@@ -1,6 +1,8 @@
 from courseaffils.models import Course
 from django.core.cache import cache
 
+from mediathread.assetmgr.models import ExternalCollection
+
 
 UPLOAD_PERMISSION_KEY = "upload_permission"
 UPLOAD_PERMISSION_ADMINISTRATOR = 0
@@ -19,7 +21,8 @@ def can_upload(user, course):
                                   UPLOAD_PERMISSION_DEFAULT))
     if user.is_staff:
         return True
-    elif course.is_faculty(user) and value >= UPLOAD_PERMISSION_INSTRUCTOR:
+    elif (cached_course_is_faculty(course, user) and
+            value >= UPLOAD_PERMISSION_INSTRUCTOR):
         return True
     elif value == UPLOAD_PERMISSION_STUDENT:
         return True
@@ -27,15 +30,14 @@ def can_upload(user, course):
         return False
 
 
+def get_uploader(course):
+    return ExternalCollection.objects.filter(
+        course=course, uploader=True).first()
+
+
 def is_upload_enabled(course):
-    upload_enabled = False
-    for item in course.asset_set.archives().order_by('title'):
-        attribute = item.metadata().get('upload', 0)
-        value = attribute[0] if hasattr(attribute, 'append') else attribute
-        if value and int(value) == 1:
-            upload_enabled = True
-            break
-    return upload_enabled
+    return get_uploader(course) is not None
+
 
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
@@ -78,14 +80,14 @@ def course_information_title(course):
 def cached_course_is_member(course, user):
     key = "%s:%s:is_member" % (course.id, user.id)
     if key not in cache:
-        cache.set(key, course.is_member(user), 3)
+        cache.set(key, course.is_member(user))
     return cache.get(key)
 
 
 def cached_course_is_faculty(course, user):
     key = "%s:%s:is_faculty" % (course.id, user.id)
     if key not in cache:
-        cache.set(key, course.is_faculty(user), 3)
+        cache.set(key, course.is_faculty(user))
     return cache.get(key)
 
 

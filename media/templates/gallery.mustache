@@ -58,18 +58,18 @@
         </div>
         
         <div class="filter-widget">
-            <div class="switcher-search-container">
-                <h3>SEARCH<span>(beta)</span></h3>
-                <div class="switcher-tool switcher-search-text {{#active_filters.search_text?}}populated{{/active_filters.search_text?}}">
-                    <span class="search-text-prefix"><img src="/media/img/icons/search.png" /></span>
-                    <input type="text" name="search-text" value="{{active_filters.search_text}}" placeholder="Item and selection titles"/>
-                    <span class="search-text-clear"><img src="/media/img/icons/meth_clear.png" /></span>
+            <div class="collection-col-3">
+                <div class="switcher-tool switcher-search-text input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    <input type="text" class="form-control" name="search-text"
+                        value="{{active_filters.search_text}}" placeholder="Search titles"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-search-text" type="button">Go</button>
+                    </span>
                 </div>
             </div>
-        
-            <div class="switcher-filter-container">
-                <h3>FILTER</h3>
-            
+
+            <div class="collection-col-3">
                 {{#>>switcher_collection_chooser}}
                 <div class="switcher_collection_chooser switcher collection-chooser switcher-tool">                
                     <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
@@ -103,7 +103,42 @@
                     </ul>
                 </div>
                 {{/>>switcher_collection_chooser}}
+            </div>
+
+            <div class="collection-col-3">
+                <div class="switcher-tool">
+                    <span class="course-tags-prefix">Tags </span>
+                    <select class="course-tags"
+                        data-placeholder="Select tags" 
+                        multiple="multiple">
+                        {{#active_tags}}
+                            <option value="{{name}}">{{name}} ({{count}})</option>
+                        {{/active_tags}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="collection-col-3">
+                <div class="switcher-tool">
+                    <span class="concept-prefix" title="{{Terms}}">Terms</span>
+                    <select class="vocabulary"
+                        data-placeholder="Select {{display_name?lower()}}"
+                        multiple="multiple">
+                                        
+                        {{#active_vocabulary}}
+                        <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+                            {{#term_set}}
+                                <option value="{{id}}">
+                                    {{display_name}} ({{count}})
+                                </option>
+                            {{/term_set}}
+                        </optgroup>
+                        {{/active_vocabulary}}     
+                    </select>
+                </div>
+            </div>
                 
+            <div class="collection-col-2">
                 <div class="switcher collection-date-filter switcher-tool">
                     <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                         <span class="switcher-prefix">Date </span>
@@ -124,37 +159,17 @@
                         <li><a class="switcher-choice filterbydate" href="lastweek">within the last week</a></li>
                     </ul>
                 </div>
-                
-                
-                <div class="switcher-tool">
-                    <span class="course-tags-prefix">Tags </span>
-                    <select class="course-tags"
-                        data-placeholder="Select tags" 
-                        multiple="multiple">
-                        {{#active_tags}}
-                            <option value="{{name}}">{{name}} ({{count}})</option>
-                        {{/active_tags}}
-                    </select>
-                </div>
-                
-                {{#active_vocabulary}}
-                <div class="switcher-tool">
-                    <span class="concept-prefix" title="{{display_name}}">{{display_name}}</span>                
-                    <select class="vocabulary" name="vocabulary-{{id}}"
-                        data-placeholder="Select {{display_name?lower()}}" multiple="multiple">
-                        {{#term_set}}
-                            <option value="{{id}}">{{display_name}} ({{count}})</option>
-                        {{/term_set}}
-                    </select>
-                </div>
-                {{/active_vocabulary}}
-                            
-            </div>
+            </div>            
         </div>  {{! end filter widget }}
-            
+        <div class="clearfix"></div>
+
         <div class="collection-assets scroll annotation-embedding">
             {{#>>assets}}
             <div id="asset_table" class="asset-table">
+                <div class="gallery-item-overlay rounded hidden">
+                    <div class="glyphicon glyphicon-plus" aria-hidden="true"></div>
+                </div>
+            
                 {{^assets}}
                     <div class="default-content feature-help">
                         {{^active_filter_count}}
@@ -220,7 +235,8 @@
                    </div>
                 {{/assets}} 
                 {{#assets}}
-                    <div id="record-{{id}}" class="gallery-item record-{{primary_type}} gallery-item-{{id}} static-height rounded">
+                    <div data-id="{{id}}" id="record-{{id}}" class="gallery-item
+                     record-{{primary_type}} gallery-item-{{id}} static-height rounded">
                         <h4 id="asset-item-{{id}}" class="asset_title asset-{{primary_type}}">
                             <a class="asset-title-link"
                                title="{{{title?default(-Untitled-)}}"
@@ -246,18 +262,6 @@
                         </div>
                         
                         <div>
-                            <div class="actions">
-                                {{#editable?}}
-                                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                                        <img src="/media/img/icons/meth_delete.png"  class="delete_icon" alt="Remove item from your collection"  />
-                                    </a>
-                                {{/editable?}}
-                                
-                                <a class="collection-choice edit-asset-inplace" href="{{local_url}}" title="Edit item attributes">
-                                    <img src="/media/img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                                </a>
-                            </div>
-                        
                             {{#annotation_count?}}
                                 <div class="item-annotation-count meta">
                                     <span class="metadata-label item-annotation-count-total">{{annotation_count}}</span>

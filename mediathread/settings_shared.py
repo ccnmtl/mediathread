@@ -5,7 +5,6 @@
 # then you can put a settings.py file and templates/ overrides there
 # (see bottom)
 
-from courseaffils import policies
 import os.path
 import re
 import sys
@@ -23,7 +22,7 @@ ALLOWED_HOSTS = ['.ccnmtl.columbia.edu', 'localhost']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': '',
+        'NAME': 'mediathread',
         'HOST': '',
         'PORT': '',
         'USER': '',
@@ -44,8 +43,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
     }
 
 JENKINS_TASKS = (
-    'django_jenkins.tasks.run_pylint',
-    'django_jenkins.tasks.with_coverage',
     'django_jenkins.tasks.run_pep8',
     'django_jenkins.tasks.run_pyflakes',
 )
@@ -55,16 +52,19 @@ PROJECT_APPS = ['mediathread.main',
                 'mediathread.assetmgr',
                 'mediathread.projects',
                 'mediathread.reports',
-                'mediathread.discussions']
+                'mediathread.discussions',
+                'mediathread.taxonomy',
+                'structuredcollaboration']
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    '--with-coverage',
-    ('--cover-package=mediathread.main,mediathread.djangosherd,'
-     'mediathread.assetmgr,mediathread.projects'),
-]
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 CACHE_BACKEND = 'locmem:///'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 3600  # One Hour
+    }
+}
 
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
@@ -99,6 +99,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = [
     'django_statsd.middleware.GraphiteRequestTimingMiddleware',
     'django_statsd.middleware.GraphiteMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -106,9 +107,9 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.transaction.TransactionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
-    'mediathread.main.middleware.AuthRequirementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
+    'waffle.middleware.WaffleMiddleware'
 ]
 
 ROOT_URLCONF = 'mediathread.urls'
@@ -135,7 +136,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
     'tagging',
-    'modelversions',
     'structuredcollaboration',
     'mediathread.assetmgr',
     'mediathread.djangosherd',
@@ -146,8 +146,6 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'south',
-    'django_nose',
     'compressor',
     'django_jenkins',
     'mediathread.taxonomy',
@@ -156,6 +154,9 @@ INSTALLED_APPS = [
     'django_markwhat',
     'impersonate',
     'registration',
+    'waffle',
+    'corsheaders',
+    'reversion'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -214,23 +215,23 @@ ANONYMOUS_PATHS = ('/media/',
                    '/api/user/courses'
                    )
 
-NON_ANONYMOUS_PATHS = ('/asset/',
+NON_ANONYMOUS_PATHS = ('/analysis/',
                        '/annotations/',
-                       '/project/',
-                       '/explore/',
-                       '/comments/',
-                       '/reports/',
-                       '/discussion/',
-                       '/archive/',
-                       '/assignment/',
-                       '/dashboard/',
-                       '/analysis/',
-                       '/taxonomy/',
                        '/api/',
+                       '/archive/',
+                       '/asset/',
+                       '/assignment/',
+                       '/comments/',
+                       '/dashboard/',
+                       '/discussion/',
+                       '/explore/',
+                       '/project/',
+                       '/reports/',
                        '/setting/',
+                       '/taxonomy/',
                        '/upgrade/',
-                       re.compile(r'^/$'),
-                       )
+                       '/upload/',
+                       re.compile(r'^/$'))
 
 # save is an exception, for server2server api
 COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save', '/settings')
@@ -244,8 +245,16 @@ COMMENT_MAX_LENGTH = None
 
 FORCE_LOWERCASE_TAGS = True
 
-# if you set this to a string, then bookmarklet can import from flickr
-DJANGOSHERD_FLICKR_APIKEY = None
+# specify FLICKR api key as a string
+# https://www.flickr.com/services/api/misc.api_keys.html
+DJANGOSHERD_FLICKR_APIKEY = 'undefined'
+
+# specify YouTube browser api key as a string
+# obtain a browser api key here:
+# https://developers.google.com/youtube/registering_an_application#Create_API_Keys
+YOUTUBE_BROWSER_APIKEY = 'undefined'
+
+BOOKMARKLET_VERSION = '1'  # current version
 
 # Mediathread instantiates a Flowplayer .swf to play many video flavors.
 # Update this variable with your site's Flowplayer installation
@@ -260,7 +269,7 @@ FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.13.swf'
 FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.13.swf'
 
 
-DEFAULT_COLLABORATION_POLICY = policies.InstructorManaged()
+DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
 
 # this gets around Django 1.2's stupidity for commenting
@@ -279,6 +288,16 @@ LOGGING = {
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 ACCOUNT_ACTIVATION_DAYS = 7
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = ('GET',)
+CORS_ALLOW_CREDENTIALS = True
+
+
+def default_url_processor(url, label=None, request=None):
+    return url
+
+ASSET_URL_PROCESSOR = default_url_processor
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

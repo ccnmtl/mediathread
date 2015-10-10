@@ -1,4 +1,8 @@
 from datetime import datetime
+import json
+from random import choice
+from string import letters
+
 from django.conf import settings
 from django.contrib import comments
 from django.contrib.comments.models import COMMENT_MAX_LENGTH
@@ -9,20 +13,19 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from djangohelpers.lib import rendered_with, allow_http
+from threadedcomments import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
+
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
+from mediathread.djangosherd.models import DiscussionIndex
 from mediathread.mixins import faculty_only
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from random import choice
-from string import letters
 from structuredcollaboration.models import Collaboration
 from structuredcollaboration.views import delete_collaboration
-from threadedcomments import ThreadedComment
-from threadedcomments.util import annotate_tree_properties, fill_tree
-import json
 
 
 @allow_http("POST")
@@ -31,6 +34,7 @@ def discussion_create(request):
 
     """Start a discussion of an arbitrary model instance."""
     title = request.POST['comment_html']
+    comment = request.POST.get('comment', '')
 
     # Find the object we're discussing.
     the_content_type = ContentType.objects.get(
@@ -42,7 +46,7 @@ def discussion_create(request):
     assert the_object is not None
 
     try:
-        obj_sc = Collaboration.get_associated_collab(the_object)
+        obj_sc = Collaboration.objects.get_for_object(the_object)
     except Collaboration.DoesNotExist:
         obj_sc = Collaboration()
         # TODO: populate this collab with sensible auth defaults.
@@ -69,16 +73,13 @@ def discussion_create(request):
                             # content_object=None,
                             context=request.collaboration_context,
                             )
-    disc_sc.policy = request.POST.get('publish', None)
-    if request.POST.get('inherit', None) == 'true':
-        disc_sc.group_id = obj_sc.group_id
-        disc_sc.user_id = obj_sc.user_id
+    disc_sc.set_policy(request.POST.get('publish', None))
     disc_sc.save()
 
     # finally create the root discussion object, pointing it at the CHILD.
     new_threaded_comment = ThreadedComment(parent=None,
                                            title=title,
-                                           comment='',
+                                           comment=comment,
                                            user=request.user,
                                            content_object=disc_sc)
 
@@ -88,6 +89,11 @@ def discussion_create(request):
 
     disc_sc.content_object = new_threaded_comment
     disc_sc.save()
+
+    DiscussionIndex.update_class_references(
+        new_threaded_comment.comment, new_threaded_comment.user,
+        new_threaded_comment, new_threaded_comment.content_object,
+        new_threaded_comment.user)
 
     if not request.is_ajax():
         return HttpResponseRedirect("/discussion/%d/" %
@@ -108,13 +114,14 @@ def discussion_create(request):
                                                  new_threaded_comment)}
 
         return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+                            content_type='application/json')
 
 
 @allow_http("POST")
 def discussion_delete(request, discussion_id):
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -127,7 +134,8 @@ def discussion_view(request, discussion_id):
     discussion_id is the pk of the root comment."""
 
     root_comment = get_object_or_404(ThreadedComment, pk=discussion_id)
-    if not root_comment.content_object.permission_to('read', request):
+    if not root_comment.content_object.permission_to(
+            'read', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \
                                      to view this discussion.')
 
@@ -137,7 +145,7 @@ def discussion_view(request, discussion_id):
         # legacy: for when contexts weren't being set in new()
         my_course = request.course
         root_comment.content_object.context = \
-            Collaboration.get_associated_collab(my_course)
+            Collaboration.objects.get_for_object(my_course)
         root_comment.content_object.save()
 
     data = {'space_owner': request.user.username}
@@ -178,8 +186,7 @@ def discussion_view(request, discussion_id):
 
         data['panels'].append(panel)
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            mimetype='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 @allow_http("POST")
@@ -188,7 +195,8 @@ def comment_save(request, comment_id, next_url=None):
     "save comment, since comments/post only does add, no edit"
     comment = ThreadedComment.objects.get(pk=comment_id)
 
-    if comment.content_object.permission_to('manage', request):
+    if comment.content_object.permission_to(
+            'manage', request.course, request.user):
         comment.comment = request.POST['comment']
     elif comment.user == request.user:
         now = datetime.now()
@@ -201,7 +209,7 @@ def comment_save(request, comment_id, next_url=None):
         return HttpResponseForbidden('You do not have permission \
                                      to edit this discussion.')
 
-    if request.POST['title']:
+    if request.POST.get('title', None):
         comment.title = request.POST['title']
         if not comment.parent:
             disc_sc = comment.content_object
@@ -209,7 +217,16 @@ def comment_save(request, comment_id, next_url=None):
             disc_sc.save()
 
     comment.save()
-    return {'comment': comment, }
+
+    DiscussionIndex.update_class_references(comment.comment, comment.user,
+                                            comment, comment.content_object,
+                                            comment.user)
+
+    if request.META['HTTP_ACCEPT'].startswith("text/html"):
+        return {'comment': comment}
+    else:
+        ctx = {'context': threaded_comment_json(request, comment)}
+        return HttpResponse(json.dumps(ctx), content_type='application/json')
 
 
 def threaded_comment_citations(all_comments, viewer):

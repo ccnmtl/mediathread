@@ -7,7 +7,7 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--pypi', dest='pypi_url',
-                    default='https://pypi.python.org/pypi',
+                    default='https://pypi.python.org/simple/',
                     help='Remote pypi repository')
 args = parser.parse_args()
 
@@ -32,8 +32,8 @@ if ret:
 
 ret = subprocess.call(
     [os.path.join(vedir, 'bin', 'pip'), "install",
-     "--index-url=http://pypi.ccnmtl.columbia.edu/",
-     "wheel==0.21.0"])
+    "--index-url=%s" % args.pypi_url,
+     "wheel==0.24.0"])
 
 if ret:
     exit(ret)
@@ -41,6 +41,7 @@ if ret:
 ret = subprocess.call(
     [os.path.join(vedir, 'bin', 'pip'), "install",
      "--use-wheel",
+     "--no-deps",
      "--index-url=%s" % args.pypi_url,
      "--requirement", os.path.join(pwd, "requirements.txt")])
 
@@ -51,7 +52,7 @@ ret = subprocess.call(["python", "virtualenv.py", "--relocatable", vedir])
 # --relocatable always complains about activate.csh, which we don't really
 # care about. but it means we need to ignore its error messages
 
-#install javascript libraries
+# install javascript libraries
 libs = [l.strip() for l in open(os.path.join(pwd, "requirements/js.txt"))]
 jsdir = os.path.abspath(os.path.join(pwd, "media/js/"))
 os.chdir(jsdir)

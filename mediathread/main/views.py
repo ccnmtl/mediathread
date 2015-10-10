@@ -1,7 +1,10 @@
 from datetime import datetime
 import json
-import operator
 
+from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.middleware import SESSION_KEY
+from courseaffils.models import Course
+from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,13 +20,10 @@ from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 
-from courseaffils.lib import in_course_or_404, in_course
-from courseaffils.middleware import SESSION_KEY
-from courseaffils.models import Course
-from courseaffils.views import available_courses_query
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, SupportedSource
+from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
+    ExternalCollection
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
@@ -51,18 +51,9 @@ def django_settings(request):
                  'GOOGLE_ANALYTICS_ID',
                  'CAS_BASE']
 
-    context = {'settings': dict([(k, getattr(settings, k, None))
-                                 for k in whitelist]),
-               'EXPERIMENTAL': 'experimental' in request.COOKIES}
-
-    if request.course:
-        context['is_course_faculty'] = request.course.is_faculty(request.user)
-
-    user_agent = request.META.get("HTTP_USER_AGENT")
-    if user_agent is not None and 'firefox' in user_agent.lower():
-        context['settings']['FIREFOX'] = True
-
-    return context
+    return {'settings': dict([(k, getattr(settings, k, None))
+                              for k in whitelist]),
+            'EXPERIMENTAL': 'experimental' in request.COOKIES}
 
 
 @rendered_with('homepage.html')
@@ -79,33 +70,12 @@ def triple_homepage(request):
 
     course = request.course
 
-    archives = []
-    upload_archive = None
-    for item in course.asset_set.archives().order_by('title'):
-        archive = item.sources['archive']
-        thumb = item.sources.get('thumb', None)
-        description = item.metadata().get('description', '')
-        uploader = item.metadata().get('upload', 0)
-
-        archive_context = {
-            "id": item.id,
-            "title": item.title,
-            "thumb": (None if not thumb else {"id": thumb.id,
-                                              "url": thumb.url}),
-            "archive": {"id": archive.id, "url": archive.url},
-            "metadata": (description[0]
-                         if hasattr(description, 'append') else description)
-        }
-
-        if (uploader[0] if hasattr(uploader, 'append') else uploader):
-            upload_archive = archive_context
-        else:
-            archives.append(archive_context)
-
-    archives.sort(key=operator.itemgetter('title'))
+    qs = ExternalCollection.objects.filter(course=request.course)
+    collections = qs.filter(uploader=False).order_by('title')
+    uploader = qs.filter(uploader=True).first()
 
     owners = []
-    if (in_course(logged_in_user.username, request.course) and
+    if (request.course.is_member(logged_in_user) and
         (logged_in_user.is_staff or
          logged_in_user.has_perm('assetmgr.can_upload_for'))):
         owners = UserResource().render_list(request, request.course.members)
@@ -113,13 +83,14 @@ def triple_homepage(request):
     context = {
         'classwork_owner': classwork_owner,
         "information_title": course_information_title(course),
-        'faculty_feed': Project.objects.faculty_compositions(request, course),
-        'is_faculty': course.is_faculty(logged_in_user),
+        'faculty_feed': Project.objects.faculty_compositions(course,
+                                                             logged_in_user),
+        'is_faculty': cached_course_is_faculty(course, logged_in_user),
         'discussions': get_course_discussions(course),
         'msg': request.GET.get('msg', ''),
         'view': request.GET.get('view', ''),
-        'archives': archives,
-        'upload_archive': upload_archive,
+        'collections': collections,
+        'uploader': uploader,
         'can_upload': course_details.can_upload(request.user, request.course),
         'owners': owners
     }
@@ -154,21 +125,18 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         course = self.request.course
 
-        upload_enabled = course_details.is_upload_enabled(course)
-
-        supported_sources = SupportedSource.objects.all().order_by("title")
+        uploader = course_details.get_uploader(course)
+        suggested = SuggestedExternalCollection.objects.all()
         upload_permission = int(course.get_detail(
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))
 
         return {
             'course': course,
-            'supported_archives': supported_sources,
+            'suggested_collections': suggested,
             'space_viewer': self.request.user,
             'is_staff': self.request.user.is_staff,
-            'newsrc': self.request.GET.get('newsrc', ''),
-            'delsrc': self.request.GET.get('delsrc', ''),
-            'upload_enabled': upload_enabled,
+            'uploader': uploader,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }
@@ -220,6 +188,9 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             value = int(request.POST.get(key))
             request.course.add_detail(key, value)
 
+            if value == 0:
+                Project.objects.limit_response_policy(request.course)
+
         key = course_details.ITEM_VISIBILITY_KEY
         if key in request.POST:
             value = int(request.POST.get(key))
@@ -231,17 +202,7 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             request.course.add_detail(key, value)
 
             if value == 0:
-                # Check any existing projects -- if they are
-                # world publishable, turn this feature OFF
-                projects = Project.objects.filter(course=request.course)
-                for project in projects:
-                    try:
-                        col = Collaboration.objects.get_for_object(project)
-                        if col._policy.policy_name == 'PublicEditorsAreOwners':
-                            col.policy = 'CourseProtected'
-                            col.save()
-                    except:
-                        pass
+                Project.objects.reset_publish_to_world(request.course)
 
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')
@@ -262,7 +223,7 @@ def set_user_setting(request, user_name):
     UserSetting.set_setting(user, name, value)
 
     json_stream = json.dumps({'success': True})
-    return HttpResponse(json_stream, mimetype='application/json')
+    return HttpResponse(json_stream, content_type='application/json')
 
 
 class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
@@ -309,11 +270,11 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             owner = User.objects.get(id=request.POST.get('on_behalf_of'))
 
         if (not in_course(owner.username, request.course) or
-                not request.course.is_faculty(owner)):
+                not cached_course_is_faculty(request.course, owner)):
             json_stream = json.dumps({
                 'success': False,
                 'message': '%s is not a course member or faculty member'})
-            return HttpResponse(json_stream, mimetype='application/json')
+            return HttpResponse(json_stream, content_type='application/json')
 
         if 'asset_ids[]' in request.POST:
             asset_ids = request.POST.getlist('asset_ids[]')
@@ -335,7 +296,7 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
             'project_count': len(object_map['projects']),
             'note_count': len(object_map['notes'])})
 
-        return HttpResponse(json_stream, mimetype='application/json')
+        return HttpResponse(json_stream, content_type='application/json')
 
 
 class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
@@ -371,7 +332,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         if projects.count() > 0:
             collabs = Collaboration.objects.get_for_object_list(projects)
             collabs = collabs.exclude(
-                _policy__policy_name='PrivateEditorsAreOwners')
+                policy_record__policy_name='PrivateEditorsAreOwners')
             ids = [int(c.object_pk) for c in collabs]
             projects = projects.filter(id__in=ids)
 
@@ -458,3 +419,59 @@ class ContactUsView(FormView):
             send_mail(subject, form_data['description'], sender, recipients)
 
         return super(ContactUsView, self).form_valid(form)
+
+
+class IsLoggedInView(View):
+
+    def get(self, request, *args, **kwargs):
+        """This could be a privacy hole, but since it's just logged in status,
+         it seems pretty harmless"""
+        logged_in = request.user.is_authenticated()
+        course_selected = SESSION_KEY in request.session
+        current = (request.GET.get('version', None) ==
+                   settings.BOOKMARKLET_VERSION)
+        data = {
+            "logged_in": logged_in,
+            "current": current,
+            "course_selected": course_selected,  # just truth value
+            "ready": (logged_in and course_selected and current),
+        }
+
+        # deliver the api keys here
+        if logged_in and course_selected:
+            data['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
+            data['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
+
+        jscript = """(function() {
+                       var status = %s;
+                       if (window.SherdBookmarklet) {
+                           window.SherdBookmarklet.update_user_status(status);
+                       }
+                       if (!window.SherdBookmarkletOptions) {
+                              window.SherdBookmarkletOptions={};
+                       }
+                       window.SherdBookmarkletOptions.user_status = status;
+                      })();
+                  """ % json.dumps(data)
+        return HttpResponse(jscript, content_type='application/javascript')
+
+
+class IsLoggedInDataView(View):
+    """
+    This is similar to the IsLoggedInView, but instead of returning
+    some JavaScript code along with the data, it just returns the data.
+    """
+    def get(self, request, *args, **kwargs):
+        logged_in = request.user.is_authenticated()
+        course_selected = SESSION_KEY in request.session
+
+        d = {
+            'logged_in': logged_in,
+            'course_selected': course_selected,
+        }
+
+        if logged_in and course_selected:
+            d['youtube_apikey'] = settings.YOUTUBE_BROWSER_APIKEY
+            d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
+
+        return HttpResponse(json.dumps(d), content_type='application/json')

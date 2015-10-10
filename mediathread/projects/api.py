@@ -1,14 +1,17 @@
 # pylint: disable-msg=R0904
+from random import choice
+from string import letters
+
 from courseaffils.lib import get_public_name
+
+from tastypie import fields
+from tastypie.resources import ModelResource
+
 from mediathread.api import UserResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.projects.forms import ProjectForm
 from mediathread.projects.models import Project
-from random import choice
-from string import letters
-from tastypie import fields
-from tastypie.resources import ModelResource
 
 
 class ProjectResource(ModelResource):
@@ -30,7 +33,7 @@ class ProjectResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all().order_by('id')
-        excludes = ['participants', 'body', 'submitted',
+        excludes = ['participants', 'body',
                     'feedback', 'sherdnote_set']
         list_allowed_methods = []
         detail_allowed_methods = []
@@ -38,8 +41,10 @@ class ProjectResource(ModelResource):
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
-        bundle.data['is_assignment'] = \
-            bundle.obj.visibility_short() == 'Assignment'
+        bundle.data['is_assignment'] = bundle.obj.is_assignment()
+        bundle.data['is_selection_assignment'] = \
+            bundle.obj.is_selection_assignment()
+        bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
         bundle.data['url'] = bundle.obj.get_absolute_url()
@@ -48,6 +53,7 @@ class ProjectResource(ModelResource):
         bundle.data['modified_time'] = bundle.obj.modified.strftime("%I:%M %p")
         bundle.data['editable'] = self.editable
         bundle.data['is_faculty'] = self.is_viewer_faculty
+        bundle.data['submitted'] = bundle.obj.is_submitted()
 
         participants = bundle.obj.attribution_list()
         bundle.data['participants'] = [{
@@ -64,60 +70,39 @@ class ProjectResource(ModelResource):
 
         return bundle
 
-    def render_one(self, request, project, version_number=None):
-        bundle = self.build_bundle(obj=project, request=request)
-        dehydrated = self.full_dehydrate(bundle)
-        project_ctx = self._meta.serializer.to_simple(dehydrated, None)
-        project_ctx['body'] = project.body
-        project_ctx['public_url'] = project.public_url()
-        project_ctx['current_version'] = version_number
-        project_ctx['visibility'] = project.visibility_short()
-        project_ctx['type'] = ('assignment' if project.is_assignment(request)
-                               else 'composition')
+    def all_responses(self, request, project):
+        ctx = []
+        responses = project.responses(request.course, request.user)
 
-        rand = ''.join([choice(letters) for i in range(5)])
+        for response in responses:
+            submitted = ''
+            if response.is_submitted():
+                submitted = response.date_submitted.strftime(self.date_fmt)
 
-        asset_resource = AssetResource()
-        sherd_resource = SherdNoteResource()
+            obj = {
+                'url': response.get_absolute_url(),
+                'title': response.title,
+                'submitted': submitted,
+                'modified': response.modified.strftime(self.date_fmt),
+                'attribution_list': []}
 
-        assets = {}
-        notes = []
-        for note in project.citations():
-            notes.append(sherd_resource.render_one(request, note, rand))
-            if (note.title not in ["Annotation Deleted", 'Asset Deleted']):
-                key = '%s_%s' % (rand, note.asset.pk)
-                if key not in assets.keys():
-                    assets[key] = \
-                        asset_resource.render_one(request, note.asset)
+            last = len(response.attribution_list()) - 1
+            for idx, author in enumerate(response.attribution_list()):
+                obj['attribution_list'].append({
+                    'name': get_public_name(author, request),
+                    'last': idx == last})
 
-        data = {
-            'project': project_ctx,
-            'type': 'project',
-            'can_edit': self.editable,
-            'annotations': notes,
-            'assets': assets
-        }
+            ctx.append(obj)
 
-        data['responses'] = []
-        for response in project.responses(request):
-            if response.can_read(request):
-                obj = {
-                    'url': response.get_absolute_url(),
-                    'title': response.title,
-                    'modified': response.modified.strftime(self.date_fmt),
-                    'attribution_list': []}
+        return sorted(
+            ctx,
+            key=lambda response: response['attribution_list'][0]['name'])
 
-                last = len(response.attribution_list()) - 1
-                for idx, author in enumerate(response.attribution_list()):
-                    obj['attribution_list'].append({
-                        'name': get_public_name(author, request),
-                        'last': idx == last})
-
-                data['responses'].append(obj)
-        data['response_count'] = len(data['responses'])
-
-        my_responses = []
-        for response in project.responses_by(request, request.user):
+    def my_responses(self, request, project):
+        ctx = []
+        responses = project.responses(request.course,
+                                      request.user, request.user)
+        for response in responses:
             obj = {'url': response.get_absolute_url(),
                    'title': response.title,
                    'modified': response.modified.strftime(self.date_fmt),
@@ -129,21 +114,59 @@ class ProjectResource(ModelResource):
                     'name': get_public_name(author, request),
                     'last': idx == last})
 
-            my_responses.append(obj)
+            ctx.append(obj)
 
+        return ctx
+
+    def related_assets_notes(self, request, project):
+
+        asset_resource = AssetResource()
+        sherd_resource = SherdNoteResource()
+
+        rand = ''.join([choice(letters) for i in range(5)])
+
+        assets = {}
+        notes = []
+        for note in project.citations():
+            notes.append(sherd_resource.render_one(request, note, rand))
+            if (note.title not in ["Annotation Deleted", 'Asset Deleted']):
+                key = '%s_%s' % (rand, note.asset.pk)
+                if key not in assets.keys():
+                    assets[key] = \
+                        asset_resource.render_one(request, note.asset)
+
+        return assets, notes
+
+    def render_one(self, request, project, version_number=None):
+        bundle = self.build_bundle(obj=project, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        project_ctx = self._meta.serializer.to_simple(dehydrated, None)
+        project_ctx['body'] = project.body
+        project_ctx['public_url'] = project.public_url()
+        project_ctx['modified'] = project.modified.strftime(self.date_fmt)
+        project_ctx['current_version'] = version_number
+        project_ctx['visibility'] = project.visibility_short()
+        project_ctx['type'] = project.project_type
+
+        assets, notes = self.related_assets_notes(request, project)
+
+        data = {
+            'project': project_ctx,
+            'type': 'project',
+            'can_edit': self.editable,
+            'annotations': notes,
+            'assets': assets
+        }
+
+        data['responses'] = self.all_responses(request, project)
+        data['response_count'] = len(data['responses'])
+
+        my_responses = self.my_responses(request, project)
         if len(my_responses) == 1:
             data['my_response'] = my_responses[0]
         elif len(my_responses) > 1:
             data['my_responses'] = my_responses
             data['my_responses_count'] = len(my_responses)
-
-        if project.is_participant(request.user):
-            data['revisions'] = [{
-                'version_number': v.version_number,
-                'versioned_id': v.versioned_id,
-                'author': get_public_name(v.instance().author, request),
-                'modified': v.modified.strftime("%m/%d/%y %I:%M %p")}
-                for v in project.versions.order_by('-change_time')]
 
         if self.editable:
             projectform = ProjectForm(request, instance=project)
@@ -165,6 +188,9 @@ class ProjectResource(ModelResource):
         return lst
 
     def render_projects(self, request, projects):
+        course = request.course
+        user = request.user
+
         lst = []
         for project in projects:
             abundle = self.build_bundle(obj=project, request=request)
@@ -178,26 +204,18 @@ class ProjectResource(ModelResource):
 
             parent_assignment = project.assignment()
             if parent_assignment:
+                ctx['display_as_assignment'] = True
                 ctx['collaboration'] = {}
                 ctx['collaboration']['title'] = parent_assignment.title
                 ctx['collaboration']['url'] = \
                     parent_assignment.get_absolute_url()
                 ctx['collaboration']['due_date'] = \
                     parent_assignment.get_due_date()
-
-            is_assignment = project.is_assignment(request)
-            if is_assignment:
-                count = 0
-                for response in project.responses(request):
-                    if response.can_read(request):
-                        count += 1
-                ctx['responses'] = count
-
+            elif project.is_assignment() or project.is_selection_assignment():
+                responses = project.responses(course, user)
+                ctx['responses'] = len(responses)
                 ctx['is_assignment'] = True
-                ctx['responses'] = len(project.responses(request))
-
-            ctx['display_as_assignment'] = \
-                is_assignment or parent_assignment is not None
+                ctx['display_as_assignment'] = True
 
             lst.append(ctx)
         return lst

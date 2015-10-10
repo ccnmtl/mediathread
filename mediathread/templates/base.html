@@ -2,32 +2,35 @@
 {% load cache user_projects coursetags compress static %}
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-{% with request.collaboration_context.content_object as course %}
+{% with request.course as course %}
     <head><!-- {{controller_name}} :: {{template_name}} -->
     	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
     	<title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
         
-        <script type="text/javascript" src='{% static "jquery/js/jquery-1.8.3.min.js" %}'></script>
-        <script type="text/javascript" src='{% static "jquery/js/jquery-ui-1.9.1.custom.min.js" %}'></script>
+        <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
+        <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>    
+        <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
         
-        <script type="text/javascript" src='{% static "js/mustache/mustache.js" %}'></script>
+        <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
+        <script>
+         // Let Mediathread's custom Mustache library use the Mustache global.
+         var Mustache2 = Mustache;
+         Mustache = undefined;
+        </script>
+        <script src="{% static 'js/mustache/mustache-custom.js' %}"></script>
 
-        {% if settings.FIREFOX %}
-            <script type="text/javascript" src="{{STATIC_URL}}js/sherdjs/lib/flowplayer/flowplayer-3.2.13.min.js"></script>
-        {% else %}
-            <script src="http://ccnmtl.columbia.edu/remote/flowplayer-5.5.0/flowplayer.min.js"></script>
-        {% endif %}
+        <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
 
-        <script type="text/javascript" src='{% static "js/sherdjs/lib/OpenLayers-min.js" %}'></script>
+        <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
-        
-        <link rel="stylesheet" href='{% static "jquery/css/jquery-ui-1.9.1.custom.min.css" media="screen" %}'/>            
-        <link rel="shortcut icon" href='{% static "img/mediathread_favicon.ico" type="image/x-icon" %}'/>
+
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" media="screen" />
+        <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.min.css' %}" media="screen" />
+        <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
 
         {% compress css %}
             <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
             <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
-
             {% block css %}{% endblock %}
         {% endcompress %}
 
@@ -36,7 +39,7 @@
     </head>
 
     {% course_role for request.user in course as role_in_course %}
-    <body class="one_column role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
+    <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
     <div id="dialog-confirm" style="display: none"></div>    
     <div id="container">
         {% block masthead %}
@@ -51,12 +54,12 @@
                 </div>
                 {% block standardnav %}
                    <ul id="standardnav">
-                        {% if request.user.is_authenticated %}   
+                        {% if course %}
                             {% ifequal role_in_course "non-member" %}
                                 <li>
                                     <div class="nonmember">You are not a class member!</div>
                                 </li>
-                            {% endifequal %}     
+                            {% endifequal %}
                             <li>
                                 <div class="settings_menu user closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
@@ -89,7 +92,7 @@
                                 </div>
                             </li>
 
-                            {% if is_course_faculty %}
+                            {% if role_in_course == 'instructor' %}
                             <li>
                                 <div class="settings_menu manage closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
@@ -119,12 +122,11 @@
                                     {% if user.is_staff %}
                                         <hr />
                                         <a href="/reports/activity/course/">Activity by Course</a>
-                                        <a href="/reports/activity/school/">Activity by School</a>
-                                    {%endif%}     
+                                        <a href="/reports/self-registration/">Self-Registration Report</a>
+                                    {% endif %}
                                 </div>
                             </li>
                             {% endif %}
-
                             <li>
                                 {% block standardnav_help %}
                                     <div class="settings_menu help closed">
@@ -178,20 +180,15 @@
     
     
     		<!-- ###### Page Content ###### -->
-    		<div id="content">
-    			<div id="squish"><!-- Don't touch this div -->
-    				<div id="block" class="block">
-    					{% block pagetitle %}{% endblock %}
-    				
-    					{% block content %}{% endblock %}
+    		<div>
+				{% block pagetitle %}{% endblock %}
+			
+				{% block content %}{% endblock %}
     
-    				<!-- ###### Don't touch this ###### -->
-    				<div class="visualclear"></div><!-- id="visualclear" -->				
-    
-    				</div><!-- class="block" -->
-    			</div><!-- id="squish" -->
+				<!-- ###### Don't touch this ###### -->
+				<div class="visualclear"></div><!-- id="visualclear" -->				
     			<div id="clearfooter"></div>
-    		</div><!-- id="content" -->
+    		</div>
     	</div><!-- id="pagebody" -->
     </div><!-- id="container" -->
 
@@ -229,7 +226,7 @@
     </script>
     
     {% compress js %}
-        <script type="text/javascript" src='{% static "js/app/json2.js" %}'></script>    
+        <script type="text/javascript" src='{% static "js/lib/json2.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/util.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/ajaxDelete.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
@@ -253,12 +250,13 @@
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 // setup some ajax progress indicator
-                jQuery("html").bind("ajaxStart", function(){  
+                jQuery("html").ajaxStart(function() {  
                    jQuery(this).addClass("busy");
-                }).bind("ajaxStop", function(){  
+                })
+                jQuery("html").ajaxStop(function() {  
                    jQuery(this).removeClass("busy");
                 });
-                
+
                 /* Select from list: Chrome, Firefox, Safari, MSIE */
                 shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 10 });
                
@@ -288,8 +286,8 @@
         {% block js %}{% endblock %}
     {% endcompress %}
     
-    {% if not settings.DEBUG %}
-        <script>                
+    {% if not debug %}
+        <script>
             {% if settings.GOOGLE_ANALYTICS_ID %}
                 var _gaq = _gaq || [];
                 _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
@@ -316,6 +314,27 @@
 <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>
 </div>
 {% endif %}
+
+{% if not debug %}
+<script src="//cdn.ravenjs.com/1.1.18/jquery,native/raven.min.js"></script>
+<script>
+ Raven.config('https://49021d8321684c2f9fe0fde14fbcdf8a@sentry.ccnmtl.columbia.edu/33', {
+     whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
+ }).install();
+ {% if user.is_anonymous %}
+ Raven.setUserContext({
+     email: 'none',
+     id: 'anonymous'
+ });
+ {% else %}
+ Raven.setUserContext({
+     email: '{{user.email}}',
+     id: '{{user.username}}'
+ });
+ {% endif %}
+</script>
+{% endif %}
+
 </body>
 {% endwith %}
 </html>

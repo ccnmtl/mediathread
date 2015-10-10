@@ -8,7 +8,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -16,7 +16,7 @@ Feature: Composition
         
         Then I am at the Untitled page
         I see "by Instructor One"
-        And I see "Private"
+        And I see "Draft"
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -32,14 +32,13 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - only author(s) can view"
-        There is a project visibility "Assignment - published to all students in class, tracks responses"
+        There is a project visibility "Draft - only you can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Private - only author(s) can view"
+        And the project visibility is "Draft - only you can view"
         
         Then I save the changes
-        Then there is a "Private" link
+        Then there is a "Draft" link
         And the Composition panel has a Saved button              
         
         # Toggle Preview Mode
@@ -54,7 +53,7 @@ Feature: Composition
         # The project shows on Home
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is a private "Composition: Scenario 1" project by Instructor One
+        Then there is a draft "Composition: Scenario 1" project by Instructor One
 
         Finished using Selenium
 
@@ -66,7 +65,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is not a Create Assignment button
+        Then there is not a Create Composition Assignment button
         And there is a Create Composition button
         And there is not a Create Discussion button
         
@@ -74,7 +73,7 @@ Feature: Composition
 
         Then I am at the Untitled page
         I see "by Student One"
-        And there is a "Private" link
+        And there is a "Draft" link
         
         # Verify user is able to edit the project
         There is an open Composition panel
@@ -92,12 +91,11 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I see a Save Changes dialog
-        There is a project visibility "Private - only author(s) can view"
+        There is a project visibility "Draft - only you can view"
         There is a project visibility "Instructor - only author(s) and instructor can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
-        There is not a project visibility "Assignment - published to all students in class, tracks responses"
-        And the project visibility is "Private - only author(s) can view"
+        And the project visibility is "Draft - only you can view"
         
         Then I save the changes
         
@@ -113,7 +111,7 @@ Feature: Composition
         # The project shows on Home
         When I click the "Sample Course" link
         Given the home workspace is loaded
-        Then there is a private "Composition: Scenario 2" project by Student One
+        Then there is a draft "Composition: Scenario 2" project by Student One
         
         Finished using Selenium
 
@@ -124,7 +122,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -139,9 +137,10 @@ Feature: Composition
         Then I set the project visibility to "<visibility>"
         When I save the changes
         Then there is a "<status>" link
-        
+
         # Try to view as student one
         Given I am test_student_one in Sample Course
+        Given the home workspace is loaded
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
         Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
         
@@ -149,8 +148,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                                        | status             | info_count | composition_count |
-        | Private | Private - only author(s) can view                                 | Private            | 0          | 0                 |
-        | Assign  | Assignment - published to all students in class, tracks responses | Assignment         | 0          | 1                 |
+        | Draft   | Draft - only you can view                                         | Draft              | 0          | 0                 |
         | Public  | Whole Class - all class members can view                          | Published to Class | 1          | 0                 |
                  
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
@@ -160,7 +158,7 @@ Feature: Composition
         # Create a project from the home page
         There is a Create button
         When I click the Create button
-        Then there is not a Create Assignment button
+        Then there is not a Create Composition Assignment button
         And there is a Create Composition button
         And there is not a Create Discussion button
         
@@ -177,12 +175,14 @@ Feature: Composition
         
         # Try to view as student two
         Given I am test_student_two in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
+        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
@@ -191,7 +191,7 @@ Feature: Composition
              
       Examples:
         | title   | visibility                                      | status             | count |
-        | private | Private - only author(s) can view               | Private            | 0     |
+        | Draft   | Draft - only you can view                       | Draft              | 0     |
         | public  | Whole Class - all class members can view        | Published to Class | 1     |
 
 

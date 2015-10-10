@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load tagging_tags user_projects helpful_tags coursetags comments collaborations %}
+{% load waffle_tags %}
 
 {% block title %}
     Home
@@ -96,15 +97,12 @@
     {{ block.super }}
     
     {% if course and course.title == "Mediathread Guest Sandbox" %}
-    <div class="infonote">
-        <a href="#" class="dismiss" 
-           onclick="jQuery(this).parent().fadeOut(); return false;">
-           <img src="/media/img/switcher/icon_x.png"/>
-        </a>
-        <strong>Welcome to Mediathread!</strong> The Guest Sandbox is a place to experiment with all the application features.
-        <p>Be aware that work here is temporary. All user-created compositions and selections are removed every Monday morning.</p>
-        <p>To learn more about Mediathread and how to install an instance at your institution, visit <a href="//mediathread.info">http://mediathread.info</a></p>
-    </div>
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Welcome to Mediathread!</strong> The Guest Sandbox is a place to experiment with all the application features.
+            <p>Be aware that work here is temporary. All user-created compositions and selections are removed every Monday morning.</p>
+            <p>To learn more about Mediathread and how to install an instance at your institution, visit <a href="//mediathread.info">http://mediathread.info</a></p>
+        </div>        
     {% endif %}
     
     <table id="home-columns">
@@ -139,12 +137,12 @@
                                 </p>                          
                             
                                 <div class="tour_buttons">
-                                    <span class="button" id="nextstep" style="">Next &gt;</span>
+                                    <span class="btn btn-default" id="nextstep" style="">Next &gt;</span>
                                     <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
                                 </div>
                             </div>
 
-                            {% if faculty_feed %}
+                            {% if faculty_feed|length %}
                                 <h4 class="inst-header information">
                                     {{information_title}}
                                 </h4>
@@ -197,7 +195,7 @@
             
                 <div class="column-container parent-column-container">
                     <h2 class="tour_2">
-                        Composition
+                        Compositions &amp; Assignments 
                         <div class="actions">{% include "help/help_button.html" %}</div>
                     </h2>
                     <div id="tour_2_content" style="display: none">
@@ -238,8 +236,11 @@
             
             	<div class="column-container">
                 	<h2 class="tour_3">Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
-                	<a class="btn-primary collection" href="/asset/">
-                        <img src="{{STATIC_URL}}img/viewfullcollection.png" width="12" height="12" alt="view full collection icon" />View Full Collection</a> 
+                	<a class="btn btn-default collection right" href="/asset/">
+                        <img src="{{STATIC_URL}}img/viewfullcollection.png"
+                            alt="view full collection icon" />
+                                View Full Collection
+                    </a> 
                     
                     <div id="tour_3_content" style="display: none">
                         <p>
@@ -278,99 +279,88 @@
                         </p>
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->
-                {% if can_upload %}
-                {% if upload_archive %}
+                {% if can_upload and uploader %}
                 <div class="collection_content">
                     <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
                         <h3 class="left">Upload from Computer</h3>
-                        <div class="arrowIcon left">
-                        </div>
+                        <div class="arrowIcon left"></div>
                     </a>
-                        <div class="arrowContent" id="upload_desktop" style="display: none">                
+                    <div class="arrowContent" id="upload_desktop" style="display: none">
+                        {% flag "uploads_offline" %}
+                            <div class="instructions">
+                                <p>The upload feature is currently down for maintenance. We will return shortly.</p>
+                            </div>
+                        {% else %}
                             {% ifequal role_in_course "non-member" %}
                                 <div class="instructions">
-                                    You must be a course member to upload media files.
+                                    <p>You must be a course member to upload media files.</p>
                                 </div>
                             {% else %}                        
                                     <p>
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
                                     </p>
-                                    <div id="upload_audio">
-                                     <strong>Upload Audio</strong>
-                                    <form action="/explore/redirect/" method="POST">
+                                    <div>
+                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
                                             <b>For:</b>&nbsp;
-                                            <select name="as"> 
-                                            {% for owner in owners %}                                
+                                            <select id="video_owners" name="as">
+                                            {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
                                             {% endfor %}
                                             </select>
                                             </div>
                                         {% endif %}
-                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
+                                        <a class="btn btn-primary upload_button video">
+                                            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>&nbsp;&nbsp;Upload video</a>
+                                    </form>
+                                    <hr class="divideLinks" />                                
+                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                        {% if owners %}
+                                            <div class="upload_for">
+                                            <b>For:</b>&nbsp;
+                                            <select name="as">
+                                            {% for owner in owners %}
+                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                            {% endfor %}
+                                            </select>
+                                            </div>
+                                        {% endif %}
                                         <input type="hidden" name="audio" value="mp4"></input>
-                                        <a class="btn-primary upload_button audio"><img src="{{STATIC_URL}}img/uploadaudio.png" width="12" height="12" alt="Upload Audio" />Upload audio</a>                                        
+                                        <a class="btn btn-primary upload_button video">
+                                            <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>                                        
                                     </form>  
-                                    </div>
-                                    <div id="upload_video">
-                                     <strong>Upload Video</strong>
-                                    <form action="/explore/redirect/" method="POST">
-                                        {% if owners %}
-                                            <div class="upload_for">
-                                            <b>For:</b>&nbsp;
-                                            <select id="video_owners" name="as"> 
-                                            {% for owner in owners %}                                
-                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                            {% endfor %}
-                                            </select>
-                                            </div>
-                                        {% endif %}
-                                        <input type="hidden" name="url" value="{{upload_archive.archive.url}}"></input>
-                                        <a class="btn-primary upload_button video"><img src="{{STATIC_URL}}img/uploadvideo.png" width="12" height="12" alt="Upload Video" />Upload video</a>
-                                    </form>               
-                                    </div>
                             {% endifequal %}
-
-                        
-                    </div><!-- end upload from desktop -->
+                       {% endflag %}
+                </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
-            {% endif %}
             {% endif %}            
 
-                    {% if archives %}
-                    <div id="recommend">
-                        
-                            <h3>Recommended Sources</h3>
-                            Your instructor suggests that you import items from these sites. 
+            {% if collections.count %}
+                <div id="recommend">
+                    <h3>Recommended Sources</h3>
+                    Your instructor suggests that you import items from these sites. 
                     
-                            {% for archive in archives %}
-                                {% if space_viewer.is_staff %}
-                                    <div class="manage-archive">
-                                        <a class="manage-archive-link" href="{%url 'admin:assetmgr_asset_change' archive.id %}">Manage</a>
-                                    </div>
-                                {% endif %}
-                            <div class="recommend_source">
-                                {% if archive.thumb %}
-                                    {% if archive.thumb.url %}
-                                        <div class="source_thumb">
-                                            <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}">
-                                                <img src="{{archive.thumb.url}}" alt="thumbnail image" class="archive-link" />
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                                <div class="source_title">
-                                <a href="/explore/redirect/?url={{archive.archive.url|urlencode}}" class="archive-link">{{archive.title}}</a>
+                    {% for collection in collections %}
+                        <div class="recommend_source">
+                            {% if collection.thumb_url %}
+                                <div class="source_thumb">
+                                    <a href="/explore/redirect/{{collection.id}}/">
+                                        <img src="{{collection.thumb_url}}" alt="thumbnail image" class="collection-link" />
+                                    </a>
                                 </div>
-                            </div>     
-                            {%endfor%}                        
-                    </div>
-                    {% endif %} 
-                    
+                            {% endif %}
+                            <div class="source_title">
+                                <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
+                            </div>
+                        </div>
+                    {% endfor %}                        
                 </div>
-                {% endwith %}
-            </td>            
+            {% endif %} 
+
+            </div>
+        {% endwith %}
+        </td>            
 
         </tr>
     </tbody>

@@ -1,8 +1,10 @@
+import csv
 import json
 
 from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
@@ -12,6 +14,9 @@ from django.utils.decorators import method_decorator
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
+from mediathread.projects.models import Project, ProjectNote
+
+import reversion
 
 
 def ajax_required(func):
@@ -37,6 +42,8 @@ def ajax_required(func):
 def faculty_only(func):
 
     def wrap(request, *args, **kwargs):
+        if request.user is None or request.user.is_anonymous():
+            return HttpResponseForbidden("forbidden")
         if not cached_course_is_faculty(request.course, request.user):
             return HttpResponseForbidden("forbidden")
         return func(request, *args, **kwargs)
@@ -49,11 +56,15 @@ def faculty_only(func):
 class RestrictedMaterialsMixin(object):
 
     def dispatch(self, *args, **kwargs):
+        record_owner_name = kwargs.pop('record_owner_name', None)
+        self.initialize(record_owner_name)
+        return super(RestrictedMaterialsMixin, self).dispatch(*args, **kwargs)
+
+    def initialize(self, record_owner_name=None):
         # initialize a few helpful variables here
         self.record_viewer = self.request.user
 
         self.record_owner = None
-        record_owner_name = kwargs.pop('record_owner_name', None)
         if record_owner_name:
             self.record_owner = get_object_or_404(User,
                                                   username=record_owner_name)
@@ -84,8 +95,6 @@ class RestrictedMaterialsMixin(object):
             for user in self.request.course.faculty.all():
                 self.visible_authors.append(user.id)
 
-        return super(RestrictedMaterialsMixin, self).dispatch(*args, **kwargs)
-
     def visible_assets_and_notes(self, request, assets):
         tag_string = request.GET.get('tag', '')
         modified = request.GET.get('modified', '')
@@ -102,6 +111,16 @@ class RestrictedMaterialsMixin(object):
             visible_notes = visible_notes.filter(
                 Q(asset__title__icontains=search_text) |
                 Q(title__icontains=search_text))
+
+        # filter out notes associated with hidden project responses
+        # (for selection assignment responses only right now)
+        (visible, hidden) = Project.objects.responses_by_course(
+            request.course, self.record_viewer)
+
+        pids = [project.id for project in hidden]
+        pnotes = ProjectNote.objects.filter(project__id__in=pids)
+        pnids = pnotes.values_list('annotation__id', flat=True)
+        visible_notes = visible_notes.exclude(id__in=pnids)
 
         # return the related asset ids
         ids = visible_notes.values_list('asset__id', flat=True)
@@ -123,6 +142,25 @@ class JSONResponseMixin(object):
         return HttpResponse(json.dumps(context, indent=2),
                             content_type='application/json',
                             **response_kwargs)
+
+
+class CSVResponseMixin():
+
+    def render_csv_response(self, filename, headers, rows):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = \
+            'attachment; filename=' + filename + '.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(headers)
+
+        for row in rows:
+            try:
+                writer.writerow(row)
+            except:
+                pass
+
+        return response
 
 
 class LoggedInMixin(object):
@@ -148,3 +186,28 @@ class LoggedInMixinSuperuser(object):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
         return super(LoggedInMixinSuperuser, self).dispatch(*args, **kwargs)
+
+
+class CreateReversionMixin(object):
+    @transaction.atomic()
+    @reversion.create_revision()
+    def dispatch(self, *args, **kwargs):
+        return super(CreateReversionMixin, self).dispatch(*args, **kwargs)
+
+
+class ProjectReadableMixin(object):
+    def dispatch(self, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if not project.can_read(self.request.course, self.request.user):
+            return HttpResponseForbidden("forbidden")
+
+        return super(ProjectReadableMixin, self).dispatch(*args, **kwargs)
+
+
+class ProjectEditableMixin(object):
+    def dispatch(self, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        if (not project.can_edit(self.request.course, self.request.user)):
+            return HttpResponseForbidden("forbidden")
+        self.project = project
+        return super(ProjectEditableMixin, self).dispatch(*args, **kwargs)

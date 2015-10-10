@@ -1,7 +1,12 @@
 language: python
+sudo: false
+env:
+  - TEST_SUITE=jenkins
+  - TEST_SUITE=harvest1
+  - TEST_SUITE=harvest2
 python:
   - "2.7"
 install:
-  - ./bootstrap.py --pypi="https://pypi.ccnmtl.columbia.edu/"
+  - ./bootstrap.py
 script:
-  - make
+  - make $TEST_SUITE

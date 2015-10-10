@@ -36,8 +36,8 @@
         </div>
 
         <% if (projects && projects.length > 0) { %>
-            <div class="metadata-value"><%= projects.length %> Compositions &amp; Assignments</div>
-            <div><input id="import-projects" type="button" class="rounded-button blue" value="Select Compositions &amp; Assignments"></div>
+            <h5><%= projects.length %> Compositions &amp; Assignments</h5>
+            <div><input id="import-projects" type="button" class="btn btn-primary" value="Select Compositions &amp; Assignments"></div>
             <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Compositions & Assignments To Migrate">
                 <div class="right"><a href="#" id="select-all-projects">Select All</a> | <a href="#" id="clear-all-projects">Clear All</a></div>
                 <div class="visualclear"/>
@@ -70,8 +70,8 @@
         <br />
 
         <% if (assets && assets.length > 0) { %>             
-            <div class="metadata-value"><%= assets.length %> Items with <%= assets.total_sherdnotes() %> selection(s)</div>
-            <div><input id="import-items" type="button" class="rounded-button blue" value="Select Items"/></div>
+            <h5><%= assets.length %> Items with <%= assets.total_sherdnotes() %> selection(s)</h5>
+            <div><input id="import-items" type="button" class="btn btn-primary" value="Select Items"/></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
                 <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
@@ -110,7 +110,7 @@
         <% } %>
 
         <br /><br />
-        <input id="import-all" class="rounded-button green" type="button" value="Select Everything" />
+        <input id="import-all" class="btn btn-success" type="button" value="Select Everything" />
         <div id="import-all-dialog" style="display: none" title="Import">
             <h3><%= course.title %></h3>
             <% if (projects && projects.length > 0) { %>
@@ -215,7 +215,7 @@
         jQuery(document).ready(function () {
             var view = new CourseMaterialsView({
                 availableCourses: courses,
-                el: "#block"
+                el: "#pagebody"
             });
         });
     </script>
@@ -242,8 +242,8 @@
     <input type="hidden" id="is-staff" value="{{user.is_staff}}" /> 
                 
     <div id="available-courses-selector" style="display: none">
-        <input type="text" class="default autocomplete" id="available-courses" value="Type course name here">
-        <input type="submit" id="view-materials" value="View materials" class="btn-primary"/>        
+        <input type="text" class="default autocomplete" id="available-courses" placeholder="Type course name here">
+        <input type="submit" id="view-materials" value="View materials" class="btn btn-primary"/>        
     </div>
     
     <div id="course-materials-container" style="display: none">       

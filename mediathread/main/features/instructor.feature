@@ -18,7 +18,12 @@ Feature: Instructor Dashboard
         When I access the url "/dashboard/settings/"
         Then I do not see "Manage Settings"
         And I see "forbidden"
-        
+
+        # Taxonomy
+        When I access the url "/taxonomy/"
+        Then I do not see "Course Vocabulary"
+        And I see "forbidden"
+
         # Reports
         When I access the url "/reports/class_assignments/"
         Then I do not see "Assignment Responses"
@@ -60,7 +65,7 @@ Feature: Instructor Dashboard
         
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -83,7 +88,7 @@ Feature: Instructor Dashboard
         
         There is a Create button
         When I click the Create button
-        Then there is a Create Assignment button
+        Then there is a Create Composition Assignment button
         And there is a Create Composition button
         And there is a Create Discussion button
         
@@ -102,7 +107,7 @@ Feature: Instructor Dashboard
         Then I am at the Home page
         
         Given the home workspace is loaded
-        Then there is a private "Instructor Feature 4" project by Instructor One
+        Then there is a draft "Instructor Feature 4" project by Instructor One
         
         Finished using Selenium
         
@@ -110,13 +115,6 @@ Feature: Instructor Dashboard
         Using selenium
         Given there is a sample response
         Given I am test_instructor in Sample Course
-        
-        When I open the reports menu
-        When I click the "Assignment Responses" link
-        There is a "Sample Assignment" link
-        When I click the "Sample Assignment" link
-        Then I am at the Sample Assignment page
-        There is an open Assignment panel
 
         When I open the reports menu
         When I click the "Assignment Responses" link
@@ -126,7 +124,7 @@ Feature: Instructor Dashboard
         And I see "Student One"
         And I there is a "Sample Assignment Response" link
         And I see "Submitted to Instructor"
-        And I see "No feedback" 
+        And I see "No" 
         
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page

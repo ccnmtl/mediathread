@@ -7,13 +7,16 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
+from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
 
 from mediathread.assetmgr.models import Asset
-from mediathread.factories import UserFactory, MediathreadTestMixin, \
+from mediathread.factories import (
+    UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory
+)
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
@@ -378,7 +381,8 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
                                               policy='PrivateEditorsAreOwners')
         self.project2 = ProjectFactory.create(course=self.sample_course,
                                               author=self.instructor_one,
-                                              policy='Assignment')
+                                              policy='CourseProtected',
+                                              project_type='assignment')
 
         self.assertTrue(self.client.login(
             username=self.instructor_three.username,
@@ -599,8 +603,8 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
             '/dashboard/settings/',
             {course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 0})
 
-        col = project.collaboration()
-        self.assertEquals(col._policy.policy_name, 'CourseProtected')
+        col = project.get_collaboration()
+        self.assertEquals(col.policy_record.policy_name, 'CourseProtected')
 
     def test_post(self):
         self.assertTrue(
@@ -649,12 +653,10 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
 
         ctx = view.get_context_data()
         self.assertEquals(ctx['course'], self.sample_course)
-        self.assertEquals(list(ctx['supported_archives']), [])
+        self.assertEquals(list(ctx['suggested_collections']), [])
         self.assertEquals(ctx['space_viewer'], self.instructor_one)
         self.assertFalse(ctx['is_staff'])
-        self.assertEquals(ctx['newsrc'], '')
-        self.assertEquals(ctx['delsrc'], '')
-        self.assertTrue(ctx['upload_enabled'])
+        self.assertIsNotNone(ctx['uploader'])
 
     def test_post(self):
         self.assertTrue(
@@ -672,3 +674,92 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
                                                    self.sample_course))
         self.assertFalse(course_details.can_upload(self.student_one,
                                                    self.sample_course))
+
+
+class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
+        self.url = reverse('is_logged_in.js')
+
+    def test_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertContains(response, '"current": false')
+        self.assertContains(response, '"logged_in": false')
+        self.assertContains(response, '"course_selected": false')
+        self.assertContains(response, '"ready": false')
+        self.assertNotContains(response, 'youtube_apikey')
+        self.assertNotContains(response, 'flickr_apikey')
+
+    def test_logged_in_no_course(self):
+        self.client.login(username=self.instructor_three.username,
+                          password='test')
+
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertContains(response, '"current": false')
+        self.assertContains(response, '"logged_in": true')
+        self.assertContains(response, '"course_selected": false')
+        self.assertContains(response, '"ready": false')
+        self.assertNotContains(response, 'youtube_apikey')
+        self.assertNotContains(response, 'flickr_apikey')
+
+    def test_logged_in_with_course(self):
+        self.client.login(username=self.instructor_three.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        with self.settings(YOUTUBE_BROWSER_APIKEY="123",
+                           DJANGOSHERD_FLICKR_APIKEY="456",
+                           BOOKMARKLET_VERSION="1"):
+            response = self.client.get(self.url, {'version': 1})
+            self.assertEquals(response.status_code, 200)
+
+            self.assertContains(response, '"current": true')
+            self.assertContains(response, '"logged_in": true')
+            self.assertContains(response, '"course_selected": true')
+            self.assertContains(response, '"ready": true')
+            self.assertContains(response, '"youtube_apikey": "123"')
+            self.assertContains(response, '"flickr_apikey": "456"')
+
+
+class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
+    def setUp(self):
+        self.up = UserProfileFactory()
+        self.setup_sample_course()
+
+    def test_get_as_anonymous(self):
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)
+
+        data = json.loads(r.content)
+        self.assertEqual(data['logged_in'], False)
+        self.assertEqual(data['course_selected'], False)
+        self.assertNotIn('youtube_apikey', data)
+        self.assertNotIn('flickr_apikey', data)
+
+    def test_get_when_logged_in(self):
+        self.client.login(username=self.up.user.username, password='test')
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)
+
+        data = json.loads(r.content)
+        self.assertEqual(data['logged_in'], True)
+        self.assertEqual(data['course_selected'], False)
+
+    def test_get_when_course_is_selected(self):
+        # TODO: Select the sample course for the user and
+        # make sure the api keys are present.
+        self.client.login(username=self.up.user.username, password='test')
+        r = self.client.get(reverse('is_logged_in'))
+        self.assertEqual(r.status_code, 200)

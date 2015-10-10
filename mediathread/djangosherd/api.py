@@ -1,11 +1,13 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
+from tastypie import fields
+from tastypie.resources import ModelResource
+
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
+from mediathread.projects.models import ProjectNote
 from mediathread.taxonomy.api import TermResource
 from mediathread.taxonomy.models import TermRelationship
-from tastypie import fields
-from tastypie.resources import ModelResource
 
 
 class SherdNoteResource(ModelResource):
@@ -40,11 +42,21 @@ class SherdNoteResource(ModelResource):
                 'title': bundle.obj.title
             }
 
-            bundle.data['editable'] = (bundle.request.user.id ==
-                                       getattr(bundle.obj, 'author_id', -1))
+            editable = (bundle.request.user.id ==
+                        getattr(bundle.obj, 'author_id', -1))
+            citable = bundle.request.GET.get('citable', '') == 'true'
 
-            if bundle.request.GET.get('citable', '') == 'true':
-                bundle.data['citable'] = True
+            # assumed: there is only one ProjectNote per annotation
+            reference = ProjectNote.objects.filter(
+                annotation__id=bundle.obj.id).first()
+            if reference:
+                # notes in a submitted response are not editable
+                editable = editable and not reference.project.is_submitted()
+                citable = reference.project.can_cite(bundle.request.course,
+                                                     bundle.request.user)
+
+            bundle.data['editable'] = editable
+            bundle.data['citable'] = citable
 
             vocabulary = {}
             related = list(TermRelationship.objects.get_for_object(bundle.obj))

@@ -2,28 +2,12 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
-from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
-from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
 
-
-class TermValidation(Validation):
-    def is_valid(self, bundle, request=None):
-        errors = {}
-
-        a = Term.objects.filter(
-            display_name=bundle.data['display_name'],
-            vocabulary_id=bundle.data['vocabulary_id'])
-
-        if len(a) > 0:  # term exists with this name
-            if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
-                # a vocabulary already exists with this name
-                msg = 'A %s term already exists. Please choose another name' \
-                    % bundle.data['display_name']
-                errors['error_message'] = [msg]
-        return errors
+from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
+from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
 
 class TermResource(ModelResource):
@@ -35,17 +19,17 @@ class TermResource(ModelResource):
         authentication = ClassLevelAuthentication()
         authorization = FacultyAuthorization()
         excludes = ['description', 'ordinality']
-        validation = TermValidation()
-
-    def dehydrate(self, bundle):
-        bundle.data['vocabulary_id'] = bundle.obj.vocabulary.id
-        if hasattr(bundle.obj, "count"):
-            bundle.data['count'] = int(bundle.obj.count)
-        return bundle
+        always_return_data = True
 
     def hydrate(self, bundle):
-        bundle.obj.vocabulary = Vocabulary.objects.get(
-            id=bundle.data['vocabulary_id'])
+        if 'vocabulary' in bundle.data:
+            bundle.obj.vocabulary = VocabularyResource().get_via_uri(
+                bundle.data['vocabulary'])
+        elif (hasattr(bundle, 'related_obj') and
+              bundle.related_obj is not None):
+            bundle.obj.vocabulary = bundle.related_obj
+
+        bundle.obj.display_name = bundle.data['display_name']
         return bundle
 
     def render_one(self, request, term):
@@ -88,7 +72,8 @@ class VocabularyResource(ModelResource):
     term_set = ToManyField(
         'mediathread.taxonomy.api.TermResource',
         'term_set',
-        blank=True, null=True, full=True, readonly=True)
+        blank=True, null=True, full=True, readonly=False,
+        related_name='vocabulary')
 
     class Meta:
         queryset = Vocabulary.objects.all().order_by('id')
@@ -99,6 +84,7 @@ class VocabularyResource(ModelResource):
         excludes = ['description', 'single_select']
         ordering = ['display_name']
         validation = VocabularyValidation()
+        always_return_data = True
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(
@@ -161,17 +147,17 @@ class VocabularyResource(ModelResource):
         return values
 
     def render_for_course(self, request, object_list):
-        term_counts = TermRelationship.objects.none()
+        related = TermRelationship.objects.none()
         if len(object_list) > 0:
             related = TermRelationship.objects.get_for_object_list(object_list)
-            term_counts = related.values('term').annotate(count=Count('id'))
 
         data = []
-        for vocabulary in Vocabulary.objects.get_for_object(request.course):
+        lst = Vocabulary.objects.get_for_object(request.course)
+        lst = lst.select_related('term_set')
+        for vocabulary in lst:
             ctx = self.render_one(request, vocabulary)
             for term in ctx['term_set']:
-                qs = term_counts.filter(term=term['id'])
-                term['count'] = qs[0]['count'] if len(qs) > 0 else 0
+                term['count'] = related.filter(term__id=term['id']).count()
             data.append(ctx)
 
         data.sort(lambda a, b: cmp(a['display_name'].lower(),

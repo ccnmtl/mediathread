@@ -5,9 +5,11 @@ Feature: Single Asset View
         Given I am test_instructor in Sample Course
         
         When I access the url "/asset/2/"
+        Given the asset workspace is loaded
+        
         Then there is a minimized Collection panel        
         And there is an open Asset panel
-        
+
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
         There is an "Item" link
@@ -16,7 +18,16 @@ Feature: Single Asset View
         And there is not an Edit this item button
         And there is a View button
         And there is a Create button
-                
+        
+        # Verify the Quick Help popup is visible
+        Contextual help is visible for the asset
+        When I close the asset's contextual help
+        Contextual help is not visible for the asset
+        
+        # Verify the Sources tab
+        When I click the "Source" link
+        And there is an "Item Permalink" link
+                        
         Finished using Selenium
         
     Scenario: single_asset_view.feature 2. Edit global annotation
@@ -24,9 +35,15 @@ Feature: Single Asset View
         Given I am test_instructor in Sample Course
         
         When I access the url "/asset/2/"
+        Given the asset workspace is loaded
         Then there is a minimized Collection panel        
         And there is an open Asset panel
         And the asset workspace is loaded
+        
+        # Verify the Quick Help popup is visible
+        Contextual help is visible for the asset
+        When I close the asset's contextual help
+        Contextual help is not visible for the asset
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
@@ -56,9 +73,15 @@ Feature: Single Asset View
         Given I am test_student_one in Sample Course
         
         When I access the url "/asset/2/"
+        Given the asset workspace is loaded
         Then there is a minimized Collection panel        
         And there is an open Asset panel
         And the asset workspace is loaded
+        
+        # Verify the Quick Help popup is visible
+        Contextual help is visible for the asset
+        When I close the asset's contextual help
+        Contextual help is not visible for the asset
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
@@ -83,4 +106,61 @@ Feature: Single Asset View
         Then I wait 1 second
         And I do not see "student_one_item"
                         
+        Finished using Selenium
+        
+        
+    Scenario: single_asset_view.feature 4. References tab
+        Using selenium
+        Given I am test_student_one in Sample Course
+        Given there are no projects
+        
+        # Create a project from the home page
+        Given the home workspace is loaded
+        There is a Create button
+        When I click the Create button
+        There is a Create Composition button
+            
+        When I click the Create Composition button        
+        
+        Given the composition workspace is loaded
+        Then I am at the Untitled page
+        Then I see "by Student One"
+        And I see "Draft"
+        
+        # Add a title and some text and an asset
+        Then I call the Composition "Single Asset View 4"
+        And I write some text for the Composition
+        And I insert "MAAP Award Reception" into the text
+
+        # Save
+        When I click the Save button
+        Then I set the project visibility to "Whole Class - all class members can view"
+        Then I save the changes
+        And there is a "Published to Class" link
+
+        # Navigate to the asset
+        When I access the url "/asset/2/"
+        Given the asset workspace is loaded
+        Then there is a minimized Collection panel        
+        And there is an open Asset panel
+        
+        # Verify the Quick Help popup is visible
+        Contextual help is visible for the asset
+        When I close the asset's contextual help
+        Contextual help is not visible for the asset
+        
+        # Check the references tab
+        Then I click the "References" link
+        And I see "Tags"
+        And there is a "flickr (1)" link
+        And there is an "image (1)" link
+        And there is an "instructor_one (1)" link
+        And there is an "instructor_one_selection (1)" link
+        And there is a "student_one_item (1)" link
+        And there is a "student_one_selection (1)" link
+        And there is a "student_two_item (1)" link
+        And there is a "student_two_selection (1)" link
+        And I see "Class References"
+        And there is a "Single Asset View 4" link
+
         Finished using Selenium

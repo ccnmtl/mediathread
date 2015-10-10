@@ -1,38 +1,34 @@
-from django.db import models
-from django.db.models import Max
+from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
-from django.conf import settings
-from structuredcollaboration.policies import CollaborationPolicies
-from structuredcollaboration.policies import PublicEditorsAreOwners
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django.contrib.auth.models import User, Group
+
+DEFAULT_POLICY = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
+                         'PublicEditorsAreOwners')
 
 
-class CollaborationManager(models.Manager):
-    def inc_order(self):
-        return 1 + (self.aggregate(Max('_order')).get('_order__max', 0) or 0)
+class CollaborationPolicyRecordManager(models.Manager):
+    '''
+        @todo - consider pulling this whole registration approach.
+        feels overcomplicated & unnecessary. The primary aim here
+        seems to be caching instances of the policies.
+    '''
+    registered_policies = dict()
 
-    def get_for_object_list(self, object_list):
-        ctype = ContentType.objects.get_for_model(object_list[0])
-        ids = [str(o.id) for o in object_list]
-        lst = self.filter(content_type__pk=ctype.pk, object_pk__in=ids)
-        return lst
+    def policy_instance(self, record):
+        return self.registered_policies[record.policy_name]
 
-    def get_for_object(self, obj):
-        ctype = ContentType.objects.get_for_model(obj)
-        return self.get(content_type__pk=ctype.pk, object_pk=str(obj.pk))
+    def register_policy(self, policy_class, policy_key, policy_title):
+        self.registered_policies[policy_key] = policy_class()
 
 
 class CollaborationPolicyRecord(models.Model):
-    policy_name = models.CharField(max_length=512,
-                                   choices=CollaborationPolicies)
-
-    @property
-    def policy(self):
-        return CollaborationPolicies.registered_policies[self.policy_name]
+    objects = CollaborationPolicyRecordManager()
+    policy_name = models.CharField(max_length=512)
 
     def __unicode__(self):
         return self.policy_name
@@ -40,9 +36,31 @@ class CollaborationPolicyRecord(models.Model):
     def __eq__(self, other):
         return self.policy_name is other or self is other
 
-DEFAULT_POLICY = getattr(settings,
-                         'DEFAULT_COLLABORATION_POLICY',
-                         PublicEditorsAreOwners())
+
+class CollaborationManager(models.Manager):
+    def get_for_object_list(self, object_list):
+        if len(object_list) < 1:
+            return Collaboration.objects.none()
+        else:
+            ctype = ContentType.objects.get_for_model(object_list[0])
+            ids = [str(o.id) for o in object_list]
+            return self.filter(
+                content_type=ctype,
+                object_pk__in=ids).select_related('user', 'group',
+                                                  '_parent',
+                                                  'policy_record')
+
+    def get_for_object(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return self.select_related(
+            'user', 'group', '_parent', 'policy_record').get(
+            content_type=ctype, object_pk=str(obj.pk))
+
+    def get_children_for_object(self, obj):
+        ctype = ContentType.objects.get_for_model(obj)
+        return self.select_related(
+            'user', 'group', '_parent', 'policy_record').filter(
+            content_type=ctype, _parent=obj)
 
 
 class Collaboration(models.Model):
@@ -58,53 +76,28 @@ class Collaboration(models.Model):
         ContentType, related_name="collaboration_set_for_%(class)s",
         null=True, blank=True)
 
-    object_pk = models.CharField(_('object ID'),
-                                 max_length=255,
-                                 null=True,
-                                 blank=True)
+    object_pk = models.CharField(_('object ID'), max_length=255,
+                                 null=True, blank=True)
 
     content_object = generic.GenericForeignKey(ct_field="content_type",
                                                fk_field="object_pk")
 
-    _policy = models.ForeignKey(CollaborationPolicyRecord,
-                                null=True,
-                                default=None,
-                                blank=True)
+    policy_record = models.ForeignKey(CollaborationPolicyRecord,
+                                      null=True, default=None, blank=True)
 
-    _parent = models.ForeignKey('self',
-                                related_name='children',
-                                null=True,
-                                default=None,
-                                blank=True)
+    _parent = models.ForeignKey('self', related_name='children',
+                                null=True, default=None, blank=True)
 
-    context = models.ForeignKey('self',
-                                related_name='context_children',
-                                null=True,
-                                default=None,
-                                blank=True)
+    context = models.ForeignKey('self', related_name='context_children',
+                                null=True, default=None, blank=True)
 
-    def save(self, *args, **kwargs):
-        create_group = (self.group and not self.group.id)
-
-        super(Collaboration, self).save(*args, **kwargs)
-        if create_group:
-            self.have_group()
-
-    def have_group(self):
-        if self.id:
-            if self.group_id:
-                return self.group
-            else:
-                name = unicode('Collaboration %s: %s' %
-                               (self.pk, self.title))[0:80]
-                self.group = Group.objects.create(name=name)
-                self.save()
-                return self.group
-
-    def inc_order():
-        return Collaboration.objects.inc_order()
-
-    _order = models.IntegerField(default=inc_order)
+    def get_or_create_group(self):
+        if not self.group:
+            name = unicode('Collaboration %s: %s' %
+                           (self.pk, self.title))[0:80]
+            self.group = Group.objects.create(name=name)
+            self.save()
+        return self.group
 
     class Meta:
         unique_together = (("content_type", "object_pk"),)
@@ -127,9 +120,9 @@ class Collaboration(models.Model):
             return urlresolvers.reverse("collaboration-dispatch",
                                         args=(self.pk,))
 
-    def permission_to(self, permission, request):
-        rv = self.policy.permission_to(self, permission, request)
-        return rv
+    def permission_to(self, permission, course, user):
+        return self.get_policy().permission_to(self, permission,
+                                               course, user)
 
     def get_parent(self):
         return self._parent
@@ -149,28 +142,21 @@ class Collaboration(models.Model):
         return coll
 
     def get_policy(self):
-        return self._policy_id and self._policy.policy or DEFAULT_POLICY
-
-    def set_policy(self, p):
-        if p is None:
-            self._policy = None
+        if self.policy_record:
+            return CollaborationPolicyRecord.objects.policy_instance(
+                self.policy_record)
         else:
-            self._policy, created = \
-                CollaborationPolicyRecord.objects.get_or_create(policy_name=p)
+            record, created = CollaborationPolicyRecord.objects.get_or_create(
+                policy_name=DEFAULT_POLICY)
+            return CollaborationPolicyRecord.objects.policy_instance(record)
 
-    policy = property(get_policy, set_policy)
-
-    @classmethod
-    def get_associated_collab(cls, obj):
-        """
-        collaboration, if any, associated with this object:
-        Collaboration.get_associated_collabs(my_course)
-        """
-        content_type = ContentType.objects.get_for_model(type(obj))
-        return Collaboration.objects.get(
-            content_type=content_type,
-            object_pk=str(obj.pk)
-        )
+    def set_policy(self, policy_name):
+        if policy_name is None:
+            self.policy_record = None
+        else:
+            self.policy_record, created = \
+                CollaborationPolicyRecord.objects.get_or_create(
+                    policy_name=policy_name)
 
     def __unicode__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,

@@ -6,13 +6,13 @@ import json
 import re
 import urllib
 import urllib2
-import lxml.etree as ET
 
+from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.urlresolvers import reverse
 from django.db.models.aggregates import Max
 from django.db.models.query_utils import Q
@@ -23,39 +23,58 @@ from django.template import RequestContext, loader
 from django.views.generic.base import View
 from djangohelpers.lib import allow_http
 
-from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
+    SuggestedExternalCollection
 from mediathread.discussions.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInMixin, \
-    JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin
+    JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
+    LoggedInMixinSuperuser
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
 
-@login_required
-@allow_http("POST")
-def archive_add_or_remove(request):
+class ManageExternalCollectionView(LoggedInMixin, View):
 
-    in_course_or_404(request.user.username, request.course)
+    def post(self, request):
+        suggested_id = request.POST.get('suggested_id', None)
+        collection_id = request.POST.get('collection_id', None)
+        if 'remove' in request.POST.keys():
+            exc = get_object_or_404(ExternalCollection, id=collection_id)
+            msg = '%s has been disabled for your class.' % exc.title
+            exc.delete()
+        elif suggested_id:
+            suggested = get_object_or_404(SuggestedExternalCollection,
+                                          id=suggested_id)
+            exc = ExternalCollection()
+            exc.title = suggested.title
+            exc.url = suggested.url
+            exc.thumb_url = suggested.thumb_url
+            exc.description = suggested.description
+            exc.course = request.course
+            exc.save()
+            msg = '%s has been enabled for your class.' % exc.title
+        else:
+            exc = ExternalCollection()
+            exc.title = request.POST.get('title')
+            exc.url = request.POST.get('url')
+            exc.thumb_url = request.POST.get('thumb')
+            exc.description = request.POST.get('description')
+            exc.course = request.course
+            exc.uploader = request.POST.get('uploader', False)
+            exc.save()
+            msg = '%s has been enabled for your class.' % exc.title
 
-    if 'remove' in request.POST.keys():
-        title = request.POST.get('title')
-        lst = Asset.objects.filter(title=title, course=request.course)
-        for asset in lst:
-            if asset.primary and asset.primary.is_archive():
-                redirect = request.POST.get('redirect-url',
-                                            reverse('class-manage-sources'))
-                url = "%s?delsrc=%s" % (redirect, asset.title)
-                asset.delete()
-                return HttpResponseRedirect(url)
-    else:
-        return asset_create(request)
+        messages.add_message(request, messages.INFO, msg)
+
+        redirect_url = request.POST.get('redirect-url',
+                                        reverse('class-manage-sources'))
+        return HttpResponseRedirect(redirect_url)
 
 
 @login_required
@@ -115,87 +134,126 @@ def most_recent(request):
     return HttpResponseRedirect('/asset/' + asset_id + '/')
 
 
-# @login_required #no login, so server2server interface is possible
-@allow_http("POST")
-def asset_create(request):
-    """
-    We'd like to support basically the Delicious URL API as much as possible
-    /save?jump={yes|close}&url={url}&title={title}&{noui}&v={5}&share={yes}
-    But also thumb={url}&stream={url}&...
-    Other groups to pay attention to are MediaMatrix
-    (seems subset of delicious: url=)
-    """
+class AssetCreateView(View):
+    OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
+                      'as', 'set_course', 'secret')
 
-    req_dict = getattr(request, request.method)
-    user = _parse_user(request)
-    metadata = _parse_metadata(req_dict)
-    title = req_dict.get('title', '')
-    success, asset = Asset.objects.get_by_args(req_dict,
-                                               asset__course=request.course)
+    @classmethod
+    def good_asset_arg(cls, key):
+        # need support for some things like width,height,max_zoom
+        return (not (key.startswith('annotation-') or
+                     key.startswith('save-') or
+                     key.startswith('metadata-') or  # asset metadata
+                     key.endswith('-metadata')  # source metadata
+                     ) and
+                key not in cls.OPERATION_TAGS)
 
-    if success is False:
-        raise AssertionError("no arguments were supplied to make an asset")
+    @classmethod
+    def add_metadata(cls, source, src_metadata):
+        if src_metadata:
+            # w{width}h{height};{mimetype}
+            # (with mimetype and w+h optional)
+            the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
+                                 src_metadata).groups()
+            if the_match[1]:
+                source.width = int(the_match[1])
+                source.height = int(the_match[2])
+            if the_match[4]:
+                source.media_type = the_match[4]
 
-    if asset is None:
-        asset = Asset(title=title[:1020],  # max title length
-                      course=request.course,
-                      author=user)
-        asset.save()
+    @classmethod
+    def sources_from_args(cls, request, asset=None):
+        '''
+        utilized by add_view to help create a new asset
+        returns a dict of sources represented in GET/POST args
+        '''
+        sources = {}
+        args = request.REQUEST
+        for key, val in args.items():
+            if cls.good_asset_arg(key) and val != '' and len(val) < 4096:
+                source = Source(label=key, url=val)
 
-        for source in sources_from_args(request, asset).values():
+                # UGLY non-functional programming for url_processing
+                if asset:
+                    source.asset = asset
+
+                src_metadata = args.get(key + '-metadata', None)
+                cls.add_metadata(source, src_metadata)
+                sources[key] = source
+
+        # iterate the primary labels in order of priority
+        # pickup the first matching one & use that
+        for lbl in Asset.primary_labels:
+            if lbl in sources:
+                sources[lbl].primary = True
+                return sources
+
+        # no primary source found, return no sources
+        return {}
+
+    def add_sources(self, request, asset):
+        for source in self.sources_from_args(request, asset).values():
             source.save()
 
+    def add_tags(self, asset, user, metadata):
         if "tag" in metadata:
             for each_tag in metadata["tag"]:
                 asset.save_tag(user, each_tag)
 
-        asset.metadata_blob = json.dumps(metadata)
-        asset.save()
+    ''' No login required so server2server interface is possible'''
 
-        try:
-            asset.primary  # make sure a primary source was specified
-        except Source.DoesNotExist:
-            # we'll make it here if someone doesn't submit
-            # any primary_labels as arguments
-            # @todo verify the above comment.
-            raise AssertionError("no primary source provided")
+    def post(self, request):
+        req_dict = getattr(request, request.method)
+        user = _parse_user(request)
+        metadata = _parse_metadata(req_dict)
+        title = req_dict.get('title', '')
+        success, asset = Asset.objects.get_by_args(
+            req_dict, asset__course=request.course)
 
-    # create a global annotation
-    asset.global_annotation(user, True)
-    asset_url = reverse('asset-view', args=[asset.id])
-    source = request.POST.get('asset-source', "")
+        if success is False:
+            raise AssertionError("no arguments were supplied to make an asset")
 
-    if source == 'bookmarklet':
-        # bookmarklet create
-        asset_url += "?level=item"
+        if asset is None:
+            asset = Asset(title=title[:1020],  # max title length
+                          course=request.course,
+                          author=user)
+            asset.save()
 
-        template = loader.get_template('assetmgr/analyze.html')
-        context = RequestContext(request, {
-            'request': request,
-            'user': user,
-            'action': request.POST.get('button', None),
-            'asset_url': asset_url
-        })
-        return HttpResponse(template.render(context))
-    elif request.REQUEST.get('noui', '').startswith('postMessage'):
-        # for bookmarklet mass-adding
-        return render_to_response('assetmgr/interface_iframe.html',
-                                  {'message': ('%s|%s' %
-                                   (request.build_absolute_uri(asset_url)),
-                                   request.REQUEST['noui']), },
-                                  context_instance=RequestContext(request))
-    elif request.is_ajax():
-        # unsure when asset_create is called via ajax
-        return HttpResponse(serializers.serialize('json', asset),
-                            mimetype="application/json")
-    elif "archive" == asset.primary.label:
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
-        url = "%s?newsrc=%s" % (redirect_url, asset.title)
-        return HttpResponseRedirect(url)
-    else:
-        # server2server create
-        return HttpResponseRedirect(asset_url)
+            self.add_sources(request, asset)
+
+            self.add_tags(asset, user, metadata)
+
+            asset.metadata_blob = json.dumps(metadata)
+            asset.save()
+
+            try:
+                asset.primary  # make sure a primary source was specified
+            except Source.DoesNotExist:
+                # we'll make it here if someone doesn't submit
+                # any primary_labels as arguments
+                # @todo verify the above comment.
+                raise AssertionError("no primary source provided")
+
+        # create a global annotation
+        asset.global_annotation(user, True)
+        asset_url = reverse('asset-view', args=[asset.id])
+        source = request.POST.get('asset-source', "")
+
+        if source == 'bookmarklet':
+            # bookmarklet create
+            asset_url += "?level=item"
+
+            template = loader.get_template('assetmgr/analyze.html')
+            context = RequestContext(request, {
+                'request': request,
+                'user': user,
+                'action': request.POST.get('button', None),
+                'asset_url': asset_url
+            })
+            return HttpResponse(template.render(context))
+        else:
+            # server2server create (wardenclyffe)
+            return HttpResponseRedirect(asset_url)
 
 
 @login_required
@@ -212,60 +270,7 @@ def asset_delete(request, asset_id):
     annotations.delete()
 
     json_stream = json.dumps({})
-    return HttpResponse(json_stream, mimetype='application/json')
-
-
-OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
-                  'as', 'set_course', 'secret')
-
-
-# NON_VIEW
-def good_asset_arg(key):
-    # need support for some things like width,height,max_zoom
-    return (not (key.startswith('annotation-')
-                 or key.startswith('save-')
-                 or key.startswith('metadata-')  # asset metadata
-                 or key.endswith('-metadata')  # source metadata
-                 )
-            and key not in OPERATION_TAGS)
-
-
-def sources_from_args(request, asset=None):
-    '''
-    utilized by add_view to help create a new asset
-    returns a dict of sources represented in GET/POST args
-    '''
-    sources = {}
-    args = request.REQUEST
-    for key, val in args.items():
-        if good_asset_arg(key) and val != '' and len(val) < 4096:
-            source = Source(label=key, url=val)
-
-            # UGLY non-functional programming for url_processing
-            source.request = request
-            if asset:
-                source.asset = asset
-            src_metadata = args.get(key + '-metadata', None)
-            if src_metadata:
-                # w{width}h{height};{mimetype} (with mimetype and w+h optional)
-                the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
-                                     src_metadata).groups()
-                if the_match[1]:
-                    source.width = int(the_match[1])
-                    source.height = int(the_match[2])
-                if the_match[4]:
-                    source.media_type = the_match[4]
-            sources[key] = source
-
-    # iterate the primary labels in order of priority
-    # pickup the first matching one & use that
-    for lbl in Asset.primary_labels:
-        if lbl in sources:
-            sources[lbl].primary = True
-            return sources
-
-    # no primary source found, return no sources
-    return {}
+    return HttpResponse(json_stream, content_type='application/json')
 
 
 @login_required
@@ -309,7 +314,7 @@ def annotation_create_global(request, asset_id):
             }
         }
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
 
     except SherdNote.DoesNotExist:
         return HttpResponseForbidden("forbidden")
@@ -357,55 +362,51 @@ def annotation_delete(request, asset_id, annot_id):
         return HttpResponseForbidden("forbidden")
 
 
-@login_required
-@allow_http("GET", "POST")
-def source_redirect(request):
-    url = request.REQUEST.get('url', None)
+class RedirectToExternalCollectionView(LoggedInMixin, View):
+    """
+        simple way to redirect to a stored (thus obfuscated) url
+    """
 
-    if not url:
-        url = '/'
-    else:
-        source = None
-        try:
-            source = Source.objects.get(primary=True,
-                                        label='archive',
-                                        url=url,
-                                        asset__course=request.course)
-        except Source.DoesNotExist:
-            return HttpResponseForbidden()
+    def get(self, request, collection_id):
+        exc = get_object_or_404(ExternalCollection, id=collection_id)
+        return HttpResponseRedirect(exc.url)
+
+
+class RedirectToUploaderView(LoggedInMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        collection_id = kwargs['collection_id']
+        exc = get_object_or_404(ExternalCollection, id=collection_id)
+
         special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
-        for server in special.keys():
-            if url.startswith(server):
-                url = source_specialauth(request, url, special[server])
-                continue
-        if url == source.url:
-            return HttpResponseRedirect(source.url_processed(request))
-    return HttpResponseRedirect(url)
+        if exc.url not in special.keys():
+            raise Http404("The uploader does not exist.")
 
-
-def source_specialauth(request, url, key):
-    nonce = '%smthc' % datetime.datetime.now().isoformat()
-    redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
-
-    username = request.user.username
-
-    if ('as' in request.REQUEST and
-            in_course(request.user.username, request.course) and
+        username = request.user.username
+        as_user = request.POST.get('as', None)
+        if (as_user and in_course(request.user.username, request.course) and
             (request.user.is_staff or
              request.user.has_perm('assetmgr.can_upload_for'))):
-        username = request.REQUEST['as']
+            username = as_user
 
-    return ("%s?set_course=%s&as=%s&redirect_url=%s"
-            "&nonce=%s&hmac=%s&audio=%s") % \
-        (url,
-         request.course.group.name,
-         username,
-         urllib.quote(redirect_back),
-         nonce,
-         hmac.new(key,
-                  '%s:%s:%s' % (username, redirect_back, nonce),
-                  hashlib.sha1).hexdigest(),
-         request.POST.get('audio', ''))
+        redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
+
+        nonce = '%smthc' % datetime.datetime.now().isoformat()
+
+        digest = hmac.new(special[exc.url],
+                          '%s:%s:%s' % (username, redirect_back, nonce),
+                          hashlib.sha1).hexdigest()
+
+        url = ("%s?set_course=%s&as=%s&redirect_url=%s"
+               "&nonce=%s&hmac=%s&audio=%s") % (exc.url,
+                                                request.course.group.name,
+                                                username,
+                                                urllib.quote(redirect_back),
+                                                nonce,
+                                                digest,
+                                                request.POST.get('audio', ''))
+
+        return HttpResponseRedirect(url)
 
 
 def final_cut_pro_xml(request, asset_id):
@@ -439,7 +440,7 @@ def final_cut_pro_xml(request, asset_id):
                 clips.append(clip)
 
         xmldom, dumb_uuid = the_video.clips2dom(clips)
-        res = HttpResponse(xmldom.toxml(), mimetype='application/xml')
+        res = HttpResponse(xmldom.toxml(), content_type='application/xml')
         res['Content-Disposition'] = \
             'attachment; filename="%s.xml"' % asset.title
         return res
@@ -449,126 +450,222 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-def mep_dump(request):
-    user = request.user
-    user_id = user.id
-    assets = Asset.objects.filter(author_id=user_id)
-    ar = AssetResource(include_annotations=True)
-    ar.Meta.excludes = ['added', 'modified', 'course', 'active']
-    lst = []
+class ScalarExportView(LoggedInMixinSuperuser, RestrictedMaterialsMixin, View):
 
-    notes = SherdNote.objects.get_related_notes(assets, user_id or None,
-                                                [request.user.id], True)
+    def __init__(self):
+        self.export = {}
+        self.tag_num = 0
+        self.anno_num = 0
+        self.root = ''
 
-    api_response = ar.render_list(request, [request.user.id],
-                                  [request.user.id], assets, notes)
-    if len(api_response) == 0:
-        return HttpResponse("There are no videos in your collection")
-    for i in range(0, len(api_response)):
-        data = api_response[i]
-        utf_blob = data.get('metadata_blob')
-        jsonmetadata_blob = dict()
-        if utf_blob is not None:
-            utf_blob = utf_blob.encode('UTF-8', 'ignore')
-            jsonmetadata_blob = json.loads(utf_blob)
-        # this maps the xmlns paths and all that fun stuff
-        NS_MAP = {"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-                  "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-                  "art": "http://simile.mit.edu/2003/10/ontologies/artstor#",
-                  "foaf": "http://xmlns.com/foaf/0.1/",
-                  "dcterms": "http://purl.org/dc/terms/",
-                  "sioc": "http://rdfs.org/sioc/ns#",
-                  "oa": "http://www.openannotation.org/ns/"}
-        # short hands the ns
-        RDF = "{%s}" % NS_MAP['rdf']
-        RDFS = "{%s}" % NS_MAP['rdfs']
-        ART = "{%s}" % NS_MAP['art']
-        FOAF = "{%s}" % NS_MAP['foaf']
-        DCTERMS = "{%s}" % NS_MAP['dcterms']
-        OA = "{%s}" % NS_MAP['oa']
+    def get_time_string(self, root, data, n):
+        time = ''
+        try:
+            note = data['annotations'][n]['annotation']
+            if note:
+                time += root
+                time += data.get('local_url').rstrip('/')
+                time += '#t=npt:'
+                time += str(note['start'])
+                time += ','
+                time += str(note['end'])
+        except KeyError:
+            pass
 
-        # rdf is the 'root'
-        rdf = ET.Element(RDF + "RDF", nsmap=NS_MAP)
+        return time
 
-        # creating the main rdf for the video
-        description = ET.SubElement(rdf, "{%s}" % NS_MAP['rdf'] +
-                                    "Description")
-        description.attrib[RDF + 'about'] = data.get('local_url')
-        rdf_type = ET.SubElement(description, RDF + "type")
-        rdf_type.attrib[RDF + 'resource'] = data.get('primary_type')
-        art_thumb = ET.SubElement(description, ART + 'thumbnail')
-        art_thumb.attrib[RDF + 'resource'] = \
-            data.get('sources').get('thumb')['url']
-        art_url = ET.SubElement(description, ART + 'url')
-        art_url.attrib[RDF + 'resource'] = \
-            data.get('sources').get('url')['url']
-        art_source = ET.SubElement(description, ART + 'sourceLocation')
-        art_source.attrib[RDF + 'resource'] = \
-            data.get('sources').get('youtube')['url']
-        dc_title = ET.SubElement(description, DCTERMS + 'title')
-        dc_title.text = data.get('title')
-        dc_desc = ET.SubElement(description, DCTERMS + 'description')
-        dc_desc.text = jsonmetadata_blob.get('description')[0]
-        dc_vers = ET.SubElement(description, DCTERMS + 'isVersionOf')
-        dc_vers.attrib[RDF + 'resource'] = \
-            data.get('sources').get('url')['url']
-        dc_pub = ET.SubElement(description, DCTERMS + 'publisher')
-        dc_pub.text = jsonmetadata_blob.get('author')[0]
-        dc_cntb = ET.SubElement(description, DCTERMS + 'contributor')
-        dc_cntb.text = jsonmetadata_blob.get('author')[0]
-        dc_date = ET.SubElement(description, DCTERMS + 'date')
-        dc_date.text = jsonmetadata_blob.get('published')[0]
-        dc_form = ET.SubElement(description, DCTERMS + 'format')
-        dc_form.text = data.get('media_type_label')
+    def parse_annotations(self, data, n):
+        user_node = {}
+        username = data['annotations'][n]['author']['username']
+        author_user = User.objects.get(username=username)
+        author_email = author_user.email
+        hash_or_username = hashlib.sha1(author_email).hexdigest()
 
-        # this can be found if the video has annotations but
-        # if it doesnt it doesnt show up
-        dc_ext = ET.SubElement(description, DCTERMS + 'extent')
-        dc_ext.text = "CANNOT BE FOUND"
+        user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get(
+            'annotations')[n]['author']['public_name'], "type": "literal"}]
+        user_node['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [
+            {"value": "http://xmlns.com/foaf/0.1/Person", "type": "uri"}]
+        user_node['http://xmlns.com/foaf/0.1/mbox_sha1sum'] = [
+            {"value": hash_or_username, "type": "literal"}]
+        self.export[self.root + '/user/' + hash_or_username] = user_node
 
-        dc_type = ET.SubElement(description, DCTERMS + 'type')
-        dc_type.text = data.get('media_type_label')
-        dc_datesub = ET.SubElement(description, DCTERMS + 'datesubmitted')
-        dc_datesub.text = jsonmetadata_blob.get('published')[0]
-        dc_rel = ET.SubElement(description, DCTERMS + 'relation')
-        dc_rel.text = jsonmetadata_blob.get('category')[0]
+        annotation_node = {}
+        annotation_node['http://purl.org/dc/terms/title'] = [
+            {"value": data['annotations'][n]['title'],
+             "type": "literal"}]
+        annotation_node['http://purl.org/dc/terms/description'] = [
+            {"value": "This is an annotation", "type": "literal"}]
+        annotation_node['http://rdfs.org/sioc/ns#content'] = [
+            {"value": data['annotations'][n]['metadata']['body'],
+             "type": "literal"}]
+        annotation_node['http://www.w3.org/ns/prov#wasAttributedTo'] = [
+            {"value": self.root +
+             data['annotations'][n]['author']['resource_uri'].rstrip('/') +
+             '/user/' + hash_or_username,
+             "type": "uri"}]
+        a_annotation_node = {}
+        a_annotation_node['http://www.openannotation.org/ns/hasBody'] = [
+            {"value": self.root +
+             data['annotations'][n]['url'].rstrip('/'),
+             "type": "uri"}]
 
-        vocab = []
-        # now we do annotations and tags etc.
-        for i in range(0, data.get('annotation_count')):
-            anno = ET.SubElement(rdf, RDF + 'Description')
-            anno.attrib[RDF + 'about'] = data.get('annotations')[i]['url']
-            anno_resource = ET.SubElement(anno, OA + 'hasBody')
-            anno_resource.attrib[RDF + 'resource'] = \
-                data.get('annotations')[i]['url']
-            vocab.append(data.get('annotations')[i]['vocabulary'])
-            for j in range(0, len(vocab)):
-                # create the sub elements for the annotations
-                anno_vocab = ET.SubElement(anno, OA + 'hasBody')
-                anno_vocab.attrib[RDF + 'nodeID'] = vocab[j][0]['display_name']
+        time = self.get_time_string(self.root, data, n)
+        a_annotation_node['http://www.openannotation.org/ns/hasTarget'] = [
+            {"value": time, "type": "uri"}]
 
-                # create the description for that vocab while we are at it
-                for t in vocab[j][0]['terms']:
-                    term = ET.SubElement(rdf, RDF + 'Description')
-                    term.attrib[RDF + 'nodeID'] = t['name']
-                    rdfs_label = ET.SubElement(term, RDFS + 'label')
-                    rdfs_label.text = t['display_name']
-                    foaf_page = ET.SubElement(term, FOAF + "page")
-                    foaf_page.attrib[RDF + 'resource'] = t['resource_uri']
+        a_annotation_node[
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        ] = [
+            {"value": "http://www.openannotation.org/ns/Annotation",
+             "type": "uri"}]
+        anno_urn = 'urn:mediathread:anno' + str(self.anno_num + 1)
+        self.export[anno_urn.rstrip('/')] = a_annotation_node
+        self.anno_num += 1
 
-            anno_author = ET.SubElement(anno, OA + 'annotatedBy')
-            anno_author.attrib[RDF + 'resource'] = \
-                data.get('annotations')[i]['author']['username']
-            anno_time = ET.SubElement(anno, OA + 'annotatedAt')
-            anno_time.text = data.get('annotations')[i]['metadata']['modified']
-            foaf_name = ET.SubElement(anno, FOAF + "name")
-            foaf_name.text = \
-                data.get('annotations')[i]['author']['public_name']
+        tag = (data['annotations'][n]['metadata']['tags'])
+        for k in range(0, len(tag)):
+            self.parse_tag(data, k, tag, n)
 
-        lst.append(ET.tostring(rdf, pretty_print=True,
-                               xml_declaration=True, encoding="UTF-8"))
+        vocab = data['annotations'][n]['vocabulary']
+        self.parse_vocab(vocab, n, data)
 
-    return HttpResponse(lst)
+        self.export[self.root + data['annotations'][n]
+                    ['url'].rstrip('/')] = annotation_node
+
+    def parse_vocab(self, vocab, n, data):
+        for j in range(0, len(vocab)):
+            num = 0
+            for t in vocab[j]['terms']:
+                num += 1
+                urn_vocab_node = {}
+                urn_vocab_node[
+                    'http://www.openannotation.org/ns/hasBody'] = [
+                    {"value": self.root +
+                        '/term/' + vocab[j]['display_name'] +
+                        '-' + t['name'],
+                     "type": "literal"}]
+                urn_vocab_node[
+                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+                ] = [{"value":
+                      "http://www.openannotation.org/ns/Annotation",
+                      "type": "uri"}]
+
+                term_node = {}
+                term_node[
+                    'http://www.w3.org/1999/02/22' +
+                    '-rdf-syntax-ns#Description'
+                ] = [
+                    {"value": vocab[j]['display_name'] +
+                        '-' + t['name'], "type": "literal"}]
+                term_node[
+                    'http://www.w3.org/2000/01/rdf-schema#label'
+                ] = [
+                    {"value": vocab[j]['display_name'] +
+                        '-' + t['name'], "type": "literal"}]
+
+                if t['skos_uri'] is not None:
+                    term_node[
+                        'http://www.w3.org/2004/02/skos/core#related'
+                    ] = [{"value": t['skos_uri'].rstrip('/'),
+                         "type": "uri"}]
+
+                term_node[
+                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+                ] = [
+                    {"type": "uri",
+                     "value":
+                        "http://www.openannotation.org/ns/SemanticTag"}
+                    ]
+                self.export[self.root + '/term/' + vocab[j]
+                            ['display_name'] + '-' +
+                            t['name']] = term_node
+
+                urn_vocab_node[
+                    'http://www.openannotation.org/ns/hasTarget'
+                ] = [
+                    {"value": self.root +
+                        data.get(
+                            'annotations')[n]['url'].rstrip('/'),
+                     "type": "uri"}]
+
+                self.export["urn:mediathread:term" +
+                            str(num)] = urn_vocab_node
+
+    def parse_tag(self, data, k, tag, n):
+        tag_node = {}
+        tag_node["http://www.w3.org/2000/01/rdf-schema#label"] = [
+            {"value": tag[k]['name'], "type": "literal"}]
+        self.export[self.root + '/tag/' + tag[k]['name']] = tag_node
+        a_tag_node = {}
+
+        a_tag_node[
+            'http://www.openannotation.org/ns/hasTarget'] = [
+            {"value": self.root + data.get(
+             'annotations')[n]['url'].rstrip('/'),
+             "type": "uri"}]
+
+        if (len(tag[k]['resource_uri']) > 1):
+            a_tag_node[
+                'http://www.openannotation.org/ns/hasBody'
+            ] = [
+                {
+                    "value": self.root + '/tag/' + tag[k][
+                        'resource_uri'].rstrip('/'), "type": "uri"}
+                ]
+        else:
+            a_tag_node[
+                'http://www.openannotation.org/ns/hasBody'] = [
+                {"value": self.root +
+                 '/tag/' + tag[k]['name'].rstrip('/'),
+                 "type": "uri"}]
+
+        a_tag_node[
+            'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] = [
+            {"value": "http://www.openannotation.org/ns/Annotation",
+             "type": "uri"}]
+        self.tag_num += 1
+        a_tag_urn = 'urn:mediathread:tag' + str(self.tag_num)
+        self.export[a_tag_urn] = a_tag_node
+
+    def parse_response(self, data):
+        video_node = {}
+        # for the video node
+        video_node[
+            'http://purl.org/dc/terms/title'
+            ] = [{"value": data.get('title'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/description'] = [
+            {"value": data.get('description'), "type": "literal"}]
+        video_node['http://simile.mit.edu/2003/10/ontologies/artstor#url'] = [
+            {"value": data.get('sources')[
+             data.get('primary_type')]['url'], "type": "uri"}]
+        video_node['http://purl.org/dc/terms/source'] = [
+            {"value": data.get('primary_type'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/date'] = [
+            {"value": data.get('modified'), "type": "literal"}]
+        video_node['http://purl.org/dc/terms/contributor'] = [
+            {"value": data.get('author')['username'], "type": "literal"}]
+        self.export[self.root + data.get('local_url').rstrip('/')] = video_node
+        # for annotation node
+        for n in range(0, data.get('annotation_count')):
+            self.parse_annotations(data, n)
+
+    def get(self, request):
+        self.root = 'http://' + request.get_host()
+        assets = Asset.objects.filter(course=request.course)
+        assets, notes = self.visible_assets_and_notes(request, assets)
+
+        # @todo - factor out the tastypie interim json step
+        ar = AssetResource(include_annotations=True)
+        api_response = ar.render_list(request, None, request.user,
+                                      assets, notes)
+
+        if len(api_response) == 0:
+            return HttpResponse("There are no videos in your collection")
+
+        for i in range(0, len(api_response)):
+            self.parse_response(api_response[i])
+
+        return HttpResponse(json.dumps(self.export))
 
 
 class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
@@ -605,7 +702,6 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
-
         if asset_id:
             try:
                 asset = Asset.objects.get(pk=asset_id, course=request.course)
@@ -622,7 +718,7 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             return render_to_response('assetmgr/asset_workspace.html',
                                       data,
                                       context_instance=RequestContext(request))
-        context = {'type': 'asset'}
+        ctx = {'type': 'asset'}
         if asset_id:
             # @todo - refactor this context out of the mix
             # ideally, the client would simply request the json
@@ -633,14 +729,13 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
             # only return original author's global annotations
             notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
 
-            context['assets'] = {
-                asset.pk: AssetResource().render_one(request, asset, notes)
-            }
+            ares = AssetResource()
+            ctx.update(ares.render_one_context(request, asset, notes))
 
             help_setting = UserSetting.get_setting(request.user,
                                                    "help_item_detail_view",
                                                    True)
-            context['user_settings'] = {'help_item_detail_view': help_setting}
+            ctx['user_settings'] = {'help_item_detail_view': help_setting}
 
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.get_for_object(request.course))
@@ -648,16 +743,21 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
 
-        data['panels'] = [{'panel_state': 'open',
-                           'panel_state_label': "Annotate Media",
-                           'context': context,
-                           'owners': owners,
-                           'vocabulary': vocabulary,
-                           'template': 'asset_workspace',
-                           'current_asset': asset_id,
-                           'current_annotation': annot_id,
-                           'update_history': True,
-                           'show_collection': True}]
+        update_history = True
+        show_collection = True
+        template = 'asset_workspace'
+
+        data['panels'] = [{
+            'panel_state': 'open',
+            'panel_state_label': "Annotate Media",
+            'context': ctx,
+            'owners': owners,
+            'vocabulary': vocabulary,
+            'template': template,
+            'current_asset': asset_id,
+            'current_annotation': annot_id,
+            'update_history': update_history,
+            'show_collection': show_collection}]
 
         return self.render_to_json_response(data)
 
@@ -685,13 +785,9 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
                                                "help_item_detail_view",
                                                True)
 
-        ctx = {
-            'user_settings': {'help_item_detail_view': help_setting},
-            'type': 'asset',
-            'assets': {
-                asset.pk: AssetResource().render_one(request, asset, notes)
-            }
-        }
+        ctx = AssetResource().render_one_context(request, asset, notes)
+        ctx['user_settings'] = {'help_item_detail_view': help_setting}
+        ctx['type'] = 'asset'
 
         return self.render_to_json_response(ctx)
 
@@ -705,7 +801,6 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/asset/a/
         /api/asset/
     """
-
     valid_filters = ['tag', 'modified', 'search_text']
 
     def get_context(self, request, assets, notes):
@@ -747,7 +842,6 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
     def add_metadata(self, request, assets):
         # metadata for all notes associated with these assets
         # is displayed in the filtered list.
-        # Not sure this is exactly right...will discuss with team
         notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
             self.all_items_are_visible)
@@ -792,6 +886,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         ctx.update(self.get_context(request, assets, notes))
 
         return self.render_to_json_response(ctx)
+
 
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
 

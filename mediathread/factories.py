@@ -3,13 +3,17 @@ from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.test.client import RequestFactory
 import factory
+from registration.models import RegistrationProfile
 
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
+    SuggestedExternalCollection
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
-from mediathread.projects.models import Project
+from mediathread.main.models import UserProfile
+from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
-from structuredcollaboration.models import Collaboration
+from structuredcollaboration.models import Collaboration, \
+    CollaborationPolicyRecord
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -18,9 +22,29 @@ class UserFactory(factory.DjangoModelFactory):
     password = factory.PostGenerationMethodCall('set_password', 'test')
 
 
+class UserProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = UserProfile
+    '''UserProfile adds extra information to a user,
+    and associates the user with a group, school,
+    and country.'''
+    user = factory.SubFactory(UserFactory)
+    title = "Title"
+    institution = "Columbia University"
+    referred_by = "Pablo Picasso"
+    user_story = "User Story"
+    self_registered = True
+
+
 class GroupFactory(factory.DjangoModelFactory):
     FACTORY_FOR = Group
-    name = factory.Sequence(lambda n: 'group%d' % n)
+    name = factory.Sequence(
+        lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
+
+
+class RegistrationProfileFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = RegistrationProfile
+    user = factory.SubFactory(UserFactory)
+    activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
 class CourseFactory(factory.DjangoModelFactory):
@@ -59,6 +83,23 @@ class AssetFactory(factory.DjangoModelFactory):
             self.source_set.add(source)
 
 
+class ExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
+    course = factory.SubFactory(CourseFactory)
+
+
+class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = SuggestedExternalCollection
+
+    title = 'collection'
+    url = 'http://ccnmtl.columbia.edu'
+    description = 'description'
+
+
 class SherdNoteFactory(factory.DjangoModelFactory):
     FACTORY_FOR = SherdNote
     title = factory.Sequence(lambda n: 'note %d' % n)
@@ -73,6 +114,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
     title = factory.Sequence(lambda n: 'Project %d' % n)
     author = factory.SubFactory(UserFactory)
+    project_type = 'composition'
 
     @factory.post_generation
     def policy(self, create, extracted, **kwargs):
@@ -83,18 +125,38 @@ class ProjectFactory(factory.DjangoModelFactory):
 
             request = RequestFactory().post('/', data)
             request.collaboration_context = \
-                Collaboration.objects.get(
-                    content_type=ContentType.objects.get_for_model(Course),
-                    object_pk=str(self.course.pk))
+                Collaboration.objects.get_for_object(self.course)
 
-            self.collaboration(request, sync_group=True)
+            self.create_or_update_collaboration(data['publish'])
 
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):
         if create and extracted:
-            parent_collab = extracted.collaboration()
-            if parent_collab._policy.policy_name == 'Assignment':
-                parent_collab.append_child(self)
+            parent_collab = extracted.get_collaboration()
+            parent_collab.append_child(self)
+
+    @factory.post_generation
+    def participants(self, create, extracted, **kwargs):
+        if create:
+            self.participants.add(self.author)
+
+
+class CollaborationFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = Collaboration
+    user = factory.SubFactory(UserFactory)
+    group = factory.SubFactory(GroupFactory)
+
+
+class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = CollaborationPolicyRecord
+
+
+class AssignmentItemFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = AssignmentItem
+
+
+class ProjectNoteFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = ProjectNote
 
 
 class MediathreadTestMixin(object):
@@ -110,7 +172,7 @@ class MediathreadTestMixin(object):
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
                 object_pk=str(course.pk))
-        discussion_create(request)
+        return discussion_create(request)
 
     def create_vocabularies(self, course, taxonomy):
         course_type = ContentType.objects.get_for_model(course)
@@ -194,6 +256,5 @@ class MediathreadTestMixin(object):
         return client.get(set_course_url)
 
     def enable_upload(self, course):
-        AssetFactory.create(course=course,
-                            primary_source='archive',
-                            metadata_blob='{"upload": ["1"]}')
+        ExternalCollectionFactory.create(course=course,
+                                         uploader=True)

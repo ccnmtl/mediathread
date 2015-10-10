@@ -13,9 +13,10 @@ class ModelsTest(MediathreadTestMixin, TestCase):
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PrivateEditorsAreOwners')
-        collaboration = Collaboration.get_associated_collab(project)
+        collaboration = Collaboration.objects.get_for_object(project)
         self.assertIsNotNone(collaboration)
 
     def test_get_associated_collaboration_course(self):
-        collaboration = Collaboration.get_associated_collab(self.sample_course)
+        collaboration = Collaboration.objects.get_for_object(
+            self.sample_course)
         self.assertIsNotNone(collaboration)

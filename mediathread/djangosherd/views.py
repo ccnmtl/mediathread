@@ -1,11 +1,15 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from djangohelpers.lib import allow_http
+
 from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
+from mediathread.projects.models import ProjectNote, Project
 from mediathread.taxonomy.views import update_vocabulary_terms
-import json
+
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
@@ -47,11 +51,16 @@ def create_annotation(request):
     # so it appears in the user's list
     asset.global_annotation(annotation.author, auto_create=True)
 
+    project_id = request.POST.get('project', None)
+    if project_id:
+        project = get_object_or_404(Project, id=project_id)
+        ProjectNote.objects.create(project=project, annotation=annotation)
+
     if request.is_ajax():
         response = {'asset': {'id': asset.id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
     else:
         # new annotations should redirect 'back' to the asset
         # at the endpoint of the last annotation
@@ -99,7 +108,7 @@ def edit_annotation(request, annot_id):
         response = {'asset': {'id': annotation.asset_id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),
-                            mimetype="application/json")
+                            content_type="application/json")
     else:
         redirect_to = request.GET.get('next', '.')
         return HttpResponseRedirect(redirect_to)

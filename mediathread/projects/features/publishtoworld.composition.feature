@@ -10,7 +10,7 @@ Feature: Public Compositions
         Given the home workspace is loaded
             There is a Create button
             When I click the Create button
-            Then there is a Create Assignment button
+            Then there is a Create Composition Assignment button
             And there is a Create Composition button
             And there is a Create Discussion button
             
@@ -19,7 +19,7 @@ Feature: Public Compositions
         Given the composition workspace is loaded
             Then I am at the Untitled page
             Then I see "by Instructor One"
-            And I see "Private"
+            And I see "Draft"
         
             # Add a title and some text
             Then I call the Composition "<project_name>"

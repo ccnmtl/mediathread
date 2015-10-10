@@ -1,5 +1,11 @@
+/* global _: true, Backbone: true, getVisibleContentHeight: true */
+/* global showMessage: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+
 (function(jQuery) {
     var global = this;
+
+    Backbone.Model.prototype.idAttribute = 'id';
 
     var Asset = Backbone.Model.extend({
         initialize: function(attrs) {
@@ -47,8 +53,7 @@
     });
 
     global.CourseMaterialsView = Backbone.View.extend({
-        events : {
-            'focus input#available-courses': 'focusAvailableCourses',
+        events: {
             'click #view-materials': 'clickViewMaterials',
             'click #import-all': 'importAll',
             'click #import-projects': 'importProjects',
@@ -65,7 +70,7 @@
         },
 
         initialize: function(options) {
-            _.bindAll(this, 'setCourse', 'focusAvailableCourses', 'render',
+            _.bindAll(this, 'setCourse', 'render',
                 'clickViewMaterials', 'importAll', 'importProjects',
                       'importItems', 'selectAllItems', 'clearAllItems',
                       'selectAllProjects', 'clearAllProjects',
@@ -76,7 +81,8 @@
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
 
-            this.courseTemplate = _.template(jQuery('#course-template').html());
+            this.courseTemplate = _.template(jQuery('#course-template')
+                                             .html());
             this.selectedTemplate = _.template(jQuery('#selected-template')
                                                .html());
 
@@ -85,8 +91,8 @@
             this.selectedProjects.on('add remove', this.renderSelectedList);
             this.selectedAssets.on('add remove', this.renderSelectedList);
 
-            this.is_staff = jQuery('#is-staff').attr('value') === 'True';
-            this.role_in_course = jQuery('#role-in-course').attr('value');
+            this.is_staff = jQuery('#is-staff').val() === 'True';
+            this.role_in_course = jQuery('#role-in-course').val();
 
             var self = this;
 
@@ -123,14 +129,6 @@
         clickViewMaterials: function(evt) {
             if (this.selectedCourse !== undefined) {
                 this.setCourse(this.selectedCourse);
-            }
-        },
-
-        focusAvailableCourses: function(evt) {
-            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-            if (jQuery(srcElement).attr('value') === 'Type course name here') {
-                jQuery(srcElement).attr('value', '');
-                jQuery(srcElement).removeClass('default');
             }
         },
 
@@ -197,31 +195,33 @@
             jQuery('#selected-for-import').fadeOut();
             jQuery('#selected-for-import').html('');
             jQuery('#available-courses-selector').fadeIn();
-            jQuery('#available-courses').val('Type course name here');
-            jQuery('#available-courses').addClass('default');
+            jQuery('#available-courses').val('');
             jQuery('#course-title').html('');
         },
 
-        migrateCourseMaterials: function() {
+        migrateCourseMaterials: function(evt) {
             var self = this;
             // @todo - put up an overlay & a progress indicator.
+            jQuery(evt.currentTarget).attr('disabled', 'disabled');
 
-            asset_ids = [];
+            var asset_ids = [];
             this.selectedAssets.forEach(function(asset) {
                 asset_ids.push(asset.id);
             });
-            project_ids = [];
+            var project_ids = [];
             this.selectedProjects.forEach(function(project) {
                 project_ids.push(project.id);
             });
 
             var data = {
                 'fromCourse': this.model.get('id'),
-                'on_behalf_of': jQuery('#on_behalf_of').attr('value'),
+                'on_behalf_of': jQuery('#on_behalf_of').val(),
                 'project_ids': project_ids,
                 'asset_ids': asset_ids,
-                'include_tags': jQuery("input[name='include_tags']").is(":checked"),
-                'include_notes': jQuery("input[name='include_notes']").is(":checked")
+                'include_tags': jQuery('input[name="include_tags"]')
+                    .is(':checked'),
+                'include_notes': jQuery('input[name="include_notes"]')
+                    .is(':checked')
             };
 
             jQuery.ajax({
@@ -256,6 +256,9 @@
                         self.selectedProjects.reset();
                         self.selectedAssets.reset();
                     });
+                },
+                complete: function() {
+                    jQuery(evt.currentTarget).removeAttr('disabled');
                 }
             });
         },
@@ -328,7 +331,7 @@
                                 if (lst.length > 0) {
                                     jQuery(lst).each(
                                         function(idx, elt) {
-                                            var id = jQuery(elt).attr('value');
+                                            var id = jQuery(elt).val();
                                             var project = self.model
                                                 .get('projects')
                                                 .get(id);
@@ -387,7 +390,7 @@
                                 if (lst.length > 0) {
                                     jQuery(lst).each(
                                         function(idx, elt) {
-                                            var id = jQuery(elt).attr('value');
+                                            var id = jQuery(elt).val();
                                             var asset = self.model
                                                 .get('assets').get(id);
                                             if (jQuery(elt).is(':checked')) {
@@ -444,7 +447,8 @@
         },
 
         deselectProject: function(evt) {
-            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            var srcElement = evt.srcElement || evt.target ||
+                evt.originalTarget;
 
             var project = this.selectedProjects
                               .get(jQuery(srcElement).attr('name'));
@@ -452,7 +456,8 @@
         },
 
         deselectAsset: function(evt) {
-            var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+            var srcElement = evt.srcElement || evt.target ||
+                evt.originalTarget;
 
             var asset = this.selectedAssets.get(jQuery(srcElement)
                 .attr('name'));

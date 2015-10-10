@@ -1,4 +1,4 @@
-#pylint: disable-msg=R0904
+# pylint: disable-msg=R0904
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
@@ -59,8 +59,7 @@ class AssetResource(ModelResource):
         sources = {}
         for s in bundle.obj.source_set.all():
             sources[s.label] = {'label': s.label,
-                                'url': s.url_processed(bundle.request,
-                                                       bundle.obj),
+                                'url': s.url_processed(bundle.request),
                                 'width': s.width,
                                 'height': s.height,
                                 'primary': s.primary}
@@ -106,6 +105,40 @@ class AssetResource(ModelResource):
         except Source.DoesNotExist:
             return None
 
+    def render_one_context(self, request, asset, notes=None):
+        ctx = {
+            'assets': {
+                asset.pk: self.render_one(request, asset, notes)
+            }
+        }
+        return ctx
+
+    def update_asset_context(self, request, ctx, note):
+        if note.asset.id not in ctx:
+            abundle = self.build_bundle(obj=note.asset, request=request)
+            dehydrated = self.full_dehydrate(abundle)
+            asset_ctx = self._meta.serializer.to_simple(dehydrated, None)
+            ctx[note.asset.id] = asset_ctx
+
+    def update_note_context(self, request, ctx, note_res, note, owner, viewer):
+        is_global = note.is_global_annotation()
+        if not is_global:
+            ctx[note.asset.id]['annotation_count'] += 1
+            if note.author == viewer:
+                ctx[note.asset.id]['my_annotation_count'] += 1
+
+        if note.modified > note.asset.modified:
+            ctx[note.asset.id]['modified'] = self.format_time(note.modified)
+
+        if self.include_annotations:
+            note_ctx = note_res.render_one(request, note, "")
+
+            if is_global:
+                if note.author == owner:
+                    ctx[note.asset.id]['global_annotation'] = note_ctx
+            else:
+                ctx[note.asset.id]['annotations'].append(note_ctx)
+
     def render_list(self, request, record_owner, record_viewer, assets, notes):
         note_resource = SherdNoteResource()
         ctx = {}
@@ -113,32 +146,11 @@ class AssetResource(ModelResource):
             try:
                 note.asset.primary
 
-                if note.asset.id not in ctx:
-                    abundle = self.build_bundle(obj=note.asset,
-                                                request=request)
-                    dehydrated = self.full_dehydrate(abundle)
-                    asset_ctx = self._meta.serializer.to_simple(dehydrated,
-                                                                None)
-                    ctx[note.asset.id] = asset_ctx
+                self.update_asset_context(request, ctx, note)
 
-                is_global = note.is_global_annotation()
-                if not is_global:
-                    ctx[note.asset.id]['annotation_count'] += 1
-                    if note.author == record_viewer:
-                        ctx[note.asset.id]['my_annotation_count'] += 1
+                self.update_note_context(request, ctx, note_resource, note,
+                                         record_owner, record_viewer)
 
-                if note.modified > note.asset.modified:
-                    ctx[note.asset.id]['modified'] = \
-                        self.format_time(note.modified)
-
-                if self.include_annotations:
-                    note_ctx = note_resource.render_one(request, note, "")
-
-                    if is_global:
-                        if note.author == record_owner:
-                            ctx[note.asset.id]['global_annotation'] = note_ctx
-                    else:
-                        ctx[note.asset.id]['annotations'].append(note_ctx)
             except Source.DoesNotExist:
                 pass  # don't break in this situation
 

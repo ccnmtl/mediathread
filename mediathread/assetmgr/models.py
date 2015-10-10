@@ -1,20 +1,12 @@
-from courseaffils.models import Course
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.db import models
-from django.db.models.query_utils import Q
-from tagging.models import Tag
 import json
 import re
 
-
-def default_url_processor(source, request, obj=None):
-    return source.url
-
-# Override in deploy_specific/settings.py
-# for special authentication processing
-# Called by Source:url_processed
-url_processor = getattr(settings, 'ASSET_URL_PROCESSOR', default_url_processor)
+from courseaffils.models import Course
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.cache import cache
+from django.db import models
+from tagging.models import Tag
 
 
 class AssetManager(models.Manager):
@@ -34,30 +26,20 @@ class AssetManager(models.Manager):
         else:
             return (True, None)
 
-    def archives(self):
-        return self.filter(Q(source__primary=True) &
-                           Q(source__label='archive'))
-
     def by_course_and_user(self, course, user):
         # returns the assets in a user's "collection"
         assets = Asset.objects.filter(course=course,
                                       sherdnote_set__author=user,
                                       sherdnote_set__range1=None).distinct()
-
-        # Exclude archives from these lists
-        assets = assets.exclude(Q(source__primary=True) &
-                                Q(source__label='archive'))
-        return assets.order_by('-sherdnote_set__modified').select_related()
+        assets = assets.order_by('-sherdnote_set__modified')
+        return assets.select_related('sherdnote_set', 'source_set', 'author')
 
     def by_course(self, course):
         assets = Asset.objects.filter(course=course) \
             .extra(select={'lower_title': 'lower(assetmgr_asset.title)'}) \
-            .distinct().select_related().order_by('lower_title')
-
-        # Exclude archives from these lists
-        assets = assets.exclude(Q(source__primary=True) &
-                                Q(source__label='archive'))
-        return assets.order_by('-sherdnote_set__modified')
+            .distinct()
+        assets = assets.order_by('-sherdnote_set__modified')
+        return assets.select_related('sherdnote_set', 'source_set', 'author')
 
     def migrate(self, assets, course, user, faculty, object_map,
                 include_tags, include_notes):
@@ -144,26 +126,22 @@ class Asset(models.Model):
     # make it json or somethin
     metadata_blob = models.TextField(
         blank=True,
-        help_text="""Be careful, this is a JSON blob and NOT a place to enter \
-        the description, etc, and is easy to format incorrectly. \
-        Make sure not to add any "'s.""")
+        help_text="Be careful, this is a JSON blob and NOT a place to enter "
+        "the description, etc, and is easy to format incorrectly. "
+        "Make sure not to add any \"'s.")
 
     # labels which determine the saving of an asset
     # in order of priority for which label is marked primary
     # an asset must have at least one source label from this list
     # 'url' should probably stay at the end
-    useful_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
-                     'mp4', 'mp4_pseudo', 'mp4_rtmp',
-                     'youtube', 'quicktime', 'realplayer',
-                     'ogg', 'vimeo', 'kaltura',
-                     'video_pseudo', 'video_rtmp', 'video',
-                     'mp3', 'mp4_audio',
-                     'image_fpx', 'image_fpxid',  # artstor.org
-                     'image')
-
-    # not good for uniqueness
-    fundamental_labels = ('archive',)
-    primary_labels = useful_labels + fundamental_labels
+    primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
+                      'mp4', 'mp4_pseudo', 'mp4_rtmp',
+                      'youtube', 'quicktime', 'realplayer',
+                      'ogg', 'vimeo', 'kaltura',
+                      'video_pseudo', 'video_rtmp', 'video',
+                      'mp3', 'mp4_audio',
+                      'image_fpx', 'image_fpxid',  # artstor.org
+                      'image')
 
     class Meta:
         permissions = (("can_upload_for", "Can upload assets for others"),)
@@ -189,7 +167,7 @@ class Asset(models.Model):
 
     @property
     def html_source(self):
-        return Source.objects.get(asset=self, label='url')
+        return self.source_set.get(asset=self, label='url')
 
     def xmeml_source(self):
         return self.sources.get('xmeml', None)
@@ -200,21 +178,21 @@ class Asset(models.Model):
 
     @property
     def primary(self):
-        primary_cache = getattr(self, '_primary_cache', None)
-        if primary_cache:
-            return primary_cache
-        self._primary_cache = Source.objects.get(asset=self, primary=True)
-        return self._primary_cache
+        key = "%s:primary" % (self.id)
+        if key not in cache:
+            cache.set(key, self.source_set.get(primary=True))
+        return cache.get(key)
 
     @property
     def thumb_url(self):
-        if not hasattr(self, '_thumb_url'):
+        key = "%s:thumb" % (self.id)
+        if key not in cache:
             try:
-                self._thumb_url = \
-                    Source.objects.get(asset=self, label='thumb').url
+                url = self.source_set.get(label='thumb').url
             except Source.DoesNotExist:
-                self._thumb_url = None
-        return self._thumb_url
+                url = None
+            cache.set(key, url)
+        return cache.get(key)
 
     def tags(self):
         # returns all tags for this instance's notes
@@ -250,11 +228,10 @@ class Asset(models.Model):
         whether this function actually did anything.
         """
         note_model = models.get_model('djangosherd', 'sherdnote')
-        if note_model:
-            bucket, created = note_model.objects.global_annotation(self, user)
-            bucket.add_tag(tag)
-            bucket.save()
-            return created
+        bucket, created = note_model.objects.global_annotation(self, user)
+        bucket.add_tag(tag)
+        bucket.save()
+        return created
 
     request = None
 
@@ -298,7 +275,7 @@ class Source(models.Model):
     # This should help indicate what 'kind' of thing
     # the asset is, so one with label 'quicktime' as primary
     # is a movie, even though it might have image urls for thumbs, etc
-    primary = models.BooleanField(default=False)
+    primary = models.BooleanField(default=False, db_index=True)
 
     media_type = models.CharField(default=None, null=True, max_length=64)
 
@@ -316,32 +293,47 @@ class Source(models.Model):
                                     auto_now=True)
 
     def __unicode__(self):
-        asset = u'No Asset'
-        if self.asset_id:  # defensive for non-saved sources w/o an asset
-            asset = self.asset
-        return u'[%s] %s' % (self.label, unicode(asset))
+        return u'[%s] %s' % (self.label, self.asset.__unicode__())
 
     def is_image(self):
         return (self.label == 'poster' or
                 self.label == "image" or
+                self.label == "image_fpxid" or
                 self.label == "image_fpx" or
                 (self.media_type and self.media_type.startswith('image/')))
 
     def is_audio(self):
         return self.label == 'mp3' or self.label == 'mp4_audio'
 
-    def is_archive(self):
-        return self.label == 'archive'
-
-    def url_processed(self, request, obj=None):
-        return url_processor(self, request, obj)
+    def url_processed(self, request):
+        url_processor = getattr(settings, 'ASSET_URL_PROCESSOR')
+        return url_processor(self.url, self.label, request)
 
 
-class SupportedSource(models.Model):
+class ExternalCollection(models.Model):
     title = models.CharField(max_length=1024)
-    archive_url = models.CharField(max_length=1024)
+    url = models.CharField(max_length=1024)
+    thumb_url = models.CharField(max_length=1024, null=True, blank=True)
+    description = models.TextField()
+    course = models.ForeignKey(Course)
+    uploader = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['title']
+        unique_together = ("title", "course")
+
+
+class SuggestedExternalCollection(models.Model):
+    title = models.CharField(max_length=1024, unique=True)
+    url = models.CharField(max_length=1024)
     thumb_url = models.CharField(max_length=1024)
     description = models.TextField()
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        ordering = ['title']

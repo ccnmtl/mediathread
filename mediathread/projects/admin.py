@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from mediathread.projects.models import Project
-from modelversions import version_model
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -9,7 +8,9 @@ class ProjectAdmin(admin.ModelAdmin):
                      "participants__last_name", "author__username",
                      "participants__last_name")
 
-    list_display = ("title", "course", "author", "modified", "submitted", "id")
+    list_display = ("title", "course", "author", "modified",
+                    "date_submitted", "id", "project_type",
+                    "response_view_policy")
     filter_horizontal = ('participants',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -28,5 +29,3 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
-
-ProjectVersion = version_model(Project)

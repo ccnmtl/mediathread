@@ -2,7 +2,7 @@
 Mediathread
 ===========================================================
 
-[![Build Status](https://travis-ci.org/ccnmtl/mediathread.png)](https://travis-ci.org/ccnmtl/mediathread)
+[![Build Status](https://travis-ci.org/ccnmtl/mediathread.svg?branch=master)](https://travis-ci.org/ccnmtl/mediathread)
 
 Mediathread is a Django site for multimedia annotations facilitating
 collaboration on video and image analysis. Developed at the Columbia
@@ -85,6 +85,25 @@ Go to your site in a web browser.
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
+
+DJANGO SITE INFRASTRUCTURE
+----------------
+Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/1.6/ref/contrib/sites/
+
+By default, Django creates a site called "example.com" with an id of 1. This id is referenced in settings_shared.py as SITE_ID=1.
+
+In your production environment, RENAME example.com to your domain.
+
+If a new site is created, update SITE_ID=<new site id> in your deploy_specific/settings.py or local_settings.py
+
+ALLOWED_HOSTS
+----------------
+
+ALLOWED_HOSTS is "a list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent an attacker from poisoning caches and password reset emails with links to malicious hosts by submitting requests with a fake HTTP Host header, which is possible even under many seemingly-safe web server configurations." More here: https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
+
+Make sure the ALLOWED_HOSTS is set properly in your deploy_specific/settings.py or local_settings.py  
+
+
 APACHE
 ----------------
 For deployment to Apache, see our sample configuration in `apache/sample.conf`. This directory also contains standard `django.wsgi` file which can be used with other webservers
@@ -122,6 +141,28 @@ FLICKR
 ----------------
 In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.  
 DJANGOSHERD_FLICKR_APIKEY='your key here'
+
+FLATPAGES
+----------------
+Mediathread's About & Help pages are constructed using the Django Flat Pages architecture. (https://docs.djangoproject.com/en/1.6/ref/contrib/flatpages/). In order to setup pages for your site, follow these steps:
+
+1. Navigate to the Mediathread /admin/ area, Flatpages.
+
+2. Create a new flat page, e.g. url: /help/ or /about/, select your domain site site and add content.
+
+3. Save.
+
+4. The page should be immediately available by navigating to yourdomain/help/ or yourdomain/about/
+
+
+HELP DOCUMENTATION
+----------------
+Our help documentation tailored for the Columbia community and our in-house video upload system is here: http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593. 
+
+And, Nate Autune helpfully added this a few months ago, "Thanks to Rebecca Darling from Wellesley College, who graciously gave
+permission to re-publish her "Mediathread Guide for Students" under a
+Creative Commons license. Here is a link to where you can download it:
+http://bit.ly/MediathreadStudentsGuide"
 
 
 METADATA SUPPORT

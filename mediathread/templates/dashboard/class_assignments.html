@@ -11,18 +11,18 @@
 
 {% if assignments %}
 
-<table>
+<table class="table table-bordered">
   <thead>
     <tr>
       <th>Assignment</th>
       <th>Responses</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="table-striped">
 {% for assignment in assignments %}
   <tr>
     <td>
-      <a href="{{assignment.get_absolute_url}}">{{assignment.title}}</a>
+      {{assignment.title}}
     </td>
     <td>
       <a href="{% url 'class-assignment-report' assignment.id %}">

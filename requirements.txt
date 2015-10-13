@@ -5,7 +5,7 @@ statsd==3.1
 pep8==1.6.2
 pyflakes==0.9.2
 mccabe==0.3.1
-flake8==2.3.0
+flake8==2.4.1
 lxml==3.4.4
 fuzzywuzzy==0.6.1  # lettuce
 mock==1.0.1  # sure

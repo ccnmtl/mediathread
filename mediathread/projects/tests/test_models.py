@@ -296,13 +296,22 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(compositions), 0)
 
         # instructor composition
-        ProjectFactory.create(
+        beta = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected')
+            policy='CourseProtected', ordinality=2, title='Beta')
+        gamma = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=3, title='Gamma')
+        alpha = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=1, title='Alpha')
 
         compositions = Project.objects.faculty_compositions(
             self.sample_course, self.student_one)
-        self.assertEquals(len(compositions), 1)
+        self.assertEquals(len(compositions), 3)
+        self.assertEquals(compositions[0], alpha)
+        self.assertEquals(compositions[1], beta)
+        self.assertEquals(compositions[2], gamma)
 
     def test_responses(self):
         response1 = ProjectFactory.create(

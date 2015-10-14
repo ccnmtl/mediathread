@@ -33,7 +33,7 @@ pyasn1==0.1.8
 pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0
 requests==2.7.0
-djangowind==0.13.3
+djangowind==0.14.1
 django-tagging==0.4
 django-reversion==1.9.3
 djangohelpers==0.18.1

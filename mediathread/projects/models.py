@@ -182,7 +182,6 @@ class ProjectManager(models.Manager):
             author__in=course.faculty_group.user_set.all())
         qs = qs.select_related('author')
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
-        qs = qs.order_by('ordinality', 'title')
 
         # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
@@ -190,7 +189,8 @@ class ProjectManager(models.Manager):
 
         # get all the projects at once
         ids = [int(c.object_pk) for c in lst]
-        return Project.objects.filter(id__in=ids)
+        return Project.objects.filter(id__in=ids).order_by('ordinality',
+                                                           'title')
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(

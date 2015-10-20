@@ -75,20 +75,12 @@ def create_annotation(request):
         return HttpResponseRedirect(redirect_to)
 
 
-@allow_http("POST", "DELETE")
-def annotation_dispatcher(request, annot_id):
-    if request.method == "DELETE":
-        return delete_annotation(request, annot_id)
-    if request.method == "POST":
-        return edit_annotation(request, annot_id)
-
-
 @login_required
 def delete_annotation(request, annot_id):
     annotation = get_object_or_404(SherdNote, pk=annot_id)
 
     if annotation.author != request.user:
-        return HttpResponseForbidden
+        return HttpResponseForbidden()
 
     annotation.delete()
     redirect_to = request.GET.get('next', '/')

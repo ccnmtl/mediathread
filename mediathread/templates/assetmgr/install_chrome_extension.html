@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <div id="chrome-install-container" class="hidden">
     <h4><strong>Install Chrome extension</strong></h4>
     <p>
@@ -8,6 +10,12 @@
             class="btn btn-primary">
         + Add to Chrome
     </button>
+    <img width="32" height="32"
+         src="{% static 'img/browser_icons/chrome/chrome-a_128.png' %}"
+         title="Compatible with Google Chrome">
+    <img width="32" height="32"
+         src="{% static 'img/browser_icons/chrome/chromium-128.png' %}"
+         title="Compatible with Chromium">
     <hr />
 </div>
 

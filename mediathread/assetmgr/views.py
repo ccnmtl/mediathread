@@ -1046,3 +1046,7 @@ class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         if len(notes) > 0:
             context = {'tags': TagResource().render_related(request, notes)}
         return self.render_to_json_response(context)
+
+
+class BookmarkletMigrationView(TemplateView):
+    template_name = 'assetmgr/bookmarklet_migration.html'

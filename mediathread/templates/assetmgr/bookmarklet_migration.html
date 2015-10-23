@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Bookmarklet Migration
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="dashboard-module-header">
+        <h2></h2>
+    </div>
+
+    <div id="dashboard-module-body">
+        {% include "assetmgr/install_chrome_extension.html" %}
+   </div>
+{% endblock %}

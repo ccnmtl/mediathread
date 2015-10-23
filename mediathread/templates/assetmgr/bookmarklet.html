@@ -27,6 +27,8 @@ jQuery(document).ready(function() {
             '};',
 
             'if (b) {',
+                'var loadErrorCalled = false;',
+
                 /**
                  * loadError is triggered when any of the scripts that
                  * the bookmarklet relies on fail to load. This can occur
@@ -42,6 +44,12 @@ jQuery(document).ready(function() {
                  * Chrome).
                  */
                 'var loadError = function(oError) {',
+                    'if (loadErrorCalled) {',
+                        'return;',
+                    '} else {',
+                        'loadErrorCalled = true;',
+                    '}',
+
                     'if (window.confirm("',
                         'The bookmarklet encountered a ',
                         'loading error, probably due to ',
@@ -53,10 +61,8 @@ jQuery(document).ready(function() {
                         // on when forwarding to Mediathread.
                         'var referrerParam = "?bookmarklet_host=" + window.location.hostname;',
                         'var migrateUrl = "https://{{request.get_host}}/bookmarklet_migration/" + referrerParam;',
-                        'window.location.replace(migrateUrl);',
+                        'window.location.href = migrateUrl;',
                     '}',
-                    'throw new URIError("The script " + ',
-                        'oError.target.src + " is not accessible.");',
                 '};',
 
                 // Load Mediathread logged-in status

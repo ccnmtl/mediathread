@@ -626,6 +626,23 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(all_items_are_visible(self.sample_course))
         self.assertFalse(all_selections_are_visible(self.sample_course))
 
+    def test_post_disabled_selection_visibility(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        data = {course_details.ITEM_VISIBILITY_KEY: 0}
+
+        response = self.client.post('/dashboard/settings/', data)
+        self.assertEquals(response.status_code, 302)
+
+        # unchanged from defaults
+        self.assertEquals(course_information_title(self.sample_course),
+                          'From Your Instructor')
+        self.assertFalse(allow_public_compositions(self.sample_course))
+
+        # updated
+        self.assertFalse(all_items_are_visible(self.sample_course))
+        self.assertFalse(all_selections_are_visible(self.sample_course))
+
 
 class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
 

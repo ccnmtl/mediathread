@@ -12,10 +12,12 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
-from mediathread.assetmgr.views import asset_workspace_courselookup, \
-    RedirectToExternalCollectionView, \
-    RedirectToUploaderView, AssetCreateView, AssetEmbedListView, \
+from mediathread.assetmgr.views import (
+    asset_workspace_courselookup,
+    RedirectToExternalCollectionView,
+    RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
     _parse_domain, AssetEmbedView
+)
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
@@ -678,3 +680,9 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(ctx['selection_id'], note.id)
             self.assertEquals(ctx['presentation'], 'gallery')
             self.assertEquals(ctx['title'], 'Selection')
+
+
+class BookmarkletMigrationView(MediathreadTestMixin, TestCase):
+    def test_get(self):
+        response = self.client.get(reverse('bookmarklet_migration'))
+        self.assertEquals(response.status_code, 200)

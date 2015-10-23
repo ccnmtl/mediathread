@@ -7,7 +7,6 @@ from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -105,20 +104,6 @@ def triple_homepage(request):
             'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
         }
 
-    return context
-
-
-@allow_http("GET")
-@login_required
-@rendered_with('assetmgr/upgrade_bookmarklet.html')
-def upgrade_bookmarklet(request):
-    context = {}
-    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
-        # MUST only contain string values for now!!
-        # (see templates/assetmgr/bookmarklet.js to see why or fix)
-        context['bookmarklet_vars'] = {
-            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
-        }
     return context
 
 

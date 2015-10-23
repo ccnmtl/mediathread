@@ -15,7 +15,8 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         TagCollectionView,
                                         RedirectToExternalCollectionView,
                                         RedirectToUploaderView,
-                                        AssetCreateView)
+                                        AssetCreateView,
+                                        BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
@@ -133,9 +134,11 @@ urlpatterns = patterns(
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
         name='is_logged_in.js'),
-
     url(r'^accounts/is_logged_in/$', IsLoggedInDataView.as_view(), {},
         name='is_logged_in'),
+    url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
+        name='bookmarklet_migration'),
+    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
@@ -190,8 +193,6 @@ urlpatterns = patterns(
     (r'^smoketest/', include('smoketest.urls')),
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
-
-    url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
 
     (r'^lti/', include('lti_auth.urls')),
 

@@ -46,10 +46,14 @@ jQuery(document).ready(function() {
                         'The bookmarklet encountered a ',
                         'loading error, probably due to ',
                         "this website's security policy. ",
-                        "Press Okay to be redirected to instructions ",
+                        "Press OK to be redirected to instructions ",
                         'on how to proceed."',
                     ')) {',
-                        'window.location.replace("{{request.get_host}}/bookmarklet_migrate/");',
+                        // Include the hostname of the url this error occured
+                        // on when forwarding to Mediathread.
+                        'var referrerParam = "?bookmarkletHost=" + window.location.hostname;',
+                        'var migrateUrl = "https://{{request.get_host}}/bookmarklet_migration/" + referrerParam;',
+                        'window.location.replace(migrateUrl);',
                     '}',
                     'throw new URIError("The script " + ',
                         'oError.target.src + " is not accessible.");',

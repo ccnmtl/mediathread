@@ -2970,7 +2970,6 @@ table#home-columns td#classwork ul {
 }
 
 div#instructor-column {
-
     margin: 0;
     font-weight: normal;
     line-height: 17px;
@@ -3059,24 +3058,15 @@ ul.instructor-list {
 }
 
 ul.instructor-list li {
-
     margin: 5px 0 10px 0;
     font-weight: normal;
     line-height: 17px;
 }
 
-ul.instructor-list span.draghandle {
+ul.instructor-list .draghandle {
     margin-left: -5px;
     margin-right: 5px;
-    cursor: pointer;
-}
-
-ul.instructor-list li.dragging {
-    border: 1px solid #CCC;
-    background-color: #E6E6E6;
-    color: #555/*{fcDefault}*/;
-    margin: 0;
-    padding: 0.4em .185em;
+    cursor: move;
 }
 
 td.media-column .column-contents {

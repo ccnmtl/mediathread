@@ -22,7 +22,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View, TemplateView
-from djangohelpers.lib import allow_http
+from djangohelpers.lib import allow_http, rendered_with
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -1050,3 +1050,17 @@ class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 
 class BookmarkletMigrationView(TemplateView):
     template_name = 'assetmgr/bookmarklet_migration.html'
+
+
+@allow_http("GET")
+@login_required
+@rendered_with('assetmgr/upgrade_bookmarklet.html')
+def upgrade_bookmarklet(request):
+    context = {}
+    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
+        # MUST only contain string values for now!!
+        # (see templates/assetmgr/bookmarklet.js to see why or fix)
+        context['bookmarklet_vars'] = {
+            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
+        }
+    return context

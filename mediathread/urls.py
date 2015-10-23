@@ -138,6 +138,7 @@ urlpatterns = patterns(
         name='is_logged_in'),
     url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
         name='bookmarklet_migration'),
+    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
@@ -192,8 +193,6 @@ urlpatterns = patterns(
     (r'^smoketest/', include('smoketest.urls')),
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
-
-    url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
 
     (r'^lti/', include('lti_auth.urls')),
 

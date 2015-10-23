@@ -51,7 +51,7 @@ jQuery(document).ready(function() {
                     ')) {',
                         // Include the hostname of the url this error occured
                         // on when forwarding to Mediathread.
-                        'var referrerParam = "?bookmarkletHost=" + window.location.hostname;',
+                        'var referrerParam = "?bookmarklet_host=" + window.location.hostname;',
                         'var migrateUrl = "https://{{request.get_host}}/bookmarklet_migration/" + referrerParam;',
                         'window.location.replace(migrateUrl);',
                     '}',

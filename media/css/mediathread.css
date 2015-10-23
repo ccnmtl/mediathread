@@ -520,8 +520,6 @@ input[name='decoy'] {
      opacity:0.65 !important;
     -moz-opacity:0.65 !important;
     filter:alpha(opacity=65) !important;
-    padding: 10px;
-    left: -10px;
     z-index: 9999;    
 }
 
@@ -1467,8 +1465,6 @@ div.collection-materials h2 {
 
 div#collection-overlay {
     z-index:  10001;
-    margin-top: -8px;
-    padding-bottom: 8px;
 }
 
 div.ajaxloader {
@@ -1504,9 +1500,6 @@ tr.project-content-row div.ajaxloader {
 
 td.collection.minimized div#collection-overlay {
     z-index:  10001;
-    width: 280px;
-    margin-top: -8px;
-    padding-bottom: 8px;    
 }
 
 div.collection-help-tab {
@@ -1514,7 +1507,7 @@ div.collection-help-tab {
     display: block;
     z-index: 10002;
     padding: 2px;
-    right: 0;
+    right: 17px;
     top: 4px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -1548,13 +1541,13 @@ td.collection div.collection-help {
     border: none;
     width: 400px;
     top: 30px;
-    right: 0px; 
+    right: 17px; 
     font-size: .875em;    
 }
 
 td.collection.minimized div.collection-help {
     width: 240px;
-    left: 21px;
+    left: 37px;
     padding: 10px;    
 }
 
@@ -1862,16 +1855,17 @@ td#instructor input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#instructor div.help-tab {
-   right: -3px;
-    top: 21px;
-    width: 25px;
+    right: -3px;
+    top: 14px;
+    width: 30px;
 }
 
 td#instructor div.feature-help {
-    top: 50px;
+    top: 43px;
     right: -3px;
     width: 89%;
 }
@@ -1881,17 +1875,19 @@ td#classwork input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#classwork div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
+    right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
+td#explore div.feature-help,
 td#classwork div.feature-help {
-    top: 50px;
-    right: 6px;
+    top: 45px;
+    right: 7px;
     width: 90%;
 }
 
@@ -1900,18 +1896,13 @@ td#explore input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#explore div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
-}
-
-td#explore div.feature-help {
-    top: 50px;
-    right: 6px;
-    width: 90%;
+   right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
 td.collection.subpanel div.feature-help,
@@ -3369,9 +3360,6 @@ span.asset-view-title {
 
 div#asset-view-overlay {
     z-index:  10001;
-    margin-top: -55px;
-    padding-bottom: 55px;
-    padding-right: 10px;
 }
 
 input#collection-help-button {
@@ -3379,6 +3367,7 @@ input#collection-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 #annotation-view-help-button {
@@ -3393,6 +3382,7 @@ input#asset-view-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 div.asset-view-help {
@@ -3410,7 +3400,7 @@ div.asset-view-help {
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
     top: -13px;
-    right: -8px;
+    right: -1px;
     border: none;
 }
 
@@ -3432,8 +3422,8 @@ div.asset-view-help-tab {
     z-index: 10002;
     margin: -1px 2px 0 0;
     padding: 2px;
-    right: -10px;
-    top: -41px;
+    right: -1px;
+    top: -38px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -3446,6 +3436,7 @@ div.asset-view-help-tab {
 
 input[type=image].dismiss-help {
      border: none;
+     outline: 0;
 }
 
 div.asset-view-container {

@@ -26,14 +26,6 @@
                 'view': "{{request.GET.view}}"
             });
             
-            jQuery(window).resize(function () {  
-                var visible = getVisibleContentHeight();
-                jQuery('.ui-widget-overlay').css('height', visible + "px");
-            });
-    
-            var visible = getVisibleContentHeight();
-            jQuery('.ui-widget-overlay').css('height', visible + "px");
-            
             {% ifequal msg "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
                 showMessage(msg);

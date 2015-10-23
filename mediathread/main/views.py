@@ -166,13 +166,13 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
         context[key] = int(self.request.course.get_detail(key,
                            course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
 
-        key = course_details.SELECTION_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.SELECTION_VISIBILITY_DEFAULT))
-
         key = course_details.ITEM_VISIBILITY_KEY
         context[key] = int(self.request.course.get_detail(key,
                            course_details.ITEM_VISIBILITY_DEFAULT))
+
+        key = course_details.SELECTION_VISIBILITY_KEY
+        context[key] = int(self.request.course.get_detail(key,
+                           course_details.SELECTION_VISIBILITY_DEFAULT))
 
         key = course_details.COURSE_INFORMATION_TITLE_KEY
         context[key] = self.request.course.get_detail(
@@ -186,18 +186,21 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             value = request.POST.get(key)
             request.course.add_detail(key, value)
 
-        key = course_details.SELECTION_VISIBILITY_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.limit_response_policy(request.course)
-
         key = course_details.ITEM_VISIBILITY_KEY
         if key in request.POST:
             value = int(request.POST.get(key))
             request.course.add_detail(key, value)
+
+            key = course_details.SELECTION_VISIBILITY_KEY
+            if key in request.POST:
+                value = int(request.POST.get(key))
+            else:
+                value = 0
+
+            request.course.add_detail(key, value)
+
+            if value == 0:
+                Project.objects.limit_response_policy(request.course)
 
         key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
         if key in request.POST:

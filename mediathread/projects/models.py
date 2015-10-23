@@ -233,9 +233,8 @@ class ProjectManager(models.Manager):
                 pass
 
     def limit_response_policy(self, course):
-        # All selection assignment response policy must be NEVER
-        projects = Project.objects.filter(
-            course=course, project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+        # Update response policy to be NEVER
+        projects = Project.objects.filter(course=course)
         projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
 
 

@@ -352,7 +352,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         assignment = Project.objects.get(id=self.assignment.id)
         self.assertEquals(assignment.response_view_policy,
-                          RESPONSE_VIEW_ALWAYS[0])
+                          RESPONSE_VIEW_NEVER[0])
         assignment = Project.objects.get(id=self.selection_assignment.id)
         self.assertEquals(assignment.response_view_policy,
                           RESPONSE_VIEW_NEVER[0])
@@ -455,12 +455,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertFalse(self.project_class_shared.can_read(
             self.alt_course, self.alt_instructor))
 
-    def test_can_read_selection_assignment(self):
+    def can_read_assignment_response(self, parent):
         # always
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PublicEditorsAreOwners',
-            parent=self.selection_assignment)
+            parent=parent)
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -470,9 +470,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.sample_course, self.instructor_one))
 
         # never
-        self.selection_assignment.response_view_policy = \
+        parent.response_view_policy = \
             RESPONSE_VIEW_NEVER[0]
-        self.selection_assignment.save()
+        parent.save()
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -482,9 +482,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.sample_course, self.instructor_one))
 
         # submitted
-        self.selection_assignment.response_view_policy = \
+        parent.response_view_policy = \
             RESPONSE_VIEW_SUBMITTED[0]
-        self.selection_assignment.save()
+        parent.save()
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -496,7 +496,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # student two created a response
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            parent=self.selection_assignment)
+            parent=parent)
         self.assertFalse(response.can_read(
             self.sample_course, self.student_two))
 
@@ -506,6 +506,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response2.save()
         self.assertTrue(response.can_read(
             self.sample_course, self.student_two))
+
+    def test_can_read_selection_assignment_response(self):
+        self.can_read_assignment_response(self.selection_assignment)
+
+    def test_can_read_composition_assignment_response(self):
+        self.can_read_assignment_response(self.assignment)
 
     def test_unresponded_assignments(self):
         lst = Project.objects.unresponded_assignments(self.sample_course,

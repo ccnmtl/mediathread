@@ -4,7 +4,7 @@ from tastypie.resources import ModelResource
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.projects.models import ProjectNote
 from mediathread.taxonomy.api import TermResource
 from mediathread.taxonomy.models import TermRelationship
@@ -82,3 +82,20 @@ class SherdNoteResource(ModelResource):
         bundle.data['asset_key'] = '%s_%s' % (asset_key,
                                               bundle.data['asset_id'])
         return self._meta.serializer.to_simple(dehydrated, None)
+
+
+class DiscussionIndexResource(object):
+
+    def render_list(self, request, indicies):
+        collaborations = DiscussionIndex.with_permission(request, indicies)
+
+        ctx = {
+            'references': [{
+                'id': obj.collaboration.object_pk,
+                'title': obj.collaboration.title,
+                'type': obj.get_type_label(),
+                'url': obj.get_absolute_url(),
+                'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
+                for obj in collaborations]}
+
+        return ctx

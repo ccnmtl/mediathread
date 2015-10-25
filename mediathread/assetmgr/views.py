@@ -28,7 +28,7 @@ from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
-from mediathread.discussions.api import DiscussionIndexResource
+from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation

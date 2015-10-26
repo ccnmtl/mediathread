@@ -21,7 +21,7 @@ urlpatterns = patterns(
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),
-        {}, "asset-references"),
+        {}, 'asset-references'),
 
     # Goto the most recently created asset by user
     url(r'^most_recent/$', 'most_recent', name='asset-most-recent'),

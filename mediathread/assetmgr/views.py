@@ -38,6 +38,7 @@ from mediathread.mixins import ajax_required, LoggedInMixin, \
     LoggedInSuperuserMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from django.http.response import HttpResponseNotFound
 
 
 def _parse_domain(url):
@@ -306,23 +307,19 @@ def annotation_create(request, asset_id):
 @allow_http("POST")
 @ajax_required
 def annotation_create_global(request, asset_id):
-    try:
-        asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
-        global_annotation = asset.global_annotation(request.user, True)
-        update_annotation(request, global_annotation)
+    asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
+    global_annotation = asset.global_annotation(request.user, True)
+    update_annotation(request, global_annotation)
 
-        response = {
-            'asset': {'id': asset_id},
-            'annotation': {
-                'id': global_annotation.id,
-                'creating': True
-            }
+    response = {
+        'asset': {'id': asset_id},
+        'annotation': {
+            'id': global_annotation.id,
+            'creating': True
         }
-        return HttpResponse(json.dumps(response),
-                            content_type="application/json")
-
-    except SherdNote.DoesNotExist:
-        return HttpResponseForbidden("forbidden")
+    }
+    return HttpResponse(json.dumps(response),
+                        content_type="application/json")
 
 
 @login_required
@@ -364,7 +361,7 @@ def annotation_delete(request, asset_id, annot_id):
         request.GET = form
         return delete_annotation(request, annot_id)  # djangosherd.views
     except SherdNote.DoesNotExist:
-        return HttpResponseForbidden("forbidden")
+        return HttpResponseNotFound()
 
 
 class RedirectToExternalCollectionView(LoggedInMixin, View):
@@ -677,11 +674,12 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
                          AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
-        try:
-            ctx = {}
-            asset = Asset.objects.filter(pk=asset_id, course=request.course)
+        ctx = {}
+        qs = Asset.objects.filter(pk=asset_id, course=request.course)
+
+        if qs.count() > 0:
             notes = SherdNote.objects.get_related_notes(
-                asset, self.record_owner, self.visible_authors,
+                qs, self.record_owner, self.visible_authors,
                 self.all_items_are_visible)
 
             # tags
@@ -694,13 +692,10 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             # DiscussionIndex is misleading. Objects returned are
             # projects & discussions title, object_pk, content_type, modified
             indicies = DiscussionIndex.objects.filter(
-                asset=asset).order_by('-modified')
+                asset=qs[0]).order_by('-modified')
             ctx.update(DiscussionIndexResource().render_list(request,
                                                              indicies))
-
-            return self.render_to_json_response(ctx)
-        except Asset.DoesNotExist:
-            return asset_switch_course(request, asset_id)
+        return self.render_to_json_response(ctx)
 
 
 class AssetEmbedListView(LoggedInMixin, RestrictedMaterialsMixin,

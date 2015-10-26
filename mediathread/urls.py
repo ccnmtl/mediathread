@@ -99,7 +99,7 @@ urlpatterns = patterns(
     (r'^api/asset/$', AssetCollectionView.as_view(), {}, 'assets-by-course'),
     url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
         name='api-user-courses'),
-    (r'^api/tag/$', TagCollectionView.as_view(), {}),
+    (r'^api/tag/$', TagCollectionView.as_view(), {}, 'tag-collection-view'),
     (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
      ProjectCollectionView.as_view(), {}, 'project-by-user'),
     (r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
@@ -138,7 +138,8 @@ urlpatterns = patterns(
         name='is_logged_in'),
     url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
         name='bookmarklet_migration'),
-    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet'),
+    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet',
+        name='bookmarklet_upgrade'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),

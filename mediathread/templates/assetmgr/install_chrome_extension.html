@@ -1,0 +1,52 @@
+{% load staticfiles %}
+
+<div id="chrome-install-container" class="hidden">
+    <h4><strong>Install Chrome extension</strong></h4>
+    <p>
+        Use Mediathread's Google Chrome extension to import media
+        from various sites.
+    </p>
+    <button id="chrome-install-button"
+            class="btn btn-primary">
+        + Add to Chrome
+    </button>
+    <img width="32" height="32"
+         src="{% static 'img/browser_icons/chrome/chrome-a_128.png' %}"
+         title="Compatible with Google Chrome">
+    <img width="32" height="32"
+         src="{% static 'img/browser_icons/chrome/chromium-128.png' %}"
+         title="Compatible with Chromium">
+    <hr />
+</div>
+
+<script>
+(function() {
+    var markAsInstalled = function($button) {
+        $button.text('Installed.');
+        $button.removeClass('btn-primary');
+        $button.addClass('btn-default disabled');
+    };
+
+    jQuery(document).ready(function() {
+        var $button = jQuery('#chrome-install-button');
+        $button.on('click', function(e) {
+            if (jQuery(this).hasClass('disabled')) {
+                return;
+            }
+            chrome.webstore.install(
+                'https://chrome.google.com/webstore/detail/gambcgmmppeklfmbahomokogelnaffbi',
+                function() {
+                    // Success handler
+                    markAsInstalled($button);
+                }
+            );
+        });
+
+        // Show the install container on chrome
+        var isChrome = !!(window.chrome && chrome.webstore);
+        if (isChrome) {
+            jQuery('#chrome-install-container').removeClass('hidden');
+        }
+    });
+})();
+</script>

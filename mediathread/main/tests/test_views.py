@@ -11,12 +11,14 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
+from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
+from mediathread.discussions.utils import get_course_discussions
+from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
-    AssetFactory, ProjectFactory, SherdNoteFactory
-)
+    AssetFactory, ProjectFactory, SherdNoteFactory)
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
@@ -624,6 +626,23 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(all_items_are_visible(self.sample_course))
         self.assertFalse(all_selections_are_visible(self.sample_course))
 
+    def test_post_disabled_selection_visibility(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        data = {course_details.ITEM_VISIBILITY_KEY: 0}
+
+        response = self.client.post('/dashboard/settings/', data)
+        self.assertEquals(response.status_code, 302)
+
+        # unchanged from defaults
+        self.assertEquals(course_information_title(self.sample_course),
+                          'From Your Instructor')
+        self.assertFalse(allow_public_compositions(self.sample_course))
+
+        # updated
+        self.assertFalse(all_items_are_visible(self.sample_course))
+        self.assertFalse(all_selections_are_visible(self.sample_course))
+
 
 class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
 
@@ -763,3 +782,147 @@ class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
         self.client.login(username=self.up.user.username, password='test')
         r = self.client.get(reverse('is_logged_in'))
         self.assertEqual(r.status_code, 200)
+
+
+class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        # Sample Course Image Asset
+        self.faculty_asset = AssetFactory.create(course=self.sample_course,
+                                                 author=self.instructor_one,
+                                                 primary_source='image')
+        self.student_asset = AssetFactory.create(course=self.sample_course,
+                                                 author=self.student_one,
+                                                 primary_source='image')
+
+        self.student_note1 = SherdNoteFactory(
+            asset=self.faculty_asset, author=self.student_one,
+            tags=',image1', body='student note on student asset')
+        self.student_note2 = SherdNoteFactory(
+            asset=self.student_asset, author=self.student_one,
+            tags=',image2', body='student note on faculty asset')
+        self.faculty_note1 = SherdNoteFactory(
+            asset=self.faculty_asset, author=self.instructor_one,
+            tags=',image3', body='faculty note on faculty asset')
+        self.faculty_note2 = SherdNoteFactory(
+            asset=self.student_asset, author=self.instructor_one,
+            tags=',image4', body='faculty note on student asset')
+
+        self.alt_asset = AssetFactory.create(course=self.alt_course,
+                                             author=self.alt_student,
+                                             primary_source='image')
+        self.alt_note = SherdNoteFactory(
+            asset=self.alt_asset, author=self.alt_student,
+            tags=',image1', body='student note on student asset')
+
+        self.faculty_composition = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='InstructorShared')
+        self.student_composition = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='CourseProtected')
+        self.assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+        self.assignment_response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        self.alt_composition = ProjectFactory.create(
+            course=self.alt_course, author=self.student_one,
+            policy='CourseProtected')
+
+        self.discussion = self.create_discussion(
+            self.sample_course, self.instructor_one)
+        self.comment = self.add_comment(self.discussion, self.student_one)
+
+        self.alt_discussion = self.create_discussion(
+            self.alt_course, self.alt_instructor)
+        self.alt_comment = self.add_comment(self.alt_discussion,
+                                            self.alt_student)
+
+        self.superuser = UserFactory(is_superuser=True, is_staff=True)
+        self.add_as_faculty(self.sample_course, self.superuser)
+
+    def verify_alt_course_materials(self):
+        # alt course assets, notes & projects are intact
+        assets = Asset.objects.filter(course=self.alt_course)
+        self.assertEquals(self.alt_asset, assets.first())
+        notes = SherdNote.objects.filter(asset__course=self.alt_course)
+        self.assertEquals(self.alt_note, notes.first())
+        projects = Project.objects.filter(course=self.alt_course)
+        self.assertEquals(self.alt_composition, projects.first())
+
+        self.assertEquals(get_course_discussions(self.alt_course),
+                          [self.alt_discussion])
+        comments = ThreadedComment.objects.filter(parent=self.alt_discussion)
+        self.assertEquals(self.alt_comment, comments.first())
+
+    def test_access(self):
+        url = reverse('course-delete-materials')
+        data = {'clear_all': True, 'username': self.student_one.username}
+
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+
+    def test_clear_all(self):
+        url = reverse('course-delete-materials')
+        data = {'clear_all': True, 'username': self.superuser.username}
+
+        self.client.login(username=self.superuser.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue('All requested materials were deleted'
+                        in response.cookies['messages'].value)
+
+        assets = Asset.objects.filter(course=self.sample_course)
+        self.assertEquals(assets.count(), 0)
+        notes = SherdNote.objects.filter(asset__course=self.sample_course)
+        self.assertEquals(notes.count(), 0)
+        projects = Project.objects.filter(course=self.sample_course)
+        self.assertEquals(projects.count(), 0)
+
+        self.assertEquals(get_course_discussions(self.sample_course),
+                          [self.discussion])
+        comments = ThreadedComment.objects.filter(parent=self.discussion)
+        self.assertEquals(comments.count(), 0)
+
+        self.verify_alt_course_materials()
+
+    def test_clear_student_only(self):
+        url = reverse('course-delete-materials')
+        data = {'clear_all': False, 'username': self.superuser.username}
+
+        self.client.login(username=self.superuser.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue('All requested materials were deleted'
+                        in response.cookies['messages'].value)
+
+        assets = Asset.objects.filter(course=self.sample_course)
+        self.assertEquals(assets.count(), 1)
+        self.assertEquals(assets.first(), self.faculty_asset)
+
+        notes = SherdNote.objects.filter(asset__course=self.sample_course)
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes.first(), self.faculty_note1)
+
+        projects = Project.objects.filter(course=self.sample_course)
+        self.assertEquals(projects.count(), 2)
+        self.assertTrue(self.faculty_composition in projects.all())
+        self.assertTrue(self.assignment in projects.all())
+
+        self.assertEquals(get_course_discussions(self.sample_course),
+                          [self.discussion])
+        comments = ThreadedComment.objects.filter(parent=self.discussion)
+        self.assertEquals(comments.count(), 0)
+
+        self.verify_alt_course_materials()

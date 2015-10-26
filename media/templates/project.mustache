@@ -56,21 +56,31 @@
                                             type="submit" value="Save" />
                                             
                                             <div class="save-publish-status" style="display: none" title="Save Changes">
-                                                <br />
-                                                <div><b>IMPORTANT:</b> Select who can see your work before saving.<br/><br /></div>
-                                                <div>
+                                                <div class="well">
+                                                    <div class="right small">required</div>
                                                     <label for="due_date">Visibility</label><br />
+                                                    <div class="small">Select who can see your work</div><br />
                                                     {{{context.form.publish}}}
+                                                    <div class="small help-inline">Select who can see your work</div>
                                                 </div>
                                                 {{#context.project.is_assignment}}
                                                 {{#is_faculty}}
-                                                    <br />
-                                                    <div class="due-date">
+                                                    <div class="due-date well">
+                                                        <div class="right small">optional</div>
                                                         <label for="due_date">Due Date</label><br />
                                                         <input class="form-control" type="text" name="due_date"
                                                             value="{{context.project.due_date}}" id="id_due_date">
+                                                        <br />
                                                     </div>
-                                                    <input type="hidden" name="response_view_policy" value="{{context.project.response_view_policy}}" />
+                                                    <div class="response-visibility well">
+                                                        <div class="right small">required</div>
+                                                        <label for="response_view_policy">Responses</label>
+                                                        <div class="small">Choose when students can see responses submitted by other students</div><br />
+                                                        <div class="form-group">
+                                                            {{{context.form.response_view_policy}}}
+                                                            <div class="small help-inline">Select a response visibility level</div> 
+                                                        </div>
+                                                    </div>
                                                 {{/is_faculty}}
                                                 {{/context.project.is_assignment}}
                                             </div> 

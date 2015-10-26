@@ -10,18 +10,10 @@
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
         <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>    
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
-        
         <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
-        <script>
-         // Let Mediathread's custom Mustache library use the Mustache global.
-         var Mustache2 = Mustache;
-         Mustache = undefined;
-        </script>
-        <script src="{% static 'js/mustache/mustache-custom.js' %}"></script>
-
         <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
 
-        <script type="text/javascript" src="{% static 'js/sherdjs/lib/OpenLayers-min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
 
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" media="screen" />
@@ -36,6 +28,9 @@
 
         {% block uncompressable_css %}
         {% endblock %}
+
+        <link rel="chrome-webstore-item"
+              href="https://chrome.google.com/webstore/detail/gambcgmmppeklfmbahomokogelnaffbi">
     </head>
 
     {% course_role for request.user in course as role_in_course %}
@@ -86,9 +81,12 @@
                                     {% if user.has_usable_password %}
                                         <a href="/accounts/password_change/">Change Password</a>
                                     {% endif %}
-                                        
-                                    <a href="/accounts/logout/?next=/">Log Out</a>
                                     
+                                    {% if role_in_course == 'instructor' %}
+                                        <a href="/course/request/">Request Course</a>
+                                    {% endif %}
+
+                                    <a href="/accounts/logout/?next=/">Log Out</a>
                                 </div>
                             </li>
 
@@ -105,7 +103,10 @@
                                     <a href="/dashboard/sources/">Sources</a>
                                     <a href="/dashboard/migrate/">Migrations</a>
                                     <a href="/taxonomy/">Vocabulary</a>
-                                    <a href="/course/request/">Course Request</a>
+                                    {% if user.is_staff %}
+                                        <hr />
+                                        <a href="/dashboard/delete/materials/">Materials</a>
+                                    {% endif %}
                                 </div>
                             </li>
                             <li>
@@ -202,7 +203,7 @@
             </h4> 
     
     	   <ul id="footernav">
-               <li><a href="http://ccnmtl.columbia.edu/our_services/tools/mediathread/" target="_blank">About</a></li>
+               <li><a href="http://mediathread.info" target="_blank">About</a></li>
                <li><a href="/contact/">Contact Us</a></li>
                <li><a href="/help/">Help</a></li>
             </ul>
@@ -231,7 +232,7 @@
         <script type="text/javascript" src='{% static "js/app/ajaxDelete.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/browserdetect.js" %}'></script>
-        <script type="text/javascript" src='{% static "js/app/mediathread_mustache.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/mediathread_setup.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/panel.js" %}'></script>
         <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>        
         

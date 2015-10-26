@@ -1,5 +1,5 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
-/* global getVisibleContentHeight: true, MediaThread: true, Mustache2: true */
+/* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
 /* global SelectFilter: true, showMessage: true */
 /* global tinyMCE: true, tiny_mce_settings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -7,16 +7,25 @@
 var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     var self = this;
 
-    self.el = el;
-    self.panel = panel;
-    self.projectModified = false;
-    self.parentContainer = parent;
-    self.space_owner = space_owner;
-    self.tiny_mce_settings = tiny_mce_settings;
+    this.el = el;
+    this.panel = panel;
+    this.projectModified = false;
+    this.parentContainer = parent;
+    this.space_owner = space_owner;
+    this.tiny_mce_settings = tiny_mce_settings;
     jQuery(self.el).find('.project-savebutton').attr('value', 'Saved');
 
     djangosherd.storage.json_update(panel.context);
-    MediaThread.loadTemplate('project_revisions');
+    MediaThread.loadTemplate('project_revisions')
+        .then(function() {
+            self.initAfterTemplateLoad(el, parent, panel, space_owner);
+        });
+};
+
+ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
+    el, parent, panel, space_owner
+) {
+    var self = this;
 
     if (panel.context.can_edit) {
         var select = jQuery(self.el).find('select[name="participants"]')[0];
@@ -196,7 +205,8 @@ ProjectPanelHandler.prototype.resize = function() {
         // tinyMCE project editing window. Make sure we only resize ourself.
         jQuery(self.el).find('table.mceLayout')
             .css('height', (editorHeight) + 'px');
-        jQuery(self.el).find('iframe').css('height', (editorHeight) + 'px');
+        jQuery(self.el).find('.mceFirst iframe')
+            .css('height', (editorHeight) + 'px');
     }
 
     jQuery(self.el).find('div.essay-space')
@@ -715,7 +725,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         draggable: true,
         resizable: false,
         modal: true,
-        width: 430,
+        width: 450,
         position: {
             my: 'center top',
             at: 'center top',
@@ -891,8 +901,8 @@ ProjectPanelHandler.prototype.updateRevisions = function() {
             dataType: 'json',
             error: function() {},
             success: function(json, textStatus, xhr) {
-                var rendered = Mustache2.render(
-                        MediaThread.templates.project_revisions, json);
+                var rendered = Mustache.render(
+                    MediaThread.templates.project_revisions, json);
                 $elt.html(rendered);
             }
         });

@@ -104,8 +104,18 @@ div.save-publish-status li {
     list-style-type: none;
 }
 
+.save-publish-status #id_response_view_policy label,
 .save-publish-status #id_publish label {
     font-weight: normal;
+}
+
+.save-publish-status .well {
+    padding: 15px;
+    padding-bottom: 0;
+}
+
+.save-publish-status .right.small {
+    margin: -10px -5px 0 0;
 }
 
 /* ---- Threaded comments ---------- */

@@ -71,7 +71,7 @@ class ProjectForm(forms.ModelForm):
 
         # response view policy. limit choices if there is no project
         # or the project is a selection assignment
-        if not project or project.is_selection_assignment():
+        if (not project or not project.is_composition()):
             choices = [RESPONSE_VIEW_NEVER]
             if all_selections_are_visible(request.course):
                 choices.append(RESPONSE_VIEW_SUBMITTED)

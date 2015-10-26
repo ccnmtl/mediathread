@@ -7,7 +7,6 @@ from courseaffils.models import Course
 from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -19,6 +18,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
+from threadedcomments.models import ThreadedComment
 
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
@@ -29,10 +29,12 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
-from mediathread.main.forms import RequestCourseForm, ContactUsForm
+from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
+    CourseDeleteMaterialsForm
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, \
-    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin
+    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
+    LoggedInSuperuserMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -105,20 +107,6 @@ def triple_homepage(request):
     return context
 
 
-@allow_http("GET")
-@login_required
-@rendered_with('assetmgr/upgrade_bookmarklet.html')
-def upgrade_bookmarklet(request):
-    context = {}
-    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
-        # MUST only contain string values for now!!
-        # (see templates/assetmgr/bookmarklet.js to see why or fix)
-        context['bookmarklet_vars'] = {
-            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
-        }
-    return context
-
-
 class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     template_name = 'dashboard/class_manage_sources.html'
 
@@ -163,13 +151,13 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
         context[key] = int(self.request.course.get_detail(key,
                            course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
 
-        key = course_details.SELECTION_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.SELECTION_VISIBILITY_DEFAULT))
-
         key = course_details.ITEM_VISIBILITY_KEY
         context[key] = int(self.request.course.get_detail(key,
                            course_details.ITEM_VISIBILITY_DEFAULT))
+
+        key = course_details.SELECTION_VISIBILITY_KEY
+        context[key] = int(self.request.course.get_detail(key,
+                           course_details.SELECTION_VISIBILITY_DEFAULT))
 
         key = course_details.COURSE_INFORMATION_TITLE_KEY
         context[key] = self.request.course.get_detail(
@@ -183,18 +171,21 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
             value = request.POST.get(key)
             request.course.add_detail(key, value)
 
-        key = course_details.SELECTION_VISIBILITY_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.limit_response_policy(request.course)
-
         key = course_details.ITEM_VISIBILITY_KEY
         if key in request.POST:
             value = int(request.POST.get(key))
             request.course.add_detail(key, value)
+
+            key = course_details.SELECTION_VISIBILITY_KEY
+            if key in request.POST:
+                value = int(request.POST.get(key))
+            else:
+                value = 0
+
+            request.course.add_detail(key, value)
+
+            if value == 0:
+                Project.objects.limit_response_policy(request.course)
 
         key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
         if key in request.POST:
@@ -475,3 +466,46 @@ class IsLoggedInDataView(View):
             d['flickr_apikey'] = settings.DJANGOSHERD_FLICKR_APIKEY
 
         return HttpResponse(json.dumps(d), content_type='application/json')
+
+
+class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
+    template_name = 'dashboard/class_delete_materials.html'
+    form_class = CourseDeleteMaterialsForm
+
+    def get_success_url(self):
+        return reverse('course-delete-materials')
+
+    def form_valid(self, form):
+        # delete the requested materials
+        notes = SherdNote.objects.filter(asset__course=self.request.course)
+        assets = Asset.objects.filter(course=self.request.course)
+        projects = Project.objects.filter(course=self.request.course)
+
+        if not form.cleaned_data['clear_all']:
+            # exclude assets, projects & notes authored by faculty
+            faculty = self.request.course.faculty_group.user_set.all()
+            assets = assets.exclude(author__in=faculty)
+            projects = projects.exclude(author__in=faculty)
+            notes = notes.exclude(author__in=faculty)
+
+        notes.delete()
+        assets.delete()
+        projects.delete()
+
+        # Clear all discussions. The root comment will be preserved.
+        discussions = get_course_discussions(self.request.course)
+        parents = [d.id for d in discussions]
+        comments = ThreadedComment.objects.filter(parent_id__in=parents)
+        comments.delete()
+
+        # @todo - kill all unreferenced tags
+
+        messages.add_message(self.request, messages.INFO,
+                             'All requested materials were deleted')
+
+        return super(CourseDeleteMaterialsView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(CourseDeleteMaterialsView, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs

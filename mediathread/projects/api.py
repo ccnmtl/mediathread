@@ -172,7 +172,9 @@ class ProjectResource(ModelResource):
             projectform = ProjectForm(request, instance=project)
             data['form'] = {
                 'participants': projectform['participants'].__unicode__(),
-                'publish': projectform['publish'].__unicode__()
+                'publish': projectform['publish'].__unicode__(),
+                'response_view_policy':
+                    projectform['response_view_policy'].__unicode__()
             }
 
         return data

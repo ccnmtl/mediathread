@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tagging_tags user_projects helpful_tags coursetags comments collaborations %}
+{% load tagging_tags user_projects helpful_tags coursetags comments %}
 {% load waffle_tags %}
 
 {% block title %}
@@ -25,14 +25,6 @@
                 'template_label': 'classwork_table',
                 'view': "{{request.GET.view}}"
             });
-            
-            jQuery(window).resize(function () {  
-                var visible = getVisibleContentHeight();
-                jQuery('.ui-widget-overlay').css('height', visible + "px");
-            });
-    
-            var visible = getVisibleContentHeight();
-            jQuery('.ui-widget-overlay').css('height', visible + "px");
             
             {% ifequal msg "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
@@ -272,6 +264,7 @@
                         <div class="arrowIcon left"></div>
                     </a>
                     <div class="arrowContent" id="import_collection" style="display: none">
+                        {% include "assetmgr/install_chrome_extension.html" %}
                         <p>
                             Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
                             

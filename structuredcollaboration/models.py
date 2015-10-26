@@ -1,3 +1,5 @@
+import importlib
+
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes import generic
@@ -7,27 +9,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-DEFAULT_POLICY = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
-                         'PublicEditorsAreOwners')
-
-
-class CollaborationPolicyRecordManager(models.Manager):
-    '''
-        @todo - consider pulling this whole registration approach.
-        feels overcomplicated & unnecessary. The primary aim here
-        seems to be caching instances of the policies.
-    '''
-    registered_policies = dict()
-
-    def policy_instance(self, record):
-        return self.registered_policies[record.policy_name]
-
-    def register_policy(self, policy_class, policy_key, policy_title):
-        self.registered_policies[policy_key] = policy_class()
-
-
 class CollaborationPolicyRecord(models.Model):
-    objects = CollaborationPolicyRecordManager()
     policy_name = models.CharField(max_length=512)
 
     def __unicode__(self):
@@ -35,6 +17,17 @@ class CollaborationPolicyRecord(models.Model):
 
     def __eq__(self, other):
         return self.policy_name is other or self is other
+
+    @classmethod
+    def class_for_name(cls, class_name):
+        # load the module, will raise ImportError if module cannot be loaded
+        m = importlib.import_module('structuredcollaboration.policies')
+        # get the class, will raise AttributeError if class cannot be found
+        c = getattr(m, class_name)
+        return c
+
+    def policy_instance(self):
+        return self.class_for_name(self.policy_name)()
 
 
 class CollaborationManager(models.Manager):
@@ -142,13 +135,12 @@ class Collaboration(models.Model):
         return coll
 
     def get_policy(self):
-        if self.policy_record:
-            return CollaborationPolicyRecord.objects.policy_instance(
-                self.policy_record)
-        else:
-            record, created = CollaborationPolicyRecord.objects.get_or_create(
-                policy_name=DEFAULT_POLICY)
-            return CollaborationPolicyRecord.objects.policy_instance(record)
+        if not self.policy_record:
+            policy_name = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
+                                  'PublicEditorsAreOwners')
+            self.set_policy(policy_name)
+            self.save()
+        return self.policy_record.policy_instance()
 
     def set_policy(self, policy_name):
         if policy_name is None:

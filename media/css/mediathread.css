@@ -520,8 +520,6 @@ input[name='decoy'] {
      opacity:0.65 !important;
     -moz-opacity:0.65 !important;
     filter:alpha(opacity=65) !important;
-    padding: 10px;
-    left: -10px;
     z-index: 9999;    
 }
 
@@ -613,6 +611,10 @@ ul#standardnav
     float: none;    
     color: #1b75bc;
 
+}
+
+#standardnav li .settings_submenu hr {
+    margin: 10px 0;
 }
 
 /* ---- Footer block elements ---------- */
@@ -978,6 +980,8 @@ table#sliding-content-container, table#sliding-content-container tr {
     border-collapse: collapse;
 }
 
+.asset-embed-view tr,
+.asset-embed-view tr td, 
 #asset-workspace-panel-container tr, #asset-workspace-panel-container tr td,
 table#sliding-content-container tr, table#sliding-content-container tr td {
     border: none;
@@ -1461,8 +1465,6 @@ div.collection-materials h2 {
 
 div#collection-overlay {
     z-index:  10001;
-    margin-top: -8px;
-    padding-bottom: 8px;
 }
 
 div.ajaxloader {
@@ -1498,9 +1500,6 @@ tr.project-content-row div.ajaxloader {
 
 td.collection.minimized div#collection-overlay {
     z-index:  10001;
-    width: 280px;
-    margin-top: -8px;
-    padding-bottom: 8px;    
 }
 
 div.collection-help-tab {
@@ -1508,7 +1507,7 @@ div.collection-help-tab {
     display: block;
     z-index: 10002;
     padding: 2px;
-    right: 0;
+    right: 17px;
     top: 4px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -1542,13 +1541,13 @@ td.collection div.collection-help {
     border: none;
     width: 400px;
     top: 30px;
-    right: 0px; 
+    right: 17px; 
     font-size: .875em;    
 }
 
 td.collection.minimized div.collection-help {
     width: 240px;
-    left: 21px;
+    left: 37px;
     padding: 10px;    
 }
 
@@ -1856,16 +1855,17 @@ td#instructor input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#instructor div.help-tab {
-   right: -3px;
-    top: 21px;
-    width: 25px;
+    right: -3px;
+    top: 14px;
+    width: 30px;
 }
 
 td#instructor div.feature-help {
-    top: 50px;
+    top: 43px;
     right: -3px;
     width: 89%;
 }
@@ -1875,17 +1875,19 @@ td#classwork input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#classwork div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
+    right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
+td#explore div.feature-help,
 td#classwork div.feature-help {
-    top: 50px;
-    right: 6px;
+    top: 45px;
+    right: 7px;
     width: 90%;
 }
 
@@ -1894,18 +1896,13 @@ td#explore input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#explore div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
-}
-
-td#explore div.feature-help {
-    top: 50px;
-    right: 6px;
-    width: 90%;
+   right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
 td.collection.subpanel div.feature-help,
@@ -2973,19 +2970,23 @@ table#home-columns td#classwork ul {
 }
 
 div#instructor-column {
-
     margin: 0;
     font-weight: normal;
     line-height: 17px;
 }
 
 
-div#materials {
+div.materials {
     margin: 0 5px;
     overflow-x: hidden;
     box-shadow: none;
     border: none;
     background-color: #EDEDED;
+}
+
+.asset-embed-view .materials {
+    margin: 0;
+    background-color: white;
 }
 
 li.annotation-group {
@@ -3000,7 +3001,7 @@ li.annotation-group {
     border: solid 1px #ccc;
 }
 
-div#materials h4 {
+div.materials h4 {
     color: #000;
     font-weight: normal;
     margin: .3em 0 0 0;
@@ -3024,15 +3025,15 @@ div.gallery-item h4 {
     margin: .5em 0 0.25em;
 }
 
-div#materials.column-contents {
+div.materials.column-contents {
     padding-top: 0px;
 }
 
-div.panel.asset-workspace div#materials h4 a {
+div.panel.asset-workspace div.materials h4 a {
     margin-left: 0px;
 }
 
-div#materials h4 a,
+div.materials h4 a,
 div.gallery-item h4 a {
     display: block;
     font-weight: bold;
@@ -3049,6 +3050,7 @@ div.gallery-item h4 {
     width: 190px;
     overflow: hidden;
     max-height: 48px;
+    min-height: 20px;
 }
 
 ul.instructor-list {
@@ -3056,25 +3058,15 @@ ul.instructor-list {
 }
 
 ul.instructor-list li {
-
     margin: 5px 0 10px 0;
     font-weight: normal;
     line-height: 17px;
 }
 
-ul.instructor-list span.draghandle {
+ul.instructor-list .draghandle {
     margin-left: -5px;
     margin-right: 5px;
-    cursor: pointer;
-}
-
-ul.instructor-list li.dragging {
-    border: 1px solid #CCC;
-    background-color: #E6E6E6;
-    color: #555/*{fcDefault}*/;
-    margin: 0;
-    padding: 0.4em .185em;
-    height: 18px;    
+    cursor: move;
 }
 
 td.media-column .column-contents {
@@ -3123,6 +3115,11 @@ table.selection-level-info td {
     border: none;
     vertical-align: top;
     padding: 5px 0px;
+}
+
+.asset-embed-view .selection-inserter input {
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 table.selection-level-info td.selection-inserter {
@@ -3353,9 +3350,6 @@ span.asset-view-title {
 
 div#asset-view-overlay {
     z-index:  10001;
-    margin-top: -55px;
-    padding-bottom: 55px;
-    padding-right: 10px;
 }
 
 input#collection-help-button {
@@ -3363,6 +3357,7 @@ input#collection-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 #annotation-view-help-button {
@@ -3377,6 +3372,7 @@ input#asset-view-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 div.asset-view-help {
@@ -3394,7 +3390,7 @@ div.asset-view-help {
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
     top: -13px;
-    right: -8px;
+    right: -1px;
     border: none;
 }
 
@@ -3416,8 +3412,8 @@ div.asset-view-help-tab {
     z-index: 10002;
     margin: -1px 2px 0 0;
     padding: 2px;
-    right: -10px;
-    top: -41px;
+    right: -1px;
+    top: -38px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -3430,6 +3426,7 @@ div.asset-view-help-tab {
 
 input[type=image].dismiss-help {
      border: none;
+     outline: 0;
 }
 
 div.asset-view-container {

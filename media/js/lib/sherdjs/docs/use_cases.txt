@@ -1,0 +1,13 @@
+============
+Drupal
+============
+JustForms(PersistanceManager) //loads into form, --save does a POST, no ajax
+
+AssetFinder:
+  find '.field-body .field-item'
+  
+
+
+============
+Havel
+============

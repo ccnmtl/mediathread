@@ -27,6 +27,7 @@ DATABASES = {
         'PORT': '',
         'USER': '',
         'PASSWORD': '',
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -39,6 +40,7 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
             'PORT': '',
             'USER': '',
             'PASSWORD': '',
+            'ATOMIC_REQUESTS': True,
         }
     }
 
@@ -87,10 +89,10 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.request',
+    'django.template.context_processors.debug',
+    'django.template.context_processors.request',
     'stagingcontext.staging_processor',
-    'django.core.context_processors.static',
+    'django.template.context_processors.static',
     'mediathread.main.views.django_settings',
     'djangowind.context.context_processor',
     'django.contrib.messages.context_processors.messages'
@@ -104,7 +106,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -141,8 +142,8 @@ INSTALLED_APPS = [
     'mediathread.djangosherd',
     'mediathread.projects',
     'mediathread.discussions',
-    'django.contrib.comments',
     'threadedcomments',
+    'django_comments',
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
@@ -156,7 +157,8 @@ INSTALLED_APPS = [
     'registration',
     'waffle',
     'corsheaders',
-    'reversion'
+    'reversion',
+    'lti_auth'
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )
@@ -298,6 +300,21 @@ def default_url_processor(url, label=None, request=None):
     return url
 
 ASSET_URL_PROCESSOR = default_url_processor
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           'lti_auth.auth.LTIBackend']
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'Mediathread',
+    'description': 'View and filter your Mediathread selections. '
+    'A new icon will show up in your course rich editor letting you '
+    'search and filter your Mediathread selections and click to '
+    'embed selections in your course material.',
+    'launch_url': 'lti/',
+    'embed_url': 'asset/embed/',
+    'embed_icon_url': 'media/img/icons/icon-16.png',
+    'embed_tool_id': 'mediathread',
+}
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

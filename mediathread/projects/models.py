@@ -128,7 +128,7 @@ class ProjectManager(models.Manager):
 
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
-        projects = projects.select_related('author', 'participants')
+        projects = projects.select_related('author')
         projects = projects.order_by('-modified', 'title')
         return [p for p in projects if p.can_read(course, viewer)]
 
@@ -136,7 +136,7 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
-        ).distinct().select_related('author', 'participants')
+        ).distinct().select_related('author')
 
         lst = [p for p in projects if p.can_read(course, viewer)]
         lst.sort(reverse=False, key=lambda project: project.title)
@@ -158,7 +158,7 @@ class ProjectManager(models.Manager):
         # get all the content objects at once
         ids = [int(c.object_pk) for c in collaborations]
         responses = Project.objects.filter(id__in=ids)
-        responses = responses.select_related('author', 'participants')
+        responses = responses.select_related('author')
 
         visible = []
         hidden = []
@@ -173,16 +173,15 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author__id__in=user_ids, course=course) |
             Q(participants__id__in=user_ids, course=course)).distinct()
-        projects = projects.select_related('author', 'participants')
+        projects = projects.select_related('author')
         return projects.order_by('-modified', 'title')
 
     def faculty_compositions(self, course, user):
         qs = Project.objects.filter(
             course=course,
             author__in=course.faculty_group.user_set.all())
-        qs = qs.select_related('author', 'participants')
+        qs = qs.select_related('author')
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
-        qs = qs.order_by('ordinality', 'title')
 
         # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
@@ -190,7 +189,8 @@ class ProjectManager(models.Manager):
 
         # get all the projects at once
         ids = [int(c.object_pk) for c in lst]
-        return Project.objects.filter(id__in=ids)
+        return Project.objects.filter(id__in=ids).order_by('ordinality',
+                                                           'title')
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(
@@ -233,9 +233,8 @@ class ProjectManager(models.Manager):
                 pass
 
     def limit_response_policy(self, course):
-        # All selection assignment response policy must be NEVER
-        projects = Project.objects.filter(
-            course=course, project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+        # Update response policy to be NEVER
+        projects = Project.objects.filter(course=course)
         projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
 
 
@@ -253,7 +252,6 @@ class Project(models.Model):
     author = models.ForeignKey(User)
 
     participants = models.ManyToManyField(User,
-                                          null=True,
                                           blank=True,
                                           related_name='projects',
                                           verbose_name='Authors',)

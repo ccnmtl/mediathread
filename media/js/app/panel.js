@@ -1,6 +1,6 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
-/* global Mustache2: true, panelFactory: true, ProjectPanelHandler: true */
+/* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -39,7 +39,18 @@
                 success: function(json) {
                     self.panels = json.panels;
                     self.space_owner = json.space_owner;
-                    self.loadTemplates(0);
+
+                    var templates = [];
+                    jQuery.each(self.panels, function(idx, e) {
+                        templates.push(e.template);
+                    });
+
+                    jQuery.when.apply(
+                        this,
+                        MediaThread.loadTemplates(templates)
+                    ).then(function() {
+                        self.loadContent();
+                    });
                 }
             });
 
@@ -67,16 +78,10 @@
                 self.loadTemplates(++idx);
             } else {
                 // pull it off the wire
-                jQuery.ajax({
-                    url: '/media/templates/' + self.panels[idx].template +
-                        '.mustache?nocache=v3',
-                    dataType: 'text',
-                    cache: false, // Chrome & IE cache aggressively.
-                    success: function(txt) {
-                        MediaThread.templates[self.panels[idx].template] = txt;
+                MediaThread.loadTemplate(self.panels[idx].template)
+                    .then(function() {
                         self.loadTemplates(++idx);
-                    }
-                });
+                    });
             }
         };
 
@@ -95,8 +100,8 @@
                     var lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
                     lastCell.before(
-                        Mustache2.render(MediaThread.templates[panel.template],
-                                         panel));
+                        Mustache.render(MediaThread.templates[panel.template],
+                                        panel));
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,

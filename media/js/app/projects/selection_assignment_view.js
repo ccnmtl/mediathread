@@ -1,6 +1,6 @@
 /* global _: true, Backbone: true, djangosherd: true */
 /* global annotationList: true, CitationView: true */
-/* global Mustache2: true, MediaThread: true, showMessage: true */
+/* global Mustache: true, MediaThread: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -63,8 +63,16 @@
                     'readOnly': readOnly,
                     'view_callback': self.render
                 });
-                MediaThread.loadTemplate('asset_feedback');
+                MediaThread.loadTemplate('asset_feedback')
+                    .then(function() {
+                        self.initializeAfterTemplateLoad(options);
+                    });
+            } else {
+                this.initializeAfterTemplateLoad(options);
             }
+        },
+        initializeAfterTemplateLoad: function(options) {
+            var self = this;
 
             // bind beforeunload so user won't forget to submit response
             if (options.responseId.length > 0 && !options.submitted) {
@@ -103,8 +111,8 @@
                         ctx.comment !== undefined;
 
                     // render the template
-                    var rendered = Mustache2.render(
-                            MediaThread.templates.asset_feedback, ctx);
+                    var rendered = Mustache.render(
+                        MediaThread.templates.asset_feedback, ctx);
                     jQuery(this).html(rendered);
                 }
             });

@@ -49,7 +49,8 @@ django-stagingcontext==0.1.0
 django-smoketest==0.3.0
 django-debug-toolbar==1.3.2
 django-markwhat==1.4
-factory_boy==2.5.2
+fake-factory==0.5.3
+factory_boy==2.6.0
 django-impersonate==0.9.1
 django-registration-redux==1.2
 django-waffle==0.10.1

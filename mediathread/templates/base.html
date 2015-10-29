@@ -148,7 +148,11 @@
                             </li>
                         {% else %}
                             <li><div unselectable="on"><a href="/help/">Help</a></div></li>
-                            <li><a href="/accounts/login/">Log In</a></li>
+                            {% if request.user.is_authenticated %}
+                                <li><a href="/accounts/logout/?next=/">Log Out</a></li>
+                            {% else %}
+                                <li><a href="/accounts/login/">Log In</a></li>
+                            {% endif %}
                         {% endif %}
             
                         

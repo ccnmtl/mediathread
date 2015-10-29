@@ -773,11 +773,6 @@ div.column-contents {
     margin: 0 10px 0 0;
 }
 
-.source_thumb img {
-    height: 30px;
-    width: 30px;
-}
-
 .source_title {
     margin: 0 20px 0 0;
 }
@@ -2578,6 +2573,11 @@ div.gallery-item h4.asset_title {
     vertical-align: top;
 }
 
+#dashboard-module-body .suggested-collection table tr td.thumb img {
+    max-width: 30px;
+    max-height: 30px;
+}
+
 a.collection-link {
     font-weight:bold;
     text-decoration:none;
@@ -2585,9 +2585,9 @@ a.collection-link {
 }
 
 img.collection-link {
-    margin:10px;
-    max-width:100px;
-    max-height:75px;
+    margin: 10px;
+    max-width: 30px;
+    max-height: 30px;
 }
 
 a.btn.collection img {

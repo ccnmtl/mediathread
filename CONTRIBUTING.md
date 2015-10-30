@@ -7,18 +7,18 @@ today! Here are the guidelines we'd like you to follow:
  - [Question or Problem?](#question)
  - [Issues and Bugs](#issue)
  - [Getting Started](#start)
- - [Making Trivial Changes](#trivial)
  - [Coding Rules](#rules)
+ - [Making Trivial Changes](#trivial)
  - [Making Changes](#changes)
  - [Submitting Changes](#submit)
  - [Further Info](#info)
 
 ## <a name="coc"></a> Code of Conduct
-Help us keep Angular open and inclusive. Please read and follow our [Code of Conduct](https://github.com/ccnmtl/mediathread/blob/master/CODE_OF_CONDUCT.md).
+Help us keep Mediathread open and inclusive. Please read and follow our [Code of Conduct](https://github.com/ccnmtl/mediathread/blob/master/CODE_OF_CONDUCT.md).
 
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to use Mediathread, please direct these to the [Google Group](https://groups.google.com/forum/#!forum/mediathread)
+If you have questions about how to use Mediathread, please direct these to the [Google Group](https://groups.google.com/forum/#!forum/mediathread).
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
@@ -34,13 +34,6 @@ submitting an issue to our [GitHub issue tracker][https://github.com/ccnmtl/medi
   * Make sure you fill in the earliest version that you know has the issue.
 * Fork the repository into your account on GitHub
 
-## <a name="trivial"></a>Making Trivial Changes
-
-### Documentation
-
-For changes of a trivial nature to comments and documentation, it is not
-always necessary to create a new github issue or sign a contributor agreement.
-
 ## <a name="rules"></a> Coding Rules
 To ensure consistency throughout the source code, please keep these rules in mind as you are working:
 
@@ -49,6 +42,13 @@ To ensure consistency throughout the source code, please keep these rules in min
      * Python's [PEP8 Style Guide](https://www.python.org/dev/peps/pep-0008/) (enforced by [flake8](https://pypi.python.org/pypi/flake8))
      * Javscript's [JSHint](http://jshint.com/) errors and warnings.  
 * The master branch is continuously integrated by [Travis-CI](https://travis-ci.org/ccnmtl/mediathread), and all tests must pass before merging.
+
+## <a name="trivial"></a>Making Trivial Changes
+
+### Documentation
+
+For changes of a trivial nature to comments and documentation, it is not
+always necessary to create a new github issue or sign a contributor agreement.
 
 ## <a name="changes"></a>Making Changes
 
@@ -74,4 +74,7 @@ To ensure consistency throughout the source code, please keep these rules in min
 * The core team reviews Pull Requests on a regular basis, and will provide feedback
 
 ## <a name="info"></a> Further Information
-For more information, see [Mediathread.info](http://mediathread.info)
+For more information, see:
+* [Mediathread's Web Site](http://mediathread.info)
+* [Github Wiki](https://github.com/ccnmtl/mediathread/wiki)
+* [CTL's User Voice Knowledge Base](http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread)

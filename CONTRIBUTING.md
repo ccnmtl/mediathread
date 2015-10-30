@@ -8,11 +8,9 @@ today! Here are the guidelines we'd like you to follow:
  - [Issues and Bugs](#issue)
  - [Getting Started](#start)
  - [Making Trivial Changes](#trivial)
+ - [Coding Rules](#rules)
  - [Making Changes](#changes)
  - [Submitting Changes](#submit)
- - [Coding Rules](#rules)
-
- - [Signing the CLA](#cla)
  - [Further Info](#info)
 
 ## <a name="coc"></a> Code of Conduct
@@ -43,6 +41,15 @@ submitting an issue to our [GitHub issue tracker][https://github.com/ccnmtl/medi
 For changes of a trivial nature to comments and documentation, it is not
 always necessary to create a new github issue or sign a contributor agreement.
 
+## <a name="rules"></a> Coding Rules
+To ensure consistency throughout the source code, please keep these rules in mind as you are working:
+
+* All features or bug fixes **must be tested** by one or more unit tests.
+* We follow the conventions contained in:
+     * Python's [PEP8 Style Guide](https://www.python.org/dev/peps/pep-0008/) (enforced by [flake8](https://pypi.python.org/pypi/flake8))
+     * Javscript's [JSHint](http://jshint.com/) errors and warnings.  
+* The master branch is continuously integrated by [Travis-CI](https://travis-ci.org/ccnmtl/mediathread), and all tests must pass before merging.
+
 ## <a name="changes"></a>Making Changes
 
 * Create a topic branch from where you want to base your work.
@@ -65,3 +72,6 @@ always necessary to create a new github issue or sign a contributor agreement.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the ccnmtl organization.
 * The core team reviews Pull Requests on a regular basis, and will provide feedback
+
+## <a name="info"></a> Further Information
+For more information, see [Mediathread.info](http://mediathread.info)

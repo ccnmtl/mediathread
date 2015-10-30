@@ -1970,6 +1970,7 @@ div.homepage-column-info {
 
 
 /* composition, assignment, discussion space */
+.panel.assignment td.panel-container.collection .filter-widget,
 .panel.composition td.panel-container.collection .filter-widget,
 .panel.discussion td.panel-container.collection .filter-widget {
     width: 370px;
@@ -1979,7 +1980,9 @@ div.homepage-column-info {
 .panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
 .panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
 .panel.composition td.panel-container.collection .filter-widget .collection-col-3,
-.panel.composition td.panel-container.collection .filter-widget .collection-col-2 {
+.panel.composition td.panel-container.collection .filter-widget .collection-col-2,
+.panel.assignment td.panel-container.collection .filter-widget .collection-col-3,
+.panel.assignment td.panel-container.collection .filter-widget .collection-col-2 {
     min-width: 370px;
 }
 

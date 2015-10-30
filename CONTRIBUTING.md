@@ -22,7 +22,7 @@ If you have questions about how to use Mediathread, please direct these to the [
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
-submitting an issue to our [GitHub issue tracker][https://github.com/ccnmtl/mediathread/issues]. Even better you can submit a Pull Request with a fix ;-).
+submitting an issue to our [GitHub issue tracker](https://github.com/ccnmtl/mediathread/issues). Even better you can submit a Pull Request with a fix ;-).
 
 **Please see the Submission Guidelines below**.
 

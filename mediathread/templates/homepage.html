@@ -339,13 +339,14 @@
                             {% if collection.thumb_url %}
                                 <div class="source_thumb">
                                     <a href="/explore/redirect/{{collection.id}}/">
-                                        <img src="{{collection.thumb_url}}" alt="thumbnail image" class="collection-link" />
+                                        <img src="{{collection.thumb_url}}" class="collection-link" />
                                     </a>
                                 </div>
                             {% endif %}
                             <div class="source_title">
                                 <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
                             </div>
+                            <div class="clearfix"></div>
                         </div>
                     {% endfor %}                        
                 </div>

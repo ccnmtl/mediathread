@@ -158,7 +158,8 @@ INSTALLED_APPS = [
     'waffle',
     'corsheaders',
     'reversion',
-    'lti_auth'
+    'lti_auth',
+    'bootstrap3',
 ]
 
 INTERNAL_IPS = ('127.0.0.1', )

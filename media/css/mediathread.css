@@ -1008,7 +1008,6 @@ table#sliding-content-container tr td.panhandle-stripe {
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
     color: #fff;
-    writing-mode:tb-rl;
     -webkit-transform:rotate(90deg);
     -moz-transform:rotate(90deg);
     -o-transform: rotate(90deg);

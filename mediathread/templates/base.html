@@ -1,4 +1,4 @@
-{% load cache user_projects coursetags compress static %}
+{% load cache user_projects coursetags compress static bootstrap3 %}
 <!DOCTYPE html>
 <html lang="en">
 {% with request.course as course %}
@@ -7,7 +7,7 @@
         <title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
         
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
-        <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>    
+        {% bootstrap_javascript %}
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
         <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
         <script src="{{STATIC_URL}}js/flowplayer/flowplayer-5.5.0.min.js"></script>
@@ -15,7 +15,7 @@
         <script type="text/javascript" src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
 
-        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}" media="screen" />
+        {% bootstrap_css %}
         <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.min.css' %}" media="screen" />
         <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
 

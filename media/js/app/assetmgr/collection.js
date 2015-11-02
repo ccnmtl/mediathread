@@ -663,6 +663,8 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
         });
     }
 
+    jQuery('.filter-widget').show();
+
     $elt.fadeIn('slow');
 
     if (self.view_callback) {

@@ -65,6 +65,7 @@ ProjectList.prototype.deleteAssignmentResponse = function(evt) {
 ProjectList.prototype.refresh = function(config) {
     var self = this;
     var url;
+    jQuery('.ajaxloader').show();
 
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
@@ -94,12 +95,14 @@ ProjectList.prototype.refresh = function(config) {
             jQuery('a.btnDeleteResponse').on('click', function(evt) {
                 self.deleteAssignmentResponse(evt);
             });
+            jQuery('.ajaxloader').hide();
         }
     });
 };
 
 ProjectList.prototype.selectOwner = function(username) {
     var self = this;
+    jQuery('.ajaxloader').show();
     var url = username ? MediaThread.urls['your-projects'](username) :
         MediaThread.urls['all-projects']();
 
@@ -113,6 +116,7 @@ ProjectList.prototype.selectOwner = function(username) {
         },
         success: function(the_records) {
             self.update(the_records);
+            jQuery('.ajaxloader').hide();
         }
     });
 

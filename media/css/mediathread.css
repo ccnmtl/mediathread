@@ -15,6 +15,10 @@ body
     width: 100% auto;
 }
 
+iframe {
+    border: 0;
+}
+
 .ui-widget {
     font-family: 'lucida grande',arial,verdana,sans-serif;
     font-size: 1em;

@@ -136,8 +136,7 @@ a:hover {
 }
 
 /* ---- Structure ---------- */
-#header
-{
+#header {
     display: block;
     overflow: hidden;
     margin: 0;
@@ -145,8 +144,7 @@ a:hover {
 	border: 0;
 }
 
-#pagebody
-{
+#pagebody {
 	position: relative;
 	padding: 0 15px;
 }
@@ -1465,7 +1463,8 @@ div.ajaxloader {
     text-align: center;
     opacity:0.85;
     -moz-opacity:0.85;
-    filter:alpha(opacity=85);    
+    filter:alpha(opacity=85);
+    width: 100%;    
 }
 
 div.ajaxloader div.message {

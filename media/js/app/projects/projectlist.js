@@ -95,7 +95,6 @@ ProjectList.prototype.refresh = function(config) {
             jQuery('a.btnDeleteResponse').on('click', function(evt) {
                 self.deleteAssignmentResponse(evt);
             });
-            jQuery('.ajaxloader').hide();
         }
     });
 };
@@ -116,7 +115,6 @@ ProjectList.prototype.selectOwner = function(username) {
         },
         success: function(the_records) {
             self.update(the_records);
-            jQuery('.ajaxloader').hide();
         }
     });
 
@@ -196,4 +194,5 @@ ProjectList.prototype.update = function(the_records) {
 
     self.parent = $el;
     self.updateSwitcher();
+    jQuery('.ajaxloader').hide();
 };

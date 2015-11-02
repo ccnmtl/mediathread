@@ -160,8 +160,7 @@ class ProjectManager(models.Manager):
         # get all the content objects at once
         ids = [int(c.object_pk) for c in collaborations]
         responses = Project.objects.filter(id__in=ids)
-        responses = responses.select_related('author')
-        responses = list(responses)
+        responses = list(responses.select_related('author'))
         responses.sort(reverse=False, key=lambda p: str(p.id))
 
         visible = []

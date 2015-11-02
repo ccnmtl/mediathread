@@ -562,6 +562,8 @@ CollectionList.prototype.updateSwitcher = function() {
                 }
             }
             jQuery(vocabulary).select2('val', values);
+
+            jQuery(window).trigger('resize');
         });
 };
 

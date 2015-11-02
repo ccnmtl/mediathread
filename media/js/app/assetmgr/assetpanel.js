@@ -237,10 +237,12 @@ AssetPanelHandler.prototype.resize = function() {
     q = 'div.mediathread-panel.asset-workspace div.pantab.collection:visible';
     var pantab = jQuery(self.el).find(q);
     if (pantab.length > 0) {
-        q = 'div.mediathread-panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace ' +
+            'td.panhandle-stripe.collection';
         jQuery(q).show();
     } else {
-        q = 'div.mediathread-panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace ' +
+            'td.panhandle-stripe.collection';
         jQuery(q).hide();
     }
 

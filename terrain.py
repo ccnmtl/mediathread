@@ -1369,7 +1369,7 @@ def find_button_by_value(value, parent=None):
 
     elts = world.browser.find_elements_by_tag_name("button")
     for e in elts:
-        if e.get_attribute("type") == "button" and e.text == value:
+        if e.text.strip() == value:
             return e
 
     # try the links too

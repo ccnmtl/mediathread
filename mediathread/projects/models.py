@@ -6,12 +6,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+import reversion
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty
-import reversion
 from structuredcollaboration.models import Collaboration
 
 
@@ -152,17 +152,22 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
 
+        # filter down to responses
         collaborations = Collaboration.objects.get_for_object_list(projects)
         collaborations = collaborations.filter(_parent__isnull=False)
+        collaborations = collaborations.order_by('object_pk')
 
         # get all the content objects at once
         ids = [int(c.object_pk) for c in collaborations]
         responses = Project.objects.filter(id__in=ids)
         responses = responses.select_related('author')
+        responses = list(responses)
+        responses.sort(reverse=False, key=lambda p: str(p.id))
 
         visible = []
         hidden = []
         for idx, r in enumerate(responses):
+            assert str(r.id) == collaborations[idx].object_pk
             if r.can_read(course, viewer, collaborations[idx]):
                 visible.append(r)
             else:

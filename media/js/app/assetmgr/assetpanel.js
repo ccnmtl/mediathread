@@ -234,13 +234,13 @@ AssetPanelHandler.prototype.resize = function() {
         jQuery('td.collection-view-header').hide();
     }
 
-    q = 'div.panel.asset-workspace div.pantab.collection:visible';
+    q = 'div.mediathread-panel.asset-workspace div.pantab.collection:visible';
     var pantab = jQuery(self.el).find(q);
     if (pantab.length > 0) {
-        q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace td.panhandle-stripe.collection';
         jQuery(q).show();
     } else {
-        q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace td.panhandle-stripe.collection';
         jQuery(q).hide();
     }
 

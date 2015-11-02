@@ -670,7 +670,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
 
         jQuery(self.el).find('div.collection-materials').show();
         jQuery(self.el).find('input.project-title').show();
-        jQuery(self.el).find('input.participants_toggle').show();
+        jQuery(self.el).find('.participants_toggle').show();
 
         self.tinyMCE.show();
     } else {

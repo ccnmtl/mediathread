@@ -52,8 +52,10 @@
                             <div class="panel-subcontainer-toolbar {{context.project.type}}">
                                 <div>
                                     {{#context.can_edit}}
-                                        <input class="{{context.project.type}} project project-savebutton" 
-                                            type="submit" value="Save" />
+                                        <button class="{{context.project.type}} project project-savebutton btn btn-default btn-xs"
+                                            type="submit">
+                                            Save
+                                        </button>
                                             
                                             <div class="save-publish-status" style="display: none" title="Save Changes">
                                                 <div class="well">
@@ -85,11 +87,21 @@
                                                 {{/context.project.is_assignment}}
                                             </div> 
                                     
-                                        <input class="{{context.project.type}} project project-previewbutton" 
-                                            type="submit" value="{{#context.editing}}Preview{{/context.editing}}{{^context.editing}}Edit{{/context.editing}}" />
+                                            <button
+                                                class="{{context.project.type}} project project-previewbutton btn btn-default btn-xs"
+                                                type="submit">
+                                                {{#context.editing}}
+                                                    Preview
+                                                {{/context.editing}}
+                                                {{^context.editing}}
+                                                    Edit
+                                                {{/context.editing}}
+                                            </button>
                                     
-                                        <input class="{{context.project.type}} project project-revisionbutton"
-                                          type="button" value="Revisions" />
+                                            <button class="{{context.project.type}} project project-revisionbutton btn btn-default btn-xs"
+                                            type="button">
+                                            Revisions
+                                            </button>
                                         
                                         <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
                                         </div>
@@ -170,17 +182,22 @@
                     <tr class="project-participant-row">                                      
                         <td colspan="5" style="padding-top: 5px">
                             {{#context.can_edit}}
-                                <input class="project participants_toggle" type="submit" value="+/- Author" 
-                                    disabled="disabled" style="float: left; display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}" />
+                                <button class="project participants_toggle btn btn-default btn-xs"
+                                    type="submit"
+                                    disabled="disabled"
+                                    style="float: left; display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
+                                    +/- Author
+                                </button>
                                     
                                 <div class="participant_list" style="display: none" title="Update Authors">
                                     <div>{{{context.form.participants}}}</div>
                                 </div>
                             {{/context.can_edit}}
-                            <h5 style="margin-top: 0px">by <span class="participants_chosen">
-                                {{#context.project.participants}}
-                                    {{public_name}}{{^last}}, {{/last}}
-                                {{/context.project.participants}}
+                            <h5>
+                                by <span class="participants_chosen">
+                                    {{#context.project.participants}}
+                                        {{public_name}}{{^last}}, {{/last}}
+                                    {{/context.project.participants}}
                                 </span>
                             </h5>
                         </td>

@@ -152,7 +152,7 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
 
-        # filter down to responses
+        # filter down to responses only based on the collaboration parent state
         collaborations = Collaboration.objects.get_for_object_list(projects)
         collaborations = collaborations.filter(_parent__isnull=False)
         collaborations = collaborations.order_by('object_pk')

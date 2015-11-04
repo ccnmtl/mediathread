@@ -1,3 +1,4 @@
+/* global Sherd: true */
 if (typeof Sherd === 'undefined') {
     Sherd = {};
 }
@@ -159,8 +160,8 @@ if (!Sherd.GenericAssetView) {
                     }
                 } else {
                     if (window.console) {
-                        console.log(options);
-                        console.log(self.settings);
+                        window.console.log(options);
+                        window.console.log(self.settings);
                     }
                     throw new Error("Your asset does not have a (supported) type marked.");
                 }

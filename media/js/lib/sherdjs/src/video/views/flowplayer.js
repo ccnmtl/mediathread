@@ -1,3 +1,4 @@
+/* global Sherd: true, flowplayer: true, $f: true */
 /*
  * Using Flowplayer to support the flash video and mp4 formats
  * Support for the Flowplayer js-enabled player.  documentation at:
@@ -169,7 +170,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             var newUrl = self.microformat._getPlayerParams(obj);
             if (newUrl.url && document.getElementById(self.components.playerID) && self.media.state() > 0) {
                 var playlist = self.components.player.getPlaylist();
-                if (playlist[0].url == newUrl.url) {
+                if (playlist[0].url === newUrl.url) {
                     // If the url is the same as the previous, just seek to the right spot.
                     // This works just fine.
                     rc = true;
@@ -234,7 +235,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 if (queryString === 'start={start}') {
                     queryString = 'start=${start}';
                 }
-                rc.queryString = escape('?' + queryString);
+                rc.queryString = encodeURI('?' + queryString);
                 rc.url = pieces.join('?');
             }
             return rc;
@@ -388,7 +389,9 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                            options);
     
                 // Save reference to the player
-                self.components.player = $f(create_obj.playerID);
+                if (typeof $f === 'function') {
+                    self.components.player = $f(create_obj.playerID);
+                }
                 self.components.provider = create_obj.playerParams.provider;
                 
                 // Setup timers to watch for readiness to seek/setState

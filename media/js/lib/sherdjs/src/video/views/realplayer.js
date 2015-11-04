@@ -1,3 +1,4 @@
+/* global Sherd: true */
 /*
 Documentation:
   http://service.real.com/help/library/guides/ScriptingGuide/HTML/samples/javaembed/JAVAFrames.htm

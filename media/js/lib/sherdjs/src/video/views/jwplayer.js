@@ -1,3 +1,4 @@
+/* global Sherd: true, jwplayer: true */
 /*
  * Using Flowplayer 5 to support the flash video and mp4 formats
  * Support for the Flowplayer js-enabled player.  documentation at:
@@ -109,7 +110,7 @@ if (!Sherd.Video.JWPlayer && Sherd.Video.Base) {
             var newUrl = obj.mp4_audio;
             if (newUrl && document.getElementById(self.components.playerID) && self.state.ready) {
                 var playlist = self.components.player.getPlaylistItem(0);
-                if (playlist.file == newUrl) {
+                if (playlist.file === newUrl) {
                     // If the url is the same as the previous, just seek to the right spot.
                     // This works just fine.
                     rc = true;
@@ -196,7 +197,7 @@ if (!Sherd.Video.JWPlayer && Sherd.Video.Base) {
         };
 
         this.media.isPlaying = function () {
-            return self.components.player && self.components.player.getState() == 'PLAYING';
+            return self.components.player && self.components.player.getState() === 'PLAYING';
         };
         
         this.media.ready = function () {

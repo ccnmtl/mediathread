@@ -1,4 +1,4 @@
-
+/* global Sherd: true */
 //Use Cases:
 //Default
 //-- starttime:0, endtime:0, duration:0

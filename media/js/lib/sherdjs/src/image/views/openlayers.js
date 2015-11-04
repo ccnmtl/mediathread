@@ -1,3 +1,4 @@
+/* global Sherd: true, OpenLayers: true */
 /****
 An annotation looks like this:
 ///1

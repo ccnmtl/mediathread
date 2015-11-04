@@ -1,3 +1,4 @@
+/* global Sherd: true, djangosherd: true */
 function DjangoSherd_NoteForm() {
     var self = this;
     Sherd.Base.DomObject.apply(this, arguments);// inherit
@@ -124,7 +125,7 @@ function DjangoSherd_AssetMicroFormat() {
                 // /use getAttribute rather than href, to avoid
                 // urlencodings
                 /// unescape necessary for IE7 (and sometimes 8)
-                rv[reg[1]] = unescape(elt.getAttribute('href'));
+                rv[reg[1]] = decodeURI(elt.getAttribute('href'));
                 // /TODO: maybe look for some data attributes here, too,
                 // when we put them there.
                 var metadata = elt.getAttribute('data-metadata');
@@ -315,7 +316,7 @@ CitationView.prototype.decorateElementLinks = function (element) {
             jQuery(this).addClass('active-annotation');
         } catch (e) {
             if (window.console) {
-                console.log('ERROR opening citation:' + e.message);
+                window.console.log('ERROR opening citation:' + e.message);
             }
         }
         evt.preventDefault();
@@ -538,7 +539,7 @@ function DjangoSherd_Storage() {
                             errorCallback();
                         }
                         if (window.console) {
-                            console.log(textStatus);
+                            window.console.log(textStatus);
                         }
                     }
                 });
@@ -670,4 +671,4 @@ window.DjangoSherd_Colors = {
 
 };
 
-DjangoSherd_Colors.reset();
+window.DjangoSherd_Colors.reset();

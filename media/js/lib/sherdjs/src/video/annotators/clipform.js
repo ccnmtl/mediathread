@@ -1,3 +1,4 @@
+/* global Sherd: true */
 ///clipform-display
 ///1. update noteform field: DjangoSherd_UpdateHack()
 ///2. initialize clipform field vals

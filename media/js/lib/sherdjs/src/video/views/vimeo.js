@@ -1,7 +1,7 @@
 /*
   Support for the Vimeo js-enabled player.  documentation at:
   http://vimeo.com/api/docs/oembed
-  http://http://vimeo.com/api/docs/player-js
+  http://vimeo.com/api/docs/player-js
 
   Signals:
   duration: signals duration change
@@ -85,7 +85,7 @@ if (!Sherd.Video.Vimeo) {
             var embedCode = '<div id="' + wrapperID + '" class="sherd-vimeo-wrapper">' +
                 '  <object width="' + obj.options.width + '" height="' + obj.options.height + '" ' +
                 '          classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" ' + objectID + '>' +
-                '  <param name="movie" value="http://vimeo.com/moogaloop.swf"></param>' +
+                '  <param name="movie" value="https://vimeo.com/moogaloop.swf"></param>' +
                 '  <param name="allowscriptaccess" value="always"/></param>' +
                 '  <param name="autoplay" value="' + autoplay + '"></param>' +
                 '  <param name="width" value="' + obj.options.width + '"></param>' +
@@ -93,7 +93,7 @@ if (!Sherd.Video.Vimeo) {
                 '  <param name="allowfullscreen" value="true"></param>' +
                 '  <param name="flashvars" value="autoplay=0&amp;loop=0&amp;clip_id=' + clipId + '&amp;color=0&amp;fullscreen=1&amp;server=vimeo.com&amp;show_byline=1&amp;show_portrait=1&amp;show_title=1&amp;js_api=1">' +
                 '  <embed ' + embedID + ' width="' + obj.options.width + '" height="' + obj.options.height + '" type="application/x-shockwave-flash"' +
-                '     src="http://vimeo.com/moogaloop.swf" allowscriptaccess="always" allowfullscreen="true" flashvars="autoplay=' + autoplay + '&amp;loop=0&amp;clip_id=' + clipId + '&amp;color=0&amp;fullscreen=1&amp;server=vimeo.com&amp;show_byline=1&amp;show_portrait=1&amp;show_title=1&amp;js_api=1">' +
+                '     src="https://vimeo.com/moogaloop.swf" allowscriptaccess="always" allowfullscreen="true" flashvars="autoplay=' + autoplay + '&amp;loop=0&amp;clip_id=' + clipId + '&amp;color=0&amp;fullscreen=1&amp;server=vimeo.com&amp;show_byline=1&amp;show_portrait=1&amp;show_title=1&amp;js_api=1">' +
                 '  </embed>' +
                 '</object></div>';
 

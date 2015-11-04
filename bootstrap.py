@@ -3,6 +3,7 @@ import argparse
 import os
 import shutil
 import subprocess
+import re
 
 
 parser = argparse.ArgumentParser()
@@ -62,3 +63,13 @@ for lib in libs:
                            "../../%s" % lib])
     if ret:
         exit(ret)
+
+    # The bookmarklet is packaged under the directory name
+    # 'package', so we need to move it to mediathread-bookmarklet.
+    # See: http://stackoverflow.com/q/29717774/173630
+    #      https://github.com/npm/npm/issues/10227
+    if re.match(r'.*\/mediathread-bookmarklet-.*\.tgz$', lib):
+        destdir = 'mediathread-bookmarklet'
+        if os.path.exists(destdir):
+            shutil.rmtree(destdir)
+        shutil.move('package', destdir)

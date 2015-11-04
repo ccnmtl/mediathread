@@ -218,7 +218,6 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
 
 AssetPanelHandler.prototype.resize = function() {
     var self = this;
-
     var $collection = jQuery(self.el).find('td.panel-container.collection');
 
     if ($collection.length < 1 || $collection.hasClass('minimized')) {
@@ -235,13 +234,15 @@ AssetPanelHandler.prototype.resize = function() {
         jQuery('td.collection-view-header').hide();
     }
 
-    q = 'div.panel.asset-workspace div.pantab.collection:visible';
+    q = 'div.mediathread-panel.asset-workspace div.pantab.collection:visible';
     var pantab = jQuery(self.el).find(q);
     if (pantab.length > 0) {
-        q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace ' +
+            'td.panhandle-stripe.collection';
         jQuery(q).show();
     } else {
-        q = 'div.panel.asset-workspace td.panhandle-stripe.collection';
+        q = 'div.mediathread-panel.asset-workspace ' +
+            'td.panhandle-stripe.collection';
         jQuery(q).hide();
     }
 
@@ -254,29 +255,24 @@ AssetPanelHandler.prototype.resize = function() {
         visible -= jQuery('tr.asset-workspace-title-row').outerHeight();
 
         // Resize the collections box, subtracting its header elements
-        var collectionHeight = visible;
-        if (jQuery(self.el).find('td.panel-container.collection')
-                .hasClass('minimized')) {
-            collectionHeight = visible -
-                jQuery(self.el).find('div.filter-widget').height();
-        }
+        var collectionHeight = visible -
+            jQuery(self.el).find('div.filter-widget').height();
         jQuery(self.el).find('div.collection-assets')
             .css('height', collectionHeight + 'px');
 
-        visible += 10;
+        visible += 12;
         jQuery(self.el).find('div.asset-view-container')
             .css('height', (visible) + 'px');
 
         jQuery(self.el).find('div.asset-view-published')
             .css('height', (visible) + 'px');
 
-        visible += 2;
         jQuery(self.el).find('div.asset-view-tabs')
             .css('height', (visible) + 'px');
 
         visible -= jQuery('ul.ui-tabs-nav').outerHeight();
         jQuery(self.el).find('.ui-tabs-panel')
-            .css('height', (visible - 10) + 'px');
+            .css('height', (visible) + 'px');
 
         jQuery(self.el).find('form#edit-annotation-form')
             .css('height', (visible - 56) + 'px');

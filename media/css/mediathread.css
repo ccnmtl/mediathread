@@ -136,8 +136,7 @@ a:hover {
 }
 
 /* ---- Structure ---------- */
-#header
-{
+#header {
     display: block;
     overflow: hidden;
     margin: 0;
@@ -145,8 +144,7 @@ a:hover {
 	border: 0;
 }
 
-#pagebody
-{
+#pagebody {
 	position: relative;
 	padding: 0 15px;
 }
@@ -1020,7 +1018,7 @@ table#sliding-content-container tr td.panel-container {
     border-left: none;
 }
 
-table#sliding-content-container tr td.panel-container div.panel {
+table#sliding-content-container tr td.panel-container div.mediathread-panel {
     margin: 0;
     padding: 0px;
     border: none;
@@ -1028,23 +1026,23 @@ table#sliding-content-container tr td.panel-container div.panel {
     height: 100%;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.composition {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.composition {
     border: 1px solid #3A84BE;
     background-color: #f0f5fa !important;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.feedback,
-table#sliding-content-container tr td.panel-container div.panel.discussion {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.feedback,
+table#sliding-content-container tr td.panel-container div.mediathread-panel.discussion {
     border: 1px solid black;
     background-color: #ededed;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.assignment {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.assignment {
     border: 1px solid #175D35;
     background-color: #DAE7E0 !important;
 }
 
-table#sliding-content-container tr td.panel-container div.panel form {
+table#sliding-content-container tr td.panel-container div.mediathread-panel form {
     height: 100%;
 }
 
@@ -1053,7 +1051,6 @@ table#sliding-content-container tr td.pantab-container.maximized {
 }
 
 table#sliding-content-container tr td.pantab-container.minimized {
-    display: default;
     padding-right: 4px;
 }
 
@@ -1284,29 +1281,29 @@ td.panel-container.asset-workspace {
     overflow-x: hidden !important;
 }
 
-div.panel.asset-workspace-dialog table.panel-subcontainer {
+div.mediathread-panel.asset-workspace-dialog table.panel-subcontainer {
     margin: 0 0 0 10px;
     width: 500px;
 }
 
-div.panel.asset-workspace-dialog td.panel-container.asset.fixed, 
-div.panel.asset-workspace-dialog td.panel-container.asset.fixed div.asset-view-container {
+div.mediathread-panel.asset-workspace-dialog td.panel-container.asset.fixed,
+div.mediathread-panel.asset-workspace-dialog td.panel-container.asset.fixed div.asset-view-container {
     width: 825px;
     min-width: 825px;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-title {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-title {
     margin: 10px 0 0 0;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-published {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-published {
     border: 0;
     width: 500px !important;
     height: 450px;    
     margin-left: 0;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-tabs {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-tabs {
     margin-left: 5px;
     height: 450px;
     width: 285px;
@@ -1331,9 +1328,9 @@ form#edit-global-annotation-form input[name="asset-title"],
     margin-top: 10px !important;
 }
 
-div.panel.asset-workspace-dialog #asset-global-annotation,
-div.panel.asset-workspace-dialog #annotation-current,
-div.panel.asset-workspace-dialog #asset-details-annotations-current {
+div.mediathread-panel.asset-workspace-dialog #asset-global-annotation,
+div.mediathread-panel.asset-workspace-dialog #annotation-current,
+div.mediathread-panel.asset-workspace-dialog #asset-details-annotations-current {
     border: none;
 }
 
@@ -1465,7 +1462,8 @@ div.ajaxloader {
     text-align: center;
     opacity:0.85;
     -moz-opacity:0.85;
-    filter:alpha(opacity=85);    
+    filter:alpha(opacity=85);
+    width: 100%;    
 }
 
 div.ajaxloader div.message {
@@ -1969,29 +1967,29 @@ div.homepage-column-info {
 
 
 /* composition, assignment, discussion space */
-.panel.assignment td.panel-container.collection .filter-widget,
-.panel.composition td.panel-container.collection .filter-widget,
-.panel.discussion td.panel-container.collection .filter-widget {
+.mediathread-panel.assignment td.panel-container.collection .filter-widget,
+.mediathread-panel.composition td.panel-container.collection .filter-widget,
+.mediathread-panel.discussion td.panel-container.collection .filter-widget {
     width: 370px;
     padding: 5px;
 }
 
-.panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
-.panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
-.panel.composition td.panel-container.collection .filter-widget .collection-col-3,
-.panel.composition td.panel-container.collection .filter-widget .collection-col-2,
-.panel.assignment td.panel-container.collection .filter-widget .collection-col-3,
-.panel.assignment td.panel-container.collection .filter-widget .collection-col-2 {
+.mediathread-panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
+.mediathread-panel.composition td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.composition td.panel-container.collection .filter-widget .collection-col-2,
+.mediathread-panel.assignment td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.assignment td.panel-container.collection .filter-widget .collection-col-2 {
     min-width: 370px;
 }
 
 /* asset workspace */
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget {
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget {
     width: 245px !important;
 }
 
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-3,
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-2 {
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-3,
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-2 {
     min-width: 245px !important;
 }
 
@@ -2272,8 +2270,10 @@ ul li {
     margin: 0 0 5px 0;
 }
 
-.panel { 
-  text-align:center;
+.mediathread-panel { 
+    text-align: center;
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }
 
 .panel-column { 
@@ -3026,7 +3026,7 @@ div.materials.column-contents {
     padding-top: 0px;
 }
 
-div.panel.asset-workspace div.materials h4 a {
+div.mediathread-panel.asset-workspace div.materials h4 a {
     margin-left: 0px;
 }
 
@@ -3853,44 +3853,49 @@ div.feature-help div.feature-help-instructions img {
 
 /* Full Collection View styles and overrides */
 
-div.panel.asset-workspace table.panel-subcontainer {
+div.mediathread-panel.asset-workspace table.panel-subcontainer {
     margin: 0;
     width: 100%;
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
     width: 250px;
 }
 
-div.panel.asset-workspace td.panel-container.collection {
+div.mediathread-panel.asset-workspace td.panel-container.collection {
     border: none;
     background-color: white;
 }
 
-div.panel.asset-workspace td.panel-container.collection.maximized {
+div.mediathread-panel.asset-workspace td.panel-container.collection.maximized {
     background-color: #ededed;
     padding: 5px !important;    
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized {
     width: 250px;
     background-color: #ededed;
     padding: 5px 0 0 5px !important;
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-assets {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.collection-assets {
     float: left;
-    width: 250px;    
+    width: 250px;
 }
 
-div.panel.asset-workspace td.panel-container.asset-details.fixed {
+div.panel.asset-workspace td.panel-container.collection.minimized div.collection-assets,
+div.panel.asset-workspace td.panel-container.collection.maximized div.collection-assets {
+    overflow: auto;
+}
+
+div.mediathread-panel.asset-workspace td.panel-container.asset-details.fixed {
     width: 350px;
     padding: 10px;    
 }
 
-div.panel.asset-workspace td.panel-container.collection div.collection-date-filter,
-div.panel.asset-workspace td.panel-container.collection div.collection-filter,
-div.panel.asset-workspace td.panel-container.collection div.collection-chooser {
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-date-filter,
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-filter,
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-chooser {
     width: 100%;
 }
 
@@ -3898,13 +3903,13 @@ div.panel.asset-workspace td.panel-container.collection div.collection-chooser {
 
 /** Project Dialogs **/
 
-div.panel.composition form div.ui-dialog div.ui-dialog-titlebar {
+div.mediathread-panel.composition form div.ui-dialog div.ui-dialog-titlebar {
     background-image: none;
     background-color: #3A84BF;
     color: white;
 }
 
-div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
+div.mediathread-panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
     background-image: none;
     background-color: #175D35;
     color: white;

@@ -65,6 +65,7 @@ ProjectList.prototype.deleteAssignmentResponse = function(evt) {
 ProjectList.prototype.refresh = function(config) {
     var self = this;
     var url;
+    jQuery('.ajaxloader').show();
 
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
@@ -100,6 +101,7 @@ ProjectList.prototype.refresh = function(config) {
 
 ProjectList.prototype.selectOwner = function(username) {
     var self = this;
+    jQuery('.ajaxloader').show();
     var url = username ? MediaThread.urls['your-projects'](username) :
         MediaThread.urls['all-projects']();
 
@@ -192,4 +194,5 @@ ProjectList.prototype.update = function(the_records) {
 
     self.parent = $el;
     self.updateSwitcher();
+    jQuery('.ajaxloader').hide();
 };

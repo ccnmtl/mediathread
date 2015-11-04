@@ -1473,11 +1473,12 @@ div.ajaxloader div.message {
 
 tr.asset-workspace-content-row div.ajaxloader {
     top: 46px;    
-    width: 98%;    
+    width: 98%;   
 }
 
 tr.asset-workspace-content-row td.collection.minimized div.ajaxloader {
     width: 250px;
+    height: 88%;
 }
 
 tr.discussion-content-row div.ajaxloader,
@@ -3883,8 +3884,8 @@ div.mediathread-panel.asset-workspace td.panel-container.collection.minimized di
     width: 250px;
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-assets,
-div.panel.asset-workspace td.panel-container.collection.maximized div.collection-assets {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.collection-assets,
+div.mediathread-panel.asset-workspace td.panel-container.collection.maximized div.collection-assets {
     overflow: auto;
 }
 

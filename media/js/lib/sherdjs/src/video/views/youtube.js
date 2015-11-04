@@ -1,3 +1,5 @@
+/* global Sherd: true, console: true, getYouTubeID: true */
+/* global YT: true */
 /*
   Support for the YouTube js-enabled player.  documentation at:
   http://code.google.com/apis/youtube/js_api_reference.html
@@ -227,7 +229,7 @@ if (!Sherd.Video.YouTube) {
 
         // Global function required for the player
         window.onPlayerReady = function() {
-            if (unescape(self.playerID) === self.components.playerID) {
+            if (decodeURI(self.playerID) === self.components.playerID) {
                 self.media._ready = true;
 
                 // Once the player is ready -- sort out any autoplay+seek requests
@@ -254,7 +256,7 @@ if (!Sherd.Video.YouTube) {
             } else {
                 console.error(
                     'playerID mismatch:',
-                    unescape(self.playerID),
+                    decodeURI(self.playerID),
                     self.components.playerID);
             }
         };

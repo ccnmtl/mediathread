@@ -1,3 +1,4 @@
+/* global Sherd: true, flowplayer: true */
 /*
  * Using Flowplayer 5 to support the flash video and mp4 formats
  * Support for the Flowplayer js-enabled player.  documentation at:
@@ -131,7 +132,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             var rc = false;
             var newUrl = self.microformat._getPlayerParams(obj);
             if (newUrl.url && document.getElementById(self.components.playerID) && self.media.ready()) {
-                if (self.components.player.video.url == newUrl.url) {
+                if (self.components.player.video.url === newUrl.url) {
                     // If the url is the same as the previous, just seek to the right spot.
                     // This works just fine.
                     rc = true;

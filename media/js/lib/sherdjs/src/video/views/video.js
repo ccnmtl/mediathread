@@ -1,3 +1,4 @@
+/* global Sherd: true */
 /**
  * baseline video helper functions:
  *

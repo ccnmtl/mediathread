@@ -1,3 +1,4 @@
+/* global Sherd: true */
 /*
   Support for the Vimeo js-enabled player.  documentation at:
   http://vimeo.com/api/docs/oembed

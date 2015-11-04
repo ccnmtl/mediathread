@@ -1,3 +1,4 @@
+/* global Sherd: true */
 //jQuery dependencies
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Image) { Sherd.Image = {}; }

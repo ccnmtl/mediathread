@@ -1,3 +1,6 @@
+/* global Sherd: true */
+/* global onQuicktimePlay: true, onQuicktimePause: true */
+/* global onQuicktimeFinish: true */
 /*
  http://developer.apple.com/mac/library/documentation/QuickTime/Conceptual/QTScripting_JavaScript/aQTScripting_Javascro_AIntro/Introduction%20to%20JavaScript%20QT.html
 http://developer.apple.com/safari/library/documentation/QuickTime/Conceptual/QTScripting_JavaScript/bQTScripting_JavaScri_Document/QuickTimeandJavaScri.html

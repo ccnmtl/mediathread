@@ -1,3 +1,4 @@
+/* global Sherd: true, MochiKit: true */
 if (typeof Sherd === 'undefined' || !Sherd) {
     Sherd = {};
 }
@@ -134,7 +135,7 @@ Sherd.Base = {
                     } else if (typeof possiblePromise === 'object') {
                         self.components = possiblePromise;
                     } else {
-                        console.error('components error:', possiblePromise);
+                        window.console.error('components error:', possiblePromise);
                     }
                 } else {
                     self.components = {

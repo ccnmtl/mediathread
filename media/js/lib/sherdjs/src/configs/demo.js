@@ -1,5 +1,5 @@
-
-var annotations=[
+/* global Sherd: true */
+var annotations = [
     {type:'annotation',
      view:{editable:true,color:'red'},
      metadata:{title:'My favorite part'},

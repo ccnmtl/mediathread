@@ -1,3 +1,4 @@
+/* global Sherd: true */
 /*
   Support for the Kaltura js-enabled player.  documentation at:
   http://Kaltura.com/api/docs/oembed

@@ -1,3 +1,4 @@
+/* global Sherd: true */
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Image) { Sherd.Image = {}; }
 if (!Sherd.Image.Annotators) { Sherd.Image.Annotators = {}; }

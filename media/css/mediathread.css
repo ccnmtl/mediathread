@@ -573,7 +573,8 @@ ul#standardnav
     color: #fff;
 }
 
-#standardnav li div.nonmember {
+#standardnav li .nonmember,
+#standardnav li .warning {
     color: yellow !important;
 }
 

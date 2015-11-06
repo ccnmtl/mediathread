@@ -104,14 +104,10 @@ class Collaboration(models.Model):
         )
 
     def get_absolute_url(self):
-        if self.context_id and self.context.slug:
-            return urlresolvers.reverse("collaboration-obj-view",
-                                        args=(self.context.slug,
-                                              self.content_type.model,
-                                              self.object_pk))
-        else:
-            return urlresolvers.reverse("collaboration-dispatch",
-                                        args=(self.pk,))
+        return urlresolvers.reverse("collaboration-obj-view",
+                                    args=(self.context.slug,
+                                          self.content_type.model,
+                                          self.object_pk))
 
     def permission_to(self, permission, course, user):
         return self.get_policy().permission_to(self, permission,

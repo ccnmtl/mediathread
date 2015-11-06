@@ -65,7 +65,7 @@ class CourseFactory(factory.DjangoModelFactory):
         if create:
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.pk))
+                object_pk=str(self.pk), slug=self.slug())
 
 
 class SourceFactory(factory.DjangoModelFactory):

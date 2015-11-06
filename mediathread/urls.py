@@ -21,7 +21,7 @@ from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView)
+    CourseSettingsView, CourseDeleteMaterialsView, triple_homepage)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
@@ -61,7 +61,7 @@ if hasattr(settings, 'CAS_BASE'):
 urlpatterns = patterns(
     '',
 
-    (r'^$', 'mediathread.main.views.triple_homepage'),  # Homepage
+    url(r'^$', triple_homepage, name='home'),
     admin_logout_page,
     logout_page,
     (r'^admin/', admin.site.urls),
@@ -197,7 +197,7 @@ urlpatterns = patterns(
 
     (r'^lti/', include('lti_auth.urls')),
 
-    # Public Access ###
+    # Public To World Access ###
     (r'^s/', include('structuredcollaboration.urls')),
 )
 

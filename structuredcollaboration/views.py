@@ -79,6 +79,7 @@ def collaboration_dispatch(request, collab_id, next=None):
 
 def delete_collaboration(request, collab_id, next=None):
     # only fake-delete it.  We move it out from the context
+    # @todo - why just fake-delete it?
     disc_sc = get_object_or_404(Collaboration, pk=collab_id)
     if not disc_sc.permission_to('delete', request.course, request.user):
         return HttpResponseForbidden('You do not have permission \

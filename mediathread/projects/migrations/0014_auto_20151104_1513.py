@@ -8,16 +8,19 @@ def delete_orphan_collaborations(apps, schema_editor):
     Project = apps.get_model('projects', 'Project')
     Collaboration = apps.get_model('structuredcollaboration', 'Collaboration')
     ContentType = apps.get_model('contenttypes', 'ContentType')
-    ctype = ContentType.objects.get(model='project', app_label='projects')
+    try:
+        ctype = ContentType.objects.get(model='project', app_label='projects')
 
-    to_delete = []
-    for c in Collaboration.objects.filter(content_type=ctype):
-        try:
-            Project.objects.get(id=int(c.object_pk))
-        except Project.DoesNotExist:
-            to_delete.append(c.id)
+        to_delete = []
+        for c in Collaboration.objects.filter(content_type=ctype):
+            try:
+                Project.objects.get(id=int(c.object_pk))
+            except Project.DoesNotExist:
+                to_delete.append(c.id)
 
-    Collaboration.objects.filter(id__in=to_delete).delete()
+        Collaboration.objects.filter(id__in=to_delete).delete()
+    except ContentType.DoesNotExist:
+        pass  # skip this migration during unit tests
 
 
 class Migration(migrations.Migration):

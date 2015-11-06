@@ -160,10 +160,9 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         will be returned
         """
         collaboration = self.project.get_collaboration()
-        collaboration.delete()
-
+        collaboration.remove_children()
         self.project.delete()
-
+        collaboration.delete()
         return HttpResponseRedirect('/')
 
 

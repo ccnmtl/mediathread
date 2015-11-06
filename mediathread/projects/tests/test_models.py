@@ -365,7 +365,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             policy='PublicEditorsAreOwners')
         self.assertEquals(
             public.public_url(),
-            '/s/collaboration/%s/' % public.get_collaboration().id)
+            '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())

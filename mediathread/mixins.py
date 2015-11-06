@@ -200,7 +200,7 @@ class ProjectReadableMixin(object):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         if not project.can_read(self.request.course, self.request.user):
             return HttpResponseForbidden("forbidden")
-
+        self.project = project
         return super(ProjectReadableMixin, self).dispatch(*args, **kwargs)
 
 

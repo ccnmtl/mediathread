@@ -159,8 +159,10 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
+        collaboration = self.project.get_collaboration()
+        collaboration.remove_children()
         self.project.delete()
-
+        collaboration.delete()
         return HttpResponseRedirect('/')
 
 

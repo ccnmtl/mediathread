@@ -126,13 +126,19 @@ class Collaboration(models.Model):
             result = result.get_parent()
         return result
 
-    def append_child(self, obj=None):
+    def append_child(self, obj):
         coll, created = Collaboration.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(type(obj)),
             object_pk=str(obj.pk), )
         coll._parent = self
         coll.save()
         return coll
+
+    def remove_children(self):
+        children = Collaboration.objects.filter(_parent=self)
+        for child in children:
+            child._parent = None
+            child.save()
 
     def get_policy(self):
         if not self.policy_record:

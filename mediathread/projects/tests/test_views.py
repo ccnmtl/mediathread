@@ -3,9 +3,11 @@ from datetime import datetime
 from json import loads
 import json
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+import reversion
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
@@ -13,7 +15,7 @@ from mediathread.factories import MediathreadTestMixin, UserFactory, \
 from mediathread.projects.models import Project, \
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED
 from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
-import reversion
+from structuredcollaboration.models import Collaboration
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -247,9 +249,11 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(project['is_response'])
 
     def test_project_delete(self):
+        ctype = ContentType.objects.get(model='project', app_label='projects')
         project_id = self.project_private.id
         url = reverse('project-delete', args=[project_id])
 
+        # anonymous
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
 
@@ -259,17 +263,50 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 403)
 
-        # as owner
+        # as owner -- success
         self.client.login(username=self.student_one.username, password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
         self.assertIsNone(Project.objects.filter(id=project_id).first())
+        with self.assertRaises(Collaboration.DoesNotExist):
+            Collaboration.objects.get(content_type=ctype,
+                                      object_pk=str(project_id))
 
         # invalid project id
         url = reverse('project-delete', args=[213456])
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 404)
+
+    def test_assignment_delete(self):
+        ctype = ContentType.objects.get(model='project', app_label='projects')
+        response1 = ProjectFactory.create(
+            title='Zeta', course=self.sample_course, author=self.student_three,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+        self.assertEquals(response1.assignment(), self.assignment)
+
+        response2 = ProjectFactory.create(
+            title='Omega', course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.assertEquals(response1.assignment(), self.assignment)
+
+        project_id = self.assignment.id
+        url = reverse('project-delete', args=[project_id])
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        with self.assertRaises(Project.DoesNotExist):
+            Project.objects.get(id=project_id)
+
+        with self.assertRaises(Collaboration.DoesNotExist):
+            Collaboration.objects.get(content_type=ctype,
+                                      object_pk=str(project_id))
+
+        self.assertIsNone(response1.assignment())
+        self.assertIsNone(response2.assignment())
 
     def test_unsubmit_response(self):
         assignment_response = ProjectFactory.create(

@@ -23,7 +23,8 @@ from mediathread.main.views import (
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, triple_homepage)
 from mediathread.projects.views import (
-    ProjectCollectionView, ProjectDetailView, ProjectItemView)
+    ProjectCollectionView, ProjectDetailView, ProjectItemView,
+    ProjectPublicView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
 
@@ -198,7 +199,8 @@ urlpatterns = patterns(
     (r'^lti/', include('lti_auth.urls')),
 
     # Public To World Access ###
-    (r'^s/', include('structuredcollaboration.urls')),
+    url(r'^s/(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/',
+        ProjectPublicView.as_view(), name='collaboration-obj-view'),
 )
 
 if settings.DEBUG:

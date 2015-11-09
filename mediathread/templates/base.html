@@ -54,6 +54,11 @@
                                     <div class="nonmember">You are not a class member!</div>
                                 </li>
                             {% endifequal %}
+                            {% if user.is_impersonate %}
+                                <li>
+                                    <a class="warning" href="/impersonate/stop/">Impersonate Stop</a>
+                                </li>
+                            {% endif %}    
                             <li>
                                 <div class="settings_menu user closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
@@ -67,9 +72,6 @@
                                     {% endif %}
                                     {% if user.is_superuser %}
                                         <a href="/impersonate/search/">Impersonate</a>
-                                    {% endif %}
-                                    {% if user.is_impersonate %}
-                                        <a href="/impersonate/stop/">Impersonate Stop</a>
                                     {% endif %}
                                     
                                     {% num_courses for user as user_courses %}

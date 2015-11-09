@@ -253,7 +253,9 @@ def project_view_readonly(request, project_id, version_number=None):
                                   context_instance=RequestContext(request))
     else:
         if version_number:
-            version = get_object_or_404(Version, revision_id=version_number)
+            version = get_object_or_404(Version,
+                                        object_id=str(project.id),
+                                        revision_id=version_number)
             project = version.object_version.object
 
         panels = []

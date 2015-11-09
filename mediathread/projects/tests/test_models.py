@@ -226,6 +226,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PrivateEditorsAreOwners', parent=self.assignment)
+
         self.assert_responses_by_course(self.student_one, [response], [])
         self.assert_responses_by_course(self.instructor_one, [], [response])
         self.assert_responses_by_course(self.student_two, [], [response])
@@ -292,11 +293,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             parent=self.assignment)
 
         self.assert_responses_by_course(self.student_one,
-                                        [response1, response2, response3], [])
+                                        [response3, response1, response2], [])
         self.assert_responses_by_course(self.instructor_one,
-                                        [response1, response3], [response2])
+                                        [response3, response1], [response2])
         self.assert_responses_by_course(self.student_two,
-                                        [response1, response3], [response2])
+                                        [response3, response1], [response2])
 
     def test_project_clean_date_field(self):
         try:
@@ -369,7 +370,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             policy='PublicEditorsAreOwners')
         self.assertEquals(
             public.public_url(),
-            '/s/collaboration/%s/' % public.get_collaboration().id)
+            '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())

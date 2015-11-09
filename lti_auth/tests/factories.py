@@ -1,15 +1,18 @@
 import urllib
 from urlparse import parse_qs, urlparse
 
+from django.contrib.auth.models import User, Group
 from django.test.client import RequestFactory
+import factory
 import oauthlib.oauth1
 from oauthlib.oauth1.rfc5849 import CONTENT_TYPE_FORM_URLENCODED
 
+from lti_auth.models import LTICourseContext
+
+TEST_CONTEXT_ID = u'course-v1:edX+DemoX+Demo_Course'
 
 BASE_LTI_PARAMS = {
-    u'context_id': u'course-v1:edX+DemoX+Demo_Course',
-    u'custom_course_group':
-        u't3.y2011.s001.ce0001.aaaa.st.course:columbia.edu',
+    u'context_id': TEST_CONTEXT_ID,
     u'launch_presentation_return_url': u'',
     u'lis_person_contact_email_primary': u'foo@bar.com',
     u'lis_person_name_full': u'Foo Bar Baz',
@@ -55,3 +58,25 @@ def generate_lti_request():
     request = RequestFactory().post('/lti/', params)
     request.session = {}
     return request
+
+
+class UserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = User
+    username = factory.Sequence(lambda n: 'user%d' % n)
+    password = factory.PostGenerationMethodCall('set_password', 'test')
+
+
+class GroupFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Group
+    name = factory.Sequence(lambda n: 'group %s' % n)
+
+
+class LTICourseContextFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = LTICourseContext
+
+    lms_context_id = TEST_CONTEXT_ID
+    group = factory.SubFactory(GroupFactory)
+    faculty_group = factory.SubFactory(GroupFactory)

@@ -59,14 +59,14 @@ class LTI(object):
 
         return []
 
-    def course_group(self):  # pylint: disable=no-self-use
+    def context_id(self):
         """
         Returns course_group as provided by LTI
 
         :return: course_group -- the course string
         """
-        if 'custom_course_group' in self.lti_params:
-            return self.lti_params['custom_course_group']
+        if 'context_id' in self.lti_params:
+            return self.lti_params['context_id']
 
         return None
 

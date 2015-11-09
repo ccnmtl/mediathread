@@ -4,7 +4,7 @@ from pylti.common import LTI_SESSION_KEY, LTINotInSessionException
 
 from lti_auth.lti import LTI
 from lti_auth.tests.factories import BASE_LTI_PARAMS, CONSUMERS, \
-    generate_lti_request
+    generate_lti_request, TEST_CONTEXT_ID
 
 
 class LTITest(TestCase):
@@ -47,11 +47,10 @@ class LTITest(TestCase):
 
     def test_course_group(self):
         lti = LTI('initial', 'any')
-        self.assertEquals(lti.course_group(), None)
+        self.assertEquals(lti.context_id(), None)
 
         lti.lti_params = BASE_LTI_PARAMS
-        self.assertEquals(lti.course_group(),
-                          't3.y2011.s001.ce0001.aaaa.st.course:columbia.edu')
+        self.assertEquals(lti.context_id(), TEST_CONTEXT_ID)
 
     def test_consumers(self):
         lti = LTI('any', 'any')

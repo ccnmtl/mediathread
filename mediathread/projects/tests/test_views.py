@@ -6,14 +6,15 @@ import json
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+import reversion
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
 from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED
+    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED, \
+    PUBLISH_WHOLE_WORLD
 from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
-import reversion
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -338,6 +339,48 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = loads(response.content)
         self.assertEquals(len(the_json['revisions']), 1)
+
+    def test_project_view_readonly(self):
+        version = self.project_private.versions().next()
+        url = reverse('project-view-readonly',
+                      kwargs={'project_id': self.project_private.id,
+                              'version_number': version.revision_id})
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # forbidden
+        self.client.login(username=self.student_two.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # owner
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+        # ajax
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XmlHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+    def test_project_public_view(self):
+        url = self.project_private.get_collaboration().get_absolute_url()
+
+        # still private
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # reset to public
+        self.project_private.create_or_update_collaboration(
+            PUBLISH_WHOLE_WORLD[0])
+        self.project_private.date_submitted = datetime.now()
+        self.project_private.save()
+
+        url = self.project_private.public_url()
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
 
     def test_project_workspace_errors(self):
         project_id = self.project_private.id

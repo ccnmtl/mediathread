@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from mediathread.discussions.views import DiscussionView
+from mediathread.discussions.views import DiscussionView, DiscussionDeleteView
 
 
 urlpatterns = patterns(
@@ -9,7 +9,7 @@ urlpatterns = patterns(
     url(r'^create/$', 'discussion_create', name='discussion-create'),
 
     url(r'^delete/(?P<discussion_id>\d+)/$',
-        'discussion_delete',
+        DiscussionDeleteView.as_view(), {},
         name='discussion-delete'),
 
     url(r'^comment/(?P<comment_id>\d+)/$',

@@ -50,7 +50,7 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
     jQuery(this.form).bind('submit', {
         self: this
     }, this.submit);
-    jQuery('input.cancel').bind('click', {
+    jQuery('.btn.cancel').bind('click', {
         self: this
     }, this.cancel);
 
@@ -63,10 +63,10 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
     }
 
     // decorate respond listeners
-    jQuery('span.respond_prompt', self.el).click(function(evt) {
+    jQuery('.respond_prompt', self.el).click(function(evt) {
         self.open_respond(evt);
     });
-    jQuery('span.edit_prompt', self.el).click(function(evt) {
+    jQuery('.edit_prompt', self.el).click(function(evt) {
         self.open_edit(evt);
     });
 
@@ -252,7 +252,7 @@ DiscussionPanelHandler.prototype.open_respond = function(evt) {
 
     jQuery(self.form).addClass('response');
     jQuery(self.form).children('h3').show();
-    jQuery(self.form).find('input.cancel').show();
+    jQuery(self.form).find('.btn.cancel').show();
 
     var elt = evt.srcElement || evt.target || evt.originalTarget;
     self.form.elements.parent.value = elt.getAttribute('data-comment');
@@ -291,7 +291,7 @@ DiscussionPanelHandler.prototype.open_edit = function(evt, focus) {
         jQuery('div.respond_to_comment_form_div').hide();
 
         elt = jQuery(li).find('div.threaded_comment_header')[0];
-        jQuery(self.form).find('input.cancel').show();
+        jQuery(self.form).find('.btn.cancel').show();
 
         self.open_comment_form(elt);
 
@@ -475,10 +475,10 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
                 parentHtml.appendChild(ul);
                 ul.innerHTML = self.create(newObj).text;
                 // decorate respond listener
-                jQuery('span.respond_prompt', ul).click(function(evt) {
+                jQuery('.respond_prompt', ul).click(function(evt) {
                     self.open_respond(evt);
                 });
-                jQuery('span.edit_prompt', ul).click(function(evt) {
+                jQuery('.edit_prompt', ul).click(function(evt) {
                     self.open_edit(evt);
                 });
                 break;
@@ -670,7 +670,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
 
         jQuery(self.el).find('div.collection-materials').show();
         jQuery(self.el).find('input.project-title').show();
-        jQuery(self.el).find('input.participants_toggle').show();
+        jQuery(self.el).find('.participants_toggle').show();
 
         self.tinyMCE.show();
     } else {

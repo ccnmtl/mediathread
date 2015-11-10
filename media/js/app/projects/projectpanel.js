@@ -13,7 +13,7 @@ var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     this.parentContainer = parent;
     this.space_owner = space_owner;
     this.tiny_mce_settings = tiny_mce_settings;
-    jQuery(self.el).find('.project-savebutton').attr('value', 'Saved');
+    jQuery(self.el).find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
     MediaThread.loadTemplate('project_revisions')
@@ -66,39 +66,39 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
             }
         });
 
-    self._bind(self.el, 'input.project-savebutton', 'click', function(evt) {
+    self._bind(self.el, '.project-savebutton', 'click', function(evt) {
         return self.showSaveOptions(evt);
     });
     self._bind(self.el, 'a.project-visibility-link', 'click', function(evt) {
-        jQuery(self.el).find('input.project-savebutton').click();
+        jQuery(self.el).find('.project-savebutton').click();
     });
-    self._bind(self.el, 'input.project-previewbutton', 'click', function(evt) {
+    self._bind(self.el, '.project-previewbutton', 'click', function(evt) {
         return self.preview(evt);
     });
-    self._bind(self.el, 'input.participants_toggle', 'click', function(evt) {
+    self._bind(self.el, '.participants_toggle', 'click', function(evt) {
         return self.showParticipantList(evt);
     });
 
-    self._bind(self.el, 'input.project-revisionbutton', 'click',
+    self._bind(self.el, '.project-revisionbutton', 'click',
         function(evt) {
             self.showRevisions(evt);
         });
-    self._bind(self.el, 'input.project-responsesbutton', 'click',
+    self._bind(self.el, '.project-responsesbutton', 'click',
         function(evt) {
             self.showResponses(evt);
         });
-    self._bind(self.el, 'input.project-my-responses', 'click', function(evt) {
+    self._bind(self.el, '.project-my-responses', 'click', function(evt) {
         self.showMyResponses(evt);
     });
-    self._bind(self.el, 'input.project-my-response', 'click', function(evt) {
+    self._bind(self.el, '.project-my-response', 'click', function(evt) {
         self.showMyResponse(evt);
     });
 
-    self._bind(self.el, 'input.project-create-assignment-response', 'click',
+    self._bind(self.el, '.project-create-assignment-response', 'click',
         function(evt) {
             self.createAssignmentResponse(evt);
         });
-    self._bind(self.el, 'input.project-create-instructor-feedback', 'click',
+    self._bind(self.el, '.project-create-instructor-feedback', 'click',
         function(evt) {
             self.createInstructorFeedback(evt);
         });
@@ -599,8 +599,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         jQuery(self.el).find('td.panhandle-stripe div.label')
             .html('Insert Selections');
-        jQuery(self.el).find('input.project-previewbutton')
-            .attr('value', 'Preview');
+        jQuery(self.el).find('.project-previewbutton')
+            .text('Preview');
         jQuery(self.el).find('div.asset-view-published').hide();
         jQuery(self.el).find('h1.project-title').hide();
 
@@ -609,7 +609,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         jQuery(self.el).find('div.collection-materials').show();
         jQuery(self.el).find('input.project-title').show();
-        jQuery(self.el).find('input.participants_toggle').show();
+        jQuery(self.el).find('.participants_toggle').show();
         jQuery(self.el).find('span.project-current-version').show();
 
         // Highlight toolbar
@@ -640,7 +640,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         jQuery(self.el).find('textarea.mceEditor').hide();
         jQuery(self.el).find('div.collection-materials').hide();
         jQuery(self.el).find('input.project-title').hide();
-        jQuery(self.el).find('input.participants_toggle').hide();
+        jQuery(self.el).find('.participants_toggle').hide();
         jQuery(self.el).find('span.project-current-version').hide();
 
         // De-Highlight toolbar
@@ -664,8 +664,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         jQuery(self.essaySpace).show();
         jQuery(self.el).find('td.panhandle-stripe div.label')
             .html('View Inserted Selections');
-        jQuery(self.el).find('input.project-previewbutton')
-            .attr('value', 'Edit');
+        jQuery(self.el).find('.project-previewbutton')
+            .text('Edit');
         jQuery(self.el).find('div.asset-view-published').show();
         jQuery(self.el).find('h1.project-title').show();
 
@@ -758,7 +758,7 @@ ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
 
     var saveButton = jQuery(self.el).find('.project-savebutton').get(0);
     jQuery(saveButton).attr('disabled', 'disabled')
-        .attr('value', 'Saving...')
+        .text('Saving...')
         .addClass('saving');
 
     jQuery.ajax({
@@ -768,7 +768,7 @@ ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
         dataType: 'json',
         error: function() {
             jQuery(saveButton).removeAttr('disabled')
-                .attr('value', 'Save').removeClass('saving');
+                .text('Save').removeClass('saving');
             showMessage('There was an error saving your project.',
                         null, 'Error');
         },
@@ -842,7 +842,7 @@ ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
             }
             jQuery(saveButton).removeAttr('disabled')
                 .removeClass('saving', 1200, function() {
-                    jQuery(this).attr('value', 'Saved'); });
+                    jQuery(this).text('Saved'); });
         }
     });
 
@@ -860,7 +860,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         }
 
         if (isDirty) {
-            jQuery(self.el).find('.project-savebutton').attr('value', 'Save');
+            jQuery(self.el).find('.project-savebutton').text('Save');
             // Set a single timer to kick off a save event.
             // If the timer is already active, don't set another one
             // Clear the timer variable at the end
@@ -872,7 +872,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
                 }, 10000);
             }
         } else {
-            jQuery(self.el).find('.project-savebutton').attr('value', 'Saved');
+            jQuery(self.el).find('.project-savebutton').text('Saved');
             if (self.dirtyTimer !== undefined) {
                 window.clearTimeout(self.dirtyTimer);
                 self.dirtyTimer = undefined;

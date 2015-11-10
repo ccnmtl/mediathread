@@ -1563,13 +1563,13 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
 }
 
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-assignment-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-assignment-response {
     float: right;
     margin-left: 5px;    
     width: 145px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-instructor-feedback {
     float: right;
     margin-left: 5px;    
     margin-top: 4px;
@@ -1598,25 +1598,25 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionb
     width: 65px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-responsesbutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-responsesbutton {
     float: right;
     margin-left: 5px;
     width: 120px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-responses {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-responses {
     float: right;
     margin-left: 5px;
     width: 105px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-response {
     float: right;
     margin-left: 5px;
     width: 90px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .createnew-button {
     float: right;
     width: 170px;    
 }

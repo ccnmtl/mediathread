@@ -111,8 +111,10 @@
                                         {{^is_faculty}}
                                             {{^context.my_responses.length}}
                                                 {{^context.my_response}}
-                                                    <input class="{{context.project.type}} project project-create-assignment-response" 
-                                                        type="button" value="Respond to Assignment">
+                                                    <button class="{{context.project.type}} project project-create-assignment-response btn btn-default btn-xs"
+                                                        type="button">
+                                                        Respond to Assignment
+                                                    </button>
                                                 {{/context.my_response}}
                                             {{/context.my_responses.length}}
                                         {{/is_faculty}}
@@ -120,12 +122,18 @@
                                     
                                     {{#context.my_response}}
                                         {{^context.viewing_my_response}}
-                                            <input class="project project-my-response" type="button" value="My Response" data-url="{{context.my_response.url}}"/>
+                                            <button class="project project-my-response btn btn-default btn-xs"
+                                                type="button" data-url="{{context.my_response.url}}">
+                                                My Response
+                                            </button>
                                         {{/context.viewing_my_response}}
                                     {{/context.my_response}}
                                     
                                     {{#context.my_responses.length}}
-                                        <input class="project project-my-responses" type="button" value="My Responses ({{context.my_responses_count}})"/>
+                                        <button class="project project-my-responses btn btn-default btn-xs"
+                                            type="button">
+                                            My Responses ({{context.my_responses_count}})
+                                        </button>
                                             <div class="my-response-list" style="display: none" title="My Responses">
                                                 <div>Select an assignment response, then click "View"</div>
                                                 <select name="my-responses" multiple="multiple">
@@ -142,7 +150,10 @@
                                     {{/context.my_responses.length}}
 
                                     {{#context.responses.length}}
-                                      <input class="project project-responsesbutton" type="button" value="Class Responses ({{context.response_count}})" />
+                                        <button class="project project-responsesbutton btn btn-default btn-xs"
+                                            type="button">
+                                            Class Responses ({{context.response_count}})
+                                        </button>
                                       <div class="response-list" style="display: none" title="Responses">
                                         <div>Select an assignment response, then click "View"</div>
                                         <select name="responses" multiple="multiple">
@@ -159,8 +170,10 @@
                                     {{/context.responses.length}}
                                     
                                     {{#context.create_instructor_feedback}}
-                                        <input class="{{context.project.type}} project project-create-instructor-feedback" 
-                                            type="button" value="Create Instructor Feedback"/>
+                                        <button class="{{context.project.type}} project project-create-instructor-feedback btn btn-default btn-xs"
+                                            type="button">
+                                            Create Instructor Feedback
+                                        </button>
                                     {{/context.create_instructor_feedback}}
 
                                 </div>     
@@ -168,7 +181,7 @@
                             <div class="panel-subcontainer-title">
                                 {{#context.can_edit}}
                                     <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
-                                        class="project-title" style="display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
+                                        class="project-title form-control" style="display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
                                 {{/context.can_edit}}
                                 <h1 class="project-title" 
                                     style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">

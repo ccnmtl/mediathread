@@ -70,7 +70,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         return self.showSaveOptions(evt);
     });
     self._bind(self.el, 'a.project-visibility-link', 'click', function(evt) {
-        jQuery(self.el).find('input.project-savebutton').click();
+        jQuery(self.el).find('.project-savebutton').click();
     });
     self._bind(self.el, '.project-previewbutton', 'click', function(evt) {
         return self.preview(evt);
@@ -83,22 +83,22 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         function(evt) {
             self.showRevisions(evt);
         });
-    self._bind(self.el, 'input.project-responsesbutton', 'click',
+    self._bind(self.el, '.project-responsesbutton', 'click',
         function(evt) {
             self.showResponses(evt);
         });
-    self._bind(self.el, 'input.project-my-responses', 'click', function(evt) {
+    self._bind(self.el, '.project-my-responses', 'click', function(evt) {
         self.showMyResponses(evt);
     });
-    self._bind(self.el, 'input.project-my-response', 'click', function(evt) {
+    self._bind(self.el, '.project-my-response', 'click', function(evt) {
         self.showMyResponse(evt);
     });
 
-    self._bind(self.el, 'input.project-create-assignment-response', 'click',
+    self._bind(self.el, '.project-create-assignment-response', 'click',
         function(evt) {
             self.createAssignmentResponse(evt);
         });
-    self._bind(self.el, 'input.project-create-instructor-feedback', 'click',
+    self._bind(self.el, '.project-create-instructor-feedback', 'click',
         function(evt) {
             self.createInstructorFeedback(evt);
         });

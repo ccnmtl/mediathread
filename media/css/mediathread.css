@@ -1576,32 +1576,19 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-in
     width: 175px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton {
-    float: right;
-    margin-left: 5px;    
-    width: 60px;
-}
-
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton,
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton {
     float: right;
     margin-left: 5px;
-    width: 62px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton.saving {
     text-align: left;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton {
-    float: right;
-    margin-left: 5px;
-    width: 65px;
-}
-
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton,
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-responsesbutton {
     float: right;
-    margin-left: 5px;
-    width: 120px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-responses {

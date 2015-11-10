@@ -22,7 +22,7 @@ Feature: Assignment
         # Add a title and some text
         Then I call the Assignment "Assignment: Scenario 1"
         And there is a Save button
-        And I write some text for the Composition
+        And I write some text for the Assignment
         
         # Save as an Assignment
         When I click the Save button
@@ -141,7 +141,8 @@ Feature: Assignment
         
         # Create Instructor Feedback
         When I click the Create Instructor Feedback button
-        Then there is an open Discussion panel        
+        Then there is an open Discussion panel
+        Then I click the Edit button
         Then I write some text for the discussion
         Then I click the Save Comment button
         Then there is a comment from "Instructor One"

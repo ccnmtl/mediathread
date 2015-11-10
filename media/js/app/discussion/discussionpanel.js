@@ -621,13 +621,15 @@ DiscussionPanelHandler.prototype.create = function(obj, doc) {
         'said:' +
         '<div class="respond_to_comment_form_div" ' +
         'id="respond_to_comment_form_div_id_{{current_comment.id}}">' +
-        '<span class="respond_prompt comment_action" ' +
+        '<button class="respond_prompt comment_action ' +
+        'btn btn-default btn-xs" ' +
         'data-comment="{{current_comment.id}}" title="Click to show or ' +
         'hide the comment form">' +
-        'Respond<!-- to comment {{current_comment.id}}: --></span>' +
-        ' <span class="edit_prompt comment_action" ' +
+        'Respond<!-- to comment {{current_comment.id}}: --></button>' +
+        ' <button class="edit_prompt comment_action ' +
+        'btn btn-default btn-xs" ' +
         'data-comment="{{current_comment.id}}" title="Click to show or ' +
-        'hide the edit comment form">Edit</span>' +
+        'hide the edit comment form">Edit</button>' +
         '<div class="comment_form_space"></div>' +
         '</div>' +
         ' </div>' +

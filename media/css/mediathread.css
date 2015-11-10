@@ -1557,12 +1557,6 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input {
 	cursor: pointer;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
-    width: 50px;
-    font-size: .75em;
-}
-
-
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-assignment-response {
     float: right;
     margin-left: 5px;    

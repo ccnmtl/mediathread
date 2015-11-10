@@ -1,10 +1,11 @@
 {% load staticfiles %}
 
-<div id="chrome-install-container" class="hidden">
+<div id="chrome-install-container">
     <h4><strong>Install Chrome extension</strong></h4>
     <p>
         Use Mediathread's Google Chrome extension to import media
-        from various sites.
+        from various sites. You must be using Chrome to install
+        this extension.
     </p>
     <button id="chrome-install-button"
             class="btn btn-primary pull-left">
@@ -44,12 +45,6 @@
                 }
             );
         });
-
-        // Show the install container on chrome
-        var isChrome = !!(window.chrome && chrome.webstore);
-        if (isChrome) {
-            jQuery('#chrome-install-container').removeClass('hidden');
-        }
     });
 })();
 </script>

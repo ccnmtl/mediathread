@@ -1,10 +1,11 @@
 from hashlib import sha1
-from courseaffils.models import Course
+
 from django.contrib.auth.models import User, Group
+from nameparser import HumanName
 from pylti.common import LTIException
 
 from lti_auth.lti import LTI
-from nameparser import HumanName
+from lti_auth.models import LTICourseContext
 
 
 class LTIBackend(object):
@@ -44,12 +45,12 @@ class LTIBackend(object):
 
         return user
 
-    def join_course(self, lti, course, user):
-        # add the user to the requested course
-        user.groups.add(course.group)
+    def join_groups(self, lti, ctx, user):
+        # add the user to the requested groups
+        user.groups.add(ctx.group)
         for role in lti.user_roles():
             if role.lower() in ['staff', 'instructor', 'administrator']:
-                user.groups.add(course.faculty_group)
+                user.groups.add(ctx.faculty_group)
                 break
 
     def authenticate(self, request=None, request_type=None, role_type=None):
@@ -62,16 +63,15 @@ class LTIBackend(object):
 
             # validate course first
             try:
-                coursename = lti.course_group()
-                group = Group.objects.get(name=coursename)
-                course = group.course
-            except (Course.DoesNotExist, Group.DoesNotExist):
+                context_id = lti.context_id()
+                ctx = LTICourseContext.objects.get(lms_context_id=context_id)
+            except (LTICourseContext.DoesNotExist, Group.DoesNotExist):
                 lti.clear_session(request)
                 return None
 
             user = self.find_or_create_user(lti)
 
-            self.join_course(lti, course, user)
+            self.join_groups(lti, ctx, user)
 
             return user
 

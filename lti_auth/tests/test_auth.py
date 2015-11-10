@@ -4,8 +4,7 @@ from pylti.common import LTI_SESSION_KEY
 from lti_auth.auth import LTIBackend
 from lti_auth.lti import LTI
 from lti_auth.tests.factories import BASE_LTI_PARAMS, CONSUMERS, \
-    generate_lti_request
-from mediathread.factories import UserFactory, CourseFactory, GroupFactory
+    generate_lti_request, LTICourseContextFactory, UserFactory
 
 
 class LTIBackendTest(TestCase):
@@ -63,13 +62,13 @@ class LTIBackendTest(TestCase):
         username = self.backend.get_hashed_username(self.lti)
         self.assertEquals(user.username, username)
 
-    def test_join_course(self):
-        course = CourseFactory()
+    def test_join_groups(self):
+        ctx = LTICourseContextFactory()
         user = UserFactory()
 
-        self.backend.join_course(self.lti, course, user)
-        self.assertTrue(course.is_member(user))
-        self.assertTrue(course.is_faculty(user))
+        self.backend.join_groups(self.lti, ctx, user)
+        self.assertTrue(user in ctx.group.user_set.all())
+        self.assertTrue(user in ctx.faculty_group.user_set.all())
 
     def test_authenticate_invalid_course(self):
         with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
@@ -80,9 +79,7 @@ class LTIBackendTest(TestCase):
             self.assertFalse(request.session[LTI_SESSION_KEY])
 
     def test_authenticate_valid_course(self):
-        group = GroupFactory(
-            name='t3.y2011.s001.ce0001.aaaa.st.course:columbia.edu')
-        course = CourseFactory(group=group)
+        ctx = LTICourseContextFactory()
 
         with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
             request = generate_lti_request()
@@ -94,8 +91,8 @@ class LTIBackendTest(TestCase):
             self.assertFalse(user.has_usable_password())
             self.assertEquals(user.email, 'foo@bar.com')
             self.assertEquals(user.get_full_name(), 'Foo Baz')
-            self.assertTrue(course.group in user.groups.all())
-            self.assertTrue(course.faculty_group in user.groups.all())
+            self.assertTrue(user in ctx.group.user_set.all())
+            self.assertTrue(user in ctx.faculty_group.user_set.all())
 
     def test_get_user(self):
         user = UserFactory()

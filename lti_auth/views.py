@@ -26,6 +26,11 @@ class LTIRoutingView(LTIAuthMixin, View):
     request_type = 'initial'
     role_type = 'any'
 
+    def custom_landing_page(self):
+        key = u'tool_consumer_info_product_family_code'
+        provider = self.request.POST.get(key, None)
+        return provider == 'canvas'
+
     def post(self, request):
         if request.POST.get('ext_content_intended_use', '') == 'embed':
             domain = self.request.get_host()
@@ -33,7 +38,7 @@ class LTIRoutingView(LTIAuthMixin, View):
                 self.request.scheme, domain,
                 settings.LTI_TOOL_CONFIGURATION['embed_url'],
                 request.POST.get('launch_presentation_return_url'))
-        elif len(request.POST.get('custom_landing_page', '')) > 0:
+        elif self.custom_landing_page():
             # Canvas does not support launching in a new window/tab
             # Provide a "launch in new tab" landing page
             url = reverse('lti-landing-page')

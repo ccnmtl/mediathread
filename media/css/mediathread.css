@@ -732,9 +732,7 @@ div.column-contents {
 }
 
 .upload_for {
-  display: block;
-  height: 35px;
-  margin: 15px 0 0 0;
+    margin-bottom: 10px;
 }
 
 #browser-instructions h3 {	

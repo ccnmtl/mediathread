@@ -303,7 +303,7 @@
                                     <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
-                                            <b>For:</b>&nbsp;
+                                            <label for="video_owners">For:</label>
                                             <select id="video_owners" name="as">
                                             {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -318,8 +318,8 @@
                                     <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
-                                            <b>For:</b>&nbsp;
-                                            <select name="as">
+                                            <label for="audio_owners">For:</label>
+                                            <select id="audio_owners" name="as">
                                             {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
                                             {% endfor %}

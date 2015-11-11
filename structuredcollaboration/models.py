@@ -37,11 +37,11 @@ class CollaborationManager(models.Manager):
         else:
             ctype = ContentType.objects.get_for_model(object_list[0])
             ids = [str(o.id) for o in object_list]
-            return self.filter(
-                content_type=ctype,
-                object_pk__in=ids).select_related('user', 'group',
-                                                  '_parent',
-                                                  'policy_record')
+
+            prefetch = ['user', 'group', 'context', 'content_object',
+                        '_parent', 'policy_record']
+            return self.filter(content_type=ctype,
+                               object_pk__in=ids).prefetch_related(*prefetch)
 
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)

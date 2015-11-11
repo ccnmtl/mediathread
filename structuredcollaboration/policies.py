@@ -1,5 +1,5 @@
-from structuredcollaboration.models import Collaboration
-from mediathread.main.course_details import cached_course_is_faculty
+from mediathread.main.course_details import cached_course_is_faculty, \
+    cached_course_collaboration
 
 
 class CollaborationPolicy(object):
@@ -40,14 +40,14 @@ class PrivateEditorsAreOwners(PublicEditorsAreOwners):
 
 class PrivateStudentAndFaculty(CollaborationPolicy):
     def manage(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
                 course and cached_course_is_faculty(course, user))
 
     delete = manage
 
     def read(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
                 ((course and cached_course_is_faculty(course, user)) or
                  coll.user_id == user.id or
@@ -65,14 +65,14 @@ class InstructorShared(PrivateEditorsAreOwners):
 
 class InstructorManaged(CollaborationPolicy):
     def manage(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
                 ((course and cached_course_is_faculty(course, user)) or
                  coll.user == user))
     delete = manage
 
     def read(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration)
 
     edit = read
@@ -80,7 +80,7 @@ class InstructorManaged(CollaborationPolicy):
 
 class CourseProtected(CollaborationPolicy):
     def manage(self, coll, course, user):
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
                 (coll.user == user or
                  (coll.group and
@@ -93,7 +93,7 @@ class CourseProtected(CollaborationPolicy):
         if not course:
             return False
 
-        course_collaboration = Collaboration.objects.get_for_object(course)
+        course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
                 course.is_member(user))
 

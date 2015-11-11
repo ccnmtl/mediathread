@@ -128,9 +128,27 @@ class ProjectManager(models.Manager):
 
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
-        projects = projects.select_related('author')
-        projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.can_read(course, viewer)]
+
+        # get the collaborations & filter private collaborations
+        lst = Collaboration.objects.get_for_object_list(projects)
+        lst = lst.select_related('context', 'policy_record')
+        lst = lst.order_by('object_pk')
+
+        # get all the content objects at once
+        ids = [int(c.object_pk) for c in lst]
+        projects = Project.objects.filter(id__in=ids)
+        projects = list(projects.select_related('author'))
+        projects.sort(reverse=False, key=lambda p: str(p.id))
+
+        visible = []
+        for idx, project in enumerate(projects):
+            assert str(project.id) == lst[idx].object_pk
+            if project.can_read(course, viewer, lst[idx]):
+                visible.append(project)
+
+        visible.sort(reverse=False, key=lambda project: project.title)
+        visible.sort(reverse=True, key=lambda project: project.modified)
+        return visible
 
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
@@ -154,6 +172,7 @@ class ProjectManager(models.Manager):
 
         # filter down to responses only based on the collaboration parent state
         collaborations = Collaboration.objects.get_for_object_list(projects)
+        collaborations = collaborations.select_related('context')
         collaborations = collaborations.filter(_parent__isnull=False)
         collaborations = collaborations.order_by('object_pk')
 
@@ -189,6 +208,7 @@ class ProjectManager(models.Manager):
 
         # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
+        lst = lst.select_related('context', 'policy_record')
         lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
 
         # get all the projects at once
@@ -204,6 +224,7 @@ class ProjectManager(models.Manager):
 
         # filter private assignments
         lst = Collaboration.objects.get_for_object_list(qs)
+        lst = lst.select_related('context', 'policy_record')
         lst = lst.filter(policy_record__policy_name=PUBLISH_DRAFT[0])
         ids = [int(c.object_pk) for c in lst]
         qs = qs.exclude(id__in=ids)
@@ -438,8 +459,11 @@ class Project(models.Model):
             return True  # this project is an assignment
 
         parent = collaboration.get_parent()
-        if parent is None or parent.content_object is None:
-            return True  # this project does not have a parent assignment
+        # this project does not have a parent assignment
+        if parent is None:
+            return True
+        if parent.content_object is None:
+            return True
 
         # the author & faculty can always view a submitted response
         if (self.is_participant(viewer) or

@@ -143,9 +143,14 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
-        ).distinct().select_related('author')
+        ).distinct()
 
-        lst = [p for p in projects if p.can_read(course, viewer)]
+        lst = []
+        for collab in Collaboration.objects.get_for_object_list(projects):
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                lst.append(project)
+
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 

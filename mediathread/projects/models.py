@@ -129,13 +129,10 @@ class ProjectManager(models.Manager):
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
 
-        # get all the collaborations
-        lst = Collaboration.objects.get_for_object_list(projects)
-
         visible = []
-        for collaboration in lst:
-            project = collaboration.content_object
-            if project.can_read(course, viewer, collaboration):
+        for collab in Collaboration.objects.get_for_object_list(projects):
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
                 visible.append(project)
 
         visible.sort(reverse=False, key=lambda project: project.title)

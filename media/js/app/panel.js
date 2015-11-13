@@ -1,6 +1,7 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
 /* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
+/* global tinyMCE: true, tinyMCEsettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -102,6 +103,10 @@
                     lastCell.before(
                         Mustache.render(MediaThread.templates[panel.template],
                                         panel));
+
+                    /*if (jQuery('.mceEditor').length > 0) {
+                        tinyMCE.init(tinyMCEsettings);
+                    }*/
 
                     var newCell = jQuery(lastCell).prev().prev()[0];
                     var handler = panelFactory.create(newCell,

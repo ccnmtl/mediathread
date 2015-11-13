@@ -1,7 +1,7 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
 /* global SelectFilter: true, showMessage: true */
-/* global tinyMCE: true, tiny_mce_settings: true */
+/* global tinyMCE: true, tinyMCEsettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var ProjectPanelHandler = function(el, parent, panel, space_owner) {
@@ -12,7 +12,7 @@ var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     this.projectModified = false;
     this.parentContainer = parent;
     this.space_owner = space_owner;
-    this.tiny_mce_settings = tiny_mce_settings;
+    this.tinyMCEsettings = tinyMCEsettings;
     jQuery(self.el).find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
@@ -124,7 +124,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.citationView.decorateLinks(self.essaySpace.id);
 
     if (panel.context.can_edit) {
-        tinyMCE.settings = self.tiny_mce_settings;
+        tinyMCE.settings = self.tinyMCEsettings;
         tinyMCE.execCommand('mceAddControl', false,
                             panel.context.project.id + '-project-content');
     }

@@ -22,7 +22,7 @@ Feature: Assignment
         # Add a title and some text
         Then I call the Assignment "Assignment: Scenario 1"
         And there is a Save button
-        And I write some text for the Composition
+        And I write some text for the Assignment
         
         # Save as an Assignment
         When I click the Save button

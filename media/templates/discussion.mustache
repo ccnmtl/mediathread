@@ -38,9 +38,16 @@
                                         <div class="comment">
                                             <div class="threaded_comment_header">
                                                 <div class="respond_to_comment_form_div">
-                                                    <span class="respond_prompt comment_action" data-comment="{{id}}" title="Click to respond to this comment">Respond</span>
+                                                    <button class="respond_prompt comment_action btn btn-default btn-xs"
+                                                        data-comment="{{id}}" title="Click to respond to this comment">
+                                                        Respond
+                                                    </button>
                                                     {{#can_edit}}
-                                                    <span class="edit_prompt comment_action" data-comment="{{id}}" title="Click to edit this comment">Edit</span>
+                                                        <button class="edit_prompt comment_action btn btn-default btn-xs"
+                                                            data-comment="{{id}}"
+                                                            title="Click to edit this comment">
+                                                            Edit
+                                                        </button>
                                                     {{/can_edit}}
                                                 </div>
                                                 <div>
@@ -68,8 +75,14 @@
                                     {{{context.form}}}
                                 </table>
                                 <div class="save_and_cancel">
-                                    <input class="project" id="comment-form-submit" type="submit" value="Save Comment" /></li>
-                                    <input class="project cancel" style="display: none" type="button" value="Cancel" /></li>
+                                    <button class="project btn btn-default btn-sm"
+                                        id="comment-form-submit" type="submit">
+                                        Save Comment
+                                    </button>
+                                    <button class="project cancel btn btn-default btn-sm"
+                                        style="display: none" type="button">
+                                        Cancel
+                                    </button>
                                 </div>
                             </form>
                         </div>

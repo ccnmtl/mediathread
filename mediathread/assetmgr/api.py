@@ -90,7 +90,7 @@ class AssetResource(ModelResource):
                 for note in notes:
                     note_ctx = note_resource.render_one(request, note, "")
 
-                    if note.is_global_annotation():
+                    if note_ctx['is_global_annotation']:
                         the_json['global_annotation'] = note_ctx
 
                         the_json['global_annotation_analysis'] = (

@@ -12,6 +12,7 @@ from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
+from reversion.models import Version
 
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
@@ -29,8 +30,6 @@ from mediathread.projects.models import Project, \
     RESPONSE_VIEW_POLICY, ProjectNote, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-
-from reversion.models import Version
 
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin,
@@ -646,7 +645,9 @@ class ProjectItemView(LoggedInMixin, JSONResponseMixin,
         # notes related to visible responses are visible
         pnotes = ProjectNote.objects.filter(project__id__in=response_ids)
         note_ids = pnotes.values_list('annotation__id', flat=True)
-        notes = SherdNote.objects.filter(id__in=note_ids)
+        notes = SherdNote.objects.filter(
+            id__in=note_ids).prefetch_related('author', 'asset')
 
         ctx = AssetResource().render_one_context(self.request, item, notes)
+
         return self.render_to_json_response(ctx)

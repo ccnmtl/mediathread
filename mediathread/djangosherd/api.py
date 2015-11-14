@@ -58,8 +58,10 @@ class SherdNoteResource(ModelResource):
             bundle.data['editable'] = editable
             bundle.data['citable'] = citable
 
+            termResource = TermResource()
             vocabulary = {}
-            related = list(TermRelationship.objects.get_for_object(bundle.obj))
+            related = TermRelationship.objects.get_for_object(
+                bundle.obj).prefetch_related('term__vocabulary')
             for rel in related:
                 if rel.term.vocabulary.id not in vocabulary:
                     vocabulary[rel.term.vocabulary.id] = {
@@ -68,8 +70,8 @@ class SherdNoteResource(ModelResource):
                         'terms': []
                     }
                 vocabulary[rel.term.vocabulary.id]['terms'].append(
-                    TermResource().render_one(bundle.request, rel.term))
-            bundle.data['vocabulary'] = [val for val in vocabulary.values()]
+                    termResource.render_one(bundle.request, rel.term))
+            bundle.data['vocabulary'] = vocabulary.values()
         except Asset.DoesNotExist:
             bundle.data['asset_id'] = ''
             bundle.data['metadata'] = {'title': 'Item Deleted'}

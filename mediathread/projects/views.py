@@ -559,7 +559,6 @@ class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         /api/project/user/sld2131/
         /api/project/
     """
-
     def get(self, request):
         ures = UserResource()
         course_res = CourseResource()

@@ -320,14 +320,13 @@ class Project(models.Model):
 
     def responses(self, course, viewer, by_user=None):
         visible = []
-        col = self.get_collaboration()
-        project_type = ContentType.objects.get_for_model(Project)
-        for child in col.children.filter(content_type=project_type):
-            if (child.content_object and
-                (by_user is None or
-                 child.content_object.is_participant(by_user))):
-                    if child.content_object.can_read(course, viewer):
-                        visible.append(child.content_object)
+        children = self.get_collaboration().get_children_for_object(self)
+        for child in children:
+            response = child.content_object
+            if (response and
+                    (by_user is None or response.is_participant(by_user))):
+                if response.can_read(course, viewer, child):
+                    visible.append(response)
         return visible
 
     def description(self):

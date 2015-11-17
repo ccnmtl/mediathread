@@ -18,6 +18,8 @@ if (!Sherd.Video.Vimeo) {
         var self = this;
 
         this.currentTime = 0;
+        this.currentDuration = null;
+        this.currentIsPlaying = false;
 
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
 
@@ -43,10 +45,10 @@ if (!Sherd.Video.Vimeo) {
         };
 
         /**
-          * Called when the Vimeo player is ready for event registration.
-          *
-          * Takes the froogaloop-initialized iframe as a parameter.
-          */
+         * Called when the Vimeo player is ready for event registration.
+         *
+         * Takes the froogaloop-initialized iframe as a parameter.
+         */
         this.vimeoPlayerReady = function(froogaloop) {
             jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
 
@@ -221,19 +223,32 @@ if (!Sherd.Video.Vimeo) {
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        this.media.duration = function () {
-            var duration = 0;
+        /**
+         * Get the duration asynchronously via vimeo's postMessage API.
+         *
+         * Returns a Promise.
+         */
+        this.media.getAsyncDuration = function() {
+            var dfd = jQuery.Deferred();
+
             if (self.components.player) {
                 try {
-                    duration = self.components.player.api('getDuration');
-                    if (duration < 0) {
-                        duration = 0;
-                    }
+                    self.components.player.api('getDuration', function(value) {
+                        value = Math.max(value, 0);
+                        self.currentDuration = value;
+                        return dfd.resolve(value);
+                    });
                 } catch (e) {
                     // media probably not yet initialized
+                    return dfd.reject();
                 }
             }
-            return duration;
+            return dfd;
+        };
+
+        this.media.duration = function () {
+            self.media.getAsyncDuration();
+            return self.currentDuration;
         };
 
         this.media.pause = function () {
@@ -256,14 +271,21 @@ if (!Sherd.Video.Vimeo) {
             return self.media._ready;
         };
 
-        this.media.isPlaying = function () {
-            var playing = false;
+        this.media.getAsyncIsPlaying = function() {
+            var dfd = jQuery.Deferred();
             try {
-                if (self.components.player) {
-                    playing = !self.components.player.api('paused');
-                }
-            } catch (e) {}
-            return playing;
+                self.components.player.api('paused', function(value) {
+                    return !value;
+                });
+            } catch(e) {
+                return dfd.reject();
+            }
+            return dfd;
+        };
+
+        this.media.isPlaying = function () {
+            self.media.getAsyncIsPlaying();
+            return self.currentIsPlaying;
         };
 
         this.media.seek = function (starttime, endtime, autoplay) {
@@ -316,18 +338,14 @@ if (!Sherd.Video.Vimeo) {
          */
         this.media.getAsyncTime = function() {
             var dfd = jQuery.Deferred();
-            var time = 0;
 
             if (self.components.player) {
                 try {
-                    self.components.player.api('getCurrentTime', function(value, player_id) {
+                    self.components.player.api('getCurrentTime', function(value) {
                         value = Math.max(value, 0);
                         self.currentTime = value;
                         return dfd.resolve(value);
                     });
-                    if (time < 0) {
-                        time = 0;
-                    }
                 } catch (e) {
                     // media probably not yet initialized
                     return dfd.reject();
@@ -361,7 +379,11 @@ if (!Sherd.Video.Vimeo) {
         };
 
         this.media.url = function () {
-            return self.components.player.api('getVideoUrl');
+            var dfd = jQuery.Deferred();
+            self.components.player.api('getVideoUrl', function(value) {
+                return dfd.resolve(value);
+            });
+            return dfd;
         };
     };
 }

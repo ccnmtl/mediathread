@@ -15,10 +15,6 @@ body
     width: 100% auto;
 }
 
-iframe {
-    border: 0;
-}
-
 .ui-widget {
     font-family: 'lucida grande',arial,verdana,sans-serif;
     font-size: 1em;
@@ -4262,4 +4258,8 @@ a.btn.btn-default img.left {
 .selection-assignment .selected-item .gallery-item {
     margin-top: 30px;
     float: none;
+}
+
+.sherd-vimeo-wrapper iframe {
+    border: 0;
 }

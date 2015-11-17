@@ -17,6 +17,8 @@ if (!Sherd.Video.Vimeo) {
     Sherd.Video.Vimeo = function () {
         var self = this;
 
+        this.currentTime = 0;
+
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
 
         this.state = {
@@ -307,19 +309,39 @@ if (!Sherd.Video.Vimeo) {
             }
         };
 
-        this.media.time = function () {
+        /**
+         * Get the time asynchronously via vimeo's postMessage API.
+         *
+         * Returns a Promise.
+         */
+        this.media.getAsyncTime = function() {
+            var dfd = jQuery.Deferred();
             var time = 0;
+
             if (self.components.player) {
                 try {
-                    time = self.components.player.api('getCurrentTime');
+                    self.components.player.api('getCurrentTime', function(value, player_id) {
+                        value = Math.max(value, 0);
+                        self.currentTime = value;
+                        return dfd.resolve(value);
+                    });
                     if (time < 0) {
                         time = 0;
                     }
                 } catch (e) {
                     // media probably not yet initialized
+                    return dfd.reject();
                 }
             }
-            return time;
+            return dfd;
+        };
+
+        this.media.time = function() {
+            // Schedule a time query
+            self.media.getAsyncTime();
+
+            // Return an estimate
+            return self.currentTime;
         };
 
         this.media.timestrip = function () {

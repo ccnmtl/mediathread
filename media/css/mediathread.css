@@ -1555,66 +1555,47 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input {
 	cursor: pointer;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
-    width: 50px;
-    font-size: .75em;
-}
-
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-assignment-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-assignment-response {
     float: right;
     margin-left: 5px;    
     width: 145px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-instructor-feedback {
     float: right;
     margin-left: 5px;    
     margin-top: 4px;
     width: 175px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-previewbutton {
-    float: right;
-    margin-left: 5px;    
-    width: 60px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton {
     float: right;
     margin-left: 5px;
-    width: 62px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton.saving {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton.saving {
     text-align: left;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-responsesbutton {
     float: right;
-    margin-left: 5px;
-    width: 65px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-responsesbutton {
-    float: right;
-    margin-left: 5px;
-    width: 120px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-responses {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-responses {
     float: right;
     margin-left: 5px;
     width: 105px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-response {
     float: right;
     margin-left: 5px;
     width: 90px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .createnew-button {
     float: right;
     width: 170px;    
 }

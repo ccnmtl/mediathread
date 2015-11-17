@@ -141,7 +141,8 @@ Feature: Assignment
         
         # Create Instructor Feedback
         When I click the Create Instructor Feedback button
-        Then there is an open Discussion panel        
+        Then there is an open Discussion panel
+        Then I click the Edit button
         Then I write some text for the discussion
         Then I click the Save Comment button
         Then there is a comment from "Instructor One"

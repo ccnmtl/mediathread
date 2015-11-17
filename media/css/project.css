@@ -84,9 +84,8 @@ div.mce_editorwindow {
     border: 1px solid #ccc;
 }
  
-input.participants_toggle {
-    margin: 0px 10px 5px 0px;
-    font-size: .7em;
+.participants_toggle {
+    margin: 0 10px 5px 0;
 }
 
 #id_participants {*height: 15em;}
@@ -120,19 +119,6 @@ div.save-publish-status li {
 
 /* ---- Threaded comments ---------- */
 
-.comment_action {
-    margin: 4px 2px 0 0;
-    background-repeat: repeat-x;
-    border: 1px solid #477794;
-    text-transform: capitalize;
-    padding: 2px 5px;
-    text-decoration: none;
-    color: black;
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    font-size: 85%;
-    cursor: pointer;
-}
-
 div.threadedcomments-container {
     overflow-x: hidden;
     overflow-y: auto;
@@ -152,7 +138,6 @@ form.threaded_comments_form h3 {
 }
 
 form.threaded_comments_form div.save_and_cancel {
-    height: 20px;
     width: 100%;
     background-color: #ccc;
 }
@@ -252,8 +237,7 @@ div.comment-date {
 
 .respond_to_comment_form_div {
     float: right;
-    margin-right: 0px;
-    margin-top: 4px;
+    margin-right: 2px;
 }
 
 

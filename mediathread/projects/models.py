@@ -143,9 +143,14 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
-        ).distinct().select_related('author')
+        ).distinct()
 
-        lst = [p for p in projects if p.can_read(course, viewer)]
+        lst = []
+        for collab in Collaboration.objects.get_for_object_list(projects):
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                lst.append(project)
+
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
@@ -315,14 +320,13 @@ class Project(models.Model):
 
     def responses(self, course, viewer, by_user=None):
         visible = []
-        col = self.get_collaboration()
-        project_type = ContentType.objects.get_for_model(Project)
-        for child in col.children.filter(content_type=project_type):
-            if (child.content_object and
-                (by_user is None or
-                 child.content_object.is_participant(by_user))):
-                    if child.content_object.can_read(course, viewer):
-                        visible.append(child.content_object)
+        children = self.get_collaboration().get_children_for_object(self)
+        for child in children:
+            response = child.content_object
+            if (response and
+                    (by_user is None or response.is_participant(by_user))):
+                if response.can_read(course, viewer, child):
+                    visible.append(response)
         return visible
 
     def description(self):

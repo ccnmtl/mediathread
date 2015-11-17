@@ -199,25 +199,25 @@ class ProjectResource(ModelResource):
             dehydrated = self.full_dehydrate(abundle)
             ctx = self._meta.serializer.to_simple(dehydrated, None)
 
-            if self.editable:
-                feedback = project.feedback_discussion()
-                if feedback:
-                    ctx['feedback'] = feedback.id
-
-            parent_assignment = project.assignment()
-            if parent_assignment:
-                ctx['display_as_assignment'] = True
-                ctx['collaboration'] = {}
-                ctx['collaboration']['title'] = parent_assignment.title
-                ctx['collaboration']['url'] = \
-                    parent_assignment.get_absolute_url()
-                ctx['collaboration']['due_date'] = \
-                    parent_assignment.get_due_date()
-            elif project.is_assignment() or project.is_selection_assignment():
+            if project.is_assignment() or project.is_selection_assignment():
                 responses = project.responses(course, user)
                 ctx['responses'] = len(responses)
                 ctx['is_assignment'] = True
                 ctx['display_as_assignment'] = True
+            else:
+                parent_assignment = project.assignment()
+                if parent_assignment:
+                    if self.editable:
+                        feedback = project.feedback_discussion()
+                        if feedback:
+                            ctx['feedback'] = feedback.id
+                    ctx['display_as_assignment'] = True
+                    ctx['collaboration'] = {}
+                    ctx['collaboration']['title'] = parent_assignment.title
+                    ctx['collaboration']['url'] = \
+                        parent_assignment.get_absolute_url()
+                    ctx['collaboration']['due_date'] = \
+                        parent_assignment.get_due_date()
 
             lst.append(ctx)
         return lst

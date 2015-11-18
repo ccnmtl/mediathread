@@ -4259,3 +4259,7 @@ a.btn.btn-default img.left {
     margin-top: 30px;
     float: none;
 }
+
+.sherd-vimeo-wrapper iframe {
+    border: 0;
+}

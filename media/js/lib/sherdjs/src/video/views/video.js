@@ -133,24 +133,30 @@ if (!Sherd.Video.Base) {
         // Player specific controls
         this.media = {
             duration : unimplemented, // get duration in seconds
-            pause : unimplemented,
-            pauseAt : function (endtime) {
+            pause: unimplemented,
+            pauseAt: function (endtime) {
                 if (endtime) {
                     // kill any outstanding timers for this event
                     var name = self.microformat.type() + ' pause';
                     self.events.killTimer(name);
-                    self.events.queue(name, [{
+                    self.events.queue(name, [
+                        {
                             test: function () {
-                                return self.media.time() >= endtime;
+                                var time = self.media.time();
+                                return time >= endtime;
                             },
                             poll: 500
                         },
-                        { call: function () { self.media.pause(); }}
-                     ]);
+                        {
+                            call: function () {
+                                self.media.pause();
+                            }
+                        }
+                    ]);
                 }
             },
-            play : unimplemented,
-            playAt : function (starttime) {
+            play: unimplemented,
+            playAt: function (starttime) {
                 self.media.seek(starttime, false, /*autoplay*/true);
             },
             isPlaying : function () {

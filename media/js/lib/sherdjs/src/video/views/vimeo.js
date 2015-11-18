@@ -1,4 +1,4 @@
-/* global Sherd: true */
+/* global Sherd: true, $f: true, console: true */
 /*
   Support for the Vimeo js-enabled player.  documentation at:
   http://vimeo.com/api/docs/oembed
@@ -17,6 +17,10 @@ if (!Sherd.Video.Vimeo) {
     Sherd.Video.Vimeo = function () {
         var self = this;
 
+        this.currentTime = 0;
+        this.currentDuration = null;
+        this.currentIsPlaying = false;
+
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
 
         this.state = {
@@ -27,16 +31,53 @@ if (!Sherd.Video.Vimeo) {
 
         this.presentations = {
             'small': {
-                width: function () { return 310; },
-                height: function () { return 220; }
+                width: function () { return 320; },
+                height: function () { return 240; }
             },
             'medium': {
-                width: function () { return 475; },
-                height: function () { return 336; }
+                width: function () { return 480; },
+                height: function () { return 360; }
             },
             'default': {
-                width: function () { return 620; },
-                height: function () { return 440; }
+                width: function () { return 640; },
+                height: function () { return 480; }
+            }
+        };
+
+        /**
+         * Called when the Vimeo player is ready for event registration.
+         *
+         * Takes the froogaloop-initialized iframe as a parameter.
+         */
+        this.vimeoPlayerReady = function(froogaloop) {
+            jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
+
+            self.components.player = $f(document.getElementById(
+                self.components.playerID));
+            self.components.player.addEvent('playProgress', vimeo_player_progress);
+            self.components.player.addEvent('play', on_vimeo_play);
+            self.components.player.addEvent('pause', on_vimeo_pause);
+            self.components.player.addEvent('finish', on_vimeo_finish);
+
+            // register for notifications from clipstrip to seek to various times in the video
+            self.events.connect(self, 'seek', self.media.playAt);
+
+            self.events.connect(self, 'playclip', function (obj) {
+                self.setState(obj, { 'autoplay': true });
+            });
+
+            var duration = self.media.duration();
+            if (duration > 1) {
+                self.events.signal(self, 'duration', { duration: duration });
+            }
+
+            self.media._ready = true;
+
+            // get out of the "loaded" function before seeking happens
+            if (self.state.starttime !== undefined) {
+                setTimeout(function () {
+                    self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
+                }, 100);
             }
         };
 
@@ -70,33 +111,22 @@ if (!Sherd.Video.Vimeo) {
                 };
             }
 
-            // For IE, the id needs to be placed in the object.
-            // For FF, the id needs to be placed in the embed.
-            var objectID = '';
-            var embedID = '';
-            if (window.navigator.userAgent.indexOf("MSIE") > -1) {
-                objectID = 'id="' + playerID + '"';
-            } else {
-                embedID = 'id="' + playerID + '"';
-            }
-
             var bits = obj.vimeo.split('/');
             var clipId = bits[bits.length - 1];
 
+            var params = jQuery.param({
+                api: 1,
+                player_id: playerID
+            });
+
             var embedCode = '<div id="' + wrapperID + '" class="sherd-vimeo-wrapper">' +
-                '  <object width="' + obj.options.width + '" height="' + obj.options.height + '" ' +
-                '          classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" ' + objectID + '>' +
-                '  <param name="movie" value="https://vimeo.com/moogaloop.swf"></param>' +
-                '  <param name="allowscriptaccess" value="always"/></param>' +
-                '  <param name="autoplay" value="' + autoplay + '"></param>' +
-                '  <param name="width" value="' + obj.options.width + '"></param>' +
-                '  <param name="height" value="' + obj.options.height + '"></param>' +
-                '  <param name="allowfullscreen" value="true"></param>' +
-                '  <param name="flashvars" value="autoplay=0&amp;loop=0&amp;clip_id=' + clipId + '&amp;color=0&amp;fullscreen=1&amp;server=vimeo.com&amp;show_byline=1&amp;show_portrait=1&amp;show_title=1&amp;js_api=1">' +
-                '  <embed ' + embedID + ' width="' + obj.options.width + '" height="' + obj.options.height + '" type="application/x-shockwave-flash"' +
-                '     src="https://vimeo.com/moogaloop.swf" allowscriptaccess="always" allowfullscreen="true" flashvars="autoplay=' + autoplay + '&amp;loop=0&amp;clip_id=' + clipId + '&amp;color=0&amp;fullscreen=1&amp;server=vimeo.com&amp;show_byline=1&amp;show_portrait=1&amp;show_title=1&amp;js_api=1">' +
-                '  </embed>' +
-                '</object></div>';
+                '<iframe id="' + playerID + '" ' +
+                'src="//player.vimeo.com/video/' + clipId +
+                '?' + params + '" ' +
+                'width="' + obj.options.width + '" ' +
+                'height="' + obj.options.height + '" ' +
+                '></iframe>' +
+                '</div>';
 
             return {
                 options: obj.options,
@@ -123,10 +153,12 @@ if (!Sherd.Video.Vimeo) {
                     rv.width = create_obj.options.width;
                     rv.height = create_obj.options.height;
                     rv.itemId = create_obj.object.id;
-                    rv.primaryType = create_obj.object.primary_type;                    
+                    rv.primaryType = create_obj.object.primary_type;
                 }
                 return rv;
-            } catch (e) {}
+            } catch (e) {
+                console.error('vimeo component error', e);
+            }
             return false;
         };
 
@@ -151,13 +183,13 @@ if (!Sherd.Video.Vimeo) {
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
 
-        window.vimeo_player_progress = function (timing) {
+        var vimeo_player_progress = function (timing) {
             if (self.state.seeking === true && timing.seconds > 0.5) {
                 self.state.seeking = false;
                 delete self.state.autoplay;
 
                 if (self.state.starttime !== undefined && self.state.starttime > 0) {
-                    self.components.player.api_seekTo(self.state.starttime);
+                    self.components.player.api('seekTo', self.state.starttime);
                     delete self.state.starttime;
                 }
 
@@ -169,72 +201,60 @@ if (!Sherd.Video.Vimeo) {
                 }
             }
         };
-        
-        window.on_vimeo_play = function () {
-            jQuery(window).trigger('video.play', [self.components.itemId, self.components.primaryType]);
-        };
-        
-        window.on_vimeo_pause = function () {
-            jQuery(window).trigger('video.pause', [self.components.itemId, self.components.primaryType]);
-        };
-        
-        window.on_vimeo_finish = function () {
-            jQuery(window).trigger('video.finish', [self.components.itemId, self.components.primaryType]);
+
+        var on_vimeo_play = function () {
+            jQuery(window).trigger(
+                'video.play',
+                [self.components.itemId, self.components.primaryType]);
         };
 
-        window.vimeo_player_loaded = function (playerID) {
-            jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
-            
-            self.components.player = document.getElementById(self.components.playerID);
-            self.components.player.api_addEventListener("playProgress", "vimeo_player_progress");
-            self.components.player.api_addEventListener("play", "on_vimeo_play");
-            self.components.player.api_addEventListener("pause", "on_vimeo_pause");
-            self.components.player.api_addEventListener("finish", "on_vimeo_finish");
+        var on_vimeo_pause = function () {
+            jQuery(window).trigger(
+                'video.pause',
+                [self.components.itemId, self.components.primaryType]);
+        };
 
-            // register for notifications from clipstrip to seek to various times in the video
-            self.events.connect(self, 'seek', self.media.playAt);
-
-            self.events.connect(self, 'playclip', function (obj) {
-                self.setState(obj, { 'autoplay': true });
-            });
-
-            var duration = self.media.duration();
-            if (duration > 1) {
-                self.events.signal(self, 'duration', { duration: duration });
-            }
-
-            self.media._ready = true;
-
-            // get out of the "loaded" function before seeking happens
-            if (self.state.starttime !== undefined) {
-                setTimeout(function () {
-                    self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
-                }, 100);
-            }
+        var on_vimeo_finish = function () {
+            jQuery(window).trigger(
+                'video.finish',
+                [self.components.itemId, self.components.primaryType]);
         };
 
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        this.media.duration = function () {
-            var duration = 0;
+        /**
+         * Get the duration asynchronously via vimeo's postMessage API.
+         *
+         * Returns a Promise.
+         */
+        this.media.getAsyncDuration = function() {
+            var dfd = jQuery.Deferred();
+
             if (self.components.player) {
                 try {
-                    duration = self.components.player.api_getDuration();
-                    if (duration < 0) {
-                        duration = 0;
-                    }
+                    self.components.player.api('getDuration', function(value) {
+                        value = Math.max(value, 0);
+                        self.currentDuration = value;
+                        return dfd.resolve(value);
+                    });
                 } catch (e) {
                     // media probably not yet initialized
+                    return dfd.reject();
                 }
             }
-            return duration;
+            return dfd;
+        };
+
+        this.media.duration = function () {
+            self.media.getAsyncDuration();
+            return self.currentDuration;
         };
 
         this.media.pause = function () {
             if (self.components.player) {
                 try {
-                    self.components.player.api_pause();
+                    self.components.player.api('pause');
                 } catch (e) {}
             }
         };
@@ -242,7 +262,7 @@ if (!Sherd.Video.Vimeo) {
         this.media.play = function () {
             if (self.media.ready) {
                 try {
-                    self.components.player.api_play();
+                    self.components.player.api('play');
                 } catch (e) {}
             }
         };
@@ -251,19 +271,26 @@ if (!Sherd.Video.Vimeo) {
             return self.media._ready;
         };
 
-        this.media.isPlaying = function () {
-            var playing = false;
+        this.media.getAsyncIsPlaying = function() {
+            var dfd = jQuery.Deferred();
             try {
-                if (self.components.player) {
-                    playing = !self.components.player.api_paused();
-                }
-            } catch (e) {}
-            return playing;
+                self.components.player.api('paused', function(value) {
+                    return !value;
+                });
+            } catch(e) {
+                return dfd.reject();
+            }
+            return dfd;
+        };
+
+        this.media.isPlaying = function () {
+            self.media.getAsyncIsPlaying();
+            return self.currentIsPlaying;
         };
 
         this.media.seek = function (starttime, endtime, autoplay) {
             if (starttime === undefined || starttime === 0) {
-                starttime = 0.1; // don't even ask. 
+                starttime = 0.1; // don't even ask.
             }
             // this might need to be a timer to determine "when" the media player is ready
             // it's working differently from initial load to the update method
@@ -279,15 +306,15 @@ if (!Sherd.Video.Vimeo) {
                 self.state.seeking = true;
 
                 if (!self.media.isPlaying()) {
-                    if (self.components.player.api_play) {
-                        self.components.player.api_play();
+                    if (self.components.player.api) {
+                        self.components.player.api('play');
                     }
                 }
             } else if (self.media.isPlaying() || self.state.seeking || self.state.autoplay) {
                 // executes immediately
                 if (starttime !== undefined && starttime > 0) {
-                    if (self.components.player.api_seekTo) {
-                        self.components.player.api_seekTo(starttime);
+                    if (self.components.player.api) {
+                        self.components.player.api('seekTo', starttime);
                     }
                 }
 
@@ -304,19 +331,35 @@ if (!Sherd.Video.Vimeo) {
             }
         };
 
-        this.media.time = function () {
-            var time = 0;
+        /**
+         * Get the time asynchronously via vimeo's postMessage API.
+         *
+         * Returns a Promise.
+         */
+        this.media.getAsyncTime = function() {
+            var dfd = jQuery.Deferred();
+
             if (self.components.player) {
                 try {
-                    time = self.components.player.api_getCurrentTime();
-                    if (time < 0) {
-                        time = 0;
-                    }
+                    self.components.player.api('getCurrentTime', function(value) {
+                        value = Math.max(value, 0);
+                        self.currentTime = value;
+                        return dfd.resolve(value);
+                    });
                 } catch (e) {
                     // media probably not yet initialized
+                    return dfd.reject();
                 }
             }
-            return time;
+            return dfd;
+        };
+
+        this.media.time = function() {
+            // Schedule a time query
+            self.media.getAsyncTime();
+
+            // Return an estimate
+            return self.currentTime;
         };
 
         this.media.timestrip = function () {
@@ -336,7 +379,11 @@ if (!Sherd.Video.Vimeo) {
         };
 
         this.media.url = function () {
-            return self.components.player.api_getVideoUrl();
+            var dfd = jQuery.Deferred();
+            self.components.player.api('getVideoUrl', function(value) {
+                return dfd.resolve(value);
+            });
+            return dfd;
         };
     };
 }

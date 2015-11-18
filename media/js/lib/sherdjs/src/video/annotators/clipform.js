@@ -170,8 +170,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
         };
 
         this.initialize = function (create_obj) {
-            self.events.connect(self.components.startButton, 'click', function (evt) {
-                var movieTime = self.targetview.media.time();
+            var postStartButton = function(movieTime) {
                 var movieTimeCode = secondsToCode(movieTime);
                 if (self.components.startField) {
                     // update start time with movie time
@@ -185,9 +184,19 @@ if (!Sherd.Video.Annotators.ClipForm) {
                     self.components.endField.value = movieTimeCode;
                 }
                 self.storage.update(self.getState(), false);
+            };
+            self.events.connect(self.components.startButton, 'click', function (evt) {
+                if (typeof self.targetview.media.getAsyncTime === 'function') {
+                    self.targetview.media.getAsyncTime().then(function(time) {
+                        postStartButton(time);
+                    });
+                } else {
+                    var movieTime = self.targetview.media.time();
+                    postStartButton(movieTime);
+                }
             });
-            self.events.connect(self.components.endButton, 'click', function (evt) {
-                var movieTime = self.targetview.media.time();
+
+            var postEndButton = function(movieTime) {
                 var movieTimeCode = secondsToCode(movieTime);
                 
                 if (self.targetview.media.pause) {
@@ -209,6 +218,17 @@ if (!Sherd.Video.Annotators.ClipForm) {
                 }
 
                 self.storage.update(self.getState(), false);
+            };
+            self.events.connect(self.components.endButton, 'click', function (evt) {
+                if (typeof self.targetview.media.getAsyncTime === 'function') {
+                    self.targetview.media.getAsyncTime().then(function(time) {
+                        postEndButton(time);
+                    });
+                } else {
+                    var movieTime = self.targetview.media.time();
+                    postEndButton(movieTime);
+                }
+
             });
             self.events.connect(self.components.startField, 'change', function (evt) {
                 var obj = self.getState();

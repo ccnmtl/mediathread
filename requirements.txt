@@ -41,7 +41,7 @@ django-contrib-comments==1.6.1
 django-threadedcomments==1.0b1
 requirements/src/django-courseaffils-2.0.6.tar.gz
 django-statsd-mozilla==0.3.15
-raven==5.2.0
+raven==5.8.1
 django-appconf==1.0.1  # django_compressor
 django-compressor==1.5
 django-jenkins==0.17.0

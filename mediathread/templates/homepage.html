@@ -272,11 +272,7 @@
                     </a>
                     <div class="arrowContent" id="import_collection" style="display: none">
                         {% include "assetmgr/install_chrome_extension.html" %}
-                        <p>
-                            Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
-                            
-                            {% include "assetmgr/install_bookmarklet.html" %}
-                        </p>
+                        {% include "assetmgr/install_bookmarklet.html" %}
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->
                 {% if can_upload and uploader %}

@@ -110,7 +110,8 @@ MIDDLEWARE_CLASSES = [
     'courseaffils.middleware.CourseManagerMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
-    'waffle.middleware.WaffleMiddleware'
+    'waffle.middleware.WaffleMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'mediathread.urls'

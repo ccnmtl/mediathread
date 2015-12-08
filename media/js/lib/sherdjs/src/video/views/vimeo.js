@@ -76,7 +76,10 @@ if (!Sherd.Video.Vimeo) {
             // get out of the "loaded" function before seeking happens
             if (self.state.starttime !== undefined) {
                 setTimeout(function () {
-                    self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
+                    self.media.seek(
+                        self.state.starttime,
+                        self.state.endtime,
+                        self.state.autoplay);
                 }, 100);
             }
         };
@@ -119,12 +122,16 @@ if (!Sherd.Video.Vimeo) {
                 player_id: playerID
             });
 
-            var embedCode = '<div id="' + wrapperID + '" class="sherd-vimeo-wrapper">' +
+            var src = 'https://player.vimeo.com/video/' + clipId + '?' +
+                params;
+
+            var embedCode = '<div id="' + wrapperID + '" ' +
+                'class="sherd-vimeo-wrapper">' +
                 '<iframe id="' + playerID + '" ' +
-                'src="//player.vimeo.com/video/' + clipId +
-                '?' + params + '" ' +
+                'src="' + src + '" ' +
                 'width="' + obj.options.width + '" ' +
                 'height="' + obj.options.height + '" ' +
+                'autoplay="' + autoplay + '" ' +
                 '></iframe>' +
                 '</div>';
 
@@ -328,6 +335,16 @@ if (!Sherd.Video.Vimeo) {
                 delete self.state.endtime;
                 delete self.state.autoplay;
                 self.state.seeking = false;
+            } else {
+                self.state.starttime = starttime;
+                self.state.endtime = endtime;
+                self.state.seeking = true;
+
+                if (!self.media.isPlaying()) {
+                    if (self.components.player.api) {
+                        self.components.player.api('play');
+                    }
+                }
             }
         };
 

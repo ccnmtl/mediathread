@@ -1,1 +1,1 @@
-requirements/src/mediathread-bookmarklet-1.0.3.tgz
+requirements/src/mediathread-bookmarklet-1.0.4.tgz

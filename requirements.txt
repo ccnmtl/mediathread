@@ -1,3 +1,4 @@
+--index-url https://pypi.ccnmtl.columbia.edu/
 Django==1.8.7
 psycopg2==2.6.1
 #for MySQL: MySQL-python==1.2.5
@@ -18,7 +19,7 @@ testtools==1.8.0  # python-subunit
 pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.2.0  # lettuce
-requirements/src/lettuce-0.2.21.ccnmtl.tar.gz
+lettuce==0.2.21.ccnmtl
 selenium==2.48.0
 six==1.10.0
 sqlparse==0.1.18  # django-debug-toolbar
@@ -39,7 +40,7 @@ django-reversion==1.9.3
 djangohelpers==0.18.1
 django-contrib-comments==1.6.1
 django-threadedcomments==1.0b1
-requirements/src/django-courseaffils-2.0.6.tar.gz
+django-courseaffils==2.0.6
 django-statsd-mozilla==0.3.16
 raven==5.8.1
 django-appconf==1.0.1  # django_compressor

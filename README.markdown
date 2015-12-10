@@ -86,6 +86,34 @@ Go to your site in a web browser.
    http://myhost.example.com:8000/save/
 
 
+DOCKER DEVELOPMENT
+------------------
+
+[Please note that the docker setup for Mediathread is still
+experimental. There are likely to be rough edges here.]
+
+If you have docker set up and docker-compose installed, you can get a
+development environment up and running very quickly. To initialize it,
+the following steps are recommended:
+
+    $ docker pull ccnmtl/mediathread
+    $ docker-compose run web manage syncdb # create a superuser when asked to
+	$ docker-compose run web migrate
+
+After that, a simple:
+
+    $ docker-compose up
+
+will bring up a development server on port 8000 (if you are running
+boot2docker, it may end up on a different port) backed by a PostgreSQL
+database.
+
+Production deployment with Docker is also possible, though even less
+tested than development. The `settings_docker.py` file has the default
+settings that the docker image uses and is designed to allow you to
+override/set the important values through environment variables (so
+configuration can be kept out of the docker image).
+
 DJANGO SITE INFRASTRUCTURE
 ----------------
 Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/1.6/ref/contrib/sites/

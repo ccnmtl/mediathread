@@ -1,6 +1,6 @@
 /* global CitationView: true, djangosherd: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true */
-/* global tinyMCE: true, showMessage: true */
+/* global tinymce: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
@@ -99,10 +99,10 @@ DiscussionPanelHandler.prototype.isSubpanelOpen = function() {
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     var self = this;
 
-    if (instance && instance.id === 'id_comment' && !self.tinyMCE) {
+    if (instance && instance.id === 'id_comment' && !self.tinymce) {
 
-        self.tinyMCE = instance;
-        // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize
+        self.tinymce = instance;
+        // Reset tinymce width to 100% via javascript. TinyMCE doesn't resize
         // properly
         // if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', '100%');
@@ -110,7 +110,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
         if (jQuery('#id_title').is(':visible')) {
             jQuery('#id_title').focus();
         } else {
-            self.tinyMCE.focus();
+            self.tinymce.focus();
         }
 
         self.collectionList = new CollectionList({
@@ -123,14 +123,14 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
             'owners': self.panel.owners,
             'view_callback': function() {
                 var newAssets = self.collectionList.getAssets();
-                self.tinyMCE.plugins.citation.decorateCitationAdders(
+                self.tinymce.plugins.citation.decorateCitationAdders(
                     newAssets);
 
                 // Fired by CollectionList & AnnotationList
                 jQuery(window).bind('assets.refresh', {'self': self},
                     function(event, html) {
                         var newAssets = self.collectionList.getAssets();
-                        self.tinyMCE.plugins.citation.decorateCitationAdders(
+                        self.tinymce.plugins.citation.decorateCitationAdders(
                             newAssets);
                     });
             }
@@ -151,7 +151,7 @@ DiscussionPanelHandler.prototype.resize = function() {
     visible -= jQuery(self.el).find('.discussion-participant-row').height();
     visible -= 80; // padding
 
-    if (self.tinyMCE) {
+    if (self.tinymce) {
         var threads = jQuery('li.comment-thread');
         var editorHeight = visible;
         if (threads.length === 0) {
@@ -160,7 +160,7 @@ DiscussionPanelHandler.prototype.resize = function() {
             editorHeight = 150;
         }
 
-        // tinyMCE project editing window. Make sure we only resize ourself.
+        // tinymce project editing window. Make sure we only resize ourself.
         jQuery(self.el).find('table.mceLayout')
             .css('height', (editorHeight) + 'px');
         jQuery(self.el).find('iframe').css('height', (editorHeight) + 'px');
@@ -190,8 +190,8 @@ DiscussionPanelHandler.prototype.resize = function() {
 DiscussionPanelHandler.prototype.onClosePanel = function() {
     var self = this;
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
     self.render();
 };
@@ -236,8 +236,8 @@ DiscussionPanelHandler.prototype.set_comment_content = function(content) {
     self.form.elements.title.value = content.title || '';
 
     try {
-        if (self.tinyMCE) {
-            self.tinyMCE.setContent(content.comment);
+        if (self.tinymce) {
+            self.tinymce.setContent(content.comment);
         }
     } catch (e) {
         /*
@@ -315,15 +315,15 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
         .find('a.materialCitation').addClass('disabled');
 
     if (insertAfter) {
-        self.tinyMCE = null;
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_comment');
+        self.tinymce = null;
+        tinymce.execCommand('mceRemoveControl', false, 'id_comment');
         jQuery(self.form).insertAfter(insertAfter);
 
-        ///makes it resizable--somewhat hacking tinyMCE.init()
-        tinyMCE.settings.theme_advanced_statusbar_location = 'bottom';
-        tinyMCE.settings.theme_advanced_resize_vertical = true;
+        ///makes it resizable--somewhat hacking tinymce.init()
+        tinymce.settings.theme_advanced_statusbar_location = 'bottom';
+        tinymce.settings.theme_advanced_resize_vertical = true;
 
-        tinyMCE.execCommand('mceAddControl', false, 'id_comment');
+        tinymce.execCommand('mceAddControl', false, 'id_comment');
     }
     jQuery(self.form).show('fast', function() {
         if (scroll) {
@@ -359,8 +359,8 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
         .find('a.materialCitation').removeClass('disabled');
 
     // Switch to a readonly view
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     jQuery(self.form).hide('fast', function() {
@@ -401,7 +401,7 @@ DiscussionPanelHandler.prototype.cancel = function(evt) {
 DiscussionPanelHandler.prototype.submit = function(evt) {
     var self = evt.data.self;
 
-    self.tinyMCE.save();
+    self.tinymce.save();
     evt.preventDefault();
 
     if (self.max_comment_length &&
@@ -657,8 +657,8 @@ DiscussionPanelHandler.prototype.readonly = function() {
     // Close any tinymce windows
     self.citationView.unload();
 
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     if (!jQuery(self.form).is(':visible')) {
@@ -674,7 +674,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
         jQuery(self.el).find('input.project-title').show();
         jQuery(self.el).find('.participants_toggle').show();
 
-        self.tinyMCE.show();
+        self.tinymce.show();
     } else {
         // Switch to a readonly view
         jQuery(self.el).find('div.collection-materials').hide();

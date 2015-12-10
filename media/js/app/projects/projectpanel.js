@@ -1,7 +1,7 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
 /* global SelectFilter: true, showMessage: true */
-/* global tinyMCE: true, tinyMCEsettings: true */
+/* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var ProjectPanelHandler = function(el, parent, panel, space_owner) {
@@ -12,7 +12,14 @@ var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     this.projectModified = false;
     this.parentContainer = parent;
     this.space_owner = space_owner;
-    this.tinyMCEsettings = tinyMCEsettings;
+    this.tinymceSettings = jQuery.extend(tinymceSettings, {
+        init_instance_callback: function(editor) {
+            self.onTinyMCEInitialize(editor);
+        },
+        setup: function(editor) {
+            self.setDirty(true);
+        }
+    });
     jQuery(self.el).find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
@@ -45,10 +52,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.essaySpace = jQuery(self.el).find('.essay-space')[0];
 
     // hook up behaviors
-    jQuery(window).on('tinymce_init_instance',
-        function(event, instance, param2) {
-            self.onTinyMCEInitialize(instance);
-        });
 
     jQuery(window).resize(function() {
         self.resize();
@@ -124,8 +127,8 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.citationView.decorateLinks(self.essaySpace.id);
 
     if (panel.context.can_edit) {
-        tinyMCE.settings = self.tinyMCEsettings;
-        tinyMCE.execCommand('mceAddControl', false,
+        tinymce.settings = self.tinymceSettings;
+        tinymce.execCommand('mceAddEditor', true,
                             panel.context.project.id + '-project-content');
     }
 
@@ -138,13 +141,9 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
 
     if (instance &&
         instance.id === self.panel.context.project.id + '-project-content' &&
-            !self.tinyMCE) {
+            !self.tinymce) {
 
-        self.tinyMCE = instance;
-
-        self.tinyMCE.onChange.add(function(args) {
-            self.setDirty(true);
-        });
+        self.tinymce = instance;
 
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
         // if this isn't completed AFTER instantiation
@@ -165,20 +164,20 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
             'citable': true,
             'view_callback': function() {
                 var assets = self.collectionList.getAssets();
-                self.tinyMCE.plugins.citation.decorateCitationAdders(assets);
+                //self.tinymce.plugins.citation.decorateCitationAdders(assets);
                 jQuery(window).trigger('resize');
 
                 // Fired by CollectionList & AnnotationList
                 jQuery(window).on('assets.refresh', {'self': self},
                     function(event, html) {
-                        self.tinyMCE.plugins.citation.decorateCitationAdders(
-                            self.collectionList.getAssets());
+                        /*self.tinymce.plugins.citation.decorateCitationAdders(
+                            self.collectionList.getAssets());*/
                     });
             }
         });
 
         if (self.panel.context.editing) {
-            self.tinyMCE.show();
+            self.tinymce.show();
             var title = jQuery(self.el).find('input.project-title');
             title.focus();
         }
@@ -200,9 +199,9 @@ ProjectPanelHandler.prototype.resize = function() {
 
     visible += 30;
 
-    if (self.tinyMCE) {
+    if (self.tinymce) {
         var editorHeight = visible;
-        // tinyMCE project editing window. Make sure we only resize ourself.
+        // tinymce project editing window. Make sure we only resize ourself.
         jQuery(self.el).find('table.mceLayout')
             .css('height', (editorHeight) + 'px');
         jQuery(self.el).find('.mceFirst iframe')
@@ -258,8 +257,8 @@ ProjectPanelHandler.prototype.onClosePanel = function(isSubpanel) {
     var self = this;
 
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     self.render();
@@ -329,8 +328,8 @@ ProjectPanelHandler.prototype.showParticipantList = function(evt) {
     var frm = srcElement.form;
 
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.participant_list')[0];
@@ -372,8 +371,8 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
     var frm = srcElement.form;
 
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.revision-list')[0];
@@ -425,8 +424,8 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
     var frm = srcElement.form;
 
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.response-list')[0];
@@ -479,8 +478,8 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
     var frm = srcElement.form;
 
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.my-response-list')[0];
@@ -589,8 +588,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
     // Close any tinymce windows
     self.citationView.unload();
 
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        //self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     if (self.isPreview()) {
@@ -623,7 +622,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         jQuery(self.el).find('td.panel-container.collection')
             .removeClass('fluid').addClass('fixed');
 
-        self.tinyMCE.show();
+        self.tinymce.show();
     } else {
         // TinyMCE bug
         // The first time the editor is shown
@@ -631,8 +630,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         var isDirty = self.projectModified;
 
         // Switch to Preview View
-        self.tinyMCE.hide();
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+        self.tinymce.hide();
+        //self.tinymce.plugins.editorwindow._closeWindow();
 
         var val = jQuery(self.el).find('input.project-title').val();
         jQuery(self.el).find('h1.project-title').html(val);
@@ -658,8 +657,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         }
 
         // Get updated text into the preview space - decorate any new links
-        jQuery(self.essaySpace).html(tinyMCE.activeEditor.getContent());
-        self.citationView.decorateLinks(self.essaySpace.id);
+        //jQuery(self.essaySpace).html(tinymce.activeEditor.getContent());
+        //self.citationView.decorateLinks(self.essaySpace.id);
 
         jQuery(self.essaySpace).show();
         jQuery(self.el).find('td.panhandle-stripe div.label')
@@ -742,7 +741,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
 ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
     var self = this;
 
-    tinyMCE.activeEditor.save();
+    tinymce.activeEditor.save();
 
     if (skipValidation === undefined) {
         if (!self._validTitle() || !self._validAuthors()) {
@@ -855,8 +854,8 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
     if (self.projectModified !== isDirty) {
         self.projectModified = isDirty;
 
-        if (!isDirty && self.tinyMCE) {
-            self.tinyMCE.isNotDirty = 1; // clear the tinymce dirty flags
+        if (!isDirty && self.tinymce) {
+            self.tinymce.isNotDirty = 1; // clear the tinymce dirty flags
         }
 
         if (isDirty) {
@@ -884,9 +883,9 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
 ProjectPanelHandler.prototype.isDirty = function() {
     var self = this;
     return self.projectModified ||
-        self.tinyMCE.isDirty() ||
-        (self.tinyMCE.editorId === tinyMCE.activeEditor.editorId &&
-         tinyMCE.activeEditor.isDirty());
+        self.tinymce.isDirty() ||
+        (self.tinymce.editorId === tinymce.activeEditor.editorId &&
+         tinymce.activeEditor.isDirty());
 };
 
 ProjectPanelHandler.prototype.updateRevisions = function() {
@@ -913,7 +912,7 @@ ProjectPanelHandler.prototype.beforeUnload = function() {
     var self = this;
     var msg = null;
 
-    // Check tinyMCE dirty state.
+    // Check tinymce dirty state.
     // For some reason, the instance is not always current
     if (self.isDirty()) {
         msg = 'Changes to your project have not been saved.';

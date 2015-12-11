@@ -203,9 +203,9 @@ ProjectPanelHandler.prototype.resize = function() {
         var editorHeight = visible;
         // tinymce project editing window. Make sure we only resize ourself.
         jQuery(self.el).find('table.mceLayout')
-            .css('height', (editorHeight) + 'px');
-        jQuery(self.el).find('.mceFirst iframe')
-            .css('height', (editorHeight) + 'px');
+            .css('height', editorHeight + 'px');
+        jQuery(self.el).find('.mce-edit-area iframe')
+            .css('height', editorHeight + 'px');
     }
 
     jQuery(self.el).find('div.essay-space')
@@ -258,7 +258,7 @@ ProjectPanelHandler.prototype.onClosePanel = function(isSubpanel) {
 
     // close any outstanding citation windows
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     self.render();
@@ -329,7 +329,7 @@ ProjectPanelHandler.prototype.showParticipantList = function(evt) {
 
     // close any outstanding citation windows
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.participant_list')[0];
@@ -372,7 +372,7 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
 
     // close any outstanding citation windows
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.revision-list')[0];
@@ -425,7 +425,7 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
 
     // close any outstanding citation windows
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.response-list')[0];
@@ -479,7 +479,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
 
     // close any outstanding citation windows
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     var element = jQuery(self.el).find('.my-response-list')[0];
@@ -589,7 +589,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
     self.citationView.unload();
 
     if (self.tinymce) {
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     if (self.isPreview()) {
@@ -631,7 +631,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         // Switch to Preview View
         self.tinymce.hide();
-        //self.tinymce.plugins.editorwindow._closeWindow();
+        self.tinymce.plugins.editorwindow._closeWindow();
 
         var val = jQuery(self.el).find('input.project-title').val();
         jQuery(self.el).find('h1.project-title').html(val);

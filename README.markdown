@@ -9,7 +9,7 @@ collaboration on video and image analysis. Developed at the Columbia
 Center for New Media Teaching and Learning (CCNMTL)
 
 CODE: http://github.com/ccnmtl/mediathread (see wiki for some dev documentation)  
-INFO: http://ccnmtl.columbia.edu/mediathread  
+INFO: http://mediathread.info
 FORUM: http://groups.google.com/group/mediathread  
 
 REQUIREMENTS

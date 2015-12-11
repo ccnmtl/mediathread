@@ -10,15 +10,16 @@ var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     this.el = el;
     this.$el = jQuery(this.el);
     this.panel = panel;
-    this.projectModified = false;
     this.parentContainer = parent;
     this.space_owner = space_owner;
     this.tinymceSettings = jQuery.extend(tinymceSettings, {
         init_instance_callback: function(editor) {
             self.onTinyMCEInitialize(editor);
         },
-        setup: function(editor) {
-            self.setDirty(true);
+        setup: function(ed) {
+            ed.on('keypress', function(e) {
+                self.setDirty(true);
+            });
         }
     });
     self.$el.find('.project-savebutton').text('Saved');
@@ -166,14 +167,14 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
             'citable': true,
             'view_callback': function() {
                 var assets = self.collectionList.getAssets();
-                //self.tinymce.plugins.citation.decorateCitationAdders(assets);
+                self.tinymce.plugins.citation.decorateCitationAdders(assets);
                 jQuery(window).trigger('resize');
 
                 // Fired by CollectionList & AnnotationList
                 jQuery(window).on('assets.refresh', {'self': self},
                     function(event, html) {
-                        /*self.tinymce.plugins.citation.decorateCitationAdders(
-                            self.collectionList.getAssets());*/
+                        self.tinymce.plugins.citation.decorateCitationAdders(
+                            self.collectionList.getAssets());
                     });
             }
         });
@@ -626,11 +627,6 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         self.tinymce.show();
     } else {
-        // TinyMCE bug
-        // The first time the editor is shown
-        // the project can be marked as dirty incorrectly
-        var isDirty = self.projectModified;
-
         // Switch to Preview View
         self.tinymce.hide();
         self.tinymce.plugins.editorwindow._closeWindow();
@@ -669,11 +665,6 @@ ProjectPanelHandler.prototype.preview = function(evt) {
             .text('Edit');
         self.$el.find('div.asset-view-published').show();
         self.$el.find('h1.project-title').show();
-
-        // TinyMCE bug
-        // The first time the editor is shown
-        // the project can be marked as dirty incorrectly
-        self.projectModified = isDirty;
     }
 
     jQuery(window).trigger('resize');
@@ -853,41 +844,34 @@ ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
 ProjectPanelHandler.prototype.setDirty = function(isDirty) {
     var self = this;
 
-    if (self.projectModified !== isDirty) {
-        self.projectModified = isDirty;
+    if (!isDirty && self.tinymce) {
+        // clear the tinymce dirty flags
+        tinymce.activeEditor.isNotDirty = true;
+    }
 
-        if (!isDirty && self.tinymce) {
-            self.tinymce.isNotDirty = 1; // clear the tinymce dirty flags
-        }
-
-        if (isDirty) {
-            self.$el.find('.project-savebutton').text('Save');
-            // Set a single timer to kick off a save event.
-            // If the timer is already active, don't set another one
-            // Clear the timer variable at the end
-            if (self.dirtyTimer === undefined) {
-                self.dirtyTimer = window.setTimeout(function() {
-                    var frm = self.$el.find('form[name=editproject]');
-                    self.saveProject(frm[0], true);
-                    self.dirtyTimer = undefined;
-                }, 10000);
-            }
-        } else {
-            self.$el.find('.project-savebutton').text('Saved');
-            if (self.dirtyTimer !== undefined) {
-                window.clearTimeout(self.dirtyTimer);
+    if (isDirty) {
+        self.$el.find('.project-savebutton').text('Save');
+        // Set a single timer to kick off a save event.
+        // If the timer is already active, don't set another one
+        // Clear the timer variable at the end
+        if (self.dirtyTimer === undefined) {
+            self.dirtyTimer = window.setTimeout(function() {
+                var frm = self.$el.find('form[name=editproject]');
+                self.saveProject(frm[0], true);
                 self.dirtyTimer = undefined;
-            }
+            }, 10000);
+        }
+    } else {
+        self.$el.find('.project-savebutton').text('Saved');
+        if (self.dirtyTimer !== undefined) {
+            window.clearTimeout(self.dirtyTimer);
+            self.dirtyTimer = undefined;
         }
     }
 };
 
 ProjectPanelHandler.prototype.isDirty = function() {
-    var self = this;
-    return self.projectModified ||
-        self.tinymce.isDirty() ||
-        (self.tinymce.editorId === tinymce.activeEditor.editorId &&
-         tinymce.activeEditor.isDirty());
+    return tinymce.activeEditor.isDirty();
 };
 
 ProjectPanelHandler.prototype.updateRevisions = function() {

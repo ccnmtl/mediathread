@@ -23,14 +23,6 @@
             this.totalPages = jQuery('.page').length;
 
             // hook up behaviors
-            jQuery(window).on('tinymce_init_instance',
-                function(event, instance, param2) {
-                    if (instance) {
-                        var width = jQuery(self.el).find('textarea').width();
-                        instance.theme.resizeTo(width, 200);
-                    }
-                }
-            );
             jQuery('input[name="due_date"]').datepicker({
                 minDate: 0,
                 dateFormat: 'mm/dd/yy'

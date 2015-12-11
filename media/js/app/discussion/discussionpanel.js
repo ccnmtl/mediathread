@@ -315,7 +315,6 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
         tinymce.execCommand('mceRemoveControl', false, 'id_comment');
         jQuery(self.form).insertAfter(insertAfter);
 
-        ///makes it resizable--somewhat hacking tinymce.init()
         tinymce.settings = jQuery.extend(tinymceSettings, {
             init_instance_callback: function(editor) {
                 self.onTinyMCEInitialize(editor);

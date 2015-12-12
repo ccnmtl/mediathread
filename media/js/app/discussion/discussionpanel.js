@@ -1,15 +1,16 @@
 /* global CitationView: true, djangosherd: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true */
-/* global tinyMCE: true, showMessage: true */
+/* global tinymce: true, tinymceSettings: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
     var self = this;
     self.el = el;
+    self.$el = jQuery(self.el);
     self.panel = panel;
     self.parentContainer = parent;
     self.space_owner = space_owner;
-    self.form = jQuery(self.el).find('form.threaded_comments_form')[0];
+    self.form = self.$el.find('form.threaded_comments_form')[0];
     self.max_comment_length =
         parseInt(self.form.getAttribute('data-maxlength'), 10);
 
@@ -20,11 +21,6 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
     });
 
     // hook up behaviors
-    jQuery(window).bind('tinymce_init_instance',
-        function(event, instance, param2) {
-            self.onTinyMCEInitialize(instance);
-        });
-
     self._bind(self.el, 'td.panel-container', 'panel_state_change',
         function() {
             self.onClosePanel(jQuery(this).hasClass('subpanel'));
@@ -38,7 +34,7 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
         'presentation': 'medium',
         'clipform': true,
         'winHeight': function() {
-            var elt = jQuery(self.el).find('div.asset-view-published')[0];
+            var elt = self.$el.find('div.asset-view-published')[0];
             return jQuery(elt).height() -
                 (jQuery(elt).find('div.annotation-title').height() +
                  jQuery(elt).find('div.asset-title').height() +
@@ -76,7 +72,7 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
         self.panel.context.discussion.thread[0].author_username ===
             self.space_owner &&
         self.panel.context.discussion.thread[0].content.length < 1) {
-        var elt = jQuery(self.el).find('span.edit_prompt')[0];
+        var elt = self.$el.find('span.edit_prompt')[0];
         jQuery(elt).trigger('click');
     } else {
         self.hide_comment_form(false);
@@ -92,17 +88,17 @@ DiscussionPanelHandler.prototype.isEditing = function() {
 
 DiscussionPanelHandler.prototype.isSubpanelOpen = function() {
     var self = this;
-    return jQuery(self.el).find('td.panel-container.collection')
+    return self.$el.find('td.panel-container.collection')
         .hasClass('open');
 };
 
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     var self = this;
 
-    if (instance && instance.id === 'id_comment' && !self.tinyMCE) {
+    if (instance && instance.id === 'id_comment' && !self.tinymce) {
 
-        self.tinyMCE = instance;
-        // Reset tinyMCE width to 100% via javascript. TinyMCE doesn't resize
+        self.tinymce = instance;
+        // Reset tinymce width to 100% via javascript. TinyMCE doesn't resize
         // properly
         // if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', '100%');
@@ -110,7 +106,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
         if (jQuery('#id_title').is(':visible')) {
             jQuery('#id_title').focus();
         } else {
-            self.tinyMCE.focus();
+            self.tinymce.focus();
         }
 
         self.collectionList = new CollectionList({
@@ -123,14 +119,14 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
             'owners': self.panel.owners,
             'view_callback': function() {
                 var newAssets = self.collectionList.getAssets();
-                self.tinyMCE.plugins.citation.decorateCitationAdders(
+                self.tinymce.plugins.citation.decorateCitationAdders(
                     newAssets);
 
                 // Fired by CollectionList & AnnotationList
                 jQuery(window).bind('assets.refresh', {'self': self},
                     function(event, html) {
                         var newAssets = self.collectionList.getAssets();
-                        self.tinyMCE.plugins.citation.decorateCitationAdders(
+                        self.tinymce.plugins.citation.decorateCitationAdders(
                             newAssets);
                     });
             }
@@ -144,14 +140,14 @@ DiscussionPanelHandler.prototype.resize = function() {
     var self = this;
     var visible = getVisibleContentHeight();
 
-    jQuery(self.el).find('tr td.panel-container div.panel')
+    self.$el.find('tr td.panel-container div.panel')
         .css('height', (visible) + 'px');
 
-    visible -= jQuery(self.el).find('.discussion-toolbar-row').height();
-    visible -= jQuery(self.el).find('.discussion-participant-row').height();
+    visible -= self.$el.find('.discussion-toolbar-row').height();
+    visible -= self.$el.find('.discussion-participant-row').height();
     visible -= 80; // padding
 
-    if (self.tinyMCE) {
+    if (self.tinymce) {
         var threads = jQuery('li.comment-thread');
         var editorHeight = visible;
         if (threads.length === 0) {
@@ -160,28 +156,28 @@ DiscussionPanelHandler.prototype.resize = function() {
             editorHeight = 150;
         }
 
-        // tinyMCE project editing window. Make sure we only resize ourself.
-        jQuery(self.el).find('table.mceLayout')
+        // tinymce project editing window. Make sure we only resize ourself.
+        self.$el.find('table.mceLayout')
             .css('height', (editorHeight) + 'px');
-        jQuery(self.el).find('iframe').css('height', (editorHeight) + 'px');
+        self.$el.find('iframe').css('height', (editorHeight) + 'px');
     }
 
     visible += 45;
-    jQuery(self.el).find('div.threadedcomments-container')
+    self.$el.find('div.threadedcomments-container')
         .css('height', (visible + 30) + 'px');
 
     // Resize the collections box, subtracting its header elements
-    jQuery(self.el).find('div.collection-assets')
+    self.$el.find('div.collection-assets')
         .css('height', (visible - 50) + 'px');
 
     // Resize the media display window
-    jQuery(self.el).find('div.asset-view-published')
+    self.$el.find('div.asset-view-published')
         .css('height', (visible + 30) + 'px');
 
     // For IE
-    jQuery(self.el).find('tr.discussion-content-row')
+    self.$el.find('tr.discussion-content-row')
         .css('height', (visible) + 'px');
-    jQuery(self.el).find('tr.discussion-content-row')
+    self.$el.find('tr.discussion-content-row')
         .children('td.panhandle-stripe')
         .css('height', (visible - 10) + 'px');
 
@@ -190,8 +186,8 @@ DiscussionPanelHandler.prototype.resize = function() {
 DiscussionPanelHandler.prototype.onClosePanel = function() {
     var self = this;
     // close any outstanding citation windows
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
     self.render();
 };
@@ -203,14 +199,14 @@ DiscussionPanelHandler.prototype.render = function() {
     // and we're in readonly mode
 
     if (!self.isEditing() && self.isSubpanelOpen()) {
-        jQuery(self.el).find('.panel-content')
+        self.$el.find('.panel-content')
             .removeClass('fluid').addClass('fixed');
-        jQuery(self.el).find('td.panel-container.collection')
+        self.$el.find('td.panel-container.collection')
             .removeClass('fixed').addClass('fluid');
     } else {
-        jQuery(self.el).find('.panel-content')
+        self.$el.find('.panel-content')
             .removeClass('fixed').addClass('fluid');
-        jQuery(self.el).find('td.panel-container.collection')
+        self.$el.find('td.panel-container.collection')
             .removeClass('fluid').addClass('fixed');
     }
 
@@ -236,8 +232,8 @@ DiscussionPanelHandler.prototype.set_comment_content = function(content) {
     self.form.elements.title.value = content.title || '';
 
     try {
-        if (self.tinyMCE) {
-            self.tinyMCE.setContent(content.comment);
+        if (self.tinymce) {
+            self.tinymce.setContent(content.comment);
         }
     } catch (e) {
         /*
@@ -307,28 +303,30 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
                                                               scroll) {
     var self = this;
 
-    jQuery(self.el).find('div.threaded_comment_header')
+    self.$el.find('div.threaded_comment_header')
         .addClass('opacity_fiftypercent');
-    jQuery(self.el).find('div.threaded_comment_text')
+    self.$el.find('div.threaded_comment_text')
         .addClass('opacity_fiftypercent');
-    jQuery(self.el).find('div.threaded_comment_text')
+    self.$el.find('div.threaded_comment_text')
         .find('a.materialCitation').addClass('disabled');
 
     if (insertAfter) {
-        self.tinyMCE = null;
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_comment');
+        self.tinymce = null;
+        tinymce.execCommand('mceRemoveControl', false, 'id_comment');
         jQuery(self.form).insertAfter(insertAfter);
 
-        ///makes it resizable--somewhat hacking tinyMCE.init()
-        tinyMCE.settings.theme_advanced_statusbar_location = 'bottom';
-        tinyMCE.settings.theme_advanced_resize_vertical = true;
+        tinymce.settings = jQuery.extend(tinymceSettings, {
+            init_instance_callback: function(editor) {
+                self.onTinyMCEInitialize(editor);
+            }
+        });
 
-        tinyMCE.execCommand('mceAddControl', false, 'id_comment');
+        tinymce.execCommand('mceAddEditor', true, 'id_comment');
     }
     jQuery(self.form).show('fast', function() {
         if (scroll) {
             var q = 'div.threadedcomments-container';
-            var elt = jQuery(self.el).find(q)[0];
+            var elt = self.$el.find(q)[0];
             var top = jQuery(self.form).offset().top -
                           jQuery(self.form).height();
 
@@ -341,37 +339,37 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
     // Switch to an Edit View
     // Unload any citations
     self.citationView.unload();
-    jQuery(self.el).find('div.asset-view-published').hide();
-    jQuery(self.el).find('td.panhandle-stripe div.label')
+    self.$el.find('div.asset-view-published').hide();
+    self.$el.find('td.panhandle-stripe div.label')
         .html('Insert Selections');
-    jQuery(self.el).find('div.collection-materials').show();
+    self.$el.find('div.collection-materials').show();
     self.render();
 };
 
 DiscussionPanelHandler.prototype.hide_comment_form = function() {
     var self = this;
 
-    jQuery(self.el).find('div.threaded_comment_header')
+    self.$el.find('div.threaded_comment_header')
         .removeClass('opacity_fiftypercent');
-    jQuery(self.el).find('div.threaded_comment_text')
+    self.$el.find('div.threaded_comment_text')
         .removeClass('opacity_fiftypercent');
-    jQuery(self.el).find('div.threaded_comment_text')
+    self.$el.find('div.threaded_comment_text')
         .find('a.materialCitation').removeClass('disabled');
 
     // Switch to a readonly view
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     jQuery(self.form).hide('fast', function() {
         jQuery(self.form.elements.title).hide();
 
         // Switch to a readonly view
-        jQuery(self.el).find('div.collection-materials').hide();
+        self.$el.find('div.collection-materials').hide();
 
-        jQuery(self.el).find('td.panhandle-stripe div.label')
+        self.$el.find('td.panhandle-stripe div.label')
                 .html('View Inserted Selections');
-        jQuery(self.el).find('div.asset-view-published').show();
+        self.$el.find('div.asset-view-published').show();
 
         self.render();
     });
@@ -401,7 +399,7 @@ DiscussionPanelHandler.prototype.cancel = function(evt) {
 DiscussionPanelHandler.prototype.submit = function(evt) {
     var self = evt.data.self;
 
-    self.tinyMCE.save();
+    self.tinymce.save();
     evt.preventDefault();
 
     if (self.max_comment_length &&
@@ -467,7 +465,7 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             case 'post':
                 var parentHtml = jQuery('#comment-' + form_vals.parent).get(0);
                 if (!parentHtml) {
-                    parentHtml = jQuery(self.el).find(
+                    parentHtml = self.$el.find(
                             'div.threadedcomments-container')[0];
                 }
                 var ul = this.info.target = document.createElement('ul');
@@ -585,7 +583,7 @@ DiscussionPanelHandler.prototype.update = function(obj, html_dom, components) {
         success += jQuery(components.title).html(obj.title).length;
         if (!components.parent) { // if base_comment
             document.title = obj.title;
-            jQuery(self.el).find('h1.discussion-title').html(obj.title);
+            self.$el.find('h1.discussion-title').html(obj.title);
         }
     }
     return success;
@@ -657,37 +655,37 @@ DiscussionPanelHandler.prototype.readonly = function() {
     // Close any tinymce windows
     self.citationView.unload();
 
-    if (self.tinyMCE) {
-        self.tinyMCE.plugins.editorwindow._closeWindow();
+    if (self.tinymce) {
+        self.tinymce.plugins.editorwindow._closeWindow();
     }
 
     if (!jQuery(self.form).is(':visible')) {
         // Switch to Edit View
-        jQuery(self.el).find('td.panhandle-stripe div.label').html(
+        self.$el.find('td.panhandle-stripe div.label').html(
                 'Insert Selections');
-        jQuery(self.el).find('div.asset-view-published').hide();
+        self.$el.find('div.asset-view-published').hide();
 
         // Kill the asset view
         self.citationView.unload();
 
-        jQuery(self.el).find('div.collection-materials').show();
-        jQuery(self.el).find('input.project-title').show();
-        jQuery(self.el).find('.participants_toggle').show();
+        self.$el.find('div.collection-materials').show();
+        self.$el.find('input.project-title').show();
+        self.$el.find('.participants_toggle').show();
 
-        self.tinyMCE.show();
+        self.tinymce.show();
     } else {
         // Switch to a readonly view
-        jQuery(self.el).find('div.collection-materials').hide();
+        self.$el.find('div.collection-materials').hide();
 
-        jQuery(self.el).find('td.panhandle-stripe div.label').html(
+        self.$el.find('td.panhandle-stripe div.label').html(
                 'View Inserted Selections');
-        jQuery(self.el).find('div.asset-view-published').show();
+        self.$el.find('div.asset-view-published').show();
     }
 
-    jQuery(self.el).find('td.panel-container').toggleClass('media collection');
-    jQuery(self.el).find('td.panhandle-stripe')
+    self.$el.find('td.panel-container').toggleClass('media collection');
+    self.$el.find('td.panhandle-stripe')
         .toggleClass('media collection');
-    jQuery(self.el).find('div.pantab').toggleClass('media collection');
+    self.$el.find('div.pantab').toggleClass('media collection');
 
     jQuery(window).trigger('resize');
 

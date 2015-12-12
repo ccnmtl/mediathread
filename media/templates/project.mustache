@@ -222,9 +222,10 @@
                             {{context.project.type}}">
                             <div class="essay-space-container">
                                 {{#context.can_edit}}
-                                    <textarea id="{{context.project.id}}-project-content" tabindex="0" name="body" 
-                                        class="mceEditor project-content" mce_editable="true" 
-                                        style="display: none">
+                                    <textarea id="{{context.project.id}}-project-content"
+                                        tabindex="0" name="body"
+                                        class="mceEditor project-content"
+                                        style="display: none;">
                                         {{{context.project.body}}}
                                     </textarea>
                                 {{/context.can_edit}}

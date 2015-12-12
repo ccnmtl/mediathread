@@ -1,6 +1,7 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
 /* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
+/* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -97,18 +98,19 @@
                     // Add these new columns to the table, before the last
                     // column. The last column is reserved for a placeholder td
                     // that eats space and makes the sliding UI work nicely
-                    var lastCell = jQuery('#' + self.options.container +
+                    var $lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
-                    lastCell.before(
+                    $lastCell.before(
                         Mustache.render(MediaThread.templates[panel.template],
                                         panel));
 
-                    var newCell = jQuery(lastCell).prev().prev()[0];
-                    var handler = panelFactory.create(newCell,
-                            self.el,
-                            self.panels[i].context.type,
-                            self.panels[i],
-                            self.space_owner);
+                    var newCell = $lastCell.prev().prev()[0];
+                    var handler = panelFactory.create(
+                        newCell,
+                        self.el,
+                        self.panels[i].context.type,
+                        self.panels[i],
+                        self.space_owner);
                     self.panelHandlers.push(handler);
 
                     // enable open/close controls on subpanel

@@ -44,7 +44,7 @@ django-courseaffils==2.0.6
 django-statsd-mozilla==0.3.16
 raven==5.8.1
 django-appconf==1.0.1  # django_compressor
-django-compressor==1.5
+django-compressor==1.6
 django-jenkins==0.17.0
 django-stagingcontext==0.1.0
 django-smoketest==0.3.0

@@ -1055,7 +1055,7 @@ def i_write_some_text_for_the_panel(step, panel):
 
         frame = panel.find_element_by_tag_name("iframe")
         world.browser.switch_to_frame(frame)
-        elt = world.browser.find_element_by_class_name("mceContentBody")
+        elt = world.browser.find_element_by_class_name("mce-content-body")
         elt.send_keys(
             """The Columbia Center for New Teaching and Learning
             was (CCNMTL) was founded at Columbia University in 1999

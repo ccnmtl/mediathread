@@ -15,7 +15,7 @@
             _.bindAll(this, 'render');
 
             this.collectionList = new CollectionList({
-                'parent': this.el,
+                '$parent': jQuery(this.el),
                 'template': 'embed',
                 'template_label': 'collection_table',
                 'create_annotation_thumbs': true,

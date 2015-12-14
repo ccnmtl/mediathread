@@ -8,7 +8,11 @@ jenkins: ./ve/bin/python validate jshint jscs flake8 test
 	./bootstrap.py
 
 jshint: node_modules/jshint/bin/jshint
-	./node_modules/jshint/bin/jshint --config=.jshintrc media/js/app/ media/js/lib/sherdjs/src media/js/lib/sherdjs/lib/tinymce/plugins/citation media/js/lib/sherdjs/lib/tinymce/plugins/editorwindow
+	./node_modules/jshint/bin/jshint --config=.jshintrc media/js/app/ \
+		media/js/lib/sherdjs/src \
+		media/js/lib/sherdjs/lib/tinymce/plugins/citation \
+		media/js/lib/sherdjs/lib/tinymce/plugins/editorwindow \
+		media/js/lib/sherdjs/src/configs
 
 jscs: node_modules/jscs/bin/jscs
 	./node_modules/jscs/bin/jscs media/js/app/

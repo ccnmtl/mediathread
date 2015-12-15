@@ -320,7 +320,8 @@ class Project(models.Model):
 
     def responses(self, course, viewer, by_user=None):
         visible = []
-        children = self.get_collaboration().get_children_for_object(self)
+        children = self.get_collaboration().get_children_for_object(
+            self).prefetch_related('content_object__author')
         for child in children:
             response = child.content_object
             if (response and

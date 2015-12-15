@@ -1,6 +1,13 @@
+ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 MANAGE=./manage.py
 APP=mediathread
 FLAKE8=./ve/bin/flake8
+
+ifeq ($(TAG), undefined)
+	IMAGE = ccnmtl/$(APP)
+else
+	IMAGE = ccnmtl/$(APP):$(TAG)
+endif
 
 jenkins: ./ve/bin/python validate jshint jscs flake8 test
 
@@ -77,3 +84,15 @@ install: ./ve/bin/python validate jenkins
 	createdb $(APP)
 	$(MANAGE) syncdb --noinput
 	make migrate
+
+wheelhouse/requirements.txt: requirements.txt
+	mkdir -p wheelhouse
+	docker run --rm \
+	-v $(ROOT_DIR):/app \
+	-v $(ROOT_DIR)/wheelhouse:/wheelhouse \
+	ccnmtl/django.build
+	cp requirements.txt wheelhouse/requirements.txt
+	touch wheelhouse/requirements.txt
+
+build: wheelhouse/requirements.txt
+	docker build -t $(IMAGE) .

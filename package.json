@@ -1,0 +1,25 @@
+{
+  "name": "mediathread",
+  "version": "0.0.0",
+  "description": "=========================================================== Mediathread ===========================================================",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ccnmtl/mediathread.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ccnmtl/mediathread/issues"
+  },
+  "devDependencies": {
+    "jshint": "~2.9.1-rc1",
+    "jscs": "~2.7.0"
+  }
+}

@@ -1,4 +1,3 @@
-# flake8: noqa
 # Django settings for mediathread project.
 
 # if you add a 'deploy_specific' directory
@@ -7,58 +6,23 @@
 
 import os.path
 import re
-import sys
+from ccnmtlsettings.shared import common
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-ADMINS = (
-    ('admin', 'mediathread@example.com'),
-)
+project = 'mediathread'
+base = os.path.dirname(__file__)
 
-MANAGERS = ADMINS
+locals().update(common(project=project, base=base))
 
-ALLOWED_HOSTS = ['.ccnmtl.columbia.edu', 'localhost']
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'mediathread',
-        'HOST': '',
-        'PORT': '',
-        'USER': '',
-        'PASSWORD': '',
-        'ATOMIC_REQUESTS': True,
-    }
-}
-
-if 'test' in sys.argv or 'jenkins' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
-            'HOST': '',
-            'PORT': '',
-            'USER': '',
-            'PASSWORD': '',
-            'ATOMIC_REQUESTS': True,
-        }
-    }
-
-JENKINS_TASKS = (
-    'django_jenkins.tasks.run_pep8',
-    'django_jenkins.tasks.run_pyflakes',
-)
-
-PROJECT_APPS = ['mediathread.main',
-                'mediathread.djangosherd',
-                'mediathread.assetmgr',
-                'mediathread.projects',
-                'mediathread.reports',
-                'mediathread.discussions',
-                'mediathread.taxonomy',
-                'structuredcollaboration']
-
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+PROJECT_APPS = [
+    'mediathread.main',
+    'mediathread.djangosherd',
+    'mediathread.assetmgr',
+    'mediathread.projects',
+    'mediathread.reports',
+    'mediathread.discussions',
+    'mediathread.taxonomy',
+    'structuredcollaboration',
+]
 
 CACHE_BACKEND = 'locmem:///'
 CACHES = {
@@ -68,74 +32,21 @@ CACHES = {
     }
 }
 
-TIME_ZONE = 'America/New_York'
-LANGUAGE_CODE = 'en-us'
-SITE_ID = 1
-USE_I18N = False
-MEDIA_ROOT = "/var/www/mediathread/uploads/"
-MEDIA_URL = "/uploads/"
-STATIC_URL = "/media/"
-
-# Override the secret key with your own. This is for development only
-SECRET_KEY = ')ng#)ef_u@_^zvvu@dxm7ql-yb^_!a6%v3v^j3b(mp+)l+5%@h'
-
-# appends a slash if nothing is found without a slash.
-APPEND_SLASH = True
-
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader'
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.template.context_processors.debug',
-    'django.template.context_processors.request',
-    'stagingcontext.staging_processor',
-    'django.template.context_processors.static',
+TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
     'mediathread.main.views.django_settings',
-    'djangowind.context.context_processor',
-    'django.contrib.messages.context_processors.messages'
-)
-
-MIDDLEWARE_CLASSES = [
-    'django_statsd.middleware.GraphiteRequestTimingMiddleware',
-    'django_statsd.middleware.GraphiteMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'courseaffils.middleware.CourseManagerMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'impersonate.middleware.ImpersonateMiddleware',
-    'waffle.middleware.WaffleMiddleware'
 ]
 
-ROOT_URLCONF = 'mediathread.urls'
+MIDDLEWARE_CLASSES += [  # noqa
+    'corsheaders.middleware.CorsMiddleware',
+    'courseaffils.middleware.CourseManagerMiddleware',
+]
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates"
-    # or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    # Put application templates before these fallback ones:
-    "/var/www/mediathread/templates/",
-    os.path.join(os.path.dirname(__file__), "deploy_specific/templates"),
-    os.path.join(os.path.dirname(__file__), "templates"),
-)
+TEMPLATE_DIRS += [  # noqa
+    os.path.join(base, "deploy_specific/templates"),
+]
 
-INSTALLED_APPS = [
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.flatpages',
-    'django.contrib.staticfiles',
-    'django.contrib.messages',
+INSTALLED_APPS += [  # noqa
     'courseaffils',
-    'django.contrib.sites',
-    'django.contrib.admin',
     'tagging',
     'structuredcollaboration',
     'mediathread.assetmgr',
@@ -147,62 +58,19 @@ INSTALLED_APPS = [
     'djangohelpers',
     'mediathread.reports',
     'mediathread.main',
-    'compressor',
-    'django_jenkins',
     'mediathread.taxonomy',
-    'smoketest',
-    'debug_toolbar',
-    'django_markwhat',
-    'impersonate',
     'registration',
-    'waffle',
     'corsheaders',
     'reversion',
     'lti_auth',
     'bootstrap3',
 ]
 
-INTERNAL_IPS = ('127.0.0.1', )
-
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
-DEBUG_TOOLBAR_PANELS = [
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-]
-
-
-STATIC_ROOT = os.path.join(os.path.dirname(__file__), "../media")
-STATICFILES_DIRS = (
-)
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
-)
-
-COMPRESS_URL = "/media/"
-COMPRESS_ROOT = "media/"
-
 THUMBNAIL_SUBDIR = "thumbs"
-EMAIL_SUBJECT_PREFIX = "[mediathread] "
-EMAIL_HOST = 'localhost'
 SERVER_EMAIL = "mediathread@example.com"
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
@@ -211,31 +79,34 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # users. we need to allow anonymous access to the login
 # page, and to static resources.
 
-ANONYMOUS_PATHS = ('/media/',
-                   '/accounts/',
-                   '/admin/',
-                   '/help/',
-                   '/api/user/courses'
-                   )
+ANONYMOUS_PATHS = (
+    '/media/',
+    '/accounts/',
+    '/admin/',
+    '/help/',
+    '/api/user/courses',
+)
 
-NON_ANONYMOUS_PATHS = ('/analysis/',
-                       '/annotations/',
-                       '/api/',
-                       '/archive/',
-                       '/asset/',
-                       '/assignment/',
-                       '/comments/',
-                       '/dashboard/',
-                       '/discussion/',
-                       '/explore/',
-                       '/impersonate/',
-                       '/project/',
-                       '/reports/',
-                       '/setting/',
-                       '/taxonomy/',
-                       '/upgrade/',
-                       '/upload/',
-                       re.compile(r'^/$'))
+NON_ANONYMOUS_PATHS = (
+    '/analysis/',
+    '/annotations/',
+    '/api/',
+    '/archive/',
+    '/asset/',
+    '/assignment/',
+    '/comments/',
+    '/dashboard/',
+    '/discussion/',
+    '/explore/',
+    '/impersonate/',
+    '/project/',
+    '/reports/',
+    '/setting/',
+    '/taxonomy/',
+    '/upgrade/',
+    '/upload/',
+    re.compile(r'^/$'),
+)
 
 # save is an exception, for server2server api
 COURSEAFFILS_PATHS = NON_ANONYMOUS_PATHS + ('/save', '/settings')
@@ -272,7 +143,6 @@ FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.11.swf'
 FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.13.swf'
 FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.13.swf'
 
-
 DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
 
@@ -283,11 +153,6 @@ def no_reject(request, reason):
     return None
 
 CSRF_FAILURE_VIEW = no_reject
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-}
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
@@ -303,8 +168,10 @@ def default_url_processor(url, label=None, request=None):
 
 ASSET_URL_PROCESSOR = default_url_processor
 
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
-                           'lti_auth.auth.LTIBackend']
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'lti_auth.auth.LTIBackend',
+]
 
 LTI_TOOL_CONFIGURATION = {
     'title': 'Mediathread',
@@ -325,7 +192,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 # otherwise, make sure you specify the correct database settings in your
 # local_settings.py
 try:
-    from mediathread.deploy_specific.settings import *
+    from mediathread.deploy_specific.settings import *  # noqa
     if 'EXTRA_INSTALLED_APPS' in locals():
         INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
     if 'EXTRA_MIDDLEWARE_CLASSES' in locals():

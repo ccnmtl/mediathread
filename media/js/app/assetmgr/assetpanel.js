@@ -18,13 +18,12 @@
  * Nothing
  */
 
-var AssetPanelHandler = function(el, parent, panel, space_owner) {
+var AssetPanelHandler = function(el, $parent, panel, space_owner) {
     var self = this;
 
-    self.el = el;
-    self.$el = jQuery(self.el);
+    self.$el = jQuery(el);
     self.panel = panel;
-    self.parentContainer = parent;
+    self.$parentContainer = $parent;
     self.space_owner = space_owner;
 
     djangosherd.storage.json_update(panel.context);
@@ -80,17 +79,17 @@ var AssetPanelHandler = function(el, parent, panel, space_owner) {
             if (self.dialogWindow) {
                 return 450;
             } else {
-                var elt = self.$el.find('div.asset-view-published')[0];
-                return jQuery(elt).height() -
-                    (jQuery(elt).find('div.annotation-title').height() +
-                     jQuery(elt).find('div.asset-title').height() + 15);
+                var $elt = self.$el.find('div.asset-view-published');
+                return $elt.height() -
+                    ($elt.find('div.annotation-title').height() +
+                     $elt.find('div.asset-title').height() + 15);
             }
         }
     });
 
     if (self.panel.show_collection) {
         self.collectionList = new CollectionList({
-            'parent': self.el,
+            '$parent': self.$el,
             'template': 'gallery',
             'template_label': 'media_gallery',
             'create_asset_thumbs': true,
@@ -101,12 +100,12 @@ var AssetPanelHandler = function(el, parent, panel, space_owner) {
                 var self = this;
 
                 if (assetCount > 0) {
-                    var container = self.$el.find('div.asset-table')[0];
-                    jQuery(container).masonry({
+                    var $container = self.$el.find('div.asset-table');
+                    $container.masonry({
                         itemSelector: '.gallery-item',
                         columnWidth: 23
                     });
-                    jQuery(container).masonry('bindResize');
+                    $container.masonry('bindResize');
                 } else {
                     jQuery('div.asset-table').css('height', '500px');
                 }
@@ -142,10 +141,10 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
         }
     }
 
-    var dlg = jQuery('#asset-workspace-panel-container')[0];
-    var elt = jQuery(dlg).find('div.asset-view-tabs').hide();
+    var $dlg = jQuery('#asset-workspace-panel-container');
+    var elt = $dlg.find('div.asset-view-tabs').hide();
 
-    self.dialogWindow = jQuery(dlg).dialog({
+    self.dialogWindow = $dlg.dialog({
         open: function() {
             self.dialogWindow = true;
             self.citationView.openCitationById(null, assetId, annotationId);
@@ -209,7 +208,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
         'vocabulary': self.panel.vocabulary,
         'view_callback': function() {
             self.$el.find('div.tabs').fadeIn('fast', function() {
-                window.panelManager.verifyLayout(self.el);
+                window.panelManager.verifyLayout(self.$el);
                 jQuery(window).trigger('resize');
             });
             jQuery('html').removeClass('busy');
@@ -292,8 +291,8 @@ AssetPanelHandler.prototype.resize = function() {
         jQuery('div.accordion').accordion('refresh');
     }
 
-    var container = self.$el.find('div.asset-table')[0];
-    jQuery(container).masonry();
+    var $container = self.$el.find('div.asset-table');
+    $container.masonry();
 };
 
 AssetPanelHandler.prototype.onClickAssetTitle = function(evt) {

@@ -3,12 +3,12 @@
 /* global tinymce: true, tinymceSettings: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
-var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
+var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     var self = this;
     self.el = el;
     self.$el = jQuery(self.el);
     self.panel = panel;
-    self.parentContainer = parent;
+    self.$parentContainer = $parent;
     self.space_owner = space_owner;
     self.form = self.$el.find('form.threaded_comments_form')[0];
     self.max_comment_length =
@@ -21,7 +21,7 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
     });
 
     // hook up behaviors
-    self._bind(self.el, 'td.panel-container', 'panel_state_change',
+    self._bind(self.$el, 'td.panel-container', 'panel_state_change',
         function() {
             self.onClosePanel(jQuery(this).hasClass('subpanel'));
         });
@@ -41,7 +41,7 @@ var DiscussionPanelHandler = function(el, parent, panel, space_owner) {
                  jQuery(elt).find('div.discussion-toolbar-row').height() + 15);
         }
     });
-    self.citationView.decorateLinks(self.el.id);
+    self.citationView.decorateLinks(self.$el.attr('id'));
 
     jQuery(this.form).bind('submit', {
         self: this
@@ -110,7 +110,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
         }
 
         self.collectionList = new CollectionList({
-            'parent': self.el,
+            '$parent': self.$el,
             'template': 'collection',
             'template_label': 'collection_table',
             'create_annotation_thumbs': true,
@@ -375,9 +375,9 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
     });
 };
 
-DiscussionPanelHandler.prototype._bind = function(parent, elementSelector,
+DiscussionPanelHandler.prototype._bind = function($parent, elementSelector,
         event, handler) {
-    var elements = jQuery(parent).find(elementSelector);
+    var elements = $parent.find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).bind(event, handler);
         return true;

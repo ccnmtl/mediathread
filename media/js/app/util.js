@@ -40,13 +40,14 @@ function getVisibleContentHeight() {
 function switcher(event, a) {
     event.preventDefault();
     event.stopPropagation();
-    if (jQuery(a).hasClass('menuclosed')) {
+    var $a = jQuery(a);
+    if ($a.hasClass('menuclosed')) {
         // we're going to open. make sure everyone else is CLOSED
         jQuery('.menuopen').toggleClass('menuopen menuclosed');
         jQuery('.switcher-options').hide();
     }
-    jQuery(a).toggleClass('menuclosed menuopen');
-    jQuery(a).parent().children('.switcher-options').toggle();
+    $a.toggleClass('menuclosed menuopen');
+    $a.parent().children('.switcher-options').toggle();
     return false;
 }
 
@@ -138,15 +139,16 @@ function retrieveData(name) {
 
 function showMessage(msg, onclose, customTitle, position) {
     var title = customTitle ? customTitle : 'Success';
-    jQuery('#dialog-confirm').html(msg);
-    jQuery('#dialog-confirm').dialog({
+    var $dialogConfirm = jQuery('#dialog-confirm');
+    $dialogConfirm.html(msg);
+    $dialogConfirm.dialog({
         resizable: false,
         modal: true,
         title: title,
         close: function() {
             if (onclose) {
                 onclose();
-                jQuery('#dialog-confirm').html('');
+                $dialogConfirm.html('');
             }
         },
         buttons: {
@@ -157,6 +159,6 @@ function showMessage(msg, onclose, customTitle, position) {
     });
     // position newly opened dialog (using its parent container) below $div.
     if (position) {
-        jQuery('#dialog-confirm').dialog('widget').position(position);
+        $dialogConfirm.dialog('widget').position(position);
     }
 }

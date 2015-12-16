@@ -4,13 +4,12 @@
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
-var ProjectPanelHandler = function(el, parent, panel, space_owner) {
+var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
     var self = this;
 
-    this.el = el;
-    this.$el = jQuery(this.el);
+    this.$el = jQuery(el);
     this.panel = panel;
-    this.parentContainer = parent;
+    this.$parentContainer = $parent;
     this.space_owner = space_owner;
     this.tinymceSettings = jQuery.extend(tinymceSettings, {
         init_instance_callback: function(editor) {
@@ -27,7 +26,7 @@ var ProjectPanelHandler = function(el, parent, panel, space_owner) {
     djangosherd.storage.json_update(panel.context);
     MediaThread.loadTemplate('project_revisions')
         .then(function() {
-            self.initAfterTemplateLoad(el, parent, panel, space_owner);
+            self.initAfterTemplateLoad(el, $parent, panel, space_owner);
         });
 };
 
@@ -59,56 +58,56 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         self.resize();
     });
 
-    self._bind(self.el, 'td.panel-container', 'panel_state_change',
+    self._bind(self.$el, 'td.panel-container', 'panel_state_change',
         function() {
             self.onClosePanel(jQuery(this).hasClass('subpanel'));
         });
 
-    self._bind(self.el, 'form[name="editproject"]', 'keypress keydown keyup',
+    self._bind(self.$el, 'form[name="editproject"]', 'keypress keydown keyup',
         function(e) {
             if (e.keyCode === 13) {
                 e.preventDefault();
             }
         });
 
-    self._bind(self.el, '.project-savebutton', 'click', function(evt) {
+    self._bind(self.$el, '.project-savebutton', 'click', function(evt) {
         return self.showSaveOptions(evt);
     });
-    self._bind(self.el, 'a.project-visibility-link', 'click', function(evt) {
+    self._bind(self.$el, 'a.project-visibility-link', 'click', function(evt) {
         self.$el.find('.project-savebutton').click();
     });
-    self._bind(self.el, '.project-previewbutton', 'click', function(evt) {
+    self._bind(self.$el, '.project-previewbutton', 'click', function(evt) {
         return self.preview(evt);
     });
-    self._bind(self.el, '.participants_toggle', 'click', function(evt) {
+    self._bind(self.$el, '.participants_toggle', 'click', function(evt) {
         return self.showParticipantList(evt);
     });
 
-    self._bind(self.el, '.project-revisionbutton', 'click',
+    self._bind(self.$el, '.project-revisionbutton', 'click',
         function(evt) {
             self.showRevisions(evt);
         });
-    self._bind(self.el, '.project-responsesbutton', 'click',
+    self._bind(self.$el, '.project-responsesbutton', 'click',
         function(evt) {
             self.showResponses(evt);
         });
-    self._bind(self.el, '.project-my-responses', 'click', function(evt) {
+    self._bind(self.$el, '.project-my-responses', 'click', function(evt) {
         self.showMyResponses(evt);
     });
-    self._bind(self.el, '.project-my-response', 'click', function(evt) {
+    self._bind(self.$el, '.project-my-response', 'click', function(evt) {
         self.showMyResponse(evt);
     });
 
-    self._bind(self.el, '.project-create-assignment-response', 'click',
+    self._bind(self.$el, '.project-create-assignment-response', 'click',
         function(evt) {
             self.createAssignmentResponse(evt);
         });
-    self._bind(self.el, '.project-create-instructor-feedback', 'click',
+    self._bind(self.$el, '.project-create-instructor-feedback', 'click',
         function(evt) {
             self.createInstructorFeedback(evt);
         });
 
-    self._bind(self.el, 'input.project-title', 'keypress', function(evt) {
+    self._bind(self.$el, 'input.project-title', 'keypress', function(evt) {
         self.setDirty(true);
     });
 
@@ -158,7 +157,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
         });
 
         self.collectionList = new CollectionList({
-            'parent': self.el,
+            '$parent': self.$el,
             'template': 'collection',
             'template_label': 'collection_table',
             'create_annotation_thumbs': true,
@@ -290,7 +289,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     // Navigate to a new project if the user is looking
     // at another response.
     var q = 'td.panel-container.composition';
-    if (jQuery(self.parentContainer).find(q).length > 0) {
+    if (self.$parentContainer.find(q).length > 0) {
         context.callback = function(json) {
             window.location = json.context.project.url;
         };
@@ -915,14 +914,14 @@ ProjectPanelHandler.prototype.beforeUnload = function() {
     }
 
     if (msg) {
-        window.panelManager.openPanel(self.el);
+        window.panelManager.openPanel(self.$el);
         return msg;
     }
 };
 
-ProjectPanelHandler.prototype._bind = function(parent, elementSelector,
+ProjectPanelHandler.prototype._bind = function($parent, elementSelector,
                                                event, handler) {
-    var elements = jQuery(parent).find(elementSelector);
+    var elements = $parent.find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).on(event, handler);
         return true;

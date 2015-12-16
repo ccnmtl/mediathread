@@ -24,7 +24,7 @@ var CollectionList = function(config) {
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.create_asset_thumbs = config.create_asset_thumbs;
-    self.parent = config.parent;
+    self.$parent = config.$parent;
     self.selected_view = config.hasOwnProperty('selectedView') ?
         config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
@@ -33,16 +33,15 @@ var CollectionList = function(config) {
     self.loading = false;
     self.current_asset = config.current_asset;
 
-    self.el = jQuery(self.parent).find('div.' + self.template_label)[0];
-    self.$el = jQuery(self.el);
+    self.$el = self.$parent.find('div.' + self.template_label);
 
     self.switcher_context = jQuery.extend({}, MediaThread.mustacheHelpers);
 
     jQuery(window).on('asset.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
-        var div = self.$el.find('div.collection-assets');
-        if (!self.citable && div.length > 0) {
-            self.scrollTop = jQuery(div[0]).scrollTop();
+        var $div = self.$el.find('div.collection-assets');
+        if (!self.citable && $div.length > 0) {
+            self.scrollTop = $div.scrollTop();
             event.data.self.refresh();
         }
     });
@@ -136,12 +135,12 @@ var CollectionList = function(config) {
 
     self.$el.on(
         'change select2-removed', 'select.course-tags', function() {
-            var elt = self.$el.find('select.course-tags');
-            self.current_records.active_filters.tag = jQuery(elt).val();
+            var $elt = self.$el.find('select.course-tags');
+            self.current_records.active_filters.tag = $elt.val();
             return self.filter();
         });
 
-    jQuery(self.parent).on(
+    self.$parent.on(
         'click', 'a.switcher-choice.filterbytag', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.href.split('/');
@@ -196,12 +195,12 @@ var CollectionList = function(config) {
         });
 
     var q = '#collection-overlay, #collection-help, #collection-help-tab';
-    jQuery(self.parent).on('click', '#collection-help-button', function() {
+    self.$parent.on('click', '#collection-help-button', function() {
         jQuery(q).show();
         return false;
     });
 
-    jQuery(self.parent).on('click', '.dismiss-help', function() {
+    self.$parent.on('click', '.dismiss-help', function() {
         jQuery(q).hide();
         return false;
     });
@@ -223,7 +222,7 @@ CollectionList.prototype.setLoading = function(isLoading) {
 CollectionList.prototype.constructUrl = function(config, updating) {
     var url;
 
-    if (config && config.parent) {
+    if (config && config.$parent) {
         // Retrieve the full asset w/annotations from storage
         if (config.view === 'all' || !config.space_owner) {
             url = MediaThread.urls['all-space'](
@@ -347,8 +346,9 @@ CollectionList.prototype.filterByVocabulary = function(srcElement) {
     var self = this;
     self.setLoading(true);
     var url = MediaThread.urls['all-space'](null, null, self.citable);
-    url += jQuery(srcElement).data('vocabulary-id') + '=' +
-        jQuery(srcElement).data('term-id');
+    var $srcElement = jQuery(srcElement);
+    url += $srcElement.data('vocabulary-id') + '=' +
+        $srcElement.data('term-id');
     djangosherd.storage.get({
         type: 'asset',
         url: url
@@ -655,11 +655,12 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
     } else {
         // handle the minimized view
         var q = 'div.collection-assets';
-        var container = self.$el.find(q)[0];
-        jQuery(container).scroll(function() {
+        var $container = self.$el.find(q);
+        var container = $container[0];
+        $container.scroll(function() {
             if (!self.getLoading() &&
                 container.scrollTop +
-                jQuery(container).innerHeight() >=
+                $container.innerHeight() >=
                 container.scrollHeight - 300) {
                 self.appendItems(self.current_records);
             }
@@ -691,8 +692,8 @@ CollectionList.prototype.appendAssets = function(the_records) {
             MediaThread.templates[self.config.template + '_assets'],
             jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         ));
-        var container = self.$el.find('div.asset-table');
-        jQuery(container).append(html);
+        var $container = self.$el.find('div.asset-table');
+        $container.append(html);
 
         if (self.create_annotation_thumbs) {
             self.createThumbs(the_records.assets);

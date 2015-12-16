@@ -6,17 +6,17 @@
 
 (function() {
     var PanelFactory = function() {
-        this.create = function(el, parent, type, panels, space_owner) {
+        this.create = function(el, $parent, type, panels, space_owner) {
             // Instantiate the panel's handler
             var handler = null;
             if (type === 'project') {
-                handler = new ProjectPanelHandler(el, parent, panels,
+                handler = new ProjectPanelHandler(el, $parent, panels,
                                                   space_owner);
             } else if (type === 'discussion') {
-                handler = new DiscussionPanelHandler(el, parent, panels,
+                handler = new DiscussionPanelHandler(el, $parent, panels,
                                                      space_owner);
             } else if (type === 'asset') {
-                handler = new AssetPanelHandler(el, parent, panels,
+                handler = new AssetPanelHandler(el, $parent, panels,
                                                 space_owner);
             }
 
@@ -31,7 +31,7 @@
         this.init = function(options, panels) {
             self.options = options;
             self.panelHandlers = [];
-            self.el = jQuery('#' + options.container)[0];
+            self.$el = jQuery('#' + options.container);
 
             jQuery.ajax({
                 url: options.url,
@@ -66,7 +66,7 @@
 
         this.resize = function() {
             var visible = getVisibleContentHeight();
-            jQuery(self.el).css('height', visible + 'px');
+            self.$el.css('height', visible + 'px');
         };
 
         this.loadTemplates = function(idx) {
@@ -105,23 +105,24 @@
                                         panel));
 
                     var newCell = $lastCell.prev().prev()[0];
+                    var $newCell = jQuery(newCell);
                     var handler = panelFactory.create(
                         newCell,
-                        self.el,
+                        self.$el,
                         self.panels[i].context.type,
                         self.panels[i],
                         self.space_owner);
                     self.panelHandlers.push(handler);
 
                     // enable open/close controls on subpanel
-                    jQuery(newCell)
+                    $newCell
                         .find('.pantab-container')
                         .on('click',
                             {handler: handler, isSubpanel: true},
                             slidePanelCallback);
 
                     // enable open/close controls on parent panels
-                    jQuery(newCell)
+                    $newCell
                         .next('.pantab-container')
                         .on('click',
                             {handler: handler, isSubpanel: false},
@@ -131,124 +132,123 @@
 
                     panel.loaded = true;
 
-                    self.verifyLayout(newCell);
+                    self.verifyLayout($newCell);
                 }
             }
         };
 
         this.slidePanel = function(pantab_container, event) {
             // Open/close this panhandle's panel
-            var panel = jQuery(pantab_container).prevAll(
-                'td.panel-container')[0];
+            var $panel = jQuery(pantab_container).prevAll(
+                'td.panel-container');
 
             var param;
             var panelTab;
-            if (jQuery(panel).hasClass('minimized') ||
-                    jQuery(panel).hasClass('maximized')) {
-                param = jQuery(panel).hasClass('minimized') ?
+            if ($panel.hasClass('minimized') ||
+                    $panel.hasClass('maximized')) {
+                param = $panel.hasClass('minimized') ?
                     'maximized' : 'minimized';
-                jQuery(panel).toggleClass('minimized maximized');
-                jQuery(panel).trigger('panel_state_change', [param]);
+                $panel.toggleClass('minimized maximized');
+                $panel.trigger('panel_state_change', [param]);
 
                 panelTab = jQuery(pantab_container).children('div.pantab')[0];
                 jQuery(panelTab).toggleClass('minimized maximized');
 
                 if (param === 'maximized') {
-                    jQuery(panel).siblings('td.panel-container').hide();
-                    jQuery(panel).css('display', 'table-cell');
+                    $panel.siblings('td.panel-container').hide();
+                    $panel.css('display', 'table-cell');
                 } else {
-                    jQuery(panel).siblings('td.panel-container').show();
+                    $panel.siblings('td.panel-container').show();
                 }
 
-                self.verifyLayout(panel);
+                self.verifyLayout($panel);
                 jQuery(window).trigger('resize');
             } else {
-                param = jQuery(panel).hasClass('open') ? 'closed' : 'open';
-                jQuery(panel).toggleClass('open closed');
-                jQuery(panel).trigger('panel_state_change', [param]);
+                param = $panel.hasClass('open') ? 'closed' : 'open';
+                $panel.toggleClass('open closed');
+                $panel.trigger('panel_state_change', [param]);
 
                 panelTab = jQuery(pantab_container).children('div.pantab')[0];
                 jQuery(panelTab).toggleClass('open closed');
 
-                self.verifyLayout(panel);
+                self.verifyLayout($panel);
                 jQuery(window).trigger('resize');
             }
         };
 
         this.openSubPanel = function(subpanel) {
+            var $subpanel = jQuery(subpanel);
             if (subpanel) {
-                jQuery(subpanel).removeClass('closed').addClass('open');
-                jQuery(subpanel).trigger('panel_state_change', ['open']);
+                $subpanel.removeClass('closed').addClass('open');
+                $subpanel.trigger('panel_state_change', ['open']);
 
                 var container =
-                    jQuery(subpanel).nextAll('td.pantab-container');
+                    $subpanel.nextAll('td.pantab-container');
                 var panelTab = jQuery(container[0]).children('div.pantab');
                 jQuery(panelTab[0]).removeClass('closed');
                 jQuery(panelTab[0]).addClass('open');
 
-                self.verifyLayout(subpanel);
+                self.verifyLayout($subpanel);
                 jQuery(window).trigger('resize');
             }
         };
 
         this.closeSubPanel = function(view) {
-            var subpanel = jQuery(view.el).find('td.panel-container.open')[0];
+            var $subpanel = view.$el.find('td.panel-container.open');
 
-            jQuery(subpanel).removeClass('open').addClass('closed');
-            jQuery(subpanel).trigger('panel_state_change', ['closed']);
+            $subpanel.removeClass('open').addClass('closed');
+            $subpanel.trigger('panel_state_change', ['closed']);
 
-            var panelTab = jQuery(subpanel).next()
-                                           .next()
-                                           .children('div.pantab')[0];
-            jQuery(panelTab).toggleClass('open closed');
+            var $panelTab = $subpanel.next().next().children('div.pantab');
+            $panelTab.toggleClass('open closed');
 
-            self.verifyLayout(subpanel);
+            self.verifyLayout($subpanel);
             jQuery(window).trigger('resize');
         };
 
-        this.verifyLayout = function(panel) {
+        this.verifyLayout = function($panel) {
             var screenWidth = jQuery(window).width();
-            var tableWidth = jQuery(self.el).width();
+            var tableWidth = self.$el.width();
 
-            var elts = jQuery(panel).parents('td.panel-container.open');
+            var elts = $panel.parents('td.panel-container.open');
             var parent = elts.length > 0 ? elts[0] : null;
 
             // Try really minimizing the minimized guys first
-            var a = jQuery(self.el).find(
+            var a = self.$el.find(
                 'table.panel-subcontainer td.panel-container.minimized');
             for (var i = 0; i < a.length && tableWidth > screenWidth; i++) {
                 var subcontainer = a[i];
                 jQuery(subcontainer).css('display', 'none');
-                tableWidth = jQuery(self.el).width();
+                tableWidth = self.$el.width();
             }
 
             // Try closing the subpanels first
-            a = jQuery(self.el).find(
+            a = self.$el.find(
                 'table.panel-subcontainer tbody tr td.panel-container.open')
                 .not('.alwaysopen');
             for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
-                var p = a[i];
-                if (panel !== p) {
+                var $p = jQuery(a[i]);
+                if (!$panel.is($p)) {
                     // close it
-                    jQuery(p).removeClass('open').addClass('closed');
-                    jQuery(p).trigger('panel_state_change', ['closed']);
+                    $p.removeClass('open').addClass('closed');
+                    $p.trigger('panel_state_change', ['closed']);
 
-                    var container = jQuery(p).nextAll('td.pantab-container');
+                    var container = $p.nextAll('td.pantab-container');
                     var panelTab = jQuery(container[0]).children('div.pantab');
                     jQuery(panelTab[0]).removeClass('open').addClass('closed');
 
-                    tableWidth = jQuery(self.el).width();
+                    tableWidth = self.$el.width();
                 }
             }
 
             // Then go for the parent panels
-            a = jQuery(self.el).find('tr.sliding-content-row')
+            a = self.$el.find('tr.sliding-content-row')
                 .children('td.panel-container.open:visible')
                 .not('.alwaysopen');
             if (a.length > 1) {
                 for (i = 0; i < a.length && tableWidth > screenWidth; i++) {
 
-                    if (a[i] !== panel && a[i] !== parent) {
+                    if (a[i] !== $panel && a[i] !== parent) {
                         // close it
                         jQuery(a[i]).removeClass('open').addClass('closed');
                         jQuery(a[i]).trigger('panel_state_change', ['closed']);
@@ -260,7 +260,7 @@
                         jQuery(parentPanelTab).removeClass('open')
                                               .addClass('closed');
 
-                        tableWidth = jQuery(self.el).width();
+                        tableWidth = self.$el.width();
                     }
                 }
             }
@@ -283,33 +283,33 @@
             });
         };
 
-        this.openPanel = function(panel) {
+        this.openPanel = function($panel) {
             // Open this panel
-            if (jQuery(panel).hasClass('closed')) {
-                jQuery(panel).removeClass('closed').addClass('open');
-                jQuery(panel).trigger('panel_state_change', ['open']);
+            if ($panel.hasClass('closed')) {
+                $panel.removeClass('closed').addClass('open');
+                $panel.trigger('panel_state_change', ['open']);
 
-                var panelTab = jQuery(panel).next().children('div.pantab')[0];
+                var panelTab = $panel.next().children('div.pantab')[0];
                 jQuery(panelTab).toggleClass('open closed');
 
-                self.verifyLayout(panel);
+                self.verifyLayout($panel);
                 jQuery(window).trigger('resize');
             }
         };
 
-        this.maximizePanel = function(panel) {
-            if (jQuery(panel).hasClass('minimized')) {
-                jQuery(panel).removeClass('minimized').addClass('maximized');
-                jQuery(panel).siblings('td.panel-container').hide();
+        this.maximizePanel = function($panel) {
+            if ($panel.hasClass('minimized')) {
+                $panel.removeClass('minimized').addClass('maximized');
+                $panel.siblings('td.panel-container').hide();
 
-                var panelTab = jQuery(panel).next().children('div.pantab')[0];
+                var panelTab = $panel.next().children('div.pantab')[0];
                 jQuery(panelTab).parent()
                                 .removeClass('minimized')
                                 .addClass('maximized');
                 jQuery(panelTab).removeClass('minimized')
                                 .addClass('maximized');
 
-                self.verifyLayout(panel);
+                self.verifyLayout($panel);
                 jQuery(window).trigger('resize');
             }
         };

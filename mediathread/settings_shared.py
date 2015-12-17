@@ -318,6 +318,8 @@ LTI_TOOL_CONFIGURATION = {
     'embed_tool_id': 'mediathread',
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
 # otherwise, make sure you specify the correct database settings in your

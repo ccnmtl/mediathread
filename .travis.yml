@@ -6,7 +6,5 @@ env:
   - TEST_SUITE=harvest2
 python:
   - "2.7"
-install:
-  - ./bootstrap.py
 script:
   - make $TEST_SUITE

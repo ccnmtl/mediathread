@@ -33,6 +33,7 @@ CACHES = {
 }
 
 TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
+    'django.contrib.messages.context_processors.messages',
     'mediathread.main.views.django_settings',
 ]
 
@@ -46,6 +47,7 @@ TEMPLATE_DIRS += [  # noqa
 ]
 
 INSTALLED_APPS += [  # noqa
+    'django.contrib.messages',
     'courseaffils',
     'tagging',
     'structuredcollaboration',

@@ -112,4 +112,32 @@
             <input class="btn btn-default" id="selection_visibility_submit" type="submit" value="Save Visiblity Options"></input>
         </form>
     </div>
+
+    <div class="well">
+        <h3>LTI Integration</h3>
+        <form action="{% url 'lti-enable-course' %}" method="POST">
+            <label>
+            <h4 style="display: inline">Allow external tools to access this course</h4>: &nbsp;
+            <input type="radio" name="lti-enable" value="1" {% if lti_context and lti_context.enable %}checked{% endif %} /> Yes
+            </label>&nbsp;&nbsp;
+            <label>
+            <input type="radio" name="lti-enable" value="0" {% if not lti_context or not lti_context.enable %}checked{% endif %} /> No
+            </label>
+            <br /><br />
+
+            {% if lti_context and lti_context.enable %}
+                <h5>Instructions</h5>
+                <ol>
+                    <li>Unique Course Identifier: {{lti_context.uuid}}</li>
+                    <li><a href="https://github.com/ccnmtl/mediathread/wiki/LTI-Integration">Read full configuration instructions</a></li>
+                </ol>
+            {% endif %}
+
+            <input type="hidden" name="next" value="{% url 'course-settings' %}" />
+            <input type="hidden" name="group" value="{{course.group.id}}" />
+            <input type="hidden" name="faculty_group" value="{{course.faculty_group.id}}" />
+            <div><input class="btn btn-default" type="submit" value="Save"></input></div>
+        </form>
+        <div class="visualclear"></div>        
+    </div>
 {% endblock %}

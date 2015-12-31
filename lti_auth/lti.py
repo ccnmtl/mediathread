@@ -3,6 +3,8 @@ from pylti.common import (
     LTIException, LTINotInSessionException, LTI_SESSION_KEY,
     verify_request_common, LTIRoleException, LTI_ROLES)
 
+from lti_auth.models import LTICourseContext
+
 
 class LTI(object):
     """
@@ -59,22 +61,23 @@ class LTI(object):
 
         return []
 
-    def context_id(self):
+    def custom_course_context(self):
         """
-        Returns course_group as provided by LTI
+        Returns the custom LTICourseContext id as provided by LTI
 
-        :return: course_group -- the course string
+        throws: KeyError or ValueError or LTICourseContext.DoesNotExist
+        :return: context -- the LTICourseContext instance or None
         """
-        if 'context_id' in self.lti_params:
-            return self.lti_params['context_id']
-
-        return None
+        return LTICourseContext.objects.get(
+            enable=True,
+            uuid=self.lti_params['custom_course_context'])
 
     def clear_session(self, request):
         """
-        Invalidates session
+        Invalidate the session
         """
-        request.session[LTI_SESSION_KEY] = False
+        if LTI_SESSION_KEY in request.session:
+            request.session[LTI_SESSION_KEY] = False
 
     def verify(self, request):
         """

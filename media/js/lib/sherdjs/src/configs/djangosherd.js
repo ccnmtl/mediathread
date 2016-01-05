@@ -280,6 +280,7 @@ CitationView.prototype.init = function (options) {
     // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
     if (!djangosherd.assetview) {
         var clipform = options.hasOwnProperty('clipform') ? options.clipform : false;
+        var clipplay = options.hasOwnProperty('clipplay') ? options.clipplay : false;
 
         if (!clipform) {
             djangosherd.assetview = new Sherd.GenericAssetView({ clipform: false, clipstrip: true});
@@ -288,8 +289,12 @@ CitationView.prototype.init = function (options) {
             djangosherd.assetview = new Sherd.GenericAssetView({
                 'clipform': true,
                 'clipstrip': true,
+                'clipplay': clipplay,
                 'storage': djangosherd.noteform,
-                'targets': { clipstrip: 'clipstrip-display' }
+                'targets': {
+                    clipstrip: 'clipstrip-display',
+                    clipplay: 'clipplay'
+                }
             });
         }
     }
@@ -422,6 +427,7 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
     var targets = {
         "top": asset_target,
         "clipstrip": jQuery(asset_target).find('div.clipstrip-display').get(0),
+        "clipplay": jQuery(asset_target).find('div.clipplay').get(0),
         "asset": jQuery(asset_target).find('div.asset-display').get(0),
         "asset_title": jQuery(asset_target).find('div.asset-title').get(0),
         "annotation_title": jQuery(asset_target).find('div.annotation-title').get(0)
@@ -460,7 +466,10 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
         }
         djangosherd.assetview.html.push(targets.asset, {
             asset : asset_obj,
-            targets: {clipstrip: targets.clipstrip},
+            targets: {
+                clipstrip: targets.clipstrip,
+                clipplay: targets.clipplay
+            },
             functions: { winHeight: self.options.winHeight }
         });
 

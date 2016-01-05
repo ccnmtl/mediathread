@@ -20,6 +20,7 @@ if (!Sherd.GenericAssetView) {
         //consts
         var Clipstripper = Sherd.Video.Annotators.ClipStrip;
         var Clipformer = Sherd.Video.Annotators.ClipForm;
+        var Clipplayer = Sherd.Video.Annotators.ClipPlay;
         this.options = options;
         // //INIT
         this.settings = {};
@@ -36,6 +37,10 @@ if (!Sherd.GenericAssetView) {
                     viewgroup.clipstrip = new Clipstripper();
                     viewgroup.clipstrip.attachView(viewgroup.view);
                 }
+                if (options.hasOwnProperty('clipplay') && options.clipplay) {
+                    viewgroup.clipplay = new Clipplayer();
+                    viewgroup.clipplay.attachView(viewgroup.view);
+                }                
             };
             if (Sherd.Video.QuickTime) {
                 var quicktime = this.settings.quicktime = {'view': new Sherd.Video.QuickTime() };
@@ -145,6 +150,12 @@ if (!Sherd.GenericAssetView) {
                     if (cur.clipform) {
                         self.clipform = cur.clipform;
                     }
+                    if (cur.clipplay) {
+                        cur.clipplay.html.push(options.targets.clipplay, {
+                            asset : {}
+                        });
+                        self.clipplay = cur.clipplay;
+                    }
                     if (cur.clipstrip) {
                         var target = 'clipstrip-display'; //default
                         if (options.targets && options.targets.clipstrip) {
@@ -174,6 +185,9 @@ if (!Sherd.GenericAssetView) {
                 cur.view.setState.apply(cur.view, arguments);
                 if (self.clipstrip) {
                     self.clipstrip.setState.apply(self.clipstrip, arguments);
+                }
+                if (self.clipplay) {
+                    self.clipplay.setState.apply(self.clipplay, arguments);
                 }
             }
         };

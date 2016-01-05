@@ -1,25 +1,58 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
-from django.http.response import HttpResponseRedirect, HttpResponseForbidden
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template.context import RequestContext
+from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
+
+from lti_auth.lti import LTI
+from lti_auth.models import LTICourseContext
 
 
 class LTIAuthMixin(object):
     role_type = 'any'
     request_type = 'any'
 
-    def dispatch(self, *args, **kwargs):
-        """ validates the LTI oAuth signature ticket and logs the user in """
-        user = authenticate(request=self.request,
-                            request_type=self.request_type,
-                            role_type=self.role_type)
+    def join_groups(self, lti, ctx, user):
+        # add the user to the requested groups
+        user.groups.add(ctx.group)
+        for role in lti.user_roles():
+            if role.lower() in ['staff', 'instructor', 'administrator']:
+                user.groups.add(ctx.faculty_group)
+                break
+
+    def dispatch(self, request, *args, **kwargs):
+        lti = LTI(self.request_type, self.role_type)
+
+        # validate the user via oauth
+        user = authenticate(request=request, lti=lti)
         if user is None:
-            return HttpResponseForbidden('unable to login through LTI')
+            lti.clear_session(request)
+            return render_to_response(
+                'lti_auth/fail_auth.html', {},
+                context_instance=RequestContext(request))
 
-        login(self.request, user)
+        # check if course is configured
+        try:
+            ctx = lti.custom_course_context()
+        except (KeyError, ValueError, LTICourseContext.DoesNotExist):
+            lti.clear_session(request)
+            return render_to_response(
+                'lti_auth/fail_course_configuration.html', {},
+                context_instance=RequestContext(request))
 
-        return super(LTIAuthMixin, self).dispatch(*args, **kwargs)
+        # add user to the course
+        self.join_groups(lti, ctx, user)
+
+        # login
+        login(request, user)
+
+        return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)
 
 
 class LTIRoutingView(LTIAuthMixin, View):
@@ -83,3 +116,27 @@ class LTILandingPage(TemplateView):
             'landing_url': landing_url,
             'title': settings.LTI_TOOL_CONFIGURATION['title']
         }
+
+
+class LTICourseEnableView(View):
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(self.__class__, self).dispatch(request, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        group_id = self.request.POST.get('group')
+        faculty_group_id = self.request.POST.get('faculty_group')
+
+        (ctx, created) = LTICourseContext.objects.get_or_create(
+                group=get_object_or_404(Group, id=group_id),
+                faculty_group=get_object_or_404(Group, id=faculty_group_id))
+
+        ctx.enable = self.request.POST.get('lti-enable', 0) == '1'
+        ctx.save()
+
+        messages.add_message(self.request, messages.INFO,
+                             'Your changes were saved.', fail_silently=True)
+
+        next_url = self.request.POST.get('next', '/')
+        return HttpResponseRedirect(next_url)

@@ -826,11 +826,19 @@ class AssetEmbedView(TemplateView):
         else:
             presentation = 'small'
 
-        return {'item': json.dumps(ctx),
-                'item_id': selection.asset.id,
-                'selection_id': selection.id,
-                'presentation': presentation,
-                'title': selection.display_title()}
+        media_type = selection.asset.media_type()
+
+        ctx = {'item': json.dumps(ctx),
+               'item_id': selection.asset.id,
+               'selection_id': selection.id,
+               'presentation': presentation,
+               'media_type': media_type,
+               'title': selection.display_title()}
+
+        if media_type == 'video':
+            ctx['timecode'] = selection.range_as_timecode()
+
+        return ctx
 
 
 class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,

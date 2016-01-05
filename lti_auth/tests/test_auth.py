@@ -1,10 +1,8 @@
 from django.test.testcases import TestCase
-from pylti.common import LTI_SESSION_KEY
 
 from lti_auth.auth import LTIBackend
 from lti_auth.lti import LTI
-from lti_auth.tests.factories import BASE_LTI_PARAMS, CONSUMERS, \
-    generate_lti_request, LTICourseContextFactory, UserFactory
+from lti_auth.tests.factories import BASE_LTI_PARAMS, UserFactory
 
 
 class LTIBackendTest(TestCase):
@@ -61,38 +59,6 @@ class LTIBackendTest(TestCase):
 
         username = self.backend.get_hashed_username(self.lti)
         self.assertEquals(user.username, username)
-
-    def test_join_groups(self):
-        ctx = LTICourseContextFactory()
-        user = UserFactory()
-
-        self.backend.join_groups(self.lti, ctx, user)
-        self.assertTrue(user in ctx.group.user_set.all())
-        self.assertTrue(user in ctx.faculty_group.user_set.all())
-
-    def test_authenticate_invalid_course(self):
-        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
-            request = generate_lti_request()
-            self.assertIsNone(self.backend.authenticate(request=request,
-                                                        request_type='initial',
-                                                        role_type='any'))
-            self.assertFalse(request.session[LTI_SESSION_KEY])
-
-    def test_authenticate_valid_course(self):
-        ctx = LTICourseContextFactory()
-
-        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
-            request = generate_lti_request()
-            user = self.backend.authenticate(request=request,
-                                             request_type='initial',
-                                             role_type='any')
-
-            self.assertTrue(request.session[LTI_SESSION_KEY])
-            self.assertFalse(user.has_usable_password())
-            self.assertEquals(user.email, 'foo@bar.com')
-            self.assertEquals(user.get_full_name(), 'Foo Baz')
-            self.assertTrue(user in ctx.group.user_set.all())
-            self.assertTrue(user in ctx.faculty_group.user_set.all())
 
     def test_get_user(self):
         user = UserFactory()

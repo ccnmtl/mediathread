@@ -20,6 +20,7 @@ from djangohelpers.lib import rendered_with, allow_http
 import requests
 from threadedcomments.models import ThreadedComment
 
+from lti_auth.models import LTICourseContext
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
@@ -162,6 +163,10 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
         key = course_details.COURSE_INFORMATION_TITLE_KEY
         context[key] = self.request.course.get_detail(
             key, course_details.COURSE_INFORMATION_TITLE_DEFAULT)
+
+        context['lti_context'] = LTICourseContext.objects.filter(
+            group=self.request.course.group.id,
+            faculty_group=self.request.course.faculty_group.id).first()
 
         return context
 

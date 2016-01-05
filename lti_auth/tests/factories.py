@@ -1,7 +1,8 @@
 import urllib
 from urlparse import parse_qs, urlparse
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, AnonymousUser
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 import factory
 import oauthlib.oauth1
@@ -9,11 +10,9 @@ from oauthlib.oauth1.rfc5849 import CONTENT_TYPE_FORM_URLENCODED
 
 from lti_auth.models import LTICourseContext
 
-TEST_CONTEXT_ID = u'course-v1:edX+DemoX+Demo_Course'
 
 BASE_LTI_PARAMS = {
-    u'context_id': TEST_CONTEXT_ID,
-    u'launch_presentation_return_url': u'',
+    u'launch_presentation_return_url': u'/asset/',
     u'lis_person_contact_email_primary': u'foo@bar.com',
     u'lis_person_name_full': u'Foo Bar Baz',
     u'lis_result_sourcedid': u'course-v1%3AedX%2BDemoX%2BDemo_Course'
@@ -30,7 +29,7 @@ CONSUMERS = {
 }
 
 
-def generate_lti_request():
+def generate_lti_request(course_context=None, provider=None, use=None):
     """
     This code generated valid LTI 1.0 basic-lti-launch-request request
     """
@@ -41,9 +40,17 @@ def generate_lti_request():
                                     signature_type=oauthlib.oauth1.
                                     SIGNATURE_TYPE_QUERY)
 
+    params = BASE_LTI_PARAMS.copy()
+    if course_context:
+        params.update({'custom_course_context': course_context.uuid})
+    if provider:
+        params.update({'tool_consumer_info_product_family_code': provider})
+    if use:
+        params.update({'ext_content_intended_use': use})
+
     signature = client.sign(
         'http://testserver/lti/',
-        http_method='POST', body=urllib.urlencode(BASE_LTI_PARAMS),
+        http_method='POST', body=urllib.urlencode(params),
         headers={'Content-Type': CONTENT_TYPE_FORM_URLENCODED})
 
     url_parts = urlparse(signature[0])
@@ -52,11 +59,15 @@ def generate_lti_request():
     for key, value in query_string.iteritems():
         verify_params[key] = value[0]
 
-    params = BASE_LTI_PARAMS.copy()
     params.update(verify_params)
 
     request = RequestFactory().post('/lti/', params)
-    request.session = {}
+
+    middleware = SessionMiddleware()
+    middleware.process_request(request)
+    request.session.save()
+
+    request.user = AnonymousUser()
     return request
 
 
@@ -77,6 +88,5 @@ class LTICourseContextFactory(factory.DjangoModelFactory):
     class Meta:
         model = LTICourseContext
 
-    lms_context_id = TEST_CONTEXT_ID
     group = factory.SubFactory(GroupFactory)
     faculty_group = factory.SubFactory(GroupFactory)

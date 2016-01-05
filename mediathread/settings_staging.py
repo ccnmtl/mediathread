@@ -11,9 +11,9 @@ locals().update(
         s3static=False,
     ))
 
-TEMPLATE_DIRS += [
-    "/var/www/mediathread/mediathread/mediathread/deploy_specific/templates",
-]
+TEMPLATE_DIRS.insert(
+    0,
+    "/var/www/mediathread/mediathread/mediathread/deploy_specific/templates")
 
 try:
     from local_settings import *

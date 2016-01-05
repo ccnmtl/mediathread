@@ -42,7 +42,7 @@ MIDDLEWARE_CLASSES += [  # noqa
     'courseaffils.middleware.CourseManagerMiddleware',
 ]
 
-TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))
+TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
 
 INSTALLED_APPS += [  # noqa
     'django.contrib.messages',

@@ -1,5 +1,6 @@
 # flake8: noqa
 from mediathread.settings import *
+from ccnmtlsettings.production import common
 
 locals().update(
     common(

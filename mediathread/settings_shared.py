@@ -42,9 +42,7 @@ MIDDLEWARE_CLASSES += [  # noqa
     'courseaffils.middleware.CourseManagerMiddleware',
 ]
 
-TEMPLATE_DIRS += [  # noqa
-    os.path.join(base, "deploy_specific/templates"),
-]
+TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))
 
 INSTALLED_APPS += [  # noqa
     'django.contrib.messages',
@@ -197,7 +195,5 @@ try:
     from mediathread.deploy_specific.settings import *  # noqa
     if 'EXTRA_INSTALLED_APPS' in locals():
         INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
-    if 'EXTRA_MIDDLEWARE_CLASSES' in locals():
-        MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + EXTRA_MIDDLEWARE_CLASSES
 except:
     pass

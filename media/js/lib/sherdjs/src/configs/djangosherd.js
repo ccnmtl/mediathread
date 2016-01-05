@@ -283,13 +283,16 @@ CitationView.prototype.init = function (options) {
         var clipplay = options.hasOwnProperty('clipplay') ? options.clipplay : false;
 
         if (!clipform) {
-            djangosherd.assetview = new Sherd.GenericAssetView({ clipform: false, clipstrip: true});
+            djangosherd.assetview = new Sherd.GenericAssetView({
+                clipform: false,
+                clipstrip: true,
+                'clipplay': clipplay
+            });
         } else {
             // GenericAssetView is a wrapper in ../assets.js.
             djangosherd.assetview = new Sherd.GenericAssetView({
                 'clipform': true,
                 'clipstrip': true,
-                'clipplay': clipplay,
                 'storage': djangosherd.noteform,
                 'targets': {
                     clipstrip: 'clipstrip-display',

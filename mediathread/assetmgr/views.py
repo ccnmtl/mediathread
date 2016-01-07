@@ -206,7 +206,7 @@ class AssetCreateView(View):
     def post(self, request):
         user = self.parse_user(request)
         if not request.course or not request.course.is_member(user):
-            raise HttpResponseForbidden(
+            return HttpResponseForbidden(
                 "You must be a member of the course to add assets.")
 
         req_dict = getattr(request, request.method)

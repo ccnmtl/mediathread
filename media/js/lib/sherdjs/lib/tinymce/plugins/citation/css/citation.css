@@ -2,9 +2,12 @@ a.materialCitation {
     background-color: #fff;
     background-image: url('./meth_video.png');
     background-repeat: no-repeat;
+    background-position-y: -4px;
     padding-left: 23px;
     width: auto;
+    height: 20px;
     text-decoration: underline;
+    display: inline-block;
 }
 
 a.materialCitation:after {

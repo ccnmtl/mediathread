@@ -35,7 +35,7 @@ pylint==1.4.4
 pyasn1==0.1.9
 pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0
-requests==2.8.0
+requests==2.9.1
 djangowind==0.14.3
 django-tagging==0.4
 django-reversion==1.9.3

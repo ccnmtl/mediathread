@@ -56,7 +56,8 @@ Feature: Single Asset View
         And there is a Save button
         
         When I set the "Title" "text" field to "Updated MAAP Award Reception"
-        And I set the "Tags" "text" field to "abc"
+        And I remove the existing select2 tags at ".global-annotation-tags.select2-container"
+        And I set the field with selector ".global-annotation-tags.select2-container input.select2-input" to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
         And I click the Save button
         
@@ -95,7 +96,8 @@ Feature: Single Asset View
         And there is a Save button
         And there is not a "Title" "text" field
         
-        And I set the "Tags" "text" field to "abc"
+        And I remove the existing select2 tags at ".global-annotation-tags.select2-container"
+        And I set the field with selector ".global-annotation-tags.select2-container input.select2-input" to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
         And I click the Save button
         

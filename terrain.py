@@ -12,8 +12,11 @@ from selenium.common.exceptions import NoSuchElementException, \
     StaleElementReferenceException, InvalidElementStateException, \
     TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.expected_conditions import \
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.expected_conditions import (
     visibility_of_element_located, invisibility_of_element_located
+)
+from selenium.webdriver.support.ui import WebDriverWait
 
 from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
@@ -1259,6 +1262,30 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
                     elt.clear()
                     time.sleep(1)
                     elt.send_keys(value)
+
+
+@step(u'I remove the existing select2 tags at "([^"]*)"')
+def i_remove_the_existing_select2_tags_at_selector(step, selector,
+                                                   sid='asset-view-details'):
+    if world.using_selenium:
+        wait = WebDriverWait(world.browser, 10)
+        parent = wait.until(
+            visibility_of_element_located((By.CSS_SELECTOR, selector)))
+        elts = parent.find_elements_by_css_selector(
+            'a.select2-search-choice-close')
+        for elt in elts:
+            elt.click()
+
+
+@step(u'I set the field with selector "([^"]*)" to "([^"]*)"')
+def i_set_the_field_with_selector_to_value(step, selector, value,
+                                           sid='asset-view-details'):
+    if world.using_selenium:
+        parent = world.browser.find_element_by_id(sid)
+        elt = parent.find_element_by_css_selector(selector)
+        elt.clear()
+        elt.send_keys(value)
+        elt.send_keys(Keys.ENTER)
 
 
 @step(u'I insert "([^"]*)" into the text')

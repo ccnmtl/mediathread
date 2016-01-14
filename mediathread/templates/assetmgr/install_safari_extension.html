@@ -1,5 +1,7 @@
 {% load staticfiles %}
+{% load waffle_tags %}
 
+{% flag "beta_extensions" %}
 <div id="safari-install-container">
     <h4><strong>Install Safari extension</strong></h4>
     <p>
@@ -18,3 +20,4 @@
     </div>
     <div class="clearfix"></div>
 </div>
+{% endflag %}

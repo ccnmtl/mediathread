@@ -4263,3 +4263,9 @@ a.btn.btn-default img.left {
 .sherd-vimeo-wrapper iframe {
     border: 0;
 }
+
+/* select2 customizations */
+.select2-container-multi .select2-choices .select2-search-field input {
+    height: 28px;
+}
+/* end select2 customizations */

@@ -540,7 +540,8 @@ CollectionList.prototype.updateSwitcher = function() {
 
             self.$el.find('select.course-tags')
                 .select2({
-                    placeholder: 'Select tag'
+                    placeholder: 'Select tag',
+                    width: '70%'
                 });
             if ('tag' in self.current_records.active_filters &&
                 self.current_records.active_filters.tag.length > 0) {
@@ -550,7 +551,9 @@ CollectionList.prototype.updateSwitcher = function() {
             }
 
             var vocabulary = self.$el.find('select.vocabulary')[0];
-            jQuery(vocabulary).select2({});
+            jQuery(vocabulary).select2({
+                width: '70%'
+            });
 
             var values = [];
             for (var key in self.current_records.active_filters) {

@@ -104,15 +104,19 @@ class ProjectManager(models.Manager):
 
             new_project.body = project_body
             new_project.save()
+
+            self.migrate_assignment_item(course, user,
+                                         old_project, new_project, object_map)
+
             object_map['projects'][old_project.id] = new_project
 
         return object_map
 
     def migrate_one(self, project, course, user):
-        new_project = Project.objects.create(title=project.title,
-                                             project_type=project.project_type,
-                                             course=course,
-                                             author=user)
+        new_project = Project.objects.create(
+            title=project.title, project_type=project.project_type,
+            course=course, author=user,
+            response_view_policy=project.response_view_policy)
 
         collaboration_context = Collaboration.objects.get_for_object(course)
 
@@ -125,6 +129,21 @@ class ProjectManager(models.Manager):
             policy_record=policy_record)
 
         return new_project
+
+    def migrate_assignment_item(self, course, user,
+                                old_project, new_project, object_map):
+        aItem = AssignmentItem.objects.filter(project=old_project).first()
+        if aItem is not None:
+            if aItem.asset.id in object_map['assets']:
+                new_asset = object_map['assets'][aItem.asset.id]
+            else:
+                # migrate the asset
+                new_asset = Asset.objects.migrate_one(
+                    aItem.asset, course, user)
+                object_map['assets'][aItem.asset.id] = new_asset
+
+            AssignmentItem.objects.create(project=new_project,
+                                          asset=new_asset)
 
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)

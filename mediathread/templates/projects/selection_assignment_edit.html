@@ -28,7 +28,7 @@
 
 {% block uncompressable_js %}
     <!-- required project functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
     
@@ -155,7 +155,7 @@
                                 <li>How to annotate selections in the notes field</li>
                                 <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
                             </ul>
-                            <textarea name="body" class="form-control mceEditor">
+                            <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                 {{form.instance.body}}
                             </textarea>
                             <div class="help-inline">Instructions is a required field</div>      
@@ -222,6 +222,7 @@
                         <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                             <div class="asset-display"></div>
+                            <div class="clipstrip-display"></div>
                         </div>
                     </div>
                 </div>

@@ -6,9 +6,9 @@ from django.test import TestCase
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
-    AssetFactory, SherdNoteFactory, ProjectFactory
+    AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
 from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS
+    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -109,6 +109,46 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.course, self.alt_course)
         self.assertEquals(new_project.description(), 'Composition Assignment')
         self.assertEquals(new_project.visibility_short(), 'Published to Class')
+        self.assertEquals(AssignmentItem.objects.count(), 0)
+
+    def test_migrate_selection_assignment(self):
+        assignment1 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', title="Assignment 1",
+            response_view_policy = RESPONSE_VIEW_NEVER[0],
+            project_type='selection-assignment')
+        assignment2 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', title="Assignment 2",
+            project_type='selection-assignment')
+
+        asset = AssetFactory.create(course=self.sample_course,
+                                    title='Sample', primary_source='image')
+
+        AssignmentItemFactory.create(project=assignment1, asset=asset)
+        AssignmentItemFactory.create(project=assignment2, asset=asset)
+
+        projects = [assignment1, assignment2]
+        object_map = {'assets': {}, 'notes': {}, 'projects': {}}
+        object_map = Project.objects.migrate(
+            projects, self.alt_course, self.alt_instructor,
+            object_map, True, True)
+
+        self.assertEquals(self.alt_course.asset_set.count(), 1)
+        alt_asset = self.alt_course.asset_set.first()
+        self.assertTrue(alt_asset.title, 'Sample')
+        self.assertNotEqual(alt_asset.id, asset.id)
+
+        self.assertEquals(self.alt_course.project_set.count(), 2)
+
+        a = Project.objects.get(course=self.alt_course, title='Assignment 1')
+        self.assertEquals(a.response_view_policy, RESPONSE_VIEW_NEVER[0])
+        ai = AssignmentItem.objects.get(project=a)
+        self.assertEquals(ai.asset, alt_asset)
+
+        a = Project.objects.get(course=self.alt_course, title='Assignment 2')
+        ai = AssignmentItem.objects.get(project=a)
+        self.assertEquals(ai.asset, alt_asset)
 
     def test_migrate_projects_to_alt_course(self):
         self.assertEquals(len(self.alt_course.asset_set.all()), 0)

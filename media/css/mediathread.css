@@ -1417,6 +1417,10 @@ tr.project-content-row td.panhandle-stripe.collection {
         background-color: #A88448;
 }
 
+tr.discussion-content-row .asset-view-published {
+    border-color: #bbb;
+}
+
 div.pantab.collection,
 td.panhandle-stripe.collection {
     background-color: #CCC;

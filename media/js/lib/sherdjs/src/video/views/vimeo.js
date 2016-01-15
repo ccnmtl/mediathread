@@ -384,7 +384,7 @@ if (!Sherd.Video.Vimeo) {
             return {
                 w: w,
                 trackX: 96,
-                trackWidth: w - 283,
+                trackWidth: w - 250,
                 visible: true
             };
         };

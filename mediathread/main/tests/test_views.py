@@ -740,8 +740,8 @@ class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
 
         with self.settings(YOUTUBE_BROWSER_APIKEY="123",
                            DJANGOSHERD_FLICKR_APIKEY="456",
-                           BOOKMARKLET_VERSION="1"):
-            response = self.client.get(self.url, {'version': 1})
+                           BOOKMARKLET_VERSION="2"):
+            response = self.client.get(self.url, {'version': 2})
             self.assertEquals(response.status_code, 200)
 
             self.assertContains(response, '"current": true')

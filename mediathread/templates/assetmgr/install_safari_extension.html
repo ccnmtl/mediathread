@@ -1,0 +1,23 @@
+{% load staticfiles %}
+{% load waffle_tags %}
+
+{% flag "beta_extensions" %}
+<div id="safari-install-container">
+    <h4><strong>Install Safari extension</strong></h4>
+    <p>
+        Use Mediathread's Safari extension to import media
+        from various sites. You must be using Safari to install
+        this extension.
+    </p>
+    <a id="safari-install-button"
+       href="https://github.com/ccnmtl/mediathread-safari/releases/download/0.0.3/Mediathread.safariextz"
+       class="btn btn-primary pull-left">
+        + Add to Safari
+    </a>
+    <div class="pull-left">
+        <img width="32" height="32"
+             src="{% static 'img/browser_icons/safari/safari_icon_large.png' %}">
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endflag %}

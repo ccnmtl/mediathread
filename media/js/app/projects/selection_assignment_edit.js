@@ -1,5 +1,5 @@
 /* global _: true, Backbone: true, CitationView: true */
-/* global showMessage: true, tinyMCE: true */
+/* global showMessage: true, tinymce: true */
 
 (function(jQuery) {
     var global = this;
@@ -23,14 +23,6 @@
             this.totalPages = jQuery('.page').length;
 
             // hook up behaviors
-            jQuery(window).on('tinymce_init_instance',
-                function(event, instance, param2) {
-                    if (instance) {
-                        var width = jQuery(self.el).find('textarea').width();
-                        instance.theme.resizeTo(width, 200);
-                    }
-                }
-            );
             jQuery('input[name="due_date"]').datepicker({
                 minDate: 0,
                 dateFormat: 'mm/dd/yy'
@@ -56,7 +48,7 @@
                 return jQuery('input[name="item"]').val() !== '';
             } else if (pageNo === 3) {
                 var title = jQuery(this.el).find('input[name="title"]').val();
-                var body = tinyMCE.activeEditor.getContent();
+                var body = tinymce.activeEditor.getContent();
                 return title.length > 0 && body.length > 0;
             } else if (pageNo === 4) {
                 q = 'input[name="response_view_policy"]:checked';
@@ -118,7 +110,7 @@
                 $current.addClass('has-error');
             } else {
                 jQuery(window).unbind('beforeunload');
-                tinyMCE.activeEditor.save();
+                tinymce.activeEditor.save();
                 var frm = jQuery(evt.currentTarget).parents('form')[0];
                 jQuery.ajax({
                     type: 'POST',

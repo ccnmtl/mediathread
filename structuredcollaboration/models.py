@@ -98,14 +98,10 @@ class Collaboration(models.Model):
         )
 
     def get_absolute_url(self):
-        if self.context_id and self.context.slug:
-            return urlresolvers.reverse("collaboration-obj-view",
-                                        args=(self.context.slug,
-                                              self.content_type.model,
-                                              self.object_pk))
-        else:
-            return urlresolvers.reverse("collaboration-dispatch",
-                                        args=(self.pk,))
+        return urlresolvers.reverse("collaboration-obj-view",
+                                    args=(self.context.slug,
+                                          self.content_type.model,
+                                          self.object_pk))
 
     def permission_to(self, permission, course, user):
         return self.get_policy().permission_to(self, permission,
@@ -125,13 +121,19 @@ class Collaboration(models.Model):
             result = result.get_parent()
         return result
 
-    def append_child(self, obj=None):
+    def append_child(self, obj):
         coll, created = Collaboration.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(type(obj)),
             object_pk=str(obj.pk), )
         coll._parent = self
         coll.save()
         return coll
+
+    def remove_children(self):
+        children = Collaboration.objects.filter(_parent=self)
+        for child in children:
+            child._parent = None
+            child.save()
 
     def get_policy(self):
         if not self.policy_record:

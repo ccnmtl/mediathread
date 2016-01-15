@@ -24,7 +24,7 @@ var CollectionList = function(config) {
     self.view_callback = config.view_callback;
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.create_asset_thumbs = config.create_asset_thumbs;
-    self.parent = config.parent;
+    self.$parent = config.$parent;
     self.selected_view = config.hasOwnProperty('selectedView') ?
         config.selectedView : 'Medium';
     self.citable = config.hasOwnProperty('citable') ? config.citable : false;
@@ -33,36 +33,36 @@ var CollectionList = function(config) {
     self.loading = false;
     self.current_asset = config.current_asset;
 
-    self.el = jQuery(self.parent).find('div.' + self.template_label)[0];
+    self.$el = self.$parent.find('div.' + self.template_label);
 
     self.switcher_context = jQuery.extend({}, MediaThread.mustacheHelpers);
 
     jQuery(window).on('asset.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
-        var div = jQuery(self.el).find('div.collection-assets');
-        if (!self.citable && div.length > 0) {
-            self.scrollTop = jQuery(div[0]).scrollTop();
+        var $div = self.$el.find('div.collection-assets');
+        if (!self.citable && $div.length > 0) {
+            self.scrollTop = $div.scrollTop();
             event.data.self.refresh();
         }
     });
     jQuery(window).on('annotation.on_create', {'self': self}, function(event) {
         var self = event.data.self;
         self.scrollTop =
-            jQuery(self.el).find('div.collection-assets').scrollTop();
+            self.$el.find('div.collection-assets').scrollTop();
         event.data.self.refresh();
     });
     jQuery(window).on('annotation.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
         if (!self.citable) {
             self.scrollTop =
-                jQuery(self.el).find('div.collection-assets').scrollTop();
+                self.$el.find('div.collection-assets').scrollTop();
             event.data.self.refresh();
         }
     });
     jQuery(window).on('annotation.on_save', {'self': self}, function(event) {
         var self = event.data.self;
         self.scrollTop =
-            jQuery(self.el).find('div.collection-assets').scrollTop();
+            self.$el.find('div.collection-assets').scrollTop();
         event.data.self.refresh();
     });
 
@@ -72,36 +72,36 @@ var CollectionList = function(config) {
                 Mustache.render(
                     MediaThread.templates[config.template],
                     MediaThread.mustacheHelpers);
-            jQuery(self.el).html(renderedCollection);
+            self.$el.html(renderedCollection);
 
             self.refresh(config);
         });
 
-    jQuery(self.el).on('click', '.filter-widget h3', function(evt) {
+    self.$el.on('click', '.filter-widget h3', function(evt) {
         jQuery(evt.currentTarget).parent().toggleClass('collapsed');
         jQuery(window).trigger('resize');
     });
 
-    jQuery(self.el).on('blur', 'input[name="search-text"]', function(evt) {
+    self.$el.on('blur', 'input[name="search-text"]', function(evt) {
         self.current_records.active_filters.search_text =
-            jQuery(self.el).find('input[name="search-text"]').val();
+            self.$el.find('input[name="search-text"]').val();
     });
 
-    jQuery(self.el).on('keyup', 'input[name="search-text"]', function(evt) {
+    self.$el.on('keyup', 'input[name="search-text"]', function(evt) {
         if (evt.keyCode === 13) {
             evt.preventDefault();
             self.current_records.active_filters.search_text =
-                jQuery(self.el).find('input[name="search-text"]').val();
+                self.$el.find('input[name="search-text"]').val();
             return self.filter();
         }
     });
-    jQuery(self.el).on('click', '.btn-search-text', function(evt) {
+    self.$el.on('click', '.btn-search-text', function(evt) {
         self.current_records.active_filters.search_text =
-            jQuery(self.el).find('input[name="search-text"]').val();
+            self.$el.find('input[name="search-text"]').val();
         return self.filter();
     });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.switcher-choice.filterbydate', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.href.split('/');
@@ -115,7 +115,7 @@ var CollectionList = function(config) {
             return self.filter();
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'change select2-removed', 'select.vocabulary', function(evt) {
             var option = evt.added || evt.removed;
             var vocab = jQuery(option.element).parent().attr('data-id');
@@ -133,21 +133,21 @@ var CollectionList = function(config) {
             return self.filter();
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'change select2-removed', 'select.course-tags', function() {
-            var elt = jQuery(self.el).find('select.course-tags');
-            self.current_records.active_filters.tag = jQuery(elt).val();
+            var $elt = self.$el.find('select.course-tags');
+            self.current_records.active_filters.tag = $elt.val();
             return self.filter();
         });
 
-    jQuery(self.parent).on(
+    self.$parent.on(
         'click', 'a.switcher-choice.filterbytag', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.href.split('/');
             return self.filterByTag(bits[bits.length - 1]);
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.collection-choice.edit-asset', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.parentNode.href.split('/');
@@ -156,7 +156,7 @@ var CollectionList = function(config) {
             return false;
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.collection-choice.delete-asset', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.parentNode.href.split('/');
@@ -165,14 +165,14 @@ var CollectionList = function(config) {
             return false;
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.collection-choice.delete-annotation', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.parentNode.href.split('/');
             return self.deleteAnnotation(bits[bits.length - 1]);
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.collection-choice.create-annotation', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.parentNode.href.split('/');
@@ -181,7 +181,7 @@ var CollectionList = function(config) {
             return false;
         });
 
-    jQuery(self.el).on(
+    self.$el.on(
         'click', 'a.collection-choice.edit-annotation', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.parentNode.href.split('/');
@@ -195,12 +195,12 @@ var CollectionList = function(config) {
         });
 
     var q = '#collection-overlay, #collection-help, #collection-help-tab';
-    jQuery(self.parent).on('click', '#collection-help-button', function() {
+    self.$parent.on('click', '#collection-help-button', function() {
         jQuery(q).show();
         return false;
     });
 
-    jQuery(self.parent).on('click', '.dismiss-help', function() {
+    self.$parent.on('click', '.dismiss-help', function() {
         jQuery(q).hide();
         return false;
     });
@@ -222,7 +222,7 @@ CollectionList.prototype.setLoading = function(isLoading) {
 CollectionList.prototype.constructUrl = function(config, updating) {
     var url;
 
-    if (config && config.parent) {
+    if (config && config.$parent) {
         // Retrieve the full asset w/annotations from storage
         if (config.view === 'all' || !config.space_owner) {
             url = MediaThread.urls['all-space'](
@@ -346,8 +346,9 @@ CollectionList.prototype.filterByVocabulary = function(srcElement) {
     var self = this;
     self.setLoading(true);
     var url = MediaThread.urls['all-space'](null, null, self.citable);
-    url += jQuery(srcElement).data('vocabulary-id') + '=' +
-        jQuery(srcElement).data('term-id');
+    var $srcElement = jQuery(srcElement);
+    url += $srcElement.data('vocabulary-id') + '=' +
+        $srcElement.data('term-id');
     djangosherd.storage.get({
         type: 'asset',
         url: url
@@ -365,7 +366,7 @@ CollectionList.prototype.filter = function() {
     self.setLoading(true);
     var filters = {};
 
-    jQuery(self.el).find('select.course-tags, select.vocabulary')
+    self.$el.find('select.course-tags, select.vocabulary')
         .select2('enable', false);
 
     var url = self.getSpaceUrl();
@@ -416,7 +417,7 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
         var asset = assets[i];
         djangosherd_adaptAsset(asset); //in-place
 
-        var $targetParent = jQuery(self.el).find('.gallery-item-' + asset.id);
+        var $targetParent = self.$el.find('.gallery-item-' + asset.id);
 
         if (!asset.thumbable) {
             if ($targetParent.hasClass('static-height')) {
@@ -488,7 +489,7 @@ CollectionList.prototype.createThumbs = function(assets) {
                 var objDiv = document.createElement('div');
                 objDiv.setAttribute('class', 'annotation-thumb');
 
-                var t = jQuery(self.el).find('.annotation-thumb-' + ann.id);
+                var t = self.$el.find('.annotation-thumb-' + ann.id);
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
@@ -517,7 +518,7 @@ CollectionList.prototype.updateSwitcher = function() {
                 Mustache.render(template, self.switcher_context);
             jQuery('#collection-chooser-container').html(rendered);
             // hook up switcher choice owner behavior
-            jQuery(self.el).find('a.switcher-choice.owner')
+            self.$el.find('a.switcher-choice.owner')
                 .off('click').on('click', function(evt) {
                     var srcElement = evt.srcElement ||
                         evt.target ||
@@ -537,19 +538,22 @@ CollectionList.prototype.updateSwitcher = function() {
                     return self.filter();
                 });
 
-            jQuery(self.el).find('select.course-tags')
+            self.$el.find('select.course-tags')
                 .select2({
-                    placeholder: 'Select tag'
+                    placeholder: 'Select tag',
+                    width: '70%'
                 });
             if ('tag' in self.current_records.active_filters &&
                 self.current_records.active_filters.tag.length > 0) {
-                jQuery(self.el).find('select.course-tags').select2(
+                self.$el.find('select.course-tags').select2(
                     'val',
                     self.current_records.active_filters.tag.split(','));
             }
 
-            var vocabulary = jQuery(self.el).find('select.vocabulary')[0];
-            jQuery(vocabulary).select2({});
+            var vocabulary = self.$el.find('select.vocabulary')[0];
+            jQuery(vocabulary).select2({
+                width: '70%'
+            });
 
             var values = [];
             for (var key in self.current_records.active_filters) {
@@ -569,7 +573,7 @@ CollectionList.prototype.updateSwitcher = function() {
 
 CollectionList.prototype.getAssets = function() {
     var self = this;
-    return jQuery(self.el).find('.asset-table').get(0);
+    return self.$el.find('.asset-table').get(0);
 };
 
 CollectionList.prototype.updateAssets = function(the_records) {
@@ -616,7 +620,7 @@ CollectionList.prototype.updateAssets = function(the_records) {
             MediaThread.templates[self.config.template],
             jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         );
-        jQuery(self.el).html(renderedMain);
+        self.$el.html(renderedMain);
 
         var rendered = Mustache.render(
             MediaThread.templates[self.config.template + '_assets'],
@@ -654,11 +658,12 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
     } else {
         // handle the minimized view
         var q = 'div.collection-assets';
-        var container = jQuery(self.el).find(q)[0];
-        jQuery(container).scroll(function() {
+        var $container = self.$el.find(q);
+        var container = $container[0];
+        $container.scroll(function() {
             if (!self.getLoading() &&
                 container.scrollTop +
-                jQuery(container).innerHeight() >=
+                $container.innerHeight() >=
                 container.scrollHeight - 300) {
                 self.appendItems(self.current_records);
             }
@@ -674,7 +679,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
     }
 
     if (self.scrollTop) {
-        jQuery(self.el).find('div.collection-assets')
+        self.$el.find('div.collection-assets')
             .scrollTop(self.scrollTop);
         self.scrollTop = undefined;
     }
@@ -690,8 +695,8 @@ CollectionList.prototype.appendAssets = function(the_records) {
             MediaThread.templates[self.config.template + '_assets'],
             jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         ));
-        var container = jQuery(self.el).find('div.asset-table');
-        jQuery(container).append(html);
+        var $container = self.$el.find('div.asset-table');
+        $container.append(html);
 
         if (self.create_annotation_thumbs) {
             self.createThumbs(the_records.assets);

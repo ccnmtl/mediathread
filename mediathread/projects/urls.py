@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView,
-    UnsubmitResponseView)
+    UnsubmitResponseView, ProjectReadOnlyView)
 
 
 urlpatterns = patterns(
@@ -48,14 +48,9 @@ urlpatterns = patterns(
 
     # view versioned read only
     url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
-        'project_view_readonly', name='project-view-readonly'),
+        ProjectReadOnlyView.as_view(),
+        name='project-view-readonly'),
 
     # instructor information reorder
     url(r'^sort/$', ProjectSortView.as_view(), name='project-sort'),
-
-    # view public url - read only view.
-    # Note: StructuredCollaboration requires
-    # 1. Url structure must be <classname>/<instance_id>/
-    # 2. Name must be <class>-view to do a reverse
-    url(r'^(?P<project_id>\d+)/', 'project_view_readonly', name='project-view')
 )

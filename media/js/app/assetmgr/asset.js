@@ -783,7 +783,9 @@
                                   {'mode': 'create'});
                     self._initTags();
                     self._initReferences();
-                    jQuery('select.vocabulary').select2({});
+                    jQuery('select.vocabulary').select2({
+                        width: '70%'
+                    });
                     jQuery('#asset-details-annotations-current')
                         .fadeIn(function() {
                             djangosherd.assetview.clipform.html.push(
@@ -1004,7 +1006,9 @@
         };
 
         this._initConcepts = function() {
-            jQuery('select.vocabulary').select2({});
+            jQuery('select.vocabulary').select2({
+                width: 'element'
+            });
 
             var elt;
             if (self.active_asset && self.active_asset.global_annotation) {
@@ -1059,7 +1063,8 @@
                     jQuery('input[name="annotation-tags"]').select2({
                         tags: tags,
                         tokenSeparators: [','],
-                        maximumInputLength: 20
+                        maximumInputLength: 20,
+                        width: '70%'
                     });
                 }
             });

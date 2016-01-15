@@ -271,7 +271,6 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_many_responses_by_course(self):
         # additional responses ensure selected collaborations/projects
         # don't line-up by default
-
         response1 = ProjectFactory.create(
             title='Zeta', course=self.sample_course, author=self.student_three,
             date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
@@ -282,17 +281,23 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             title='Omega', course=self.sample_course, author=self.student_one,
             policy='PrivateEditorsAreOwners', parent=self.assignment)
 
+        response4 = ProjectFactory.create(
+            title='Gam', course=self.sample_course, author=self.student_three,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+        response4.delete()
+
         response3 = ProjectFactory.create(
             title='Beta', course=self.sample_course, author=self.student_two,
             date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
             parent=self.assignment)
 
         self.assert_responses_by_course(self.student_one,
-                                        [response1, response2, response3], [])
+                                        [response3, response1, response2], [])
         self.assert_responses_by_course(self.instructor_one,
-                                        [response1, response3], [response2])
+                                        [response3, response1], [response2])
         self.assert_responses_by_course(self.student_two,
-                                        [response1, response3], [response2])
+                                        [response3, response1], [response2])
 
     def test_project_clean_date_field(self):
         try:

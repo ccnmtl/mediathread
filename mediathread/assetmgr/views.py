@@ -206,7 +206,7 @@ class AssetCreateView(View):
     def post(self, request):
         user = self.parse_user(request)
         if not request.course or not request.course.is_member(user):
-            raise HttpResponseForbidden(
+            return HttpResponseForbidden(
                 "You must be a member of the course to add assets.")
 
         req_dict = getattr(request, request.method)
@@ -826,11 +826,19 @@ class AssetEmbedView(TemplateView):
         else:
             presentation = 'small'
 
-        return {'item': json.dumps(ctx),
-                'item_id': selection.asset.id,
-                'selection_id': selection.id,
-                'presentation': presentation,
-                'title': selection.display_title()}
+        media_type = selection.asset.media_type()
+
+        ctx = {'item': json.dumps(ctx),
+               'item_id': selection.asset.id,
+               'selection_id': selection.id,
+               'presentation': presentation,
+               'media_type': media_type,
+               'title': selection.display_title()}
+
+        if media_type == 'video':
+            ctx['timecode'] = selection.range_as_timecode()
+
+        return ctx
 
 
 class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,

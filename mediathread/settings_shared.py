@@ -40,6 +40,7 @@ TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
 MIDDLEWARE_CLASSES += [  # noqa
     'corsheaders.middleware.CorsMiddleware',
     'courseaffils.middleware.CourseManagerMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
@@ -129,7 +130,7 @@ DJANGOSHERD_FLICKR_APIKEY = 'undefined'
 # https://developers.google.com/youtube/registering_an_application#Create_API_Keys
 YOUTUBE_BROWSER_APIKEY = 'undefined'
 
-BOOKMARKLET_VERSION = '1'  # current version
+BOOKMARKLET_VERSION = '2'
 
 # Mediathread instantiates a Flowplayer .swf to play many video flavors.
 # Update this variable with your site's Flowplayer installation

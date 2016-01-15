@@ -4,10 +4,11 @@ import json
 from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.template import RequestContext, loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View, TemplateView
@@ -30,6 +31,7 @@ from mediathread.projects.models import Project, \
     RESPONSE_VIEW_POLICY, ProjectNote, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from structuredcollaboration.models import Collaboration
 
 
 class ProjectCreateView(LoggedInMixin, JSONResponseMixin,
@@ -158,8 +160,10 @@ class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
+        collaboration = self.project.get_collaboration()
+        collaboration.remove_children()
         self.project.delete()
-
+        collaboration.delete()
         return HttpResponseRedirect('/')
 
 
@@ -206,8 +210,26 @@ def project_revisions(request, project_id):
                         content_type='application/json')
 
 
-@allow_http("GET")
-def project_view_readonly(request, project_id, version_number=None):
+class ProjectPublicView(View):
+
+    def get(self, request, context_slug, obj_type, obj_id):
+        context = get_object_or_404(Collaboration, slug=context_slug)
+        request.collaboration_context = context
+        collab = get_object_or_404(
+            Collaboration,
+            context=context,
+            content_type=ContentType.objects.get(model='project'),
+            object_pk=obj_id)
+
+        if not collab.permission_to('read', request.course, request.user):
+            return HttpResponseForbidden("forbidden")
+
+        return ProjectReadOnlyView.as_view()(request,
+                                             project_id=int(collab.object_pk))
+
+
+class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
+                          TemplateView):
     """
     A single panel read-only view of the specified project/version combination.
     No assignment, response or feedback access/links.
@@ -223,57 +245,68 @@ def project_view_readonly(request, project_id, version_number=None):
 
     """
 
-    project = get_object_or_404(Project, pk=project_id)
+    template_name = 'projects/project.html'
 
-    if not project.can_read(request.course, request.user):
-        return HttpResponseForbidden("forbidden")
+    def get(self, request, project_id, version_number=None):
+        """
+        A single panel read-only view of the specified project/version combo.
+        No assignment, response or feedback access/links.
+        Regular access conventions apply. For example, if the project is
+        "private" an HTTPResponseForbidden will be returned.
 
-    data = {'space_owner': request.user.username}
+        Used for reviewing old project versions and public project access.
 
-    course = request.course
-    if not course:
-        # public view
-        course = request.collaboration_context.content_object
-        public_url = project.public_url()
-    else:
-        # versioned view
-        public_url = reverse('project-view-readonly',
-                             kwargs={'project_id': project.id,
-                                     'version_number': version_number})
+        Keyword arguments:
+        project_id -- the model id
+        version_number -- a specific project version or
+        None for the current version
 
-    if not request.is_ajax():
-        data['project'] = project
-        data['version'] = version_number
-        data['public_url'] = public_url
-        return render_to_response('projects/project.html',
-                                  data,
-                                  context_instance=RequestContext(request))
-    else:
-        if version_number:
-            version = get_object_or_404(Version,
-                                        object_id=str(project.id),
-                                        revision_id=version_number)
-            project = version.object_version.object
+        """
 
-        panels = []
+        project = get_object_or_404(Project, pk=project_id)
 
-        # Requested project, either assignment or composition
-        request.public = True
+        data = {'space_owner': request.user.username}
 
-        resource = ProjectResource(record_viewer=request.user,
-                                   is_viewer_faculty=False,
-                                   editable=False)
-        project_context = resource.render_one(request, project, version_number)
-        panel = {'panel_state': 'open',
-                 'panel_state_label': "Version View",
-                 'context': project_context,
-                 'template': 'project'}
-        panels.append(panel)
+        if not request.is_ajax():
+            course = request.course
+            if not course:
+                public_url = project.public_url()
+            else:
+                # versioned view
+                public_url = reverse('project-view-readonly',
+                                     kwargs={'project_id': project.id,
+                                             'version_number': version_number})
 
-        data['panels'] = panels
+            data['project'] = project
+            data['version'] = version_number
+            data['public_url'] = public_url
+            return self.render_to_response(data)
+        else:
+            if version_number:
+                version = get_object_or_404(Version,
+                                            object_id=str(project.id),
+                                            revision_id=version_number)
+                project = version.object_version.object
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+            panels = []
+
+            # Requested project, either assignment or composition
+            request.public = True
+
+            resource = ProjectResource(record_viewer=request.user,
+                                       is_viewer_faculty=False,
+                                       editable=False)
+            project_context = resource.render_one(request, project,
+                                                  version_number)
+            panel = {'panel_state': 'open',
+                     'panel_state_label': "Version View",
+                     'context': project_context,
+                     'template': 'project'}
+            panels.append(panel)
+
+            data['panels'] = panels
+
+            return self.render_to_json_response(data)
 
 
 class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,

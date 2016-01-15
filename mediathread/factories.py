@@ -145,8 +145,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     @factory.post_generation
     def parent(self, create, extracted, **kwargs):
         if create and extracted:
-            parent_collab = extracted.get_collaboration()
-            parent_collab.append_child(self)
+            self.set_parent(extracted.id)
 
     @factory.post_generation
     def participants(self, create, extracted, **kwargs):

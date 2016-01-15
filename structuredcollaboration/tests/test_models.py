@@ -20,3 +20,21 @@ class ModelsTest(MediathreadTestMixin, TestCase):
         collaboration = Collaboration.objects.get_for_object(
             self.sample_course)
         self.assertIsNotNone(collaboration)
+
+    def test_append_remove_child(self):
+        parent = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners')
+
+        parent.get_collaboration().append_child(response)
+
+        collaboration = response.get_collaboration()
+        self.assertEquals(collaboration.get_parent().content_object, parent)
+
+        parent.get_collaboration().remove_children()
+        collaboration.refresh_from_db()
+        self.assertIsNone(collaboration.get_parent())

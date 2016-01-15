@@ -1007,7 +1007,7 @@
 
         this._initConcepts = function() {
             jQuery('select.vocabulary').select2({
-                width: 'element'
+                width: '70%'
             });
 
             var elt;

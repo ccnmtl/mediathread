@@ -271,7 +271,14 @@
                         <div class="arrowIcon left"></div>
                     </a>
                     <div class="arrowContent" id="import_collection" style="display: none">
+                        {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
                         {% include "assetmgr/install_chrome_extension.html" %}
+                        {% elif request.user_agent.browser.family == 'Safari' %}
+                        {% include "assetmgr/install_safari_extension.html" %}
+                        {% elif request.user_agent.browser.family == 'Firefox' %}
+                        {% include "assetmgr/install_firefox_extension.html" %}
+                        {% endif %}
+                        <hr />
                         {% include "assetmgr/install_bookmarklet.html" %}
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->

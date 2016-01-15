@@ -4269,3 +4269,10 @@ a.btn.btn-default img.left {
     height: 28px;
 }
 /* end select2 customizations */
+
+#chrome-install-button,
+#safari-install-button,
+#firefox-install-button {
+    margin-bottom: 5px;
+    margin-right: 5px;
+}

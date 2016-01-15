@@ -115,7 +115,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         assignment1 = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='CourseProtected', title="Assignment 1",
-            response_view_policy = RESPONSE_VIEW_NEVER[0],
+            response_view_policy=RESPONSE_VIEW_NEVER[0],
             project_type='selection-assignment')
         assignment2 = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,

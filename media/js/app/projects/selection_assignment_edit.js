@@ -1,5 +1,6 @@
 /* global _: true, Backbone: true, CitationView: true */
 /* global showMessage: true, tinymce: true, tinymceSettings: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
     var global = this;
@@ -21,9 +22,9 @@
             var self = this;
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
-            
+
             this.tinymceSettings = jQuery.extend(tinymceSettings, {
-                init_instance_callback: function(editor) {
+                init_instance_callback: function(instance) {
                     if (instance && !self.tinymce) {
                         self.tinymce = instance;
                     }
@@ -56,7 +57,7 @@
                 return jQuery('input[name="item"]').val() !== '';
             } else if (pageNo === 3) {
                 var title = jQuery(this.el).find('input[name="title"]').val();
-                var body = self.tinymce.activeEditor.getContent();
+                var body = this.tinymce.getContent();
                 return title.length > 0 && body.length > 0;
             } else if (pageNo === 4) {
                 q = 'input[name="response_view_policy"]:checked';
@@ -92,7 +93,8 @@
 
                     if (!this.tinymce) {
                         tinymce.settings = this.tinymceSettings;
-                        tinymce.execCommand('mceAddEditor', true, 'assignment-instructions');
+                        tinymce.execCommand('mceAddEditor', true,
+                                            'assignment-instructions');
                     }
                 } else if (this.currentPage === 4) {
                     // if there is only one radio button, select it

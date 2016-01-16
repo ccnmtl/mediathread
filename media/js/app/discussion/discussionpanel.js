@@ -312,7 +312,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
 
     if (insertAfter) {
         self.tinymce = null;
-        tinymce.execCommand('mceRemoveControl', false, 'id_comment');
+        tinymce.execCommand('mceRemoveEditor', false, 'id_comment');
         jQuery(self.form).insertAfter(insertAfter);
 
         tinymce.settings = jQuery.extend(tinymceSettings, {

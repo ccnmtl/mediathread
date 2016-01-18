@@ -72,7 +72,7 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
         self.panel.context.discussion.thread[0].author_username ===
             self.space_owner &&
         self.panel.context.discussion.thread[0].content.length < 1) {
-        var elt = self.$el.find('span.edit_prompt')[0];
+        var elt = self.$el.find('.edit_prompt')[0];
         jQuery(elt).trigger('click');
     } else {
         self.hide_comment_form(false);
@@ -312,7 +312,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
 
     if (insertAfter) {
         self.tinymce = null;
-        tinymce.execCommand('mceRemoveControl', false, 'id_comment');
+        tinymce.execCommand('mceRemoveEditor', false, 'id_comment');
         jQuery(self.form).insertAfter(insertAfter);
 
         tinymce.settings = jQuery.extend(tinymceSettings, {
@@ -597,7 +597,7 @@ DiscussionPanelHandler.prototype.components = function(html_dom, create_obj) {
         'author': jQuery('span.threaded_comment_author:first', html_dom)
                 .get(0),
         'edit_button': jQuery(
-                'div.respond_to_comment_form_div:first span.edit_prompt',
+                'div.respond_to_comment_form_div:first .edit_prompt',
                 html_dom).get(0),
         'parent': jQuery(html_dom).parents('li.comment-thread').get(0)
     };

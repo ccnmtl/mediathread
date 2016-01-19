@@ -516,7 +516,9 @@ CollectionList.prototype.updateSwitcher = function() {
         .then(function(template) {
             var rendered =
                 Mustache.render(template, self.switcher_context);
-            jQuery('#collection-chooser-container').html(rendered);
+            jQuery(self.$el)
+                .find('.collection-chooser-container')
+                .html(rendered);
             // hook up switcher choice owner behavior
             self.$el.find('a.switcher-choice.owner')
                 .off('click').on('click', function(evt) {
@@ -607,7 +609,7 @@ CollectionList.prototype.updateAssets = function(the_records) {
         the_records.active_filter_count = n;
     }
 
-    var $elt = jQuery('#asset_table');
+    var $elt = jQuery(self.$el).find('.asset-table');
     $elt.hide();
     jQuery.when.apply(
         this,
@@ -626,7 +628,7 @@ CollectionList.prototype.updateAssets = function(the_records) {
             MediaThread.templates[self.config.template + '_assets'],
             jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
         );
-        $elt = jQuery('#asset_table');
+        $elt = jQuery(self.$el).find('.asset-table');
         $elt.html(rendered);
         self.assetPostUpdate($elt, the_records);
     });

@@ -6,17 +6,17 @@
 
 (function() {
     var PanelFactory = function() {
-        this.create = function(el, $parent, type, panels, space_owner) {
+        this.create = function(el, $parent, type, panel, space_owner) {
             // Instantiate the panel's handler
             var handler = null;
             if (type === 'project') {
-                handler = new ProjectPanelHandler(el, $parent, panels,
+                handler = new ProjectPanelHandler(el, $parent, panel,
                                                   space_owner);
             } else if (type === 'discussion') {
-                handler = new DiscussionPanelHandler(el, $parent, panels,
+                handler = new DiscussionPanelHandler(el, $parent, panel,
                                                      space_owner);
             } else if (type === 'asset') {
-                handler = new AssetPanelHandler(el, $parent, panels,
+                handler = new AssetPanelHandler(el, $parent, panel,
                                                 space_owner);
             }
 

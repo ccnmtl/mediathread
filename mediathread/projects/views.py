@@ -290,6 +290,9 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
             panels = []
 
+            is_faculty = (self.request.course and
+                          self.request.course.is_faculty(request.user))
+
             # Requested project, either assignment or composition
             request.public = True
 
@@ -301,6 +304,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             panel = {'panel_state': 'open',
                      'panel_state_label': "Version View",
                      'context': project_context,
+                     'is_faculty': is_faculty,
                      'template': 'project'}
             panels.append(panel)
 

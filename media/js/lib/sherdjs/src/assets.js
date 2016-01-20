@@ -5,7 +5,7 @@ if (typeof Sherd === 'undefined') {
 
 // TODO used?
 if (!Sherd.AssetLayer) {
-    Sherd.AssetLayer = function () {
+    Sherd.AssetLayer = function() {
 
     };// AssetLayer
 }
@@ -15,7 +15,7 @@ if (!Sherd.AssetLayer) {
 // And a clipForm that controls how the media is annotated
 if (!Sherd.GenericAssetView) {
     // CONSTRUCTOR
-    Sherd.GenericAssetView = function (options) {
+    Sherd.GenericAssetView = function(options) {
         var self = this;
         //consts
         var Clipstripper = Sherd.Video.Annotators.ClipStrip;
@@ -25,7 +25,7 @@ if (!Sherd.GenericAssetView) {
         // //INIT
         this.settings = {};
         if (Sherd.Video) {
-            var decorateVideo = function (options, viewgroup) {
+            var decorateVideo = function(options, viewgroup) {
                 if (options.clipform) {
                     viewgroup.clipform = new Clipformer();// see clipform.js
                     viewgroup.clipform.attachView(viewgroup.view);
@@ -106,13 +106,13 @@ if (!Sherd.GenericAssetView) {
         this.settings.NONE = {
             view: {
                 html: {
-                    remove: function () {},
-                    push: function () {}
+                    remove: function() {},
+                    push: function() {}
                 },
-                setState: function () {},
-                getState: function () {},
+                setState: function() {},
+                getState: function() {},
                 queryformat: {
-                    find: function () {}
+                    find: function() {}
                 }
             }
         };
@@ -121,7 +121,7 @@ if (!Sherd.GenericAssetView) {
         // //API
         var current_type = false;
         this.html = {
-            remove: function () {
+            remove: function() {
                 if (current_type) {
                     self.settings[current_type].view.html.remove();
                     if (self.clipstrip) {
@@ -131,7 +131,7 @@ if (!Sherd.GenericAssetView) {
                     current_type = false;
                 }
             },
-            push: function (html_dom, options) {
+            push: function(htmlDom, options) {
                 if (options.asset && options.asset.type &&
                     (options.asset.type in self.settings)) {
                     
@@ -145,14 +145,14 @@ if (!Sherd.GenericAssetView) {
                     
                     // /the main pass
                     var cur = self.settings[current_type];
-                    cur.view.html.push(html_dom, options);
+                    cur.view.html.push(htmlDom, options);
 
                     if (cur.clipform) {
                         self.clipform = cur.clipform;
                     }
                     if (cur.clipplay) {
                         cur.clipplay.html.push(options.targets.clipplay, {
-                            asset : {}
+                            asset: {}
                         });
                         self.clipplay = cur.clipplay;
                     }
@@ -165,7 +165,7 @@ if (!Sherd.GenericAssetView) {
                             target = self.options.targets.clipstrip;
                         }
                         cur.clipstrip.html.push(target, {
-                            asset : {}
+                            asset: {}
                         });
                         self.clipstrip = cur.clipstrip;
                     }
@@ -174,11 +174,12 @@ if (!Sherd.GenericAssetView) {
                         window.console.log(options);
                         window.console.log(self.settings);
                     }
-                    throw new Error("Your asset does not have a (supported) type marked.");
+                    throw new Error(
+                        'Your asset does not have a (supported) type marked.');
                 }
             }
         };
-        this.setState = function () {
+        this.setState = function() {
             if (current_type) {
                 var cur = self.settings[current_type];
                 //special JS magic -- set this == view
@@ -191,15 +192,16 @@ if (!Sherd.GenericAssetView) {
                 }
             }
         };
-        this.getState = function () {
+        this.getState = function() {
             if (current_type) {
                 return self.settings[current_type].view.getState.apply(
-                        self.settings[current_type].view, arguments//special JS magic -- this == view
-                        );
+                    //special JS magic -- this == view
+                    self.settings[current_type].view, arguments
+                );
             }
         };
         this.queryformat = {
-            find: function (str) {
+            find: function(str) {
                 if (self.settings[current_type].view.queryformat &&
                     self.settings[current_type].view.queryformat.find) {
                     return self.settings[current_type].view.queryformat.find(str);
@@ -208,7 +210,7 @@ if (!Sherd.GenericAssetView) {
                 }
             }
         };
-        this.layer = function () {
+        this.layer = function() {
             if (self.settings[current_type].view.Layer) {
                 return new self.settings[current_type].view.Layer();
             } else if (self.clipstrip && self.clipstrip.Layer) {

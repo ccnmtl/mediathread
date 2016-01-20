@@ -1573,7 +1573,8 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-in
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton,
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton {
     float: right;
     margin-left: 5px;
 }

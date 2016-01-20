@@ -11,16 +11,6 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
     this.panel = panel;
     this.$parentContainer = $parent;
     this.space_owner = space_owner;
-    this.tinymceSettings = jQuery.extend(tinymceSettings, {
-        init_instance_callback: function(editor) {
-            self.onTinyMCEInitialize(editor);
-        },
-        setup: function(ed) {
-            ed.on('keypress', function(e) {
-                self.setDirty(true);
-            });
-        }
-    });
     self.$el.find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
@@ -31,7 +21,7 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
 };
 
 ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
-    el, parent, panel, space_owner
+    el, $parent, panel, space_owner
 ) {
     var self = this;
 
@@ -128,10 +118,18 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.citationView.decorateLinks(self.essaySpace.id);
 
     if (panel.context.can_edit) {
-        tinymce.settings = self.tinymceSettings;
-        tinymce.execCommand(
-            'mceAddEditor', true,
-            panel.context.project.id + '-project-content');
+        var settings = jQuery.extend(tinymceSettings, {
+            init_instance_callback: function(editor) {
+                self.onTinyMCEInitialize(editor);
+            },
+            setup: function(ed) {
+                ed.on('keypress', function(e) {
+                    self.setDirty(true);
+                });
+            },
+            selector: '#' + panel.context.project.id + '-project-content'
+        });
+        tinymce.init(settings);
     }
 
     self.render();
@@ -143,8 +141,8 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
 
     if (instance &&
         instance.id === self.panel.context.project.id + '-project-content' &&
-            !self.tinymce) {
-
+        !self.tinymce
+       ) {
         self.tinymce = instance;
 
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
@@ -624,11 +622,15 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         self.$el.find('td.panel-container.collection')
             .removeClass('fluid').addClass('fixed');
 
-        self.tinymce.show();
+        if (self.tinymce) {
+            self.tinymce.show();
+        }
     } else {
-        // Switch to Preview View
-        self.tinymce.hide();
-        self.tinymce.plugins.editorwindow._closeWindow();
+        if (self.tinymce) {
+            // Switch to Preview View
+            self.tinymce.hide();
+            self.tinymce.plugins.editorwindow._closeWindow();
+        }
 
         var val = self.$el.find('input.project-title').val();
         self.$el.find('h1.project-title').html(val);

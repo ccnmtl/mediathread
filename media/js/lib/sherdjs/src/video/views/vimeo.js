@@ -54,10 +54,11 @@ if (!Sherd.Video.Vimeo) {
 
             self.components.player = $f(document.getElementById(
                 self.components.playerID));
-            self.components.player.addEvent('playProgress', vimeo_player_progress);
+
             self.components.player.addEvent('play', on_vimeo_play);
             self.components.player.addEvent('pause', on_vimeo_pause);
             self.components.player.addEvent('finish', on_vimeo_finish);
+            self.components.player.addEvent('playProgress', on_vimeo_progress);
 
             // register for notifications from clipstrip to seek to various times in the video
             self.events.connect(self, 'seek', self.media.playAt);
@@ -71,10 +72,10 @@ if (!Sherd.Video.Vimeo) {
                 self.events.signal(self, 'duration', { duration: duration });
             }
 
-            self.media._ready = true;
-
             // get out of the "loaded" function before seeking happens
             if (self.state.starttime !== undefined) {
+                self.media._ready = true;
+
                 setTimeout(function () {
                     self.media.seek(
                         self.state.starttime,
@@ -148,6 +149,16 @@ if (!Sherd.Video.Vimeo) {
 
         // self.components -- Access to the internal player and any options needed at runtime
         this.microformat.components = function (html_dom, create_obj) {
+            if (!self.media.ready()) {
+                var top = document.getElementById(create_obj.htmlID);
+                var iframe = jQuery(top).find('iframe')[0];
+                var froogaloop = $f(iframe);
+                froogaloop.addEvent('ready', function() {
+                    djangosherd.assetview.settings.vimeo.view.vimeoPlayerReady(
+                        froogaloop);
+                });
+            }
+
             try {
                 var rv = {};
                 if (html_dom) {
@@ -184,30 +195,13 @@ if (!Sherd.Video.Vimeo) {
         this.microformat.type = function () { return 'vimeo'; };
 
         this.microformat.update = function (obj, html_dom) {
-            return obj.vimeo === self.components.mediaUrl && document.getElementById(self.components.playerID) && self.media.ready();
+            return obj.vimeo === self.components.mediaUrl &&
+                document.getElementById(self.components.playerID) &&
+                self.media.ready();
         };
 
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
-
-        var vimeo_player_progress = function (timing) {
-            if (self.state.seeking === true && timing.seconds > 0.5) {
-                self.state.seeking = false;
-                delete self.state.autoplay;
-
-                if (self.state.starttime !== undefined && self.state.starttime > 0) {
-                    self.components.player.api('seekTo', self.state.starttime);
-                    delete self.state.starttime;
-                }
-
-                if (self.state.endtime !== undefined) {
-                    setTimeout(function () {
-                        self.media.pauseAt(self.state.endtime);
-                        delete self.state.endtime;
-                    }, 200);
-                }
-            }
-        };
 
         var on_vimeo_play = function () {
             jQuery(window).trigger(
@@ -216,12 +210,24 @@ if (!Sherd.Video.Vimeo) {
         };
 
         var on_vimeo_pause = function () {
+            self.currentIsPlaying = false;
             jQuery(window).trigger(
                 'video.pause',
                 [self.components.itemId, self.components.primaryType]);
         };
 
+        var on_vimeo_progress = function(ctx) {
+            if (self.state.endtime) {
+                self.media.pauseAt(self.state.endtime);
+                delete self.state.endtime;
+            }
+            self.currentSeconds = ctx.seconds;
+            self.currentDuration = ctx.duration;
+            self.currentIsPlaying = true;
+        };
+
         var on_vimeo_finish = function () {
+            self.currentIsPlaying = false;
             jQuery(window).trigger(
                 'video.finish',
                 [self.components.itemId, self.components.primaryType]);
@@ -230,31 +236,7 @@ if (!Sherd.Video.Vimeo) {
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        /**
-         * Get the duration asynchronously via vimeo's postMessage API.
-         *
-         * Returns a Promise.
-         */
-        this.media.getAsyncDuration = function() {
-            var dfd = jQuery.Deferred();
-
-            if (self.components.player) {
-                try {
-                    self.components.player.api('getDuration', function(value) {
-                        value = Math.max(value, 0);
-                        self.currentDuration = value;
-                        return dfd.resolve(value);
-                    });
-                } catch (e) {
-                    // media probably not yet initialized
-                    return dfd.reject();
-                }
-            }
-            return dfd;
-        };
-
         this.media.duration = function () {
-            self.media.getAsyncDuration();
             return self.currentDuration;
         };
 
@@ -278,100 +260,42 @@ if (!Sherd.Video.Vimeo) {
             return self.media._ready;
         };
 
-        this.media.getAsyncIsPlaying = function() {
-            var dfd = jQuery.Deferred();
-            try {
-                self.components.player.api('paused', function(value) {
-                    return !value;
-                });
-            } catch(e) {
-                return dfd.reject();
-            }
-            return dfd;
-        };
-
         this.media.isPlaying = function () {
-            self.media.getAsyncIsPlaying();
             return self.currentIsPlaying;
         };
 
         this.media.seek = function (starttime, endtime, autoplay) {
-            if (starttime === undefined || starttime === 0) {
-                starttime = 0.1; // don't even ask.
-            }
-            // this might need to be a timer to determine "when" the media player is ready
-            // it's working differently from initial load to the update method
             if (!self.media.ready()) {
-                // executes on player_ready
+                // store values and reissues seek on player_ready
                 self.state.starttime = starttime;
                 self.state.endtime = endtime;
                 self.state.autoplay = autoplay;
-            } else if (autoplay) {
-                // executes on player_progress
-                self.state.starttime = starttime;
+                return;
+            }
+
+            // clear out old values & timers
+            self.events.clearTimers();
+            delete self.state.starttime;
+            delete self.state.endtime;
+            delete self.state.autoplay;
+
+            // seeking
+            if (starttime !== undefined) {
+                self.components.player.api('seekTo', starttime);
+            }
+
+            if (autoplay) {
+                self.media.play();
+                // endtime timer is handled in player_progress
                 self.state.endtime = endtime;
-                self.state.seeking = true;
-
-                if (!self.media.isPlaying()) {
-                    if (self.components.player.api) {
-                        self.components.player.api('play');
-                    }
-                }
-            } else if (self.media.isPlaying() || self.state.seeking || self.state.autoplay) {
-                // executes immediately
-                if (starttime !== undefined && starttime > 0) {
-                    if (self.components.player.api) {
-                        self.components.player.api('seekTo', starttime);
-                        if (!self.state.autoplay) {
-                            self.components.player.api('pause');
-                        }
-                    }
-                }
-
-                if (endtime !== undefined) {
-                    setTimeout(function () {
-                        self.media.pauseAt(endtime);
-                    }, 200);
-                }
-
-                delete self.state.starttime;
-                delete self.state.endtime;
-                delete self.state.autoplay;
-                self.state.seeking = false;
             } else {
-                self.state.starttime = starttime;
-                self.state.endtime = endtime;
-                self.state.seeking = true;
+                // seek immediately plays the video. (#$%^!)
+                // make it stop.
+                self.components.player.api('pause');
             }
-        };
-
-        /**
-         * Get the time asynchronously via vimeo's postMessage API.
-         *
-         * Returns a Promise.
-         */
-        this.media.getAsyncTime = function() {
-            var dfd = jQuery.Deferred();
-
-            if (self.components.player) {
-                try {
-                    self.components.player.api('getCurrentTime', function(value) {
-                        value = Math.max(value, 0);
-                        self.currentTime = value;
-                        return dfd.resolve(value);
-                    });
-                } catch (e) {
-                    // media probably not yet initialized
-                    return dfd.reject();
-                }
-            }
-            return dfd;
         };
 
         this.media.time = function() {
-            // Schedule a time query
-            self.media.getAsyncTime();
-
             // Return an estimate
             return self.currentTime;
         };

@@ -252,16 +252,6 @@ Sherd.Base = {
                             // Create microformat.components (self.components)
                             var top = document.getElementById(createObj.htmlID);
 
-                            // If the created element was a vimeo video, we need to
-                            // initialize its 'ready' handler.
-                            if (/^vimeo-wrapper-\d+$/.test(createObj.htmlID)) {
-                                var iframe = jQuery(top).find('iframe')[0];
-                                var froogaloop = $f(iframe);
-                                froogaloop.addEvent('ready', function() {
-                                    djangosherd.assetview.settings.vimeo.view.vimeoPlayerReady(
-                                        froogaloop);
-                                });
-                            }
                             self.html.put(top, createObj);
                         }
                     }

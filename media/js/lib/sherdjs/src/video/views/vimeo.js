@@ -339,12 +339,6 @@ if (!Sherd.Video.Vimeo) {
                 self.state.starttime = starttime;
                 self.state.endtime = endtime;
                 self.state.seeking = true;
-
-                if (!self.media.isPlaying()) {
-                    if (self.components.player.api) {
-                        self.components.player.api('play');
-                    }
-                }
             }
         };
 

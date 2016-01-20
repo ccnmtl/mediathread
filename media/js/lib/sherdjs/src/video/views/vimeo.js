@@ -322,6 +322,9 @@ if (!Sherd.Video.Vimeo) {
                 if (starttime !== undefined && starttime > 0) {
                     if (self.components.player.api) {
                         self.components.player.api('seekTo', starttime);
+                        if (!self.state.autoplay) {
+                            self.components.player.api('pause');
+                        }
                     }
                 }
 

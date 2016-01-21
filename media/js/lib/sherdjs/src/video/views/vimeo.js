@@ -221,7 +221,7 @@ if (!Sherd.Video.Vimeo) {
                 self.media.pauseAt(self.state.endtime);
                 delete self.state.endtime;
             }
-            self.currentSeconds = ctx.seconds;
+            self.currentTime = ctx.seconds;
             self.currentDuration = ctx.duration;
             self.currentIsPlaying = true;
         };

@@ -26,7 +26,7 @@ sqlparse==0.1.18  # django-debug-toolbar
 python-mimeparse==0.1.4  # tastypie
 python-dateutil==2.4.2  # tastypie
 django-tastypie==0.12.2
-coverage==3.7.1
+coverage==4.0.3
 logilab-common==0.63.2
 lazy-object-proxy==1.2.1
 wrapt==1.10.6
@@ -47,7 +47,7 @@ django-statsd-mozilla==0.3.16
 raven==5.8.1
 django-appconf==1.0.1  # django_compressor
 django-compressor==1.6
-django-jenkins==0.17.0
+django-jenkins==0.18.1
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==0.3.0

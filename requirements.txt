@@ -36,6 +36,7 @@ pyasn1==0.1.9
 pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0
 requests==2.9.1
+contextlib2==0.5.1
 djangowind==0.14.3
 django-tagging==0.4
 django-reversion==1.9.3
@@ -44,7 +45,7 @@ django-contrib-comments==1.6.1
 django-threadedcomments==1.0b1
 django-courseaffils==2.0.6
 django-statsd-mozilla==0.3.16
-raven==5.8.1
+raven==5.10.1
 django-appconf==1.0.1  # django_compressor
 django-compressor==1.6
 django-jenkins==0.18.1

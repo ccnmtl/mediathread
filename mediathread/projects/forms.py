@@ -52,21 +52,7 @@ class ProjectForm(forms.ModelForm):
         else:
             self.instance = None
 
-        choices = []
-        if request.course.is_faculty(request.user):
-            if not project or project.get_collaboration().children.count() < 1:
-                choices.append(PUBLISH_DRAFT)
-            choices.append(PUBLISH_WHOLE_CLASS)
-        else:
-            # Student
-            choices.append(PUBLISH_DRAFT)
-            choices.append(PUBLISH_INSTRUCTOR_SHARED)
-            choices.append(PUBLISH_WHOLE_CLASS)
-
-        if course_details.allow_public_compositions(request.course):
-            if project and project.is_composition():
-                choices.append(PUBLISH_WHOLE_WORLD)
-
+        choices = self.get_choices(request, project)
         self.fields['publish'].choices = choices
 
         # response view policy. limit choices if there is no project
@@ -85,3 +71,21 @@ class ProjectForm(forms.ModelForm):
 
         # for structured collaboration
         self.fields['title'].widget.attrs['maxlength'] = 80
+
+    def get_choices(self, request, project):
+        choices = []
+        if request.course.is_faculty(request.user):
+            if not project or project.get_collaboration().children.count() < 1:
+                choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_WHOLE_CLASS)
+        else:
+            # Student
+            choices.append(PUBLISH_DRAFT)
+            choices.append(PUBLISH_INSTRUCTOR_SHARED)
+            choices.append(PUBLISH_WHOLE_CLASS)
+
+        if course_details.allow_public_compositions(request.course):
+            if project and project.is_composition():
+                choices.append(PUBLISH_WHOLE_WORLD)
+
+        return choices

@@ -46,7 +46,6 @@ MIDDLEWARE_CLASSES += [  # noqa
 TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
 
 INSTALLED_APPS += [  # noqa
-    'django.contrib.messages',
     'courseaffils',
     'tagging',
     'structuredcollaboration',

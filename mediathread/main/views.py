@@ -352,6 +352,7 @@ class RequestCourseView(FormView):
     success_url = "/course/request/success/"
 
     def form_valid(self, form):
+        subject = "Mediathread Course Request"
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/course_request_description.txt')
         form_data['description'] = tmpl.render(Context(form_data))
@@ -360,8 +361,9 @@ class RequestCourseView(FormView):
         if task_url is not None:
             response = requests.post(task_url, data=form_data)
             if not response.status_code == 200:
-                msg = "Post error %s [%s]" % (task_url, response.status_code)
-                raise Exception(msg)
+                # send to server email instead
+                send_mail(subject, form_data['description'],
+                          form_data['email'], (settings.SERVER_EMAIL,))
 
         return super(RequestCourseView, self).form_valid(form)
 
@@ -399,8 +401,9 @@ class ContactUsView(FormView):
         if task_url is not None:
             response = requests.post(task_url, data=form_data)
             if not response.status_code == 200:
-                msg = "Post error %s [%s]" % (task_url, response.status_code)
-                raise Exception(msg)
+                # send to server email instead
+                send_mail(subject, form_data['description'],
+                          form_data['email'], (settings.SERVER_EMAIL,))
 
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)

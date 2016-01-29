@@ -1456,6 +1456,7 @@ div#collection-overlay {
     z-index:  10001;
 }
 
+div.annotation-ajaxloader,
 div.ajaxloader {
     position: absolute;
     display: block;
@@ -1466,12 +1467,27 @@ div.ajaxloader {
     opacity:0.85;
     -moz-opacity:0.85;
     filter:alpha(opacity=85);
-    width: 100%;    
+    width: 100%;
 }
 
+div.annotation-ajaxloader div.message,
 div.ajaxloader div.message {
     margin-top: 25px;
     font-weight: bold;
+}
+
+div.asset-view-container .annotation-ajaxloader {
+    min-width: 250px;
+    width: 33%;
+    float: left;
+    position: relative;
+    margin-left: 10px;
+} 
+
+.selection-assignment .annotation-ajaxloader {
+    margin-top: 25px;
+    height: 150px;    
+    width: 90%;
 }
 
 tr.asset-workspace-content-row div.ajaxloader {

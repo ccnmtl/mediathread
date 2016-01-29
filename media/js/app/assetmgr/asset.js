@@ -144,6 +144,8 @@
 
         this.refresh = function(opts) {
             if (opts.asset_id) {
+                jQuery('.annotation-ajaxloader').show();
+
                 this.grouping = null;
                 this.highlight_layer = null;
 
@@ -209,6 +211,7 @@
                         if (self.view_callback) {
                             self.view_callback();
                         }
+                        jQuery('.annotation-ajaxloader').hide();
                     }
                 );
             }

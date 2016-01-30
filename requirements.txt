@@ -30,7 +30,7 @@ coverage==4.0.3
 logilab-common==0.63.2
 lazy-object-proxy==1.2.1
 wrapt==1.10.6
-astroid==1.4.2  # pylint
+astroid==1.4.4  # pylint
 pylint==1.5.4
 pyasn1==0.1.9
 pyOpenSSL==0.15.1
@@ -72,4 +72,4 @@ user_agents==1.0.1
 django_user_agents==0.3.0
 gunicorn==19.3.0
 
-ccnmtlsettings==0.1.1
+ccnmtlsettings==0.1.4

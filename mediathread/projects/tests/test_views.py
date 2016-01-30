@@ -784,7 +784,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         for idx, note in enumerate(notes):
             self.assertEquals(note['id'], visible[idx][0])
             self.assertEquals(note['editable'], visible[idx][1])
-            self.assertEquals(note['citable'], visible[idx][2])
+            self.assertFalse(note['citable'])
 
     def test_get(self):
         # responses are not submitted

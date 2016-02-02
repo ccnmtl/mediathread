@@ -47,24 +47,13 @@ h4 img.materialCitation {
     border: none;
 }
 
-body.mceContentBody {
+body.mce-content-body {
     /**overrides tinyMCE's default 10px which will not correspond
       to styled as published (and 10px is too small for the image-annotation
       icon)
     **/
     font: 0.8em/120% 'lucida grande',arial,verdana,sans-serif;
 }
-
-.mceContentBodyCursor {
-    width:10px;
-    background-color:red;
-    position:absolute;
-    padding: none;
-    margin: none;
-    font:1em/100% 'lucida grande',arial,verdana,sans-serif;
-    font-weight: bold;
-}
-
 
 div.mce_editorwindow {
     min-width: 324px;
@@ -84,9 +73,8 @@ div.mce_editorwindow {
     border: 1px solid #ccc;
 }
  
-input.participants_toggle {
-    margin: 0px 10px 5px 0px;
-    font-size: .7em;
+.participants_toggle {
+    margin: 0 10px 5px 0;
 }
 
 #id_participants {*height: 15em;}
@@ -104,24 +92,21 @@ div.save-publish-status li {
     list-style-type: none;
 }
 
+.save-publish-status #id_response_view_policy label,
 .save-publish-status #id_publish label {
     font-weight: normal;
 }
 
-/* ---- Threaded comments ---------- */
-
-.comment_action {
-    margin: 4px 2px 0 0;
-    background-repeat: repeat-x;
-    border: 1px solid #477794;
-    text-transform: capitalize;
-    padding: 2px 5px;
-    text-decoration: none;
-    color: black;
-    background-image: url("../img/buttons/compositions_button_bg.jpg");
-    font-size: 85%;
-    cursor: pointer;
+.save-publish-status .well {
+    padding: 15px;
+    padding-bottom: 0;
 }
+
+.save-publish-status .right.small {
+    margin: -10px -5px 0 0;
+}
+
+/* ---- Threaded comments ---------- */
 
 div.threadedcomments-container {
     overflow-x: hidden;
@@ -142,7 +127,6 @@ form.threaded_comments_form h3 {
 }
 
 form.threaded_comments_form div.save_and_cancel {
-    height: 20px;
     width: 100%;
     background-color: #ccc;
 }
@@ -242,8 +226,7 @@ div.comment-date {
 
 .respond_to_comment_form_div {
     float: right;
-    margin-right: 0px;
-    margin-top: 4px;
+    margin-right: 2px;
 }
 
 

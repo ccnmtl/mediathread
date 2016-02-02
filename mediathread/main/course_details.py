@@ -2,6 +2,7 @@ from courseaffils.models import Course
 from django.core.cache import cache
 
 from mediathread.assetmgr.models import ExternalCollection
+from structuredcollaboration.models import Collaboration
 
 
 UPLOAD_PERMISSION_KEY = "upload_permission"
@@ -89,6 +90,19 @@ def cached_course_is_faculty(course, user):
     if key not in cache:
         cache.set(key, course.is_faculty(user))
     return cache.get(key)
+
+
+def cached_course_collaboration(course):
+    key = "%s:course:collaboration" % (course.id)
+    the_collaboration = cache.get(key)
+    if the_collaboration is None:
+        try:
+            the_collaboration = Collaboration.objects.get_for_object(course)
+            cache.set(key, the_collaboration)
+        except Collaboration.DoesNotExist:
+            the_collaboration = None
+
+    return the_collaboration
 
 
 def get_guest_sandbox():

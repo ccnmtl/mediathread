@@ -1,5 +1,5 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global DjangoSherd_Colors: true, MediaThread: true, Mustache2: true */
+/* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
 /* global updateUserSetting: true, console: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -8,10 +8,9 @@
     var AnnotationList = function() {
         var self = this;
 
-        /**
-         * Load all the asset-related templates.
-         */
-        this.loadTemplates = function() {
+        this.init = function(config) {
+            var self = this;
+
             var templates = [
                 'asset_view_help',
                 'asset_view_details',
@@ -24,14 +23,17 @@
                 'asset_sources',
                 'asset_feedback'
             ];
-            for (var i = 0; i < templates.length; i++) {
-                MediaThread.loadTemplate(templates[i]);
-            }
+
+            jQuery.when.apply(this, MediaThread.loadTemplates(templates))
+                .then(function() {
+                    // This is triggered once each promise created by
+                    // this.loadTemplates() has either been resolved or
+                    // rejected.
+                    self.initAfterTemplatesLoad(config);
+                });
         };
 
-        this.init = function(config) {
-            this.loadTemplates();
-
+        this.initAfterTemplatesLoad = function(config) {
             this.layers = {}; //should we really store layers here?
             this.active_annotation = null;
             this.active_asset = null;
@@ -142,6 +144,8 @@
 
         this.refresh = function(opts) {
             if (opts.asset_id) {
+                jQuery('.annotation-ajaxloader').show();
+
                 this.grouping = null;
                 this.highlight_layer = null;
 
@@ -207,6 +211,7 @@
                         if (self.view_callback) {
                             self.view_callback();
                         }
+                        jQuery('.annotation-ajaxloader').hide();
                     }
                 );
             }
@@ -295,6 +300,11 @@
             self.updateAnnotationList();
         };
 
+        this.rgb = function(color) {
+            return 'rgb(' + parseInt(color.r, 10) + ',' +
+                parseInt(color.g, 10) + ',' + parseInt(color.b, 10) + ')';
+        };
+
         this.updateAnnotationList = function() {
             var frm = document.forms['annotation-list-filter'];
             if (!frm) {
@@ -318,7 +328,8 @@
                     var titles = self.layers[grouping].color_by(ann);
                     for (var j = 0; j < titles.length; j++) {
                         var title = titles[j];
-                        var color = DjangoSherd_Colors.get(title);
+                        var color = self.rgb(DjangoSherd_Colors.get(title));
+
                         /// add the annotation onto the layer w/the right color
                         if (ann.annotation) {
                             self.layers[grouping].add(
@@ -362,7 +373,7 @@
             var $elt = jQuery('#asset-details-annotations-list');
             $elt.hide();
             jQuery('.accordion').accordion('destroy');
-            var rendered = Mustache2.render(
+            var rendered = Mustache.render(
                 MediaThread.templates.asset_annotation_list, context);
             $elt.html(rendered);
             var options = {
@@ -655,7 +666,7 @@
 
                         var $elt = jQuery('#asset-global-annotation');
                         $elt.hide();
-                        var rendered = Mustache2.render(
+                        var rendered = Mustache.render(
                             MediaThread.templates.asset_global_annotation,
                             context);
                         $elt.html(rendered);
@@ -766,7 +777,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
                         context);
                     jQuery('#annotation-current').html(rendered);
@@ -775,7 +786,9 @@
                                   {'mode': 'create'});
                     self._initTags();
                     self._initReferences();
-                    jQuery('select.vocabulary').select2({});
+                    jQuery('select.vocabulary').select2({
+                        width: '70%'
+                    });
                     jQuery('#asset-details-annotations-current')
                         .fadeIn(function() {
                             djangosherd.assetview.clipform.html.push(
@@ -834,7 +847,7 @@
                 .done(function() {
                     var $elt = jQuery('#annotation-current');
                     $elt.hide();
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
                         context);
                     $elt.html(rendered);
@@ -996,7 +1009,9 @@
         };
 
         this._initConcepts = function() {
-            jQuery('select.vocabulary').select2({});
+            jQuery('select.vocabulary').select2({
+                width: '70%'
+            });
 
             var elt;
             if (self.active_asset && self.active_asset.global_annotation) {
@@ -1030,7 +1045,7 @@
                 dataType: 'json',
                 error: function() {},
                 success: function(json, textStatus, xhr) {
-                    var rendered = Mustache2.render(
+                    var rendered = Mustache.render(
                         MediaThread.templates.asset_references, json);
                     jQuery('#asset-references').html(rendered);
                 }
@@ -1051,7 +1066,8 @@
                     jQuery('input[name="annotation-tags"]').select2({
                         tags: tags,
                         tokenSeparators: [','],
-                        maximumInputLength: 20
+                        maximumInputLength: 20,
+                        width: '70%'
                     });
                 }
             });
@@ -1065,13 +1081,10 @@
             var context = {
                 'asset-current': self.active_asset,
                 'vocabulary': self.vocabulary,
-                'readOnly': self.config.readOnly,
-                'lower': function() {
-                    return function(text, render) {
-                        return render(text).toLowerCase();
-                    };
-                }
+                'readOnly': self.config.readOnly
             };
+
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
 
             if (config.annotation_id) {
                 var annotation_id = parseInt(config.annotation_id, 10);
@@ -1120,15 +1133,15 @@
             self.edit_state = null;
 
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
-            var rendered = Mustache2.render(tpl, context);
+            var rendered = Mustache.render(tpl, context);
             if (template_label === 'asset-view-details') {
                 jQuery('#asset-view-details').html(rendered);
 
-                rendered = Mustache2.render(
+                rendered = Mustache.render(
                     MediaThread.templates.asset_sources, context);
                 jQuery('#asset-sources').html(rendered);
             } else if (template_label === 'asset-view-details-quick-edit') {
-                rendered = Mustache2.render(
+                rendered = Mustache.render(
                     MediaThread.templates.asset_view_details_quick_edit,
                     context);
                 var $el = jQuery('#asset-view-details-quick-edit');
@@ -1140,17 +1153,17 @@
                 console.error('Didn\'t attach template for:', template_label);
             }
 
-            rendered = Mustache2.render(MediaThread.templates.asset_view_help,
+            rendered = Mustache.render(MediaThread.templates.asset_view_help,
                                         context);
             jQuery('#asset-view-help').html(rendered);
             jQuery('.asset-view-title').text(context['asset-current'].title);
 
-            rendered = Mustache2.render(
+            rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation,
                 context);
             jQuery('#asset-global-annotation').html(rendered);
 
-            rendered = Mustache2.render(
+            rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation_quick_edit,
                 context);
             jQuery('#asset-global-annotation-quick-edit').html(rendered);

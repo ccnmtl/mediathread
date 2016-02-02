@@ -6,9 +6,9 @@ from django.test import TestCase
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
-    AssetFactory, SherdNoteFactory, ProjectFactory
+    AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
 from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS
+    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -109,6 +109,46 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.course, self.alt_course)
         self.assertEquals(new_project.description(), 'Composition Assignment')
         self.assertEquals(new_project.visibility_short(), 'Published to Class')
+        self.assertEquals(AssignmentItem.objects.count(), 0)
+
+    def test_migrate_selection_assignment(self):
+        assignment1 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', title="Assignment 1",
+            response_view_policy=RESPONSE_VIEW_NEVER[0],
+            project_type='selection-assignment')
+        assignment2 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', title="Assignment 2",
+            project_type='selection-assignment')
+
+        asset = AssetFactory.create(course=self.sample_course,
+                                    title='Sample', primary_source='image')
+
+        AssignmentItemFactory.create(project=assignment1, asset=asset)
+        AssignmentItemFactory.create(project=assignment2, asset=asset)
+
+        projects = [assignment1, assignment2]
+        object_map = {'assets': {}, 'notes': {}, 'projects': {}}
+        object_map = Project.objects.migrate(
+            projects, self.alt_course, self.alt_instructor,
+            object_map, True, True)
+
+        self.assertEquals(self.alt_course.asset_set.count(), 1)
+        alt_asset = self.alt_course.asset_set.first()
+        self.assertTrue(alt_asset.title, 'Sample')
+        self.assertNotEqual(alt_asset.id, asset.id)
+
+        self.assertEquals(self.alt_course.project_set.count(), 2)
+
+        a = Project.objects.get(course=self.alt_course, title='Assignment 1')
+        self.assertEquals(a.response_view_policy, RESPONSE_VIEW_NEVER[0])
+        ai = AssignmentItem.objects.get(project=a)
+        self.assertEquals(ai.asset, alt_asset)
+
+        a = Project.objects.get(course=self.alt_course, title='Assignment 2')
+        ai = AssignmentItem.objects.get(project=a)
+        self.assertEquals(ai.asset, alt_asset)
 
     def test_migrate_projects_to_alt_course(self):
         self.assertEquals(len(self.alt_course.asset_set.all()), 0)
@@ -226,6 +266,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PrivateEditorsAreOwners', parent=self.assignment)
+
         self.assert_responses_by_course(self.student_one, [response], [])
         self.assert_responses_by_course(self.instructor_one, [], [response])
         self.assert_responses_by_course(self.student_two, [], [response])
@@ -267,6 +308,37 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assert_responses_by_course(self.student_two,
                                         [response, response2], [])
 
+    def test_many_responses_by_course(self):
+        # additional responses ensure selected collaborations/projects
+        # don't line-up by default
+        response1 = ProjectFactory.create(
+            title='Zeta', course=self.sample_course, author=self.student_three,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+
+        # private response
+        response2 = ProjectFactory.create(
+            title='Omega', course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        response4 = ProjectFactory.create(
+            title='Gam', course=self.sample_course, author=self.student_three,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+        response4.delete()
+
+        response3 = ProjectFactory.create(
+            title='Beta', course=self.sample_course, author=self.student_two,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+
+        self.assert_responses_by_course(self.student_one,
+                                        [response3, response1, response2], [])
+        self.assert_responses_by_course(self.instructor_one,
+                                        [response3, response1], [response2])
+        self.assert_responses_by_course(self.student_two,
+                                        [response3, response1], [response2])
+
     def test_project_clean_date_field(self):
         try:
             self.assignment.due_date = datetime(2012, 3, 13, 0, 0)
@@ -296,13 +368,22 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(compositions), 0)
 
         # instructor composition
-        ProjectFactory.create(
+        beta = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected')
+            policy='CourseProtected', ordinality=2, title='Beta')
+        gamma = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=3, title='Gamma')
+        alpha = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', ordinality=1, title='Alpha')
 
         compositions = Project.objects.faculty_compositions(
             self.sample_course, self.student_one)
-        self.assertEquals(len(compositions), 1)
+        self.assertEquals(len(compositions), 3)
+        self.assertEquals(compositions[0], alpha)
+        self.assertEquals(compositions[1], beta)
+        self.assertEquals(compositions[2], gamma)
 
     def test_responses(self):
         response1 = ProjectFactory.create(
@@ -329,7 +410,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             policy='PublicEditorsAreOwners')
         self.assertEquals(
             public.public_url(),
-            '/s/collaboration/%s/' % public.get_collaboration().id)
+            '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
 
         Project.objects.reset_publish_to_world(self.sample_course)
         self.assertIsNone(public.public_url())
@@ -343,7 +424,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         assignment = Project.objects.get(id=self.assignment.id)
         self.assertEquals(assignment.response_view_policy,
-                          RESPONSE_VIEW_ALWAYS[0])
+                          RESPONSE_VIEW_NEVER[0])
         assignment = Project.objects.get(id=self.selection_assignment.id)
         self.assertEquals(assignment.response_view_policy,
                           RESPONSE_VIEW_NEVER[0])
@@ -446,12 +527,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertFalse(self.project_class_shared.can_read(
             self.alt_course, self.alt_instructor))
 
-    def test_can_read_selection_assignment(self):
+    def can_read_assignment_response(self, parent):
         # always
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy='PublicEditorsAreOwners',
-            parent=self.selection_assignment)
+            parent=parent)
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -461,9 +542,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.sample_course, self.instructor_one))
 
         # never
-        self.selection_assignment.response_view_policy = \
+        parent.response_view_policy = \
             RESPONSE_VIEW_NEVER[0]
-        self.selection_assignment.save()
+        parent.save()
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -473,9 +554,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.sample_course, self.instructor_one))
 
         # submitted
-        self.selection_assignment.response_view_policy = \
+        parent.response_view_policy = \
             RESPONSE_VIEW_SUBMITTED[0]
-        self.selection_assignment.save()
+        parent.save()
 
         self.assertTrue(response.can_read(
             self.sample_course, self.student_one))
@@ -487,7 +568,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # student two created a response
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            parent=self.selection_assignment)
+            parent=parent)
         self.assertFalse(response.can_read(
             self.sample_course, self.student_two))
 
@@ -497,6 +578,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response2.save()
         self.assertTrue(response.can_read(
             self.sample_course, self.student_two))
+
+    def test_can_read_selection_assignment_response(self):
+        self.can_read_assignment_response(self.selection_assignment)
+
+    def test_can_read_composition_assignment_response(self):
+        self.can_read_assignment_response(self.assignment)
 
     def test_unresponded_assignments(self):
         lst = Project.objects.unresponded_assignments(self.sample_course,

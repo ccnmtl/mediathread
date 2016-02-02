@@ -1,0 +1,233 @@
+Use cases:
+------------------------
+//1. play collection of annotations while a video is played
+//2. play collection of annotations as a sequential list of assets
+//3. edit annotation in any form on page, and have the others auto-update
+
+Q&A:
+------------------------
+//what are microformats for?
+//1. storage: getting information
+//2. manager: finding places to build-up a view
+//3. layers: updating content
+//what is a layer responsible to?  --it's source(s)
+//1. changes when view changes (changes source)
+//2. changes when new annotations are created (list) (needs to send some view info along)
+//3. sends events to view
+//what is an AssetView?
+//1. particular asset being manipulated
+//2. list of assets/annotations?
+//   i. can we have views inside views?
+//      yes
+//what does an AssetManager do?
+//is this just a composite AssetView? probably, yes.
+//1. upon an action will build up/tear down a view
+//2. knows what layers to add onto a view
+//what can have 'select' all at the same time?
+//1. asset(e.g. storage/UI), assetview(UI), layer(kbd control), 
+
+
+Schema:
+----------------------
+// precedent http://appjet.com/docs/librefbrowser?page=storage
+Storage
+  <-
+  id() //unique on page--if domObject, then tied unique in $()
+  Asset (local_id)
+    Annotation (local_id)
+  Collection //masks asset/annotation divide
+
+Microformat
+  <-
+  supported(obj) <-type if supported, or false
+  type() <- object type ['asset','annotation'...]
+  read( {html:html}|found_obj ) <- obj
+  write(obj,parentDocument) <- html_dom
+  find(html_dom) <- array of objs (not nec. html_dom)
+
+  update(html_dom, obj) //if obj=null then it should zero out/unload if possible
+
+
+
+DomObject(Storage)
+  hover(assetId)
+  select(assetId)
+  <-
+  id() //gets/creates id for dom obj
+  get() //returns dom obj --jQuery precedent
+  microformat() //returns microformat if available
+  addListener() <- listenerid
+  removeListener(listenerid) 
+  callListeners(func,args)
+  attachMicroformat //should have a default
+
+CollectionView 
+  CollectionLayer //(summary info, independently filterable)
+    hover(assetId)
+    select(assetId)
+    ready(assetId) //for viewing
+    
+AssetView(DomObject)
+  .changeable
+  hover(assetId)
+  select(assetId)
+  ready(assetId) //for viewing
+  //view
+  html(html_dom) <- html_dom
+  <-  
+  change(asset)
+  destroy()
+  show()
+  hide()
+  attachDOM(html_dom) <- list returned by microformat
+    //also attaches if it only finds one
+
+  AssetLayer(DomObject)
+    .options.creatable
+    click(layer) <- html_dom //or add
+    select(layer)
+    ready(layer) //for add annotations
+    //view
+    html(html_dom,layer,obj,obj_type) <- html_dom //
+    <-
+    attachStorage(instance) 
+    attachMicroformat(microformat) //optional (should have a default)
+
+    attachView(view,options) //do this last (since this will connect it to html stuff)
+    .supports <- {multiple_annotations:false, creatable:false, editable:false, extra_fields:false}
+
+    .annotations=
+    AnnotationView(DomObject)//only internal for assetlayer
+      .editable
+      .color
+
+      hover(layer, annotation)
+      select(layer, annotation)  //kbd
+      click(layer,annotation)
+      //view
+      html(layer,annotation,html_dom) <- html_dom
+
+      //storage
+      save(ann,layer)
+      remove(ann,layer)
+
+      <-
+      create(annId,ann)
+
+      select(annId)
+      update(annId,ann)//editable,color,
+      //no arg means all
+      hide(annId) 
+      show(annId)
+      remove(annId)
+      
+
+Controllers:
+  ReplaceOnSelect  
+     remove(),create(annId,ann)
+
+  HighlightOnSelect
+   
+
+Layers:
+  Form
+    remove() == reset()
+
+AssetManager
+   .options 
+   = {
+       'name':'user_collection1',//system set/defined
+       'colorManager':UserColor,//instance
+
+       'target':html_dom,//optional
+       'views':[with_microformat],//class AssetView
+
+       'subviews':{ //views that can be instantiated with layers auto-created
+	   'video':{
+	       'views':[YouTube,Quicktime],//class
+	       //'controller':EditFormWithAdder //instance
+	       'layers':{
+		   'clipstrip':{
+		       'layer':Sherd.Video.ClipStrip,//class
+		       'options':{'editable':false,'creatable':false},
+		   },
+		   'adder':{
+		       'layer':VideoCreateForm,//class
+		       'options':{'editable':true,'creatable':true}
+		   }
+	       }
+	   }
+	   ,'image':{
+	       'views':[Sherd.Image.OpenLayersWrapper],
+	       'layers':{
+		   'drawing':{
+		       'layer':OpenLayersFeatures
+		   },
+		   'annotation_form':{
+		       'layer':ImageCreateForm,
+		       'storage':UserAnnotations
+		   }
+	       }
+	   }
+       }
+   }	
+
+
+
+
+Stories
+----------------------
+/*
+$who %what :when(loop) #comment
+{loadA $layer %.ready(layer)}
+  {$storage {a :.annotations} %layer.addAnnotation(a) /}
+{/loadA}
+
+*/
+
+real scud
+leaf cuds
+
+
+--widgets--
+
+?what to do while view isn't ready
+
+options.defaults.object
+       .defaults.microformat
+                .controller
+components.top
+listeners
+
+destroy
+
+controller
+  select
+  edit
+  add
+    m = self.annotations.microformat();
+    m.html(default)
+    self.view.notify('add',html,self);
+    listen(self.components.button, self.controller.create)
+
+  (search)
+
+  create(obj)
+    view.getTime()
+    view.Pause()
+    storage.create(obj)
+  update(obj)
+
+  remove()
+    storage.
+
+
+(parent)view
+  <-
+  notify
+
+storage
+  create
+  update
+  remove
+

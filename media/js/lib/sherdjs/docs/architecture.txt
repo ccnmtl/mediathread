@@ -1,0 +1,107 @@
+function get_or_make_id(dom) {
+    
+}
+
+
+/*also implements microformat for <form> */
+//so needs to know about MicroformatManager,
+//needs AnnotationManager (to ask Annotator for extra fields)
+FormGenerator.createForm(annotation, coords, callback/*for Save and Cancel*/) {
+    return DOM //if it's to be added contextually
+
+}
+
+AssetManager
+  //from microformats
+  //from data
+    //merge two if more data is in one or another source
+
+  //needs to participate
+  MarginHelp --possibly more than one, per asset
+
+//needs AssetManager --maybe inherits?
+//      Persistence Manager
+AnnotationManager
+   //keeps track of annotation-annotator-asset
+
+PersistenceManager
+
+//needs: Asset, fed annotations--needs to listen to CRUD events
+//should annotation inherit from this?
+MarginHelp(Asset) {
+	view: {
+		visible:'always','manual','onmouseover'/*asset*/
+		onclick:
+	}
+}
+
+//needs: AnnotationManager, 
+//       MicroFormats
+Annotator //extends Asset 
+{
+  toHTML(annotation)
+	annotatable(dom) //boolean
+    
+  //needs to participate:
+  forms: //extra fields like in/out points
+         //take down (remove fields//reset form)
+} 
+
+//needs editor  (TinyMce, YUI)
+//      PersistenceManager
+Composition() { //inherits (Text) asset
+	
+	insert
+	annotations:[]
+	microformats:[]
+}
+
+asset= {
+	type:
+
+  view:{
+    annotatable// (create call)
+    duration //for images, how long they should be shown in a slideshow, e.g.
+  }
+  items:[
+  ]
+	annotations:[]
+
+  local_id:stupid_dom_id //connected to dom
+  id:'' //system id that if id AND source are equal it's the same asset
+  uuid:''
+}
+
+annotation={
+  type:stupid_type,
+	annotator_client:annotator_name,
+	version:'',//json
+  view:{
+    editable (edit call),
+    showLabel,
+    color,
+    
+  }
+  //payload for annotation--user contributed info/commentary/translation, etc
+  metadata:{
+    link:
+    title:
+    body:
+    etc:
+		notes:
+		translation:
+  }
+  //properties that possibly the annotator is the only one that can understand these fields
+  annotations:[ 
+		{//e.g. in image was 'shapes'
+		    
+		}
+  ] //assets
+  local_id:stupid_id
+}
+
+Sequence:
+[{item:asset,
+	annotations:[ann1,ann2]
+ }
+]

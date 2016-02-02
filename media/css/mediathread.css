@@ -136,8 +136,7 @@ a:hover {
 }
 
 /* ---- Structure ---------- */
-#header
-{
+#header {
     display: block;
     overflow: hidden;
     margin: 0;
@@ -145,8 +144,7 @@ a:hover {
 	border: 0;
 }
 
-#pagebody
-{
+#pagebody {
 	position: relative;
 	padding: 0 15px;
 }
@@ -520,8 +518,6 @@ input[name='decoy'] {
      opacity:0.65 !important;
     -moz-opacity:0.65 !important;
     filter:alpha(opacity=65) !important;
-    padding: 10px;
-    left: -10px;
     z-index: 9999;    
 }
 
@@ -577,7 +573,8 @@ ul#standardnav
     color: #fff;
 }
 
-#standardnav li div.nonmember {
+#standardnav li .nonmember,
+#standardnav li .warning {
     color: yellow !important;
 }
 
@@ -613,6 +610,10 @@ ul#standardnav
     float: none;    
     color: #1b75bc;
 
+}
+
+#standardnav li .settings_submenu hr {
+    margin: 10px 0;
 }
 
 /* ---- Footer block elements ---------- */
@@ -731,9 +732,7 @@ div.column-contents {
 }
 
 .upload_for {
-  display: block;
-  height: 35px;
-  margin: 15px 0 0 0;
+    margin-bottom: 10px;
 }
 
 #browser-instructions h3 {	
@@ -756,11 +755,7 @@ div.column-contents {
 }
 
 .recommend_source {
-    display: block;
-    clear: both; 
-    float: left;
-    padding: 5px 0;
-    margin: 5px 0;
+    padding: 10px 0;
     min-height: 24px;
     width: 100%;
     border-bottom: solid 1px #ccc;
@@ -768,16 +763,10 @@ div.column-contents {
 
 .source_thumb {
     float: left;
-    margin: 0 10px 0 0;
-}
-
-.source_thumb img {
-    height: 30px;
-    width: 30px;
 }
 
 .source_title {
-    margin: 0 20px 0 0;
+    margin: 10px;
 }
 
 #coursefilter {
@@ -978,6 +967,8 @@ table#sliding-content-container, table#sliding-content-container tr {
     border-collapse: collapse;
 }
 
+.asset-embed-view tr,
+.asset-embed-view tr td, 
 #asset-workspace-panel-container tr, #asset-workspace-panel-container tr td,
 table#sliding-content-container tr, table#sliding-content-container tr td {
     border: none;
@@ -1003,13 +994,12 @@ table#sliding-content-container tr td.panhandle-left-container div.panhandle-lef
 
 table#sliding-content-container tr td.panhandle-stripe {
     width: 14px;
-    height: 99%\9;
+    height: 99%;
     padding-top: 7px;
 }
 
 table#sliding-content-container tr td.panhandle-stripe div.label {
     color: #fff;
-    writing-mode:tb-rl;
     -webkit-transform:rotate(90deg);
     -moz-transform:rotate(90deg);
     -o-transform: rotate(90deg);
@@ -1027,7 +1017,7 @@ table#sliding-content-container tr td.panel-container {
     border-left: none;
 }
 
-table#sliding-content-container tr td.panel-container div.panel {
+table#sliding-content-container tr td.panel-container div.mediathread-panel {
     margin: 0;
     padding: 0px;
     border: none;
@@ -1035,23 +1025,23 @@ table#sliding-content-container tr td.panel-container div.panel {
     height: 100%;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.composition {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.composition {
     border: 1px solid #3A84BE;
     background-color: #f0f5fa !important;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.feedback,
-table#sliding-content-container tr td.panel-container div.panel.discussion {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.feedback,
+table#sliding-content-container tr td.panel-container div.mediathread-panel.discussion {
     border: 1px solid black;
     background-color: #ededed;
 }
 
-table#sliding-content-container tr td.panel-container div.panel.assignment {
+table#sliding-content-container tr td.panel-container div.mediathread-panel.assignment {
     border: 1px solid #175D35;
     background-color: #DAE7E0 !important;
 }
 
-table#sliding-content-container tr td.panel-container div.panel form {
+table#sliding-content-container tr td.panel-container div.mediathread-panel form {
     height: 100%;
 }
 
@@ -1060,7 +1050,6 @@ table#sliding-content-container tr td.pantab-container.maximized {
 }
 
 table#sliding-content-container tr td.pantab-container.minimized {
-    display: default;
     padding-right: 4px;
 }
 
@@ -1291,29 +1280,29 @@ td.panel-container.asset-workspace {
     overflow-x: hidden !important;
 }
 
-div.panel.asset-workspace-dialog table.panel-subcontainer {
+div.mediathread-panel.asset-workspace-dialog table.panel-subcontainer {
     margin: 0 0 0 10px;
     width: 500px;
 }
 
-div.panel.asset-workspace-dialog td.panel-container.asset.fixed, 
-div.panel.asset-workspace-dialog td.panel-container.asset.fixed div.asset-view-container {
+div.mediathread-panel.asset-workspace-dialog td.panel-container.asset.fixed,
+div.mediathread-panel.asset-workspace-dialog td.panel-container.asset.fixed div.asset-view-container {
     width: 825px;
     min-width: 825px;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-title {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-title {
     margin: 10px 0 0 0;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-published {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-published {
     border: 0;
     width: 500px !important;
     height: 450px;    
     margin-left: 0;
 }
 
-div.panel.asset-workspace-dialog div.asset-view-tabs {
+div.mediathread-panel.asset-workspace-dialog div.asset-view-tabs {
     margin-left: 5px;
     height: 450px;
     width: 285px;
@@ -1338,9 +1327,9 @@ form#edit-global-annotation-form input[name="asset-title"],
     margin-top: 10px !important;
 }
 
-div.panel.asset-workspace-dialog #asset-global-annotation,
-div.panel.asset-workspace-dialog #annotation-current,
-div.panel.asset-workspace-dialog #asset-details-annotations-current {
+div.mediathread-panel.asset-workspace-dialog #asset-global-annotation,
+div.mediathread-panel.asset-workspace-dialog #annotation-current,
+div.mediathread-panel.asset-workspace-dialog #asset-details-annotations-current {
     border: none;
 }
 
@@ -1428,6 +1417,10 @@ tr.project-content-row td.panhandle-stripe.collection {
         background-color: #A88448;
 }
 
+tr.discussion-content-row .asset-view-published {
+    border-color: #bbb;
+}
+
 div.pantab.collection,
 td.panhandle-stripe.collection {
     background-color: #CCC;
@@ -1461,10 +1454,9 @@ div.collection-materials h2 {
 
 div#collection-overlay {
     z-index:  10001;
-    margin-top: -8px;
-    padding-bottom: 8px;
 }
 
+div.annotation-ajaxloader,
 div.ajaxloader {
     position: absolute;
     display: block;
@@ -1474,21 +1466,38 @@ div.ajaxloader {
     text-align: center;
     opacity:0.85;
     -moz-opacity:0.85;
-    filter:alpha(opacity=85);    
+    filter:alpha(opacity=85);
+    width: 100%;
 }
 
+div.annotation-ajaxloader div.message,
 div.ajaxloader div.message {
     margin-top: 25px;
     font-weight: bold;
 }
 
+div.asset-view-container .annotation-ajaxloader {
+    min-width: 250px;
+    width: 33%;
+    float: left;
+    position: relative;
+    margin-left: 10px;
+} 
+
+.selection-assignment .annotation-ajaxloader {
+    margin-top: 25px;
+    height: 150px;    
+    width: 90%;
+}
+
 tr.asset-workspace-content-row div.ajaxloader {
     top: 46px;    
-    width: 98%;    
+    width: 98%;   
 }
 
 tr.asset-workspace-content-row td.collection.minimized div.ajaxloader {
     width: 250px;
+    height: 88%;
 }
 
 tr.discussion-content-row div.ajaxloader,
@@ -1498,9 +1507,6 @@ tr.project-content-row div.ajaxloader {
 
 td.collection.minimized div#collection-overlay {
     z-index:  10001;
-    width: 280px;
-    margin-top: -8px;
-    padding-bottom: 8px;    
 }
 
 div.collection-help-tab {
@@ -1508,7 +1514,7 @@ div.collection-help-tab {
     display: block;
     z-index: 10002;
     padding: 2px;
-    right: 0;
+    right: 17px;
     top: 4px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
@@ -1542,13 +1548,13 @@ td.collection div.collection-help {
     border: none;
     width: 400px;
     top: 30px;
-    right: 0px; 
+    right: 17px; 
     font-size: .875em;    
 }
 
 td.collection.minimized div.collection-help {
     width: 240px;
-    left: 21px;
+    left: 37px;
     padding: 10px;    
 }
 
@@ -1569,66 +1575,48 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar input {
 	cursor: pointer;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project {
-    width: 50px;
-    font-size: .75em;
-}
-
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-assignment-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-assignment-response {
     float: right;
     margin-left: 5px;    
     width: 145px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-create-instructor-feedback {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-instructor-feedback {
     float: right;
     margin-left: 5px;    
     margin-top: 4px;
     width: 175px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-previewbutton {
-    float: right;
-    margin-left: 5px;    
-    width: 60px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton {
     float: right;
     margin-left: 5px;
-    width: 62px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-savebutton.saving {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton.saving {
     text-align: left;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-revisionbutton {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton,
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-responsesbutton {
     float: right;
-    margin-left: 5px;
-    width: 65px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-responsesbutton {
-    float: right;
-    margin-left: 5px;
-    width: 120px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-responses {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-responses {
     float: right;
     margin-left: 5px;
     width: 105px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.project-my-response {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-response {
     float: right;
     margin-left: 5px;
     width: 90px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar input.createnew-button {
+table.panel-subcontainer tr td div.panel-subcontainer-toolbar .createnew-button {
     float: right;
     width: 170px;    
 }
@@ -1856,16 +1844,17 @@ td#instructor input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#instructor div.help-tab {
-   right: -3px;
-    top: 21px;
-    width: 25px;
+    right: -3px;
+    top: 14px;
+    width: 30px;
 }
 
 td#instructor div.feature-help {
-    top: 50px;
+    top: 43px;
     right: -3px;
     width: 89%;
 }
@@ -1875,17 +1864,19 @@ td#classwork input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#classwork div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
+    right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
+td#explore div.feature-help,
 td#classwork div.feature-help {
-    top: 50px;
-    right: 6px;
+    top: 45px;
+    right: 7px;
     width: 90%;
 }
 
@@ -1894,18 +1885,13 @@ td#explore input.help-tab-icon {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 td#explore div.help-tab {
-   right: 6px;
-    top: 21px;
-    width: 25px;
-}
-
-td#explore div.feature-help {
-    top: 50px;
-    right: 6px;
-    width: 90%;
+   right: 7px;
+    top: 16px;
+    width: 30px;
 }
 
 td.collection.subpanel div.feature-help,
@@ -1983,26 +1969,29 @@ div.homepage-column-info {
 
 
 /* composition, assignment, discussion space */
-.panel.composition td.panel-container.collection .filter-widget,
-.panel.discussion td.panel-container.collection .filter-widget {
+.mediathread-panel.assignment td.panel-container.collection .filter-widget,
+.mediathread-panel.composition td.panel-container.collection .filter-widget,
+.mediathread-panel.discussion td.panel-container.collection .filter-widget {
     width: 370px;
     padding: 5px;
 }
 
-.panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
-.panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
-.panel.composition td.panel-container.collection .filter-widget .collection-col-3,
-.panel.composition td.panel-container.collection .filter-widget .collection-col-2 {
+.mediathread-panel.discussion td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.discussion td.panel-container.collection .filter-widget .collection-col-2,
+.mediathread-panel.composition td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.composition td.panel-container.collection .filter-widget .collection-col-2,
+.mediathread-panel.assignment td.panel-container.collection .filter-widget .collection-col-3,
+.mediathread-panel.assignment td.panel-container.collection .filter-widget .collection-col-2 {
     min-width: 370px;
 }
 
 /* asset workspace */
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget {
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget {
     width: 245px !important;
 }
 
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-3,
-.panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-2 {
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-3,
+.mediathread-panel.asset-workspace td.panel-container.collection.minimized .filter-widget .collection-col-2 {
     min-width: 245px !important;
 }
 
@@ -2283,8 +2272,10 @@ ul li {
     margin: 0 0 5px 0;
 }
 
-.panel { 
-  text-align:center;
+.mediathread-panel { 
+    text-align: center;
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }
 
 .panel-column { 
@@ -2581,6 +2572,11 @@ div.gallery-item h4.asset_title {
     vertical-align: top;
 }
 
+#dashboard-module-body .suggested-collection table tr td.thumb img {
+    max-width: 30px;
+    max-height: 30px;
+}
+
 a.collection-link {
     font-weight:bold;
     text-decoration:none;
@@ -2588,9 +2584,9 @@ a.collection-link {
 }
 
 img.collection-link {
-    margin:10px;
-    max-width:100px;
-    max-height:75px;
+    margin: 10px;
+    max-width: 30px;
+    max-height: 30px;
 }
 
 a.btn.collection img {
@@ -2973,19 +2969,23 @@ table#home-columns td#classwork ul {
 }
 
 div#instructor-column {
-
     margin: 0;
     font-weight: normal;
     line-height: 17px;
 }
 
 
-div#materials {
+div.materials {
     margin: 0 5px;
     overflow-x: hidden;
     box-shadow: none;
     border: none;
     background-color: #EDEDED;
+}
+
+.asset-embed-view .materials {
+    margin: 0;
+    background-color: white;
 }
 
 li.annotation-group {
@@ -3000,7 +3000,7 @@ li.annotation-group {
     border: solid 1px #ccc;
 }
 
-div#materials h4 {
+div.materials h4 {
     color: #000;
     font-weight: normal;
     margin: .3em 0 0 0;
@@ -3024,15 +3024,15 @@ div.gallery-item h4 {
     margin: .5em 0 0.25em;
 }
 
-div#materials.column-contents {
+div.materials.column-contents {
     padding-top: 0px;
 }
 
-div.panel.asset-workspace div#materials h4 a {
+div.mediathread-panel.asset-workspace div.materials h4 a {
     margin-left: 0px;
 }
 
-div#materials h4 a,
+div.materials h4 a,
 div.gallery-item h4 a {
     display: block;
     font-weight: bold;
@@ -3049,6 +3049,7 @@ div.gallery-item h4 {
     width: 190px;
     overflow: hidden;
     max-height: 48px;
+    min-height: 20px;
 }
 
 ul.instructor-list {
@@ -3056,25 +3057,15 @@ ul.instructor-list {
 }
 
 ul.instructor-list li {
-
     margin: 5px 0 10px 0;
     font-weight: normal;
     line-height: 17px;
 }
 
-ul.instructor-list span.draghandle {
+ul.instructor-list .draghandle {
     margin-left: -5px;
     margin-right: 5px;
-    cursor: pointer;
-}
-
-ul.instructor-list li.dragging {
-    border: 1px solid #CCC;
-    background-color: #E6E6E6;
-    color: #555/*{fcDefault}*/;
-    margin: 0;
-    padding: 0.4em .185em;
-    height: 18px;    
+    cursor: move;
 }
 
 td.media-column .column-contents {
@@ -3123,6 +3114,11 @@ table.selection-level-info td {
     border: none;
     vertical-align: top;
     padding: 5px 0px;
+}
+
+.asset-embed-view .selection-inserter input {
+    margin-top: 5px;
+    margin-right: 5px;
 }
 
 table.selection-level-info td.selection-inserter {
@@ -3353,9 +3349,6 @@ span.asset-view-title {
 
 div#asset-view-overlay {
     z-index:  10001;
-    margin-top: -55px;
-    padding-bottom: 55px;
-    padding-right: 10px;
 }
 
 input#collection-help-button {
@@ -3363,6 +3356,7 @@ input#collection-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 #annotation-view-help-button {
@@ -3377,6 +3371,7 @@ input#asset-view-help-button {
     opacity:0.50;
     -moz-opacity:0.50;
     /* Opacity looks bad in IE filter:alpha(opacity=50); */
+    outline: 0;
 }
 
 div.asset-view-help {
@@ -3394,7 +3389,7 @@ div.asset-view-help {
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
     top: -13px;
-    right: -8px;
+    right: -1px;
     border: none;
 }
 
@@ -3416,8 +3411,8 @@ div.asset-view-help-tab {
     z-index: 10002;
     margin: -1px 2px 0 0;
     padding: 2px;
-    right: -10px;
-    top: -41px;
+    right: -1px;
+    top: -38px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -3430,6 +3425,7 @@ div.asset-view-help-tab {
 
 input[type=image].dismiss-help {
      border: none;
+     outline: 0;
 }
 
 div.asset-view-container {
@@ -3859,44 +3855,49 @@ div.feature-help div.feature-help-instructions img {
 
 /* Full Collection View styles and overrides */
 
-div.panel.asset-workspace table.panel-subcontainer {
+div.mediathread-panel.asset-workspace table.panel-subcontainer {
     margin: 0;
     width: 100%;
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.media_gallery {
     width: 250px;
 }
 
-div.panel.asset-workspace td.panel-container.collection {
+div.mediathread-panel.asset-workspace td.panel-container.collection {
     border: none;
     background-color: white;
 }
 
-div.panel.asset-workspace td.panel-container.collection.maximized {
+div.mediathread-panel.asset-workspace td.panel-container.collection.maximized {
     background-color: #ededed;
     padding: 5px !important;    
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized {
     width: 250px;
     background-color: #ededed;
     padding: 5px 0 0 5px !important;
 }
 
-div.panel.asset-workspace td.panel-container.collection.minimized div.collection-assets {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.collection-assets {
     float: left;
-    width: 250px;    
+    width: 250px;
 }
 
-div.panel.asset-workspace td.panel-container.asset-details.fixed {
+div.mediathread-panel.asset-workspace td.panel-container.collection.minimized div.collection-assets,
+div.mediathread-panel.asset-workspace td.panel-container.collection.maximized div.collection-assets {
+    overflow: auto;
+}
+
+div.mediathread-panel.asset-workspace td.panel-container.asset-details.fixed {
     width: 350px;
     padding: 10px;    
 }
 
-div.panel.asset-workspace td.panel-container.collection div.collection-date-filter,
-div.panel.asset-workspace td.panel-container.collection div.collection-filter,
-div.panel.asset-workspace td.panel-container.collection div.collection-chooser {
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-date-filter,
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-filter,
+div.mediathread-panel.asset-workspace td.panel-container.collection div.collection-chooser {
     width: 100%;
 }
 
@@ -3904,13 +3905,13 @@ div.panel.asset-workspace td.panel-container.collection div.collection-chooser {
 
 /** Project Dialogs **/
 
-div.panel.composition form div.ui-dialog div.ui-dialog-titlebar {
+div.mediathread-panel.composition form div.ui-dialog div.ui-dialog-titlebar {
     background-image: none;
     background-color: #3A84BF;
     color: white;
 }
 
-div.panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
+div.mediathread-panel.assignment form div.ui-dialog div.ui-dialog-titlebar {
     background-image: none;
     background-color: #175D35;
     color: white;
@@ -4278,4 +4279,21 @@ a.btn.btn-default img.left {
 .selection-assignment .selected-item .gallery-item {
     margin-top: 30px;
     float: none;
+}
+
+.sherd-vimeo-wrapper iframe {
+    border: 0;
+}
+
+/* select2 customizations */
+.select2-container-multi .select2-choices .select2-search-field input {
+    height: 28px;
+}
+/* end select2 customizations */
+
+#chrome-install-button,
+#safari-install-button,
+#firefox-install-button {
+    margin-bottom: 5px;
+    margin-right: 5px;
 }

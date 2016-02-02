@@ -1,0 +1,78 @@
+
+$(subject).verb(object)
+
+
+new Sherd.View(htmldom)
+
+addView
+addControl
+addLayers
+
+
+
+OBJECT MIXINS
+
+microformat
+
+dom.put()
+data.put()
+
+initialize({html:})
+
+events
+
+
+{target:
+ data:
+ storage: 
+ 
+}
+
+OBJECT INTERFACES
+storage
+view
+controller
+ 
+OBJECT DICTIONARIES
+components
+
+
+
+SERIALIZED PROPERTIES
+
+metadata
+display
+annotations[]
+
+innerHTML
+
+html_id  (unique to page as html location)
+local_id   (unique to page as an object)
+storage_id (unique to object at storage (server/db) level)
+
+
+
+layer.microformat
+features.microformat
+view.microformat
+storage.microformat
+
+
+html -> microformat
+        components
+
+put(obj)
+
+
+attachMicroformat()
+attachView()
+
+attachData()
+attachHTML()
+
+
+data->
+
+dom.put()
+
+storage

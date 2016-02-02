@@ -1,5 +1,6 @@
 /* global _: true, Backbone: true, CitationView: true */
-/* global showMessage: true, tinyMCE: true */
+/* global showMessage: true, tinymce: true, tinymceSettings: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
     var global = this;
@@ -22,15 +23,15 @@
             this.currentPage = 1;
             this.totalPages = jQuery('.page').length;
 
-            // hook up behaviors
-            jQuery(window).on('tinymce_init_instance',
-                function(event, instance, param2) {
-                    if (instance) {
-                        var width = jQuery(self.el).find('textarea').width();
-                        instance.theme.resizeTo(width, 200);
+            this.tinymceSettings = jQuery.extend(tinymceSettings, {
+                init_instance_callback: function(instance) {
+                    if (instance && !self.tinymce) {
+                        self.tinymce = instance;
                     }
                 }
-            );
+            });
+
+            // hook up behaviors
             jQuery('input[name="due_date"]').datepicker({
                 minDate: 0,
                 dateFormat: 'mm/dd/yy'
@@ -56,7 +57,7 @@
                 return jQuery('input[name="item"]').val() !== '';
             } else if (pageNo === 3) {
                 var title = jQuery(this.el).find('input[name="title"]').val();
-                var body = tinyMCE.activeEditor.getContent();
+                var body = this.tinymce.getContent();
                 return title.length > 0 && body.length > 0;
             } else if (pageNo === 4) {
                 q = 'input[name="response_view_policy"]:checked';
@@ -89,6 +90,12 @@
                         'hidden');
                     var itemId = jQuery('input[name="item"]').val();
                     this.citationView.openCitationById(null, itemId, null);
+
+                    if (!this.tinymce) {
+                        tinymce.settings = this.tinymceSettings;
+                        tinymce.execCommand('mceAddEditor', true,
+                                            'assignment-instructions');
+                    }
                 } else if (this.currentPage === 4) {
                     // if there is only one radio button, select it
                     var elts = jQuery('input[name="response_view_policy"]');
@@ -118,7 +125,7 @@
                 $current.addClass('has-error');
             } else {
                 jQuery(window).unbind('beforeunload');
-                tinyMCE.activeEditor.save();
+                tinymce.activeEditor.save();
                 var frm = jQuery(evt.currentTarget).parents('form')[0];
                 jQuery.ajax({
                     type: 'POST',

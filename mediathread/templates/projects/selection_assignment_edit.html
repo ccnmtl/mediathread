@@ -6,7 +6,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
-    <link rel="stylesheet" href="{{STATIC_URL}}js/sherdjs/lib/mcePlugin_citation/skins/minimalist/citation.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -22,26 +22,18 @@
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
         
-    <!--  TinyMCE -->
-    <script type="text/javascript">
-        var tinyMCEPreInit = {
-            query: '',
-            suffix: '',
-            base: '{{STATIC_URL}}js/sherdjs/lib/tiny_mce3/jscripts/tiny_mce'
-        };
-    </script>
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
     <script src="{{STATIC_URL}}js/app/projects/selection_assignment_edit.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
     <!-- required project functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
-    <script type="text/javascript" src="{{STATIC_URL}}js/sherdjs/lib/tiny_mce3_min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/app/tiny_mce_init3.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
     
     <!--  Generic Functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script type="text/javascript">
         jQuery(document).ready(function () {
@@ -163,7 +155,7 @@
                                 <li>How to annotate selections in the notes field</li>
                                 <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
                             </ul>
-                            <textarea name="body" class="form-control mceEditor">
+                            <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                 {{form.instance.body}}
                             </textarea>
                             <div class="help-inline">Instructions is a required field</div>      
@@ -230,6 +222,7 @@
                         <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                             <div class="asset-display"></div>
+                            <div class="clipstrip-display"></div>
                         </div>
                     </div>
                 </div>

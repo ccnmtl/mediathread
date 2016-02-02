@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tagging_tags user_projects helpful_tags coursetags comments collaborations %}
+{% load tagging_tags user_projects helpful_tags coursetags comments %}
 {% load waffle_tags %}
 
 {% block title %}
@@ -25,14 +25,6 @@
                 'template_label': 'classwork_table',
                 'view': "{{request.GET.view}}"
             });
-            
-            jQuery(window).resize(function () {  
-                var visible = getVisibleContentHeight();
-                jQuery('.ui-widget-overlay').css('height', visible + "px");
-            });
-    
-            var visible = getVisibleContentHeight();
-            jQuery('.ui-widget-overlay').css('height', visible + "px");
             
             {% ifequal msg "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
@@ -224,6 +216,13 @@
                         </div>
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
                     </div>
+                    <div class="ajaxloader">
+                        <div class="message">
+                        <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                        <br /><br />
+                        <div>Fetching compositions &amp; assignments</div>
+                        </div>
+                    </div>                    
                     <div id="classwork_table"></div>
                 </div>
                 {% endwith %}
@@ -272,11 +271,15 @@
                         <div class="arrowIcon left"></div>
                     </a>
                     <div class="arrowContent" id="import_collection" style="display: none">
-                        <p>
-                            Use the Mediathread Bookmarklet to import images and video from any web page containing Mediathread-friendly items.                                
-                            
-                            {% include "assetmgr/install_bookmarklet.html" %}
-                        </p>
+                        {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
+                        {% include "assetmgr/install_chrome_extension.html" %}
+                        {% elif request.user_agent.browser.family == 'Safari' %}
+                        {% include "assetmgr/install_safari_extension.html" %}
+                        {% elif request.user_agent.browser.family == 'Firefox' %}
+                        {% include "assetmgr/install_firefox_extension.html" %}
+                        {% endif %}
+                        <hr />
+                        {% include "assetmgr/install_bookmarklet.html" %}
                     </div> <!-- end import into collection box --> 
                 </div><!-- end collection content box -->
                 {% if can_upload and uploader %}
@@ -303,7 +306,7 @@
                                     <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
-                                            <b>For:</b>&nbsp;
+                                            <label for="video_owners">For:</label>
                                             <select id="video_owners" name="as">
                                             {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
@@ -318,8 +321,8 @@
                                     <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
-                                            <b>For:</b>&nbsp;
-                                            <select name="as">
+                                            <label for="audio_owners">For:</label>
+                                            <select id="audio_owners" name="as">
                                             {% for owner in owners %}
                                                 <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
                                             {% endfor %}
@@ -346,13 +349,14 @@
                             {% if collection.thumb_url %}
                                 <div class="source_thumb">
                                     <a href="/explore/redirect/{{collection.id}}/">
-                                        <img src="{{collection.thumb_url}}" alt="thumbnail image" class="collection-link" />
+                                        <img src="{{collection.thumb_url}}" class="collection-link" />
                                     </a>
                                 </div>
                             {% endif %}
                             <div class="source_title">
                                 <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
                             </div>
+                            <div class="clearfix"></div>
                         </div>
                     {% endfor %}                        
                 </div>

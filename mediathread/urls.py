@@ -15,16 +15,16 @@ from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
                                         TagCollectionView,
                                         RedirectToExternalCollectionView,
                                         RedirectToUploaderView,
-                                        AssetCreateView)
+                                        AssetCreateView,
+                                        BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    MigrateCourseView, MigrateMaterialsView,
-    RequestCourseView, ContactUsView,
-    CourseSettingsView,
-    CourseManageSourcesView, IsLoggedInView, IsLoggedInDataView,
-)
+    ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
+    MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
+    CourseSettingsView, CourseDeleteMaterialsView, triple_homepage)
 from mediathread.projects.views import (
-    ProjectCollectionView, ProjectDetailView, ProjectItemView)
+    ProjectCollectionView, ProjectDetailView, ProjectItemView,
+    ProjectPublicView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 
 
@@ -62,7 +62,7 @@ if hasattr(settings, 'CAS_BASE'):
 urlpatterns = patterns(
     '',
 
-    (r'^$', 'mediathread.main.views.triple_homepage'),  # Homepage
+    url(r'^$', triple_homepage, name='home'),
     admin_logout_page,
     logout_page,
     (r'^admin/', admin.site.urls),
@@ -100,7 +100,7 @@ urlpatterns = patterns(
     (r'^api/asset/$', AssetCollectionView.as_view(), {}, 'assets-by-course'),
     url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
         name='api-user-courses'),
-    (r'^api/tag/$', TagCollectionView.as_view(), {}),
+    (r'^api/tag/$', TagCollectionView.as_view(), {}, 'tag-collection-view'),
     (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
      ProjectCollectionView.as_view(), {}, 'project-by-user'),
     (r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
@@ -122,7 +122,7 @@ urlpatterns = patterns(
         'django.views.static.serve', {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    (r'^comments/', include('django.contrib.comments.urls')),
+    (r'^comments/', include('django_comments.urls')),
 
     # Contact us forms.
     (r'^contact/success/$',
@@ -135,9 +135,12 @@ urlpatterns = patterns(
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
         name='is_logged_in.js'),
-
     url(r'^accounts/is_logged_in/$', IsLoggedInDataView.as_view(), {},
         name='is_logged_in'),
+    url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
+        name='bookmarklet_migration'),
+    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet',
+        name='bookmarklet_upgrade'),
 
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
@@ -151,6 +154,8 @@ urlpatterns = patterns(
         name='class-manage-sources'),
     url(r'^dashboard/settings/', CourseSettingsView.as_view(),
         name='course-settings'),
+    url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
+        name='course-delete-materials'),
 
     # Discussion
     (r'^discussion/', include('mediathread.discussions.urls')),
@@ -191,10 +196,11 @@ urlpatterns = patterns(
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
-    url(r'^upgrade/', 'mediathread.main.views.upgrade_bookmarklet'),
+    (r'^lti/', include('lti_auth.urls')),
 
-    # Public Access ###
-    (r'^s/', include('structuredcollaboration.urls')),
+    # Public To World Access ###
+    url(r'^s/(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/',
+        ProjectPublicView.as_view(), name='collaboration-obj-view'),
 )
 
 if settings.DEBUG:

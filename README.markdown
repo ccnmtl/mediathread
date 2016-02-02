@@ -9,7 +9,7 @@ collaboration on video and image analysis. Developed at the Columbia
 Center for New Media Teaching and Learning (CCNMTL)
 
 CODE: http://github.com/ccnmtl/mediathread (see wiki for some dev documentation)  
-INFO: http://ccnmtl.columbia.edu/mediathread  
+INFO: http://mediathread.info
 FORUM: http://groups.google.com/group/mediathread  
 
 REQUIREMENTS
@@ -61,8 +61,7 @@ The rest of the instructions work like standard Django.  See: http://docs.django
 
 5. Sync the database
 
-    ./manage.py syncdb.  # When asked to create a superuser, do so.
-    ./manage.py migrate  # completes the south migration setup
+    ./manage.py migrate
 
 6. Run locally (during development only)
     ./manage.py runserver myhost.example.com:8000
@@ -85,6 +84,34 @@ Go to your site in a web browser.
 9. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
+
+DOCKER DEVELOPMENT
+------------------
+
+[Please note that the docker setup for Mediathread is still
+experimental. There are likely to be rough edges here.]
+
+If you have docker set up and docker-compose installed, you can get a
+development environment up and running very quickly. To initialize it,
+the following steps are recommended:
+
+    $ docker pull ccnmtl/mediathread
+    $ docker-compose run web manage syncdb # create a superuser when asked to
+	$ docker-compose run web migrate
+
+After that, a simple:
+
+    $ docker-compose up
+
+will bring up a development server on port 8000 (if you are running
+boot2docker, it may end up on a different port) backed by a PostgreSQL
+database.
+
+Production deployment with Docker is also possible, though even less
+tested than development. The `settings_docker.py` file has the default
+settings that the docker image uses and is designed to allow you to
+override/set the important values through environment variables (so
+configuration can be kept out of the docker image).
 
 DJANGO SITE INFRASTRUCTURE
 ----------------

@@ -6,12 +6,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+import reversion
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty
-import reversion
 from structuredcollaboration.models import Collaboration
 
 
@@ -104,15 +104,19 @@ class ProjectManager(models.Manager):
 
             new_project.body = project_body
             new_project.save()
+
+            self.migrate_assignment_item(course, user,
+                                         old_project, new_project, object_map)
+
             object_map['projects'][old_project.id] = new_project
 
         return object_map
 
     def migrate_one(self, project, course, user):
-        new_project = Project.objects.create(title=project.title,
-                                             project_type=project.project_type,
-                                             course=course,
-                                             author=user)
+        new_project = Project.objects.create(
+            title=project.title, project_type=project.project_type,
+            course=course, author=user,
+            response_view_policy=project.response_view_policy)
 
         collaboration_context = Collaboration.objects.get_for_object(course)
 
@@ -126,19 +130,46 @@ class ProjectManager(models.Manager):
 
         return new_project
 
+    def migrate_assignment_item(self, course, user,
+                                old_project, new_project, object_map):
+        aItem = AssignmentItem.objects.filter(project=old_project).first()
+        if aItem is not None:
+            if aItem.asset.id in object_map['assets']:
+                new_asset = object_map['assets'][aItem.asset.id]
+            else:
+                # migrate the asset
+                new_asset = Asset.objects.migrate_one(
+                    aItem.asset, course, user)
+                object_map['assets'][aItem.asset.id] = new_asset
+
+            AssignmentItem.objects.create(project=new_project,
+                                          asset=new_asset)
+
     def visible_by_course(self, course, viewer):
         projects = Project.objects.filter(course=course)
-        projects = projects.select_related('author', 'participants')
-        projects = projects.order_by('-modified', 'title')
-        return [p for p in projects if p.can_read(course, viewer)]
+
+        visible = []
+        for collab in Collaboration.objects.get_for_object_list(projects):
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                visible.append(project)
+
+        visible.sort(reverse=False, key=lambda project: project.title)
+        visible.sort(reverse=True, key=lambda project: project.modified)
+        return visible
 
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
-        ).distinct().select_related('author', 'participants')
+        ).distinct()
 
-        lst = [p for p in projects if p.can_read(course, viewer)]
+        lst = []
+        for collab in Collaboration.objects.get_for_object_list(projects):
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                lst.append(project)
+
         lst.sort(reverse=False, key=lambda project: project.title)
         lst.sort(reverse=True, key=lambda project: project.modified)
 
@@ -152,17 +183,21 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             course=course, project_type=PROJECT_TYPE_COMPOSITION)
 
+        # filter down to responses only based on the collaboration parent state
         collaborations = Collaboration.objects.get_for_object_list(projects)
         collaborations = collaborations.filter(_parent__isnull=False)
+        collaborations = collaborations.order_by('object_pk')
 
         # get all the content objects at once
         ids = [int(c.object_pk) for c in collaborations]
         responses = Project.objects.filter(id__in=ids)
-        responses = responses.select_related('author', 'participants')
+        responses = list(responses.select_related('author'))
+        responses.sort(reverse=False, key=lambda p: str(p.id))
 
         visible = []
         hidden = []
         for idx, r in enumerate(responses):
+            assert str(r.id) == collaborations[idx].object_pk
             if r.can_read(course, viewer, collaborations[idx]):
                 visible.append(r)
             else:
@@ -173,16 +208,15 @@ class ProjectManager(models.Manager):
         projects = Project.objects.filter(
             Q(author__id__in=user_ids, course=course) |
             Q(participants__id__in=user_ids, course=course)).distinct()
-        projects = projects.select_related('author', 'participants')
+        projects = projects.select_related('author')
         return projects.order_by('-modified', 'title')
 
     def faculty_compositions(self, course, user):
         qs = Project.objects.filter(
             course=course,
             author__in=course.faculty_group.user_set.all())
-        qs = qs.select_related('author', 'participants')
+        qs = qs.select_related('author')
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
-        qs = qs.order_by('ordinality', 'title')
 
         # filter private compositions
         lst = Collaboration.objects.get_for_object_list(qs)
@@ -190,7 +224,8 @@ class ProjectManager(models.Manager):
 
         # get all the projects at once
         ids = [int(c.object_pk) for c in lst]
-        return Project.objects.filter(id__in=ids)
+        return Project.objects.filter(id__in=ids).order_by('ordinality',
+                                                           'title')
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(
@@ -233,9 +268,8 @@ class ProjectManager(models.Manager):
                 pass
 
     def limit_response_policy(self, course):
-        # All selection assignment response policy must be NEVER
-        projects = Project.objects.filter(
-            course=course, project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+        # Update response policy to be NEVER
+        projects = Project.objects.filter(course=course)
         projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
 
 
@@ -253,7 +287,6 @@ class Project(models.Model):
     author = models.ForeignKey(User)
 
     participants = models.ManyToManyField(User,
-                                          null=True,
                                           blank=True,
                                           related_name='projects',
                                           verbose_name='Authors',)
@@ -306,14 +339,14 @@ class Project(models.Model):
 
     def responses(self, course, viewer, by_user=None):
         visible = []
-        col = self.get_collaboration()
-        project_type = ContentType.objects.get_for_model(Project)
-        for child in col.children.filter(content_type=project_type):
-            if (child.content_object and
-                (by_user is None or
-                 child.content_object.is_participant(by_user))):
-                    if child.content_object.can_read(course, viewer):
-                        visible.append(child.content_object)
+        children = self.get_collaboration().get_children_for_object(
+            self).prefetch_related('content_object__author')
+        for child in children:
+            response = child.content_object
+            if (response and
+                    (by_user is None or response.is_participant(by_user))):
+                if response.can_read(course, viewer, child):
+                    visible.append(response)
         return visible
 
     def description(self):

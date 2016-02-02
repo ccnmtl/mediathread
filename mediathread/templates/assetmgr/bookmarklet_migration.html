@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load waffle_tags %}
+
+{% block title %}
+    Bookmarklet Migration
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="dashboard-module-header">
+        <h2>Bookmarklet Migration</h2>
+    </div>
+
+    <div id="dashboard-module-body">
+        <p>
+            It looks like you've run into a bookmarklet error caused by
+            either the website you were on, or your web browser. This
+            happened because there's a
+            <a href="https://en.wikipedia.org/wiki/Content_Security_Policy"
+               >new web security standard</a> that doesn't work well with
+            bookmarklets.
+        </p>
+
+        <p>
+            Here are two different ways you can get around this limitation:
+            <ul>
+                <li>
+                    Try another web browser. If you're using Google Chrome,
+                    try Firefox or Safari.
+                </li>
+                {% flag "beta_extensions" %}
+                <li>
+                    Use Mediathread's browser extension to collect
+                    media instead of the bookmarklet. The Mediathread
+                    extension is available for Chrome, Safari, and
+                    Firefox. You can install it using the buttons
+                    below.
+                </li>
+                {% else %}
+                <li>
+                    Use Mediathread's browser extension to collect media instead
+                    of the bookmarklet.
+                    Right now, we only have this available for Google Chrome, which
+                    you can install using the button below.
+                </li>
+                {% endflag %}
+            </ul>
+        </p>
+
+        <hr />
+
+        {% include "assetmgr/install_chrome_extension.html" %}
+        {% include "assetmgr/install_safari_extension.html" %}
+        {% include "assetmgr/install_firefox_extension.html" %}
+    </div>
+{% endblock %}

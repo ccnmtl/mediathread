@@ -3,11 +3,11 @@
     "trailing": true,
     "undef": true,
     "browser": true,
-		"eqeqeq": true,
-		"curly": true,
+    "eqeqeq": true,
+    "curly": true,
     "predef": [
         "$",
-				"confirm",
+        "confirm",
         "jQuery"
     ]
 }

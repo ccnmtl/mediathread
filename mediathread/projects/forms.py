@@ -52,6 +52,27 @@ class ProjectForm(forms.ModelForm):
         else:
             self.instance = None
 
+        choices = self.get_choices(request, project)
+        self.fields['publish'].choices = choices
+
+        # response view policy. limit choices if there is no project
+        # or the project is a selection assignment
+        if (not project or not project.is_composition()):
+            choices = [RESPONSE_VIEW_NEVER]
+            if all_selections_are_visible(request.course):
+                choices.append(RESPONSE_VIEW_SUBMITTED)
+                choices.append(RESPONSE_VIEW_ALWAYS)
+            self.fields['response_view_policy'].choices = choices
+
+        self.fields['participants'].required = False
+        self.fields['body'].required = False
+        self.fields['submit'].required = False
+        self.fields['publish'].required = False
+
+        # for structured collaboration
+        self.fields['title'].widget.attrs['maxlength'] = 80
+
+    def get_choices(self, request, project):
         choices = []
         if request.course.is_faculty(request.user):
             if not project or project.get_collaboration().children.count() < 1:
@@ -67,21 +88,4 @@ class ProjectForm(forms.ModelForm):
             if project and project.is_composition():
                 choices.append(PUBLISH_WHOLE_WORLD)
 
-        self.fields['publish'].choices = choices
-
-        # response view policy. limit choices if there is no project
-        # or the project is a selection assignment
-        if not project or project.is_selection_assignment():
-            choices = [RESPONSE_VIEW_NEVER]
-            if all_selections_are_visible(request.course):
-                choices.append(RESPONSE_VIEW_SUBMITTED)
-                choices.append(RESPONSE_VIEW_ALWAYS)
-            self.fields['response_view_policy'].choices = choices
-
-        self.fields['participants'].required = False
-        self.fields['body'].required = False
-        self.fields['submit'].required = False
-        self.fields['publish'].required = False
-
-        # for structured collaboration
-        self.fields['title'].widget.attrs['maxlength'] = 80
+        return choices

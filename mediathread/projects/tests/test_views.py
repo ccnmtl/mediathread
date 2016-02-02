@@ -3,17 +3,20 @@ from datetime import datetime
 from json import loads
 import json
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+import reversion
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
 from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED
+    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED, \
+    PUBLISH_WHOLE_WORLD
 from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
-import reversion
+from structuredcollaboration.models import Collaboration
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):
@@ -247,9 +250,11 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(project['is_response'])
 
     def test_project_delete(self):
+        ctype = ContentType.objects.get(model='project', app_label='projects')
         project_id = self.project_private.id
         url = reverse('project-delete', args=[project_id])
 
+        # anonymous
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
 
@@ -259,17 +264,50 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 403)
 
-        # as owner
+        # as owner -- success
         self.client.login(username=self.student_one.username, password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
         self.assertIsNone(Project.objects.filter(id=project_id).first())
+        with self.assertRaises(Collaboration.DoesNotExist):
+            Collaboration.objects.get(content_type=ctype,
+                                      object_pk=str(project_id))
 
         # invalid project id
         url = reverse('project-delete', args=[213456])
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 404)
+
+    def test_assignment_delete(self):
+        ctype = ContentType.objects.get(model='project', app_label='projects')
+        response1 = ProjectFactory.create(
+            title='Zeta', course=self.sample_course, author=self.student_three,
+            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            parent=self.assignment)
+        self.assertEquals(response1.assignment(), self.assignment)
+
+        response2 = ProjectFactory.create(
+            title='Omega', course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        self.assertEquals(response1.assignment(), self.assignment)
+
+        project_id = self.assignment.id
+        url = reverse('project-delete', args=[project_id])
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        with self.assertRaises(Project.DoesNotExist):
+            Project.objects.get(id=project_id)
+
+        with self.assertRaises(Collaboration.DoesNotExist):
+            Collaboration.objects.get(content_type=ctype,
+                                      object_pk=str(project_id))
+
+        self.assertIsNone(response1.assignment())
+        self.assertIsNone(response2.assignment())
 
     def test_unsubmit_response(self):
         assignment_response = ProjectFactory.create(
@@ -338,6 +376,48 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = loads(response.content)
         self.assertEquals(len(the_json['revisions']), 1)
+
+    def test_project_view_readonly(self):
+        version = self.project_private.versions().next()
+        url = reverse('project-view-readonly',
+                      kwargs={'project_id': self.project_private.id,
+                              'version_number': version.revision_id})
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # forbidden
+        self.client.login(username=self.student_two.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # owner
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+        # ajax
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XmlHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+    def test_project_public_view(self):
+        url = self.project_private.get_collaboration().get_absolute_url()
+
+        # still private
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # reset to public
+        self.project_private.create_or_update_collaboration(
+            PUBLISH_WHOLE_WORLD[0])
+        self.project_private.date_submitted = datetime.now()
+        self.project_private.save()
+
+        url = self.project_private.public_url()
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
 
     def test_project_workspace_errors(self):
         project_id = self.project_private.id
@@ -704,7 +784,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         for idx, note in enumerate(notes):
             self.assertEquals(note['id'], visible[idx][0])
             self.assertEquals(note['editable'], visible[idx][1])
-            self.assertEquals(note['citable'], visible[idx][2])
+            self.assertFalse(note['citable'])
 
     def test_get(self):
         # responses are not submitted

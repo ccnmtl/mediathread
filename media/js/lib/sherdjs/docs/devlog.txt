@@ -1,0 +1,50 @@
+* Still not sure how to avoid Architecture Astronauting here.
+     Consciously doing it; blah; 
+* Havel project had non-hierarchical asset types (no video/quicktime--just quicktime, etc).  
+     this looks like a simplification that demands justification for hierarchy--so go with this
+* I liked handing off the html in Byxor, so a high-level controller that knew what it was doing
+     could do the right thing: e.g. put the HTML in a new place, add/subtract info, etc.
+
+
+
+=== How to be an Architecture Astronaut ===
+http://www.joelonsoftware.com/articles/fog0000000018.html
+
+1. Worry a lot about serialization formats!
+  For example, what's better?
+  a. { <annotation markup>,
+       <asset info>,
+       <metadata>
+      }
+  b. { annotations:[{<annotation markup}]
+       <asset info>
+       <metadata>
+     }
+  c. make your own!
+
+2. Have different types of objects pass each other around in your API.
+   Bonus Points: Have API behavior be different if the object is a specific
+                 sub-class of a supported object type.
+
+3. Confuse yourself by making functions on different objects with the same
+   name do different things.
+
+4. Always start with object definitions and API instead of code that
+   actually does something.
+
+5. The more object types the better, and the more relationships between them
+   the better.  
+   Exception: if you spend a LOT of time figuring out how to reduce the lines
+              significantly, and then change them often, that's OK, too.
+6. Don't use listeners/signals for message passing--instead implement your own 
+   signaling.  Also, add as many constrains on listeners as possible, like
+   requiring certain functions.  
+
+
+"When most of your code does
+nothing in a pompous way that is a
+sure sign that you are heading in
+the wrong direction. Here's a
+translation into python"
+                       - Peter Otten
+

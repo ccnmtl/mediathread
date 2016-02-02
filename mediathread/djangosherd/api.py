@@ -4,7 +4,7 @@ from tastypie.resources import ModelResource
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
-from mediathread.djangosherd.models import SherdNote
+from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.projects.models import ProjectNote
 from mediathread.taxonomy.api import TermResource
 from mediathread.taxonomy.models import TermRelationship
@@ -52,14 +52,19 @@ class SherdNoteResource(ModelResource):
             if reference:
                 # notes in a submitted response are not editable
                 editable = editable and not reference.project.is_submitted()
-                citable = reference.project.can_cite(bundle.request.course,
-                                                     bundle.request.user)
+
+                if citable:
+                    # this is a heavy operation. don't call it unless needed
+                    citable = reference.project.can_cite(bundle.request.course,
+                                                         bundle.request.user)
 
             bundle.data['editable'] = editable
             bundle.data['citable'] = citable
 
+            termResource = TermResource()
             vocabulary = {}
-            related = list(TermRelationship.objects.get_for_object(bundle.obj))
+            related = TermRelationship.objects.get_for_object(
+                bundle.obj).prefetch_related('term__vocabulary')
             for rel in related:
                 if rel.term.vocabulary.id not in vocabulary:
                     vocabulary[rel.term.vocabulary.id] = {
@@ -68,8 +73,8 @@ class SherdNoteResource(ModelResource):
                         'terms': []
                     }
                 vocabulary[rel.term.vocabulary.id]['terms'].append(
-                    TermResource().render_one(bundle.request, rel.term))
-            bundle.data['vocabulary'] = [val for val in vocabulary.values()]
+                    termResource.render_one(bundle.request, rel.term))
+            bundle.data['vocabulary'] = vocabulary.values()
         except Asset.DoesNotExist:
             bundle.data['asset_id'] = ''
             bundle.data['metadata'] = {'title': 'Item Deleted'}
@@ -82,3 +87,20 @@ class SherdNoteResource(ModelResource):
         bundle.data['asset_key'] = '%s_%s' % (asset_key,
                                               bundle.data['asset_id'])
         return self._meta.serializer.to_simple(dehydrated, None)
+
+
+class DiscussionIndexResource(object):
+
+    def render_list(self, request, indicies):
+        collaborations = DiscussionIndex.with_permission(request, indicies)
+
+        ctx = {
+            'references': [{
+                'id': obj.collaboration.object_pk,
+                'title': obj.collaboration.title,
+                'type': obj.get_type_label(),
+                'url': obj.get_absolute_url(),
+                'modified': obj.modified.strftime("%m/%d/%y %I:%M %p")}
+                for obj in collaborations]}
+
+        return ctx

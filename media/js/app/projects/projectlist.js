@@ -1,6 +1,6 @@
 /* global jQuery: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
-/* global Mustache2: true, showMessage: true */
+/* global Mustache: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var ProjectList = function(config) {
@@ -65,6 +65,7 @@ ProjectList.prototype.deleteAssignmentResponse = function(evt) {
 ProjectList.prototype.refresh = function(config) {
     var self = this;
     var url;
+    jQuery('.ajaxloader').show();
 
     if (config.view === 'all' || !config.space_owner) {
         url = MediaThread.urls['all-projects']();
@@ -100,6 +101,7 @@ ProjectList.prototype.refresh = function(config) {
 
 ProjectList.prototype.selectOwner = function(username) {
     var self = this;
+    jQuery('.ajaxloader').show();
     var url = username ? MediaThread.urls['your-projects'](username) :
         MediaThread.urls['all-projects']();
 
@@ -185,11 +187,12 @@ ProjectList.prototype.update = function(the_records) {
     self.switcher_context.display_switcher_extras =
         !self.switcher_context.showing_my_items;
     the_records.switcher_collection_chooser = self.switcher_context;
-    var rendered = Mustache2.render(MediaThread.templates.homepage,
-                                    the_records);
+    var rendered = Mustache.render(MediaThread.templates.homepage,
+                                   the_records);
     var $el = jQuery('#classwork_table');
     $el.html(rendered).hide().fadeIn('slow');
 
     self.parent = $el;
     self.updateSwitcher();
+    jQuery('.ajaxloader').hide();
 };

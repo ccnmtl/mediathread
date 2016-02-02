@@ -1,0 +1,12 @@
+PresentationViewPort
+  - manages viewers
+  - annotators are given opportunities if they support the viewers
+    - annotators are given direct access to viewer API
+      but others pieces just get PresentationViewPort abstraction
+
+Presenters
+  - image view
+  - map view
+  - quicktime video
+
+?Storage

@@ -14,10 +14,11 @@ lettuce.db
 chromedriver.log
 ghostdriver.log
 .coverage
-media/js/sherdjs/
+media/js/mediathread-bookmarklet/
 media/CACHE
 libpeerconnection.log
 reports/
 node_modules
 media/js/CHANGES.txt
 the_report
+wheelhouse

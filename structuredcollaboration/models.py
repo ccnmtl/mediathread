@@ -1,3 +1,5 @@
+import importlib
+
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes import generic
@@ -7,27 +9,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-DEFAULT_POLICY = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
-                         'PublicEditorsAreOwners')
-
-
-class CollaborationPolicyRecordManager(models.Manager):
-    '''
-        @todo - consider pulling this whole registration approach.
-        feels overcomplicated & unnecessary. The primary aim here
-        seems to be caching instances of the policies.
-    '''
-    registered_policies = dict()
-
-    def policy_instance(self, record):
-        return self.registered_policies[record.policy_name]
-
-    def register_policy(self, policy_class, policy_key, policy_title):
-        self.registered_policies[policy_key] = policy_class()
-
-
 class CollaborationPolicyRecord(models.Model):
-    objects = CollaborationPolicyRecordManager()
     policy_name = models.CharField(max_length=512)
 
     def __unicode__(self):
@@ -35,6 +17,17 @@ class CollaborationPolicyRecord(models.Model):
 
     def __eq__(self, other):
         return self.policy_name is other or self is other
+
+    @classmethod
+    def class_for_name(cls, class_name):
+        # load the module, will raise ImportError if module cannot be loaded
+        m = importlib.import_module('structuredcollaboration.policies')
+        # get the class, will raise AttributeError if class cannot be found
+        c = getattr(m, class_name)
+        return c
+
+    def policy_instance(self):
+        return self.class_for_name(self.policy_name)()
 
 
 class CollaborationManager(models.Manager):
@@ -44,23 +37,17 @@ class CollaborationManager(models.Manager):
         else:
             ctype = ContentType.objects.get_for_model(object_list[0])
             ids = [str(o.id) for o in object_list]
-            return self.filter(
-                content_type=ctype,
-                object_pk__in=ids).select_related('user', 'group',
-                                                  '_parent',
-                                                  'policy_record')
+
+            prefetch = ['user', 'group', 'context', 'content_object',
+                        '_parent', 'policy_record']
+            return self.filter(content_type=ctype,
+                               object_pk__in=ids).prefetch_related(*prefetch)
 
     def get_for_object(self, obj):
         ctype = ContentType.objects.get_for_model(obj)
         return self.select_related(
             'user', 'group', '_parent', 'policy_record').get(
             content_type=ctype, object_pk=str(obj.pk))
-
-    def get_children_for_object(self, obj):
-        ctype = ContentType.objects.get_for_model(obj)
-        return self.select_related(
-            'user', 'group', '_parent', 'policy_record').filter(
-            content_type=ctype, _parent=obj)
 
 
 class Collaboration(models.Model):
@@ -111,14 +98,10 @@ class Collaboration(models.Model):
         )
 
     def get_absolute_url(self):
-        if self.context_id and self.context.slug:
-            return urlresolvers.reverse("collaboration-obj-view",
-                                        args=(self.context.slug,
-                                              self.content_type.model,
-                                              self.object_pk))
-        else:
-            return urlresolvers.reverse("collaboration-dispatch",
-                                        args=(self.pk,))
+        return urlresolvers.reverse("collaboration-obj-view",
+                                    args=(self.context.slug,
+                                          self.content_type.model,
+                                          self.object_pk))
 
     def permission_to(self, permission, course, user):
         return self.get_policy().permission_to(self, permission,
@@ -127,13 +110,18 @@ class Collaboration(models.Model):
     def get_parent(self):
         return self._parent
 
+    def get_children_for_object(self, obj):
+        return self.children.filter(
+                content_type=ContentType.objects.get_for_model(obj)
+            ).prefetch_related('content_object', 'policy_record', 'user')
+
     def get_top_ancestor(self):  # i.e. domain
         result = self
         while result.get_parent():
             result = result.get_parent()
         return result
 
-    def append_child(self, obj=None):
+    def append_child(self, obj):
         coll, created = Collaboration.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(type(obj)),
             object_pk=str(obj.pk), )
@@ -141,14 +129,19 @@ class Collaboration(models.Model):
         coll.save()
         return coll
 
+    def remove_children(self):
+        children = Collaboration.objects.filter(_parent=self)
+        for child in children:
+            child._parent = None
+            child.save()
+
     def get_policy(self):
-        if self.policy_record:
-            return CollaborationPolicyRecord.objects.policy_instance(
-                self.policy_record)
-        else:
-            record, created = CollaborationPolicyRecord.objects.get_or_create(
-                policy_name=DEFAULT_POLICY)
-            return CollaborationPolicyRecord.objects.policy_instance(record)
+        if not self.policy_record:
+            policy_name = getattr(settings, 'DEFAULT_COLLABORATION_POLICY',
+                                  'PublicEditorsAreOwners')
+            self.set_policy(policy_name)
+            self.save()
+        return self.policy_record.policy_instance()
 
     def set_policy(self, policy_name):
         if policy_name is None:

@@ -20,16 +20,20 @@ class SherdNoteTest(MediathreadTestMixin, TestCase):
         global_annotation, created = SherdNote.objects.global_annotation(
             asset, self.student_three, auto_create=True)
         self.assertTrue(global_annotation.is_global_annotation())
+        self.assertEquals(global_annotation.display_title(), asset.title)
 
         whole_item_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
             title="Whole Item Selection", range1=0, range2=0)
         self.assertFalse(whole_item_annotation.is_global_annotation())
+        self.assertEquals(whole_item_annotation.display_title(),
+                          'Whole Item Selection')
 
         real_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
             title="Selection", range1=116.25, range2=6.75)
         self.assertFalse(real_annotation.is_global_annotation())
+        self.assertEquals(real_annotation.display_title(), 'Selection')
 
     def test_seconds_to_code(self):
         self.assertRaises(TypeError, SherdNote.secondsToCode, None)

@@ -5,6 +5,7 @@ from django.conf.urls import patterns, url
 from mediathread.assetmgr.views import (AssetWorkspaceView,
                                         AssetReferenceView,
                                         ManageExternalCollectionView,
+                                        AssetEmbedView, AssetEmbedListView,
                                         ScalarExportView)
 
 
@@ -20,7 +21,7 @@ urlpatterns = patterns(
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),
-        {}, "asset-references"),
+        {}, 'asset-references'),
 
     # Goto the most recently created asset by user
     url(r'^most_recent/$', 'most_recent', name='asset-most-recent'),
@@ -48,6 +49,11 @@ urlpatterns = patterns(
     url(r'^xmeml/(?P<asset_id>\w+)/$',
         'final_cut_pro_xml',
         name="final_cut_pro_xml"),
+
+    url(r'^embed/view/(?P<course_id>\d+)/(?P<annot_id>\d+)/$',
+        AssetEmbedView.as_view(), {}, 'selection-embed-view'),
+
+    url(r'^embed', AssetEmbedListView.as_view(), {}, 'asset-embed-list'),
 
     url(r'scalar/', ScalarExportView.as_view(), name='scalar_export'),
 

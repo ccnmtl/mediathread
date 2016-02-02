@@ -6,6 +6,7 @@ import json
 import re
 import urllib
 import urllib2
+from urlparse import urlparse
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
@@ -20,23 +21,29 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
-from django.views.generic.base import View
-from djangohelpers.lib import allow_http
+from django.views.generic.base import View, TemplateView
+from djangohelpers.lib import allow_http, rendered_with
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
-from mediathread.discussions.api import DiscussionIndexResource
+from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
-    LoggedInMixinSuperuser
+    LoggedInSuperuserMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from django.http.response import HttpResponseNotFound
+
+
+def _parse_domain(url):
+    parsed_uri = urlparse(url)
+    return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
 
 class ManageExternalCollectionView(LoggedInMixin, View):
@@ -101,27 +108,6 @@ def asset_workspace_courselookup(asset_id=None, annot_id=None):
     """
     if asset_id:
         return Asset.objects.get(pk=asset_id).course
-
-
-def _parse_metadata(req_dict):
-    metadata = {}
-    for key in req_dict:
-        if key.startswith('metadata-'):
-            metadata[key[len('metadata-'):]] = req_dict.getlist(key)
-    return metadata
-
-
-def _parse_user(request):
-    user = request.user
-    if ((user.is_staff or CourseAccess.allowed(request)) and
-            'as' in request.REQUEST):
-        as_user = request.REQUEST['as']
-        user = get_object_or_404(User, username=as_user)
-
-    if not request.course or not request.course.is_true_member(user):
-        return HttpResponseForbidden("You must be a member of the course to \
-            add assets.")
-    return user
 
 
 @login_required
@@ -200,12 +186,32 @@ class AssetCreateView(View):
             for each_tag in metadata["tag"]:
                 asset.save_tag(user, each_tag)
 
-    ''' No login required so server2server interface is possible'''
+    def parse_user(self, request):
+        user = request.user
+        if ((user.is_staff or CourseAccess.allowed(request)) and
+                'as' in request.REQUEST):
+            as_user = request.REQUEST['as']
+            user = get_object_or_404(User, username=as_user)
 
+        return user
+
+    def parse_metadata(self, req_dict):
+        metadata = {}
+        for key in req_dict:
+            if key.startswith('metadata-'):
+                metadata[key[len('metadata-'):]] = req_dict.getlist(key)
+        return metadata
+
+    ''' No login required so server2server interface is possible'''
     def post(self, request):
+        user = self.parse_user(request)
+        if not request.course or not request.course.is_member(user):
+            return HttpResponseForbidden(
+                "You must be a member of the course to add assets.")
+
         req_dict = getattr(request, request.method)
-        user = _parse_user(request)
-        metadata = _parse_metadata(req_dict)
+
+        metadata = self.parse_metadata(req_dict)
         title = req_dict.get('title', '')
         success, asset = Asset.objects.get_by_args(
             req_dict, asset__course=request.course)
@@ -301,23 +307,19 @@ def annotation_create(request, asset_id):
 @allow_http("POST")
 @ajax_required
 def annotation_create_global(request, asset_id):
-    try:
-        asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
-        global_annotation = asset.global_annotation(request.user, True)
-        update_annotation(request, global_annotation)
+    asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
+    global_annotation = asset.global_annotation(request.user, True)
+    update_annotation(request, global_annotation)
 
-        response = {
-            'asset': {'id': asset_id},
-            'annotation': {
-                'id': global_annotation.id,
-                'creating': True
-            }
+    response = {
+        'asset': {'id': asset_id},
+        'annotation': {
+            'id': global_annotation.id,
+            'creating': True
         }
-        return HttpResponse(json.dumps(response),
-                            content_type="application/json")
-
-    except SherdNote.DoesNotExist:
-        return HttpResponseForbidden("forbidden")
+    }
+    return HttpResponse(json.dumps(response),
+                        content_type="application/json")
 
 
 @login_required
@@ -359,7 +361,7 @@ def annotation_delete(request, asset_id, annot_id):
         request.GET = form
         return delete_annotation(request, annot_id)  # djangosherd.views
     except SherdNote.DoesNotExist:
-        return HttpResponseForbidden("forbidden")
+        return HttpResponseNotFound()
 
 
 class RedirectToExternalCollectionView(LoggedInMixin, View):
@@ -450,7 +452,7 @@ def final_cut_pro_xml(request, asset_id):
                             status=503)
 
 
-class ScalarExportView(LoggedInMixinSuperuser, RestrictedMaterialsMixin, View):
+class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
 
     def __init__(self):
         self.export = {}
@@ -672,11 +674,12 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
                          AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
-        try:
-            ctx = {}
-            asset = Asset.objects.filter(pk=asset_id, course=request.course)
+        ctx = {}
+        qs = Asset.objects.filter(pk=asset_id, course=request.course)
+
+        if qs.count() > 0:
             notes = SherdNote.objects.get_related_notes(
-                asset, self.record_owner, self.visible_authors,
+                qs, self.record_owner, self.visible_authors,
                 self.all_items_are_visible)
 
             # tags
@@ -689,13 +692,153 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
             # DiscussionIndex is misleading. Objects returned are
             # projects & discussions title, object_pk, content_type, modified
             indicies = DiscussionIndex.objects.filter(
-                asset=asset).order_by('-modified')
+                asset=qs[0]).order_by('-modified')
             ctx.update(DiscussionIndexResource().render_list(request,
                                                              indicies))
+        return self.render_to_json_response(ctx)
 
-            return self.render_to_json_response(ctx)
-        except Asset.DoesNotExist:
-            return asset_switch_course(request, asset_id)
+
+class AssetEmbedListView(LoggedInMixin, RestrictedMaterialsMixin,
+                         TemplateView):
+
+    template_name = 'assetmgr/asset_embed_list.html'
+    EMBED_IMAGE_WIDTH = 200
+    EMBED_VIDEO_WIDTH = 350
+    EMBED_VIDEO_HEIGHT = 305
+
+    def get(self, request):
+        user_resource = UserResource()
+        owners = user_resource.render_list(request, request.course.members)
+
+        data = {
+            'owners': json.dumps(owners),
+            'return_url': request.GET.get('return_url', '')
+        }
+
+        return self.render_to_response(data)
+
+    def get_selection(self, keys, user):
+        for k in keys:
+            if k.startswith('item-'):
+                item_id = k.split('-')[1]
+                item = get_object_or_404(Asset, pk=item_id)
+                return item.global_annotation(user, True)
+
+            if k.startswith('selection-'):
+                selection_id = k.split('-')[1]
+                selection = get_object_or_404(SherdNote, pk=selection_id)
+                return selection
+
+        return None
+
+    def get_dimensions(self, source):
+        if source.is_image():
+            width = self.EMBED_IMAGE_WIDTH
+            if source.height > 0:
+                height = width * source.height / source.width + 100
+            else:
+                height = self.EMBED_IMAGE_WIDTH
+        else:
+            width = self.EMBED_VIDEO_WIDTH
+            height = self.EMBED_VIDEO_HEIGHT
+
+        return {'width': width, 'height': height}
+
+    def get_secret(self, return_url):
+        return_domain = _parse_domain(return_url)
+
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if return_domain not in special.keys():
+            raise Http404("The domain is not recognized.")
+
+        return special[return_domain]
+
+    def get_iframe_url(self, secret, selection):
+        view_url = reverse('selection-embed-view',
+                           kwargs={'course_id': self.request.course.id,
+                                   'annot_id': selection.id})
+
+        nonce = '%smthc' % datetime.datetime.now().isoformat()
+        digest = hmac.new(
+            secret,
+            '%s:%s:%s' % (self.request.course.id, selection.id, nonce),
+            hashlib.sha1).hexdigest()
+
+        iframe_url = '%s://%s%s?nonce=%s&hmac=%s' % (
+            self.request.scheme, self.request.get_host(),
+            view_url, nonce, digest)
+        return urllib.quote(iframe_url, safe='~()*!.\'')
+
+    def post(self, request):
+        return_url = request.POST.get('return_url', '')
+        if len(return_url) == 0:
+            raise Http404("The domain is not recognized")
+
+        secret = self.get_secret(return_url)
+
+        selection = self.get_selection(self.request.POST.keys(),
+                                       self.request.user)
+
+        iframe_url = self.get_iframe_url(secret, selection)
+
+        dims = self.get_dimensions(selection.asset.primary)
+
+        url = ('%s?return_type=iframe&title=%s&url=%s&width=%s&height=%s'
+               '&') % (return_url, selection.display_title(), iframe_url,
+                       dims['width'], dims['height'])
+
+        return HttpResponseRedirect(url)
+
+
+class AssetEmbedView(TemplateView):
+    template_name = 'assetmgr/asset_embed_view.html'
+
+    def check_signature(self, course_id, selection_id):
+        # get the domain from the referer
+        referer = _parse_domain(self.request.META['HTTP_REFERER'])
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if referer not in special.keys():
+            return False
+
+        nonce = self.request.GET.get('nonce')
+        digest = self.request.GET.get('hmac')
+
+        new_digest = hmac.new(
+            special[referer],
+            '%s:%s:%s' % (course_id, selection_id, nonce),
+            hashlib.sha1).hexdigest()
+
+        return digest == new_digest
+
+    def get_context_data(self, **kwargs):
+        course_id = kwargs.get('course_id')
+        selection_id = kwargs.get('annot_id', None)
+
+        if not self.check_signature(course_id, selection_id):
+            raise Http404()
+
+        selection = get_object_or_404(SherdNote, pk=selection_id)
+        ctx = AssetResource().render_one_context(
+            self.request, selection.asset, [selection])
+
+        if selection.asset.primary.is_image():
+            presentation = 'gallery'
+        else:
+            presentation = 'small'
+
+        media_type = selection.asset.media_type()
+
+        ctx = {'item': json.dumps(ctx),
+               'item_id': selection.asset.id,
+               'selection_id': selection.id,
+               'presentation': presentation,
+               'media_type': media_type,
+               'title': selection.display_title()}
+
+        if media_type == 'video':
+            ctx['timecode'] = selection.range_as_timecode()
+
+        return ctx
 
 
 class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
@@ -906,3 +1049,21 @@ class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
         if len(notes) > 0:
             context = {'tags': TagResource().render_related(request, notes)}
         return self.render_to_json_response(context)
+
+
+class BookmarkletMigrationView(TemplateView):
+    template_name = 'assetmgr/bookmarklet_migration.html'
+
+
+@allow_http("GET")
+@login_required
+@rendered_with('assetmgr/upgrade_bookmarklet.html')
+def upgrade_bookmarklet(request):
+    context = {}
+    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
+        # MUST only contain string values for now!!
+        # (see templates/assetmgr/bookmarklet.js to see why or fix)
+        context['bookmarklet_vars'] = {
+            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
+        }
+    return context

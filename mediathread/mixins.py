@@ -182,10 +182,10 @@ class LoggedInFacultyMixin(object):
         return super(LoggedInFacultyMixin, self).dispatch(*args, **kwargs)
 
 
-class LoggedInMixinSuperuser(object):
+class LoggedInSuperuserMixin(object):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
-        return super(LoggedInMixinSuperuser, self).dispatch(*args, **kwargs)
+        return super(LoggedInSuperuserMixin, self).dispatch(*args, **kwargs)
 
 
 class CreateReversionMixin(object):
@@ -200,7 +200,7 @@ class ProjectReadableMixin(object):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         if not project.can_read(self.request.course, self.request.user):
             return HttpResponseForbidden("forbidden")
-
+        self.project = project
         return super(ProjectReadableMixin, self).dispatch(*args, **kwargs)
 
 

@@ -1,78 +1,18 @@
-MANAGE=./manage.py
 APP=mediathread
-FLAKE8=./ve/bin/flake8
+#JS_FILES=media/js/app media/js/lib/sherdjs/src media/js/lib/sherdjs/lib/tinymce/plugins/citation media/js/lib/sherdjs/lib/tinymce/plugins/editorwindow media/js/lib/sherdjs/src/configs
+# sherdjs isn't jscs clean yet so for now:
+JS_FILES=media/js/app
+MAX_COMPLEXITY=8
+PY_DIRS=$(APP) lti_auth structuredcollaboration
 
-jenkins: ./ve/bin/python check jshint jscs flake8 test
+all: jenkins
 
-./ve/bin/python: requirements.txt bootstrap.py virtualenv.py
-	./bootstrap.py
+include *.mk
 
-jshint: node_modules/jshint/bin/jshint
-	./node_modules/jshint/bin/jshint --config=.jshintrc media/js/app/
+harvest1: $(PY_SENTINAL)
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/main/features
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/assetmgr/features
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/taxonomy/features
 
-jscs: node_modules/jscs/bin/jscs
-	./node_modules/jscs/bin/jscs media/js/app/
-
-node_modules/jshint/bin/jshint:
-	npm install jshint --prefix .
-
-node_modules/jscs/bin/jscs:
-	npm install jscs --prefix .
-
-test: ./ve/bin/python
-	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
-
-harvest1: ./ve/bin/python
-	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/main/features
-	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/assetmgr/features
-	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/taxonomy/features
-
-harvest2: ./ve/bin/python
-	$(MANAGE) harvest --settings=mediathread.settings_test --failfast -v 4 mediathread/projects/features
-
-flake8: ./ve/bin/python
-	$(FLAKE8) $(APP) --max-complexity=9
-	$(FLAKE8) structuredcollaboration --max-complexity=8
-
-runserver: ./ve/bin/python check
-	$(MANAGE) runserver
-
-migrate: ./ve/bin/python check jenkins
-	$(MANAGE) migrate
-
-check: ./ve/bin/python
-	$(MANAGE) check
-
-shell: ./ve/bin/python
-	$(MANAGE) shell_plus
-
-clean:
-	rm -rf ve
-	rm -rf media/CACHE
-	rm -rf reports
-	rm -f celerybeat-schedule
-	rm -rf .coverage
-	find . -name '*.pyc' -exec rm {} \;
-
-pull:
-	git pull
-	make check
-	make test
-	make migrate
-	make flake8
-
-rebase:
-	git pull --rebase
-	make check
-	make test
-	make migrate
-	make flake8
-
-# run this one the very first time you check
-# this out on a new machine to set up dev
-# database, etc. You probably *DON'T* want
-# to run it after that, though.
-install: ./ve/bin/python check jenkins
-	createdb $(APP)
-	$(MANAGE) syncdb --noinput
-	make migrate
+harvest2: $(PY_SENTINAL)
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features

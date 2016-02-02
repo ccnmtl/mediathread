@@ -1,1 +1,1 @@
-../js/sherdjs/src/bookmarklets/sherd.js
+../js/mediathread-bookmarklet/bookmarklet.js

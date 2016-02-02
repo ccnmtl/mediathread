@@ -1,0 +1,58 @@
+{% load compress static bootstrap3 %}
+<!DOCTYPE html>
+<html lang="en" style="height: auto;">
+<head>
+    <script type="text/javascript" src="{% static 'jquery/js/jquery-1.11.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/flowplayer/flowplayer-5.5.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
+    <script type="text/javascript" src="/jsi18n"></script>
+
+    {% bootstrap_css %}
+
+    {% compress css %}
+        <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
+        <!--All the annotation css -->
+        {% include "djangosherd/annotator_resources_css.html" %}
+    {% endcompress %}
+</head>
+
+<body>
+    <h3>{{title|truncatechars:40}} {{timecode}}</h3>
+    <div id="videoclipbox" class="videoclipbox" style="display: none;">
+        <div class="clipplay"></div><br />
+        <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+        <div class="asset-display"></div>
+        <div class="clipstrip-display"></div>
+    </div>
+
+    {% compress js %}
+        <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
+        <!--All the annotation javascript -->
+        {% include "djangosherd/annotator_resources.html" %}
+    {% endcompress %}
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            djangosherd.storage.json_update({{item|safe}});
+
+            self.citationView = new CitationView();
+            self.citationView.init({
+                'default_target': 'videoclipbox',
+                'presentation': '{{presentation}}',
+                'clipform': false,
+                {% if media_type == 'video' %}
+                    'clipplay': true,
+                {% endif %}
+                'autoplay': false,
+                'winHeight': function() {
+                    return 200;
+                }
+            });
+
+            self.citationView.openCitationById(
+                null, '{{item_id}}', '{{selection_id}}');
+        });
+    </script>
+</body>
+</html>
+

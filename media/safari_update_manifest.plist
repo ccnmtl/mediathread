@@ -15,6 +15,8 @@
        <string>0.0.5</string>
        <key>URL</key>
        <string>https://github.com/ccnmtl/mediathread-safari/releases/download/0.0.5/Mediathread.safariextz</string>
+       <key>Update From Gallery</key>
+       <true/>
      </dict>
    </array>
 </dict>

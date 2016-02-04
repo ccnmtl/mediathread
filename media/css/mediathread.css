@@ -2870,6 +2870,12 @@ tr.sherd-clipform-editing td {
     text-align: right;
 }
 
+.sherd-clipform-editing .helptext.timecode {
+    text-align: right;
+    width: 89%;
+}
+
+
 .sherd-clipform-editing input.videoplay {
     width: 25px;
     margin: -2px 0 0 0;

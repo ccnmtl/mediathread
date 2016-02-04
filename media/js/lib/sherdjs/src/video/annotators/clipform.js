@@ -303,10 +303,12 @@ if (!Sherd.Video.Annotators.ClipForm) {
                        '<tr class="sherd-clipform-editing">' +
                          '<td>' +
                            '<input type="text" class="timecode" id="clipStart" value="' + self.components.start + '" />' +
+                           '<div class="helptext timecode">HH:MM:SS</div>' +
                          '</td>' +
                          '<td style="width: 10px; text-align: center">-</td>' +
                          '<td>' +
                            '<input type="text" class="timecode" id="clipEnd" value="' + self.components.end + '" />' +
+                           '<div class="helptext timecode">HH:MM:SS</div>' +
                          '</td>' +
                          '<td class="sherd-clipform-play">' + 
                          '<input type="image" title="Play Clip" class="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png"/>' +

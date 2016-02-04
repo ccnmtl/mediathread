@@ -897,21 +897,38 @@
                     djangosherd.assetview.clipform.storage.update(obj, true);
                 }
             }
-
+            
+            var msg;
             if (frm.elements['annotation-title'].value === '') {
-                showMessage('Please specify a selection title',
-                    function() {
-                        jQuery(saveButton).removeAttr('disabled');
-                        jQuery(saveButton).removeClass('saving');
-                        jQuery(saveButton).attr('value', 'Save');
-                    },
-                    'Error',
-                    {
-                        my: 'center',
-                        at: 'center',
-                        of: jQuery('div.asset-view-tabs')
-                    });
-                return;
+                msg = 'Please specify a selection title';
+            } else if (obj.duration && obj.duration > 0) {
+                if (obj.start > obj.duration) {
+                    msg = 'The start time is greater than the video length. ' +
+                        'Please specify the start time in hours, minutes ' +
+                        'and seconds (HH:MM:SS).'
+                } else if (obj.end > obj.duration) {
+                    msg = 'The end time is greater than the video length. ' +
+                        'Please specify the end time in hours, minutes ' +
+                        'and seconds (HH:MM:SS).'
+                } else if (obj.start > obj.end) {
+                    msg = 'The start time is greater than the end time.';
+                }
+            }
+
+            if (msg) {
+                showMessage(msg,
+                        function() {
+                            jQuery(saveButton).removeAttr('disabled');
+                            jQuery(saveButton).removeClass('saving');
+                            jQuery(saveButton).attr('value', 'Save');
+                        },
+                        'Error',
+                        {
+                            my: 'center',
+                            at: 'center',
+                            of: jQuery('div.asset-view-tabs')
+                        });
+                    return;
             }
 
             // Save the results up on the server

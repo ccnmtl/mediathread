@@ -279,8 +279,7 @@ if (!Sherd.Video.YouTube) {
             case 1: // playing
                 if (self.state.endtime === -1) {
                     self.media.pause();
-                }
-                if (self.state.endtime) {
+                } else if (self.state.endtime) {
                     self.media.pauseAt(self.state.endtime);
                 }
                 delete self.state.endtime;

@@ -683,7 +683,8 @@ class ProjectItemView(LoggedInMixin, JSONResponseMixin,
         pnotes = ProjectNote.objects.filter(project__id__in=response_ids)
         note_ids = pnotes.values_list('annotation__id', flat=True)
         notes = SherdNote.objects.filter(
-            id__in=note_ids).prefetch_related('author', 'asset')
+            id__in=note_ids).prefetch_related(
+            'author', 'asset').order_by('author', 'title')
 
         ctx = AssetResource().render_one_context(self.request, item, notes)
 

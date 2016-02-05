@@ -326,7 +326,7 @@ AssetPanelHandler.prototype.onDeleteItem = function(asset_id) {
     }
 
     if (asset_id === self.current_asset) {
-        annotationList.refresh({'asset_id': asset_id});
+        window.annotationList.refresh({'asset_id': asset_id});
     }
 };
 

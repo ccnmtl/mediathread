@@ -66,8 +66,8 @@
                 jQuery(window).on('popstate', function(event) {
                     if (event.originalEvent.state) {
                         window.annotationList._update({
-                          'annotation_id':
-                              event.originalEvent.state.annotation_id
+                            'annotation_id':
+                                event.originalEvent.state.annotation_id
                         }, 'annotation-current', true);
                     }
                 });

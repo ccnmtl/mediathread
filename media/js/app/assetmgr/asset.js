@@ -897,7 +897,7 @@
                     djangosherd.assetview.clipform.storage.update(obj, true);
                 }
             }
-            
+
             var msg;
             if (frm.elements['annotation-title'].value === '') {
                 msg = 'Please specify a selection title';
@@ -905,11 +905,11 @@
                 if (obj.start > obj.duration) {
                     msg = 'The start time is greater than the video length. ' +
                         'Please specify the start time in hours, minutes ' +
-                        'and seconds (HH:MM:SS).'
+                        'and seconds (HH:MM:SS).';
                 } else if (obj.end > obj.duration) {
                     msg = 'The end time is greater than the video length. ' +
                         'Please specify the end time in hours, minutes ' +
-                        'and seconds (HH:MM:SS).'
+                        'and seconds (HH:MM:SS).';
                 } else if (obj.start > obj.end) {
                     msg = 'The start time is greater than the end time.';
                 }
@@ -928,7 +928,7 @@
                             at: 'center',
                             of: jQuery('div.asset-view-tabs')
                         });
-                    return;
+                return;
             }
 
             // Save the results up on the server

@@ -375,7 +375,6 @@ if (!Sherd.Video.YouTube) {
             // seeking
             if (starttime !== undefined) {
                 self.components.player.seekTo(starttime, true);
-                // self.components.player.cueVideoById(self.videoId, starttime, 'medium');
             }
 
             if (autoplay) {
@@ -386,7 +385,7 @@ if (!Sherd.Video.YouTube) {
                 // seek will play the video unless the player state is "paused"
                 // if the state is anything else, i.e. buffering, cued,
                 // then seek immediately plays the video. (#$%^!)
-                // make it stop on the first sign of play
+                // make it stop on the playing state change event
                 self.state.endtime = -1;
             }
         };

@@ -181,8 +181,8 @@
                         if (jQuery('#asset-view-details').length > 0) {
                             self._update(opts, 'asset-view-details', true);
                         }
-                        var selector = '#asset-view-details-quick-edit';
-                        if (jQuery(selector).length > 0) {
+                        var selector = 'asset-view-details-quick-edit';
+                        if (jQuery('#' + selector).length > 0) {
                             self._update(opts, selector, true);
                         }
                         self._addHistory(/*replace=*/true);

@@ -1,10 +1,19 @@
 /* global Sherd: true */
 /**
- * baseline video helper functions:
- *
- *
- * TODO: make sure overlapping seeks don't trip over each other
- *
+ * baseline video helper functionality
+
+ Expected Video Player Behavior
+ * Project/Discussion Spaces - Edit or View
+ * An item or selection autoplays at the correct time mark.
+
+ Item View
+ * Items & Selections do not autoplay.
+ * Selections are cued up to their time mark.
+ * Items/Selections will play at the correct time mark when play is pressed on
+   the player or on the right hand-side clipform.
+ * If an selection is playing and the user switches to a different selection,
+   the player is paused. The player is cued up to the new time mark.
+
  */
 if (typeof Sherd === 'undefined') {
     Sherd = {};

@@ -19,6 +19,11 @@ if (!Sherd.Video.YouTube) {
         var self = this;
 
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
+        
+        this.state = {
+            starttime: 0,
+            endtime: 0
+        };
 
         this.presentations = {
             'small': {
@@ -232,27 +237,18 @@ if (!Sherd.Video.YouTube) {
             if (decodeURI(self.playerID) === self.components.playerID) {
                 self.media._ready = true;
 
-                // Once the player is ready -- sort out any autoplay+seek requests
-                if (self.components.starttime !== undefined) {
-                    // Reseek if needed. Seek plays automatically
-                    self.media.seek(self.components.starttime,
-                                    self.components.endtime,
-                                    self.components.autoplay);
+                jQuery(window).trigger('video.create',
+                        [self.components.itemId, self.components.primaryType]);
+                
+                // get out of the "loaded" function before seeking happens
+                if (self.state.starttime !== undefined) {
+                    setTimeout(function () {
+                        self.media.seek(
+                            self.state.starttime,
+                            self.state.endtime,
+                            self.state.autoplay);
+                    }, 100);
                 }
-                if (self.components.autoplay) {
-                    self.media.play();
-                }
-                self.components.starttime = undefined;
-                self.components.endtime = undefined;
-                self.components.autoplay = undefined;
-
-                jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
-
-                // register a state change function
-                // @todo -- YouTube limitation does not allow anonymous functions. Will need to address for
-                // multiple YT players on a page
-                //self.player.addEventListener("onStateChange", 'onYTStateChange');
-                // does not work self.player.addEventListener("onError", 'onYTError');
             } else {
                 console.error(
                     'playerID mismatch:',
@@ -272,7 +268,8 @@ if (!Sherd.Video.YouTube) {
         // the function, which will be a problem if we ever have
         // multiple players on the page
         window.onPlayerStateChange = function(newState) {
-            switch (newState) {
+            switch (newState.data) {
+            // case -1: // unstarted
             case 0: //ended
                 self.events.clearTimers();
                 jQuery(window).trigger(
@@ -280,10 +277,13 @@ if (!Sherd.Video.YouTube) {
                     [self.components.itemId, self.components.primaryType]);
                 break;
             case 1: // playing
-                if (self.components.pauseit === true) {
+                if (self.state.endtime === -1) {
                     self.media.pause();
-                    self.components.pauseit = undefined;
+                } else if (self.state.endtime) {
+                    self.media.pauseAt(self.state.endtime);
                 }
+                delete self.state.endtime;
+
                 var duration = self.media.duration();
                 if (duration > 1) {
                     self.events.signal(self, 'duration', {duration: duration});
@@ -299,6 +299,8 @@ if (!Sherd.Video.YouTube) {
                     'video.pause',
                     [self.components.itemId, self.components.primaryType]);
                 break;
+            // case 3: // buffering
+            // case 5: // video cued
             }
         };
 
@@ -353,33 +355,37 @@ if (!Sherd.Video.YouTube) {
         };
 
         this.media.seek = function (starttime, endtime, autoplay) {
-            if (self.media.ready()) {
-                if (typeof starttime !== 'undefined') {
-                    if (self.components.player.seekTo) {
-                        self.components.player.seekTo(starttime, true);
-                        if (autoplay && !self.media.isPlaying()) {
-                            self.media.play();
-                        } else if (self.media.state() === -1) {
-                            self.components.pauseit = true;
-                        }
-                    }
-                }
+            if (!self.media.ready()) {
+                // store values and reissues seek on player_ready
+                self.state.starttime = starttime;
+                self.state.endtime = endtime;
+                self.state.autoplay = autoplay;
+                return;
+            }
 
-                if (endtime) {
-                    // Watch the video's running time & stop it when the endtime rolls around
-                    // Delay the pause a few seconds. In an update situation, there can be a slight
-                    // race condition between a prior seek with a greater end time. In that situation,
-                    // the seek to the new time hasn't yet occurred and the pauseAt test (self.media.time > endtime)
-                    // incorrectly returns true.
-                    setTimeout(function () {
-                        self.media.pauseAt(endtime);
-                    }, 100);
-                }
-            } else {
-                // store the values away for when the player is ready
-                self.components.starttime = starttime;
-                self.components.endtime = endtime;
-                self.components.autoplay = autoplay;
+            // clear out old values & timers
+            self.events.clearTimers();
+            delete self.state.starttime;
+            delete self.state.endtime;
+            delete self.state.autoplay;
+            
+            var state = self.media.state();
+
+            // seeking
+            if (starttime !== undefined) {
+                self.components.player.seekTo(starttime, true);
+            }
+
+            if (autoplay) {
+                self.media.play();
+                // endtime timer is handled in playing event
+                self.state.endtime = endtime;
+            } else if (state !== 2 /* paused */) {
+                // seek will play the video unless the player state is "paused"
+                // if the state is anything else, i.e. buffering, cued,
+                // then seek immediately plays the video. (#$%^!)
+                // make it stop on the playing state change event
+                self.state.endtime = -1;
             }
         };
 

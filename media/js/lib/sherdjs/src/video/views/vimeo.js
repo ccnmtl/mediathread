@@ -25,8 +25,7 @@ if (!Sherd.Video.Vimeo) {
 
         this.state = {
             starttime: 0,
-            endtime: 0,
-            seeking: false
+            endtime: 0
         };
 
         this.presentations = {
@@ -72,10 +71,10 @@ if (!Sherd.Video.Vimeo) {
                 self.events.signal(self, 'duration', { duration: duration });
             }
 
+            self.media._ready = true;
+
             // get out of the "loaded" function before seeking happens
             if (self.state.starttime !== undefined) {
-                self.media._ready = true;
-
                 setTimeout(function () {
                     self.media.seek(
                         self.state.starttime,

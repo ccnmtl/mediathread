@@ -1,4 +1,4 @@
-/* global annotationList: true, CitationView: true, CollectionList: true */
+/* global CitationView: true, CollectionList: true */
 /* global djangosherd: true, getVisibleContentHeight: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -150,7 +150,7 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
             self.citationView.openCitationById(null, assetId, annotationId);
 
             // Setup the edit view
-            annotationList.init({
+            window.annotationList.init({
                 'asset_id': assetId,
                 'annotation_id': annotationId,
                 'edit_state': event.type + '.' + event.namespace,
@@ -201,7 +201,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
     }
 
     // Setup the edit view
-    annotationList.init({
+    window.annotationList.init({
         'asset_id': asset_id,
         'annotation_id': annotation_id,
         'update_history': self.panel.update_history,
@@ -326,7 +326,7 @@ AssetPanelHandler.prototype.onDeleteItem = function(asset_id) {
     }
 
     if (asset_id === self.current_asset) {
-        annotationList.refresh({'asset_id': asset_id});
+        window.annotationList.refresh({'asset_id': asset_id});
     }
 };
 

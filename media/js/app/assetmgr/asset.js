@@ -41,7 +41,7 @@
             this.config = config;
             this.view_callback = config.view_callback;
             this.update_history = config.update_history !== undefined ?
-                                  config.update_history : true;
+                config.update_history : true;
             this.user_settings = {'help_item_detail_view': true};
 
             this.eltsAssetDisplay = '#asset-header, #annotation-current, ' +
@@ -65,13 +65,10 @@
                 // setup url rewriting for HTML5 && HTML4 browsers
                 jQuery(window).on('popstate', function(event) {
                     if (event.originalEvent.state) {
-                        window.annotationList
-                              ._update(
-                                  {
-                                      'annotation_id': event.originalEvent
-                                                          .state.annotation_id
-                                  },
-                                  'annotation-current');
+                        window.annotationList._update({
+                            'annotation_id':
+                                event.originalEvent.state.annotation_id
+                        }, 'annotation-current', true);
                     }
                 });
 
@@ -112,7 +109,7 @@
                     }
 
                     window.annotationList
-                        ._update(config, 'annotation-current', xywh);
+                        ._update(config, 'annotation-current', xywh, true);
                 });
                 return this;
             }
@@ -181,8 +178,13 @@
                             }
                         }
 
-                        self._update(opts, 'asset-view-details');
-                        self._update(opts, 'asset-view-details-quick-edit');
+                        if (jQuery('#asset-view-details').length > 0) {
+                            self._update(opts, 'asset-view-details', true);
+                        }
+                        var selector = 'asset-view-details-quick-edit';
+                        if (jQuery('#' + selector).length > 0) {
+                            self._update(opts, selector, true);
+                        }
                         self._addHistory(/*replace=*/true);
 
                         // Saved Annotations Form -- setup based on
@@ -535,7 +537,7 @@
                 {
                     'level': 'item',
                     'asset_id': self.active_asset.id
-                }, 'annotation-current');
+                }, 'annotation-current', false);
             self._addHistory(/*replace=*/false);
         };
 
@@ -699,7 +701,7 @@
 
                 var new_annotation_id = jQuery(ui.newHeader).data('id');
                 self._update({'annotation_id': new_annotation_id},
-                             'asset-annotation-current');
+                             'asset-annotation-current', false);
                 self._addHistory(/*replace=*/false);
 
                 var group = jQuery(ui.newHeader)
@@ -740,11 +742,10 @@
             var annotation_id = self.active_annotation ?
                 self.active_annotation.id : null;
             jQuery('#asset-details-annotations-current').fadeOut(function() {
-                self._update(
-                    {
-                        'annotation_id': annotation_id,
-                        'editing': false
-                    }, 'asset-annotation-current');
+                self._update({
+                    'annotation_id': annotation_id,
+                    'editing': false
+                }, 'asset-annotation-current', false);
 
                 if (self.active_annotation) {
                     var active = jQuery('#accordion-' +
@@ -808,12 +809,10 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    self._update(
-                        {
-                            'annotation_id': self.active_annotation.id,
-                            'editing': true
-                        },
-                        'asset-annotation-current');
+                    self._update({
+                        'annotation_id': self.active_annotation.id,
+                        'editing': true
+                    }, 'asset-annotation-current', true);
                     jQuery(window).trigger('resize');
                 });
             return false;
@@ -1090,7 +1089,7 @@
             });
         };
 
-        this._update = function(config, template_label) {
+        this._update = function(config, template_label, initAll) {
             // Set the active annotation
             self.active_annotation = null;
             self.xywh = null;
@@ -1195,9 +1194,11 @@
                 djangosherd.assetview.setState();
             }
 
-            self._initTags();
-            self._initConcepts();
-            self._initReferences();
+            if (initAll) {
+                self._initTags();
+                self._initConcepts();
+                self._initReferences();
+            }
 
             var $elt = jQuery('#asset-workspace-panel-container');
             $elt.fadeIn('slow', function() {

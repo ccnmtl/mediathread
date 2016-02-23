@@ -15,6 +15,14 @@ formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
 
 
+def is_clipping(data):
+    clipping = False
+    for field in NULL_FIELDS:
+        if field in data:
+            clipping = True
+    return clipping
+
+
 @login_required
 @allow_http("POST")
 def create_annotation(request):
@@ -33,10 +41,7 @@ def create_annotation(request):
         if form.get(field) != '':
             data[field] = form[field]
 
-    clipping = False
-    for field in NULL_FIELDS:
-        if field in data:
-            clipping = True
+    clipping = is_clipping(data)
 
     assert clipping
     assert annotationfields.intersection(data)

@@ -218,6 +218,18 @@ class SherdNoteManager(models.Manager):
 
         return text
 
+    def get_or_create_note_from_id(self, note_id, ann):
+        try:
+            return self.get(pk=note_id)
+
+        except self.model.DoesNotExist:
+            # title is NON-STANDARD to Annotation base
+            return self.model(
+                id=note_id,
+                title="Annotation Deleted",
+                asset_id=int(ann[1]),
+            )
+
     def references_in_string(self, text, user):
         """
         citation references to sherdnotes
@@ -230,15 +242,7 @@ class SherdNoteManager(models.Manager):
         ret_val = []
         for ann in re.findall(regex_string, text):
             note_id = int(ann[2])
-            try:
-                note = self.get(pk=note_id)
-
-            except self.model.DoesNotExist:
-                # title is NON-STANDARD to Annotation base
-                note = self.model(id=note_id,
-                                  title="Annotation Deleted",
-                                  asset_id=int(ann[1]),
-                                  )
+            note = self.get_or_create_note_from_id(note_id, ann)
             ret_val.append(note)
 
         if user:

@@ -75,4 +75,4 @@ user_agents==1.0.1
 django_user_agents==0.3.0
 gunicorn==19.3.0
 
-ccnmtlsettings==0.1.4
+ccnmtlsettings==0.1.5

@@ -775,6 +775,7 @@ class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
         data = json.loads(r.content)
         self.assertEqual(data['logged_in'], True)
         self.assertEqual(data['course_selected'], False)
+        self.assertEqual(data['course_name'], '')
 
     def test_get_when_course_is_selected(self):
         # TODO: Select the sample course for the user and
@@ -782,6 +783,11 @@ class IsLoggedInDataViewTest(MediathreadTestMixin, TestCase):
         self.client.login(username=self.up.user.username, password='test')
         r = self.client.get(reverse('is_logged_in'))
         self.assertEqual(r.status_code, 200)
+
+        data = json.loads(r.content)
+        self.assertEqual(data['logged_in'], True)
+        self.assertEqual(data['course_selected'], False)
+        self.assertEqual(data['course_name'], '')
 
 
 class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):

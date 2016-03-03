@@ -89,17 +89,7 @@ class AssetResource(ModelResource):
                 note_resource = SherdNoteResource()
                 for note in notes:
                     note_ctx = note_resource.render_one(request, note, "")
-
-                    if note_ctx['is_global_annotation']:
-                        the_json['global_annotation'] = note_ctx
-
-                        the_json['global_annotation_analysis'] = (
-                            len(note_ctx['vocabulary']) > 0 or
-                            len(note_ctx['metadata']['body']) > 0 or
-                            len(note_ctx['metadata']['tags']) > 0)
-                    else:
-                        the_json['annotations'].append(note_ctx)
-
+                    the_json = add_note_ctx_to_json(note_ctx, the_json)
             return the_json
 
         except Source.DoesNotExist:
@@ -174,3 +164,16 @@ class AssetResource(ModelResource):
             key=lambda bundle: bundle.data['modified'],
             reverse=True)
         return to_be_serialized
+
+
+def add_note_ctx_to_json(note_ctx, the_json):
+    if note_ctx['is_global_annotation']:
+        the_json['global_annotation'] = note_ctx
+
+        the_json['global_annotation_analysis'] = (
+            len(note_ctx['vocabulary']) > 0 or
+            len(note_ctx['metadata']['body']) > 0 or
+            len(note_ctx['metadata']['tags']) > 0)
+    else:
+        the_json['annotations'].append(note_ctx)
+    return the_json

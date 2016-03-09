@@ -1,13 +1,27 @@
 {% extends "base.html" %}
 {% load coursetags %}
+{% load static %}
 
 {% block coursetitle %}
     Select a Course
 {% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
+{% endblock %}
+
 {% block js %}
-    <script type="text/javascript">
+    <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.min.js' %}"></script>
+    <script>
         jQuery(document).ready(function () {
+            jQuery('.tablesorter').tablesorter({
+                headers: {
+                    '.nosort': {
+                        sorter: false
+                    }
+                }
+            });
             jQuery("#coursefilter").buttonset();
             jQuery('label[for="thisyear"]').removeClass("ui-corner-left");
             jQuery('label[for="thisyear"]').css("margin-right", "-.4em");
@@ -46,7 +60,7 @@
     <div class="visualclear"></div>
     
     
-    <table class="course-choices">
+    <table class="course-choices tablesorter">
       <thead>
         <tr>
           <th>Course Titles
@@ -55,7 +69,7 @@
           <th>Instructor</th>
           <th>Role</th> 
           {% if add_privilege %} 
-            <th>Actions</th>
+            <th class="nosort">Actions</th>
           {% endif %}    
         </tr>
       </thead>
@@ -90,7 +104,7 @@
                 <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
             </li>
         </ul>
-        <script type="text/javascript">
+        <script>
             function anonymizeStatus() {
                 document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: '
                     + ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');

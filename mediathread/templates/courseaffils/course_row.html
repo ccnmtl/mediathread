@@ -1,0 +1,19 @@
+{% load coursetags %}
+
+<tr>
+    <td class="course-choice">
+        <a class="choose-course"
+           href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
+        >{{course.title}}</a>
+    </td>
+    <td>{{course.info.termyear}}</td>
+    <td>{% if course.details.instructor %}{{course.details.instructor.value}}{% endif %}</td>
+    <td>{% course_role for request.user in course as foo %}{{foo}}</td>
+    {% if add_privilege %}
+        <td class="manage-course">
+            <a class="project"
+               href="{%url 'admin:courseaffils_course_change' course.id %}"
+            >manage</a>
+        </td>
+    {% endif %}
+</tr>

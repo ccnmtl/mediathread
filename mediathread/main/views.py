@@ -4,7 +4,7 @@ import json
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
-from courseaffils.views import available_courses_query
+from courseaffils.views import get_courses_for_user
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -229,7 +229,7 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         # Only show courses for which the user is an instructor
-        available_courses = available_courses_query(self.request.user)
+        available_courses = get_courses_for_user(self.request.user)
         courses = []
         if self.request.user.is_superuser:
             courses = available_courses

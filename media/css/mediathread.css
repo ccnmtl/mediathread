@@ -4314,3 +4314,13 @@ a.btn.btn-default img.left {
 .roster-container table td.role {
     width: 16%;
 }
+
+.search-box {
+    -webkit-border-radius: 18px;
+    -moz-border-radius: 18px;
+    border-radius: 18px;
+}
+
+.course-search {
+    width: 200px;
+}

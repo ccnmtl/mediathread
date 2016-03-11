@@ -24,7 +24,8 @@ from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
 from mediathread.main.forms import ContactUsForm, RequestCourseForm
 from mediathread.main.views import MigrateCourseView, ContactUsView, \
-    RequestCourseView, CourseSettingsView, CourseManageSourcesView
+    RequestCourseView, CourseSettingsView, CourseManageSourcesView, \
+    CourseRosterView
 from mediathread.projects.models import Project
 
 
@@ -932,3 +933,37 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(comments.count(), 0)
 
         self.verify_alt_course_materials()
+
+
+class CourseRosterViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.url = reverse('course-roster')
+
+    def test_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 302)
+
+    def test_as_student(self):
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 403)
+
+    def test_as_faculty(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_queryset(self):
+        request = RequestFactory().get(self.url)
+        request.user = self.instructor_one
+        request.course = self.sample_course
+
+        view = CourseRosterView()
+        view.request = request
+
+        qs = view.get_queryset()
+        self.assertEquals(qs.count(), self.sample_course.members.count())

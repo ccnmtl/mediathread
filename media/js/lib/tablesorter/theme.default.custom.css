@@ -4,6 +4,7 @@
     font-size: 14px !important;
 }
 
-.tablesorter-default td {
-    padding: 6px !important;
+.tablesorter-default td,
+.tablesorter-default th {
+    padding: 8px !important;
 }

@@ -11,17 +11,16 @@ from django.views.generic.base import TemplateView
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
-from mediathread.assetmgr.views import (AssetCollectionView, AssetDetailView,
-                                        TagCollectionView,
-                                        RedirectToExternalCollectionView,
-                                        RedirectToUploaderView,
-                                        AssetCreateView,
-                                        BookmarkletMigrationView)
+from mediathread.assetmgr.views import (
+    AssetCollectionView, AssetDetailView, TagCollectionView,
+    RedirectToExternalCollectionView, RedirectToUploaderView,
+    AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView, triple_homepage)
+    CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
+    CourseRosterView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -150,6 +149,9 @@ urlpatterns = patterns(
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
     url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
         {}, 'dashboard-migrate'),
+    url(r'^dashboard/roster/', CourseRosterView.as_view(),
+        name='course-roster'),
+
     url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
         name='class-manage-sources'),
     url(r'^dashboard/settings/', CourseSettingsView.as_view(),

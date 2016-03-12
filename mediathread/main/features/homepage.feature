@@ -47,7 +47,7 @@ Feature: Homepage
         When I click the Create button
         Then there is not a Create Composition Assignment button
         And there is a Create Composition button
-        And there is a Create Discussion button
+        And there is not a Create Discussion button
         
         Finished using Selenium
 

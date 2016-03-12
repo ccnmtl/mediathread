@@ -27,3 +27,7 @@ LETTUCE_APPS = (
 
 LETTUCE_DJANGO_APP = ['lettuce.django']
 INSTALLED_APPS = INSTALLED_APPS + LETTUCE_DJANGO_APP
+
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+)

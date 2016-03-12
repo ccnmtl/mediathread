@@ -966,6 +966,21 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-demote')
         data = {'faculty_id': self.student_one.id}
         response = self.client.post(url, data)
-
         self.assertEquals(response.status_code, 302)
         self.assertFalse(self.sample_course.is_faculty(self.student_one))
+
+    def test_remove_user(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+
+        url = reverse('course-roster-remove')
+        data = {'user_id': self.student_one.id}
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertFalse(self.sample_course.is_member(self.student_one))
+
+        data = {'user_id': self.instructor_two.id}
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertFalse(self.sample_course.is_faculty(self.instructor_two))
+        self.assertFalse(self.sample_course.is_member(self.instructor_two))

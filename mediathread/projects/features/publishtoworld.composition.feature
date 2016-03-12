@@ -21,7 +21,6 @@ Feature: Public Compositions
             
             # Save
             When I click the Save button
-            Then I see a Save Changes dialog        
             Then I set the project visibility to "Whole World - a public url is provided"
             Then I save the changes
             Then there is a "permalink" link

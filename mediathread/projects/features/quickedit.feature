@@ -8,16 +8,16 @@ Feature: QuickEdit
         # Create a project from the home page
         Given the home workspace is loaded
         I click the Create button
-        I click the Create Composition button        
+        I click the Create Composition button
 
         Given the composition workspace is loaded
-        
+
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
         I save the changes
-        
+
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
         I see "instructor one item note"
@@ -25,7 +25,7 @@ Feature: QuickEdit
 
         # Click the +/Create button next to the asset
         When I click edit item for "Mediathread: Introduction"
-        
+
         # Verify the create form is visible
         Then the "Edit Item" form appears
         And I set the quickedit "Notes" "textarea" field to "Here are my notes"
@@ -46,7 +46,7 @@ Feature: QuickEdit
         # Create a project from the home page
         Given the home workspace is loaded
         I click the Create button
-        I click the Create Composition button        
+        I click the Create Composition button
 
         Given the composition workspace is loaded
 
@@ -55,13 +55,13 @@ Feature: QuickEdit
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
         I save the changes
-        
+
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
-        
+
         # Click the +/Create button next to the asset
         When I click create selection for "Mediathread: Introduction"
-        
+
         # Verify the create form is visible
         Then the "Create Selection" form appears
         And I see "Title"
@@ -69,19 +69,19 @@ Feature: QuickEdit
         And I see "Notes"
         And there is a Cancel button
         And there is a Save Selection button
-        
+
         When I set the quickedit "Title" "text" field to "Test Selection"
         And I set the selection tags field to "abc"
         And I set the quickedit "Selection Notes" "textarea" field to "Here are my new notes"
         And I click the Save Selection button
-        
+
         Then the "Create Selection" form disappears
         And I scroll to the "Test Selection" link
         And I see "Here are my new notes"
         And there is an "abc" link
-        
+
         Finished using Selenium
-        
+
     Scenario: quickedit.feature 3. Instructor edits a selection
         Using selenium
         Given I am test_instructor in Sample Course
@@ -90,7 +90,7 @@ Feature: QuickEdit
         # Create a project from the home page
         Given the home workspace is loaded
         I click the Create button
-        I click the Create Composition button        
+        I click the Create Composition button
 
         Given the composition workspace is loaded
 
@@ -98,14 +98,14 @@ Feature: QuickEdit
         Then I call the Composition "Quick Edit Composition"
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
-        I save the changes        
-        
+        I save the changes
+
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
-        
+
         # Click the +/Create button next to the asset
         When I click edit selection for "Manage Sources"
-        
+
         # Verify the create form is visible
         Then the "Edit Selection" form appears
         And I see "Title"
@@ -118,17 +118,11 @@ Feature: QuickEdit
         And I set the selection tags field to "def"
         And I set the quickedit "Selection Notes" "textarea" field to "Here are my selection notes"
         And I click the Save Selection button
-        
+
         Then the "Edit Selection" form disappears
         Then there is a "Test Selection" link
         And I see "Here are my selection notes"
         And there is an "def" link
-        
-        Finished using Selenium        
 
-        
-        
-
-        
-
+        Finished using Selenium
 

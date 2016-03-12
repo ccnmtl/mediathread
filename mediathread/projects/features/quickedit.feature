@@ -7,15 +7,10 @@ Feature: QuickEdit
 
         # Create a project from the home page
         Given the home workspace is loaded
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition button
-        When I click the Create Composition button        
+        I click the Create button
+        I click the Create Composition button        
 
         Given the composition workspace is loaded
-        Then I am at the Untitled page
-        Then I see "by Instructor One"
-        And I see "Draft"
         
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
@@ -50,15 +45,10 @@ Feature: QuickEdit
 
         # Create a project from the home page
         Given the home workspace is loaded
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition button
-        When I click the Create Composition button        
+        I click the Create button
+        I click the Create Composition button        
 
         Given the composition workspace is loaded
-        Then I am at the Untitled page
-        Then I see "by Instructor One"
-        And I see "Draft"
 
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
@@ -74,7 +64,6 @@ Feature: QuickEdit
         
         # Verify the create form is visible
         Then the "Create Selection" form appears
-
         And I see "Title"
         And I see "Tags"
         And I see "Notes"
@@ -100,15 +89,10 @@ Feature: QuickEdit
 
         # Create a project from the home page
         Given the home workspace is loaded
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition button
-        When I click the Create Composition button        
+        I click the Create button
+        I click the Create Composition button        
 
         Given the composition workspace is loaded
-        Then I am at the Untitled page
-        Then I see "by Instructor One"
-        And I see "Draft"
 
         # Add a title and some text
         Then I call the Composition "Quick Edit Composition"
@@ -124,13 +108,12 @@ Feature: QuickEdit
         
         # Verify the create form is visible
         Then the "Edit Selection" form appears
-
         And I see "Title"
         And I see "Tags"
         And I see "Notes"
         And there is a Cancel button
         And there is a Save Selection button
-        
+
         When I set the quickedit "Title" "text" field to "Test Selection"
         And I set the selection tags field to "def"
         And I set the quickedit "Selection Notes" "textarea" field to "Here are my selection notes"

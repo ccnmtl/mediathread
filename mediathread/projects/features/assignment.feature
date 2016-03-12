@@ -4,16 +4,13 @@ Feature: Assignment
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
+        Given the home workspace is loaded
         
         # Create an assignment from the home page
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
+        I click the Create button
+        I click the Create Composition Assignment button  
         
-        When I click the Create Composition Assignment button  
-        
+        Given the assignment workspace is loaded
         Then I am at the Untitled page
         There is an open Assignment panel
         And there is a Saved button

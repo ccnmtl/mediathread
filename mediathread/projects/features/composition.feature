@@ -4,16 +4,13 @@ Feature: Composition
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
-        
+        Given the home workspace is loaded
+
         # Create a project from the home page
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
-        
-        When I click the Create Composition button
-        
+        I click the Create button
+        I click the Create Composition button
+
+        Given the composition workspace is loaded
         Then I am at the Untitled page
         I see "by Instructor One"
         And I see "Draft"
@@ -61,20 +58,17 @@ Feature: Composition
         Using selenium
         Given I am test_student_one in Sample Course
         Given there are no projects
+        Given the home workspace is loaded
         
         # Create a project from the home page
-        There is a Create button
-        When I click the Create button
-        Then there is not a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is not a Create Discussion button
-        
-        When I click the Create Composition button      
+        I click the Create button
+        I click the Create Composition button      
 
+        Given the composition workspace is loaded
         Then I am at the Untitled page
         I see "by Student One"
         And there is a "Draft" link
-        
+
         # Verify user is able to edit the project
         There is an open Composition panel
         
@@ -120,15 +114,10 @@ Feature: Composition
         Given I am test_instructor in Sample Course
                 
         # Create a project from the home page
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
-        
-        When I click the Create Composition button      
+        I click the Create button
+        I click the Create Composition button      
 
-        Then I am at the Untitled page
+        Given the composition workspace is loaded
         Then I call the Composition "Composition <title>: Scenario 3"
         
         # Save
@@ -156,14 +145,10 @@ Feature: Composition
         Given I am test_student_one in Sample Course
                 
         # Create a project from the home page
-        There is a Create button
-        When I click the Create button
-        Then there is not a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is not a Create Discussion button
+        I click the Create button
+        I click the Create Composition button
         
-        When I click the Create Composition button        
-        Then I am at the Untitled page
+        Given the composition workspace is loaded        
         Then I call the Composition "<title>"
         
         # Save
@@ -172,7 +157,7 @@ Feature: Composition
         Then I set the project visibility to "<visibility>"
         When I save the changes
         Then I see "<status>"
-        
+
         # Try to view as student two
         Given I am test_student_two in Sample Course
         Given the home workspace is loaded

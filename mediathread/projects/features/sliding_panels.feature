@@ -6,14 +6,9 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
         
         # Composition Editing
-        There is a Create button
-        When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
-        
-        When I click the Create Composition button        
-        
+        I click the Create button
+        I click the Create Composition button        
+
         Then I am at the Untitled page
         There is an open Composition panel
         And the Composition panel has a <subpanel_state> subpanel

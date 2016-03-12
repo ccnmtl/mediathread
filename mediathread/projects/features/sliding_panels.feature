@@ -6,20 +6,20 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
         
         # Composition Editing
+        Given the home workspace is loaded
         I click the Create button
         I click the Create Composition button        
 
-        Then I am at the Untitled page
+        Given the composition workspace is loaded
         There is an open Composition panel
         And the Composition panel has a <subpanel_state> subpanel
         
         # Composition has to be saved or 
         # other tests will get a save dialog
         Then I call the Composition "Sliding Panel: Scenario 1 <width> x <height>"
-        When I click the Save button
-        Then I see a Save Changes dialog
+        Then I click the Save button
         Then I save the changes
-        
+
         Finished using Selenium
         
       Examples:
@@ -35,9 +35,8 @@ Feature: Sliding Panels
         Given I am test_student_one in Sample Course
         Given my browser resolution is <width> x <height>
         
-        Given the home workspace is loaded
-        
         # Assignment View
+        Given the home workspace is loaded
         There is an assignment "Sample Assignment" project by Instructor One
         When I click the "Sample Assignment" link
 
@@ -57,13 +56,11 @@ Feature: Sliding Panels
         # other tests will get a save dialog
         Then I call the Composition "Sliding Panel: Scenario 2 <width> x <height>"
         When I click the Save button
-        Then I see a Save Changes dialog
         Then I save the changes
         
         # Delete the response from the home screen
         When I click the "Sample Course" link        
         Given the home workspace is loaded
-            Then I am at the Home page
             Then I click the "Sliding Panel: Scenario 2 <width> x <height>" project delete icon
             Then I confirm the action   
             Then there is not a "Sliding Panel: Scenario 2 <width> x <height>" link

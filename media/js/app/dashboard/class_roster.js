@@ -6,11 +6,12 @@
         events: {
             'click .btn-promote': 'onPromote',
             'click .btn-demote': 'onDemote',
-            'click .btn-remove': 'onRemove'
+            'click .btn-remove': 'onRemove',
+            'click .btn-add-uni-user': 'onAddUNIUser'
         },
         initialize: function(options) {
             _.bindAll(this, 'onPromote', 'onDemote', 'onRemove',
-                      'onActionConfirmed');
+                      'onAddUNIUser', 'onActionConfirmed');
             var self = this;
 
             jQuery(this.el).find('.tablesorter').tablesorter({
@@ -49,6 +50,9 @@
             showMessage(
                 'Are you sure you want to remove ' + name + ' from the course?',
                  this.onActionConfirmed, 'Confirm');
+        },
+        onAddUNIUser: function(evt) {
+            jQuery(this.el).find('#add-uni-user form').submit();
         },
         onActionConfirmed: function(evt) {
             this.form.submit();  // redirects

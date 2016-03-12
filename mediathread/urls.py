@@ -21,7 +21,7 @@ from mediathread.main.views import (
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
-    CourseRemoveUserView)
+    CourseRemoveUserView, CourseAddUNIUserView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -156,6 +156,8 @@ urlpatterns = patterns(
         name='course-roster-demote'),
     url(r'^dashboard/roster/remove/', CourseRemoveUserView.as_view(),
         name='course-roster-remove'),
+    url(r'^dashboard/roster/add/', CourseAddUNIUserView.as_view(),
+        name='course-roster-add-uni'),
     url(r'^dashboard/roster/', CourseRosterView.as_view(),
         name='course-roster'),
 

@@ -4,7 +4,6 @@ Feature: Assignment
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
-        Given the home workspace is loaded
 
         # Create an assignment from the home page
         I click the Create button
@@ -71,7 +70,6 @@ Feature: Assignment
         Using selenium
         Given there is a sample assignment
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
 
         # Respond as a student
         There is an assignment "Sample Assignment" project by Instructor One
@@ -120,7 +118,6 @@ Feature: Assignment
         Using selenium
         Given there is a sample response
         Given I am test_instructor in Sample Course
-        Given the home workspace is loaded
 
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
@@ -151,7 +148,6 @@ Feature: Assignment
 
         # View as Student One
         Give I am test_student_one in Sample Course
-        Given the home workspace is loaded
         Then there is a "Read Instructor Feedback" link
         When I click the "Read Instructor Feedback" link
 
@@ -161,7 +157,6 @@ Feature: Assignment
         Then there is a comment from "Instructor One"
 
         Give I am test_student_two in Sample Course
-        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has 0 projects named "Sample Assignment Response"
@@ -183,7 +178,6 @@ Feature: Assignment
         Using selenium
         Given there is a sample assignment
         Give I am test_student_one in Sample Course
-        Given the home workspace is loaded
 
         # This navigates rather than automagically opening the panel
         When I click the Respond to Assignment button
@@ -202,7 +196,6 @@ Feature: Assignment
 
         # the response must be deleted
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
         When I click the "Sample Assignment Response" link
         Given the composition workspace is loaded
         When I click the Saved button
@@ -229,7 +222,6 @@ Feature: Assignment
         Using selenium
         Given there is a sample response
         Give I am test_instructor in Sample Course
-        Given the home workspace is loaded
 
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
@@ -253,7 +245,6 @@ Feature: Assignment
         # By default, the response is "Instructor Only"
         # Student Two does not have access
         Give I am test_student_two in Sample Course
-        Given the home workspace is loaded
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
         And the Assignment Panel does not have a Class Responses (1) button
@@ -261,7 +252,6 @@ Feature: Assignment
         # Update to "Public to Class" 
         # Student Two can see the button now & view the response
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
         When I click the "Sample Assignment Response" link
         Given the composition workspace is loaded
         When I click the Saved button
@@ -271,7 +261,6 @@ Feature: Assignment
 
         # Now, test_student_two can see the response
         Give I am test_student_two in Sample Course
-        Given the home workspace is loaded
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
         The Assignment Panel has a Class Responses (1) button

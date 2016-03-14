@@ -40,8 +40,6 @@ Feature: Sources
         Given video upload is enabled
         
         # By default, instructors and administrators are allowed to upload
-        When I click the "Sample Course" link
-        Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         
         # Student cannot see

@@ -124,9 +124,7 @@ def i_am_username_in_course(step, username, coursename):
         world.browser.get(django.django_url("accounts/login/?next=/"))
 
         wait = ui.WebDriverWait(world.browser, 5)
-        wait.until(visibility_of_element_located((By.ID, 'guest-login')))
-
-        elt = world.browser.find_element_by_id('guest-login')
+        elt = wait.until(visibility_of_element_located((By.ID, 'guest-login')))
         elt.click()
 
         username_field = world.browser.find_element_by_id("id_username")
@@ -138,17 +136,10 @@ def i_am_username_in_course(step, username, coursename):
         form = world.browser.find_element_by_name("login_local")
         form.submit()
 
-        wait = ui.WebDriverWait(world.browser, 5)
-        wait.until(lambda driver: world.browser.title.find("Home") > -1)
-
         wait.until(lambda driver: world.browser.find_element_by_id("loaded"))
 
         course_title = world.browser.find_element_by_id("course_title_link")
-        msg = ("Expected the %s class, but found the %s class" %
-               (coursename, course_title.text))
-        assert course_title.text.find(coursename) > -1, msg
-
-        assert username in world.browser.page_source, world.browser.page_source
+        assert course_title.text.find(coursename) > -1
     else:
         world.client.login(username=username, password='test')
 
@@ -352,9 +343,9 @@ def i_cancel_the_action(step):
 @step(u'I confirm the action')
 def i_confirm_the_action(step):
     wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(visibility_of_element_located((By.ID, 'dialog-confirm')))
+    dialog = wait.until(
+        visibility_of_element_located((By.ID, 'dialog-confirm')))
 
-    dialog = world.browser.find_element_by_id("dialog-confirm").parent
     btns = dialog.find_elements_by_tag_name("button")
     for btn in btns:
         try:
@@ -436,9 +427,7 @@ def there_is_no_help_for_the_title_column(step, title):
 @step(u'I\'m told "([^"]*)"')
 def i_m_told_text(step, text):
     wait = ui.WebDriverWait(world.browser, 5)
-    wait.until(visibility_of_element_located((By.ID, "dialog-confirm")))
-
-    dlg = world.browser.find_element_by_id("dialog-confirm")
+    dlg = wait.until(visibility_of_element_located((By.ID, "dialog-confirm")))
     assert dlg.text.startswith(text), "Alert text invalid: %s" % dlg.text
 
 
@@ -1407,3 +1396,18 @@ def find_button_by_value(value, parent=None):
     return None
 
 world.find_button_by_value = find_button_by_value
+
+
+@step('there is a Create button')
+def there_is_a_create_button(step):
+    wait = ui.WebDriverWait(world.browser, 5)
+    the_id = 'homepage-create-menu'
+    wait.until(visibility_of_element_located((By.ID, the_id)))
+
+
+@step('I click the Create button')
+def i_click_the_create_button(step):
+    wait = ui.WebDriverWait(world.browser, 5)
+    the_id = 'homepage-create-menu'
+    elt = wait.until(visibility_of_element_located((By.ID, the_id)))
+    elt.click()

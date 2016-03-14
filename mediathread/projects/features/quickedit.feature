@@ -6,7 +6,6 @@ Feature: QuickEdit
         Given there are no projects
 
         # Create a project from the home page
-        Given the home workspace is loaded
         I click the Create button
         I click the Create Composition button
 
@@ -44,7 +43,6 @@ Feature: QuickEdit
         Given there are no projects
 
         # Create a project from the home page
-        Given the home workspace is loaded
         I click the Create button
         I click the Create Composition button
 
@@ -88,7 +86,6 @@ Feature: QuickEdit
         Given there are no projects
 
         # Create a project from the home page
-        Given the home workspace is loaded
         I click the Create button
         I click the Create Composition button
 

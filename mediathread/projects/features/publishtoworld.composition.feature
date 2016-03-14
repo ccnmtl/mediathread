@@ -8,29 +8,19 @@ Feature: Public Compositions
         
         # Create a project from the home page
         Given the home workspace is loaded
-            There is a Create button
-            When I click the Create button
-            Then there is a Create Composition Assignment button
-            And there is a Create Composition button
-            And there is a Create Discussion button
-            
-            When I click the Create Composition button        
-        
+            I click the Create button
+            I click the Create Composition button        
+
         Given the composition workspace is loaded
-            Then I am at the Untitled page
-            Then I see "by Instructor One"
-            And I see "Draft"
-        
             # Add a title and some text
             Then I call the Composition "<project_name>"
             And I write some text for the Composition
-            
+
             # Insert an asset
             Then I insert "<item_name>" into the text
             
             # Save
             When I click the Save button
-            Then I see a Save Changes dialog        
             Then I set the project visibility to "Whole World - a public url is provided"
             Then I save the changes
             Then there is a "permalink" link
@@ -62,5 +52,3 @@ Feature: Public Compositions
         | project_name                    | item_name             |
         | Composition Public: Scenario 1A | MAAP Award Reception  |
         | Composition Public: Scenario 1B | Left Corner           |
-        
-        

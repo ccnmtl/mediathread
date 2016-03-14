@@ -6,7 +6,10 @@
 
 import os.path
 import re
+import sys
+
 from ccnmtlsettings.shared import common
+
 
 project = 'mediathread'
 base = os.path.dirname(__file__)
@@ -186,6 +189,11 @@ LTI_TOOL_CONFIGURATION = {
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+
+if 'test' in sys.argv or 'jenkins' in sys.argv:
+    PASSWORD_HASHERS = (
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    )
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there

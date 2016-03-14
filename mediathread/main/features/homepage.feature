@@ -22,6 +22,12 @@ Feature: Homepage
         And there is help for the Composition column
         And there is help for the Collection column
         
+        And there is a Create button
+        When I click the Create button
+        Then there is a Create Composition Assignment button
+        And there is a Create Composition button
+        And there is a Create Discussion button
+        
         Finished using Selenium
         
     Scenario: homepage.feature 2. Student view w/o assignment
@@ -37,6 +43,12 @@ Feature: Homepage
         And there is help for the Composition column
         And there is help for the Collection column
         
+        And there is a Create button
+        When I click the Create button
+        Then there is not a Create Composition Assignment button
+        And there is a Create Composition button
+        And there is not a Create Discussion button
+        
         Finished using Selenium
 
     Scenario: homepage.feature 3. Student view w/assignment
@@ -46,10 +58,9 @@ Feature: Homepage
         
         And there is not a From Your Instructor column
         Then the composition panel has 1 projects named "Sample Assignment"
-        
         And there is a Composition column
         And there is a Collection column
-        
+
         And there is help for the Composition column
         And there is help for the Collection column
         

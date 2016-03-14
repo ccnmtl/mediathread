@@ -343,9 +343,10 @@ def i_cancel_the_action(step):
 @step(u'I confirm the action')
 def i_confirm_the_action(step):
     wait = ui.WebDriverWait(world.browser, 5)
-    dialog = wait.until(
+    elt = wait.until(
         visibility_of_element_located((By.ID, 'dialog-confirm')))
 
+    dialog = elt.parent
     btns = dialog.find_elements_by_tag_name("button")
     for btn in btns:
         try:

@@ -10,31 +10,42 @@
     <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
 {% endblock %}
 
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+{% endblock %}
+
 {% block dashboard_module_header %}
     <h2>Course Roster</h2>    
 {% endblock %}
 
-{% block js %}{% endblock %}
+{% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/dashboard/class_roster.js"></script>
+{% endblock %}
 
 {% block uncompressable_js %}
     <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.min.js' %}"></script>
     
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            jQuery('.tablesorter').tablesorter({
-                sortList: [[0,0]],
-                headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
-                headers: {
-                    '.nosort': {
-                        sorter: false
-                    },
-                }
+            var view = new CourseRosterView({
+                el: jQuery(".roster-container"),
             });
         });
     </script>
 {% endblock %}
 
 {% block dashboard_module %}
+{% if messages %}
+    <div class="alert alert-info alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      {% for message in messages %}
+            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+    </div>    
+{% endif %}  
+
 <div class="roster-container">
     <div class="pull-right">
         <h3>{{object_list|length}} Members</h3>
@@ -70,15 +81,30 @@
                         {{user.first_name}}
                     </td>
                     <td>{{user.username}}</td>
-                    <td>
-                        {% if role == 'instructor' %}
-                            Faculty
+                    <td class="role">
+                        {% if role == "instructor" %}
+                            Faculty &nbsp;
+                            <form class="inline" action="{% url 'course-roster-demote' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="faculty_id" value="{{user.id}}" />
+                                <button data-user-fullname="{{user.get_full_name}}"  data-user-id="{{user.id}}"
+                                 class="btn btn-default btn-sm btn-demote" type="submit">
+                                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> Demote
+                                </button>
+                            </form>
                         {% else %}
-                            Student
+                            Student &nbsp;
+                            <form class="inline" action="{% url 'course-roster-promote' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="student_id" value="{{user.id}}" />
+                                <button data-user-fullname="{{user.get_full_name}}" data-user-id="{{user.id}}"
+                                 class="btn btn-default btn-sm btn-promote" type="submit">
+                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Promote
+                                </button>
+                            </form>
                         {% endif %}
                     </td>
-                    <td>
-                    </td>
+                    <td></td>
                 </tr>
             {% endfor %}
             </tbody>

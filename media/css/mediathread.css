@@ -4306,3 +4306,7 @@ a.btn.btn-default img.left {
 .update-chrome-extension-feedback {
     margin-top: 5px;
 }
+
+.roster-container table td.role {
+    width: 16%;
+}

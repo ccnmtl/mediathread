@@ -531,3 +531,29 @@ class CourseRosterView(LoggedInFacultyMixin, ListView):
 
     def get_queryset(self):
         return self.request.course.members
+
+
+class CoursePromoteUserView(LoggedInFacultyMixin, View):
+
+    def post(self, request):
+        student_id = request.POST.get('student_id', None)
+        student = get_object_or_404(User, id=student_id)
+        request.course.faculty_group.user_set.add(student)
+
+        msg = '{} is now faculty'.format(student.get_full_name())
+        messages.add_message(request, messages.INFO, msg)
+
+        return HttpResponseRedirect(reverse('course-roster'))
+
+
+class CourseDemoteUserView(LoggedInFacultyMixin, View):
+
+    def post(self, request):
+        faculty_id = request.POST.get('faculty_id', None)
+        faculty = get_object_or_404(User, id=faculty_id)
+        request.course.faculty_group.user_set.remove(faculty)
+
+        msg = '{} is now a student'.format(faculty.get_full_name())
+        messages.add_message(request, messages.INFO, msg)
+
+        return HttpResponseRedirect(reverse('course-roster'))

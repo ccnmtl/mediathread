@@ -935,29 +935,13 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.verify_alt_course_materials()
 
 
-class CourseRosterViewTest(MediathreadTestMixin, TestCase):
+class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
         self.url = reverse('course-roster')
 
-    def test_not_logged_in(self):
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 302)
-
-    def test_as_student(self):
-        self.client.login(username=self.student_one.username,
-                          password='test')
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 403)
-
-    def test_as_faculty(self):
-        self.client.login(username=self.instructor_one.username,
-                          password='test')
-        response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
-
-    def test_get_queryset(self):
+    def test_roster_view_get_queryset(self):
         request = RequestFactory().get(self.url)
         request.user = self.instructor_one
         request.course = self.sample_course
@@ -967,3 +951,21 @@ class CourseRosterViewTest(MediathreadTestMixin, TestCase):
 
         qs = view.get_queryset()
         self.assertEquals(qs.count(), self.sample_course.members.count())
+
+    def test_promote_demote_users(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+
+        url = reverse('course-roster-promote')
+        data = {'student_id': self.student_one.id}
+        response = self.client.post(url, data)
+
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(self.sample_course.is_faculty(self.student_one))
+
+        url = reverse('course-roster-demote')
+        data = {'faculty_id': self.student_one.id}
+        response = self.client.post(url, data)
+
+        self.assertEquals(response.status_code, 302)
+        self.assertFalse(self.sample_course.is_faculty(self.student_one))

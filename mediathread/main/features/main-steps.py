@@ -80,10 +80,8 @@ def there_is_not_an_upload_from_computer_feature(step):
 
 @step(u'There is an "Upload From Computer" feature')
 def there_is_an_upload_from_computer_feature(step):
-    try:
-        world.browser.find_element_by_id('upload-from-computer')
-    except NoSuchElementException:
-        assert False, "Cannot find the Upload From Computer link"
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.ID, 'upload-from-computer')))
 
 
 @step('I open the "Upload From Computer" feature')

@@ -240,7 +240,7 @@ def there_is_a_text_link(step, text):
         assert False, "could not find the '%s' link" % text
     else:
         try:
-            wait = ui.WebDriverWait(world.browser, 5)
+            wait = ui.WebDriverWait(world.browser, 7)
             wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
                                                       text)))
         except TimeoutException:
@@ -1295,6 +1295,11 @@ def there_are_no_projects(step):
 
     n = Project.objects.count()
     assert n == 0, "Found %s projects. Expected 0" % n
+
+
+@step(u'Given ([^"]*) has no assignment responses')
+def given_student_has_no_assignment_responses(step, student):
+    Project.objects.filter(author__username=student).delete()
 
 
 @step(u'Then I set the project visibility to "([^"]*)"')

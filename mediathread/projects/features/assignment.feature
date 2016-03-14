@@ -177,6 +177,7 @@ Feature: Assignment
     Scenario Outline: assignment.feature 4. Assignment Response - visibility rules
         Using selenium
         Given there is a sample assignment
+        Given test_student_one has no assignment responses
         Give I am test_student_one in Sample Course
 
         # This navigates rather than automagically opening the panel
@@ -189,23 +190,10 @@ Feature: Assignment
         When I save the changes
         Then there is a "<status>" link
 
-        Give I am <username> in Sample Course 
+        Given I am <username> in Sample Course 
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> responses named "Sample Assignment Response"
-
-        # the response must be deleted
-        Given I am test_student_one in Sample Course
-        When I click the "Sample Assignment Response" link
-        Given the composition workspace is loaded
-        When I click the Saved button
-        Then I set the project visibility to "Draft - only you can view"
-        Then I save the changes
-
-        When I click the "Sample Course" link
-        Given the home workspace is loaded
-        When I click the "Sample Assignment Response" project delete icon
-        Then I confirm the action
 
         Finished using Selenium
 

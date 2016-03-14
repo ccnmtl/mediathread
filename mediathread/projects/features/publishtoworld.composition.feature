@@ -7,9 +7,8 @@ Feature: Public Compositions
         Given publish to world is enabled
         
         # Create a project from the home page
-        Given the home workspace is loaded
-            I click the Create button
-            I click the Create Composition button        
+        I click the Create button
+        I click the Create Composition button        
 
         Given the composition workspace is loaded
             # Add a title and some text

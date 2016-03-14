@@ -6,7 +6,6 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
 
         # Composition Editing
-        Given the home workspace is loaded
         I click the Create button
         I click the Create Composition button
 
@@ -36,7 +35,6 @@ Feature: Sliding Panels
         Given my browser resolution is <width> x <height>
 
         # Assignment View
-        Given the home workspace is loaded
         When I click the "Sample Assignment" link
 
         Given the composition workspace is loaded

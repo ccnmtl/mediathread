@@ -1,0 +1,88 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load coursetags %}
+{% load static %}
+{% block title %}Course Roster{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
+{% endblock %}
+
+{% block dashboard_module_header %}
+    <h2>Course Roster</h2>    
+{% endblock %}
+
+{% block js %}{% endblock %}
+
+{% block uncompressable_js %}
+    <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.min.js' %}"></script>
+    
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery('.tablesorter').tablesorter({
+                sortList: [[0,0]],
+                headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
+                headers: {
+                    '.nosort': {
+                        sorter: false
+                    },
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block dashboard_module %}
+<div class="roster-container">
+    <div class="pull-right">
+        <h3>{{object_list|length}} Members</h3>
+    </div>
+    <div class="visualclear"></div>
+    <div class="table-responsive">
+        <table class="tablesorter">
+            <thead>
+            <tr>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Username
+                </th>
+                <th>
+                    Role
+                </th>
+                <th class="nosort">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in object_list %}
+                {% course_role for user in course as role %}
+                <tr>
+                    <td>
+                        {{user.last_name}}
+                    </td>
+                    <td>
+                        {{user.first_name}}
+                    </td>
+                    <td>{{user.username}}</td>
+                    <td>
+                        {% if role == 'instructor' %}
+                            Faculty
+                        {% else %}
+                            Student
+                        {% endif %}
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>    
+{% endblock %}

@@ -1,4 +1,6 @@
 {% load cache user_projects coursetags compress static bootstrap3 %}
+{% load waffle_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 {% with request.course as course %}
@@ -105,6 +107,10 @@
                                     <a href="/dashboard/sources/">Sources</a>
                                     <a href="/dashboard/migrate/">Migrations</a>
                                     <a href="/taxonomy/">Vocabulary</a>
+                                    {% flag "roster_view" %}
+                                        <a href="/dashboard/roster/">Roster</a>
+                                    {% endflag %}
+                                    
                                     {% if user.is_staff %}
                                         <hr />
                                         <a href="/dashboard/delete/materials/">Materials</a>

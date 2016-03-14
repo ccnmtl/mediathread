@@ -16,6 +16,7 @@ from django.template import loader
 from django.template.context import Context
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 from threadedcomments.models import ThreadedComment
@@ -522,3 +523,11 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
         kwargs = super(CourseDeleteMaterialsView, self).get_form_kwargs()
         kwargs['request'] = self.request
         return kwargs
+
+
+class CourseRosterView(LoggedInFacultyMixin, ListView):
+    model = User
+    template_name = 'dashboard/class_roster.html'
+
+    def get_queryset(self):
+        return self.request.course.members

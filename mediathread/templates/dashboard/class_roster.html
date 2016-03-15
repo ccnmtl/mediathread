@@ -104,7 +104,16 @@
                             </form>
                         {% endif %}
                     </td>
-                    <td></td>
+                    <td>
+                        <form class="inline" action="{% url 'course-roster-remove' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{user.id}}" />
+                            <button data-user-fullname="{{user.get_full_name}}" data-user-id="{{user.id}}"
+                             class="btn btn-default btn-sm btn-remove" type="submit">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Remove
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>

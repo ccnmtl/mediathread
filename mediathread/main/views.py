@@ -557,3 +557,21 @@ class CourseDemoteUserView(LoggedInFacultyMixin, View):
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
+
+
+class CourseRemoveUserView(LoggedInFacultyMixin, View):
+
+    def post(self, request):
+        user_id = request.POST.get('user_id', None)
+        user = get_object_or_404(User, id=user_id)
+
+        # @todo - leave student / faculty work?
+        # Removing it could have unintended side-effects
+
+        request.course.group.user_set.remove(user)
+        request.course.faculty_group.user_set.remove(user)
+
+        msg = '{} is no longer a course member'.format(user.get_full_name())
+        messages.add_message(request, messages.INFO, msg)
+
+        return HttpResponseRedirect(reverse('course-roster'))

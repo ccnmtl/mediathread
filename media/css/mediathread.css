@@ -123,6 +123,10 @@ a:hover {
 	text-decoration: underline;
 }
 
+button span.glyphicon {
+    color: #1b75bc;
+}
+
 /* ---- block elements ---------- */
 
 #container

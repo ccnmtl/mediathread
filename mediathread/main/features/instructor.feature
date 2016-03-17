@@ -61,19 +61,14 @@ Feature: Instructor Dashboard
         Given there is a sample response
         Given I am test_instructor in Sample Course
         
-        Then I am at the Home page
-        
         There is a Create button
         When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
         
         When I click the Create Discussion button
         Then I am at the Discussion page
         When I click the "Sample Course" link
-        Then I am at the Home page
-        And there is a "Discussion Title" link
+        Given the home workspace is loaded
+        There is a "Discussion Title" link
         When I click the "Discussion Title" link
         Then I am at the Discussion page
         
@@ -84,14 +79,8 @@ Feature: Instructor Dashboard
         Given there is a sample response
         Given I am test_instructor in Sample Course
         
-        Then I am at the Home page
-        
         There is a Create button
         When I click the Create button
-        Then there is a Create Composition Assignment button
-        And there is a Create Composition button
-        And there is a Create Discussion button
-        
         When I click the Create Composition button
         
         Then I am at the Untitled page
@@ -104,8 +93,6 @@ Feature: Instructor Dashboard
         Then the Composition is called "Instructor Feature 4"
         
         When I click the "Sample Course" link
-        Then I am at the Home page
-        
         Given the home workspace is loaded
         Then there is a draft "Instructor Feature 4" project by Instructor One
         

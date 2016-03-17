@@ -36,14 +36,7 @@ Feature: Single Asset View
         
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        And the asset workspace is loaded
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
@@ -75,14 +68,7 @@ Feature: Single Asset View
         
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        And the asset workspace is loaded
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
@@ -142,13 +128,7 @@ Feature: Single Asset View
         # Navigate to the asset
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Check the references tab
         Then I click the "References" link

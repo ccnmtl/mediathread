@@ -156,6 +156,8 @@ Feature: Sources
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
+        Finished using Selenium
+        
     Scenario: manage_sources.feature 6. Add & Remove External Source, verify navigation from Add to My Collection
         Using selenium
         Given I am test_instructor in Sample Course
@@ -177,6 +179,8 @@ Feature: Sources
         # Verify YouTube navigation works
         When I click the "You Tube" link
         Then I am at the YouTube page
+        
+        Finished using Selenium
         
     Scenario: manage_sources.feature 7. Remove External Source, verify navigation from Add to My Collection
         Using selenium
@@ -208,3 +212,5 @@ Feature: Sources
         # Under Add to My Collection
         When I click the "Sample Course" link
         I see 0 source
+
+        Finished using Selenium

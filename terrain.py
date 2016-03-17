@@ -1383,26 +1383,28 @@ def find_button_by_value(value, parent=None):
     if not parent:
         parent = world.browser
 
-    elts = parent.find_elements_by_css_selector("input[type=submit]")
-    for e in elts:
-        if e.get_attribute("value") == value:
-            return e
+    selector = "input[type=submit][value='{}']".format(value)
+    try:
+        return parent.find_element_by_css_selector(selector)
+    except NoSuchElementException:
+        pass  # try something else
 
-    elts = parent.find_elements_by_css_selector("input[type=button]")
-    for e in elts:
-        if e.get_attribute("value") == value:
-            return e
+    selector = "input[type=button][value='{}']".format(value)
+    try:
+        return parent.find_element_by_css_selector(selector)
+    except NoSuchElementException:
+        pass  # try something else
 
-    elts = world.browser.find_elements_by_tag_name("button")
-    for e in elts:
-        if e.text.strip() == value:
-            return e
+    selector = "//button[contains(text(),'{}')]".format(value)
+    try:
+        return parent.find_element_by_xpath(selector)
+    except NoSuchElementException:
+        pass  # try something else
 
-    # try the links too
-    elts = parent.find_elements_by_tag_name("a")
-    for e in elts:
-        if e.text and e.text.strip() == value:
-            return e
+    try:
+        return parent.find_element_by_partial_link_text(value)
+    except NoSuchElementException:
+        pass  # try something else
 
     return None
 

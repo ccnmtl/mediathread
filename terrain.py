@@ -1409,7 +1409,7 @@ def find_button_by_value(value, parent=None):
     except NoSuchElementException:
         pass  # try something else
 
-    selector = "//button[contains(text(),'{}')]".format(value)
+    selector = "//button[contains(.,'{}')]".format(value)
     try:
         return parent.find_element_by_xpath(selector)
     except NoSuchElementException:

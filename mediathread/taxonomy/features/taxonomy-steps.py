@@ -217,7 +217,7 @@ def there_is_a_text_concept(step, text):
 
 @step(u'there is not a "([^"]*)" concept')
 def there_is_not_a_text_concept(step, text):
-    wait = ui.WebDriverWait(world.browser, 2)
+    wait = ui.WebDriverWait(world.browser, 5)
     wait.until(invisibility_of_element_located((By.PARTIAL_LINK_TEXT,
                                                 text)))
 

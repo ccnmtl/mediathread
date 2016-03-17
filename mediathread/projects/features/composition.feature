@@ -4,7 +4,6 @@ Feature: Composition
         Using selenium
         Given I am test_instructor in Sample Course
         Given there are no projects
-        Given the home workspace is loaded
 
         # Create a project from the home page
         I click the Create button
@@ -58,7 +57,6 @@ Feature: Composition
         Using selenium
         Given I am test_student_one in Sample Course
         Given there are no projects
-        Given the home workspace is loaded
 
         # Create a project from the home page
         I click the Create button
@@ -127,7 +125,6 @@ Feature: Composition
 
         # Try to view as student one
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
         Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
 
@@ -157,14 +154,12 @@ Feature: Composition
 
         # Try to view as student two
         Given I am test_student_two in Sample Course
-        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am test_instructor in Sample Course
-        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"

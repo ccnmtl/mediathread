@@ -1365,6 +1365,20 @@ def i_set_the_quickedit_label_ftype_to_value(step, label, ftype, value):
                                           sid='asset-view-details-quick-edit')
 
 
+@step('there is a Create button')
+def there_is_a_create_button(step):
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.ID, 'homepage-create-menu')))
+
+
+@step('I click the Create button')
+def i_click_the_create_button(step):
+    wait = ui.WebDriverWait(world.browser, 5)
+    the_id = 'homepage-create-menu'
+    elt = wait.until(visibility_of_element_located((By.ID, the_id)))
+    elt.click()
+
+
 # Local utility functions
 def get_column(title):
     elts = world.browser.find_elements_by_tag_name("h2")

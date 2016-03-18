@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.expected_conditions import (
     visibility_of_element_located, invisibility_of_element_located
-)
+, visibility_of)
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mediathread.projects.models import Project
@@ -210,12 +210,10 @@ def i_click_the_value_button(step, value):
         elt = find_button_by_value(value)
         if elt is None:
             assert False, "Cannot locate button named %s" % value
-        elif not elt.is_displayed():
-            time.sleep(1)
-            elt = find_button_by_value(value)
-            elt.click()
-        else:
-            elt.click()
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of(elt))
+        elt.click()
 
 
 @step(u'there is not an? "([^"]*)" link')
@@ -229,11 +227,9 @@ def there_is_not_a_text_link(step, text):
                     world.dom = html.fromstring(response.content)
                     assert False, "found the '%s' link" % text
     else:
-        try:
-            world.browser.find_element_by_partial_link_text(text)
-            assert False, "found the '%s' link" % text
-        except NoSuchElementException:
-            pass  # expected
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(invisibility_of_element_located((By.PARTIAL_LINK_TEXT,
+                                                    text)))
 
 
 @step(u'there is an? "([^"]*)" link')
@@ -248,13 +244,8 @@ def there_is_a_text_link(step, text):
                     return
         assert False, "could not find the '%s' link" % text
     else:
-        try:
-            wait = ui.WebDriverWait(world.browser, 5)
-            wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
-                                                      text)))
-        except TimeoutException:
-            world.browser.get_screenshot_as_file("/tmp/selenium.png")
-            assert False, "Cannot find link %s" % text
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT, text)))
 
 
 @step(u'I click the "([^"]*)" link')
@@ -464,8 +455,6 @@ def i_select_name_as_the_owner(step, name):
 def i_select_name_as_the_owner_in_the_title_column(step, name, title):
     column = get_column(title)
 
-    assert column, "Unable to find a column entitled %s" % title
-
     m = column.find_element_by_css_selector("div.switcher_collection_chooser")
 
     assert m, 'Unable to find the owner menu'
@@ -483,39 +472,18 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
 
 @step(u'the owner is "([^"]*)" in the ([^"]*) column')
 def the_owner_is_name_in_the_title_column(step, name, title):
-    column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-    assert column, "Unable to find a column entitled %s" % title
+    selector = ("//h2[contains(.,'{}')]/../"
+                "descendant::a[contains(@class,'switcher-top')]"
+                "//span[@class='title'][contains(text(),'{}')]").format(title,
+                                                                        name)
 
-    s = "div.switcher_collection_chooser"
-    try:
-        m = column.find_element_by_css_selector(s)
-        owner = m.find_element_by_css_selector("a.switcher-top span.title")
-        owner.text
-    except StaleElementReferenceException:
-        time.sleep(1)
-        m = column.find_element_by_css_selector(s)
-        owner = m.find_element_by_css_selector("a.switcher-top span.title")
-
-    if owner.text != name:
-        time.sleep(1)
-        m = column.find_element_by_css_selector(s)
-        owner = m.find_element_by_css_selector("a.switcher-top span.title")
-
-    msg = "Expected owner title to be %s. Actually %s" % (name, owner.text)
-    assert owner.text == name, msg
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.XPATH, selector)))
 
 
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
@@ -529,11 +497,6 @@ def the_collection_panel_has_a_title_item(step, title):
 @step(u'the collection panel has no "([^"]*)" item')
 def the_collection_panel_has_no_title_item(step, title):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
@@ -547,11 +510,6 @@ def the_collection_panel_has_no_title_item(step, title):
 @step(u'the "([^"]*)" item has a note "([^"]*)"')
 def the_title_item_has_a_note_text(step, title, text):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
@@ -573,11 +531,6 @@ def the_title_item_has_a_total_selections_count_by_me(step,
                                                       total,
                                                       count):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
@@ -603,11 +556,6 @@ def the_title_item_has_a_total_selections_count_by_me(step,
 @step(u'the "([^"]*)" item has a tag "([^"]*)"')
 def the_title_item_has_a_tag_text(step, title, text):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
     for i in items:
@@ -628,11 +576,6 @@ def the_title_item_has_a_tag_text(step, title, text):
 @step(u'the "([^"]*)" item has a selection "([^"]*)"')
 def the_title_item_has_a_selection_seltitle(step, title, seltitle):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     select = 'td.selection-meta div.metadata-container a.materialCitationLink'
 
@@ -655,11 +598,6 @@ def the_title_item_has_a_selection_seltitle(step, title, seltitle):
 @step(u'the "([^"]*)" item has no selections')
 def the_title_item_has_no_selections(step, title):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     select = 'td.selection-meta div.metadata-container a.materialCitationLink'
 
@@ -680,11 +618,6 @@ def the_title_item_has_no_selections(step, title):
 @step(u'the "([^"]*)" item has no notes')
 def the_title_item_has_no_notes(step, title):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     select = 'li.annotation-global-body span.metadata-value'
 
@@ -704,11 +637,6 @@ def the_title_item_has_no_notes(step, title):
 @step(u'the "([^"]*)" item has no tags')
 def the_title_item_has_no_tags(step, title):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
     select = 'li.annotation-global-tags span.metadata-value a.switcher-choice'
 
     items = panel.find_elements_by_css_selector('div.gallery-item')
@@ -727,11 +655,6 @@ def the_title_item_has_no_tags(step, title):
 @step(u'the "([^"]*)" selection has a note "([^"]*)"')
 def the_seltitle_selection_has_a_note_text(step, seltitle, text):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     selections = panel.find_elements_by_css_selector('td.selection-meta')
     for s in selections:
@@ -756,11 +679,6 @@ def the_seltitle_selection_has_a_note_text(step, seltitle, text):
 @step(u'the "([^"]*)" selection has a tag "([^"]*)"')
 def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
     panel = get_column('collection')
-    if not panel:
-        selector = "td.panel-container.collection"
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel, "Cannot find the collection panel"
 
     selections = panel.find_elements_by_css_selector('td.selection-meta')
     for s in selections:
@@ -851,11 +769,6 @@ def i_click_the_title_item_name_icon(step, title, name):
 @step(u'I can filter by "([^"]*)" in the ([^"]*) column')
 def i_can_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-
-    assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector("div.course-tags input")
     filter_menu.click()
@@ -875,11 +788,6 @@ def i_can_filter_by_tag_in_the_title_column(step, tag, title):
 @step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
 def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
     column = get_column(title)
-    if not column:
-        selector = "td.panel-container.%s" % title.lower()
-        column = world.browser.find_element_by_css_selector(selector)
-
-    assert column, "Unable to find a column entitled %s" % title
 
     filter_menu = column.find_element_by_css_selector("div.course-tags input")
     filter_menu.click()
@@ -1382,15 +1290,9 @@ def i_click_the_create_button(step):
 
 # Local utility functions
 def get_column(title):
-    elts = world.browser.find_elements_by_tag_name("h2")
-    for e in elts:
-        try:
-            if e.text and e.text.strip().lower().find(title.lower()) > -1:
-                return e.parent
-        except StaleElementReferenceException:
-            continue
-
-    return None
+    selector = "//h2[contains(.,'{}')]/..".format(title)
+    wait = ui.WebDriverWait(world.browser, 5)
+    return wait.until(visibility_of_element_located((By.XPATH, selector)))
 
 
 def find_button_by_value(value, parent=None):

@@ -36,36 +36,29 @@ Feature: Single Asset View
         
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        And the asset workspace is loaded
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        And I see "instructor one item note"
-        And I see "flickr, instructor_one"
-        And I do not see "Here are my notes"
-        And I do not see "abc"
+        And the item notes are "instructor one item note"
+        And the item has the tag "flickr, instructor_one"
+        And the item notes are not "Here are my notes"
+        And the item does not have the tag "abc"
         When I edit the item
         Then there is a Cancel button
         And there is a Save button
         
         When I set the "Title" "text" field to "Updated MAAP Award Reception"
-        And I remove the existing select2 tags at ".global-annotation-tags.select2-container"
-        And I set the field with selector ".global-annotation-tags.select2-container input.select2-input" to "abc"
+        And I remove the item tags
+        And I set the item tags to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
         And I click the Save button
         
         Then the item header is "Updated MAAP Award Reception"
-        And I see "Here are my notes"
-        And I see "abc"
-        And I do not see "instructor one item note"
-        And I do not see "flickr, instructor_one"
+        And the item notes are "Here are my notes"
+        And the item has the tag "abc"
+        And the item notes are not "instructor one item note"
+        And the item does not have the tag "flickr, instructor_one"
                         
         Finished using Selenium
         
@@ -75,39 +68,31 @@ Feature: Single Asset View
         
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        And the asset workspace is loaded
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        And I see "student one item note"
-        And I see "student_one_item"
-        And I do not see "Here are my notes"
-        And I do not see "abc"
+        And the item notes are "student one item note"
+        And the item has the tag "student_one_item"
+        And the item notes are not "Here are my notes"
+        And the item does not have the tag "abc"
         
         When I edit the item
         Then there is a Cancel button
         And there is a Save button
         And there is not a "Title" "text" field
-        
-        And I remove the existing select2 tags at ".global-annotation-tags.select2-container"
-        And I set the field with selector ".global-annotation-tags.select2-container input.select2-input" to "abc"
+
+        And I remove the item tags
+        And I set the item tags to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
         And I click the Save button
         
         Then the item header is "MAAP Award Reception"
-        And I see "Here are my notes"
-        And I see "abc"
-        And I do not see "student one item note" in the item tab
-        Then I wait 1 second
-        And I do not see "student_one_item"
-                        
+        And the item notes are "Here are my notes"
+        And the item has the tag "abc"
+        And the item notes are not "student one item note"
+        And the item does not have the tag "student_one_item"
+
         Finished using Selenium
         
         
@@ -142,13 +127,7 @@ Feature: Single Asset View
         # Navigate to the asset
         When I access the url "/asset/2/"
         Given the asset workspace is loaded
-        Then there is a minimized Collection panel        
-        And there is an open Asset panel
-        
-        # Verify the Quick Help popup is visible
-        Contextual help is visible for the asset
-        When I close the asset's contextual help
-        Contextual help is not visible for the asset
+        I close the asset's contextual help
         
         # Check the references tab
         Then I click the "References" link

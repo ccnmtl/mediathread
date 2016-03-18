@@ -1263,10 +1263,10 @@ def i_set_the_label_ftype_to_value(step, label, ftype, value,
                     elt.send_keys(value)
 
 
-@step(u'I remove the existing select2 tags at "([^"]*)"')
-def i_remove_the_existing_select2_tags_at_selector(step, selector,
-                                                   sid='asset-view-details'):
+@step(u'I remove the item tags')
+def i_remove_the_item_tags(step):
     if world.using_selenium:
+        selector = '.global-annotation-tags.select2-container'
         wait = WebDriverWait(world.browser, 10)
         parent = wait.until(
             visibility_of_element_located((By.CSS_SELECTOR, selector)))
@@ -1276,12 +1276,13 @@ def i_remove_the_existing_select2_tags_at_selector(step, selector,
             elt.click()
 
 
-@step(u'I set the field with selector "([^"]*)" to "([^"]*)"')
-def i_set_the_field_with_selector_to_value(step, selector, value,
-                                           sid='asset-view-details'):
+@step(u'I set the item tags to "([^"]*)"')
+def i_set_the_item_tags_to_value(step, value):
     if world.using_selenium:
+        sid = 'asset-view-details'
+        sel = '.global-annotation-tags.select2-container input.select2-input'
         parent = world.browser.find_element_by_id(sid)
-        elt = parent.find_element_by_css_selector(selector)
+        elt = parent.find_element_by_css_selector(sel)
         elt.clear()
         elt.send_keys(value)
         elt.send_keys(Keys.ENTER)

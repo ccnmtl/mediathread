@@ -8,6 +8,7 @@ from courseaffils.views import available_courses_query
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -572,6 +573,59 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         request.course.faculty_group.user_set.remove(user)
 
         msg = '{} is no longer a course member'.format(user.get_full_name())
+        messages.add_message(request, messages.INFO, msg)
+
+        return HttpResponseRedirect(reverse('course-roster'))
+
+
+class CourseAddUNIUserView(LoggedInFacultyMixin, View):
+
+    def get_or_create_user(self, uni):
+        try:
+            user = User.objects.get(username=uni)
+        except User.DoesNotExist:
+            user = User(username=uni)
+            user.set_unusable_password()
+            user.save()
+        return user
+
+    def notify_user(self, uni):
+        template = loader.get_template(
+            'dashboard/course_invitation_uni_email.txt')
+
+        subject = "Mediathread Course Invitation: {}".format(
+            self.request.course.title)
+
+        ctx = Context({
+            'course': self.request.course,
+            'domain': get_current_site(self.request).domain
+        })
+        message = template.render(ctx)
+
+        sender = settings.SERVER_EMAIL
+        recipients = ['{}@columbia.edu'.format(uni)]
+        send_mail(subject, message, sender, recipients)
+
+    def post(self, request):
+        uni = request.POST.get('uni', None)
+        url = reverse('course-roster')
+
+        if uni is None or len(uni) < 1:
+            msg = 'Please enter a valid UNI'
+            messages.add_message(request, messages.ERROR, msg)
+            return HttpResponseRedirect(url)
+
+        user = self.get_or_create_user(uni)
+        if self.request.course.is_true_member(user):
+            msg = '{} is already a course member'.format(user.get_full_name())
+            messages.add_message(request, messages.INFO, msg)
+            return HttpResponseRedirect(url)
+
+        self.request.course.group.user_set.add(user)
+        self.notify_user(uni)
+
+        msg = ("{} can now access this course by logging in with their UNI. "
+               "An email was sent notifying the user.".format(uni))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))

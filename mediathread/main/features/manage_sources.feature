@@ -40,19 +40,11 @@ Feature: Sources
         Given video upload is enabled
         
         # By default, instructors and administrators are allowed to upload
-        When I click the "Sample Course" link
-        Given the home workspace is loaded
-        Then there is an "Upload from Computer" feature
+        There is an "Upload from Computer" feature
         
         # Student cannot see
-        When I log out
-        When I click the Guest Log In button
-        When I type "test_student_one" for username
-        When I type "test" for password
-        When I click the Log In button
-        Then I am at the Home page
-        Given the home workspace is loaded
-        Then there is not an "Upload from Computer" feature
+        Given I am test_student_one in Sample Course
+        There is not an "Upload from Computer" feature
 
         Finished using Selenium
         
@@ -75,13 +67,7 @@ Feature: Sources
         Then there is not an "Upload from Computer" feature
         
         # Student cannot see
-        When I log out
-        When I click the Guest Log In button
-        When I type "test_student_one" for username
-        When I type "test" for password
-        When I click the Log In button
-        Then I am at the Home page
-        Given the home workspace is loaded
+        Given I am test_student_one in Sample Course
         Then there is not an "Upload from Computer" feature
         
         Finished using Selenium
@@ -105,13 +91,7 @@ Feature: Sources
         Then there is an "Upload from Computer" feature
         
         # Student can see
-        When I log out
-        When I click the Guest Log In button
-        When I type "test_student_one" for username
-        When I type "test" for password
-        When I click the Log In button
-        Then I am at the Home page
-        Given the home workspace is loaded
+        Given I am test_student_one in Sample Course
         Then there is an "Upload from Computer" feature
 
         Finished using Selenium
@@ -140,7 +120,6 @@ Feature: Sources
         
         # Regular student cannot upload on someone's behalf
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
         Then I see "Upload video"
@@ -149,7 +128,6 @@ Feature: Sources
         
         # Student with special privileges can upload on someone's behalf
         Given I am test_ta in Sample Course
-        Given the home workspace is loaded
         Then there is an "Upload from Computer" feature
         When I open the "Upload from Computer" feature
         Then I see "Upload video"
@@ -178,6 +156,8 @@ Feature: Sources
         And I see "You must be a course member to upload media files."
         And I cannot upload on behalf of other users
         
+        Finished using Selenium
+        
     Scenario: manage_sources.feature 6. Add & Remove External Source, verify navigation from Add to My Collection
         Using selenium
         Given I am test_instructor in Sample Course
@@ -194,12 +174,13 @@ Feature: Sources
 
         # Under Add to My Collection
         Given I am test_student_one in Sample Course
-        Given the home workspace is loaded
         And I see 1 source
         
         # Verify YouTube navigation works
         When I click the "You Tube" link
         Then I am at the YouTube page
+        
+        Finished using Selenium
         
     Scenario: manage_sources.feature 7. Remove External Source, verify navigation from Add to My Collection
         Using selenium
@@ -231,3 +212,5 @@ Feature: Sources
         # Under Add to My Collection
         When I click the "Sample Course" link
         I see 0 source
+
+        Finished using Selenium

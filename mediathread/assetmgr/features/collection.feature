@@ -5,7 +5,6 @@ Feature: Collection View
         Given I am test_instructor in Sample Course
 
         When I click the "View Full Collection" link
-        Then I am at the Collection page
         Given the collection workspace is loaded
 
         Then the owner is "All Class Members" in the Collection column
@@ -29,19 +28,14 @@ Feature: Collection View
 
     Scenario: collection.feature 2. Collection - Viewing Items & Selections
         Using selenium
-        
         Given I am test_instructor in Sample Course
         Given the item visibility is set to "Yes"
         Given the selection visibility is set to "Yes"
         
-        Given I am test_instructor in Sample Course
-        Given I am at the Home page
-        
         When I click the "View Full Collection" link
-        Then I am at the Collection page
-        Given the collection workspace is loaded
         
         # Instructor One
+        Given the collection workspace is loaded
         When I select "Instructor One" as the owner
         Then the owner is "Me" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
@@ -85,18 +79,17 @@ Feature: Collection View
         
     Scenario: collection.feature 3. Collection - Viewing Items & Selections
         Using selenium
-        
+
+        # Instructor sets visibility        
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "Yes"
         
+        # View as student
         Given I am test_student_one in Sample Course
-        Given I am at the Home page
-        
         When I click the "View Full Collection" link
-        Then I am at the Collection page
-        Given the collection workspace is loaded
         
         # Instructor One
+        Given the collection workspace is loaded
         When I select "Instructor One" as the owner
         Then the owner is "Instructor One" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
@@ -145,13 +138,11 @@ Feature: Collection View
         Given the selection visibility is set to "Yes"
         
         Given I am test_student_two in Sample Course
-        Given I am at the Home page
         
         When I click the "View Full Collection" link
-        Then I am at the Collection page
-        Given the collection workspace is loaded
         
         # Instructor One
+        Given the collection workspace is loaded
         When I select "Instructor One" as the owner
         Then the owner is "Instructor One" in the asset-workspace column
         Then the Collection panel has a "MAAP Award Reception" item
@@ -198,9 +189,6 @@ Feature: Collection View
         
         Given I am test_instructor in Sample Course
         Given the selection visibility is set to "No"
-        
-        Given I am test_instructor in Sample Course
-        Given I am at the Home page
         
         When I click the "View Full Collection" link
         Then I am at the Collection page
@@ -256,7 +244,7 @@ Feature: Collection View
         Given I am test_student_one in Sample Course
 
         When I click the "View Full Collection" link
-        Then I am at the Collection page
+
         Given the collection workspace is loaded
                 
         # Student One can see his own & the instructors annotations
@@ -324,7 +312,6 @@ Feature: Collection View
         Given I am test_instructor in Sample Course
         
         When I click the "View Full Collection" link
-        Then I am at the Collection page
         Given the collection workspace is loaded
         
         Then the owner is "All Class Members" in the asset-workspace column

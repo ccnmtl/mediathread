@@ -12,6 +12,7 @@ def video_upload_is_enabled(step):
             elt = world.browser.find_element_by_id("mediathread-video-upload")
             if elt:
                 elt.click()
+                world.browser.get(django_url("/"))
         except NoSuchElementException:
             pass  # It's already enabled. That's ok.
 

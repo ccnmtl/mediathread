@@ -5,7 +5,6 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample assignment
         Given I am test_student_one in Sample Course
         
-        Given the home workspace is loaded
         The "Sample Assignment" project has no delete icon
 
         Finished using Selenium 
@@ -15,7 +14,6 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample response
         Given I am test_instructor in Sample Course
         
-        Given the home workspace is loaded
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has 1 response named "Sample Assignment Response"
@@ -28,7 +26,6 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample assignment
         Given I am test_instructor in Sample Course
         
-        Given the home workspace is loaded
         The "Sample Assignment" project has a delete icon
         
         When I click the "Sample Assignment" project delete icon
@@ -48,7 +45,6 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample response
         Given I am test_student_one in Sample Course
         
-        Given the home workspace is loaded
         The "Sample Assignment Response" project has no delete icon
         
         # Add a title and some text

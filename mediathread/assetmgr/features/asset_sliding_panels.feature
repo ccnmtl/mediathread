@@ -7,8 +7,8 @@ Feature: Sliding Panels in the Asset View
     
         # Full Collection
         When I click the "View Full Collection" link
-        Then I am at the Collection page
-        
+        Given the asset workspace is loaded
+
         # View an individual asset
         When I click the "MAAP Award Reception" link
         Then there is a minimized Collection panel
@@ -16,9 +16,6 @@ Feature: Sliding Panels in the Asset View
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        There is an "Item" link
-        There is a "Source" link
-        There is a "References" link
         
         Finished using Selenium
         
@@ -36,15 +33,12 @@ Feature: Sliding Panels in the Asset View
     
         # View an individual asset
         When I access the url "/asset/2/"
-        Then I am at the Collection page
+        Given the asset workspace is loaded
         Then there is a minimized Collection panel
         And there is an open Asset panel
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        There is an "Item" link
-        There is a "Source" link
-        There is a "References" link
         
         Finished using Selenium
         

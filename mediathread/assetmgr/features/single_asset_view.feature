@@ -102,7 +102,6 @@ Feature: Single Asset View
         Given there are no projects
         
         # Create a project from the home page
-        Given the home workspace is loaded
         There is a Create button
         When I click the Create button
         There is a Create Composition button

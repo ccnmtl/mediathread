@@ -3,13 +3,15 @@
     <div class="actions">
       {{#global_annotation.id}}
         <input type="image" title="Remove item from collection"
-        onclick="return annotationList.deleteItem(event, this, {{id}});"
-        alt="Delete" src="/media/img/icons/meth_delete.png" />
+         class="remove-item-icon"
+         onclick="return annotationList.deleteItem(event, this, {{id}});"
+         alt="Delete" src="/media/img/icons/meth_delete.png" />
       {{/global_annotation.id}}
 
       <input type="image" title="Edit item"
-      onclick="return annotationList.editItem(this);"
-      alt="Edit" src="/media/img/icons/meth_edit.png" />
+       class="edit-item-icon"
+       onclick="return annotationList.editItem(this);"
+       alt="Edit" src="/media/img/icons/meth_edit.png" />
     </div>
   </h2>
 
@@ -52,9 +54,7 @@
     {{#global_annotation.metadata.tags.length}}
       <div class="meta global-annotation-tags">
         <label>Tags: </label>
-        {{#global_annotation.metadata.tags}}
-          {{name}}{{^last}}, {{/last}}
-        {{/global_annotation.metadata.tags}}
+        {{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}
       </div>
     {{/global_annotation.metadata.tags.length}}
 

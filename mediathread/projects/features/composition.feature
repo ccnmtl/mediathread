@@ -82,12 +82,6 @@ Feature: Composition
 
         # Save
         When I click the Save button
-        There is a project visibility "Draft - only you can view"
-        There is a project visibility "Instructor - only author(s) and instructor can view"
-        There is a project visibility "Whole Class - all class members can view"
-        There is not a project visibility "Whole World - a public url is provided"
-        And the project visibility is "Draft - only you can view"
-
         Then I save the changes
 
         # Toggle Preview Mode

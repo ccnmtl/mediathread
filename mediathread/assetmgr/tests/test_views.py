@@ -37,6 +37,9 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.add_as_faculty(self.sample_course, self.instructor_three)
         self.add_as_faculty(self.alt_course, self.instructor_three)
 
+    def tearDown(self):
+        cache.clear()
+
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',
@@ -756,6 +759,9 @@ class AssetReferenceViewTest(MediathreadTestMixin, TestCase):
     def setUp(self):
         self.setup_sample_course()
 
+    def tearDown(self):
+        cache.clear()
+
     def test_get(self):
         asset = AssetFactory(course=self.sample_course, primary_source='image')
         SherdNoteFactory(
@@ -809,6 +815,9 @@ class TagCollectionViewTest(MediathreadTestMixin, TestCase):
     def setUp(self):
         self.setup_sample_course()
         self.url = reverse('tag-collection-view')
+
+    def tearDown(self):
+        cache.clear()
 
     def test_get_anonymous(self):
         response = self.client.get(self.url)

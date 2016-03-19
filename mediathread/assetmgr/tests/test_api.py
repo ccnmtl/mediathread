@@ -3,6 +3,7 @@
 import json
 
 from courseaffils.models import Course
+from django.core.cache import cache
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 from tagging.models import Tag
@@ -63,6 +64,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             tags=',video, instructor_one_global,',
             body='instructor one global note',
             title=None, range1=None, range2=None)
+
+    def tearDown(self):
+        cache.clear()
 
     def get_credentials(self):
         return None

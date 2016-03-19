@@ -9,13 +9,12 @@ from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
 from selenium.common.exceptions import NoSuchElementException, \
-    StaleElementReferenceException, InvalidElementStateException, \
-    TimeoutException
+    StaleElementReferenceException, InvalidElementStateException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.expected_conditions import (
-    visibility_of_element_located, invisibility_of_element_located
-, visibility_of)
+    visibility_of_element_located, invisibility_of_element_located,
+    visibility_of)
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mediathread.projects.models import Project
@@ -472,7 +471,7 @@ def i_select_name_as_the_owner_in_the_title_column(step, name, title):
 
 @step(u'the owner is "([^"]*)" in the ([^"]*) column')
 def the_owner_is_name_in_the_title_column(step, name, title):
-    selector = ("//h2[contains(.,'{}')]/../"
+    selector = ("//h2[contains(.,'{}')]/../../../"
                 "descendant::a[contains(@class,'switcher-top')]"
                 "//span[@class='title'][contains(text(),'{}')]").format(title,
                                                                         name)
@@ -483,261 +482,27 @@ def the_owner_is_name_in_the_title_column(step, name, title):
 
 @step(u'the collection panel has a "([^"]*)" item')
 def the_collection_panel_has_a_title_item(step, title):
-    panel = get_column('collection')
+    ''' Full collection in the asset worksapce '''
+    selector = (
+        "//tr[@class='asset-workspace-content-row']"
+        "//div[contains(@class,'gallery-item')]"
+        "//a[contains(@class,'asset-title-link')]"
+        "[contains(text(),'{}')]").format(title)
 
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.XPATH, selector)))
 
 
 @step(u'the collection panel has no "([^"]*)" item')
 def the_collection_panel_has_no_title_item(step, title):
-    panel = get_column('collection')
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            assert False, "Found an item [%s] in the collection panel" % title
-
-    assert True, "Unable to find the %s item in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has a note "([^"]*)"')
-def the_title_item_has_a_note_text(step, title, text):
-    panel = get_column('collection')
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            note = i.find_element_by_css_selector(
-                'li.annotation-global-body span.metadata-value')
-            assert note, "Unable to find a note for the %s item" % title
-            assert note.text == text, ("Item note is %s. Expected %s" %
-                                       (note.text, text))
-            return
-
-    assert False, "No named [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has ([^"]*) selections, ([^"]*) by me')
-def the_title_item_has_a_total_selections_count_by_me(step,
-                                                      title,
-                                                      total,
-                                                      count):
-    panel = get_column('collection')
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            item_total = i.find_element_by_css_selector(
-                'span.item-annotation-count-total')
-            msg = "Item selection count is %s. Expected %s" % (item_total.text,
-                                                               total)
-            assert item_total.text == total, msg
-
-            my_count = i.find_element_by_css_selector(
-                'span.item-annotation-count-user')
-
-            msg = ("User item selection count is %s. Expected %s" %
-                   (my_count.text, count))
-            assert my_count.text == count, msg
-            return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has a tag "([^"]*)"')
-def the_title_item_has_a_tag_text(step, title, text):
-    panel = get_column('collection')
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            tags = i.find_elements_by_css_selector(
-                'li.annotation-global-tags '
-                'span.metadata-value a.switcher-choice')
-            for t in tags:
-                if t.text == text:
-                    return
-            assert False, "Unable to find a tag for the %s item" % title
-            return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has a selection "([^"]*)"')
-def the_title_item_has_a_selection_seltitle(step, title, seltitle):
-    panel = get_column('collection')
-
-    select = 'td.selection-meta div.metadata-container a.materialCitationLink'
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            selection = i.find_element_by_css_selector(select)
-            assert selection, "Unable to find the %s selection" % seltitle
-
-            msg = "Selection title is %s. Expected %s" % (selection.text,
-                                                          seltitle)
-            assert selection.text == seltitle, msg
-
-            return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has no selections')
-def the_title_item_has_no_selections(step, title):
-    panel = get_column('collection')
-
-    select = 'td.selection-meta div.metadata-container a.materialCitationLink'
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            selections = i.find_elements_by_css_selector(select)
-            if len(selections) > 0:
-                assert False, "Item %s has %s selections" % (
-                    title, len(selections))
-            else:
-                return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has no notes')
-def the_title_item_has_no_notes(step, title):
-    panel = get_column('collection')
-
-    select = 'li.annotation-global-body span.metadata-value'
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            try:
-                i.find_element_by_css_selector(select)
-                assert False, "Item %s has notes" % title
-            except NoSuchElementException:
-                return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" item has no tags')
-def the_title_item_has_no_tags(step, title):
-    panel = get_column('collection')
-    select = 'li.annotation-global-tags span.metadata-value a.switcher-choice'
-
-    items = panel.find_elements_by_css_selector('div.gallery-item')
-    for i in items:
-        elt = i.find_element_by_css_selector('a.asset-title-link')
-        if elt.text == title:
-            try:
-                i.find_element_by_css_selector(select)
-                assert False, "Item %s has tags" % title
-            except NoSuchElementException:
-                return
-
-    assert False, "Unable to find item [%s] in the collection panel" % title
-
-
-@step(u'the "([^"]*)" selection has a note "([^"]*)"')
-def the_seltitle_selection_has_a_note_text(step, seltitle, text):
-    panel = get_column('collection')
-
-    selections = panel.find_elements_by_css_selector('td.selection-meta')
-    for s in selections:
-        title = s.find_element_by_css_selector(
-            'div.metadata-container a.materialCitationLink')
-        if title and title.text == seltitle:
-            note = s.find_element_by_css_selector(
-                'div.annotation-notes span.metadata-value')
-
-            assert note, "No note for the %s selection" % seltitle
-
-            msg = "The %s note reads %s. Expected %s" % (seltitle,
-                                                         note.text,
-                                                         text)
-            assert note.text == text, msg
-
-            return
-
-    assert False, "No selection [%s] in the collection panel" % seltitle
-
-
-@step(u'the "([^"]*)" selection has a tag "([^"]*)"')
-def the_seltitle_selection_has_a_tag_text(step, seltitle, text):
-    panel = get_column('collection')
-
-    selections = panel.find_elements_by_css_selector('td.selection-meta')
-    for s in selections:
-        title = s.find_element_by_css_selector(
-            'div.metadata-container a.materialCitationLink')
-        if title and title.text == seltitle:
-            tags = s.find_elements_by_css_selector(
-                'div.annotation-tags span.metadata-value a.switcher-choice')
-            for t in tags:
-                if t.text == text:
-                    return
-            assert False, "No tag for the %s selection" % seltitle
-            return
-
-    assert False, "No selection [%s] in the collection panel" % seltitle
-
-
-@step(u'the "([^"]*)" item has an? ([^"]*) icon')
-def the_title_item_has_a_name_icon(step, title, name):
-    select = "div.gallery-item"
-    items = world.browser.find_elements_by_css_selector(select)
-    for item in items:
-        try:
-            item.find_element_by_partial_link_text(title)
-        except NoSuchElementException:
-            continue
-
-        try:
-            item.find_element_by_css_selector("a.%s-asset" % name)
-            return  # found the link & the icon
-        except:
-            try:
-                item.find_element_by_css_selector("a.%s-asset-inplace" % name)
-                return  # found the link & the icon
-            except NoSuchElementException:
-                assert False, \
-                    "Item %s does not have a %s icon." % (title, name)
-
-    assert False, "Unable to find the %s item" % title
-
-
-@step(u'the "([^"]*)" item has no ([^"]*) icon')
-def the_title_item_has_no_name_icon(step, title, name):
-    select = "div.gallery-item"
-    items = world.browser.find_elements_by_css_selector(select)
-    for item in items:
-        try:
-            item.find_element_by_partial_link_text(title)
-        except NoSuchElementException:
-            continue
-
-        try:
-            item.find_element_by_css_selector("a.%s-asset" % name)
-            assert False, "Item %s has a %s icon." % (title, name)
-        except NoSuchElementException:
-            assert True, "Item %s does not have a %s icon" % (title, name)
-            return
-
-    assert False, "Unable to find the %s item" % title
+    ''' Full collection in the asset worksapce '''
+    selector = (
+        "//tr[@class='asset-workspace-content-row']"
+        "//div[contains(@class,'gallery-item')]"
+        "//a[contains(@class,'asset-title-link')]"
+        "[contains(text(),'{}')]").format(title)
+    elts = world.browser.find_elements_by_xpath(selector)
+    assert len(elts) == 0
 
 
 @step(u'I click the "([^"]*)" item ([^"]*) icon')
@@ -764,56 +529,6 @@ def i_click_the_title_item_name_icon(step, title, name):
             assert False, "Item %s does not have a %s icon." % (title, name)
 
     assert False, "Unable to find the %s item" % title
-
-
-@step(u'I can filter by "([^"]*)" in the ([^"]*) column')
-def i_can_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-
-    filter_menu = column.find_element_by_css_selector("div.course-tags input")
-    filter_menu.click()
-
-    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
-
-    for t in tags:
-        if t.text == tag:
-            t.click()
-            time.sleep(1)
-            return
-
-    filter_menu.click()
-    assert False, "Unable to filter by %s tag" % tag
-
-
-@step(u'I cannot filter by "([^"]*)" in the ([^"]*) column')
-def i_cannot_filter_by_tag_in_the_title_column(step, tag, title):
-    column = get_column(title)
-
-    filter_menu = column.find_element_by_css_selector("div.course-tags input")
-    filter_menu.click()
-
-    tags = world.browser.find_elements_by_css_selector("ul.select2-results li")
-
-    for t in tags:
-        if t.text == tag:
-            assert False, "Found %s tag" % tag
-
-    # close the menu
-    world.browser.find_element_by_css_selector("body").click()
-
-
-@step(u'I clear all tags')
-def i_clear_all_tags(step):
-    selector = "a.select2-search-choice-close"
-    tag_count = len(world.browser.find_elements_by_css_selector(selector))
-
-    for x in range(0, tag_count):
-        tag = world.browser.find_element_by_css_selector(selector)
-        tag.click()
-        time.sleep(2)
-
-    tag_count = world.browser.find_elements_by_css_selector(selector)
-    assert True, tag_count == 0
 
 
 @step(u'Given publish to world is ([^"]*)')

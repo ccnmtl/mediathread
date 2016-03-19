@@ -422,7 +422,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.put('/api/asset/2/', {},
+        response = self.client.put('/api/asset/{}/'.format(self.asset2.id),
+                                   {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)
 
@@ -431,7 +432,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.delete('/api/asset/2/', {},
+        response = self.client.delete('/api/asset/{}/'.format(self.asset2.id),
+                                      {},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)
 

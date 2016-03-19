@@ -3,6 +3,7 @@
 import json
 
 from courseaffils.models import Course
+from django.core.cache import cache
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 from tagging.models import Tag
@@ -63,6 +64,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             tags=',video, instructor_one_global,',
             body='instructor one global note',
             title=None, range1=None, range2=None)
+
+    def tearDown(self):
+        cache.clear()
 
     def get_credentials(self):
         return None
@@ -422,7 +426,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.put('/api/asset/2/', {},
+        response = self.client.put('/api/asset/{}/'.format(self.asset2.id),
+                                   {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)
 
@@ -431,7 +436,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
 
-        response = self.client.delete('/api/asset/2/', {},
+        response = self.client.delete('/api/asset/{}/'.format(self.asset2.id),
+                                      {},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 405)
 
@@ -445,7 +451,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
-                          "courseaffils/select_course.html")
+                          "courseaffils/course_list.html")
 
     def test_getobject_multiple_class_member_wrongcourse(self):
         self.assertTrue(
@@ -488,7 +494,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/', {})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
-                          "courseaffils/select_course.html")
+                          "courseaffils/course_list.html")
 
         # No dice, login to Alternate Course
         self.switch_course(self.client, self.alt_course)

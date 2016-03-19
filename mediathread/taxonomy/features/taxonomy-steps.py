@@ -206,3 +206,25 @@ def specify_the_refresh_onomy_url(step):
     elt = world.browser.find_element_by_id('onomy_url')
     elt.send_keys(',')
     elt.send_keys(url)
+
+
+@step(u'there is a "([^"]*)" concept')
+def there_is_a_text_concept(step, text):
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
+                                              text)))
+
+
+@step(u'there is not a "([^"]*)" concept')
+def there_is_not_a_text_concept(step, text):
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.PARTIAL_LINK_TEXT,
+                                                text)))
+
+
+@step(u'I click the "([^"]*)" concept')
+def i_click_the_text_concept(step, text):
+    wait = ui.WebDriverWait(world.browser, 5)
+    elt = wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
+                                                    text)))
+    elt.click()

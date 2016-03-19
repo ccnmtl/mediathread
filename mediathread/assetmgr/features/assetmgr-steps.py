@@ -142,7 +142,7 @@ def i_can_filter_by_tag_in_the_collection_column(step, tag):
 
     wait = ui.WebDriverWait(world.browser, 5)
     wait.until(invisibility_of_element_located((By.CSS_SELECTOR,
-                                                '.select2-drop')))
+                                                '.ajaxloader')))
 
 
 @step(u'I clear all tags')

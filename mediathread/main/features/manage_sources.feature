@@ -24,12 +24,12 @@ Feature: Sources
         
         # On the Full Collection page
         When I access the url "/asset/"
-        Given the asset workspace is loaded
-
+        Then I am at the Mediathread Collection page
+        
         The Collection panel has no "You Tube" item
         And the Collection panel has a "MAAP Award Reception" item
         And the Collection panel has a "Mediathread: Introduction" item
-        And the Collection panel has a "The Armory" item
+        And the Collection panel has a "The Armory - Home to CCNMTL'S CUMC…" item
             
         Finished using Selenium
    

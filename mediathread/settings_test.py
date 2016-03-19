@@ -1,8 +1,8 @@
 # flake8: noqa
 from settings_shared import *
 
-DEBUG = True
-TEMPLATE_DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 DATABASES = {
     'default': {
@@ -15,8 +15,8 @@ DATABASES = {
     }
 }
 
-BROWSER = 'Headless'
 # BROWSER = 'Firefox'
+BROWSER = 'Headless'
 # BROWSER = 'Chrome'
 
 LETTUCE_SERVER_PORT = 8002

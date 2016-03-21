@@ -277,11 +277,6 @@ def the_title_form_disappears(step, title):
         assert False, '%s form did not appear' % title
 
 
-@step(u'"([^"]*)" does not have a response')
-def title_does_not_have_a_response(step, title):
-    assert False, 'This step must be implemented'
-
-
 @step(u'I set the selection tags field to "([^"]*)"')
 def i_set_the_selection_tags_field_to_value(step, value):
     q = '#edit-annotation-form #s2id_id_annotation-tags .select2-input'

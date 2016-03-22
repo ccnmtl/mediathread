@@ -113,7 +113,7 @@
                                     </li>
                                 {{/vocabulary}}
 
-                                {{#metadata.tags}}
+                                {{#metadata.tags.length}}
                                     <li class="annotation-global-tags meta">
                                         <span class="metadata-label">Item Tags:</span>
                                         <span class="metadata-value">
@@ -122,7 +122,7 @@
                                             {{/metadata.tags}}
                                         </span>
                                     </li>
-                                            {{/metadata.tags}}
+                                {{/metadata.tags.length}}
 
                                 {{#metadata.body}}
                                     <li class="annotation-global-body meta">
@@ -218,7 +218,7 @@
                                                     {{/vocabulary}}
 
                                                     {{#metadata}}
-                                                        {{#tags}}
+                                                        {{#tags.length}}
                                                             <div><span class="metadata-label">Tags:</span>
                                                             <span class="metadata-value">
                                                                 {{#tags}}
@@ -226,7 +226,7 @@
                                                                 {{/tags}}
                                                             </span>
                                                             </div>
-                                                        {{/tags}}
+                                                        {{/tags.length}}
                                                         {{#body}}
                                                             <div>
                                                                 <span class="metadata-label">Note:</span>

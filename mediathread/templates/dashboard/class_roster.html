@@ -67,7 +67,18 @@
                     </div>
                     <div class="modal-body">
                         <form action="{% url 'course-roster-add-uni' %}" method="POST">
-                            <p>Enter a list of unis separated by commas</p>
+                            <p>
+                            <b>About Adding Students</b><br />
+                            Normally, an instructor does not need to add users manually to a Mediathread course.
+                            Registered students are added to their affiliated courses automatically when they login
+                            to Mediathread. But, sometimes students or teaching assistants are not formally registered.
+                            This utility will allow you to add them to the course easily.</p>
+
+                            <p><b>How To Add Students</b><br />
+                            To add students or teaching assistants who are not formally registered, enter a list 
+                            of UNIs separated by commas. The users will be added to the course
+                            and receive an email with login instructions.</p>
+                            <br />  
                             <div class="form-group">
                                 <label for="uni">UNI</label>
                                 <textarea class="form-control" name="uni"></textarea>

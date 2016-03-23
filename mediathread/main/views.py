@@ -37,7 +37,7 @@ from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
-    LoggedInSuperuserMixin
+    LoggedInSuperuserMixin, EmailMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -370,7 +370,7 @@ class RequestCourseView(FormView):
         return super(RequestCourseView, self).form_valid(form)
 
 
-class ContactUsView(FormView):
+class ContactUsView(EmailMixin, FormView):
     template_name = 'main/contact.html'
     form_class = ContactUsForm
     success_url = "/contact/success/"
@@ -410,10 +410,9 @@ class ContactUsView(FormView):
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
         if support_email is None:
-            # POST back to the user. Assumes task or support emails are set.
-            tmpl = loader.get_template('main/contact_email_response.txt')
-            send_mail(subject, tmpl.render(Context(form_data)),
-                      settings.SERVER_EMAIL, (form_data['email'],))
+            self.send_template_email(
+                subject, 'main/contact_email_response.txt',
+                form_data, form_data['email'])
         else:
             sender = form_data['email']
             recipients = (support_email,)
@@ -578,7 +577,7 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
-class CourseAddUNIUserView(LoggedInFacultyMixin, View):
+class CourseAddUNIUserView(EmailMixin, LoggedInFacultyMixin, View):
 
     def get_or_create_user(self, uni):
         try:
@@ -590,21 +589,15 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
         return user
 
     def notify_user(self, uni):
-        template = loader.get_template(
-            'dashboard/course_invitation_uni_email.txt')
-
         subject = "Mediathread Course Invitation: {}".format(
             self.request.course.title)
-
-        ctx = Context({
+        ctx = {
             'course': self.request.course,
             'domain': get_current_site(self.request).domain
-        })
-        message = template.render(ctx)
-
-        sender = settings.SERVER_EMAIL
-        recipients = ['{}@columbia.edu'.format(uni)]
-        send_mail(subject, message, sender, recipients)
+        }
+        self.send_template_email(
+            subject, 'dashboard/course_invitation_uni_email.txt',
+            ctx, '{}@columbia.edu'.format(uni))
 
     def post(self, request):
         uni = request.POST.get('uni', None)

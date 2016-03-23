@@ -1,11 +1,13 @@
 from datetime import datetime
+
+from django.core import mail
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
 from mediathread.assetmgr.models import Asset
 from mediathread.factories import MediathreadTestMixin, ProjectFactory, \
     AssetFactory, AssignmentItemFactory, SherdNoteFactory, ProjectNoteFactory
-from mediathread.mixins import RestrictedMaterialsMixin
+from mediathread.mixins import RestrictedMaterialsMixin, EmailMixin
 from mediathread.projects.models import RESPONSE_VIEW_NEVER, \
     RESPONSE_VIEW_SUBMITTED
 
@@ -99,3 +101,17 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
                                   [self.note_one, self.note_two])
         self.assert_visible_notes(self.instructor_one,
                                   [self.note_one, self.note_two])
+
+
+class EmailMixinTest(TestCase):
+
+    def test_send_template_email(self):
+        with self.settings(SERVER_EMAIL='mediathread@example.com'):
+            mixin = EmailMixin()
+            mixin.send_template_email('foo', 'main/contact_email_response.txt',
+                                      {'name': 'bar'}, 'abc123@columbia.edu')
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, 'foo')
+            self.assertEquals(mail.outbox[0].from_email,
+                              'mediathread@example.com')
+            self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])

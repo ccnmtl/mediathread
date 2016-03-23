@@ -2,21 +2,24 @@ import csv
 import json
 
 from courseaffils.lib import in_course_or_404
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.template import loader
+from django.template.context import Context
 from django.utils.decorators import method_decorator
+import reversion
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
 from mediathread.projects.models import Project, ProjectNote
-
-import reversion
 
 
 def ajax_required(func):
@@ -211,3 +214,11 @@ class ProjectEditableMixin(object):
             return HttpResponseForbidden("forbidden")
         self.project = project
         return super(ProjectEditableMixin, self).dispatch(*args, **kwargs)
+
+
+class EmailMixin(object):
+
+    def send_template_email(self, subject, template_name, params, recipient):
+        template = loader.get_template(template_name)
+        message = template.render(Context(params))
+        send_mail(subject, message, settings.SERVER_EMAIL, [recipient])

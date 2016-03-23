@@ -1,5 +1,5 @@
 /* global _: true, Backbone: true */
-/* global showMessage: true */
+/* global confirmAction: true */
 
 (function() {
     window.CourseRosterView = Backbone.View.extend({
@@ -29,7 +29,7 @@
             var $elt = jQuery(evt.currentTarget);
             this.form = $elt.parents('form').first();
             var name = $elt.data('user-fullname');
-            showMessage(
+            confirmAction(
                 'Are you sure you want to promote ' + name + ' to faculty?',
                  this.onActionConfirmed, 'Confirm');
         },
@@ -38,7 +38,7 @@
             var $elt = jQuery(evt.currentTarget);
             this.form = $elt.parents('form').first();
             var name = $elt.data('user-fullname');
-            showMessage(
+            confirmAction(
                 'Are you sure you want to demote ' + name + ' to student?',
                  this.onActionConfirmed, 'Confirm');
         },
@@ -47,7 +47,7 @@
             var $elt = jQuery(evt.currentTarget);
             this.form = $elt.parents('form').first();
             var name = $elt.data('user-fullname');
-            showMessage(
+            confirmAction(
                 'Are you sure you want to remove ' + name + ' from the course?',
                  this.onActionConfirmed, 'Confirm');
         },

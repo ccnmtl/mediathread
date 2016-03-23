@@ -22,7 +22,10 @@ class LTIAuthMixin(object):
         # add the user to the requested groups
         user.groups.add(ctx.group)
         for role in lti.user_roles():
-            if role.lower() in ['staff', 'instructor', 'administrator']:
+            role = role.lower()
+            if ('staff' in role or
+                'instructor' in role or
+                    'administrator' in role):
                 user.groups.add(ctx.faculty_group)
                 break
 

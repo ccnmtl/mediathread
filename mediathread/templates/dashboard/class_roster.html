@@ -65,9 +65,10 @@
                     </div>
                     <div class="modal-body">
                         <form action="{% url 'course-roster-add-uni' %}" method="POST">
+                            <p>Enter a list of unis separated by commas</p>
                             <div class="form-group">
                                 <label for="uni">UNI</label>
-                                <input type="text" class="form-control" name="uni" placeholder="UNI">
+                                <textarea class="form-control" name="uni"></textarea>>
                             </div>
                             <p class="small"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
                         </form>

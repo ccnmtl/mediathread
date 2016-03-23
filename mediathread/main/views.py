@@ -607,25 +607,30 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
         send_mail(subject, message, sender, recipients)
 
     def post(self, request):
-        uni = request.POST.get('uni', None)
+        unis = request.POST.get('uni', None)
         url = reverse('course-roster')
 
-        if uni is None or len(uni) < 1:
-            msg = 'Please enter a valid UNI'
+        if unis is None:
+            msg = 'Please enter a comma-separated list of UNIs'
             messages.add_message(request, messages.ERROR, msg)
             return HttpResponseRedirect(url)
 
-        user = self.get_or_create_user(uni)
-        if self.request.course.is_true_member(user):
-            msg = '{} is already a course member'.format(user.get_full_name())
-            messages.add_message(request, messages.INFO, msg)
-            return HttpResponseRedirect(url)
-
-        self.request.course.group.user_set.add(user)
-        self.notify_user(uni)
-
-        msg = ("{} can now access this course by logging in with their UNI. "
-               "An email was sent notifying the user.".format(uni))
-        messages.add_message(request, messages.INFO, msg)
+        for uni in unis.split(','):
+            uni = uni.strip()
+            if len(uni) > 0:
+                user = self.get_or_create_user(uni)
+                if self.request.course.is_true_member(user):
+                    msg = '{} is already a course member'.format(
+                        user.get_full_name())
+                    messages.add_message(request, messages.WARNING, msg)
+                else:
+                    msg = (
+                        '{} is now a course member. An email was sent to '
+                        '{}@columbia.edu notifying the user.').format(
+                            user.get_full_name() or user.username,
+                            user.username)
+                    messages.add_message(request, messages.INFO, msg)
+                    self.request.course.group.user_set.add(user)
+                    self.notify_user(uni)
 
         return HttpResponseRedirect(reverse('course-roster'))

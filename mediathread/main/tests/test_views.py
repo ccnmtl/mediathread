@@ -985,7 +985,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertFalse(self.sample_course.is_faculty(self.instructor_two))
         self.assertFalse(self.sample_course.is_member(self.instructor_two))
 
-    def test_uniinvite_get_or_create_user(self):
+    def test_uni_invite_get_or_create_user(self):
         request = RequestFactory().get(self.url)
         request.user = self.instructor_one
         request.course = self.sample_course
@@ -997,7 +997,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertFalse(user.has_usable_password())
         self.assertEquals(user, view.get_or_create_user('abc123'))
 
-    def test_uniinvite_notify_user(self):
+    def test_uni_invite_notify_user(self):
         request = RequestFactory().get(self.url)
         request.user = self.instructor_one
         request.course = self.sample_course
@@ -1014,14 +1014,14 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
                               'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
 
-    def test_uniinvite_post(self):
+    def test_uni_invite_post(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
 
         url = reverse('course-roster-add-uni')
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('Please enter a valid UNI'
+        self.assertTrue('Please enter a comma-separated list of UNIs'
                         in response.cookies['messages'].value)
 
         response = self.client.post(url, {'uni': 'abc123'})
@@ -1033,7 +1033,12 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         user.last_name = 'Smith'
         user.save()
 
-        response = self.client.post(url, {'uni': 'abc123'})
+        response = self.client.post(url, {'uni': ' abc123 ,efg456,'})
         self.assertEquals(response.status_code, 302)
+
+        user = User.objects.get(username='efg456')
+        self.assertTrue(self.sample_course.is_true_member(user))
         self.assertTrue('John Smith is already a course member'
+                        in response.cookies['messages'].value)
+        self.assertTrue('efg456 is now a course member'
                         in response.cookies['messages'].value)

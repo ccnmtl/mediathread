@@ -61,8 +61,8 @@ class LTIRoutingView(LTIAuthMixin, View):
 
     def custom_landing_page(self):
         key = u'tool_consumer_info_product_family_code'
-        provider = self.request.POST.get(key, None)
-        return provider == 'canvas'
+        provider = self.request.POST.get(key, '').lower()
+        return 'canvas' in provider or 'blackboard' in provider
 
     def post(self, request):
         if request.POST.get('ext_content_intended_use', '') == 'embed':

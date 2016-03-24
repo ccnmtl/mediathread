@@ -35,9 +35,10 @@ from mediathread.main.course_details import cached_course_is_faculty, \
 from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
     CourseDeleteMaterialsForm
 from mediathread.main.models import UserSetting
+from mediathread.main.util import send_template_email
 from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
-    LoggedInSuperuserMixin, EmailMixin
+    LoggedInSuperuserMixin
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -370,7 +371,7 @@ class RequestCourseView(FormView):
         return super(RequestCourseView, self).form_valid(form)
 
 
-class ContactUsView(EmailMixin, FormView):
+class ContactUsView(FormView):
     template_name = 'main/contact.html'
     form_class = ContactUsForm
     success_url = "/contact/success/"
@@ -410,7 +411,7 @@ class ContactUsView(EmailMixin, FormView):
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
         if support_email is None:
-            self.send_template_email(
+            send_template_email(
                 subject, 'main/contact_email_response.txt',
                 form_data, form_data['email'])
         else:
@@ -577,7 +578,7 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
-class CourseAddUNIUserView(EmailMixin, LoggedInFacultyMixin, View):
+class CourseAddUNIUserView(LoggedInFacultyMixin, View):
 
     def get_or_create_user(self, uni):
         try:
@@ -595,7 +596,7 @@ class CourseAddUNIUserView(EmailMixin, LoggedInFacultyMixin, View):
             'course': self.request.course,
             'domain': get_current_site(self.request).domain
         }
-        self.send_template_email(
+        send_template_email(
             subject, 'dashboard/course_invitation_uni_email.txt',
             ctx, '{}@columbia.edu'.format(uni))
 

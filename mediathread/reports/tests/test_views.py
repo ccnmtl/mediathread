@@ -238,8 +238,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         header = ("First Name,Last Name,Email,Title,Institution,"
                   "Referred_By,User Story,Created")
-        data = ("Student,One,,Title,Columbia University,Pablo Picasso,"
-                "User Story,")
+        data = ("Student,One,student_one@example.com,Title,"
+                "Columbia University,Pablo Picasso,User Story,")
 
         self.assertTrue(header in response.content)
         self.assertTrue(data in response.content)

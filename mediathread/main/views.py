@@ -35,6 +35,7 @@ from mediathread.main.course_details import cached_course_is_faculty, \
 from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
     CourseDeleteMaterialsForm
 from mediathread.main.models import UserSetting
+from mediathread.main.util import send_template_email
 from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
     LoggedInSuperuserMixin
@@ -410,10 +411,9 @@ class ContactUsView(FormView):
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
         if support_email is None:
-            # POST back to the user. Assumes task or support emails are set.
-            tmpl = loader.get_template('main/contact_email_response.txt')
-            send_mail(subject, tmpl.render(Context(form_data)),
-                      settings.SERVER_EMAIL, (form_data['email'],))
+            send_template_email(
+                subject, 'main/contact_email_response.txt',
+                form_data, form_data['email'])
         else:
             sender = form_data['email']
             recipients = (support_email,)
@@ -590,21 +590,15 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
         return user
 
     def notify_user(self, uni):
-        template = loader.get_template(
-            'dashboard/course_invitation_uni_email.txt')
-
         subject = "Mediathread Course Invitation: {}".format(
             self.request.course.title)
-
-        ctx = Context({
+        ctx = {
             'course': self.request.course,
             'domain': get_current_site(self.request).domain
-        })
-        message = template.render(ctx)
-
-        sender = settings.SERVER_EMAIL
-        recipients = ['{}@columbia.edu'.format(uni)]
-        send_mail(subject, message, sender, recipients)
+        }
+        send_template_email(
+            subject, 'dashboard/course_invitation_uni_email.txt',
+            ctx, '{}@columbia.edu'.format(uni))
 
     def post(self, request):
         unis = request.POST.get('uni', None)

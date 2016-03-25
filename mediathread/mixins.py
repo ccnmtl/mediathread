@@ -10,13 +10,12 @@ from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
+import reversion
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
 from mediathread.projects.models import Project, ProjectNote
-
-import reversion
 
 
 def ajax_required(func):

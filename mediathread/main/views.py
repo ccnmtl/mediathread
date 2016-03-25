@@ -35,7 +35,7 @@ from mediathread.main.course_details import cached_course_is_faculty, \
 from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
     CourseDeleteMaterialsForm
 from mediathread.main.models import UserSetting
-from mediathread.main.util import send_template_email
+from mediathread.main.util import send_template_email, user_display_name
 from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
     LoggedInSuperuserMixin
@@ -541,7 +541,7 @@ class CoursePromoteUserView(LoggedInFacultyMixin, View):
         student = get_object_or_404(User, id=student_id)
         request.course.faculty_group.user_set.add(student)
 
-        msg = '{} is now faculty'.format(student.get_full_name())
+        msg = '{} is now faculty'.format(user_display_name(student))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -554,7 +554,7 @@ class CourseDemoteUserView(LoggedInFacultyMixin, View):
         faculty = get_object_or_404(User, id=faculty_id)
         request.course.faculty_group.user_set.remove(faculty)
 
-        msg = '{} is now a student'.format(faculty.get_full_name())
+        msg = '{} is now a student'.format(user_display_name(faculty))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -572,7 +572,7 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         request.course.group.user_set.remove(user)
         request.course.faculty_group.user_set.remove(user)
 
-        msg = '{} is no longer a course member'.format(user.get_full_name())
+        msg = '{} is no longer a course member'.format(user_display_name(user))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -621,8 +621,7 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
                     msg = (
                         '{} is now a course member. An email was sent to '
                         '{}@columbia.edu notifying the user.').format(
-                            user.get_full_name() or user.username,
-                            user.username)
+                            user_display_name(user), user.username)
                     messages.add_message(request, messages.INFO, msg)
                     self.request.course.group.user_set.add(user)
                     self.notify_user(uni)

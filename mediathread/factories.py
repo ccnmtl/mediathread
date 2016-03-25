@@ -32,10 +32,10 @@ class UserProfileFactory(factory.DjangoModelFactory):
         model = UserProfile
 
     user = factory.SubFactory(UserFactory)
-    title = "Title"
-    institution = "Columbia University"
-    referred_by = "Pablo Picasso"
-    user_story = "User Story"
+    title = 'Title'
+    institution = 'Columbia University'
+    referred_by = 'Pablo Picasso'
+    user_story = 'User Story'
     self_registered = True
 
 
@@ -56,7 +56,7 @@ class RegistrationProfileFactory(factory.DjangoModelFactory):
 class CourseFactory(factory.DjangoModelFactory):
     class Meta:
         model = Course
-    title = "Sample Course"
+    title = 'Sample Course'
     faculty_group = factory.SubFactory(GroupFactory)
     group = factory.SubFactory(GroupFactory)
 
@@ -197,7 +197,7 @@ class MediathreadTestMixin(object):
         comment = ThreadedComment.objects.create(
             site=Site.objects.all().first(),
             content_type=ContentType.objects.get_for_model(ThreadedComment),
-            parent=parent_comment, comment="test comment",
+            parent=parent_comment, comment='test comment',
             user=author)
         return comment
 
@@ -238,24 +238,23 @@ class MediathreadTestMixin(object):
         user.groups.add(course.faculty_group)
 
     def setup_sample_course(self):
-        self.instructor_one = UserFactory(username='instructor_one',
-                                          first_name="Instructor",
-                                          last_name="One")
-        self.instructor_two = UserFactory(username='instructor_two',
-                                          first_name="Instructor",
-                                          last_name="Two")
+        self.instructor_one = UserFactory(
+            username='instructor_one', email='instructor_one@example.com',
+            first_name='Instructor', last_name='One')
+        self.instructor_two = UserFactory(
+            username='instructor_two', email='instructor_two@example.com',
+            first_name='Instructor', last_name='Two')
+        self.student_one = UserFactory(
+            username='student_one', email='student_one@example.com',
+            first_name='Student', last_name='One')
+        self.student_two = UserFactory(
+            username='student_two', email='student_two@example.com',
+            first_name='Student', last_name='Two')
+        self.student_three = UserFactory(
+            username='student_three', email='student_three@example.com',
+            first_name='Student', last_name='Three')
 
-        self.student_one = UserFactory(username='student_one',
-                                       first_name="Student",
-                                       last_name="One")
-        self.student_two = UserFactory(username='student_two',
-                                       first_name="Student",
-                                       last_name="Two")
-        self.student_three = UserFactory(username='student_three',
-                                         first_name="Student",
-                                         last_name="Three")
-
-        self.sample_course = CourseFactory(title="Sample Course")
+        self.sample_course = CourseFactory(title='Sample Course')
 
         self.add_as_student(self.sample_course, self.student_one)
         self.add_as_student(self.sample_course, self.student_two)
@@ -265,14 +264,14 @@ class MediathreadTestMixin(object):
         self.add_as_faculty(self.sample_course, self.instructor_two)
 
     def setup_alternate_course(self):
-        self.alt_instructor = UserFactory(username='alt_instructor',
-                                          first_name='Instructor',
-                                          last_name='Alternate')
-        self.alt_student = UserFactory(username='alt_student',
-                                       first_name='Student',
-                                       last_name='Alternate')
+        self.alt_instructor = UserFactory(
+            username='alt_instructor', email='alt_instructor@example.com',
+            first_name='Instructor', last_name='Alternate')
+        self.alt_student = UserFactory(
+            username='alt_student', email='alt_student@example.com',
+            first_name='Student', last_name='Alternate')
 
-        self.alt_course = CourseFactory(title="Alternate Course")
+        self.alt_course = CourseFactory(title='Alternate Course')
 
         self.add_as_student(self.alt_course, self.alt_student)
         self.add_as_faculty(self.alt_course, self.alt_instructor)

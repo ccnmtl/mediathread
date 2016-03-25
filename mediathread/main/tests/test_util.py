@@ -1,10 +1,11 @@
 from django.core import mail
 from django.test.testcases import TestCase
 
-from mediathread.main.util import send_template_email
+from mediathread.factories import UserFactory
+from mediathread.main.util import send_template_email, user_display_name
 
 
-class SendTemplateEmailTest(TestCase):
+class UtilTest(TestCase):
 
     def test_send_template_email(self):
         with self.settings(SERVER_EMAIL='mediathread@example.com'):
@@ -15,3 +16,10 @@ class SendTemplateEmailTest(TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
+
+    def test_user_display_name(self):
+        user = UserFactory()
+        self.assertEquals(user_display_name(user), user.username)
+
+        user = UserFactory(first_name='John', last_name='Smith')
+        self.assertEquals(user_display_name(user), 'John Smith')

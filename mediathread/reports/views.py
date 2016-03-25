@@ -21,6 +21,7 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
+from mediathread.main.util import user_display_name
 from mediathread.mixins import faculty_only, LoggedInSuperuserMixin, \
     CSVResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.models import Project
@@ -108,9 +109,8 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
             collaboration__context=collaboration_context,
                 participant__isnull=False).order_by('-modified'):
             self.nodes.append({
-                'nodeName': 'Comment: %s' %
-                (didx.participant.get_full_name() or
-                 didx.participant.username),
+                'nodeName':
+                    'Comment: %s' % user_display_name(didx.participant),
                 'users': {didx.participant.username: 1},
                 'group': 4,
                 'href': didx.get_absolute_url(),

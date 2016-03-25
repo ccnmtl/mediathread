@@ -8,3 +8,7 @@ def send_template_email(subject, template_name, params, recipient):
     template = loader.get_template(template_name)
     message = template.render(Context(params))
     send_mail(subject, message, settings.SERVER_EMAIL, [recipient])
+
+
+def user_display_name(user):
+    return user.get_full_name() or user.username

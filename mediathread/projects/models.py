@@ -12,6 +12,7 @@ from threadedcomments.models import ThreadedComment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty
+from mediathread.main.util import user_display_name
 from structuredcollaboration.models import Collaboration
 
 
@@ -444,8 +445,7 @@ class Project(models.Model):
 
     def attribution(self, participants=None):
         participants = self.attribution_list()
-        return ', '.join([p.get_full_name() or p.username
-                          for p in participants])
+        return ', '.join([user_display_name(p) for p in participants])
 
     def __unicode__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())

@@ -710,7 +710,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
 
 
 class CourseAcceptInvitationView(FormView):
-    template_name = 'registration/activate_invitation.html'
+    template_name = 'registration/invitation_activate_form.html'
     form_class = ActivateInvitationForm
 
     def form_valid(self, form):
@@ -718,4 +718,4 @@ class CourseAcceptInvitationView(FormView):
         return super(CourseAcceptInvitationView, self).form_valid(form)
 
     def get_success_url(self):
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('course-invite-complete'))

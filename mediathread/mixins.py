@@ -2,13 +2,16 @@ import csv
 import json
 
 from courseaffils.lib import in_course_or_404
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models.query_utils import Q
 from django.http.response import HttpResponseNotAllowed, HttpResponse, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.template import loader
 from django.utils.decorators import method_decorator
 import reversion
 
@@ -210,3 +213,12 @@ class ProjectEditableMixin(object):
             return HttpResponseForbidden("forbidden")
         self.project = project
         return super(ProjectEditableMixin, self).dispatch(*args, **kwargs)
+
+
+class EmailMixin(object):
+
+    def send_template_email(self, subject, template_name, context, email):
+        template = loader.get_template(template_name)
+        message = template.render(context)
+        sender = settings.SERVER_EMAIL
+        send_mail(subject, message, sender, [email])

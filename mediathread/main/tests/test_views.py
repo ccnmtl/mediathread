@@ -25,7 +25,7 @@ from mediathread.main.course_details import allow_public_compositions, \
 from mediathread.main.forms import ContactUsForm, RequestCourseForm
 from mediathread.main.views import MigrateCourseView, ContactUsView, \
     RequestCourseView, CourseSettingsView, CourseManageSourcesView, \
-    CourseRosterView, CourseAddUNIUserView
+    CourseRosterView, CourseAddUserByUNIView, CourseInviteUserByEmailView
 from mediathread.projects.models import Project
 
 
@@ -941,6 +941,12 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
         self.url = reverse('course-roster')
 
+    def test_get(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(self.url)
+        self.assertEquals(response.status_code, 200)
+
     def test_roster_view_get_queryset(self):
         request = RequestFactory().get(self.url)
         request.user = self.instructor_one
@@ -990,29 +996,12 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        view = CourseAddUNIUserView()
+        view = CourseAddUserByUNIView()
         view.request = request
 
         user = view.get_or_create_user('abc123')
         self.assertFalse(user.has_usable_password())
         self.assertEquals(user, view.get_or_create_user('abc123'))
-
-    def test_uni_invite_notify_user(self):
-        request = RequestFactory().get(self.url)
-        request.user = self.instructor_one
-        request.course = self.sample_course
-
-        view = CourseAddUNIUserView()
-        view.request = request
-
-        with self.settings(SERVER_EMAIL='mediathread@example.com'):
-            view.notify_user('abc123')
-            self.assertEqual(len(mail.outbox), 1)
-            self.assertEqual(mail.outbox[0].subject,
-                             'Mediathread Course Invitation: Sample Course')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'mediathread@example.com')
-            self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
 
     def test_uni_invite_post(self):
         self.client.login(username=self.instructor_one.username,
@@ -1023,6 +1012,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertTrue('Please enter a comma-separated list of UNIs'
                         in response.cookies['messages'].value)
+        response.delete_cookie('messages')
 
         response = self.client.post(url, {'uni': 'abc123'})
         self.assertEquals(response.status_code, 302)
@@ -1041,4 +1031,83 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertTrue('John Smith is already a course member'
                         in response.cookies['messages'].value)
         self.assertTrue('efg456 is now a course member'
+                        in response.cookies['messages'].value)
+
+    def test_email_invite_get_user(self):
+        view = CourseInviteUserByEmailView()
+
+        self.assertEquals(view.get_user(self.student_one.email),
+                          self.student_one)
+        self.assertIsNone(view.get_user('foo@example.com'))
+
+    def test_email_invite_existing_course_member(self):
+        url = reverse('course-roster-invite-email')
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {'email': self.student_one.email})
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue('Student One is already a course member'
+                        in response.cookies['messages'].value)
+
+    def test_email_invite_existing_user(self):
+        with self.settings(SERVER_EMAIL='mediathread@example.com'):
+            self.setup_alternate_course()
+
+            url = reverse('course-roster-invite-email')
+            self.client.login(username=self.instructor_one.username,
+                              password='test')
+            response = self.client.post(url, {'email': self.alt_student.email})
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue('Student Alternate is now a course member'
+                            in response.cookies['messages'].value)
+            self.assertTrue(
+                self.sample_course.is_true_member(self.alt_student))
+
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread: Sample Course')
+            self.assertEquals(mail.outbox[0].from_email,
+                              'mediathread@example.com')
+            self.assertTrue(mail.outbox[0].to, [self.alt_student.email])
+
+    def test_email_invite_new_user(self):
+        with self.settings(SERVER_EMAIL='mediathread@example.com'):
+            url = reverse('course-roster-invite-email')
+            self.client.login(username=self.instructor_one.username,
+                              password='test')
+            response = self.client.post(url, {'email': 'foo@example.com'})
+
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue('foo@example.com was invited to join the course'
+                            in response.cookies['messages'].value)
+
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Course Invitation: Sample Course')
+            self.assertEquals(mail.outbox[0].from_email,
+                              'mediathread@example.com')
+            self.assertTrue(mail.outbox[0].to, ['foo@example.com'])
+
+    def test_email_invite_no_user(self):
+        url = reverse('course-roster-invite-email')
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {})
+
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(
+            'Please enter a comma-separated list of email addresses.'
+            in response.cookies['messages'].value)
+
+    def test_email_invite_invalid_email(self):
+        url = reverse('course-roster-invite-email')
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {'email': '#$%^,foo@example.com'})
+
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(
+            '#$%^ is not a valid email address.'
+            in response.cookies['messages'].value)
+        self.assertTrue('foo@example.com was invited to join the course'
                         in response.cookies['messages'].value)

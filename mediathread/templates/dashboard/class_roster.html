@@ -40,17 +40,20 @@
 {% if messages %}
     <div class="alert alert-info alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div><b>Action Completed</b></div><br />
       <ul>
       {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
         </ul>
-    </div>    
+    </div>
 {% endif %}  
 
 <div class="roster-container">
     <div>
-        <h3>{{object_list|length}} Members</h3>
+        <h3>
+            <a href="#roster-table">{{object_list|length}} Members</a>{% if invitations|length > 0 %}, <a href="#invite-table">{{invitations|length}} Invitations</a>{% endif %}
+        </h3>
     </div>
     <div class="pull-right">
         <button class="btn btn-default btn-sm"
@@ -63,7 +66,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Add Columbia University Network IDs (UNIs)</h4>
+                        <h4 class="modal-title">Add by Columbia University Network ID (UNI)</h4>
                     </div>
                     <div class="modal-body">
                         <form action="{% url 'course-roster-add-uni' %}" method="POST">
@@ -81,7 +84,8 @@
                             <br />  
                             <div class="form-group">
                                 <label for="uni">UNI</label>
-                                <textarea class="form-control" name="uni"></textarea>
+                                <textarea class="form-control" name="uni" placeholder="UNIs separated by commas"></textarea>
+                                <div class="help-inline">At least one UNI is required.</div>
                             </div>
                             <p class="small"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
                         </form>
@@ -93,8 +97,52 @@
                 </div>
             </div>
         </div>
+        <button class="btn btn-default btn-sm"
+            data-toggle="modal" data-target="#invite-email-user">
+            Invite by Email Address
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="invite-email-user" tabindex="-1" role="dialog" aria-labelledby="Add User">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Invite by Email Address</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'course-roster-invite-email' %}" method="POST">
+                            <p>
+                            <b>About Inviting Students</b><br />
+                            An instructor can invite a student into the course by providing an email address.
+                            An invitation will be sent to the student with instructions on how to create an
+                            account and login to the Mediathread course.</p>  
+
+                            <p><b>How To Invite Students</b><br />
+                            To invite students, enter a list of email addresses separated by commas. The users will 
+                            receive an invitation to the course via email.</p>
+                            
+                            <p><b>Columbia University Students</b><br />
+                            Do not invite students with Columbia University Network ID via email. Their course affiliations
+                            will not be picked up correctly. 
+                            <br />
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <textarea class="form-control" name="email" placeholder="email addresses separated by commas"></textarea>
+                                <div class="help-inline">At least one email address is required.</div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn-invite_email-user">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="visualclear"></div>
+    <a name="roster-table"></a>
     <div class="table-responsive">
         <table class="tablesorter">
             <thead>
@@ -163,5 +211,32 @@
             </tbody>
         </table>
     </div>
+
+    {% if invitations|length > 0 %}
+        <a name="invite-table"></a>
+        <h3>Invitations</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                    <th>Email</th>
+                    <th>Invited By</th>
+                    <th>Invited At</th>
+                    <th>Accepted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invite in invitations %}
+                        <tr>
+                            <td>{{invite.email}}</td>
+                            <td>{{invite.invited_by}}</td>
+                            <td>{{invite.invited_at}}</td>
+                            <td>{{invite.accepted}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <div>
+    {% endif %}
 </div>    
 {% endblock %}

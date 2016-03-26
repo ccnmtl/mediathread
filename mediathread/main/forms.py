@@ -145,3 +145,21 @@ class CourseDeleteMaterialsForm(forms.Form):
                 "Please enter your username"])
 
         return cleaned_data
+
+
+class ActivateInvitationForm(forms.Form):
+    first_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(
+        required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))

@@ -9,8 +9,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -33,8 +35,8 @@ from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
 from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
-    CourseDeleteMaterialsForm
-from mediathread.main.models import UserSetting
+    CourseDeleteMaterialsForm, ActivateInvitationForm
+from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name
 from mediathread.mixins import ajax_required, \
     AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
@@ -533,6 +535,12 @@ class CourseRosterView(LoggedInFacultyMixin, ListView):
     def get_queryset(self):
         return self.request.course.members
 
+    def get_context_data(self, **kwargs):
+        ctx = ListView.get_context_data(self, **kwargs)
+        ctx['invitations'] = CourseInvitation.objects.filter(
+            course=self.request.course)
+        return ctx
+
 
 class CoursePromoteUserView(LoggedInFacultyMixin, View):
 
@@ -578,7 +586,9 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
-class CourseAddUNIUserView(LoggedInFacultyMixin, View):
+class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
+
+    email_template = 'dashboard/email_add_uni_user.txt'
 
     def get_or_create_user(self, uni):
         try:
@@ -589,17 +599,6 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
             user.save()
         return user
 
-    def notify_user(self, uni):
-        subject = "Mediathread Course Invitation: {}".format(
-            self.request.course.title)
-        ctx = {
-            'course': self.request.course,
-            'domain': get_current_site(self.request).domain
-        }
-        send_template_email(
-            subject, 'dashboard/course_invitation_uni_email.txt',
-            ctx, '{}@columbia.edu'.format(uni))
-
     def post(self, request):
         unis = request.POST.get('uni', None)
         url = reverse('course-roster')
@@ -609,21 +608,114 @@ class CourseAddUNIUserView(LoggedInFacultyMixin, View):
             messages.add_message(request, messages.ERROR, msg)
             return HttpResponseRedirect(url)
 
+        subj = "Mediathread: {}".format(self.request.course.title)
+        ctx = {
+            'course': self.request.course,
+            'domain': get_current_site(self.request).domain
+        }
+
         for uni in unis.split(','):
             uni = uni.strip()
             if len(uni) > 0:
                 user = self.get_or_create_user(uni)
+                display_name = user_display_name(user)
                 if self.request.course.is_true_member(user):
-                    msg = '{} is already a course member'.format(
-                        user.get_full_name())
+                    msg = '{} is already a course member'.format(display_name)
                     messages.add_message(request, messages.WARNING, msg)
                 else:
+                    email = '{}@columbia.edu'.format(uni)
+                    self.request.course.group.user_set.add(user)
+                    send_template_email(subj, self.email_template, ctx, email)
                     msg = (
                         '{} is now a course member. An email was sent to '
-                        '{}@columbia.edu notifying the user.').format(
-                            user_display_name(user), user.username)
+                        '{} notifying the user.').format(display_name, email)
+
                     messages.add_message(request, messages.INFO, msg)
-                    self.request.course.group.user_set.add(user)
-                    self.notify_user(uni)
 
         return HttpResponseRedirect(reverse('course-roster'))
+
+
+class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
+    add_template = 'dashboard/email_add_user.txt'
+    invite_template = 'dashboard/email_invite_user.txt'
+
+    def get_user(self, email):
+        try:
+            return User.objects.get(email=email)
+        except User.DoesNotExist:
+            return None
+
+    def add_existing_user(self, user):
+        display_name = user_display_name(user)
+        if self.request.course.is_true_member(user):
+            msg = '{} is already a course member'.format(display_name)
+            messages.add_message(self.request, messages.INFO, msg)
+            return
+
+        # add existing user to course and notify them via email
+        self.request.course.group.user_set.add(user)
+        subject = "Mediathread: {}".format(self.request.course.title)
+        ctx = {
+            'course': self.request.course,
+            'domain': get_current_site(self.request).domain
+        }
+        send_template_email(subject, self.add_template, ctx, user.email)
+
+        msg = ('{} is now a course member. An email was sent to {} '
+               'notifying the user.').format(display_name, user.email)
+        messages.add_message(self.request, messages.INFO, msg)
+
+    def invite_new_user(self, email):
+        invite = CourseInvitation.objects.create(
+            email=email, course=self.request.course,
+            invited_by=self.request.user)
+
+        subject = "Mediathread Course Invitation: {}".format(
+            self.request.course.title)
+
+        ctx = {
+            'course': self.request.course,
+            'domain': get_current_site(self.request).domain,
+            'invite': invite,
+            'inviter': user_display_name(self.request.user)
+        }
+        send_template_email(subject, self.invite_template, ctx, email)
+
+        msg = "{} was invited to join the course.".format(email)
+        messages.add_message(self.request, messages.INFO, msg)
+
+    def post(self, request):
+        url = reverse('course-roster')
+        emails = self.request.POST.get('email', None)
+
+        if emails is None:
+            msg = 'Please enter a comma-separated list of email addresses.'
+            messages.add_message(request, messages.ERROR, msg)
+            return HttpResponseRedirect(url)
+
+        for email in emails.split(','):
+            try:
+                email = email.strip()
+                validate_email(email)
+                user = self.get_user(email)
+                if user:
+                    self.add_existing_user(user)
+                else:
+                    self.invite_new_user(email)
+            except ValidationError:
+                msg = '{} is not a valid email address.'.format(email)
+                messages.add_message(request, messages.ERROR, msg)
+
+        return HttpResponseRedirect(url)
+
+
+class CourseAcceptInvitationView(FormView):
+    template_name = 'registration/activate_invitation.html'
+    form_class = ActivateInvitationForm
+
+    def form_valid(self, form):
+        # create user
+        return super(CourseAcceptInvitationView, self).form_valid(form)
+
+    def get_success_url(self):
+        return HttpResponseRedirect(reverse('login'))

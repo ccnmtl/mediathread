@@ -58,12 +58,19 @@
             delete this.form;
         },
         onAddUNIUser: function(evt) {
-            jQuery(this.el).find('#add-uni-user form').submit();
+            evt.stopImmediatePropagation();
+            var $frm = jQuery(this.el).find('#add-uni-user form').first();
+            if ($frm.find('textarea[name="unis"]').val() === '') {
+                $frm.addClass('has-error');
+                return false;
+            }
+
+            $frm.submit();
         },
         onInviteEmailUser: function(evt) {
             evt.stopImmediatePropagation();
             var $frm = jQuery(this.el).find('#invite-email-user form').first();
-            if ($frm.find('textarea[name="email"]').val() === '') {
+            if ($frm.find('textarea[name="emails"]').val() === '') {
                 $frm.addClass('has-error');
                 return false;
             }

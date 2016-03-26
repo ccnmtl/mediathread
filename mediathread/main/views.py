@@ -600,7 +600,7 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
         return user
 
     def post(self, request):
-        unis = request.POST.get('uni', None)
+        unis = request.POST.get('unis', None)
         url = reverse('course-roster')
 
         if unis is None:
@@ -638,12 +638,6 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
     add_template = 'dashboard/email_add_user.txt'
     invite_template = 'dashboard/email_invite_user.txt'
-
-    def get_user(self, email):
-        try:
-            return User.objects.get(email=email)
-        except User.DoesNotExist:
-            return None
 
     def add_existing_user(self, user):
         display_name = user_display_name(user)
@@ -686,7 +680,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
 
     def post(self, request):
         url = reverse('course-roster')
-        emails = self.request.POST.get('email', None)
+        emails = self.request.POST.get('emails', None)
 
         if emails is None:
             msg = 'Please enter a comma-separated list of email addresses.'
@@ -697,11 +691,11 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
             try:
                 email = email.strip()
                 validate_email(email)
-                user = self.get_user(email)
-                if user:
-                    self.add_existing_user(user)
-                else:
-                    self.invite_new_user(email)
+
+                user = User.objects.get(email=email)
+                self.add_existing_user(user)
+            except User.DoesNotExist:
+                self.invite_new_user(email)
             except ValidationError:
                 msg = '{} is not a valid email address.'.format(email)
                 messages.add_message(request, messages.ERROR, msg)

@@ -25,7 +25,7 @@ from mediathread.main.course_details import allow_public_compositions, \
 from mediathread.main.forms import ContactUsForm, RequestCourseForm
 from mediathread.main.views import MigrateCourseView, ContactUsView, \
     RequestCourseView, CourseSettingsView, CourseManageSourcesView, \
-    CourseRosterView, CourseAddUserByUNIView, CourseInviteUserByEmailView
+    CourseRosterView, CourseAddUserByUNIView
 from mediathread.projects.models import Project
 
 
@@ -1014,7 +1014,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
                         in response.cookies['messages'].value)
         response.delete_cookie('messages')
 
-        response = self.client.post(url, {'uni': 'abc123'})
+        response = self.client.post(url, {'unis': 'abc123'})
         self.assertEquals(response.status_code, 302)
         user = User.objects.get(username='abc123')
         self.assertTrue(self.sample_course.is_true_member(user))
@@ -1023,7 +1023,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         user.last_name = 'Smith'
         user.save()
 
-        response = self.client.post(url, {'uni': ' abc123 ,efg456,'})
+        response = self.client.post(url, {'unis': ' abc123 ,efg456,'})
         self.assertEquals(response.status_code, 302)
 
         user = User.objects.get(username='efg456')
@@ -1033,18 +1033,11 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertTrue('efg456 is now a course member'
                         in response.cookies['messages'].value)
 
-    def test_email_invite_get_user(self):
-        view = CourseInviteUserByEmailView()
-
-        self.assertEquals(view.get_user(self.student_one.email),
-                          self.student_one)
-        self.assertIsNone(view.get_user('foo@example.com'))
-
     def test_email_invite_existing_course_member(self):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
-        response = self.client.post(url, {'email': self.student_one.email})
+        response = self.client.post(url, {'emails': self.student_one.email})
         self.assertEquals(response.status_code, 302)
         self.assertTrue('Student One is already a course member'
                         in response.cookies['messages'].value)
@@ -1056,7 +1049,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             url = reverse('course-roster-invite-email')
             self.client.login(username=self.instructor_one.username,
                               password='test')
-            response = self.client.post(url, {'email': self.alt_student.email})
+            response = self.client.post(url,
+                                        {'emails': self.alt_student.email})
             self.assertEquals(response.status_code, 302)
             self.assertTrue('Student Alternate is now a course member'
                             in response.cookies['messages'].value)
@@ -1075,7 +1069,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             url = reverse('course-roster-invite-email')
             self.client.login(username=self.instructor_one.username,
                               password='test')
-            response = self.client.post(url, {'email': 'foo@example.com'})
+            response = self.client.post(url, {'emails': 'foo@example.com'})
 
             self.assertEquals(response.status_code, 302)
             self.assertTrue('foo@example.com was invited to join the course'
@@ -1103,7 +1097,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
-        response = self.client.post(url, {'email': '#$%^,foo@example.com'})
+        response = self.client.post(url, {'emails': '#$%^,foo@example.com'})
 
         self.assertEquals(response.status_code, 302)
         self.assertTrue(

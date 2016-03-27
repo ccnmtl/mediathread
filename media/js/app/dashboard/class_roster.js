@@ -7,11 +7,13 @@
             'click .btn-promote': 'onPromote',
             'click .btn-demote': 'onDemote',
             'click .btn-remove': 'onRemove',
-            'click .btn-add-uni-user': 'onAddUNIUser'
+            'click .btn-add-uni-user': 'onAddUNIUser',
+            'click .btn-invite_email-user': 'onInviteEmailUser'
         },
         initialize: function(options) {
             _.bindAll(this, 'onPromote', 'onDemote', 'onRemove',
-                      'onAddUNIUser', 'onActionConfirmed');
+                      'onAddUNIUser', 'onInviteEmailUser',
+                      'onActionConfirmed');
             var self = this;
 
             jQuery(this.el).find('.tablesorter').tablesorter({
@@ -51,11 +53,28 @@
                 'Are you sure you want to remove ' + name + ' from the course?',
                  this.onActionConfirmed, 'Confirm');
         },
-        onAddUNIUser: function(evt) {
-            jQuery(this.el).find('#add-uni-user form').submit();
-        },
         onActionConfirmed: function(evt) {
             this.form.submit();  // redirects
+            delete this.form;
+        },
+        onAddUNIUser: function(evt) {
+            evt.stopImmediatePropagation();
+            var $frm = jQuery(this.el).find('#add-uni-user form').first();
+            if ($frm.find('textarea[name="unis"]').val() === '') {
+                $frm.addClass('has-error');
+                return false;
+            }
+
+            $frm.submit();
+        },
+        onInviteEmailUser: function(evt) {
+            evt.stopImmediatePropagation();
+            var $frm = jQuery(this.el).find('#invite-email-user form').first();
+            if ($frm.find('textarea[name="emails"]').val() === '') {
+                $frm.addClass('has-error');
+                return false;
+            }
+            $frm.submit();
         }
     });
 })();

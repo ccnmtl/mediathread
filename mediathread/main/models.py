@@ -1,5 +1,9 @@
+import uuid
+
+from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.fields import UUIDField
 from registration.signals import user_registered, user_activated
 
 from mediathread.main.course_details import get_guest_sandbox
@@ -72,3 +76,17 @@ def user_activated_callback(sender, user, request, **kwargs):
 
 user_registered.connect(user_registered_callback)
 user_activated.connect(user_activated_callback)
+
+
+class CourseInvitation(models.Model):
+    email = models.EmailField()
+    course = models.ForeignKey(Course)
+    uuid = UUIDField(default=uuid.uuid4, editable=False)
+
+    activated_at = models.DateTimeField(null=True)
+
+    invited_by = models.ForeignKey(User)
+    invited_at = models.DateTimeField(auto_now_add=True)
+
+    def activated(self):
+        return self.activated_at is not None

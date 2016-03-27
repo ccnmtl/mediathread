@@ -21,7 +21,8 @@ from mediathread.main.views import (
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
-    CourseRemoveUserView, CourseAddUNIUserView)
+    CourseRemoveUserView, CourseAddUserByUNIView,
+    CourseInviteUserByEmailView, CourseAcceptInvitationView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -86,6 +87,13 @@ urlpatterns = patterns(
     url(r'^password/reset/confirm/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
         password_reset_confirm,
         name='password_reset_confirm'),
+
+    url(r'^accounts/invite/accept/(?P<uidb64>[0-9A-Za-z]+)',
+        CourseAcceptInvitationView.as_view(),
+        name='course-invite-accept'),
+    url(r'^accounts/invite/complete/', TemplateView.as_view(
+        template_name='registration/invitation_activate_complete.html'),
+        name='course-invite-complete'),
 
     url(r'^accounts/register/$',
         RegistrationView.as_view(form_class=CustomRegistrationForm),
@@ -156,8 +164,10 @@ urlpatterns = patterns(
         name='course-roster-demote'),
     url(r'^dashboard/roster/remove/', CourseRemoveUserView.as_view(),
         name='course-roster-remove'),
-    url(r'^dashboard/roster/add/', CourseAddUNIUserView.as_view(),
+    url(r'^dashboard/roster/add/uni/', CourseAddUserByUNIView.as_view(),
         name='course-roster-add-uni'),
+    url(r'^dashboard/roster/add/email/', CourseInviteUserByEmailView.as_view(),
+        name='course-roster-invite-email'),
     url(r'^dashboard/roster/', CourseRosterView.as_view(),
         name='course-roster'),
 

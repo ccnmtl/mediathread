@@ -46,7 +46,7 @@ django-reversion==1.9.3
 djangohelpers==0.18.1
 django-contrib-comments==1.6.1
 django-threadedcomments==1.0b1
-django-courseaffils==2.1.0
+django-courseaffils==2.1.1
 django-statsd-mozilla==0.3.16
 raven==5.10.1
 django-appconf==1.0.1  # django_compressor
@@ -84,5 +84,6 @@ path.py==8.1.2
 simplegeneric==0.8.1
 ipython==4.1.2
 ipdb==0.9.0
+freezegun==0.3.6
 
 ccnmtlsettings==0.1.6

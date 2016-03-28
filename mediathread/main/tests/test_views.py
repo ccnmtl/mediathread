@@ -4,6 +4,8 @@ from datetime import datetime
 import json
 
 from courseaffils.models import Course
+from courseaffils.tests.mixins import LoggedInFacultyTestMixin
+from courseaffils.tests.factories import CourseFactory, GroupFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -1105,3 +1107,25 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             in response.cookies['messages'].value)
         self.assertTrue('foo@example.com was invited to join the course'
                         in response.cookies['messages'].value)
+
+
+class HomepageAnonViewTest(TestCase):
+    def test_get(self):
+        url = reverse('homepage')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+
+
+class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
+    def setUp(self):
+        super(HomepageViewTest, self).setUp()
+        self.course = CourseFactory(faculty_group=GroupFactory())
+        self.u.groups.add(self.course.faculty_group)
+
+    def test_get(self):
+        url = reverse('homepage')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Homepage')
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_courses']), 0)

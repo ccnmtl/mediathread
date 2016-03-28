@@ -4,7 +4,7 @@ import json
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
-from courseaffils.views import get_courses_for_user
+from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -38,9 +38,12 @@ from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
     CourseDeleteMaterialsForm, ActivateInvitationForm
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name
-from mediathread.mixins import ajax_required, \
-    AjaxRequiredMixin, JSONResponseMixin, LoggedInFacultyMixin, \
+from mediathread.mixins import (
+    ajax_required,
+    AjaxRequiredMixin, JSONResponseMixin,
+    LoggedInAsFacultyMixin, LoggedInFacultyMixin,
     LoggedInSuperuserMixin
+)
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
@@ -713,3 +716,13 @@ class CourseAcceptInvitationView(FormView):
 
     def get_success_url(self):
         return HttpResponseRedirect(reverse('course-invite-complete'))
+
+
+class HomepageView(LoggedInAsFacultyMixin, CourseListView):
+    template_name = 'main/homepage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomepageView, self).get_context_data(**kwargs)
+        activatable_courses = []
+        context.update({'activatable_courses': activatable_courses})
+        return context

@@ -202,6 +202,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
 try:
     from mediathread.deploy_specific.settings import *  # noqa
     if 'EXTRA_INSTALLED_APPS' in locals():
-        INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS
+        INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS  # noqa
 except:
     pass

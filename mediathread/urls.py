@@ -17,6 +17,7 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
+    HomepageView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
@@ -153,6 +154,8 @@ urlpatterns = patterns(
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
       'path': 'crossdomain.xml'}),
+
+    url(r'^homepage/$', HomepageView.as_view(), name='homepage'),
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),

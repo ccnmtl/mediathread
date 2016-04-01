@@ -8,11 +8,14 @@ jQuery(document).ready(function() {
                 extensionId, {
                     command: 'updatesettings'
                 }, function(response) {
+                    var $el = jQuery('.update-chrome-extension-feedback');
+                    var defaultResponse = 'Settings updated.';
+                    var msg = response ? response : defaultResponse;
+
+                    $el.hide();
+                    $el.text(msg);
+                    $el.fadeIn();
                 });
-            var $el = jQuery('.update-chrome-extension-feedback');
-            $el.hide();
-            $el.text('Settings updated.');
-            $el.fadeIn();
         }
     });
 });

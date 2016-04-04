@@ -86,4 +86,4 @@ ipython==4.1.2
 ipdb==0.9.0
 freezegun==0.3.6
 
-ccnmtlsettings==0.1.6
+ccnmtlsettings==0.2.0

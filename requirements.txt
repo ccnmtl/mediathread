@@ -7,7 +7,7 @@ pep8==1.7.0
 pyflakes==1.1.0
 mccabe==0.4.0
 flake8==2.5.4
-lxml==3.5.0
+lxml==3.6.0
 fuzzywuzzy==0.10.0  # lettuce
 mock==1.0.1  # sure
 sure==1.2.24  # lettuce

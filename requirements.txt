@@ -31,7 +31,7 @@ logilab-common==0.63.2
 lazy-object-proxy==1.2.1
 wrapt==1.10.6
 astroid==1.4.5  # pylint
-pylint==1.5.4
+pylint==1.5.5
 pyasn1==0.1.9
 pyOpenSSL==0.15.1
 ndg-httpsclient==0.4.0

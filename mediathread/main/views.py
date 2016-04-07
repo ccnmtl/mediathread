@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 
+import waffle
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
@@ -723,6 +724,14 @@ class HomepageView(LoggedInAsFacultyMixin, CourseListView):
 
     def get_context_data(self, **kwargs):
         context = super(HomepageView, self).get_context_data(**kwargs)
-        activatable_courses = []
+        if not waffle.flag_is_active(self.request, 'instructor_homepage'):
+            return context
+
+        groups = self.request.user.groups.all()
+        created_courses = Course.objects.filter(group__in=groups)
+        course_groups = set([c.group for c in created_courses])
+        groups_without_courses = set(groups) - course_groups
+
+        activatable_courses = groups_without_courses
         context.update({'activatable_courses': activatable_courses})
         return context

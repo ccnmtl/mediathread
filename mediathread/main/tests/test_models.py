@@ -1,10 +1,14 @@
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
-from mediathread.factories import MediathreadTestMixin, \
-    UserFactory, UserProfileFactory, CourseFactory
-from mediathread.main.models import UserSetting, user_registered_callback, \
+from mediathread.factories import (
+    MediathreadTestMixin, UserFactory, UserProfileFactory, CourseFactory,
+    ActivatableAffilFactory
+)
+from mediathread.main.models import (
+    UserSetting, user_registered_callback,
     user_activated_callback
+)
 
 
 class UserSettingsTest(MediathreadTestMixin, TestCase):
@@ -68,3 +72,11 @@ class UserRegistrationTest(TestCase):
         user_activated_callback(None, user, None)
 
         self.assertTrue(course.is_member(user))
+
+
+class ActivatableAffilTest(TestCase):
+    def setUp(self):
+        self.aa = ActivatableAffilFactory()
+
+    def test_is_valid_from_factory(self):
+        self.aa.full_clean()

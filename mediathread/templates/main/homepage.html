@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load coursetags %}
 {% load static %}
+{% load waffle_tags %}
 
 {% block title %}&mdash; Homepage{% endblock %}
 
@@ -37,6 +38,7 @@
 {% endblock %}
 
 {% block content %}
+    {% flag 'instructor_homepage' %}
     <div id="course-list">
         <div id="coursefilter">
             <span class="h5">View courses for:</span>
@@ -91,6 +93,22 @@
         No courses match this criteria.
     {% endif %}
 
+    {% if activatable_affils|length > 0 %}
+        <h2>Activatable Courses</h2>
+        <ul>
+            {% for affil in activatable_affils %}
+                <li>
+                    {{affil.name}}
+                    <a class="btn btn-default btn-xs"
+                       href="{% url 'affil_activate' affil.id %}" role="button"
+                    >Activate</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     </div>
+    {% else %}
+    The instructor_homepage flag isn't enabled for this user.
+    {% endflag %}
 
 {% endblock %}

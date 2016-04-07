@@ -1,12 +1,48 @@
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.utils import timezone
+from mediathread.main.models import ActivatableAffil
 
 
 class CourseGroupMapper(object):
-    """ See if the user is part of any existing course. If so, add them
-        as a member """
+    """
+    See if the user is part of any existing course. If so, add them
+    as a member.
+    """
 
-    def map(self, user, affils):
+    @staticmethod
+    def create_activatable_affil(user, affil, year):
+        """Create an ActivatableAffil for the affil/user.
+
+        The required conditions are:
+        - The user has 'faculty' status for this affil
+        - The affil has a recent or future date.
+
+        Returns the ActivatableAffil if created, otherwise returns None.
+        """
+        if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER'):
+            d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(affil)
+        else:
+            return None
+
+        try:
+            conditions = user is not None and \
+                         user.is_authenticated() and \
+                         d is not None and \
+                         d['member'] == 'fc' and \
+                         year is not None and \
+                         year <= int(d['year'])
+        except KeyError:
+            return None
+
+        if conditions:
+            return ActivatableAffil.objects.get_or_create(
+                name=affil, user=user)[0]
+
+        return None
+
+    @staticmethod
+    def map(user, affils):
         # we also make a "pseudo" affil group ALL_CU
         # that contains *anyone* who's logged in through WIND
         affils.append("ALL_CU")
@@ -20,6 +56,8 @@ class CourseGroupMapper(object):
             if settings.WIND_AFFIL_GROUP_INCLUDE_UNI_GROUP is True:
                 remove_uni = False
 
+        year = timezone.now().year
+
         for affil in affils:
             if remove_uni and (affil == user.username):
                 continue
@@ -28,4 +66,4 @@ class CourseGroupMapper(object):
                 user.groups.add(group)
                 user.save()
             except Group.DoesNotExist:
-                pass
+                CourseGroupMapper.create_activatable_affil(user, affil, year)

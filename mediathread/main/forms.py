@@ -163,3 +163,14 @@ class ActivateInvitationForm(forms.Form):
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class CourseActivateForm(forms.Form):
+    term = forms.ChoiceField(required=True, choices=TERM_CHOICES)
+    consult_or_demo = forms.ChoiceField(
+        required=True,
+        choices=(
+            ('consultation', 'Consultation'),
+            ('demo', 'In-class demo')),
+        widget=forms.RadioSelect
+    )

@@ -338,16 +338,26 @@ class Project(models.Model):
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
 
-    def responses(self, course, viewer, by_user=None):
+    def _response_by_author(self, children, author):
+        '''not protected by can_read, strictly internal'''
+        children = children.filter(Q(user=author) | Q(group__user=author))
+        response = children.first()
+        return response.content_object if response else None
+
+    def responses(self, course, viewer, author=None):
         visible = []
         children = self.get_collaboration().get_children_for_object(
             self).prefetch_related('content_object__author')
+
+        viewer_response = self._response_by_author(children, viewer)
+
+        if author:
+            children = children.filter(Q(user=author) | Q(group__user=author))
+
         for child in children:
             response = child.content_object
-            if (response and
-                    (by_user is None or response.is_participant(by_user))):
-                if response.can_read(course, viewer, child):
-                    visible.append(response)
+            if response.can_read(course, viewer, child, viewer_response):
+                visible.append(response)
         return visible
 
     def description(self):
@@ -457,7 +467,8 @@ class Project(models.Model):
         col = self.get_collaboration()
         return (col.permission_to('edit', course, user))
 
-    def can_read(self, course, viewer, the_collaboration=None):
+    def can_read(self, course, viewer,
+                 the_collaboration=None, viewer_response=None):
         # has the author published his work?
         collaboration = the_collaboration or self.get_collaboration()
         if (collaboration is None) or \
@@ -482,11 +493,11 @@ class Project(models.Model):
         if (assignment.response_view_policy == RESPONSE_VIEW_ALWAYS[0]):
             return True
         elif assignment.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:
-            # can_read if the viewer has submitted his own work
-            # @todo - consider multiple assignment responses
-            # via collaborative authoring.
-            responses = assignment.responses(course, viewer, viewer)
-            return len(responses) > 0 and responses[0].is_submitted()
+            viewer_response = (
+                viewer_response or
+                self._response_by_author(parent.get_children_for_object(self),
+                                         viewer))
+            return viewer_response and viewer_response.is_submitted()
         else:  # assignment.response_view_policy == 'never':
             return False
 

@@ -351,9 +351,11 @@ class Project(models.Model):
         children = self.get_collaboration().get_children_for_object(
             self).prefetch_related('content_object__author')
 
-        viewer_response = self._response_by_author(children, viewer)
+        viewer_response = None
+        if viewer and not viewer.is_anonymous():
+            viewer_response = self._response_by_author(children, viewer)
 
-        if author:
+        if author and not author.is_anonymous():
             children = children.filter(Q(user=author) | Q(group__user=author))
 
         for child in children:

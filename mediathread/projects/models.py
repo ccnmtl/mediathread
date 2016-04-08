@@ -424,7 +424,8 @@ class Project(models.Model):
             return u"Private"
 
     def is_participant(self, user):
-        return (user == self.author or user in self.participants.all())
+        return (user == self.author or
+                self.participants.filter(id=user.id).exists())
 
     def citations(self):
         """
@@ -473,8 +474,8 @@ class Project(models.Model):
             return True  # this project does not have a parent assignment
 
         # the author & faculty can always view a submitted response
-        if (self.is_participant(viewer) or
-                cached_course_is_faculty(course, viewer)):
+        if (cached_course_is_faculty(course, viewer) or
+                self.is_participant(viewer)):
             return True
 
         assignment = parent.content_object

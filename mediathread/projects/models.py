@@ -342,7 +342,9 @@ class Project(models.Model):
         '''not protected by can_read, strictly internal'''
         children = children.filter(Q(user=author) | Q(group__user=author))
         response = children.first()
-        return response.content_object if response else None
+        if response:
+            return response.content_object
+        return None
 
     def responses(self, course, viewer, author=None):
         visible = []

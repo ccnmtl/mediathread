@@ -64,7 +64,7 @@ class SherdNoteResource(ModelResource):
             termResource = TermResource()
             vocabulary = {}
             related = TermRelationship.objects.get_for_object(
-                bundle.obj).prefetch_related('term__vocabulary')
+                bundle.obj).select_related('term__vocabulary')
             for rel in related:
                 if rel.term.vocabulary.id not in vocabulary:
                     vocabulary[rel.term.vocabulary.id] = {

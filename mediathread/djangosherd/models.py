@@ -320,8 +320,10 @@ class SherdNote(Annotation):
                                              self.asset.course.title)
 
     def tags_split(self):
-        "Because |split filter sucks and doesn't break at commas"
-        return Tag.objects.get_for_object(self)
+        if self.tags:
+            "Because |split filter sucks and doesn't break at commas"
+            return Tag.objects.get_for_object(self)
+        return Tag.objects.none()
 
     def add_tag(self, tag):
         self.tags = "%s,%s" % (self.tags, tag)

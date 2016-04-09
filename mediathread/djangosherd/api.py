@@ -15,10 +15,26 @@ class SherdNoteResource(ModelResource):
                                full=True, null=True, blank=True)
 
     class Meta:
-        queryset = SherdNote.objects.select_related('asset').order_by("id")
+        queryset = SherdNote.objects.select_related('asset')
         excludes = ['tags', 'body', 'added', 'modified']
         list_allowed_methods = []
         detail_allowed_methods = []
+
+    def render_related_terms(self, bundle):
+        termResource = TermResource()
+        vocabulary = {}
+        related = TermRelationship.objects.get_for_object(bundle.obj)
+        related = related.select_related('term__vocabulary')
+        for rel in related:
+            if rel.term.vocabulary.id not in vocabulary:
+                vocabulary[rel.term.vocabulary.id] = {
+                    'id': rel.term.vocabulary.id,
+                    'display_name': rel.term.vocabulary.display_name,
+                    'terms': []
+                }
+            vocabulary[rel.term.vocabulary.id]['terms'].append(
+                termResource.render_one(bundle.request, rel.term))
+        return vocabulary.values()
 
     def dehydrate(self, bundle):
         try:
@@ -60,21 +76,7 @@ class SherdNoteResource(ModelResource):
 
             bundle.data['editable'] = editable
             bundle.data['citable'] = citable
-
-            termResource = TermResource()
-            vocabulary = {}
-            related = TermRelationship.objects.get_for_object(
-                bundle.obj).select_related('term__vocabulary')
-            for rel in related:
-                if rel.term.vocabulary.id not in vocabulary:
-                    vocabulary[rel.term.vocabulary.id] = {
-                        'id': rel.term.vocabulary.id,
-                        'display_name': rel.term.vocabulary.display_name,
-                        'terms': []
-                    }
-                vocabulary[rel.term.vocabulary.id]['terms'].append(
-                    termResource.render_one(bundle.request, rel.term))
-            bundle.data['vocabulary'] = vocabulary.values()
+            bundle.data['vocabulary'] = self.render_related_terms(bundle)
         except Asset.DoesNotExist:
             bundle.data['asset_id'] = ''
             bundle.data['metadata'] = {'title': 'Item Deleted'}

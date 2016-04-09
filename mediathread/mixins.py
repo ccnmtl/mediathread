@@ -116,10 +116,11 @@ class RestrictedMaterialsMixin(object):
         (visible, hidden) = Project.objects.responses_by_course(
             request.course, self.record_viewer)
 
-        pids = [project.id for project in hidden]
-        pnotes = ProjectNote.objects.filter(project__id__in=pids)
-        pnids = pnotes.values_list('annotation__id', flat=True)
-        visible_notes = visible_notes.exclude(id__in=pnids)
+        if len(hidden) > 0:
+            pids = [project.id for project in hidden]
+            pnotes = ProjectNote.objects.filter(project__id__in=pids)
+            pnids = pnotes.values_list('annotation__id', flat=True)
+            visible_notes = visible_notes.exclude(id__in=pnids)
 
         # return the related asset ids
         ids = visible_notes.values_list('asset__id', flat=True)

@@ -114,8 +114,7 @@ var AssetPanelHandler = function(el, $parent, panel, space_owner) {
     }
 
     if (self.panel.current_asset) {
-        self.showAsset(self.panel.current_asset, self.panel.current_annotation,
-                       true);
+        self.showAsset(self.panel.current_asset, self.panel.current_annotation);
     }
 
     jQuery(window).trigger('resize');
@@ -179,26 +178,26 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
     return false;
 };
 
-AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
-                                                 displayNow) {
+AssetPanelHandler.prototype.showAssetContainer = function() {
+    var self = this;
+
+    self.$el.find('td.panel-container.collection')
+        .removeClass('maximized').addClass('minimized');
+    self.$el.find('td.pantab-container')
+        .removeClass('maximized').addClass('minimized');
+    self.$el.find('div.pantab.collection')
+        .removeClass('maximized').addClass('minimized');
+    self.$el.find('td.panel-container.asset')
+        .removeClass('closed').addClass('open');
+    self.$el.find('td.panel-container.asset').show();
+    self.$el.find('td.panel-container.asset-details').show();
+};
+
+AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
     var self = this;
 
     self.current_asset = parseInt(asset_id, 10);
-
-    if (displayNow) {
-        self.$el.find('td.panel-container.collection')
-            .removeClass('maximized').addClass('minimized');
-        self.$el.find('td.pantab-container')
-            .removeClass('maximized').addClass('minimized');
-        self.$el.find('div.pantab.collection')
-            .removeClass('maximized').addClass('minimized');
-        self.$el.find('td.panel-container.asset')
-            .removeClass('closed').addClass('open');
-        self.$el.find('td.panel-container.asset').show();
-        self.$el.find('td.panel-container.asset-details').show();
-
-        self.citationView.openCitationById(null, asset_id, annotation_id);
-    }
+    self.showAssetContainer();
 
     // Setup the edit view
     window.annotationList.init({
@@ -212,6 +211,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id,
                 jQuery(window).trigger('resize');
             });
             jQuery('html').removeClass('busy');
+            self.citationView.openCitationById(null, asset_id, annotation_id);
         }
     });
 };
@@ -302,7 +302,7 @@ AssetPanelHandler.prototype.onClickAssetTitle = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
 
     var bits = srcElement.href.split('/');
-    self.showAsset(bits[bits.length - 2], null, true);
+    self.showAsset(bits[bits.length - 2], null);
 
     return false;
 };
@@ -312,7 +312,7 @@ AssetPanelHandler.prototype.editItem = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
 
     var bits = srcElement.parentNode.href.split('/');
-    self.showAsset(bits[bits.length - 2], null, true);
+    self.showAsset(bits[bits.length - 2], null);
     return false;
 };
 

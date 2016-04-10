@@ -99,7 +99,6 @@ urlpatterns = patterns(
     url(r'^accounts/register/$',
         RegistrationView.as_view(form_class=CustomRegistrationForm),
         name='registration_register'),
-    (r'^accounts/', include('registration.backends.default.urls')),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
     (r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',

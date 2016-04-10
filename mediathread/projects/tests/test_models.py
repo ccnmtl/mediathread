@@ -612,3 +612,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
         self.assertEquals(len(lst), 0)
+
+    def test_is_participant(self):
+        self.assertTrue(self.project_private.is_participant(self.student_one))
+        self.assertFalse(self.project_private.is_participant(self.student_two))
+
+        self.project_private.participants.add(self.student_two)
+        self.assertTrue(self.project_private.is_participant(self.student_two))

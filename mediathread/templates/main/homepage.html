@@ -96,8 +96,13 @@
     {% if activatable_courses|length > 0 %}
         <h2>Activatable Courses</h2>
         <ul>
-            {% for course in activatable_courses %}
-                <li>{{course}} <button>Activate</button></li>
+            {% for group in activatable_courses %}
+                <li>
+                    {{group}}
+                    <a class="btn btn-default btn-xs"
+                       href="{% url 'course_activate' group.id %}" role="button"
+                    >Activate</a>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}

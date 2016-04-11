@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 
+from waffle.testutils import override_flag
 from courseaffils.models import Course
 from courseaffils.tests.mixins import LoggedInFacultyTestMixin
 from courseaffils.tests.factories import CourseFactory, GroupFactory
@@ -1123,8 +1124,25 @@ class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('homepage')
-        response = self.client.get(url)
+        with override_flag('instructor_homepage', active=True):
+            response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
         self.assertEqual(len(response.context['object_list']), 0)
-        self.assertEqual(len(response.context['activatable_courses']), 0)
+        self.assertEqual(len(response.context['activatable_courses']), 1)
+
+
+class CourseActivateViewTest(LoggedInFacultyTestMixin, TestCase):
+    def setUp(self):
+        super(CourseActivateViewTest, self).setUp()
+        self.course = CourseFactory(faculty_group=GroupFactory())
+        self.u.groups.add(self.course.faculty_group)
+
+    def test_get(self):
+        group = self.u.groups.last()
+        response = self.client.get(reverse('course_activate', kwargs={
+            'pk': group.pk
+        }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Activation')
+        self.assertEqual(response.context['group'], group)

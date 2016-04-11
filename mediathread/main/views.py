@@ -2,13 +2,15 @@ from datetime import datetime
 import json
 
 import waffle
-from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.lib import (
+    in_course_or_404, in_course, faculty_courses_for_user
+)
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -35,8 +37,11 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
-from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
-    CourseDeleteMaterialsForm, ActivateInvitationForm
+from mediathread.main.forms import (
+    RequestCourseForm, ContactUsForm,
+    CourseDeleteMaterialsForm, ActivateInvitationForm,
+    CourseActivateForm
+)
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name
 from mediathread.mixins import (
@@ -72,6 +77,10 @@ def django_settings(request):
 def triple_homepage(request):
     if not request.course:
         return HttpResponseRedirect('/accounts/login/')
+
+    if waffle.flag_is_active(request, 'instructor_homepage') and \
+       faculty_courses_for_user(request.user).exists():
+        return HttpResponseRedirect('/homepage/')
 
     logged_in_user = request.user
     classwork_owner = request.user  # Viewing your own work by default
@@ -732,6 +741,22 @@ class HomepageView(LoggedInAsFacultyMixin, CourseListView):
         course_groups = set([c.group for c in created_courses])
         groups_without_courses = set(groups) - course_groups
 
-        activatable_courses = groups_without_courses
+        activatable_courses = set()
+        for g in groups_without_courses:
+            activatable_courses.add(g)
+
         context.update({'activatable_courses': activatable_courses})
+        return context
+
+
+class CourseActivateView(LoggedInAsFacultyMixin, FormView):
+    template_name = 'main/activate_course.html'
+    form_class = CourseActivateForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CourseActivateView, self).get_context_data(
+            *args, **kwargs)
+        pk = self.kwargs.get('pk')
+        group = Group.objects.get(pk=pk)
+        context.update({'group': group})
         return context

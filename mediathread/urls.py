@@ -17,7 +17,7 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    HomepageView,
+    HomepageView, CourseActivateView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
@@ -140,6 +140,9 @@ urlpatterns = patterns(
     (r'^course/request/success/$',
      TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
+    url(r'^course/(?P<pk>\d+)/activate/$',
+        CourseActivateView.as_view(),
+        name='course_activate'),
 
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},

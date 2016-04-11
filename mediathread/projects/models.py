@@ -485,7 +485,7 @@ class Project(models.Model):
             return True  # this project is an assignment
 
         parent = collaboration.get_parent()
-        if parent is None or parent.content_object is None:
+        if parent is None:
             return True  # this project does not have a parent assignment
 
         # the author & faculty can always view a submitted response

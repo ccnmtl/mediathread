@@ -256,7 +256,7 @@ if (!Sherd.Video.Vimeo) {
         };
 
         this.media.ready = function () {
-            return self.media._ready;
+            return self.media._ready && self.components.player !== undefined;
         };
 
         this.media.isPlaying = function () {

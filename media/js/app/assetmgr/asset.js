@@ -56,9 +56,6 @@
                 window.location.hash = '';
             }
 
-            djangosherd.assetview.clipform
-                .setState({'start': 0, 'end': 0}, {'mode': 'reset'});
-
             this.refresh(config);
 
             if (this.update_history) {
@@ -160,6 +157,11 @@
                     function(asset_full) {
                         self.processAsset(asset_full);
 
+                        // let the caller display the citationview if needed
+                        if (self.view_callback) {
+                            self.view_callback();
+                        }
+
                         // window.location.hash
                         // #annotation_id=xxxx
                         // #xywh=pixel:x,y,w,h (MediaFragment syntax)
@@ -209,9 +211,6 @@
                                 self.groupBy(val);
                             });
                             self.groupBy(value);
-                        }
-                        if (self.view_callback) {
-                            self.view_callback();
                         }
                         jQuery('.annotation-ajaxloader').hide();
                     }

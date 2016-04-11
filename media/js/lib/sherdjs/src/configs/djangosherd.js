@@ -369,7 +369,7 @@ CitationView.prototype.openCitationById = function (anchor, asset_id, annotation
         type = "asset";
     }
 
-    djangosherd.storage.get({id: id, type: type },
+    djangosherd.storage.get({id: id, type: type},
     function (ann_obj) {
         self.options.deleted = false;
         return_value = self.displayCitation(anchor, ann_obj, id);

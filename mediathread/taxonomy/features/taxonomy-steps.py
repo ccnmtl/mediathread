@@ -210,7 +210,7 @@ def specify_the_refresh_onomy_url(step):
 
 @step(u'there is a "([^"]*)" concept')
 def there_is_a_text_concept(step, text):
-    wait = ui.WebDriverWait(world.browser, 5)
+    wait = ui.WebDriverWait(world.browser, 6)
     wait.until(visibility_of_element_located((By.PARTIAL_LINK_TEXT,
                                               text)))
 

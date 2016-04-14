@@ -863,8 +863,8 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                                       ctx,
                                       context_instance=RequestContext(request))
 
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+        qs = Vocabulary.objects.filter(course=request.course)
+        vocabulary = VocabularyResource().render_list(request, qs)
 
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)

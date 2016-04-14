@@ -23,7 +23,7 @@ class SherdNoteResource(ModelResource):
     def render_related_terms(self, bundle):
         termResource = TermResource()
         vocabulary = {}
-        related = TermRelationship.objects.get_for_object(bundle.obj)
+        related = TermRelationship.objects.filter(sherdnote=bundle.obj)
         related = related.select_related('term__vocabulary')
         for rel in related:
             if rel.term.vocabulary.id not in vocabulary:

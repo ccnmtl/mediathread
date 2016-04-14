@@ -5,7 +5,6 @@ import re
 
 from django.contrib.auth.models import User
 from django_comments.models import Comment
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
@@ -13,7 +12,6 @@ from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
 
 from mediathread.assetmgr.models import Asset
-from mediathread.taxonomy.models import TermRelationship
 from structuredcollaboration.models import Collaboration
 
 
@@ -74,16 +72,16 @@ class SherdNoteQuerySet(models.query.QuerySet):
         if vocabulary is None:
             return self
 
+        from mediathread.taxonomy.models import TermRelationship
+
         # OR'd within vocabulary, AND'd across vocabulary
-        content_type = ContentType.objects.get_for_model(SherdNote)
         for vocabulary_id in vocabulary:
-            items = TermRelationship.objects.filter(
-                content_type_id=content_type,
-                object_id__in=self.values_list('id', flat=True),
+            related = TermRelationship.objects.filter(
+                sherdnote__id__in=self.values_list('id', flat=True),
                 term__id__in=vocabulary[vocabulary_id],
                 term__vocabulary__id=vocabulary_id)
-            if items.count() > 0:
-                iids = items.values_list('object_id', flat=True)
+            if related.count() > 0:
+                iids = related.values_list('sherdnote__id', flat=True)
                 self = self.filter(id__in=iids)
             else:
                 self = SherdNote.objects.none()  # nothing matched

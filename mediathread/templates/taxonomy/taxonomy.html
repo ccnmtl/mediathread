@@ -57,7 +57,6 @@
                             <input class="create-vocabulary-name form-control left"
                                 id="id_display_name" type="text" name="display_name"
                                 maxlength="50" placeholder="Concept name">
-                            <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                             <input type="hidden" name="object_id" value="<%=course_id%>"/>
                             <a class="btn btn-default btn-sm right create-vocabulary-close" href="#">
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -96,7 +95,6 @@
                         </p>
                         <label><b>Published Onomy Urls</b> <i>JSON format, separated by commas</i></label>
                         <input class="form-control left" type="text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
-                        <input type="hidden" name="content_type_id" value="<%=content_type_id%>"/>
                         <input type="hidden" name="object_id" value="<%=course_id%>"/>
                         <a class="btn btn-default btn-sm right import-vocabulary-close" href="#">
                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -173,7 +171,6 @@
             var view = new VocabularyListView({
                 el: jQuery("#taxonomy"),
                 course_id: "{{course.id}}",
-                content_type_id: "{{course_type.id}}"
             });
         });
     </script>

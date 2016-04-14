@@ -25,7 +25,7 @@ from mediathread.main.util import user_display_name
 from mediathread.mixins import faculty_only, LoggedInSuperuserMixin, \
     CSVResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.models import Project
-from mediathread.taxonomy.models import Vocabulary, TermRelationship
+from mediathread.taxonomy.models import TermRelationship
 from structuredcollaboration.models import Collaboration
 
 
@@ -340,19 +340,16 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
                 row.append(float(len(t)) / len(selections) * 100)
 
                 # Vocabulary
-                vocab = Vocabulary.objects.get_for_object(the_course)
-                content_type = ContentType.objects.get_for_model(SherdNote)
                 related = TermRelationship.objects.filter(
-                    term__vocabulary__in=vocab,
-                    content_type=content_type,
-                    object_id__in=selections.values_list('id'))
+                    term__vocabulary__course=the_course,
+                    sherdnote__id__in=selections.values_list('id', flat=True))
 
                 # '# of Active Vocabulary Terms'
                 q = related.aggregate(Count('term', distinct=True))
                 active_terms = q['term__count']
-                termed = SherdNote.objects.filter(
-                    id__in=related.values_list('object_id')).values('author')
-                vocab_users = termed.distinct().count()
+                q = related.aggregate(
+                    Count('sherdnote__author', distinct=True))
+                vocab_users = q['sherdnote__author__count']
 
                 row.append(active_terms)
                 if len(students) > 0:
@@ -361,7 +358,7 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
                 else:
                     row.append(0)
 
-                related_ids = related.values_list('object_id')
+                related_ids = related.values_list('sherdnote__id', flat=True)
                 items = len(SherdNote.objects.filter(id__in=related_ids,
                                                      range1=None, range2=None))
                 row.append(float(items) / len(selections) * 100)  # % Items
@@ -431,10 +428,8 @@ class AssignmentDetailReport(LoggedInFacultyMixin, View):
 
     def vocabulary_usage(self, selections):
         try:
-            content_type = ContentType.objects.get_for_model(SherdNote)
             related = TermRelationship.objects.filter(
-                content_type=content_type,
-                object_id__in=selections.values_list('id', flat=True))
+                sherdnote__id__in=selections.values_list('id', flat=True))
             return float(related.count()) / selections.count() * 100
         except ZeroDivisionError:
             return 0

@@ -211,7 +211,6 @@
             display_name = display_name.trim();
             var v = new Vocabulary({
                 'display_name': display_name,
-                'content_type_id': this.context.content_type_id,
                 'object_id': this.context.course_id,
                 'term_set': undefined,
                 'onomy_url': ''
@@ -538,7 +537,6 @@
                     // if vocab not in the collection create a new one.
                     var vocab = new Vocabulary({
                         'display_name': key,
-                        'content_type_id': self.context.content_type_id,
                         'object_id': self.context.course_id,
                         'term_set': new TermList(),
                         'onomy_url': 'child',
@@ -613,7 +611,6 @@
                         var temp = {
                             'display_name': pL,
                             'term_set': [],
-                            'content_type_id': self.context.content_type_id,
                             'object_id': self.context.course_id,
                             'onomy_url': 'child',
                             'skos_uri': parent_uri

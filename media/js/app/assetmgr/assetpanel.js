@@ -155,7 +155,8 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
                 'update_history': false,
                 'vocabulary': self.panel.vocabulary,
                 'view_callback': function() {
-                    self.citationView.openCitationById(null, assetId, annotationId);
+                    self.citationView.openCitationById(
+                        null, assetId, annotationId);
                     if (self.dialogWindow) {
                         jQuery(elt).fadeIn('slow');
                     }

@@ -198,6 +198,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
 
     self.current_asset = parseInt(asset_id, 10);
     self.showAssetContainer();
+    self.citationView.openCitationById(null, asset_id, annotation_id);
 
     // Setup the edit view
     window.annotationList.init({
@@ -211,7 +212,6 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
                 jQuery(window).trigger('resize');
             });
             jQuery('html').removeClass('busy');
-            self.citationView.openCitationById(null, asset_id, annotation_id);
         }
     });
 };

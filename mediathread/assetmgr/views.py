@@ -23,6 +23,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http, rendered_with
+from waffle.decorators import waffle_flag
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -1036,6 +1037,7 @@ class BookmarkletMigrationView(TemplateView):
 @allow_http("GET")
 @login_required
 @rendered_with('assetmgr/upgrade_bookmarklet.html')
+@waffle_flag('!remove_bookmarklet')
 def upgrade_bookmarklet(request):
     context = {}
     if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):

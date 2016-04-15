@@ -146,7 +146,6 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
     self.dialogWindow = $dlg.dialog({
         open: function() {
             self.dialogWindow = true;
-            self.citationView.openCitationById(null, assetId, annotationId);
 
             // Setup the edit view
             window.annotationList.init({
@@ -156,6 +155,7 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
                 'update_history': false,
                 'vocabulary': self.panel.vocabulary,
                 'view_callback': function() {
+                    self.citationView.openCitationById(null, assetId, annotationId);
                     if (self.dialogWindow) {
                         jQuery(elt).fadeIn('slow');
                     }

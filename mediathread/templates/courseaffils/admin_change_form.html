@@ -10,7 +10,7 @@
             width: 75px;
             overflow: hidden;
         }
-        
+
         p.deletelink-box {
             display: none;
         }
@@ -26,8 +26,8 @@
 {% block breadcrumbs %}{% if not is_popup %}
 <div class="breadcrumbs">
      <a href="../../../">{% trans "Home" %}</a> &rsaquo;
-     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo; 
-     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo; 
+     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
+     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo;
      {% if add %}{% trans "Add" %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}
 </div>
 {% endif %}{% endblock %}
@@ -67,22 +67,22 @@
     {# ###################### COURSE CHANGES  ############################## #}
     {% if adminform.form.instance.is_course %}
       <ul>
-        <li>Info: 
+        <li>Info:
         {% if adminform.form.instance.info %}
            {{adminform.form.instance.info.display}} <a href="{%url 'admin:courseaffils_courseinfo_change' adminform.form.instance.info.id %}">[Edit]</a>
         {% else %}
            (Term, course times) <a href="{%url 'admin:courseaffils_courseinfo_add' %}?course={{adminform.form.instance.id}}">[Create]</a>
         {% endif %}
         </li>
-    
-        <li>Settings: 
+
+        <li>Settings:
         {% if adminform.form.instance.settings %}
            {{adminform.form.instance.settings}} <a href="{%url 'admin:courseaffils_coursesettings_change' adminform.form.instance.settings.id %}">[Edit]</a>
         {% else %}
            (custom headers for style and javascript) <a href="{%url 'admin:courseaffils_coursesettings_add' %}?course={{adminform.form.instance.id}}">[Create]</a>
         {% endif %}
         </li>
-    
+
         <li>Metadata (instructor, etc.): <a href="{%url 'admin:courseaffils_coursedetails_add' %}?course={{adminform.form.instance.id}}">[Add]</a>
           <ul>
             {% for d in adminform.form.instance.coursedetails_set.all %}
@@ -93,7 +93,7 @@
       </ul>
       {% submit_row %}
     {% else %}
-        {% submit_row %}        
+        {% submit_row %}
     {% endif %}
     {# ###################### END COURSE CHANGES  ############################## #}
 {% endblock %}

@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block dashboard_module_header %}
-    <h2>Delete Course Materials</div></h2>    
+    <h2>Delete Course Materials</div></h2>
 {% endblock %}
 
 {% block uncompressable_js %}
@@ -25,7 +25,7 @@
                 jQuery('form[name="course-clear-form"]').addClass('has-error');
                 return false;
             }
-            
+
             return confirm("Are you very, very sure?");
         });
     });
@@ -39,21 +39,21 @@
           {% for message in messages %}
                 <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
             {% endfor %}
-        </div>        
-    {% endif %}   
+        </div>
+    {% endif %}
 
     <form action="{% url 'course-delete-materials' %}"
      name="course-clear-form" method="POST"
      class="{% if form.errors %}has-error{% endif %}">
         <div class="alert alert-danger">
             <h3 style="margin: 0;">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 DANGER
             </h3>
             <p>
                 This utility deletes course materials including items, selections, compositions, assignments and assignment responses.
-            </p>            
-            <p> 
+            </p>
+            <p>
                 <strong>This action cannot be undone.</strong>
             </p>
         </div>
@@ -86,4 +86,3 @@
         </div>
     </form>
 {% endblock %}
-    

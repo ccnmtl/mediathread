@@ -1,25 +1,25 @@
 {% spaceless %}
 {% ifequal action "collection" %}
-	<script type="text/javascript">
-		window.location.replace('/asset/')
-	</script>
+    <script type="text/javascript">
+        window.location.replace('/asset/')
+    </script>
 {% endifequal %}
 
 {% ifequal action "cont" %}
-	<script type="text/javascript">
-		window.close()
-	</script>
+    <script type="text/javascript">
+        window.close()
+    </script>
 {% endifequal %}
 
 {% ifequal action "analyze" %}
-	<script type="text/javascript">
-		window.location.replace('/asset/most_recent/')
-	</script>
+    <script type="text/javascript">
+        window.location.replace('/asset/most_recent/')
+    </script>
 {% endifequal %}
 
 {% ifequal action None %}
-	<script type="text/javascript">
-		window.location.replace('{{ asset_url }}')
-	</script>
+    <script type="text/javascript">
+        window.location.replace('{{ asset_url }}')
+    </script>
 {% endifequal %}
 {% endspaceless %}

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />    
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.print.css"  media="print" />
     <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
@@ -21,7 +21,7 @@
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
-        
+
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 {% endblock %}
 
@@ -31,16 +31,16 @@
     <script type="text/javascript" src="/media/admin/js/jquery.init.js"></script>
     <script type="text/javascript" src="/media/admin/js/core.js"></script>
     <script type="text/javascript" src="/media/admin/js/SelectFilter2.js"></script>
-    <script type="text/javascript" src="/media/admin/js/SelectBox.js"></script>    
+    <script type="text/javascript" src="/media/admin/js/SelectBox.js"></script>
 
     <!-- required project functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>    
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
 
     <!--  Generic Functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
-    
+
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
@@ -61,11 +61,11 @@
 
 {% block content %}
     {{ block.super }}
-    
+
     <table id="sliding-content-container">
         <tr id="sliding-content-row" class="sliding-content-row">
             <td id="sliding-content-last-column" class="filler"></td>
         </tr>
     </table>
 
-{% endblock %}    
+{% endblock %}

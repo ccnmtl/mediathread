@@ -7,7 +7,7 @@
     <head><!-- {{controller_name}} :: {{template_name}} -->
         <meta charset="utf-8">
         <title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
-        
+
         <script type="text/javascript" src='{% static "jquery/js/jquery-1.11.3.min.js" %}'></script>
         {% bootstrap_javascript %}
         <script type="text/javascript" src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
@@ -36,14 +36,14 @@
     </head>
 
     {% course_role for request.user in course as role_in_course %}
-    <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">    
-    <div id="dialog-confirm" style="display: none"></div>    
+    <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
+    <div id="dialog-confirm" style="display: none"></div>
     <div id="container">
         {% block masthead %}
-        	<!-- ###### Site banner ###### -->
-        	<div id="header">
-    
-                <div id="standardnav_container">   
+            <!-- ###### Site banner ###### -->
+            <div id="header">
+
+                <div id="standardnav_container">
                 <div id="mediathread_logo">
                     <a href="/">
                         <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
@@ -61,11 +61,11 @@
                                 <li>
                                     <a class="warning" href="/impersonate/stop/">Impersonate Stop</a>
                                 </li>
-                            {% endif %}    
+                            {% endif %}
                             <li>
                                 <div class="settings_menu user closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                    <div class="left settings_menu_title">{% public_name for user %}</div>                                
+                                    <div class="left settings_menu_title">{% public_name for user %}</div>
                                 </div>
                                 <div class="visualclear"></div>
                                 <!-- Settings Menu -->
@@ -76,7 +76,7 @@
                                     {% if user.is_superuser %}
                                         <a href="/impersonate/search/">Impersonate</a>
                                     {% endif %}
-                                    
+
                                     {% num_courses for user as user_courses %}
                                     {% if user_courses > 1 or user.is_staff %}
                                         <a href="/?unset_course">Switch Course</a>
@@ -85,7 +85,7 @@
                                     {% if user.has_usable_password %}
                                         <a href="/accounts/password_change/">Change Password</a>
                                     {% endif %}
-                                    
+
                                     {% if role_in_course == 'instructor' %}
                                         <a href="/course/request/">Request Course</a>
                                     {% endif %}
@@ -98,7 +98,7 @@
                             <li>
                                 <div class="settings_menu manage closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                    <div class="left settings_menu_title">Manage</div>                                
+                                    <div class="left settings_menu_title">Manage</div>
                                 </div>
                                 <div class="visualclear"></div>
                                 <!-- Settings Menu -->
@@ -110,7 +110,7 @@
                                     {% flag "roster_view" %}
                                         <a href="/dashboard/roster/">Roster</a>
                                     {% endflag %}
-                                    
+
                                     {% if user.is_staff %}
                                         <hr />
                                         <a href="/dashboard/delete/materials/">Materials</a>
@@ -120,7 +120,7 @@
                             <li>
                                 <div class="settings_menu reports closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                    <div class="left settings_menu_title">Reports</div>                                
+                                    <div class="left settings_menu_title">Reports</div>
                                 </div>
                                 <div class="visualclear"></div>
                                 <!-- Settings Menu -->
@@ -140,7 +140,7 @@
                                 {% block standardnav_help %}
                                     <div class="settings_menu help closed">
                                         <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                        <div class="left settings_menu_title">Help</div>                                
+                                        <div class="left settings_menu_title">Help</div>
                                     </div>
                                     <div class="visualclear"></div>
                                     <!-- Settings Menu -->
@@ -150,9 +150,9 @@
                                     </div>
                                 {% endblock %}
                             </li>
-                            
+
                             <li>
-            			      <div unselectable="on"><a href="/contact/">Contact Us</a></div>
+                              <div unselectable="on"><a href="/contact/">Contact Us</a></div>
                             </li>
                         {% else %}
                             <li><div unselectable="on"><a href="/help/">Help</a></div></li>
@@ -162,8 +162,8 @@
                                 <li><a href="/accounts/login/">Log In</a></li>
                             {% endif %}
                         {% endif %}
-            
-                        
+
+
                     </ul>
                 {% endblock %}
             </div>
@@ -177,44 +177,44 @@
                 <div class="clear: right;"></div>
             </div>
             {% endblock %}
-            
-        	</div><!-- id="header" -->
-    
+
+            </div><!-- id="header" -->
+
         {% endblock %}
-            
+
         <!-- ###### Don't touch this ###### -->
         <div class="visualclear"></div>
-        	
-    
-    
-    	<!-- ###### Page: Sidebars and Content ###### -->
-    	<div id="pagebody">
+
+
+
+        <!-- ###### Page: Sidebars and Content ###### -->
+        <div id="pagebody">
             <div id="shieldbox"></div>
-    
-    
-    		<!-- ###### Page Content ###### -->
-    		<div>
-				{% block pagetitle %}{% endblock %}
-			
-				{% block content %}{% endblock %}
-    
-				<!-- ###### Don't touch this ###### -->
-				<div class="visualclear"></div><!-- id="visualclear" -->				
-    			<div id="clearfooter"></div>
-    		</div>
-    	</div><!-- id="pagebody" -->
+
+
+            <!-- ###### Page Content ###### -->
+            <div>
+                {% block pagetitle %}{% endblock %}
+
+                {% block content %}{% endblock %}
+
+                <!-- ###### Don't touch this ###### -->
+                <div class="visualclear"></div><!-- id="visualclear" -->
+                <div id="clearfooter"></div>
+            </div>
+        </div><!-- id="pagebody" -->
     </div><!-- id="container" -->
 
-	{% block footer %}
-    	<!-- ###### Footer ###### -->
+    {% block footer %}
+        <!-- ###### Footer ###### -->
         <div id="footer">
-                
+
             <!-- CCNMTL title/logo -->
             <h4 id="logo_ccnmtl">
                 <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
-            </h4> 
-    
-    	   <ul id="footernav">
+            </h4>
+
+           <ul id="footernav">
                <li><a href="http://mediathread.info" target="_blank">About</a></li>
                <li><a href="/contact/">Contact Us</a></li>
                <li><a href="/help/">Help</a></li>
@@ -227,7 +227,7 @@
         if (window.jQuery) {
             jQuery.noConflict();
         }
-         
+
         var MediaThread = new (function() {
             this.templates = {};
             {% if request.user.is_authenticated %}
@@ -237,7 +237,7 @@
             {% endif %}
         })();
     </script>
-    
+
     {% compress js %}
         <script type="text/javascript" src='{% static "js/lib/json2.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/util.js" %}'></script>
@@ -246,66 +246,66 @@
         <script type="text/javascript" src='{% static "js/app/browserdetect.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/mediathread_setup.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/panel.js" %}'></script>
-        <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>        
-        
+        <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>
+
         <!--  Asset related -->
         <script type="text/javascript" src='{% static "js/app/assetmgr/asset.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/assetmgr/assetpanel.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/assetmgr/collection.js" %}'></script>
-        
+
         <!--  Discussion related -->
         <script type="text/javascript" src='{% static "js/app/discussion/discussionpanel.js" %}'></script>
-        
+
         <!--  Project related -->
         <script type="text/javascript" src='{% static "js/app/projects/projectpanel.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/projects/projectlist.js" %}'></script>
-    
+
         <script type="text/javascript">
             jQuery(document).ready(function() {
                 // setup some ajax progress indicator
-                jQuery("html").ajaxStart(function() {  
+                jQuery("html").ajaxStart(function() {
                    jQuery(this).addClass("busy");
                 })
-                jQuery("html").ajaxStop(function() {  
+                jQuery("html").ajaxStop(function() {
                    jQuery(this).removeClass("busy");
                 });
 
                 /* Select from list: Chrome, Firefox, Safari, MSIE */
                 shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 10 });
-               
+
                 jQuery("div.settings_menu").click(function(evt) {
                     evt.stopPropagation();
-                   
+
                     // close all other menus
                     var opening = jQuery(this).hasClass("closed");
                     jQuery("div.settings_submenu").hide();
                     jQuery("div.settings_menu").removeClass("open").addClass("closed");
-        
+
                     // open this one if needed
                     if (opening) {
                         jQuery(this).removeClass("closed").addClass("open");
                         jQuery(this).nextAll("div.settings_submenu").toggle();
                     }
                 });
-               
+
                 jQuery("body").click(function() {
                    jQuery("div.settings_submenu").hide();
                    jQuery("div.settings_menu").removeClass("open").addClass("closed");
                    jQuery("a.switcher-top.menuopen").click();
-                });      
+                });
             });
         </script>
-        
+
         {% block js %}{% endblock %}
     {% endcompress %}
-    
+
     {% if not debug %}
         <script>
             {% if settings.GOOGLE_ANALYTICS_ID %}
                 var _gaq = _gaq || [];
                 _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
                 _gaq.push(['_trackPageview']);
-        
+
                 (function () {
                     var ga = document.createElement('script');
                     ga.type = 'text/javascript';
@@ -314,14 +314,14 @@
                     var s = document.getElementsByTagName('script')[0];
                     s.parentNode.insertBefore(ga, s);
                 })();
-            
+
                 var analytics = new MediathreadAnalytics(_gaq);
             {% endif %}
         </script>
-    {% endif %}        
-    
-    {% block uncompressable_js %}{% endblock %}        
-    
+    {% endif %}
+
+    {% block uncompressable_js %}{% endblock %}
+
 {% if STAGING_ENV %}
 <div class="alert alert-error" style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px; width: 100%;">
 <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>

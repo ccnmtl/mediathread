@@ -23,7 +23,7 @@
 {% block uncompressable_js %}
     <!--  Generic Functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
-    
+
     <!--  Panel Manage initialization -->
     <script type="text/javascript">
         jQuery(document).ready(function () {
@@ -39,10 +39,10 @@
 
 {% block content %}
     {{ block.super }}
-    
+
     <table id="sliding-content-container">
         <tr id="sliding-content-row" class="sliding-content-row">
             <td id="sliding-content-last-column" class="filler"></td>
         </tr>
     </table>
-{% endblock %}    
+{% endblock %}

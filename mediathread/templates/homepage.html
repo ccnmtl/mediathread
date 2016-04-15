@@ -12,10 +12,10 @@
 
 {% block js %}
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.easing.1.3.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.websitetour.js"></script>    
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/jquery.websitetour.js"></script>
 {% endblock %}
 
-{% block uncompressable_js %}      
+{% block uncompressable_js %}
     <script type="text/javascript">
         jQuery(document).ready(function() {
             var projectList = new ProjectList({
@@ -25,7 +25,7 @@
                 'template_label': 'classwork_table',
                 'view': "{{request.GET.view}}"
             });
-            
+
             {% ifequal msg "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
                 showMessage(msg);
@@ -33,11 +33,11 @@
                 jQuery(window).trigger('tour.start');
             {% endif %}
             {% endifequal %}
-            
+
             jQuery("a.arrow").click(function(evt) {
-                jQuery(this).next("div.arrowContent").toggle();                
+                jQuery(this).next("div.arrowContent").toggle();
             });
-            
+
             jQuery("a.upload_button").click(function(evt) {
                 jQuery(this).parent().submit();
             });
@@ -68,13 +68,13 @@
                 });
             {% endif %}
         });
-    </script>    
+    </script>
 {% endblock %}
 
 {% block standardnav_help %}
     <div class="settings_menu help closed">
         <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-        <div class="left settings_menu_title">Help</div>                                
+        <div class="left settings_menu_title">Help</div>
     </div>
     <div class="visualclear"></div>
     <!-- Settings Menu -->
@@ -87,16 +87,16 @@
 
 {% block content %}
     {{ block.super }}
-    
+
     {% if course and course.title == "Mediathread Guest Sandbox" %}
         <div class="alert alert-info alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>Welcome to Mediathread!</strong> The Guest Sandbox is a place to experiment with all the application features.
             <p>Be aware that work here is temporary. All user-created compositions and selections are removed every Monday morning.</p>
             <p>To learn more about Mediathread and how to install an instance at your institution, visit <a href="//mediathread.info">http://mediathread.info</a></p>
-        </div>        
+        </div>
     {% endif %}
-    
+
     <table id="home-columns">
     <tbody>
         <tr>
@@ -106,28 +106,28 @@
                 {% include "help/help_contentarea.html" %}
                 <div class="column-container">
                    <h2 class="tour_1">
-                        {{information_title}}                     
+                        {{information_title}}
                         <div class="actions">{% include "help/help_button.html" %}</div>
-                   </h2>                   
+                   </h2>
                    <div class="column-contents">
-                        <div id="instructor-column">                        
+                        <div id="instructor-column">
                             <div id="tour_1_content" style="display: none">
                                 <p>
                                     {% if is_faculty %}
-                                        Review and edit compositions you have saved for the whole class (such as a syllabus, 
-                                        a list of resources or model compositions) here. 
-                                        If you have created a discussion topic, links to the discussion appear here.                                  
+                                        Review and edit compositions you have saved for the whole class (such as a syllabus,
+                                        a list of resources or model compositions) here.
+                                        If you have created a discussion topic, links to the discussion appear here.
                                     {% else %}
-                                        Review information posted by your instructor such as course materials and syllabus here. 
-                                        If your instructor has created a class discussion, you can respond to discussion posts in this area.           
-                                    {% endif %}                                
+                                        Review information posted by your instructor such as course materials and syllabus here.
+                                        If your instructor has created a class discussion, you can respond to discussion posts in this area.
+                                    {% endif %}
                                 </p>
                                 <p>
                                     <i>
                                         For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
                                     </i>
-                                </p>                          
-                            
+                                </p>
+
                                 <div class="tour_buttons">
                                     <span class="btn btn-default" id="nextstep" style="">Next &gt;</span>
                                     <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
@@ -144,16 +144,16 @@
                                         {% if is_faculty %}
                                         <span title="drag to reorder information"
                                         class="left draghandle ui-icon ui-icon-arrowthick-2-n-s"></span>
-                                        {% endif %}                                                                                                     
+                                        {% endif %}
                                         <a href="{{project.get_absolute_url}}">
                                             {{project.title}}
-                                        </a>                                        
+                                        </a>
                                     </li>
                                 {% endfor %}
-                                </ul>    
+                                </ul>
                             {% endif %}
-                            
-                        
+
+
                             {% if discussions %}
                                 <h4 class="inst-header discussion">Discussions</h4>
                                 <ul class="instructor-list">
@@ -162,7 +162,7 @@
                                             <div class="actions">
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
-                                                        href="{% url 'discussion-delete' disc.id %}">                                                        
+                                                        href="{% url 'discussion-delete' disc.id %}">
                                                     <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
@@ -179,28 +179,28 @@
                 {% endwith %}
             </td>
             {% endif %}
-            
-            
+
+
             <td id="classwork">
                 {% with "help_homepage_classwork_column" as help_id %}
                 {% include "help/help_contentarea.html" %}
-            
+
                 <div class="column-container parent-column-container">
                     <h2 class="tour_2">
-                        Compositions &amp; Assignments 
+                        Compositions &amp; Assignments
                         <div class="actions">{% include "help/help_button.html" %}</div>
                     </h2>
                     <div id="tour_2_content" style="display: none">
                         <p>
                             {% if is_faculty %}
-                                Create and view compositions, assignments, and instructor feedback here. 
-                                Use the <b>Author</b> field to view shared work from an individual student 
-                                by choosing his or her name in the drop down menu. Use the <b>Create</b> 
-                                button to begin new assignments and course information.              
+                                Create and view compositions, assignments, and instructor feedback here.
+                                Use the <b>Author</b> field to view shared work from an individual student
+                                by choosing his or her name in the drop down menu. Use the <b>Create</b>
+                                button to begin new assignments and course information.
                             {% else %}
-                                Respond to assignments posted by your instructor, review instructor feedback, and 
-                                create compositions here. View compositions shared by other class members by 
-                                choosing his or her name in the <b>Author</b> drop down menu. Use the <b>Create</b> 
+                                Respond to assignments posted by your instructor, review instructor feedback, and
+                                create compositions here. View compositions shared by other class members by
+                                choosing his or her name in the <b>Author</b> drop down menu. Use the <b>Create</b>
                                 button to begin new compositions or respond to assignments.
                             {% endif %}
                         </p>
@@ -208,8 +208,8 @@
                            <i>
                             For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
                            </i>
-                        </p>       
-                       
+                        </p>
+
                         <div class="tour_buttons">
                             <span class="button" id="prevstep" style="">&lt; Prev</span>
                             <span class="button" id="nextstep" style="">Next &gt;</span>
@@ -222,42 +222,42 @@
                         <br /><br />
                         <div>Fetching compositions &amp; assignments</div>
                         </div>
-                    </div>                    
+                    </div>
                     <div id="classwork_table"></div>
                 </div>
                 {% endwith %}
             </td>
-            
-            
+
+
             <td id="explore">
                 {% with "help_homepage_explore_column" as help_id %}
                 {% include "help/help_contentarea.html" %}
-            
-            	<div class="column-container">
-                	<h2 class="tour_3">Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
-                	<a class="btn btn-default collection right" href="/asset/">
+
+                <div class="column-container">
+                    <h2 class="tour_3">Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
+                    <a class="btn btn-default collection right" href="/asset/">
                         <img src="{{STATIC_URL}}img/viewfullcollection.png"
                             alt="view full collection icon" />
                                 View Full Collection
-                    </a> 
-                    
+                    </a>
+
                     <div id="tour_3_content" style="display: none">
                         <p>
-                            A collection is a set of images, video and/or audio brought into Mediathread that 
+                            A collection is a set of images, video and/or audio brought into Mediathread that
                             can be annotated, organized, and embedded into essays and other written analysis.
                         </p>
                         <p>
                            <i>
                             For detailed help, click the question mark icon associated with each section or the <b>Help</b> link in the upper right corner.
                            </i>
-                        </p>       
-                        
+                        </p>
+
                    <div class="tour_buttons">
                         <span class="button" id="prevstep" style=""> &lt; Prev</span>
                         <span class="button start" id="nextstep"
                             onclick="updateUserSetting('{{request.user.username}}', 'help_show_homepage_tour', false);">
                             Get Started &gt;
-                        </span>            
+                        </span>
                         <span class="close ui-icon ui-icon-closethick" id="canceltour"></span>
                     </div>
                     </div>
@@ -266,7 +266,7 @@
                 <div class="collection_content">
                     <a href="#"
                        class ="arrow arrowClosed">
-                                              
+
                         <h3 class="left">Import into Collection</h3>
                         <div class="arrowIcon left"></div>
                     </a>
@@ -280,7 +280,7 @@
                         {% endif %}
                         <hr />
                         {% include "assetmgr/install_bookmarklet.html" %}
-                    </div> <!-- end import into collection box --> 
+                    </div> <!-- end import into collection box -->
                 </div><!-- end collection content box -->
                 {% if can_upload and uploader %}
                 <div class="collection_content">
@@ -298,7 +298,7 @@
                                 <div class="instructions">
                                     <p>You must be a course member to upload media files.</p>
                                 </div>
-                            {% else %}                        
+                            {% else %}
                                     <p>
                                         This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
                                     </p>
@@ -317,7 +317,7 @@
                                         <a class="btn btn-primary upload_button video">
                                             <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>&nbsp;&nbsp;Upload video</a>
                                     </form>
-                                    <hr class="divideLinks" />                                
+                                    <hr class="divideLinks" />
                                     <form action="/upload/redirect/{{uploader.id}}/" method="POST">
                                         {% if owners %}
                                             <div class="upload_for">
@@ -331,19 +331,19 @@
                                         {% endif %}
                                         <input type="hidden" name="audio" value="mp4"></input>
                                         <a class="btn btn-primary upload_button video">
-                                            <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>                                        
-                                    </form>  
+                                            <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>
+                                    </form>
                             {% endifequal %}
                        {% endflag %}
                 </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
-            {% endif %}            
+            {% endif %}
 
             {% if collections.count %}
                 <div id="recommend">
                     <h3>Recommended Sources</h3>
-                    Your instructor suggests that you import items from these sites. 
-                    
+                    Your instructor suggests that you import items from these sites.
+
                     {% for collection in collections %}
                         <div class="recommend_source">
                             {% if collection.thumb_url %}
@@ -358,13 +358,13 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                    {% endfor %}                        
+                    {% endfor %}
                 </div>
-            {% endif %} 
+            {% endif %}
 
             </div>
         {% endwith %}
-        </td>            
+        </td>
 
         </tr>
     </tbody>

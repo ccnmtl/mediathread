@@ -155,11 +155,12 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
                 'update_history': false,
                 'vocabulary': self.panel.vocabulary,
                 'view_callback': function() {
-                    self.citationView.openCitationById(
-                        null, assetId, annotationId);
-                    if (self.dialogWindow) {
-                        jQuery(elt).fadeIn('slow');
+                    if (assetId !== self.citationView.asset_id ||
+                            annotationId !== self.citationView.annotation_id) {
+                        self.citationView.openCitationById(
+                            null, assetId, annotationId);
                     }
+                    jQuery(elt).fadeIn('slow');
                 }
             });
         },
@@ -213,9 +214,10 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
             });
             jQuery('html').removeClass('busy');
 
-            if (asset_id != self.citationView.asset_id ||
-                    annotation_id != self.citationView.annotation_id) {
-                self.citationView.openCitationById(null, asset_id, annotation_id);
+            if (asset_id !== self.citationView.asset_id ||
+                    annotation_id !== self.citationView.annotation_id) {
+                self.citationView.openCitationById(
+                    null, asset_id, annotation_id);
             }
         }
     });

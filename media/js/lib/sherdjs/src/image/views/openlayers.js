@@ -233,13 +233,13 @@ if (!Sherd.Image.OpenLayers) {
 
                 return this;
             },
-            destroy: function () {
+            destroyAll: function() {
                 //remove from mouselistener obj
-                this.all_layers.splice(this.root.layers[this.v.id].index, 1);
-                delete this.root.layers[this.v.id];
-                //destroy layer -- openlayers does the rest
-                this.v.destroy();
-                //delete ann pointers
+                for (var i = 0; i < this.all_layers.length; i++) {
+                    layer = this.all_layers[i];
+                    delete this.root.layers[layer.id];
+                }
+                this.all_layers = [];
                 for (var ann_id in this._anns) {
                     if (this._anns.hasOwnProperty(ann_id)) {
                         delete this._anns[ann_id];
@@ -498,13 +498,7 @@ if (!Sherd.Image.OpenLayers) {
         };
         this.deinitialize = function () {
             if (this.openlayers.map) {
-                var lays = this.Layer.prototype.root.layers;
-                for (var a in lays) {
-                    if (lays[a].name !== 'annotating') {
-                        lays[a].me.destroy();
-                    }
-                }
-
+                this.Layer.prototype.destroyAll();
                 this.openlayers.map.destroy();
             }
         };
@@ -550,14 +544,7 @@ if (!Sherd.Image.OpenLayers) {
                     } else {
                         //everything should fit in this?
                         objopt.maxExtent = new OpenLayers.Bounds(-180, (80 - 360), 180, 80);
-                        //earth dimensions
-                        //opt.maxExtent=new OpenLayers.Bounds(-180, -90, 180, 80);
                     }
-                    //opt.maxExtent=new OpenLayers.Bounds(-180, -280, 180, 80);//DEBUG
-                    ///so it doesn't cut off the bottom/right of the image--by partial tile
-                    //opt.displayOutsideMaxExtent = true;
-
-                    //opt.transitionEffect='resize'; //bug: doesn't hide gutter tiles quickly enough
                     self.openlayers.graphic = new OpenLayers.Layer.XYZ(
                             create_obj.object.title || 'Image',
                             create_obj.object.xyztile,
@@ -690,28 +677,6 @@ if (!Sherd.Image.OpenLayers) {
                 };
 
                 self.openlayers.map.addControl(new OpenLayers.Control.MousePosition());
-
-                /* /// Issues with overview window:
-                   /// 1. loads slowly
-                   /// 2. positioning is too zoomed in and not synced with map (xy coords)
-                   /// TODO: investigate further
-                self.openlayers.graphicOverview = self.openlayers.graphic.clone();
-
-                self.openlayers.graphicOverview.getImageSize = function (){return null;};
-
-                self.openlayers.ovwin = new OpenLayers.Control.OverviewMap({
-                  maximized:true,
-                  layers:[self.openlayers.graphicOverview],
-                  minRatio:1,
-                  //needs to be low or we don't see the image altogether
-                  maxRatio:2,
-                  mapOptions: OpenLayers.Util.extend(objopt, {
-                     numZoomLevels:objopt.numZoomLevels-1,
-
-                  })
-                })
-                self.openlayers.map.addControl(self.openlayers.ovwin);
-                 */
                 self.openlayers.map.addLayers([self.openlayers.graphic]);
                 self.openlayers.vectorLayer = new self.Layer().create('annotating', {
                     zIndex: 1000

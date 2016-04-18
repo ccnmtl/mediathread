@@ -22,7 +22,7 @@ from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.mixins import (
-    LoggedInMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
+    LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
     ProjectEditableMixin, CreateReversionMixin)
 from mediathread.projects.api import ProjectResource
@@ -34,7 +34,7 @@ from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
 
 
-class ProjectCreateView(LoggedInMixin, JSONResponseMixin,
+class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
                         CreateReversionMixin, View):
 
     def get_title(self):
@@ -93,8 +93,9 @@ class ProjectCreateView(LoggedInMixin, JSONResponseMixin,
             return self.render_to_json_response(data)
 
 
-class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
-                      ProjectEditableMixin, CreateReversionMixin, View):
+class ProjectSaveView(LoggedInCourseMixin, AjaxRequiredMixin,
+                      JSONResponseMixin, ProjectEditableMixin,
+                      CreateReversionMixin, View):
 
     def post(self, request, *args, **kwargs):
         frm = ProjectForm(request, instance=self.project, data=request.POST)
@@ -152,7 +153,7 @@ class ProjectSaveView(LoggedInMixin, AjaxRequiredMixin, JSONResponseMixin,
         return self.render_to_json_response(ctx)
 
 
-class ProjectDeleteView(LoggedInMixin, ProjectEditableMixin, View):
+class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
     def post(self, request, *args, **kwargs):
         """
         Delete the requested project. Regular access conventions apply.
@@ -313,7 +314,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             return self.render_to_json_response(data)
 
 
-class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
+class SelectionAssignmentView(LoggedInCourseMixin, ProjectReadableMixin,
                               TemplateView):
     template_name = 'projects/selection_assignment_view.html'
 
@@ -381,7 +382,7 @@ class SelectionAssignmentView(LoggedInMixin, ProjectReadableMixin,
         return ctx
 
 
-class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
+class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
                          JSONResponseMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
@@ -515,7 +516,7 @@ class DefaultProjectView(LoggedInMixin, ProjectReadableMixin,
             return self.render_to_json_response(data)
 
 
-class ProjectWorkspaceView(LoggedInMixin, ProjectReadableMixin, View):
+class ProjectWorkspaceView(LoggedInCourseMixin, ProjectReadableMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
@@ -571,7 +572,7 @@ def project_export_msword(request, project_id):
     return response
 
 
-class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
+class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                         AjaxRequiredMixin, JSONResponseMixin,
                         ProjectReadableMixin, View):
 
@@ -587,7 +588,7 @@ class ProjectDetailView(LoggedInMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(context)
 
 
-class ProjectCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
+class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                             AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user
@@ -668,7 +669,7 @@ class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
         })
 
 
-class ProjectItemView(LoggedInMixin, JSONResponseMixin,
+class ProjectItemView(LoggedInCourseMixin, JSONResponseMixin,
                       AjaxRequiredMixin, View):
 
     def get(self, *args, **kwargs):

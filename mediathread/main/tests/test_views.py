@@ -3,9 +3,9 @@
 from datetime import datetime
 import json
 
+from waffle.testutils import override_flag
 from courseaffils.models import Course
 from courseaffils.tests.mixins import LoggedInFacultyTestMixin
-from courseaffils.tests.factories import CourseFactory, GroupFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -20,7 +20,9 @@ from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
-    AssetFactory, ProjectFactory, SherdNoteFactory)
+    AssetFactory, ProjectFactory, SherdNoteFactory,
+    ActivatableAffilFactory
+)
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
@@ -1118,13 +1120,49 @@ class HomepageAnonViewTest(TestCase):
 class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
     def setUp(self):
         super(HomepageViewTest, self).setUp()
-        self.course = CourseFactory(faculty_group=GroupFactory())
-        self.u.groups.add(self.course.faculty_group)
 
-    def test_get(self):
+    def test_get_without_featureflag(self):
         url = reverse('homepage')
-        response = self.client.get(url)
+        with override_flag('instructor_homepage', active=False):
+            response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
         self.assertEqual(len(response.context['object_list']), 0)
-        self.assertEqual(len(response.context['activatable_courses']), 0)
+        with self.assertRaises(KeyError):
+            response.context['activatable_affils']
+
+    def test_get_no_affils(self):
+        url = reverse('homepage')
+        with override_flag('instructor_homepage', active=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Homepage')
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_affils']), 0)
+
+    def test_get(self):
+        url = reverse('homepage')
+        aa = ActivatableAffilFactory(
+            user=self.u,
+            name='t1.y2016.s001.cf1000.scnc.fc.course:columbia.edu')
+        with override_flag('instructor_homepage', active=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Homepage')
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_affils']), 1)
+        self.assertEqual(response.context['activatable_affils'][0], aa)
+
+
+class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
+    def setUp(self):
+        super(AffilActivateViewTest, self).setUp()
+        self.aa = ActivatableAffilFactory(user=self.u, name='affil')
+
+    def test_get(self):
+        response = self.client.get(reverse('affil_activate', kwargs={
+            'pk': self.aa.pk
+        }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Activation')
+        self.assertEqual(response.context['affil'], self.aa)

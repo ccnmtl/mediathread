@@ -1,7 +1,7 @@
 import csv
 import json
 
-from courseaffils.lib import in_course_or_404, faculty_courses_for_user
+from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -166,10 +166,16 @@ class CSVResponseMixin():
 class LoggedInMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        return super(LoggedInMixin, self).dispatch(*args, **kwargs)
+
+
+class LoggedInCourseMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
         if not self.request.user.is_staff:
             in_course_or_404(self.request.user.username, self.request.course)
 
-        return super(LoggedInMixin, self).dispatch(*args, **kwargs)
+        return super(LoggedInCourseMixin, self).dispatch(*args, **kwargs)
 
 
 class LoggedInFacultyMixin(object):
@@ -180,17 +186,6 @@ class LoggedInFacultyMixin(object):
             return HttpResponseForbidden("forbidden")
 
         return super(LoggedInFacultyMixin, self).dispatch(*args, **kwargs)
-
-
-class LoggedInAsFacultyMixin(object):
-    """Mixin for views that only allow faculty."""
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        if not faculty_courses_for_user(self.request.user).exists():
-            return HttpResponseForbidden('forbidden')
-
-        return super(LoggedInAsFacultyMixin, self).dispatch(
-            *args, **kwargs)
 
 
 class LoggedInSuperuserMixin(object):

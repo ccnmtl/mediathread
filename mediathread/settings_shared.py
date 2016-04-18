@@ -42,7 +42,7 @@ TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
 
 MIDDLEWARE_CLASSES += [  # noqa
     'corsheaders.middleware.CorsMiddleware',
-    'courseaffils.middleware.CourseManagerMiddleware',
+    'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
 

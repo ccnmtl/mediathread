@@ -13,7 +13,7 @@ from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
     SuggestedExternalCollection
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
-from mediathread.main.models import UserProfile
+from mediathread.main.models import UserProfile, ActivatableAffil
 from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from structuredcollaboration.models import Collaboration, \
@@ -284,3 +284,12 @@ class MediathreadTestMixin(object):
     def enable_upload(self, course):
         ExternalCollectionFactory.create(course=course,
                                          uploader=True)
+
+
+class ActivatableAffilFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = ActivatableAffil
+
+    name = factory.Sequence(
+        lambda n: 't1.y2016.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
+    user = factory.SubFactory(UserFactory)

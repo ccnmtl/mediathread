@@ -23,6 +23,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http, rendered_with
+from waffle.decorators import waffle_flag
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -33,7 +34,7 @@ from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
 from mediathread.main.models import UserSetting
-from mediathread.mixins import ajax_required, LoggedInMixin, \
+from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
     LoggedInSuperuserMixin
 from mediathread.taxonomy.api import VocabularyResource
@@ -46,7 +47,7 @@ def _parse_domain(url):
     return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
 
-class ManageExternalCollectionView(LoggedInMixin, View):
+class ManageExternalCollectionView(LoggedInCourseMixin, View):
 
     def post(self, request):
         suggested_id = request.POST.get('suggested_id', None)
@@ -364,7 +365,7 @@ def annotation_delete(request, asset_id, annot_id):
         return HttpResponseNotFound()
 
 
-class RedirectToExternalCollectionView(LoggedInMixin, View):
+class RedirectToExternalCollectionView(LoggedInCourseMixin, View):
     """
         simple way to redirect to a stored (thus obfuscated) url
     """
@@ -374,7 +375,7 @@ class RedirectToExternalCollectionView(LoggedInMixin, View):
         return HttpResponseRedirect(exc.url)
 
 
-class RedirectToUploaderView(LoggedInMixin, View):
+class RedirectToUploaderView(LoggedInCourseMixin, View):
 
     def post(self, request, *args, **kwargs):
         collection_id = kwargs['collection_id']
@@ -670,7 +671,7 @@ class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
         return HttpResponse(json.dumps(self.export))
 
 
-class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
+class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
@@ -698,7 +699,7 @@ class AssetReferenceView(LoggedInMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
-class AssetEmbedListView(LoggedInMixin, RestrictedMaterialsMixin,
+class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          TemplateView):
 
     template_name = 'assetmgr/asset_embed_list.html'
@@ -841,7 +842,7 @@ class AssetEmbedView(TemplateView):
         return ctx
 
 
-class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
+class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
     def get(self, request, asset_id=None, annot_id=None):
@@ -883,7 +884,7 @@ class AssetWorkspaceView(LoggedInMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
-class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
+class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                       AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request, asset_id):
@@ -913,7 +914,7 @@ class AssetDetailView(LoggedInMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
-class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
+class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                           AjaxRequiredMixin, JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user
@@ -1012,7 +1013,7 @@ class AssetCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
 AUTO_COURSE_SELECT[AssetWorkspaceView.as_view()] = asset_workspace_courselookup
 
 
-class TagCollectionView(LoggedInMixin, RestrictedMaterialsMixin,
+class TagCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                         AjaxRequiredMixin, JSONResponseMixin, View):
 
     def get(self, request):
@@ -1036,6 +1037,7 @@ class BookmarkletMigrationView(TemplateView):
 @allow_http("GET")
 @login_required
 @rendered_with('assetmgr/upgrade_bookmarklet.html')
+@waffle_flag('!remove_bookmarklet')
 def upgrade_bookmarklet(request):
     context = {}
     if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):

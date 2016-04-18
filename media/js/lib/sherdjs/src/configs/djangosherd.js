@@ -354,6 +354,8 @@ CitationView.prototype.openCitation = function (anchor) {
 
 CitationView.prototype.openCitationById = function (anchor, asset_id, annotation_id) {
     var self = this;
+    self.asset_id = asset_id;
+    self.annotation_id = annotation_id;
 
     if (anchor && jQuery(anchor).hasClass("disabled")) {
         return;

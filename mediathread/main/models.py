@@ -90,3 +90,15 @@ class CourseInvitation(models.Model):
 
     def activated(self):
         return self.activated_at is not None
+
+
+class ActivatableAffil(models.Model):
+    """Model for storing activatable affiliations.
+
+    Faculty use this to 'activate' it into a Group/Course.
+    """
+    class Meta:
+        unique_together = ('name', 'user')
+
+    name = models.TextField()
+    user = models.ForeignKey(User)

@@ -48,11 +48,20 @@ if (!Sherd.Image.Annotators.OpenLayers) {
             }
         };
 
+        this.deinitialize = function () {
+            if (self.vectorLayer !== undefined &&
+                    self.vectorLayer.id !== 
+                        self.targetview.openlayers.vectorLayer.getLayer().id) {
+                self.openlayers.editingtoolbar = undefined;
+            }
+        };
+
         this.initialize = function (create_obj) {
             if (!self.openlayers.editingtoolbar) {
-                self.openlayers.editingtoolbar = new self.openlayers.CustomEditingToolbar(
-                        self.targetview.openlayers.vectorLayer.getLayer()
-                );
+                self.vectorLayer =
+                    self.targetview.openlayers.vectorLayer.getLayer(); 
+                self.openlayers.editingtoolbar =
+                    new self.openlayers.CustomEditingToolbar(self.vectorLayer);
                 self.targetview.openlayers.map.addControl(self.openlayers.editingtoolbar);
                 self.openlayers.editingtoolbar.deactivate();
 

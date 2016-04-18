@@ -278,9 +278,14 @@
                         {% elif request.user_agent.browser.family == 'Firefox' %}
                         {% include "assetmgr/install_firefox_extension.html" %}
                         {% endif %}
+
+                        {% flag 'remove_bookmarklet' %}
+                        {% else %}
                         <hr />
                         {% include "assetmgr/install_bookmarklet.html" %}
-                    </div> <!-- end import into collection box -->
+                        {% endflag %}
+                    </div> <!-- end import into collection box --> 
+
                 </div><!-- end collection content box -->
                 {% if can_upload and uploader %}
                 <div class="collection_content">

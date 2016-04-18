@@ -1,6 +1,5 @@
 # pylint: disable-msg=R0904
 from courseaffils.models import Course
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
@@ -43,9 +42,8 @@ class VocabularyValidation(Validation):
         errors = {}
 
         a = Vocabulary.objects.filter(
-            content_type_id=bundle.data['content_type_id'],
             display_name=bundle.data['display_name'],
-            object_id=bundle.data['object_id'])
+            course__id=bundle.data['object_id'])
 
         if len(a) > 0:  # vocabulary exists with this name
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
@@ -60,12 +58,7 @@ class VocabularyAuthorization(FacultyAuthorization):
 
     def read_list(self, object_list, bundle):
         request = bundle.request
-
-        course_type = ContentType.objects.get_for_model(request.course)
-        object_list = object_list.filter(content_type=course_type,
-                                         object_id=request.course.id)
-
-        return object_list.order_by('id')
+        return object_list.filter(course=request.course)
 
 
 class VocabularyResource(ModelResource):
@@ -92,13 +85,7 @@ class VocabularyResource(ModelResource):
             key=lambda bundle: bundle.data['display_name'])
         return to_be_serialized
 
-    def dehydrate(self, bundle):
-        bundle.data['content_type_id'] = bundle.obj.content_type.id
-        return bundle
-
     def hydrate(self, bundle):
-        bundle.obj.content_type = ContentType.objects.get(
-            id=bundle.data['content_type_id'])
         bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
         return bundle
 
@@ -120,8 +107,11 @@ class VocabularyResource(ModelResource):
         ctx = {}
         term_resource = TermResource()
 
-        related = TermRelationship.objects.get_for_object_list(object_list)
+        # render vocabulary and terms related to these notes
+        ids = object_list.values_list('id', flat=True)
+        related = TermRelationship.objects.filter(sherdnote__id__in=ids)
         term_counts = related.values('term').annotate(count=Count('id'))
+        related = related.select_related('term__vocabulary')
 
         for rel in related:
             if rel.term.vocabulary.id not in ctx:
@@ -149,12 +139,11 @@ class VocabularyResource(ModelResource):
     def render_for_course(self, request, object_list):
         related = TermRelationship.objects.none()
         if len(object_list) > 0:
-            related = TermRelationship.objects.get_for_object_list(object_list)
+            ids = [obj.id for obj in object_list]
+            related = TermRelationship.objects.filter(sherdnote__id__in=ids)
 
         data = []
-        lst = Vocabulary.objects.get_for_object(request.course)
-        lst = lst.select_related('content_type')
-        for vocabulary in lst:
+        for vocabulary in Vocabulary.objects.filter(course=request.course):
             ctx = self.render_one(request, vocabulary)
             for term in ctx['term_set']:
                 term['count'] = related.filter(term__id=term['id']).count()

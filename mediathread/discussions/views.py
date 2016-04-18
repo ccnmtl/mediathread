@@ -102,7 +102,7 @@ def discussion_create(request):
                                     new_threaded_comment.id)
     else:
         vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+            request, Vocabulary.objects.filter(course=request.course))
 
         user_resource = UserResource()
         owners = user_resource.render_list(request, request.course.members)
@@ -163,7 +163,7 @@ class DiscussionView(LoggedInCourseMixin, View):
                                       context_instance=RequestContext(request))
         else:
             vocabulary = VocabularyResource().render_list(
-                request, Vocabulary.objects.get_for_object(request.course))
+                request, Vocabulary.objects.filter(course=request.course))
 
             user_resource = UserResource()
             owners = user_resource.render_list(request, request.course.members)

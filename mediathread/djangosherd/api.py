@@ -5,9 +5,7 @@ from tastypie.resources import ModelResource
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.projects.models import ProjectNote
 from mediathread.taxonomy.api import TermResource
-from mediathread.taxonomy.models import TermRelationship
 
 
 class SherdNoteResource(ModelResource):
@@ -23,9 +21,7 @@ class SherdNoteResource(ModelResource):
     def render_related_terms(self, bundle):
         termResource = TermResource()
         vocabulary = {}
-        related = TermRelationship.objects.get_for_object(bundle.obj)
-        related = related.select_related('term__vocabulary')
-        for rel in related:
+        for rel in bundle.obj.termrelationship_set.all():
             if rel.term.vocabulary.id not in vocabulary:
                 vocabulary[rel.term.vocabulary.id] = {
                     'id': rel.term.vocabulary.id,
@@ -63,9 +59,11 @@ class SherdNoteResource(ModelResource):
             citable = bundle.request.GET.get('citable', '') == 'true'
 
             # assumed: there is only one ProjectNote per annotation
-            reference = ProjectNote.objects.filter(
-                annotation__id=bundle.obj.id).first()
-            if reference:
+            if bundle.obj.projectnote_set.count() > 0:
+                # "first" here kills the prefetch/select_related optimization
+                # use the qs array indexing to keep things fast
+                reference = bundle.obj.projectnote_set.all()[0]
+
                 # notes in a submitted response are not editable
                 editable = editable and not reference.project.is_submitted()
 

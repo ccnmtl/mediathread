@@ -4,14 +4,15 @@ import json
 
 from django.contrib.auth.models import User
 from django.http.request import HttpRequest
-from django.test.client import RequestFactory
 from django.test import TestCase
+from django.test.client import RequestFactory
+from tastypie.bundle import Bundle
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory
 from mediathread.taxonomy.api import VocabularyResource, \
-    VocabularyAuthorization
+    VocabularyAuthorization, VocabularyValidation
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
 
@@ -66,16 +67,18 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         self.create_term_relationship(note, term)
 
     def test_single_term_relationship(self):
-        notes = SherdNote.objects.filter(asset__title='Asset Two')
+        notes = SherdNote.objects.filter(
+            asset__title='Asset Two').values_list('id', flat=True)
 
-        lst = TermRelationship.objects.get_for_object_list(notes)
+        lst = TermRelationship.objects.filter(sherdnote__id__in=notes)
         self.assertEquals(len(lst), 1)
         self.assertEquals(lst[0].term, Term.objects.get(name='paper'))
 
     def test_multiple_term_relationship(self):
-        notes = SherdNote.objects.filter(asset__title="Asset One")
+        notes = SherdNote.objects.filter(
+            asset__title="Asset One").values_list('id', flat=True)
 
-        lst = TermRelationship.objects.get_for_object_list(notes)
+        lst = TermRelationship.objects.filter(sherdnote__id__in=notes)
 
         self.assertEquals(len(lst), 3)
         self.assertEquals(lst[0].term, Term.objects.get(name='red'))
@@ -116,9 +119,9 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
     def test_vocabulary_render_list(self):
         request = HttpRequest()
         request.course = self.sample_course
+        qs = Vocabulary.objects.filter(course=request.course)
 
-        lst = VocabularyResource().render_list(
-            request, Vocabulary.objects.get_for_object(request.course))
+        lst = VocabularyResource().render_list(request, qs)
 
         self.assertEquals(len(lst), 2)
         self.assertEquals(lst[0]['display_name'], "Colors")
@@ -207,3 +210,20 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx[1]['term_set'][0]['count'], 1)
         self.assertEquals(ctx[1]['term_set'][1]['display_name'], 'Triangle')
         self.assertEquals(ctx[1]['term_set'][1]['count'], 0)
+
+    def test_vocabulary_validation(self):
+        vv = VocabularyValidation()
+
+        mock_bundle = Bundle()
+        mock_bundle.data['display_name'] = 'Shapes'
+        mock_bundle.data['object_id'] = self.sample_course.id
+        errors = vv.is_valid(mock_bundle)
+        self.assertTrue('error_message' in errors)
+        self.assertTrue(
+            'A Shapes concept exists' in errors['error_message'][0])
+
+        mock_bundle = Bundle()
+        mock_bundle.data['display_name'] = 'Patterns'
+        mock_bundle.data['object_id'] = self.sample_course.id
+        errors = vv.is_valid(mock_bundle)
+        self.assertFalse('error_message' in errors)

@@ -1,19 +1,9 @@
+from courseaffils.models import Course
 from django import forms
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.template.defaultfilters import slugify
 
-
-class GenericRelationshipManager(models.Manager):
-    def get_for_object(self, obj):
-        ctype = ContentType.objects.get_for_model(obj)
-        return self.filter(content_type__pk=ctype.pk, object_id=obj.pk)
-
-    def get_for_object_list(self, object_list):
-        ctype = ContentType.objects.get_for_model(object_list[0])
-        ids = object_list.values_list('id', flat=True)
-        return self.filter(content_type__pk=ctype.pk, object_id__in=ids)
+from mediathread.djangosherd.models import SherdNote
 
 
 class Vocabulary(models.Model):
@@ -23,11 +13,7 @@ class Vocabulary(models.Model):
     single_select = models.BooleanField(default=False)
     onomy_url = models.TextField(null=True, blank=True)
     skos_uri = models.CharField(null=True, blank=True, max_length=100)
-    # Map this taxonomy to something else. like a course.
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-    objects = GenericRelationshipManager()
+    course = models.ForeignKey(Course)
 
     class Meta:
         ordering = ['display_name', 'id']
@@ -81,12 +67,8 @@ class TermForm(forms.ModelForm):
 
 class TermRelationship(models.Model):
     term = models.ForeignKey(Term)
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-
-    objects = GenericRelationshipManager()
+    sherdnote = models.ForeignKey(SherdNote)
 
     class Meta:
-        unique_together = ('term', 'content_type', 'object_id')
+        unique_together = ('term', 'sherdnote')
         ordering = ['term__display_name', 'id']

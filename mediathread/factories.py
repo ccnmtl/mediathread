@@ -202,25 +202,16 @@ class MediathreadTestMixin(object):
         return comment
 
     def create_vocabularies(self, course, taxonomy):
-        course_type = ContentType.objects.get_for_model(course)
-
         for name, terms in taxonomy.items():
-            concept = Vocabulary(display_name=name,
-                                 content_type=course_type,
-                                 object_id=course.id)
+            concept = Vocabulary(display_name=name, course=course)
             concept.save()
             for term_name in terms:
-                term = Term(display_name=term_name,
-                            vocabulary=concept)
+                term = Term(display_name=term_name, vocabulary=concept)
                 term.save()
 
-    def create_term_relationship(self, content_object, term):
+    def create_term_relationship(self, note, term):
         # Add some tags to a few notes
-        content_type = ContentType.objects.get_for_model(content_object)
-        TermRelationship.objects.get_or_create(
-            term=term,
-            content_type=content_type,
-            object_id=content_object.id)
+        TermRelationship.objects.get_or_create(term=term, sherdnote=note)
 
     def add_citation(self, project, note):
         # add this note into the project's body

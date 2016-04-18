@@ -17,10 +17,10 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    HomepageView,
+    HomepageView, AffilActivateView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView, triple_homepage,
+    CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView)
@@ -64,7 +64,7 @@ if hasattr(settings, 'CAS_BASE'):
 urlpatterns = patterns(
     '',
 
-    url(r'^$', triple_homepage, name='home'),
+    url(r'^$', course_detail_view, name='home'),
     admin_logout_page,
     logout_page,
     (r'^admin/', admin.site.urls),
@@ -140,6 +140,9 @@ urlpatterns = patterns(
     (r'^course/request/success/$',
      TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
+    url(r'^affil/(?P<pk>\d+)/activate/$',
+        AffilActivateView.as_view(),
+        name='affil_activate'),
 
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},

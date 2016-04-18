@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 
+import waffle
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
@@ -34,14 +35,19 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
-from mediathread.main.forms import RequestCourseForm, ContactUsForm, \
-    CourseDeleteMaterialsForm, ActivateInvitationForm
-from mediathread.main.models import UserSetting, CourseInvitation
+from mediathread.main.forms import (
+    RequestCourseForm, ContactUsForm,
+    CourseDeleteMaterialsForm, ActivateInvitationForm,
+    CourseActivateForm
+)
+from mediathread.main.models import (
+    UserSetting, CourseInvitation, ActivatableAffil
+)
 from mediathread.main.util import send_template_email, user_display_name
 from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
-    LoggedInAsFacultyMixin, LoggedInFacultyMixin,
+    LoggedInMixin, LoggedInFacultyMixin,
     LoggedInSuperuserMixin
 )
 from mediathread.projects.api import ProjectResource
@@ -68,7 +74,7 @@ def django_settings(request):
 
 
 @rendered_with('homepage.html')
-def triple_homepage(request):
+def course_detail_view(request):
     if not request.course:
         return HttpResponseRedirect('/accounts/login/')
 
@@ -718,11 +724,28 @@ class CourseAcceptInvitationView(FormView):
         return HttpResponseRedirect(reverse('course-invite-complete'))
 
 
-class HomepageView(LoggedInAsFacultyMixin, CourseListView):
+class HomepageView(LoggedInMixin, CourseListView):
     template_name = 'main/homepage.html'
 
     def get_context_data(self, **kwargs):
         context = super(HomepageView, self).get_context_data(**kwargs)
-        activatable_courses = []
-        context.update({'activatable_courses': activatable_courses})
+        if not waffle.flag_is_active(self.request, 'instructor_homepage'):
+            return context
+
+        affils = ActivatableAffil.objects.filter(user=self.request.user)
+        context.update({'activatable_affils': affils})
+        return context
+
+
+class AffilActivateView(LoggedInMixin, FormView):
+    """View for activating an affiliation into a Meth Course."""
+    template_name = 'main/activate_course.html'
+    form_class = CourseActivateForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AffilActivateView, self).get_context_data(
+            *args, **kwargs)
+        pk = self.kwargs.get('pk')
+        affil = ActivatableAffil.objects.get(pk=pk)
+        context.update({'affil': affil})
         return context

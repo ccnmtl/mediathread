@@ -23,7 +23,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import DiscussionIndex
-from mediathread.mixins import faculty_only, LoggedInMixin, \
+from mediathread.mixins import faculty_only, LoggedInCourseMixin, \
     LoggedInFacultyMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
@@ -133,7 +133,7 @@ class DiscussionDeleteView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('home'))
 
 
-class DiscussionView(LoggedInMixin, View):
+class DiscussionView(LoggedInCourseMixin, View):
 
     def get(self, request, *args, **kwargs):
         """Show a threadedcomments discussion of an arbitrary object.

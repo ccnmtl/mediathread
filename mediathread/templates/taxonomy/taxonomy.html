@@ -5,9 +5,9 @@
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
-    
+
     <script type="text/template" id="vocabulary-template">
-        <div class="vocabularies">           
+        <div class="vocabularies">
             <ul>
                 <% for (var i=0; i < vocabularies.length; i++) { %>
                     <li class="vocabulary-wrapper" id="vocabulary-wrapper-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
@@ -20,16 +20,16 @@
 
                                 <%=vocabularies[i].display_name%>
                             </a>
-                            
+
                           <div class="actions">
-                                <a class="icon-link edit-vocabulary-open" href="#">                                                     
+                                <a class="icon-link edit-vocabulary-open" href="#">
                                     <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit vocabulary"  />
                                 </a>
                                 <a class="icon-link delete-vocabulary"
-                                    href="<%=vocabularies[i].id%>">                                                
+                                    href="<%=vocabularies[i].id%>">
                                     <img src="{{STATIC_URL}}img/icons/meth_delete.png" class="delete_icon" alt="Delete vocabulary"  />
                                 </a>
-                            </div>                        
+                            </div>
                         </div>
                         <div class="vocabulary-edit" style="display: none">
                             <input class="form-control left" id="id_display_name" type="text" name="display_name"
@@ -68,11 +68,11 @@
                         </div>
                     </li>
                 <% } %>
-            </ul>       
+            </ul>
             <% for (var i=0; i < vocabularies.length; i++) { %>
                 <div class="vocabulary-container" id="vocabulary-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
-		            <h2>
-                        <%=vocabularies[i].display_name%> Concept 
+                    <h2>
+                        <%=vocabularies[i].display_name%> Concept
                         <% if (vocabularies[i].onomy_url.length < 1) { %>
                             <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Import</span>
@@ -92,7 +92,7 @@
                         <p>
                             <a href="http://onomy.org">onomy.org</a> is a site where you can create and share taxonomies,
                             folksonomies, and other forms of controlled vocabularies for use on the semantic web. Visit
-                            <a href="http://onomy.org">onomy.org</a> now to build your own taxonomies.  
+                            <a href="http://onomy.org">onomy.org</a> now to build your own taxonomies.
                         </p>
                         <label><b>Published Onomy Urls</b> <i>JSON format, separated by commas</i></label>
                         <input class="form-control left" type="text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
@@ -113,8 +113,8 @@
                             <a class="btn btn-default create-term-submit left" href="#">
                                 <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
                             </a>
-                        
-                        
+
+
                         <div class="visualclear"></div>
                         <% if (vocabularies[i].term_set.length > 0) { %>
                             <div class="term-container">
@@ -126,11 +126,11 @@
                                         </h5>
 
                                         <div class="term-actions">
-                                            <a class="icon-link edit-term-open" href="#">                                                     
+                                            <a class="icon-link edit-term-open" href="#">
                                                 <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit term"  />
                                             </a>
                                             <a class="icon-link delete-term"
-                                                href="<%=vocabularies[i].term_set[j].id%>">                                                
+                                                href="<%=vocabularies[i].term_set[j].id%>">
                                                 <img src="{{STATIC_URL}}img/icons/meth_delete.png" class="delete_icon" alt="Delete term"  />
                                             </a>
                                         </div>
@@ -185,18 +185,18 @@
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
 
-    <h2>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h2>    
-    
+    <h2>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h2>
+
     {% endwith %}{% endwith %}
 {% endblock %}
 
 {% block dashboard_module %}
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
-            
+
     {% include "help/help_contentarea.html" %}
-    
+
     <div id="taxonomy">
     </div>
-{% endwith %}{% endwith %}      
+{% endwith %}{% endwith %}
 {% endblock %}

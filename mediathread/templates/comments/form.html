@@ -6,13 +6,13 @@
       {{ field }}
     {% else %}
       {% ifnotequal field.name "comment" %}
-        <!-- 
-	     CANNOT DO display:none, because then IE disables
-	     form-submit on Enter.
-	     Same with Submit button
-	-->
+        <!--
+         CANNOT DO display:none, because then IE disables
+         form-submit on Enter.
+         Same with Submit button
+    -->
         <input type="hidden" name="{{field.html_name}}"
-	       value="{{field.value}}" />
+           value="{{field.value}}" />
         <!--p
         {% if field.errors %} class="error"{% endif %}
         style="display:none;">
@@ -21,9 +21,9 @@
         </p-->
 
       {% else %}
-	<input type="text" name="{{field.html_name}}"
-	       value="Enter your comment here and press return"
-	       >
+    <input type="text" name="{{field.html_name}}"
+           value="Enter your comment here and press return"
+           >
 
       {% endifnotequal %}
 

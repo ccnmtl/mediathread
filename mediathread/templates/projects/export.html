@@ -15,7 +15,7 @@
     {{ block.super }}
 
     <h1 class="project-title">{{project.title}}</h1>
-    
+
     <h5>by {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
             {%public_name for part %}{%endfor%}</h5>
     <h5> for {{request.course.title}}</h5>

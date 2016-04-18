@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block dashboard_module_header %}
-    <h2>Course Roster</h2>    
+    <h2>Course Roster</h2>
 {% endblock %}
 
 {% block js %}
@@ -26,7 +26,7 @@
 
 {% block uncompressable_js %}
     <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.combined.min.js' %}"></script>
-    
+
     <script type="text/javascript">
         jQuery(document).ready(function () {
             var view = new CourseRosterView({
@@ -47,7 +47,7 @@
         {% endfor %}
         </ul>
     </div>
-{% endif %}  
+{% endif %}
 
 <div class="roster-container">
     <div>
@@ -78,10 +78,10 @@
                             This utility will allow you to add them to the course easily.</p>
 
                             <p><b>How To Add Students</b><br />
-                            To add students or teaching assistants who are not formally registered, enter a list 
+                            To add students or teaching assistants who are not formally registered, enter a list
                             of UNIs separated by commas. The users will be added to the course
                             and receive an email with login instructions.</p>
-                            <br />  
+                            <br />
                             <div class="form-group">
                                 <label for="uni">UNI</label>
                                 <textarea class="form-control" name="unis" placeholder="UNIs separated by commas"></textarea>
@@ -115,15 +115,15 @@
                             <b>About Inviting Students</b><br />
                             An instructor can invite a student into the course by providing an email address.
                             An invitation will be sent to the student with instructions on how to create an
-                            account and login to the Mediathread course.</p>  
+                            account and login to the Mediathread course.</p>
 
                             <p><b>How To Invite Students</b><br />
-                            To invite students, enter a list of email addresses separated by commas. The users will 
+                            To invite students, enter a list of email addresses separated by commas. The users will
                             receive an invitation to the course via email.</p>
-                            
+
                             <p><b>Columbia University Students</b><br />
                             Do not invite students with Columbia University Network ID via email. Their course affiliations
-                            will not be picked up correctly. 
+                            will not be picked up correctly.
                             <br />
 
                             <div class="form-group">
@@ -238,5 +238,5 @@
             </table>
         <div>
     {% endif %}
-</div>    
+</div>
 {% endblock %}

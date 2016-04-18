@@ -1,29 +1,29 @@
 {% load coursetags %}
-	<li>
-	  <div class="asset_title type-{{clump.type}}
+    <li>
+      <div class="asset_title type-{{clump.type}}
                       {%ifequal clump.type "asset"%}
                       asset-{{clump.content_object.primary.label}}
                       {%endifequal%}
                       ">
-	    <a href="{{clump.href}}" class="title">{{clump.title|striptags|safe|default:"(Untitled)"}}</a>
-	  </div>
-	  <div class="asset-activities">
-	    {%for act in clump%}
-	    <div class="asset-activity">
-	      {{act.action}}
-	      {%if act.user%}
-	      by 
-	      <a href="/?username={{act.user.username}}"
-		 >{% public_name for act.user %}</a>
-	      {%endif%}
-	      {%if act.text %}
-	      :
-	      {%if act.href %}<a href="{{act.href}}">{%endif%}
-		{{act.text|safe|truncatewords:10 }}
-	      {%if act.href %}</a>{%endif%}
-	      {%endif%}
-	      {{act.date|date}}
-	    </div>
-	    {%endfor%}
-	  </div>
-	</li>
+        <a href="{{clump.href}}" class="title">{{clump.title|striptags|safe|default:"(Untitled)"}}</a>
+      </div>
+      <div class="asset-activities">
+        {%for act in clump%}
+        <div class="asset-activity">
+          {{act.action}}
+          {%if act.user%}
+          by
+          <a href="/?username={{act.user.username}}"
+         >{% public_name for act.user %}</a>
+          {%endif%}
+          {%if act.text %}
+          :
+          {%if act.href %}<a href="{{act.href}}">{%endif%}
+        {{act.text|safe|truncatewords:10 }}
+          {%if act.href %}</a>{%endif%}
+          {%endif%}
+          {{act.date|date}}
+        </div>
+        {%endfor%}
+      </div>
+    </li>

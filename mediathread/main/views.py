@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-
+import re
 import waffle
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
@@ -8,7 +8,7 @@ from courseaffils.models import Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -41,7 +41,7 @@ from mediathread.main.forms import (
     CourseActivateForm
 )
 from mediathread.main.models import (
-    UserSetting, CourseInvitation, ActivatableAffil
+    UserSetting, CourseInvitation, Affil
 )
 from mediathread.main.util import send_template_email, user_display_name
 from mediathread.mixins import (
@@ -732,20 +732,60 @@ class HomepageView(LoggedInMixin, CourseListView):
         if not waffle.flag_is_active(self.request, 'instructor_homepage'):
             return context
 
-        affils = ActivatableAffil.objects.filter(user=self.request.user)
+        affils = Affil.objects.filter(user=self.request.user, activated=False)
         context.update({'activatable_affils': affils})
         return context
 
 
 class AffilActivateView(LoggedInMixin, FormView):
     """View for activating an affiliation into a Meth Course."""
-    template_name = 'main/activate_course.html'
+    template_name = 'main/course_activate.html'
     form_class = CourseActivateForm
+    success_url = '/homepage/'
+    terms = {'Spring': 1, 'Summer': 2, 'Fall': 3}
+
+    def send_email(self, form):
+        subject = 'Course Activation Request'
+        body = """
+Term: %s
+Year: %s
+Consult or demo: %s
+""" % (form['term'], form['year'], form['consult_or_demo'])
+
+        send_mail(
+            subject,
+            body,
+            self.affil.user.email,
+            [settings.SERVER_EMAIL])
 
     def get_context_data(self, *args, **kwargs):
         context = super(AffilActivateView, self).get_context_data(
             *args, **kwargs)
         pk = self.kwargs.get('pk')
-        affil = ActivatableAffil.objects.get(pk=pk)
-        context.update({'affil': affil})
+        self.affil = Affil.objects.get(pk=pk)
+        context.update({'affil': self.affil})
         return context
+
+    def form_valid(self, form):
+        pk = self.kwargs.get('pk')
+        self.affil = Affil.objects.get(pk=pk)
+        self.affil.activated = True
+        self.affil.save()
+
+        # Create the course.
+        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
+        g = Group.objects.get_or_create(name=studentaffil)[0]
+        fg = Group.objects.get_or_create(name=self.affil.name)[0]
+        c = Course.objects.create(
+            title=form.cleaned_data.get('course_name'),
+            group=g,
+            faculty_group=fg)
+        c.info.year = form.cleaned_data.get('year')
+        c.info.term = self.terms[form.cleaned_data.get('term')]
+        c.info.save()
+
+        # TODO:
+        # Notify CTL Staff, allow them to create the course based on the
+        # activation request.
+
+        return super(AffilActivateView, self).form_valid(form)

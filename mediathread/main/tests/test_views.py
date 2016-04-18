@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 
 from waffle.testutils import override_flag
+from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
 from courseaffils.tests.mixins import LoggedInFacultyTestMixin
 from django.conf import settings
@@ -11,7 +12,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
 from threadedcomments.models import ThreadedComment
 
@@ -21,7 +22,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
-    ActivatableAffilFactory
+    AffilFactory
 )
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
@@ -1142,7 +1143,7 @@ class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('homepage')
-        aa = ActivatableAffilFactory(
+        aa = AffilFactory(
             user=self.u,
             name='t1.y2016.s001.cf1000.scnc.fc.course:columbia.edu')
         with override_flag('instructor_homepage', active=True):
@@ -1154,15 +1155,51 @@ class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
         self.assertEqual(response.context['activatable_affils'][0], aa)
 
 
+@override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
 class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()
-        self.aa = ActivatableAffilFactory(user=self.u, name='affil')
+        self.aa = AffilFactory(user=self.u, name='affil')
 
     def test_get(self):
         response = self.client.get(reverse('affil_activate', kwargs={
             'pk': self.aa.pk
         }))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Activation')
+        self.assertContains(
+            response,
+            'Course Activation: {}'.format(self.aa.name))
         self.assertEqual(response.context['affil'], self.aa)
+
+    def test_post_no_course_name(self):
+        self.assertFalse(self.aa.activated)
+        response = self.client.post(
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
+                'course_name': '',
+                'term': 'Fall',
+                'year': 2016,
+                'consult_or_demo': 'consultation',
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
+        self.assertEqual(Course.objects.count(), 0)
+
+    def test_post(self):
+        self.assertFalse(self.aa.activated)
+        response = self.client.post(
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
+                'course_name': 'My Course',
+                'term': 'Fall',
+                'year': 2016,
+                'consult_or_demo': 'consultation',
+            })
+        self.assertEqual(response.status_code, 302)
+        self.aa.refresh_from_db()
+        self.assertTrue(self.aa.activated)
+
+        course = Course.objects.last()
+        self.assertEqual(course.title, 'My Course')
+        self.assertEqual(unicode(course.info),
+                         'My Course (Fall 2016) None None-None')
+        self.assertEqual(course.info.term, 3)
+        self.assertEqual(course.info.year, 2016)

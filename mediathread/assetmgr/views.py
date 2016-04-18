@@ -900,6 +900,9 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         # only return original author's global annotations
         notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
+        notes = notes.prefetch_related(
+            'termrelationship_set__term__vocabulary',
+            'projectnote_set__project')
 
         asset = the_assets[0]
 

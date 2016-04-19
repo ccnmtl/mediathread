@@ -39,9 +39,8 @@ all_archives = [
              },
          'thumb': {
              'label': 'thumb',
-             'url': ("http://ccnmtl.columbia.edu/projects/"
-                     "mediathread/skins/vietnam//img/bvault_bug.jpg"),
-             },
+             'url': '/media/img/thumbs/bvault_bug.jpg',
+         },
      },
      },
     {'title': 'Flickr',

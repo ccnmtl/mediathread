@@ -46,6 +46,21 @@
                 function() {
                     // Success handler
                     markAsInstalled($button);
+
+                    var extensionId = 'gambcgmmppeklfmbahomokogelnaffbi';
+
+                    chrome.runtime.sendMessage(
+                        extensionId, {
+                            command: 'updatesettings'
+                        }, function(response) {
+                            var $el = jQuery('.update-chrome-extension-feedback');
+                            var defaultResponse = 'Settings updated.';
+                            var msg = response ? response : defaultResponse;
+
+                            $el.hide();
+                            $el.text(msg);
+                            $el.fadeIn();
+                        });
                 }
             );
         });

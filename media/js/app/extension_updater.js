@@ -3,7 +3,7 @@
 jQuery(document).ready(function() {
     jQuery('.update-chrome-extension-hosturl').click(function() {
         if (chrome && chrome.runtime) {
-            var extensionId = 'kfninnbnfofmpjhlgkikjplmahfjkhjp';
+            var extensionId = 'gambcgmmppeklfmbahomokogelnaffbi';
             chrome.runtime.sendMessage(
                 extensionId, {
                     command: 'updatesettings'

@@ -92,7 +92,7 @@ class CourseInvitation(models.Model):
         return self.activated_at is not None
 
 
-class ActivatableAffil(models.Model):
+class Affil(models.Model):
     """Model for storing activatable affiliations.
 
     Faculty use this to 'activate' it into a Group/Course.
@@ -100,5 +100,8 @@ class ActivatableAffil(models.Model):
     class Meta:
         unique_together = ('name', 'user')
 
+    activated = models.BooleanField(default=False)
     name = models.TextField()
     user = models.ForeignKey(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)

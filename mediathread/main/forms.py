@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.widgets import RadioSelect
+from django.utils import timezone
 from registration.forms import RegistrationForm
 
 
@@ -166,7 +167,9 @@ class ActivateInvitationForm(forms.Form):
 
 
 class CourseActivateForm(forms.Form):
+    course_name = forms.CharField(label='Course Name')
     term = forms.ChoiceField(required=True, choices=TERM_CHOICES)
+    year = forms.ChoiceField(required=True, choices=())
     consult_or_demo = forms.ChoiceField(
         required=True,
         choices=(
@@ -174,3 +177,18 @@ class CourseActivateForm(forms.Form):
             ('demo', 'In-class demo')),
         widget=forms.RadioSelect
     )
+
+    def __init__(self, *args, **kwargs):
+        r = super(CourseActivateForm, self).__init__(*args, **kwargs)
+
+        # Give the option to choose the current year or the next
+        # two years.
+        year = timezone.now().year
+        year_choices = []
+        for i in range(3):
+            year_choices.append((year, year))
+            year += 1
+
+        self.fields['year'].choices = year_choices
+
+        return r

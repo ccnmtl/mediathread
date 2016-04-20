@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.utils import timezone
-from mediathread.main.models import ActivatableAffil
+from mediathread.main.models import Affil
 
 
 class CourseGroupMapper(object):
@@ -12,13 +12,13 @@ class CourseGroupMapper(object):
 
     @staticmethod
     def create_activatable_affil(user, affil, year):
-        """Create an ActivatableAffil for the affil/user.
+        """Create an Affil for the affil/user.
 
         The required conditions are:
         - The user has 'faculty' status for this affil
         - The affil has a recent or future date.
 
-        Returns the ActivatableAffil if created, otherwise returns None.
+        Returns the Affil if created, otherwise returns None.
         """
         if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER'):
             d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(affil)
@@ -36,7 +36,7 @@ class CourseGroupMapper(object):
             return None
 
         if conditions:
-            return ActivatableAffil.objects.get_or_create(
+            return Affil.objects.get_or_create(
                 name=affil, user=user)[0]
 
         return None

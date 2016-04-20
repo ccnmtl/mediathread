@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}&mdash; Activate Course{% endblock %}
+
+{% block content %}
+    <form action="." method="post" class="form col-md-6">
+        {% csrf_token %}
+        <h1>Course Activation: {{affil.name}}</h1>
+        {% bootstrap_form form %}
+        {% buttons submit='Submit' %}{% endbuttons %}
+    </form>
+{% endblock %}

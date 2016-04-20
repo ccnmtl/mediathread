@@ -3,7 +3,7 @@ from django.test.testcases import TestCase
 
 from mediathread.factories import (
     MediathreadTestMixin, UserFactory, UserProfileFactory, CourseFactory,
-    ActivatableAffilFactory
+    AffilFactory
 )
 from mediathread.main.models import (
     UserSetting, user_registered_callback,
@@ -74,9 +74,9 @@ class UserRegistrationTest(TestCase):
         self.assertTrue(course.is_member(user))
 
 
-class ActivatableAffilTest(TestCase):
+class AffilTest(TestCase):
     def setUp(self):
-        self.aa = ActivatableAffilFactory()
+        self.aa = AffilFactory()
 
     def test_is_valid_from_factory(self):
         self.aa.full_clean()

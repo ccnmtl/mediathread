@@ -4328,3 +4328,34 @@ a.btn.btn-default img.left {
 .course-search {
     width: 200px;
 }
+
+.projectlist.pagination {
+    margin-bottom: 0px;
+    float: right;
+}
+
+.projectlist.pagination.bottom {
+    margin-top: 0px;
+}
+
+.projectlist.pagination a {
+    font-weight: normal;
+    border: 0;
+    border-radius: 4px;
+    font-size: .75em;
+    padding: 7px;
+}
+
+.projectlist.pagination li.description a {
+    border: 0;
+    font-size: .9em;
+    padding: 6px 4px 0 4px;
+}
+
+.projectlist.pagination li.description:hover,
+.projectlist.pagination li.description:active,
+.projectlist.pagination li.description a:active,
+.projectlist.pagination li.description a:hover {
+    background-color: white;
+    color: #337ab7;
+}

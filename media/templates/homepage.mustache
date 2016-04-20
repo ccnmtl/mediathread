@@ -35,7 +35,7 @@
         </div>
         {{/switcher_collection_chooser}}
     </div> {{! end filter widget }}
-
+    
     <a href="#" id="homepage-create-menu" onclick='jQuery("#create-project-menu").toggle();' class="btn btn-default create right">
         Create&nbsp;
         <img src="/media/img/menuselect.png" width="6" height="12" />
@@ -79,6 +79,30 @@
 </div>
 
 <div class="visualclear"></div>
+
+{{#num_pages}}
+<ul class="projectlist pagination">
+{{#previous_page}}
+    <li>
+        <a href="#" aria-label="Previous" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+    </li>
+{{/previous_page}}
+    <li class="description">
+        <a href="#" aria-label="{{current_page}}/{{num_pages}}">
+            <span>{{current_page}} of {{num_pages}}</span>
+        </a>
+    </li>
+{{#next_page}}
+    <li>
+        <a href="#" aria-label="Next" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+     </li>
+{{/next_page}}
+</ul>   
+{{/num_pages}}
 
 <table>
     <tbody>
@@ -276,4 +300,29 @@
         </tr>
     </tbody>
 </table>
+
+{{#num_pages}}
+<ul class="projectlist pagination bottom">
+{{#previous_page}}
+    <li>
+        <a href="#" aria-label="Previous" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+    </li>
+{{/previous_page}}
+    <li class="description">
+        <a href="#" aria-label="{{current_page}}/{{num_pages}}">
+            <span>{{current_page}} of {{num_pages}}</span>
+        </a>
+    </li>
+{{#next_page}}
+    <li>
+        <a href="#" aria-label="Next" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+     </li>
+{{/next_page}}
+</ul>
+{{/num_pages}}
+
 <div id="loaded"></div>

@@ -5,6 +5,7 @@ from courseaffils.lib import in_course_or_404, get_public_name
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
@@ -590,6 +591,34 @@ class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
 class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                             AjaxRequiredMixin, JSONResponseMixin, View):
+
+    limit = 10
+
+    def paginate(self, pres, assignments, projects):
+        ctx = {'assignments': [], 'projects': []}
+
+        # paginate
+        paginator = Paginator(assignments + projects, self.limit)
+        page_number = self.request.GET.get('page', 1)
+        the_page = paginator.page(page_number)
+        if paginator.num_pages > 1:
+            ctx['num_pages'] = paginator.num_pages
+            ctx['current_page'] = page_number
+
+            if the_page.has_previous():
+                ctx['previous_page'] = the_page.previous_page_number()
+            if the_page.has_next():
+                ctx['next_page'] = the_page.next_page_number()
+
+        for o in the_page.object_list:
+            if o in assignments:
+                ctx['assignments'].append(
+                    pres.render_assignment(self.request, o))
+            else:
+                ctx['projects'].append(pres.render_project(self.request, o))
+
+        return ctx
+
     """
     An ajax-only request to retrieve assets for a course or a specified user
     Example:
@@ -624,13 +653,13 @@ class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                     request.course, request.user)
 
             ctx['space_owner'] = ures.render_one(request, self.record_owner)
-            ctx['assignments'] = pres.render_assignments(request, assignments)
         else:
             projects = Project.objects.visible_by_course(request.course,
                                                          request.user)
 
-        ctx['projects'] = pres.render_projects(request, projects)
         ctx['compositions'] = len(projects) > 0 or len(assignments) > 0
+
+        ctx.update(self.paginate(pres, assignments, projects))
 
         return self.render_to_json_response(ctx)
 

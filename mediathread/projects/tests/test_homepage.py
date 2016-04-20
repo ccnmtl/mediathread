@@ -229,7 +229,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertEquals(len(projects), 4)
@@ -256,7 +256,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertEquals(len(projects), 2)
@@ -275,7 +275,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertProjectEquals(projects[0], self.assignment.title,

@@ -5,9 +5,11 @@
 
 var ProjectList = function(config) {
     var self = this;
+
     self.template_label = config.template_label;
     self.parent = config.parent;
     self.switcher_context = {};
+    self.page = 1;
 
     jQuery.ajax({
         url: '/media/templates/' + config.template + '.mustache?nocache=v2',
@@ -22,6 +24,14 @@ var ProjectList = function(config) {
     jQuery(window).on('projectlist.refresh', {'self': self}, function(event) {
         var self = event.data.self;
         self.refresh(config);
+    });
+
+    jQuery(config.parent).on('click', 'ul.pagination li a.page', function(evt) {
+        var page = jQuery(this).data('page');
+        if (self.page !== page) {
+            self.page = page;
+            self.refresh(config);
+        }
     });
 
     return this;
@@ -72,6 +82,7 @@ ProjectList.prototype.refresh = function(config) {
     } else {
         url = MediaThread.urls['your-projects'](config.space_owner);
     }
+    url += '?page=' + self.page;
 
     jQuery('a.linkRespond').off('click');
     jQuery('a.btnRespond').off('click');
@@ -84,6 +95,8 @@ ProjectList.prototype.refresh = function(config) {
         success: function(the_records) {
             self.update(the_records);
 
+            jQuery('[data-toggle="tooltip"]').tooltip();
+
             jQuery('a.btnRespond').on('click', function(evt) {
                 self.createAssignmentResponse(evt);
             });
@@ -95,6 +108,7 @@ ProjectList.prototype.refresh = function(config) {
             jQuery('a.btnDeleteResponse').on('click', function(evt) {
                 self.deleteAssignmentResponse(evt);
             });
+
         }
     });
 };
@@ -194,5 +208,6 @@ ProjectList.prototype.update = function(the_records) {
 
     self.parent = $el;
     self.updateSwitcher();
+
     jQuery('.ajaxloader').hide();
 };

@@ -742,7 +742,6 @@ class AffilActivateView(LoggedInMixin, FormView):
     template_name = 'main/course_activate.html'
     form_class = CourseActivateForm
     success_url = '/homepage/'
-    terms = {'Spring': 1, 'Summer': 2, 'Fall': 3}
 
     def send_email(self, form):
         subject = 'Course Activation Request'
@@ -758,6 +757,26 @@ Consult or demo: %s
             self.affil.user.email,
             [settings.SERVER_EMAIL])
 
+    def create_course(self, form, affil):
+        # Create the course.
+        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
+        g = Group.objects.get_or_create(name=studentaffil)[0]
+        fg = Group.objects.get_or_create(name=self.affil.name)[0]
+        c = Course.objects.create(
+            title=form.cleaned_data.get('course_name'),
+            group=g,
+            faculty_group=fg)
+
+        # Get the year and term from the affil string.
+        affil_dict = {}
+        if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER'):
+            affil_dict = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(
+                affil.name)
+        if affil_dict:
+            c.info.year = affil_dict.get('year')
+            c.info.term = affil_dict.get('term')
+            c.info.save()
+
     def get_context_data(self, *args, **kwargs):
         context = super(AffilActivateView, self).get_context_data(
             *args, **kwargs)
@@ -772,20 +791,9 @@ Consult or demo: %s
         self.affil.activated = True
         self.affil.save()
 
-        # Create the course.
-        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
-        g = Group.objects.get_or_create(name=studentaffil)[0]
-        fg = Group.objects.get_or_create(name=self.affil.name)[0]
-        c = Course.objects.create(
-            title=form.cleaned_data.get('course_name'),
-            group=g,
-            faculty_group=fg)
-        c.info.year = form.cleaned_data.get('year')
-        c.info.term = self.terms[form.cleaned_data.get('term')]
-        c.info.save()
+        self.create_course(form, self.affil)
 
         # TODO:
-        # Notify CTL Staff, allow them to create the course based on the
-        # activation request.
+        # Notify CTL Staff
 
         return super(AffilActivateView, self).form_valid(form)

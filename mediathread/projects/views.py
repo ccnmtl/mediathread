@@ -683,9 +683,14 @@ class ProjectItemView(LoggedInCourseMixin, JSONResponseMixin,
         # notes related to visible responses are visible
         pnotes = ProjectNote.objects.filter(project__id__in=response_ids)
         note_ids = pnotes.values_list('annotation__id', flat=True)
-        notes = SherdNote.objects.filter(
-            id__in=note_ids).prefetch_related(
-            'author', 'asset').order_by('author', 'title')
+        notes = SherdNote.objects.filter(id__in=note_ids)
+
+        if item.primary.is_image():
+            notes = notes.order_by('author', 'title')
+        else:
+            notes = notes.order_by('author', 'range1', 'title')
+
+        notes = notes.prefetch_related('author', 'asset')
 
         ctx = AssetResource().render_one_context(self.request, item, notes)
 

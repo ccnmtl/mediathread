@@ -12,11 +12,15 @@
           <h3 class="annotation-header" id="accordion-{{id}}"
             data-id="{{id}}" data-username="{{author.username}}">
             <a href="#">
-              {{^metadata.title}}
-                -Untitled-
+                {{^metadata.title}}
+                    -Untitled-
                 {{/metadata.title}}
                 {{#metadata.title}}
-                  {{metadata.title}}
+                    {{metadata.title}}
+                    <br />
+                    {{#annotation.startCode}}
+                        <span class="small">{{annotation.startCode}} - {{annotation.endCode}}</span>
+                    {{/annotation.startCode}}
                 {{/metadata.title}}
             </a>
 

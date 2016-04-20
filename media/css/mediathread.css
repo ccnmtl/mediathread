@@ -1488,12 +1488,6 @@ div.asset-view-container .annotation-ajaxloader {
     margin-left: 10px;
 } 
 
-.selection-assignment .annotation-ajaxloader {
-    margin-top: 25px;
-    height: 150px;    
-    width: 90%;
-}
-
 tr.asset-workspace-content-row div.ajaxloader {
     top: 46px;    
     width: 98%;   
@@ -4196,6 +4190,12 @@ a.btn.btn-default img.left {
 }
 
 /* Selection Assignment */
+.selection-assignment .annotation-ajaxloader {
+    margin-top: 25px;
+    height: 150px;    
+    width: 90%;
+}
+
 .selection-assignment #sliding-content-container {
     margin-top: 20px;
 }
@@ -4230,6 +4230,10 @@ a.btn.btn-default img.left {
 
 .selection-assignment .asset-view-published {
     border: 0;
+}
+
+.selection-assignment h3.annotation-header a {
+    font-size: .9em;
 }
 
 .affix-top, .affix {

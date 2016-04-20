@@ -45,7 +45,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.instructor_note = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_selection,',
-            body='instructor one selection note', range1=0, range2=1)
+            body='instructor one selection note', range1=1, range2=2)
         self.instructor_ga = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_global,',
@@ -314,7 +314,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
 
-        selections = [self.student_note.id, self.instructor_note.id]
+        selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
             asset,

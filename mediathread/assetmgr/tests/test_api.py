@@ -341,7 +341,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
 
-        selections = [self.student_note.id, self.instructor_note.id]
+        selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
             asset,
@@ -368,7 +368,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
 
-        selections = [self.student_note.id, self.instructor_note.id]
+        selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(
             asset,
@@ -478,7 +478,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         the_json = json.loads(response.content)
 
-        selections = [self.student_note.id, self.instructor_note.id]
+        selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(asset, self.asset1.title,
                                'Instructor One', 'image', selections)

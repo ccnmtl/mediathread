@@ -900,11 +900,16 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         # only return original author's global annotations
         notes = notes.exclude(~Q(author=request.user), range1__isnull=True)
+
+        asset = the_assets[0]
+        if asset.primary.is_image():
+            notes = notes.order_by('author', 'title')
+        else:
+            notes = notes.order_by('author', 'range1', 'title')
+
         notes = notes.prefetch_related(
             'termrelationship_set__term__vocabulary',
             'projectnote_set__project')
-
-        asset = the_assets[0]
 
         help_setting = UserSetting.get_setting(request.user,
                                                "help_item_detail_view",

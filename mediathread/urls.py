@@ -17,7 +17,7 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    HomepageView, AffilActivateView,
+    MethCourseListView, AffilActivateView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
@@ -143,6 +143,9 @@ urlpatterns = patterns(
     url(r'^affil/(?P<pk>\d+)/activate/$',
         AffilActivateView.as_view(),
         name='affil_activate'),
+    url(r'^course/list/$',
+        MethCourseListView.as_view(),
+        name='course_list'),
 
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},
@@ -157,8 +160,6 @@ urlpatterns = patterns(
     (r'^crossdomain.xml$', 'django.views.static.serve',
      {'document_root': os.path.abspath(os.path.dirname(__file__)),
       'path': 'crossdomain.xml'}),
-
-    url(r'^homepage/$', HomepageView.as_view(), name='homepage'),
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),

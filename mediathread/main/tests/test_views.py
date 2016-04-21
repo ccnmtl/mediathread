@@ -1111,45 +1111,45 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
                         in response.cookies['messages'].value)
 
 
-class HomepageAnonViewTest(TestCase):
+class MethCourseListAnonViewTest(TestCase):
     def test_get(self):
-        url = reverse('homepage')
+        url = reverse('course_list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
 
 
-class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
+class MethCourseListViewTest(LoggedInFacultyTestMixin, TestCase):
     def setUp(self):
-        super(HomepageViewTest, self).setUp()
+        super(MethCourseListViewTest, self).setUp()
 
     def test_get_without_featureflag(self):
-        url = reverse('homepage')
-        with override_flag('instructor_homepage', active=False):
+        url = reverse('course_list')
+        with override_flag('course_activation', active=False):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Homepage')
+        self.assertContains(response, 'Course Selection')
         self.assertEqual(len(response.context['object_list']), 0)
         with self.assertRaises(KeyError):
             response.context['activatable_affils']
 
     def test_get_no_affils(self):
-        url = reverse('homepage')
-        with override_flag('instructor_homepage', active=True):
+        url = reverse('course_list')
+        with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Homepage')
+        self.assertContains(response, 'Course Selection')
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 0)
 
     def test_get(self):
-        url = reverse('homepage')
+        url = reverse('course_list')
         aa = AffilFactory(
             user=self.u,
             name='t1.y2016.s001.cf1000.scnc.fc.course:columbia.edu')
-        with override_flag('instructor_homepage', active=True):
+        with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Homepage')
+        self.assertContains(response, 'Course Selection')
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 1)
         self.assertEqual(response.context['activatable_affils'][0], aa)

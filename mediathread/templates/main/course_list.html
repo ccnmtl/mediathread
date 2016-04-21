@@ -6,7 +6,7 @@
 {% block title %}&mdash; Homepage{% endblock %}
 
 {% block coursetitle %}
-    Homepage
+    Course Selection
 {% endblock %}
 
 {% block css %}
@@ -38,7 +38,7 @@
 {% endblock %}
 
 {% block content %}
-    {% flag 'instructor_homepage' %}
+    {% flag 'course_activation' %}
     <div id="course-list">
         <div id="coursefilter">
             <span class="h5">View courses for:</span>
@@ -119,10 +119,10 @@
         </table>
     {% endif %}
 
-    {% if activatable_affils|length > 0 %}
+    {% if course_activations|length > 0 %}
         <h2>Activatable Courses</h2>
         <ul>
-            {% for affil in activatable_affils %}
+            {% for affil in course_activations %}
                 <li>
                     {{affil.name}}
                     <a class="btn btn-default btn-xs"
@@ -134,7 +134,7 @@
     {% endif %}
     </div>
     {% else %}
-    The instructor_homepage flag isn't enabled for this user.
+    The course_activation flag isn't enabled for this user.
     {% endflag %}
 
 {% endblock %}

@@ -724,12 +724,12 @@ class CourseAcceptInvitationView(FormView):
         return HttpResponseRedirect(reverse('course-invite-complete'))
 
 
-class HomepageView(LoggedInMixin, CourseListView):
-    template_name = 'main/homepage.html'
+class MethCourseListView(LoggedInMixin, CourseListView):
+    template_name = 'main/course_list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(HomepageView, self).get_context_data(**kwargs)
-        if not waffle.flag_is_active(self.request, 'instructor_homepage'):
+        context = super(MethCourseListView, self).get_context_data(**kwargs)
+        if not waffle.flag_is_active(self.request, 'course_activation'):
             return context
 
         affils = Affil.objects.filter(user=self.request.user, activated=False)

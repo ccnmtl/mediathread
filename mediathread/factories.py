@@ -282,5 +282,5 @@ class AffilFactory(factory.DjangoModelFactory):
         model = Affil
 
     name = factory.Sequence(
-        lambda n: 't1.y2016.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
+        lambda n: 't1.y2016.s001.cf100%d.scnc.st.course:columbia.edu' % n)
     user = factory.SubFactory(UserFactory)

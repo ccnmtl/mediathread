@@ -1159,7 +1159,7 @@ class HomepageViewTest(LoggedInFacultyTestMixin, TestCase):
 class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()
-        self.aa = AffilFactory(user=self.u, name='affil')
+        self.aa = AffilFactory(user=self.u)
 
     def test_get(self):
         response = self.client.get(reverse('affil_activate', kwargs={
@@ -1176,8 +1176,6 @@ class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
                 'course_name': '',
-                'term': 'Fall',
-                'year': 2016,
                 'consult_or_demo': 'consultation',
             })
         self.assertEqual(response.status_code, 200)
@@ -1189,8 +1187,6 @@ class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
                 'course_name': 'My Course',
-                'term': 'Fall',
-                'year': 2016,
                 'consult_or_demo': 'consultation',
             })
         self.assertEqual(response.status_code, 302)
@@ -1200,6 +1196,6 @@ class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
         course = Course.objects.last()
         self.assertEqual(course.title, 'My Course')
         self.assertEqual(unicode(course.info),
-                         'My Course (Fall 2016) None None-None')
-        self.assertEqual(course.info.term, 3)
+                         'My Course (Spring 2016) None None-None')
+        self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)

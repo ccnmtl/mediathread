@@ -10,6 +10,7 @@ var ProjectList = function(config) {
     self.parent = config.parent;
     self.switcher_context = {};
     self.page = 1;
+    self.space_owner = config.space_owner;
 
     jQuery.ajax({
         url: '/media/templates/' + config.template + '.mustache?nocache=v2',
@@ -17,20 +18,20 @@ var ProjectList = function(config) {
         cache: false, // Chrome && IE have aggressive caching policies.
         success: function(text) {
             MediaThread.templates[config.template] = text;
-            self.refresh(config);
+            self.refresh();
         }
     });
 
     jQuery(window).on('projectlist.refresh', {'self': self}, function(event) {
         var self = event.data.self;
-        self.refresh(config);
+        self.refresh();
     });
 
     jQuery(config.parent).on('click', 'ul.pagination li a.page', function(evt) {
         var page = jQuery(this).data('page');
         if (self.page !== page) {
             self.page = page;
-            self.refresh(config);
+            self.refresh();
         }
     });
 
@@ -39,57 +40,62 @@ var ProjectList = function(config) {
 
 ProjectList.prototype.createAssignmentResponse = function(evt) {
     var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    var $elt = jQuery(evt.currentTarget);
 
-    if (!jQuery(srcElement).is('a')) {
-        srcElement = jQuery(srcElement).parent();
+    if (!$elt.is('a')) {
+        $elt = $elt.parent();
     }
-
-    var params = {'parent': jQuery(srcElement).data('id')};
 
     jQuery.ajax({
         type: 'POST',
         url: MediaThread.urls['project-create'](),
         dataType: 'json',
-        data: params,
+        data: {'parent': $elt.data('id')},
         success: function(json) {
             window.location = json.context.project.url;
         }
     });
 };
 
-ProjectList.prototype.deleteAssignmentResponse = function(evt) {
+ProjectList.prototype.deleteProject = function(icon) {
     var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var link = jQuery(srcElement).parent()[0];
-    var data_id = jQuery(link).data('id');
 
-    return ajaxDelete(link, data_id, {
-        object_type: 'assignment response',
+    var link = jQuery(icon).parent()[0];
+    var title = jQuery(link).prevAll('a').first().html();
+    var objectType = jQuery(link).data('object-type');
+
+    return ajaxDelete(link, jQuery(link).data('container-id'), {
+        object_type: objectType,
+        msg: 'Are you sure you want to delete ' + title + '?',
         success: function() {
-            self.refresh(self.config);
+            self.page = 1;
+            self.refresh();
         }
     });
 };
 
-ProjectList.prototype.refresh = function(config) {
+ProjectList.prototype.refreshUrl = function() {
     var self = this;
     var url;
-    jQuery('.ajaxloader').show();
-
-    if (config.view === 'all' || !config.space_owner) {
+    if (!self.space_owner) {
         url = MediaThread.urls['all-projects']();
     } else {
-        url = MediaThread.urls['your-projects'](config.space_owner);
+        url = MediaThread.urls['your-projects'](self.space_owner);
     }
     url += '?page=' + self.page;
+    return url;
+};
+
+ProjectList.prototype.refresh = function() {
+    var self = this;
+    jQuery('.ajaxloader').show();
 
     jQuery('a.linkRespond').off('click');
     jQuery('a.btnRespond').off('click');
     jQuery('a.btnDeleteResponse').off('click');
 
     jQuery.ajax({
-        url: url,
+        url: self.refreshUrl(),
         dataType: 'json',
         cache: false, // Internet Explorer has aggressive caching policies.
         success: function(the_records) {
@@ -105,10 +111,11 @@ ProjectList.prototype.refresh = function(config) {
                 self.createAssignmentResponse(evt);
             });
 
-            jQuery('a.btnDeleteResponse').on('click', function(evt) {
-                self.deleteAssignmentResponse(evt);
+            jQuery('a.delete-project img').on('click', function(evt) {
+                evt.preventDefault();
+                self.deleteProject(this);
+                return false;
             });
-
         }
     });
 };
@@ -116,16 +123,17 @@ ProjectList.prototype.refresh = function(config) {
 ProjectList.prototype.selectOwner = function(username) {
     var self = this;
     jQuery('.ajaxloader').show();
-    var url = username ? MediaThread.urls['your-projects'](username) :
-        MediaThread.urls['all-projects']();
+
+    self.space_owner = username;
+    self.page = 1;
 
     jQuery.ajax({
         type: 'GET',
-        url: url,
+        url: self.refreshUrl(),
         dataType: 'json',
         error: function() {
             showMessage('There was an error retrieving the project list.',
-                    null, 'Error');
+                        null, 'Error');
         },
         success: function(the_records) {
             self.update(the_records);
@@ -133,20 +141,6 @@ ProjectList.prototype.selectOwner = function(username) {
     });
 
     return false;
-};
-
-ProjectList.prototype.getShowingAllItems = function(json) {
-    return !json.hasOwnProperty('space_owner');
-};
-
-ProjectList.prototype.getSpaceUrl = function(active_tag, active_modified) {
-    var self = this;
-    if (self.getShowingAllItems(self.current_records)) {
-        return MediaThread.urls['all-projects']();
-    } else {
-        return MediaThread.urls['your-projects'](
-           self.current_records.space_owner.username);
-    }
 };
 
 ProjectList.prototype.updateSwitcher = function() {
@@ -169,17 +163,17 @@ ProjectList.prototype.updateSwitcher = function() {
 
 ProjectList.prototype.update = function(the_records) {
     var self = this;
+
     self.switcher_context.owners = the_records.course.group.user_set;
     self.switcher_context.space_viewer = the_records.space_viewer;
     self.switcher_context.selected_view = self.selected_view;
 
-    if (self.getShowingAllItems(the_records)) {
+    if (!self.space_owner) {
         self.switcher_context.selected_label = 'All Class Members';
         self.switcher_context.showing_all_items = true;
         self.switcher_context.showing_my_items = false;
         the_records.showing_all_items = true;
-    } else if (the_records.space_owner.username ===
-               the_records.space_viewer.username) {
+    } else if (self.space_owner === the_records.space_viewer.username) {
         self.switcher_context.selected_label = 'Me';
         self.switcher_context.showing_my_items = true;
         self.switcher_context.showing_all_items = false;

@@ -1,7 +1,7 @@
 /* global showMessage */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
-function ajaxDelete(link, container, opts) {
+function ajaxDelete(link, containerId, opts) {
     var postUrl = null;
     if (link && link.href) {
         postUrl = link.href;
@@ -11,7 +11,7 @@ function ajaxDelete(link, container, opts) {
         showMessage('An error occurred. Unable to delete this item.');
     }
 
-    var dom = document.getElementById(container);
+    var dom = document.getElementById(containerId);
     jQuery(dom).addClass('about-to-delete');
 
     var msg = 'Are you sure you want to delete this?';

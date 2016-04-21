@@ -1,7 +1,7 @@
 from datetime import datetime
 import json
 
-from courseaffils.lib import in_course_or_404, get_public_name
+from courseaffils.lib import get_public_name
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -640,8 +640,11 @@ class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             'is_faculty': self.is_viewer_faculty
         }
 
-        if (self.record_owner):
-            in_course_or_404(self.record_owner.username, request.course)
+        if self.record_owner:
+            ctx['space_owner'] = ures.render_one(request, self.record_owner)
+
+            if not request.course.is_true_member(self.record_owner):
+                return self.render_to_json_response(ctx)
 
             projects = Project.objects.visible_by_course_and_user(
                 request.course, request.user, self.record_owner,
@@ -651,16 +654,13 @@ class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             if not self.is_viewer_faculty and self.viewing_own_records:
                 assignments = Project.objects.unresponded_assignments(
                     request.course, request.user)
-
-            ctx['space_owner'] = ures.render_one(request, self.record_owner)
         else:
             projects = Project.objects.visible_by_course(request.course,
                                                          request.user)
 
+        # update counts and paginate
         ctx['compositions'] = len(projects) > 0 or len(assignments) > 0
-
         ctx.update(self.paginate(pres, assignments, projects))
-
         return self.render_to_json_response(ctx)
 
 

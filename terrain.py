@@ -643,7 +643,7 @@ def there_is_a_state_name_panel(step, state, name):
     try:
         panel = world.browser.find_element_by_css_selector(selector)
     except NoSuchElementException:
-        time.sleep(1)
+        time.sleep(2)
         panel = world.browser.find_element_by_css_selector(selector)
 
     assert panel is not None, "Can't find panel named %s" % panel

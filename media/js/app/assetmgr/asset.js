@@ -213,6 +213,7 @@
                             self.groupBy(value);
                         }
                         jQuery('.annotation-ajaxloader').hide();
+                        jQuery(window).trigger('annotation-list.init', []);
                     }
                 );
             }

@@ -87,6 +87,8 @@
                               self.decrementSelectionCount);
             jQuery(window).on('annotation.on_create', {'self': self},
                               self.incrementSelectionCount);
+            jQuery(window).one('annotation-list.init', {'self': self},
+                               self.render);
         },
         render: function() {
             var self = this;

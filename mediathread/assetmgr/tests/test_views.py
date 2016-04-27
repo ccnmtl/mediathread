@@ -40,6 +40,21 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
     def tearDown(self):
         cache.clear()
 
+    def test_asset_access(self):
+        item = AssetFactory.create(course=self.alt_course,
+                                   primary_source='image')
+        note = SherdNoteFactory(asset=item, author=self.alt_instructor,
+                                title="Selection", range1=1, range2=2)
+
+        item_url = reverse('asset-view', kwargs={'asset_id': item.id})
+        note_url = reverse('annotation-view',
+                           kwargs={'asset_id': item.id, 'annot_id': note.id})
+
+        # sample course members can't see alt course assets
+        self.client.login(username=self.student_one.username, password='test')
+        self.assertEquals(self.client.get(item_url).status_code, 404)
+        self.assertEquals(self.client.get(note_url).status_code, 404)
+
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',

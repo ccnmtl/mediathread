@@ -2,7 +2,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 1. Create, Duplicate, Delete Taxonomy
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         When I open the manage menu
         Then there is a "Vocabulary" link
@@ -46,7 +46,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 2. Edit Taxonomy
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -77,7 +77,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 3. Create, Duplicate, Delete Term
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -110,7 +110,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 4. Edit Term
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -141,7 +141,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 5. Create Term, Edit Taxonomy
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -177,7 +177,7 @@ Feature: Taxonomy
         
     Scenario: taxonomy.feature 6. Create & Refresh from onomy
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -221,7 +221,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 7. Try invalid Onomy url
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"
@@ -249,7 +249,7 @@ Feature: Taxonomy
 
     Scenario: taxonomy.feature 8. Refresh
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
         When I access the url "/taxonomy/"

@@ -2,8 +2,7 @@ Feature: Assignment
 
     Scenario: assignment.feature 1. Instructor creates assignment
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given I am instructor_one in Sample Course
 
         # Create an assignment from the home page
         I click the Create button
@@ -69,7 +68,7 @@ Feature: Assignment
     Scenario: assignment.feature 2. Student creates assignment response
         Using selenium
         Given there is a sample assignment
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
 
         # Respond as a student
         There is an assignment "Sample Assignment" project by Instructor One
@@ -117,7 +116,7 @@ Feature: Assignment
     Scenario: assignment.feature 3. Instructor provides response feedback
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
@@ -147,7 +146,7 @@ Feature: Assignment
         Then there is a comment from "Instructor One"
 
         # View as Student One
-        Give I am test_student_one in Sample Course
+        Give I am student_one in Sample Course
         Then there is a "Read Instructor Feedback" link
         When I click the "Read Instructor Feedback" link
 
@@ -156,7 +155,7 @@ Feature: Assignment
         Then there is an open Discussion panel
         Then there is a comment from "Instructor One"
 
-        Give I am test_student_two in Sample Course
+        Give I am student_two in Sample Course
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has 0 projects named "Sample Assignment Response"
@@ -177,7 +176,7 @@ Feature: Assignment
     Scenario Outline: assignment.feature 4. Assignment Response - visibility rules
         Using selenium
         Given there is a sample assignment
-        Give I am test_student_one in Sample Course
+        Give I am student_one in Sample Course
 
         # This navigates rather than automagically opening the panel
         When I click the Respond to Assignment button
@@ -195,7 +194,7 @@ Feature: Assignment
         Then the composition panel has <count> responses named "Sample Assignment Response"
 
         # the response must be deleted
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         When I click the "Sample Assignment Response" link
         Given the composition workspace is loaded
         When I click the Saved button
@@ -211,17 +210,17 @@ Feature: Assignment
 
       Examples:
         | visibility                                          | status                  | username         | count |
-        | Draft - only you can view                           | Draft                   | test_instructor  |   0   |
-        | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_instructor  |   1   |
-        | Whole Class - all class members can view            | Published to Class      | test_instructor  |   1   |
-        | Draft - only you can view                           | Draft                   | test_student_two |   0   |
-        | Instructor - only author(s) and instructor can view | Submitted to Instructor | test_student_two |   0   |
-        | Whole Class - all class members can view            | Published to Class      | test_student_two |   1   |
+        | Draft - only you can view                           | Draft                   | instructor_one |   0   |
+        | Instructor - only author(s) and instructor can view | Submitted to Instructor | instructor_one |   1   |
+        | Whole Class - all class members can view            | Published to Class      | instructor_one |   1   |
+        | Draft - only you can view                           | Draft                   | student_two |   0   |
+        | Instructor - only author(s) and instructor can view | Submitted to Instructor | student_two |   0   |
+        | Whole Class - all class members can view            | Published to Class      | student_two |   1   |
 
     Scenario: assignment.feature 5. Class Responses link - instructor
         Using selenium
         Given there is a sample response
-        Give I am test_instructor in Sample Course
+        Give I am instructor_one in Sample Course
 
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
@@ -244,14 +243,14 @@ Feature: Assignment
 
         # By default, the response is "Instructor Only"
         # Student Two does not have access
-        Give I am test_student_two in Sample Course
+        Give I am student_two in Sample Course
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
         And the Assignment Panel does not have a Class Responses (1) button
 
         # Update to "Public to Class" 
         # Student Two can see the button now & view the response
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         When I click the "Sample Assignment Response" link
         Given the composition workspace is loaded
         When I click the Saved button
@@ -259,8 +258,8 @@ Feature: Assignment
         When I save the changes
         Then there is a "Published to Class" link
 
-        # Now, test_student_two can see the response
-        Give I am test_student_two in Sample Course
+        # Now, student_two can see the response
+        Give I am student_two in Sample Course
         When I click the "Sample Assignment" link
         Given the assignment workspace is loaded
         The Assignment Panel has a Class Responses (1) button
@@ -295,7 +294,7 @@ Feature: Assignment
     Scenario: assignment.feature 7. Assignment Response - reset visibility
         Using selenium
         Given there is a sample assignment
-        Give I am test_student_one in Sample Course
+        Give I am student_one in Sample Course
 
         # This navigates rather than automagically opening the panel
         When I click the Respond to Assignment button

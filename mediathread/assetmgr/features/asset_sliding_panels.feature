@@ -34,7 +34,7 @@ Feature: Sliding Panels in the Asset View
         Given my browser resolution is <width> x <height>
     
         # View an individual asset
-        When I access the url "/asset/1/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         Then there is a minimized Collection panel
         And there is an open Asset panel

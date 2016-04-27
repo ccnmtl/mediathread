@@ -5,7 +5,7 @@ Feature: Single Asset View
         Given there are sample assets
         Given I am instructor_one in Sample Course
         
-        When I access the url "/asset/1/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         
         Then there is a minimized Collection panel        
@@ -36,7 +36,7 @@ Feature: Single Asset View
         Given there are sample assets
         Given I am instructor_one in Sample Course
         
-        When I access the url "/asset/1/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         
@@ -69,7 +69,7 @@ Feature: Single Asset View
         Given there are sample assets
         Given I am student_one in Sample Course
         
-        When I access the url "/asset/1/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         
@@ -128,7 +128,7 @@ Feature: Single Asset View
         And there is a "Published to Class" link
 
         # Navigate to the asset
-        When I access the url "/asset/1/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         

@@ -4,6 +4,7 @@ from urlparse import urlparse
 
 from django.conf import settings
 from django.core import management
+from django.core.urlresolvers import reverse
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
@@ -16,6 +17,7 @@ from selenium.webdriver.support.expected_conditions import (
     visibility_of)
 from selenium.webdriver.support.ui import WebDriverWait
 
+from mediathread.assetmgr.models import Asset
 from mediathread.factories import MediathreadTestMixin
 from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
@@ -1016,6 +1018,13 @@ def get_column(title):
     selector = "//h2[contains(.,'{}')]/..".format(title)
     wait = ui.WebDriverWait(world.browser, 5)
     return wait.until(visibility_of_element_located((By.XPATH, selector)))
+
+
+@step(u'When I view the "([^"]*)" asset')
+def when_i_view_the_title_asset(step, title):
+    item = Asset.objects.filter(title=title).first()
+    url = reverse('asset-view', kwargs={'asset_id': item.id})
+    world.browser.get(django.django_url(url))
 
 
 def find_button_by_value(value, parent=None):

@@ -4346,14 +4346,14 @@ a.btn.btn-default img.left {
     padding: 7px;
 }
 
-.projectlist.pagination li.description a {
+.projectlist.pagination li.description span {
     border: 0;
     font-size: .9em;
     padding: 6px 4px 0 4px;
 }
 
-.projectlist.pagination li.description:hover,
-.projectlist.pagination li.description:active,
+.projectlist.pagination li.description span:hover,
+.projectlist.pagination li.description span:active,
 .projectlist.pagination li.description a:active,
 .projectlist.pagination li.description a:hover {
     background-color: white;

@@ -1,6 +1,7 @@
 from django.test.client import RequestFactory
-from django.test.testcases import TestCase
+from django.test.testcases import TestCase, override_settings
 
+from courseaffils.columbia import CourseStringMapper
 from mediathread.factories import (
     MediathreadTestMixin, UserFactory, UserProfileFactory, CourseFactory,
     AffilFactory
@@ -74,9 +75,42 @@ class UserRegistrationTest(TestCase):
         self.assertTrue(course.is_member(user))
 
 
-class AffilTest(TestCase):
+@override_settings(COURSEAFFILS_COURSESTRING_MAPPER=None)
+class AffilNoMapperTest(TestCase):
     def setUp(self):
         self.aa = AffilFactory()
 
     def test_is_valid_from_factory(self):
         self.aa.full_clean()
+
+    def test_unicode(self):
+        self.assertEqual(unicode(self.aa), self.aa.name)
+
+    def test_courseworks_name(self):
+        self.assertIsNone(self.aa.courseworks_name)
+
+    def test_coursedirectory_name(self):
+        self.assertIsNone(self.aa.coursedirectory_name)
+
+
+@override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
+class AffilTest(TestCase):
+    def setUp(self):
+        self.aa = AffilFactory(
+            name='t1.y2016.s001.cf1002.scnc.st.course:columbia.edu')
+
+    def test_is_valid_from_factory(self):
+        self.aa.full_clean()
+
+    def test_unicode(self):
+        self.assertEqual(unicode(self.aa), self.aa.name)
+
+    def test_courseworks_name(self):
+        self.assertEqual(
+            self.aa.courseworks_name,
+            'CUcourse_SCNCf1002_001_2016_1')
+
+    def test_coursedirectory_name(self):
+        self.assertEqual(
+            self.aa.coursedirectory_name,
+            '20161SCNC1002F001')

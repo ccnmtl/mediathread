@@ -743,18 +743,50 @@ class AffilActivateView(LoggedInMixin, FormView):
     form_class = CourseActivateForm
     success_url = '/homepage/'
 
-    def send_email(self, form):
-        subject = 'Course Activation Request'
+    @staticmethod
+    def send_faculty_email(form, faculty_user):
+        data = form.cleaned_data
+        subject = 'Your Mediathread Course Activation: {}'.format(
+            data.get('course_name'))
         body = """
-Term: %s
-Year: %s
-Consult or demo: %s
-""" % (form['term'], form['year'], form['consult_or_demo'])
+Course Name: {}
+Term: {}
+Year: {}
+Consult or Demo: {}
+""".format(data.get('course_name'),
+           data.get('term'),
+           data.get('year'),
+           data.get('consult_or_demo'))
 
         send_mail(
             subject,
             body,
-            self.affil.user.email,
+            settings.SERVER_EMAIL,
+            [faculty_user.email])
+
+    @staticmethod
+    def send_staff_email(form, faculty_user):
+        data = form.cleaned_data
+        subject = 'Mediathread Course Activated: {}'.format(
+            data.get('course_name'))
+        body = """
+Course Name: {}
+Term: {}
+Year: {}
+Consult or Demo: {}
+Faculty: {} {} <{}>
+""".format(data.get('course_name'),
+           data.get('term'),
+           data.get('year'),
+           data.get('consult_or_demo'),
+           faculty_user.first_name,
+           faculty_user.last_name,
+           faculty_user.email)
+
+        send_mail(
+            subject,
+            body,
+            faculty_user.email,
             [settings.SERVER_EMAIL])
 
     def create_course(self, form, affil):
@@ -793,7 +825,7 @@ Consult or demo: %s
 
         self.create_course(form, self.affil)
 
-        # TODO:
-        # Notify CTL Staff
+        self.send_faculty_email(form, self.request.user)
+        self.send_staff_email(form, self.request.user)
 
         return super(AffilActivateView, self).form_valid(form)

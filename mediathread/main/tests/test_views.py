@@ -6,7 +6,6 @@ import json
 from waffle.testutils import override_flag
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
-from courseaffils.tests.mixins import LoggedInFacultyTestMixin
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -19,6 +18,7 @@ from threadedcomments.models import ThreadedComment
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
+from mediathread.main.tests.mixins import LoggedInUserTestMixin
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
@@ -27,10 +27,15 @@ from mediathread.factories import (
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
-from mediathread.main.forms import ContactUsForm, RequestCourseForm
-from mediathread.main.views import MigrateCourseView, ContactUsView, \
-    RequestCourseView, CourseSettingsView, CourseManageSourcesView, \
+from mediathread.main.forms import (
+    ContactUsForm, RequestCourseForm, CourseActivateForm
+)
+from mediathread.main.views import (
+    AffilActivateView,
+    MigrateCourseView, ContactUsView,
+    RequestCourseView, CourseSettingsView, CourseManageSourcesView,
     CourseRosterView, CourseAddUserByUNIView
+)
 from mediathread.projects.models import Project
 
 
@@ -1118,7 +1123,7 @@ class MethCourseListAnonViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class MethCourseListViewTest(LoggedInFacultyTestMixin, TestCase):
+class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(MethCourseListViewTest, self).setUp()
 
@@ -1143,20 +1148,20 @@ class MethCourseListViewTest(LoggedInFacultyTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('course_list')
-        aa = AffilFactory(
-            user=self.u,
-            name='t1.y2016.s001.cf1000.scnc.fc.course:columbia.edu')
+        affil_name = 't1.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        aa = AffilFactory(user=self.u, name=affil_name)
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Course Selection')
+        self.assertContains(response, aa.coursedirectory_name)
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 1)
         self.assertEqual(response.context['activatable_affils'][0], aa)
 
 
 @override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
-class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
+class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()
         self.aa = AffilFactory(user=self.u)
@@ -1168,7 +1173,7 @@ class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(
             response,
-            'Course Activation: {}'.format(self.aa.name))
+            'Course Activation: {}'.format(self.aa.coursedirectory_name))
         self.assertEqual(response.context['affil'], self.aa)
 
     def test_post_no_course_name(self):
@@ -1199,3 +1204,39 @@ class AffilActivateViewTest(LoggedInFacultyTestMixin, TestCase):
                          'My Course (Spring 2016) None None-None')
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)
+
+    def test_send_faculty_email(self):
+        form = CourseActivateForm({
+            'course_name': 'My Course',
+            'consult_or_demo': 'consultation',
+        })
+        self.assertTrue(form.is_valid())
+        AffilActivateView.send_faculty_email(form, self.u)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'Your Mediathread Course Activation: My Course')
+        self.assertEquals(
+            mail.outbox[0].from_email,
+            settings.SERVER_EMAIL)
+        self.assertEquals(
+            mail.outbox[0].to,
+            ['test_user@example.com'])
+
+    def test_send_staff_email(self):
+        form = CourseActivateForm({
+            'course_name': 'My Course',
+            'consult_or_demo': 'consultation',
+        })
+        self.assertTrue(form.is_valid())
+        AffilActivateView.send_staff_email(form, self.u)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'Mediathread Course Activated: My Course')
+        self.assertEquals(
+            mail.outbox[0].from_email,
+            'test_user@example.com')
+        self.assertEquals(
+            mail.outbox[0].to,
+            [settings.SERVER_EMAIL])

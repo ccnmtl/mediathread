@@ -1,6 +1,7 @@
 import uuid
 
 from courseaffils.models import Course
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields import UUIDField
@@ -105,3 +106,48 @@ class Affil(models.Model):
     user = models.ForeignKey(User)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def courseworks_name(self):
+        """Returns the Courseworks formatted name.
+
+        e.g.: CUcourse_NURSN6610_001_2008_2
+
+        If no mapper is configured, returns None.
+        """
+        if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER') and \
+           settings.COURSEAFFILS_COURSESTRING_MAPPER is not None:
+            affil_dict = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(
+                self.name)
+            return 'CUcourse_{}{}{}_{}_{}_{}'.format(
+                affil_dict['dept'].upper(),
+                affil_dict['letter'],
+                affil_dict['number'],
+                affil_dict['section'],
+                affil_dict['year'],
+                affil_dict['term'])
+        return None
+
+    @property
+    def coursedirectory_name(self):
+        """Returns the Course Directory formatted name.
+
+        e.g.: 20082NURS6610N001
+
+        If no mapper is configured, returns None.
+        """
+        if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER') and \
+           settings.COURSEAFFILS_COURSESTRING_MAPPER is not None:
+            affil_dict = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(
+                self.name)
+            return '{}{}{}{}{}{}'.format(
+                affil_dict['year'],
+                affil_dict['term'],
+                affil_dict['dept'].upper(),
+                affil_dict['number'],
+                affil_dict['letter'].upper(),
+                affil_dict['section'])
+        return None

@@ -23,7 +23,7 @@ from mediathread.main.views import (
     CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
-    CourseInviteUserByEmailView, CourseAcceptInvitationView)
+    CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -224,6 +224,8 @@ urlpatterns = patterns(
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
     (r'^lti/', include('lti_auth.urls')),
+
+    (r'^test/clear/', ClearTestCache.as_view()),
 
     # Public To World Access ###
     url(r'^s/(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/',

@@ -168,9 +168,12 @@ class ActivateInvitationForm(forms.Form):
 class CourseActivateForm(forms.Form):
     course_name = forms.CharField(label='Course Name')
     consult_or_demo = forms.ChoiceField(
+        label='Will you need a consultation or an in-class demo?',
         required=True,
         choices=(
             ('consultation', 'Consultation'),
-            ('demo', 'In-class demo')),
-        widget=forms.RadioSelect
+            ('demo', 'In-class demo'),
+            ('none', 'None')),
+        widget=forms.RadioSelect,
+        initial='none'
     )

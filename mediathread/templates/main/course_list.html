@@ -119,12 +119,12 @@
         </table>
     {% endif %}
 
-    {% if course_activations|length > 0 %}
+    {% if activatable_affils|length > 0 %}
         <h2>Activatable Courses</h2>
         <ul>
-            {% for affil in course_activations %}
+            {% for affil in activatable_affils %}
                 <li>
-                    {{affil.name}}
+                    {{affil.coursedirectory_name}}
                     <a class="btn btn-default btn-xs"
                        href="{% url 'affil_activate' affil.id %}" role="button"
                     >Activate</a>

@@ -48,13 +48,13 @@ Feature: Single Asset View
         And the item does not have the tag "abc"
         When I edit the item
         Then there is a Cancel button
-        And there is a Save button
+        And there is a Save Item button
         
         When I set the "Title" "text" field to "Updated MAAP Award Reception"
         And I remove the item tags
         And I set the item tags to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
-        And I click the Save button
+        And I click the Save Item button
         
         Then the item header is "Updated MAAP Award Reception"
         And the item notes are "Here are my notes"
@@ -82,13 +82,13 @@ Feature: Single Asset View
         
         When I edit the item
         Then there is a Cancel button
-        And there is a Save button
+        And there is a Save Item button
         And there is not a "Title" "text" field
 
         And I remove the item tags
         And I set the item tags to "abc"
         And I set the "Notes" "textarea" field to "Here are my notes"
-        And I click the Save button
+        And I click the Save Item button
         
         Then the item header is "MAAP Award Reception"
         And the item notes are "Here are my notes"

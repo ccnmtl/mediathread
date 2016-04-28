@@ -18,7 +18,7 @@ Feature: Login
         When I access the url "/"
         Then I am at the Login page
         When I click the Guest Log In button
-        When I type "test_student_one" for username
+        When I type "student_one" for username
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
@@ -32,7 +32,7 @@ Feature: Login
         When I access the url "/"
         Then I am at the Login page
         When I click the Guest Log In button
-        When I type "test_instructor" for username
+        When I type "instructor_one" for username
         When I type "test" for password
         When I click the Log In button
         Then I am at the Home page
@@ -42,11 +42,12 @@ Feature: Login
         
     Scenario: login.feature 4. Test Switch Course feature
         Using selenium
+        Given there is an alternate course
         Given I am not logged in
         When I access the url "/"
         Then I am at the Login page
         When I click the Guest Log In button
-        When I type "test_student_three" for username
+        When I type "student_three" for username
         When I type "test" for password
         When I click the Log In button
         

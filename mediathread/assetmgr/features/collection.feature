@@ -2,7 +2,8 @@ Feature: Collection View
     
     Scenario: collection.feature 1. Collection - Basic item functionality
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
 
         When I click the "View Full Collection" link
         Given the collection workspace is loaded
@@ -18,7 +19,7 @@ Feature: Collection View
         Then the owner is "Student One" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
-        
+
         When I click the "MAAP Award Reception" link
         Then I am at the Mediathread Collection page
                 
@@ -26,7 +27,8 @@ Feature: Collection View
 
     Scenario: collection.feature 2. Collection - Viewing Items & Selections as instructor
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         Given the item visibility is set to "Yes"
         Given the selection visibility is set to "Yes"
         
@@ -39,10 +41,10 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         When I clear all tags
-        And I can filter by "instructor_one_selection (1)" in the Collection column
-        
+        And I can filter by "instructor_one_selection (3)" in the Collection column
+
         # Student One
         When I clear all tags
         And I select "Student One" as the owner
@@ -53,7 +55,7 @@ Feature: Collection View
         And I can filter by "student_one_selection (1)" in the Collection column
         When I clear all tags
         And I can filter by "student_one_item (1)" in the Collection column
-        
+
         # All Class Members
         When I select "All Class Members" as the owner
         And I clear all tags
@@ -63,13 +65,12 @@ Feature: Collection View
         
         Then the Collection panel has a "Mediathread: Introduction" item
         Then the Collection panel has a "The Armory" item
-        Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         And the "MAAP Award Reception" item has no selections
-        
+
         When I clear all tags
-        I can filter by "instructor_one_selection (1)" in the Collection column
+        I can filter by "instructor_one_selection (3)" in the Collection column
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
         When I clear all tags
@@ -92,13 +93,13 @@ Feature: Collection View
         
     Scenario: collection.feature 3. Collection - Viewing Items & Selections as student one
         Using selenium
-
+        Given there are sample assets
         # Instructor sets visibility        
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         Given the selection visibility is set to "Yes"
         
         # View as student
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         When I click the "View Full Collection" link
         
         # Instructor One
@@ -108,9 +109,9 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         When I clear all tags
-        And I can filter by "instructor_one_selection (1)" in the Collection column
+        And I can filter by "instructor_one_selection (3)" in the Collection column
         
         # Student One
         When I clear all tags
@@ -132,12 +133,11 @@ Feature: Collection View
         
         Then the Collection panel has a "Mediathread: Introduction" item
         Then the Collection panel has a "The Armory" item
-        Then the Collection panel has a "Project Portfolio" item
         
-        I can filter by "instructor_one (1)" in the Collection column
-        
+        I can filter by "instructor_one_item (3)" in the Collection column
+
         When I clear all tags
-        I can filter by "instructor_one_selection (1)" in the Collection column
+        I can filter by "instructor_one_selection (3)" in the Collection column
         
         When I clear all tags
         I can filter by "student_one_selection (1)" in the Collection column
@@ -155,10 +155,11 @@ Feature: Collection View
         
     Scenario: collection.feature 4. Collection - Viewing Items & Selections as student two
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         Given the selection visibility is set to "Yes"
 
-        Given I am test_student_two in Sample Course
+        Given I am student_two in Sample Course
         
         When I click the "View Full Collection" link
         
@@ -169,9 +170,9 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         When I clear all tags
-        And I can filter by "instructor_one_selection (1)" in the Collection column
+        And I can filter by "instructor_one_selection (3)" in the Collection column
         
         # Student One
         When I clear all tags
@@ -193,12 +194,11 @@ Feature: Collection View
         
         Then the Collection panel has a "Mediathread: Introduction" item
         Then the Collection panel has a "The Armory" item
-        Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
 
         When I clear all tags
-        I can filter by "instructor_one_selection (1)" in the Collection column
+        I can filter by "instructor_one_selection (3)" in the Collection column
 
         When I clear all tags
         I can filter by "student_one_selection (1)" in the Collection column
@@ -216,8 +216,8 @@ Feature: Collection View
         
     Scenario: collection.feature 5. Collection - Viewing Items & Selections
         Using selenium
-        
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         Given the selection visibility is set to "No"
         
         When I click the "View Full Collection" link
@@ -230,10 +230,10 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         
         When I clear all tags
-        I can filter by "instructor_one_selection (1)" in the Collection column
+        I can filter by "instructor_one_selection (3)" in the Collection column
         
         # Student One
         When I clear all tags
@@ -256,12 +256,11 @@ Feature: Collection View
         
         Then the Collection panel has a "Mediathread: Introduction" item
         Then the Collection panel has a "The Armory" item
-        Then the Collection panel has a "Project Portfolio" item
         
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         
         When I clear all tags
-        I can filter by "instructor_one_selection (1)" in the Collection column
+        I can filter by "instructor_one_selection (3)" in the Collection column
         
         When I clear all tags
         I can filter by "student_one_selection (1)" in the Collection column
@@ -279,11 +278,12 @@ Feature: Collection View
         
    Scenario: collection.feature 6. Collection - Limited Selection Visibility 
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         Given the item visibility is set to "Yes"
         Given the selection visibility is set to "No"
 
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
 
         When I click the "View Full Collection" link
 
@@ -299,8 +299,8 @@ Feature: Collection View
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
         
-        And I can filter by "instructor_one (1)" in the Collection column
-        And I can filter by "instructor_one_selection (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
+        And I can filter by "instructor_one_selection (3)" in the Collection column
 
         # Student One
         When I clear all tags
@@ -333,9 +333,9 @@ Feature: Collection View
         Then the Collection panel has a "Mediathread: Introduction" item
         Then the Collection panel has a "The Armory" item
 
-        And I can filter by "instructor_one (1)" in the Collection column
+        And I can filter by "instructor_one_item (3)" in the Collection column
         When I clear all tags
-        And I can filter by "instructor_one_selection (1)" in the Collection column
+        And I can filter by "instructor_one_selection (3)" in the Collection column
         When I clear all tags
         And I can filter by "student_one_selection (1)" in the Collection column
         When I clear all tags
@@ -349,7 +349,8 @@ Feature: Collection View
     
     Scenario: collection.feature 7. Collection - Filter by tag
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         
         When I click the "View Full Collection" link
         Given the collection workspace is loaded
@@ -371,7 +372,7 @@ Feature: Collection View
         And the Collection panel has a "The Armory" item
         And the Collection panel has a "Mediathread: Introduction" item
         
-        And I can filter by "video (2)" in the Collection column
+        And I can filter by "video (1)" in the Collection column
         Then the Collection panel has no "MAAP Award Reception" item
         And the Collection panel has no "The Armory" item
         And the Collection panel has a "Mediathread: Introduction" item

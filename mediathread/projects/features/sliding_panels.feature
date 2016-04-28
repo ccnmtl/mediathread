@@ -2,7 +2,7 @@ Feature: Sliding Panels
 
     Scenario Outline: 1. Composition At Various Resolutions
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         Given my browser resolution is <width> x <height>
 
         # Composition Editing
@@ -31,7 +31,7 @@ Feature: Sliding Panels
     Scenario Outline: 2. Assignment At Various Resolutions
         Using selenium
         Given there is a sample assignment
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         Given my browser resolution is <width> x <height>
 
         # Assignment View

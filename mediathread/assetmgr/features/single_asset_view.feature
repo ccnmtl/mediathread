@@ -2,9 +2,10 @@ Feature: Single Asset View
     
     Scenario: single_asset_view.feature 1. Basic Item View
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         
-        When I access the url "/asset/2/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         
         Then there is a minimized Collection panel        
@@ -32,16 +33,17 @@ Feature: Single Asset View
         
     Scenario: single_asset_view.feature 2. Edit global annotation
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         
-        When I access the url "/asset/2/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        And the item notes are "instructor one item note"
-        And the item has the tag "flickr, instructor_one"
+        And the item notes are "instructor_one item note"
+        And the item has the tag "instructor_one_item"
         And the item notes are not "Here are my notes"
         And the item does not have the tag "abc"
         When I edit the item
@@ -57,22 +59,23 @@ Feature: Single Asset View
         Then the item header is "Updated MAAP Award Reception"
         And the item notes are "Here are my notes"
         And the item has the tag "abc"
-        And the item notes are not "instructor one item note"
+        And the item notes are not "instructor_one item note"
         And the item does not have the tag "flickr, instructor_one"
                         
         Finished using Selenium
         
     Scenario: single_asset_view.feature 3. Edit global annotation as student
         Using selenium
-        Given I am test_student_one in Sample Course
+        Given there are sample assets
+        Given I am student_one in Sample Course
         
-        When I access the url "/asset/2/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         
         # Verify the asset is really there
         The item header is "MAAP Award Reception"
-        And the item notes are "student one item note"
+        And the item notes are "student_one item note"
         And the item has the tag "student_one_item"
         And the item notes are not "Here are my notes"
         And the item does not have the tag "abc"
@@ -90,7 +93,7 @@ Feature: Single Asset View
         Then the item header is "MAAP Award Reception"
         And the item notes are "Here are my notes"
         And the item has the tag "abc"
-        And the item notes are not "student one item note"
+        And the item notes are not "student_one item note"
         And the item does not have the tag "student_one_item"
 
         Finished using Selenium
@@ -98,8 +101,8 @@ Feature: Single Asset View
         
     Scenario: single_asset_view.feature 4. References tab
         Using selenium
-        Given I am test_student_one in Sample Course
-        Given there are no projects
+        Given there are sample assets
+        Given I am student_one in Sample Course
         
         # Create a project from the home page
         There is a Create button
@@ -125,7 +128,7 @@ Feature: Single Asset View
         And there is a "Published to Class" link
 
         # Navigate to the asset
-        When I access the url "/asset/2/"
+        When I view the "MAAP Award Reception" asset
         Given the asset workspace is loaded
         I close the asset's contextual help
         
@@ -133,8 +136,7 @@ Feature: Single Asset View
         Then I click the "References" link
         And I see "Tags"
         And there is a "flickr (1)" link
-        And there is an "image (1)" link
-        And there is an "instructor_one (1)" link
+        And there is an "instructor_one_item (1)" link
         And there is an "instructor_one_selection (1)" link
         And there is a "student_one_item (1)" link
         And there is a "student_one_selection (1)" link

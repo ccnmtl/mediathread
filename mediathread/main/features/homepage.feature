@@ -2,7 +2,7 @@ Feature: Homepage
 
     Scenario: homepage.feature 1. Instructor default view
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         When I open the manage menu
         Then there is a "Settings" link
@@ -32,7 +32,7 @@ Feature: Homepage
         
     Scenario: homepage.feature 2. Student view w/o assignment
         Using selenium
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         Then there is no manage menu
         And there is no reports menu
         
@@ -54,8 +54,8 @@ Feature: Homepage
     Scenario: homepage.feature 3. Student view w/assignment
         Using selenium
         Given there is a sample assignment
-        Given I am test_student_one in Sample Course
-        
+        Given I am student_one in Sample Course
+
         And there is not a From Your Instructor column
         Then the composition panel has 1 projects named "Sample Assignment"
         And there is a Composition column
@@ -74,7 +74,7 @@ Feature: Homepage
     Scenario: homepage.feature 4. Student view w/assignment & response
         Using selenium
         Given there is a sample response
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         
         There is not a From Your Instructor column
         The composition panel has 1 projects named "Sample Assignment"
@@ -104,8 +104,8 @@ Feature: Homepage
         
     Examples:
         | user_name           |
-        | test_instructor     |
-        | test_student_one    |         
+        | instructor_one     |
+        | student_one    |         
                 
 
         

@@ -1,10 +1,12 @@
+from datetime import datetime
 import re
 
 from courseaffils.models import Course
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.test.client import RequestFactory
+from django.utils.text import slugify
 import factory
 from registration.models import RegistrationProfile
 from threadedcomments.models import ThreadedComment
@@ -64,9 +66,14 @@ class CourseFactory(factory.DjangoModelFactory):
     @factory.post_generation
     def create_collaboration(self, create, extracted, **kwargs):
         if create:
-            Collaboration.objects.get_or_create(
+            coll, created = Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.pk), slug=self.slug())
+                object_pk=str(self.pk), slug=slugify(self.title))
+
+            coll.slug = self.slug()
+            coll.title = self.title
+            coll.group = self.group
+            coll.save()
 
 
 class SourceFactory(factory.DjangoModelFactory):
@@ -137,10 +144,6 @@ class ProjectFactory(factory.DjangoModelFactory):
             if extracted:
                 data = {'publish': extracted}
 
-            request = RequestFactory().post('/', data)
-            request.collaboration_context = \
-                Collaboration.objects.get_for_object(self.course)
-
             self.create_or_update_collaboration(data['publish'])
 
     @factory.post_generation
@@ -174,6 +177,15 @@ class AssignmentItemFactory(factory.DjangoModelFactory):
 class ProjectNoteFactory(factory.DjangoModelFactory):
     class Meta:
         model = ProjectNote
+
+
+class AffilFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Affil
+
+    name = factory.Sequence(
+        lambda n: 't1.y2016.s001.cf100%d.scnc.st.course:columbia.edu' % n)
+    user = factory.SubFactory(UserFactory)
 
 
 class MediathreadTestMixin(object):
@@ -246,6 +258,9 @@ class MediathreadTestMixin(object):
             username='student_three', email='student_three@example.com',
             first_name='Student', last_name='Three')
 
+        self.superuser = UserFactory(
+            username='superuser', is_staff=True, is_superuser=True)
+
         self.sample_course = CourseFactory(title='Sample Course')
 
         self.add_as_student(self.sample_course, self.student_one)
@@ -268,6 +283,9 @@ class MediathreadTestMixin(object):
         self.add_as_student(self.alt_course, self.alt_student)
         self.add_as_faculty(self.alt_course, self.alt_instructor)
 
+        # add student three from sample course
+        self.add_as_student(self.alt_course, self.student_three)
+
     def switch_course(self, client, course):
         # assumes there is a logged in user
         set_course_url = '/?set_course=%s' % course.group.name
@@ -277,11 +295,88 @@ class MediathreadTestMixin(object):
         ExternalCollectionFactory.create(course=course,
                                          uploader=True)
 
+    def setup_teaching_assistant(self):
+        ct = ContentType.objects.get_for_model(Asset)
+        permission, created = Permission.objects.get_or_create(
+            content_type=ct, codename='can_upload_for')
 
-class AffilFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = Affil
+        ta = UserFactory(username='teaching_assistant')
+        ta.user_permissions.add(permission)
+        self.add_as_student(self.sample_course, ta)
 
-    name = factory.Sequence(
-        lambda n: 't1.y2016.s001.cf100%d.scnc.st.course:columbia.edu' % n)
-    user = factory.SubFactory(UserFactory)
+    def setup_suggested_collection(self):
+        SuggestedExternalCollectionFactory(title='YouTube',
+                                           url='http://www.youtube.com')
+
+    def setup_sample_assignment(self):
+        ProjectFactory.create(
+            title='Sample Assignment',
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+
+    def setup_sample_assignment_and_response(self):
+        assignment = ProjectFactory.create(
+            title='Sample Assignment',
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+        ProjectFactory.create(
+            title='Sample Assignment Response', course=self.sample_course,
+            author=self.student_one, policy='InstructorShared',
+            project_type='composition', parent=assignment,
+            response_view_policy='always', date_submitted=datetime.now(),
+            body='Sample assignment response text')
+
+    def setup_sample_assets(self):
+        items = [
+            AssetFactory(
+                title='MAAP Award Reception', primary_source='image',
+                author=self.instructor_one, course=self.sample_course),
+            AssetFactory(
+                title='Mediathread: Introduction', primary_source='image',
+                author=self.instructor_one, course=self.sample_course),
+            AssetFactory(
+                title='The Armory - Home to CCNMTL\'s CUMC Office',
+                primary_source='image',
+                author=self.instructor_one, course=self.sample_course),
+        ]
+
+        for idx, item in enumerate(items):
+            if idx == 0:  # everyone has the first item
+                a = [self.instructor_one, self.student_one, self.student_two]
+            else:  # the instructor has all the items
+                a = [self.instructor_one]
+
+            for user in a:
+                SherdNoteFactory(asset=item, author=user,
+                                 tags=',{}_item'.format(user.username),
+                                 body='{} item note'.format(user.username),
+                                 title=None, range1=None, range2=None)
+
+        # instructor one selections
+        SherdNoteFactory(
+            title='Our esteemed leaders',
+            asset=items[0], author=self.instructor_one,
+            body='instructor one selection note',
+            tags=',instructor_one_selection,flickr', range1=0, range2=1)
+        SherdNoteFactory(
+            title='Manage Sources',
+            asset=items[1], author=self.instructor_one,
+            tags=',instructor_one_selection,video', range1=0, range2=1)
+        SherdNoteFactory(
+            title='Left Corner',
+            asset=items[2], author=self.instructor_one,
+            tags=',instructor_one_selection,flickr', range1=0, range2=1)
+
+        # student one selections
+        SherdNoteFactory(
+            title='The Award',
+            asset=items[0], author=self.student_one,
+            body='student one selection note',
+            tags=',student_one_selection', range1=0, range2=1)
+
+        # student two selections
+        SherdNoteFactory(
+            title='Nice Tie',
+            asset=items[0], author=self.student_two,
+            body='student two selection note',
+            tags=',student_two_selection', range1=0, range2=1)

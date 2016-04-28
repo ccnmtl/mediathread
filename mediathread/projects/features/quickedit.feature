@@ -2,8 +2,8 @@ Feature: QuickEdit
 
     Scenario: quickedit.feature 1. Instructor edits the item metadata
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -19,7 +19,7 @@ Feature: QuickEdit
 
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
-        I see "instructor one item note"
+        I see "instructor_one item note"
         And there is not an "abc" link
 
         # Click the +/Create button next to the asset
@@ -39,8 +39,8 @@ Feature: QuickEdit
 
     Scenario: quickedit.feature 2. Instructor creates a selection
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -82,8 +82,8 @@ Feature: QuickEdit
 
     Scenario: quickedit.feature 3. Instructor edits a selection
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
 
         # Create a project from the home page
         I click the Create button

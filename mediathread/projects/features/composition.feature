@@ -2,8 +2,7 @@ Feature: Composition
 
     Scenario: composition.feature 1. Instructor creates composition
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given I am instructor_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -55,8 +54,7 @@ Feature: Composition
 
     Scenario: composition.feature 2. Student creates composition
         Using selenium
-        Given I am test_student_one in Sample Course
-        Given there are no projects
+        Given I am student_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -102,7 +100,7 @@ Feature: Composition
 
     Scenario Outline: composition.feature 3. Composition Visibility - Student Viewing Instructor Created Information
         Using selenium
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -118,7 +116,7 @@ Feature: Composition
         Then there is a "<status>" link
 
         # Try to view as student one
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         Then the instructor panel has <info_count> projects named "Composition <title>: Scenario 3"
         Then the composition panel has <composition_count> projects named "Composition <title>: Scenario 3"
 
@@ -131,7 +129,7 @@ Feature: Composition
 
     Scenario Outline: composition.feature 4. Homepage Composition Visibility - Student/Instructor Viewing Another Student's Compositions
         Using selenium
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
 
         # Create a project from the home page
         I click the Create button
@@ -147,13 +145,13 @@ Feature: Composition
         Then I see "<status>"
 
         # Try to view as student two
-        Given I am test_student_two in Sample Course
+        Given I am student_two in Sample Course
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
         Then the composition panel has <count> projects named "<title>"

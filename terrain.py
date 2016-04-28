@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-import errno
-import os
 import time
 from urlparse import urlparse
 
 from django.conf import settings
+from django.core import management
+from django.core.urlresolvers import reverse
 from django.test import client
 from lettuce import before, after, world, step
 from lettuce import django
@@ -17,6 +17,8 @@ from selenium.webdriver.support.expected_conditions import (
     visibility_of)
 from selenium.webdriver.support.ui import WebDriverWait
 
+from mediathread.assetmgr.models import Asset
+from mediathread.factories import MediathreadTestMixin
 from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
 
@@ -29,20 +31,21 @@ except:
     pass
 
 
+@before.harvest
+def migrate_database(variables):
+    management.call_command('migrate', verbosity=0, interactive=False)
+
+
 @before.each_scenario
 def reset_database(variables):
     world.using_selenium = False
+    management.call_command('flush', verbosity=0, interactive=False)
 
-    try:
-        os.remove('lettuce.db')
-        time.sleep(0.25)
-    except OSError, e:
-        if e.errno != errno.ENOENT:  # errno.ENOENT = no such file or directory
-            raise  # re-raise exception if a different error occurred
-        else:
-            pass  # database doesn't exist yet. that's okay.
+    world.browser.get(django.django_url("/test/clear/"))
 
-    os.system('cp scripts/lettuce_base.db lettuce.db')
+    # add the sample course and some user data by default
+    world.mixin = MediathreadTestMixin()
+    world.mixin.setup_sample_course()
 
 
 @before.all
@@ -85,6 +88,37 @@ def using_selenium(step):
 @step(u'Finished using selenium')
 def finished_selenium(step):
     world.using_selenium = False
+
+
+# Data Loading Functionality
+@step(u'there is an alternate course')
+def there_is_an_alternate_course(step):
+    world.mixin.setup_alternate_course()
+
+
+@step(u'there is a sample assignment')
+def there_is_a_sample_assignment(step):
+    world.mixin.setup_sample_assignment()
+
+
+@step(u'there is a sample response')
+def there_is_a_sample_response(step):
+    world.mixin.setup_sample_assignment_and_response()
+
+
+@step(u'there are sample assets')
+def there_are_sample_assets(step):
+    world.mixin.setup_sample_assets()
+
+
+@step(u'there are sample suggested collections')
+def there_are_sample_suggested_collections(step):
+    world.mixin.setup_suggested_collection()
+
+
+@step(u'there is a teaching assistant in Sample Course')
+def there_is_a_teaching_assistant_in_sample_course(step):
+    world.mixin.setup_teaching_assistant()
 
 
 @step(r'I access the url "(.*)"')
@@ -178,22 +212,6 @@ def i_am_at_the_name_page(step, name):
         wait.until(lambda driver: world.browser.title.find(name) > -1)
 
 
-@step(u'there is a sample assignment')
-def there_is_a_sample_assignment(step):
-    os.system("./manage.py loaddata mediathread/main/fixtures/"
-              "sample_assignment.json "
-              "--settings=mediathread.settings_test > /dev/null")
-    time.sleep(2)
-
-
-@step(u'there is a sample response')
-def there_is_a_sample_response(step):
-    os.system("./manage.py loaddata mediathread/main/fixtures/"
-              "sample_assignment_and_response.json "
-              "--settings=mediathread.settings_test > /dev/null")
-    time.sleep(2)
-
-
 @step(u'I type "([^"]*)" for ([^"]*)')
 def i_type_value_for_field(step, value, field):
     if world.using_selenium:
@@ -265,7 +283,7 @@ def i_click_the_link(step, text):
             link.click()
         except NoSuchElementException:
             world.browser.get_screenshot_as_file("/tmp/selenium.png")
-            assert False, link.location
+            assert False, text
 
 
 @step(u'I scroll to the "([^"]*)" link')
@@ -923,14 +941,6 @@ def i_insert_title_into_the_text(step, title):
     insert_icon.click()
 
 
-@step(u'There are no projects')
-def there_are_no_projects(step):
-    Project.objects.all().delete()
-
-    n = Project.objects.count()
-    assert n == 0, "Found %s projects. Expected 0" % n
-
-
 @step(u'Then I set the project visibility to "([^"]*)"')
 def i_set_the_project_visibility_to_level(step, level):
     elts = world.browser.find_elements_by_name("publish")
@@ -1008,6 +1018,13 @@ def get_column(title):
     selector = "//h2[contains(.,'{}')]/..".format(title)
     wait = ui.WebDriverWait(world.browser, 5)
     return wait.until(visibility_of_element_located((By.XPATH, selector)))
+
+
+@step(u'When I view the "([^"]*)" asset')
+def when_i_view_the_title_asset(step, title):
+    item = Asset.objects.filter(title=title).first()
+    url = reverse('asset-view', kwargs={'asset_id': item.id})
+    world.browser.get(django.django_url(url))
 
 
 def find_button_by_value(value, parent=None):

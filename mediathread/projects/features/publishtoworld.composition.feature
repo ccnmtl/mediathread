@@ -2,8 +2,8 @@ Feature: Public Compositions
 
     Scenario Outline: publishtoworld.composition.feature 1. Instructor creates public to world composition - verify visibility 
         Using selenium
-        Given I am test_instructor in Sample Course
-        Given there are no projects
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         Given publish to world is enabled
         
         # Create a project from the home page

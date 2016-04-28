@@ -3,7 +3,7 @@ Feature: Homepage Delete Operations. Project, Item
     Scenario: homepage.delete.feature 1. Student cannot delete assignment
         Using selenium
         Given there is a sample assignment
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         
         The "Sample Assignment" project has no delete icon
 
@@ -12,7 +12,7 @@ Feature: Homepage Delete Operations. Project, Item
     Scenario: homepage.delete.feature 2. Instructor cannot delete student's response
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         When I select "Student One" as the owner in the Composition column
         Then the owner is "Student One" in the Composition column
@@ -24,7 +24,7 @@ Feature: Homepage Delete Operations. Project, Item
     Scenario: homepage.delete.feature 3. Instructor can delete his own assignment
         Using selenium
         Given there is a sample assignment
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         The "Sample Assignment" project has a delete icon
         
@@ -43,7 +43,7 @@ Feature: Homepage Delete Operations. Project, Item
     Scenario: homepage.delete.feature 4. Student can delete his own response
         Using selenium
         Given there is a sample response
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         
         The "Sample Assignment Response" project has no delete icon
         

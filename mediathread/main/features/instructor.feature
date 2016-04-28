@@ -2,7 +2,7 @@ Feature: Instructor Dashboard
 
     Scenario: instructor_dashboard.feature 1. Students are forbidden
         Using selenium
-        Given I am test_student_one in Sample Course
+        Given I am student_one in Sample Course
         
         # No Instructor Menus
         Then I am at the Home page
@@ -42,7 +42,8 @@ Feature: Instructor Dashboard
     Scenario: instructor_dashboard.feature 2. Class Activity      
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given there are sample assets
+        Given I am instructor_one in Sample Course
         
         When I open the reports menu
         There is a "Class Activity" link
@@ -51,7 +52,7 @@ Feature: Instructor Dashboard
         
         And there is a "MAAP Award Reception" link
         And there is a "Sample Assignment Response" link
-        And there is a "The Armory - Home to CCNMTL'S CUMC Office" link
+        And there is a "The Armory - Home to CCNMTL's CUMC Office" link
         And there is a "Mediathread: Introduction" link
             
         Finished using Selenium
@@ -59,7 +60,7 @@ Feature: Instructor Dashboard
     Scenario: instructor_dashboard.feature 3. Test Create Discussion
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         There is a Create button
         When I click the Create button
@@ -77,7 +78,7 @@ Feature: Instructor Dashboard
     Scenario: instructor_dashboard.feature 4. Test Create Composition
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         There is a Create button
         When I click the Create button
@@ -101,29 +102,29 @@ Feature: Instructor Dashboard
     Scenario: instructor_dashboard.feature 5. Test Assignment Responses      
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
 
         When I open the reports menu
         When I click the "Assignment Responses" link
-        Then there is a "1 / 4" link
-        When I click the "1 / 4" link
+        Then there is a "1 / 3" link
+        When I click the "1 / 3" link
         Then I see "Assignment Report: Sample Assignment"
         And I see "Student One"
         And I there is a "Sample Assignment Response" link
         And I see "Submitted to Instructor"
-        And I see "No" 
-        
+        And I see "No"
+
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
         There is an open Composition panel
         And the Composition title is "Sample Assignment Response"
-         
+
         Finished using Selenium
         
     Scenario: instructor_dashboard.feature 6. Student Contributions     
         Using selenium
         Given there is a sample response
-        Given I am test_instructor in Sample Course
+        Given I am instructor_one in Sample Course
         
         When I open the reports menu
         When I click the "Class Member Contributions" link

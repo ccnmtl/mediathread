@@ -29,7 +29,7 @@ def i_see_count_source(step, count):
 @step(u'I add YouTube to the class')
 def when_i_add_youtube_to_the_class(step):
     if world.using_selenium:
-        elt = world.browser.find_element_by_id("you-tube")
+        elt = world.browser.find_element_by_id("youtube")
         elt.click()
 
 

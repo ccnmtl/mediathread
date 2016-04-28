@@ -1,7 +1,7 @@
 from datetime import datetime
 import json
 import re
-import waffle
+
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Course
@@ -9,7 +9,9 @@ from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group, User
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -24,6 +26,7 @@ from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 from threadedcomments.models import ThreadedComment
+import waffle
 
 from lti_auth.models import LTICourseContext
 from mediathread.api import UserResource, CourseInfoResource
@@ -829,3 +832,13 @@ Faculty: {} {} <{}>
         self.send_staff_email(form, self.request.user)
 
         return super(AffilActivateView, self).form_valid(form)
+
+
+class ClearTestCache(View):
+    def get(self, request, *args, **kwargs):
+        # for selenium test use only
+        if hasattr(settings, 'LETTUCE_DJANGO_APP'):
+            cache.clear()
+            ContentType.objects.clear_cache()
+
+        return HttpResponse()

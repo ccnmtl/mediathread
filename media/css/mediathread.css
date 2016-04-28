@@ -295,6 +295,7 @@ ul#projects li {
     position: absolute;
     right: 2px;
     top: 105px;
+    z-index: 1000;
 }
 
 #create-project-menu form {

@@ -4,6 +4,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import \
     invisibility_of_element_located, visibility_of_element_located
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.select import Select
 import selenium.webdriver.support.ui as ui
 from selenium.webdriver.common.keys import Keys
@@ -297,3 +298,73 @@ def i_set_the_item_tags_field_to_value(step, value):
     elt.send_keys(value)
     elt.send_keys(Keys.TAB)
     time.sleep(1)
+
+
+@step(u'I click a gallery item')
+def i_click_a_gallery_item(step):
+    q = '.gallery-item'
+    elt = world.browser.find_element_by_css_selector(q)
+    ActionChains(world.browser).move_to_element(elt).perform()
+
+    q = '.gallery-item-overlay'
+    elt = world.browser.find_element_by_css_selector(q)
+    elt.click()
+
+
+@step(u'I call the selection assignment "([^"]*)"')
+def i_call_the_selection_assignment_value(step, title):
+    elt = world.browser.find_element_by_name('title')
+    elt.clear()
+    elt.send_keys(title)
+
+
+@step(u'I write instructions for the selection assignment')
+def i_write_instructions_for_the_selection_assignment(step):
+    world.browser.execute_script(
+        "tinyMCE.activeEditor.setContent('some instructions')")
+
+
+@step(u'I set selection assignment visibility to "([^"]*)"')
+def i_set_selection_assignment_visibility_to_value(step, value):
+    q = "//input[@value='{}']".format(value)
+    wait = ui.WebDriverWait(world.browser, 5)
+    elt = wait.until(visibility_of_element_located((By.XPATH, q)))
+    elt.click()
+
+
+@step(u'I publish the selection assignment as "([^"]*)"')
+def i_publish_the_selection_assignment_as_value(step, value):
+    if value == 'Whole Class':
+        q = "//input[@value='CourseProtected']"
+    else:
+        q = "//input[@value='PrivateEditorsAreOwners']"
+
+    elt = world.browser.find_element_by_xpath(q)
+    elt.click()
+
+
+@step(u'I submit the selection assignment')
+def i_submit_the_selection_assignment(step):
+    wait = ui.WebDriverWait(world.browser, 5)
+    elt = wait.until(visibility_of_element_located((By.ID, 'submit-project')))
+
+    btn = elt.parent.find_element_by_css_selector('button.submit-response')
+    btn.click()
+
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(invisibility_of_element_located((By.ID,
+                                                'submit-project')))
+
+
+@step(u'The feedback count is ([0-9])')
+def the_feedback_count_is_value(step, value):
+    q = 'span.feedback-count'
+    elt = world.browser.find_element_by_css_selector(q)
+    assert elt.text == value
+
+
+@step(u'I add some feedback to the selection assignment response')
+def i_add_some_feedback_to_the_selection_assignment_response(step):
+    q = "//textarea[@name='comment']"
+    elt = world.browser.find_element_by_xpath(q)
+    elt.send_keys('good job')

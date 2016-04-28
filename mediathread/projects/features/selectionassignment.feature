@@ -2,8 +2,9 @@ Feature: Selection Assignment
 
     Scenario: selectionassignment.feature 1. Instructor creates assignment
         Using selenium
+        Given there are sample assets
         Given I am instructor_one in Sample Course
-        
+
         # Create an assignment from the home page
         I click the Create button
         I click the Create Selection Assignment button 
@@ -88,13 +89,4 @@ Feature: Selection Assignment
         There is an "edit feedback" link
         The feedback count is 1
 
-        Finished using Selenium
-
-    Scenario: selectionassignment.feature 4. Instructor unsubmits a response
-        Using selenium
-        Given there are no projects
-        Given there is a sample selection assignment and response
-
-        Given I am test_instructor in Sample Course
-        
         Finished using Selenium

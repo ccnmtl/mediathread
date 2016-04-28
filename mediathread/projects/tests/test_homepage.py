@@ -206,19 +206,32 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                  'Student One', False)
 
     def test_request_nonclassmember_projectlist(self):
-        self.assertTrue(
-            self.client.login(username=self.student_one.username,
-                              password='test'))
+        self.client.login(username=self.student_one.username, password='test')
 
         url = '/api/project/user/%s/' % self.alt_student.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
+        self.assertFalse('compositions' in the_json)
 
         url = '/api/project/user/%s/' % self.alt_instructor.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response.status_code, 200)
+        self.assertFalse('compositions' in the_json)
+
+    def test_request_superuser_nonclassmember_projectlist(self):
+        su = UserFactory(is_staff=True, is_superuser=True)
+        self.client.login(username=su.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        url = '/api/project/user/%s/' % su.username
+        response = self.client.get(url, {},
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+        the_json = json.loads(response.content)
+        self.assertFalse('compositions' in the_json)
 
     def test_get_all_projects_as_student(self):
         self.assertTrue(
@@ -229,7 +242,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertEquals(len(projects), 4)
@@ -256,7 +269,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertEquals(len(projects), 2)
@@ -275,7 +288,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertTrue('assignments' not in the_json)
+        self.assertEquals(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertProjectEquals(projects[0], self.assignment.title,

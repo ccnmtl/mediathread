@@ -35,7 +35,7 @@
         </div>
         {{/switcher_collection_chooser}}
     </div> {{! end filter widget }}
-
+    
     <a href="#" id="homepage-create-menu" onclick='jQuery("#create-project-menu").toggle();' class="btn btn-default create right">
         Create&nbsp;
         <img src="/media/img/menuselect.png" width="6" height="12" />
@@ -80,6 +80,28 @@
 
 <div class="visualclear"></div>
 
+{{#num_pages}}
+<ul class="projectlist pagination">
+{{#previous_page}}
+    <li>
+        <a href="#" aria-label="Previous" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+    </li>
+{{/previous_page}}
+    <li class="description">
+        <span>{{current_page}} of {{num_pages}}</span>
+    </li>
+{{#next_page}}
+    <li>
+        <a href="#" aria-label="Next" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+     </li>
+{{/next_page}}
+</ul>   
+{{/num_pages}}
+
 <table>
     <tbody>
         <tr>
@@ -88,11 +110,9 @@
                     <div class="column-contents">
                         <div id="project_table">
                             {{^compositions}}
-                            {{^showing_my_items}}
                                 <div class="homepage-column-info">
                                     No published work available.
                                 </div>
-                            {{/showing_my_items}}
                             {{/compositions}}
 
                             {{#compositions}}
@@ -182,14 +202,15 @@
                                         </a>
 
                                         {{#editable}}
-                                        <a title="Delete this Composition"
+                                        <a title="Delete {{title}}"
+                                           href="/project/delete/{{id}}/"
+                                           class="delete-project" data-container-id="project-{{id}}"
                                             {{#display_as_assignment}}
-                                                onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'assignment' });"
+                                                data-object-type="assignment"
                                             {{/display_as_assignment}}
                                             {{^display_as_assignment}}
-                                                onclick="return ajaxDelete(this, 'project-{{id}}', { object_type: 'composition' });"
-                                            {{/display_as_assignment}}"
-                                            href="/project/delete/{{id}}/">
+                                                data-object-type="composition"
+                                            {{/display_as_assignment}}">
                                             <img src="/media/img/icons/meth_delete.png"
                                             width="25" height="25"
                                             class="delete_icon" alt="Delete" />
@@ -224,11 +245,9 @@
                                                 {{#editable}}
                                                 {{^submitted}}
                                                 <a href="/project/delete/{{id}}/"
-                                                   onclick="return ajaxDelete(this,
-                                                           'project-{{id}}',
-                                                           {'object_type': 'assignment response',
-                                                           'success': function() { jQuery(window).trigger('projectlist.refresh'); }
-                                                           });"
+                                                   class="delete-project"
+                                                   data-container-id="project-{{id}}"
+                                                   data-object-type="assignment_response"
                                                    title="Delete My Response">
                                                     <img src="/media/img/icons/meth_delete.png"
                                                         class="delete_icon" alt="Delete"
@@ -276,4 +295,27 @@
         </tr>
     </tbody>
 </table>
+
+{{#num_pages}}
+<ul class="projectlist pagination bottom">
+{{#previous_page}}
+    <li>
+        <a href="#" aria-label="Previous" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        </a>
+    </li>
+{{/previous_page}}
+    <li class="description">
+        <span>{{current_page}} of {{num_pages}}</span>
+    </li>
+{{#next_page}}
+    <li>
+        <a href="#" aria-label="Next" data-page="{{.}}" class="page">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        </a>
+     </li>
+{{/next_page}}
+</ul>
+{{/num_pages}}
+
 <div id="loaded"></div>

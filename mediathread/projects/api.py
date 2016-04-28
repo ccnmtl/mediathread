@@ -179,48 +179,42 @@ class ProjectResource(ModelResource):
 
         return data
 
-    def render_assignments(self, request, assignments):
-        lst = []
-        for a in assignments:
-            bundle = self.build_bundle(obj=a, request=request)
-            dehydrated = self.full_dehydrate(bundle)
-            ctx = self._meta.serializer.to_simple(dehydrated, None)
-            ctx['display_as_assignment'] = True
-            lst.append(ctx)
-        return lst
+    def render_assignment(self, request, assignment):
+        bundle = self.build_bundle(obj=assignment, request=request)
+        dehydrated = self.full_dehydrate(bundle)
+        ctx = self._meta.serializer.to_simple(dehydrated, None)
+        ctx['display_as_assignment'] = True
+        return ctx
 
-    def render_projects(self, request, projects):
+    def render_project(self, request, project):
         course = request.course
         user = request.user
 
-        lst = []
-        for project in projects:
-            abundle = self.build_bundle(obj=project, request=request)
-            dehydrated = self.full_dehydrate(abundle)
-            ctx = self._meta.serializer.to_simple(dehydrated, None)
+        abundle = self.build_bundle(obj=project, request=request)
+        dehydrated = self.full_dehydrate(abundle)
+        ctx = self._meta.serializer.to_simple(dehydrated, None)
 
-            if project.is_assignment() or project.is_selection_assignment():
-                responses = project.responses(course, user)
-                ctx['responses'] = len(responses)
-                ctx['is_assignment'] = True
+        if project.is_assignment() or project.is_selection_assignment():
+            responses = project.responses(course, user)
+            ctx['responses'] = len(responses)
+            ctx['is_assignment'] = True
+            ctx['display_as_assignment'] = True
+        else:
+            parent_assignment = project.assignment()
+            if parent_assignment:
+                if self.editable:
+                    feedback = project.feedback_discussion()
+                    if feedback:
+                        ctx['feedback'] = feedback.id
                 ctx['display_as_assignment'] = True
-            else:
-                parent_assignment = project.assignment()
-                if parent_assignment:
-                    if self.editable:
-                        feedback = project.feedback_discussion()
-                        if feedback:
-                            ctx['feedback'] = feedback.id
-                    ctx['display_as_assignment'] = True
-                    ctx['collaboration'] = {}
-                    ctx['collaboration']['title'] = parent_assignment.title
-                    ctx['collaboration']['url'] = \
-                        parent_assignment.get_absolute_url()
-                    ctx['collaboration']['due_date'] = \
-                        parent_assignment.get_due_date()
+                ctx['collaboration'] = {}
+                ctx['collaboration']['title'] = parent_assignment.title
+                ctx['collaboration']['url'] = \
+                    parent_assignment.get_absolute_url()
+                ctx['collaboration']['due_date'] = \
+                    parent_assignment.get_due_date()
 
-            lst.append(ctx)
-        return lst
+        return ctx
 
     def render_list(self, request, projects):
         lst = []

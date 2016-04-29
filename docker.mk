@@ -1,3 +1,4 @@
+# VERSION=1.0.0
 # Docker related stuff
 # use wheelhouse/requirements.txt as the sentinal so make
 # knows whether it needs to rebuild the wheel directory or not

@@ -1,3 +1,4 @@
+# VERSION=1.0.0
 # expect JS_FILES to be set from the main Makefile, but default
 # to everything in media/js otherwise.
 JS_FILES ?= media/js

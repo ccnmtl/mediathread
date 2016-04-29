@@ -1,3 +1,4 @@
+# VERSION=1.0.0
 VE ?= ./ve
 MANAGE ?= ./manage.py
 FLAKE8 ?= $(VE)/bin/flake8
@@ -26,6 +27,9 @@ $(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
 
 test: $(PY_SENTINAL)
 	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
+
+parallel-tests: $(PY_SENTINAL)
+	$(MANAGE) test --parallel
 
 flake8: $(PY_SENTINAL)
 	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY)

@@ -3499,6 +3499,7 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
     outline: 0;
+    padding-bottom: 0.6em;
 }
 
 div.asset-view-con  tainer div.asset-view-details h1 {

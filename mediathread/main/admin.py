@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-
-from mediathread.main.models import UserSetting, UserProfile
+from mediathread.main.models import UserSetting, UserProfile, CourseInvitation
 
 
 class UserSettingAdmin(admin.ModelAdmin):
@@ -26,3 +25,14 @@ class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline, ]
 
 admin.site.register(User, UserProfileAdmin)
+
+
+class CourseInvitationAdmin(admin.ModelAdmin):
+    class Meta:
+        model = CourseInvitation
+
+    list_display = ('email', 'course', 'invited_by',
+                    'invited_at', 'activated_at')
+    search_fields = ('email',)
+
+admin.site.register(CourseInvitation, CourseInvitationAdmin)

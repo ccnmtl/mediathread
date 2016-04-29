@@ -89,7 +89,7 @@ urlpatterns = patterns(
         password_reset_confirm,
         name='password_reset_confirm'),
 
-    url(r'^accounts/invite/accept/(?P<uidb64>[0-9A-Za-z]+)',
+    url(r'^accounts/invite/accept/(?P<uidb64>[0-9A-Za-z-]+)/$',
         CourseAcceptInvitationView.as_view(),
         name='course-invite-accept'),
     url(r'^accounts/invite/complete/', TemplateView.as_view(

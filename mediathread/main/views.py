@@ -672,9 +672,10 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         messages.add_message(self.request, messages.INFO, msg)
 
     def invite_new_user(self, email):
-        invite = CourseInvitation.objects.create(
-            email=email, course=self.request.course,
-            invited_by=self.request.user)
+        invite, created = CourseInvitation.objects.get_or_create(
+            email=email, course=self.request.course)
+        invite.invited_by = self.request.user
+        invite.save()
 
         subject = "Mediathread Course Invitation: {}".format(
             self.request.course.title)
@@ -704,10 +705,12 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
                 email = email.strip()
                 validate_email(email)
 
-                user = User.objects.get(email=email)
-                self.add_existing_user(user)
-            except User.DoesNotExist:
-                self.invite_new_user(email)
+                user = User.objects.filter(email=email).first()
+                if user:
+                    self.add_existing_user(user)
+                else:
+                    self.invite_new_user(email)
+
             except ValidationError:
                 msg = '{} is not a valid email address.'.format(email)
                 messages.add_message(request, messages.ERROR, msg)
@@ -719,8 +722,37 @@ class CourseAcceptInvitationView(FormView):
     template_name = 'registration/invitation_activate_form.html'
     form_class = ActivateInvitationForm
 
+    def get_invite(self):
+        try:
+            uuid = self.kwargs.get('uidb64', None)
+            return CourseInvitation.objects.filter(uuid=uuid).first()
+        except ValueError:
+            return None  # likely a badly formed UUID string
+
+    def get(self, request, *args, **kwargs):
+        invite = self.get_invite()
+
+        if not invite:
+            raise Http404()
+
+        form = self.get_form()
+        ctx = self.get_context_data(form=form, invite=invite)
+        return self.render_to_response(ctx)
+
     def form_valid(self, form):
-        # create user
+        invite = self.get_invite()
+        username = form.cleaned_data.get('username')
+        first_name = form.cleaned_data.get('first_name')
+        last_name = form.cleaned_data.get('last_name')
+
+        user = User.objects.create(username=username, first_name=first_name,
+                                   last_name=last_name, email=invite.email)
+        user.set_password(form.cleaned_data.get('password1'))
+
+        invite.course.group.user_set.add(user)
+        invite.accepted_at = datetime.now()
+        invite.save()
+
         return super(CourseAcceptInvitationView, self).form_valid(form)
 
     def get_success_url(self):

@@ -627,7 +627,7 @@
                 dataType: 'json',
                 error: function() {
                     jQuery(saveButton).removeAttr('disabled')
-                        .attr('value', 'Save').removeClass('saving');
+                        .attr('value', 'Save Item').removeClass('saving');
                     showMessage('There was an error saving your changes.');
                 },
                 success: function(json, textStatus, xhr) {
@@ -656,7 +656,7 @@
 
                         jQuery(saveButton).removeAttr('disabled');
                         jQuery(saveButton).removeClass('saving');
-                        jQuery(saveButton).attr('value', 'Save');
+                        jQuery(saveButton).attr('value', 'Save Item');
 
                         var context = {
                             'asset-current': self.active_asset,
@@ -919,7 +919,7 @@
                         function() {
                             jQuery(saveButton).removeAttr('disabled');
                             jQuery(saveButton).removeClass('saving');
-                            jQuery(saveButton).attr('value', 'Save');
+                            jQuery(saveButton).attr('value', 'Save Selection');
                         },
                         'Error',
                         {

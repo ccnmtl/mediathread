@@ -106,6 +106,16 @@ def there_is_a_sample_response(step):
     world.mixin.setup_sample_assignment_and_response()
 
 
+@step(u'there is a sample selection assignment')
+def there_is_a_sample_selection_assignment(step):
+    world.mixin.setup_sample_selection_assignment()
+
+
+@step(u'there is a sample selection assignment and response')
+def there_is_a_sample_selection_response(step):
+    world.mixin.setup_sample_selection_assignment_and_response()
+
+
 @step(u'there are sample assets')
 def there_are_sample_assets(step):
     world.mixin.setup_sample_assets()
@@ -774,7 +784,8 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
             if assignment:
                 type_elt = e.find_element_by_css_selector(
                     "span.metadata-value-assignment")
-                assert type_elt.text.strip() == "COMPOSITION ASSIGNMENT"
+                assert (type_elt.text.strip() == "COMPOSITION ASSIGNMENT" or
+                        type_elt.text.strip() == "SELECTION ASSIGNMENT")
             else:
                 type_elt = e.find_element_by_css_selector(
                     "span.metadata-value-composition")

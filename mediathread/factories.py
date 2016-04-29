@@ -309,22 +309,47 @@ class MediathreadTestMixin(object):
                                            url='http://www.youtube.com')
 
     def setup_sample_assignment(self):
-        ProjectFactory.create(
-            title='Sample Assignment',
-            course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', project_type='assignment')
-
-    def setup_sample_assignment_and_response(self):
         assignment = ProjectFactory.create(
             title='Sample Assignment',
             course=self.sample_course, author=self.instructor_one,
             policy='CourseProtected', project_type='assignment')
+        return assignment
+
+    def setup_sample_assignment_and_response(self):
+        assignment = self.setup_sample_assignment()
         ProjectFactory.create(
             title='Sample Assignment Response', course=self.sample_course,
             author=self.student_one, policy='InstructorShared',
             project_type='composition', parent=assignment,
             response_view_policy='always', date_submitted=datetime.now(),
             body='Sample assignment response text')
+
+    def setup_sample_selection_assignment(self):
+        assignment = ProjectFactory.create(
+            title='Sample Selection Assignment',
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='selection-assignment')
+
+        item = AssetFactory.create(
+                title='Selection Assignment Item', primary_source='image',
+                author=self.instructor_one, course=self.sample_course)
+        AssignmentItemFactory(project=assignment, asset=item)
+
+        return assignment
+
+    def setup_sample_selection_assignment_and_response(self):
+        assignment = self.setup_sample_selection_assignment()
+        ai = assignment.assignmentitem_set.first()
+
+        response = ProjectFactory.create(
+            title='My Response', course=self.sample_course,
+            author=self.student_one, policy='InstructorShared',
+            project_type='composition', parent=assignment,
+            response_view_policy='always', date_submitted=datetime.now())
+
+        note = SherdNoteFactory.create(
+            asset=ai.asset, author=self.student_one, range1=0, range2=1)
+        ProjectNoteFactory(project=response, annotation=note)
 
     def setup_sample_assets(self):
         items = [

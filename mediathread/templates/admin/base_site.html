@@ -7,21 +7,22 @@
 {{ block.super }}
 <style type="text/css">
   /*for remove users in Course admin view*/
-  ul li {
+  .field-users_to_remove ul li {
     padding:1em 0 0;
     clear:both;
   } 
-  .aligned li label {
+  .field-users_to_remove .aligned li label {
     width:auto;
   }
-  ul {
+  .field-users_to_remove ul {
      max-height:300px;
      overflow-y:auto;
   }
+
   #id_groups {
     height: 300px;
   }
-  
+
   #changelist table tbody td, #changelist table tbody th {
     border-left: 1px solid #ddd;
     max-width: 300px;
@@ -32,11 +33,6 @@
 
 {% block branding %}
     <h1 id="site-name"><a href="/">{% trans 'Back to Mediathread' %}</a></h1>
-    {% if settings.DATABASES %}
-    <div style="float: right; font-size: 11px; padding: 0 10px 5px 10px">
-        Database: {{settings.DATABASES.default.NAME}}@{{settings.DATABASES.default.HOST}}{% if settings.DATABASES.default.PORT %}:{{settings.DATABASES.default.PORT}}{% endif %}
-    </div>
-    {% endif %}
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

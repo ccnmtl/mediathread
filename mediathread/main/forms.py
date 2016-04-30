@@ -148,7 +148,7 @@ class CourseDeleteMaterialsForm(forms.Form):
         return cleaned_data
 
 
-class ActivateInvitationForm(forms.Form):
+class AcceptInvitationForm(forms.Form):
 
     first_name = forms.CharField(
         required=True,
@@ -167,7 +167,7 @@ class ActivateInvitationForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean(self):
-        cleaned_data = super(ActivateInvitationForm, self).clean()
+        cleaned_data = super(AcceptInvitationForm, self).clean()
 
         username = cleaned_data.get('username')
         if username:

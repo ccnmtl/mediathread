@@ -40,13 +40,14 @@ from mediathread.main.course_details import cached_course_is_faculty, \
     course_information_title
 from mediathread.main.forms import (
     RequestCourseForm, ContactUsForm,
-    CourseDeleteMaterialsForm, ActivateInvitationForm,
+    CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm
 )
 from mediathread.main.models import (
     UserSetting, CourseInvitation, Affil
 )
-from mediathread.main.util import send_template_email, user_display_name
+from mediathread.main.util import send_template_email, user_display_name, \
+    send_course_invitation_email
 from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
@@ -648,10 +649,9 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
 
 class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
-    add_template = 'dashboard/email_add_user.txt'
-    invite_template = 'dashboard/email_invite_user.txt'
 
     def add_existing_user(self, user):
+        add_template = 'dashboard/email_add_user.txt'
         display_name = user_display_name(user)
         if self.request.course.is_true_member(user):
             msg = '{} is already a course member'.format(display_name)
@@ -665,28 +665,26 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
             'course': self.request.course,
             'domain': get_current_site(self.request).domain
         }
-        send_template_email(subject, self.add_template, ctx, user.email)
+        send_template_email(subject, add_template, ctx, user.email)
 
         msg = ('{} is now a course member. An email was sent to {} '
                'notifying the user.').format(display_name, user.email)
         messages.add_message(self.request, messages.INFO, msg)
 
-    def invite_new_user(self, email):
-        invite, created = CourseInvitation.objects.get_or_create(
-            email=email, course=self.request.course)
+    def get_or_create_invite(self, email):
+        try:
+            invite = CourseInvitation.objects.get(
+                email=email, course=self.request.course)
+        except CourseInvitation.DoesNotExist:
+            invite = CourseInvitation(email=email, course=self.request.course)
+
         invite.invited_by = self.request.user
         invite.save()
+        return invite
 
-        subject = "Mediathread Course Invitation: {}".format(
-            self.request.course.title)
-
-        ctx = {
-            'course': self.request.course,
-            'domain': get_current_site(self.request).domain,
-            'invite': invite,
-            'inviter': user_display_name(self.request.user)
-        }
-        send_template_email(subject, self.invite_template, ctx, email)
+    def invite_new_user(self, email):
+        invite = self.get_or_create_invite(email)
+        send_course_invitation_email(self.request, invite)
 
         msg = "{} was invited to join the course.".format(email)
         messages.add_message(self.request, messages.INFO, msg)
@@ -718,19 +716,32 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(url)
 
 
-class CourseAcceptInvitationView(FormView):
-    template_name = 'registration/invitation_activate_form.html'
-    form_class = ActivateInvitationForm
+class CourseResendInviteView(LoggedInFacultyMixin, View):
 
-    def get_invite(self):
+    def post(self, request):
+        url = reverse('course-roster')
+        pk = request.POST.get('invite-id', None)
+        invite = get_object_or_404(CourseInvitation, pk=pk)
+
+        send_course_invitation_email(request, invite)
+        msg = "A course invitation was resent to {}.".format(invite.email)
+        messages.add_message(self.request, messages.INFO, msg)
+
+        return HttpResponseRedirect(url)
+
+
+class CourseAcceptInvitationView(FormView):
+    template_name = 'registration/invitation_accept.html'
+    form_class = AcceptInvitationForm
+
+    def get_invite(self, uuid):
         try:
-            uuid = self.kwargs.get('uidb64', None)
             return CourseInvitation.objects.filter(uuid=uuid).first()
         except ValueError:
             return None  # likely a badly formed UUID string
 
     def get(self, request, *args, **kwargs):
-        invite = self.get_invite()
+        invite = self.get_invite(self.kwargs.get('uidb64', None))
 
         if not invite:
             raise Http404()
@@ -740,7 +751,7 @@ class CourseAcceptInvitationView(FormView):
         return self.render_to_response(ctx)
 
     def form_valid(self, form):
-        invite = self.get_invite()
+        invite = self.get_invite(self.kwargs.get('uidb64', None))
         username = form.cleaned_data.get('username')
         first_name = form.cleaned_data.get('first_name')
         last_name = form.cleaned_data.get('last_name')
@@ -748,15 +759,17 @@ class CourseAcceptInvitationView(FormView):
         user = User.objects.create(username=username, first_name=first_name,
                                    last_name=last_name, email=invite.email)
         user.set_password(form.cleaned_data.get('password1'))
+        user.save()
 
         invite.course.group.user_set.add(user)
         invite.accepted_at = datetime.now()
+        invite.accepted_user = user
         invite.save()
 
         return super(CourseAcceptInvitationView, self).form_valid(form)
 
     def get_success_url(self):
-        return HttpResponseRedirect(reverse('course-invite-complete'))
+        return reverse('course-invite-complete')
 
 
 class MethCourseListView(LoggedInMixin, CourseListView):

@@ -23,7 +23,8 @@ from mediathread.main.views import (
     CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
-    CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache)
+    CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
+    CourseResendInviteView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -93,7 +94,7 @@ urlpatterns = patterns(
         CourseAcceptInvitationView.as_view(),
         name='course-invite-accept'),
     url(r'^accounts/invite/complete/', TemplateView.as_view(
-        template_name='registration/invitation_activate_complete.html'),
+        template_name='registration/invitation_complete.html'),
         name='course-invite-complete'),
 
     url(r'^accounts/register/$',
@@ -175,6 +176,8 @@ urlpatterns = patterns(
         name='course-roster-add-uni'),
     url(r'^dashboard/roster/add/email/', CourseInviteUserByEmailView.as_view(),
         name='course-roster-invite-email'),
+    url(r'^dashboard/roster/resend/email/', CourseResendInviteView.as_view(),
+        name='course-roster-resend-email'),
     url(r'^dashboard/roster/', CourseRosterView.as_view(),
         name='course-roster'),
 

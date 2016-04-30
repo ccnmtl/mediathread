@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n admin_static %}
-{% block title %}&mdash; Sign up for an account{% endblock %}
+{% block title %}&mdash; Course Invitation{% endblock %}
 
 {% block css %}
 <style>
@@ -59,15 +59,13 @@
 {% endblock %}
 
 {% block content %}
-
-{% if invite.is_activated %}
-    <h2 class="pagetitle signuptitle">Register for {{invite.course.title}}</h2>
-    <p>This invitation has already been activated</p>
+    <h2 class="pagetitle signuptitle">Invitation for {{invite.course.title}}</h2>
+    <br />
+{% if invite.accepted %}
+    <p>This invitation has already been accepted.</p>
     <p>Log in to <a href="/">Mediathread</a></p>
 {% else %}
     <form method="post" action="." class="register-form">
-        <h2 class="pagetitle signuptitle">Register for {{invite.course.title}}</h2>
-        <br />
         <p>Your instructor has invited you to join {{invite.course.title}}. Please create a username and password for the Mediathread applicaton.</p>
         <br />
 
@@ -127,10 +125,10 @@
                 </ul>
             {% endif %}
         </div>
-    
+
         <div style="text-align: center">
         <input class="btn btn-primary btn-large right" type="submit"
-         id="submit-id" value="{% trans 'Register!' %}" />
+         id="submit-id" value="{% trans 'Register' %}" />
         </div>
     </form>
 {% endif %}    

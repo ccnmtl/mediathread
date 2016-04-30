@@ -32,7 +32,7 @@ class CourseInvitationAdmin(admin.ModelAdmin):
         model = CourseInvitation
 
     list_display = ('email', 'course', 'invited_by',
-                    'invited_at', 'activated_at')
+                    'invited_at', 'accepted_at')
     search_fields = ('email',)
 
 admin.site.register(CourseInvitation, CourseInvitationAdmin)

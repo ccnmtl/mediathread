@@ -80,6 +80,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context_data['assignment'],
@@ -102,6 +103,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context_data['num_students'], 3)
@@ -122,6 +124,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(response.context_data['students']), 5)
@@ -138,6 +141,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertTrue('my_feed' in response.context_data)
@@ -163,6 +167,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         the_json = loads(response.content)
@@ -188,6 +193,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 302)
 
@@ -220,6 +226,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 302)
 
@@ -353,5 +360,6 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)

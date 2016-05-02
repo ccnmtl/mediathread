@@ -99,6 +99,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         # Forbidden to save or view
         url = '/project/save/%s/' % self.project_private.id
@@ -296,6 +297,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         url = reverse('project-delete', args=[project_id])
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
 
@@ -329,6 +331,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         # as faculty
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, data)
         self.assertEquals(response.status_code, 403)
 
@@ -525,6 +528,7 @@ class TestProjectSortView(MediathreadTestMixin, TestCase):
         url = reverse('project-sort')
         c = self.client
         c.login(username=self.instructor_one.username, password='test')
+        self.switch_course(self.client, self.sample_course)
 
         project1 = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
@@ -571,6 +575,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         # alt course instructor
         self.client.login(username=self.alt_instructor.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 403)
 
@@ -662,6 +667,7 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         # alt course instructor
         self.client.login(username=self.alt_instructor.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 403)
 
@@ -697,6 +703,7 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         # author
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         data = {
             'title': 'Updated',
             'body': 'Body Text',

@@ -119,6 +119,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         response = self.client.get('/asset/archive/')
         self.assertEquals(response.status_code, 405)
@@ -133,6 +134,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post('/asset/archive/',
                                     {'remove': True,
                                      'collection_id': exc.id})
@@ -151,6 +153,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         self.client.post('/asset/archive/', data)
 
         ExternalCollection.objects.get(course=self.sample_course,
@@ -163,6 +166,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         self.client.post('/asset/archive/', data)
 
         ExternalCollection.objects.get(course=self.sample_course,
@@ -230,7 +234,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
-
+        self.switch_course(self.client, self.sample_course)
         asset1 = AssetFactory.create(course=self.sample_course,
                                      primary_source='image',
                                      author=self.instructor_one)
@@ -245,6 +249,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         asset1 = AssetFactory.create(course=self.sample_course,
                                      author=self.instructor_one,
@@ -267,6 +272,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         asset1 = AssetFactory.create(course=self.sample_course,
                                      author=self.instructor_one,
@@ -317,6 +323,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         # Item Does Not Exist
         response = self.client.get('/asset/5616/')
@@ -352,6 +359,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         # Update passing in a non-global annotation. This should fail
         post_data = {'asset-title': 'Updated Title',
@@ -375,6 +383,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         # Update passing in a non-global annotation. This should fail
         post_data = {'asset-title': "Updated Item Title"}
@@ -395,6 +404,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         # Update passing in a non-global annotation. This should fail
         url = "/asset/save/%s/annotations/%s/" % (asset1.id, note.id)
@@ -414,6 +424,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         url = "/asset/save/%s/annotations/%s/" % (asset1.id, 42)
         post_data = {'annotation-range1': -4.5}
@@ -636,6 +647,7 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
         return_url = 'http://foo.bar/baz/'
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.get(self.url, {'return_url': return_url})
         self.assertEquals(response.status_code, 200)
 

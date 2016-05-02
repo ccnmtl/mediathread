@@ -84,6 +84,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         # faculty
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
         discussions = get_course_discussions(self.sample_course)

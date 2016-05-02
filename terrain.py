@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import time
 from urlparse import urlparse
 
@@ -180,6 +181,11 @@ def i_am_username_in_course(step, username, coursename):
 
         form = world.browser.find_element_by_name("login_local")
         form.submit()
+
+        if re.match(r'^instructor', username):
+            course = world.browser.find_element_by_css_selector(
+                'a.choose-course')
+            course.click()
 
         wait = ui.WebDriverWait(world.browser, 5)
         wait.until(lambda driver: world.browser.title.find("Home") > -1)

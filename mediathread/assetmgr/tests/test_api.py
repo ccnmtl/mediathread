@@ -138,6 +138,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         url = '/api/asset/?annotations=true'
         response = self.client.get(url, {},
@@ -267,6 +268,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
     def test_getstudentlist_as_instructor(self):
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         record_owner = self.student_one.username
         response = self.client.get(
@@ -334,6 +336,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {},

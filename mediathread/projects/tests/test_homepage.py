@@ -149,6 +149,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         url = '/api/project/user/%s/' % self.instructor_one.username
         response = self.client.get(url, {},
@@ -168,6 +169,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_two.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         url = '/api/project/user/%s/' % self.instructor_one.username
         response = self.client.get(url, {},
@@ -187,6 +189,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         url = '/api/project/user/%s/' % self.student_one.username
         response = self.client.get(url, {},
@@ -283,6 +286,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
 
         response = self.client.get('/api/project/', {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')

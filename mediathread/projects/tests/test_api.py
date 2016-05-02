@@ -147,6 +147,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         response = self.client.get('/api/project/', {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -233,6 +234,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password="test"))
+        self.switch_course(self.client, self.sample_course)
 
         # Student one private composition
         url = '/api/project/%s/' % self.project_private.id

@@ -216,13 +216,14 @@
         <a name="invite-table"></a>
         <h3>Invitations</h3>
         <div class="table-responsive">
-            <table>
+            <table class="tablesorter">
                 <thead>
                     <tr>
                     <th>Email</th>
                     <th>Invited By</th>
                     <th>Invited At</th>
                     <th>Accepted</th>
+                    <th>Resend Invite</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -231,7 +232,24 @@
                             <td>{{invite.email}}</td>
                             <td>{{invite.invited_by}}</td>
                             <td>{{invite.invited_at}}</td>
-                            <td>{{invite.accepted}}</td>
+                            <td>
+                                {% if invite.accepted_at %}
+                                    {{invite.accepted_at}}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not invite.accepted_at %}
+                                    <form class="inline" action="{% url 'course-roster-resend-email' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="invite-id" value="{{invite.id}}" />                                    
+                                        <button class="btn btn-default btn-sm"
+                                            type="submit"
+                                            data-invite-id="{{invite.id}}">
+                                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Resend Invitation
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

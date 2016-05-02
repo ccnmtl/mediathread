@@ -3,7 +3,6 @@
 from datetime import datetime
 import json
 
-from waffle.testutils import override_flag
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
 from django.conf import settings
@@ -14,28 +13,28 @@ from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
 from threadedcomments.models import ThreadedComment
+from waffle.testutils import override_flag
 
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
-from mediathread.main.tests.mixins import LoggedInUserTestMixin
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
-    AffilFactory
+    AffilFactory, CourseInvitationFactory
 )
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
     course_information_title, all_items_are_visible, all_selections_are_visible
 from mediathread.main.forms import (
-    ContactUsForm, RequestCourseForm, CourseActivateForm
-)
+    ContactUsForm, RequestCourseForm, CourseActivateForm, AcceptInvitationForm)
+from mediathread.main.models import CourseInvitation
+from mediathread.main.tests.mixins import LoggedInUserTestMixin
 from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView,
     RequestCourseView, CourseSettingsView, CourseManageSourcesView,
-    CourseRosterView, CourseAddUserByUNIView
-)
+    CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView)
 from mediathread.projects.models import Project
 
 
@@ -1072,6 +1071,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, [self.alt_student.email])
+            self.assertTrue(CourseInvitation.objects.count() == 0)
 
     def test_email_invite_new_user(self):
         with self.settings(SERVER_EMAIL='mediathread@example.com'):
@@ -1090,6 +1090,15 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, ['foo@example.com'])
+            self.assertTrue(CourseInvitation.objects.count() == 1)
+
+            # reinvite the user. a new email will be sent w/existing invitation
+            url = reverse('course-roster-invite-email')
+            self.client.login(username=self.instructor_one.username,
+                              password='test')
+            response = self.client.post(url, {'emails': 'foo@example.com'})
+            self.assertEqual(len(mail.outbox), 2)
+            self.assertTrue(CourseInvitation.objects.count() == 1)
 
     def test_email_invite_no_user(self):
         url = reverse('course-roster-invite-email')
@@ -1114,6 +1123,84 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             in response.cookies['messages'].value)
         self.assertTrue('foo@example.com was invited to join the course'
                         in response.cookies['messages'].value)
+
+    def test_accept_invite_invalid_uuid(self):
+        # no uuid
+        url = reverse('course-invite-accept', kwargs={'uidb64': None})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+        # already accepted invitation
+        invite = CourseInvitationFactory(
+            course=self.sample_course, accepted_at=datetime.now(),
+            invited_by=self.instructor_one)
+        url = reverse('course-invite-accept', kwargs={'uidb64': invite.uuid})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(
+            'This invitation has already been accepted' in response.content)
+
+    def test_accept_invite_get_invite(self):
+        view = CourseAcceptInvitationView()
+        self.assertIsNone(view.get_invite(None))
+
+        view = CourseAcceptInvitationView()
+        self.assertIsNone(view.get_invite('@#$%^&'))
+
+        invite = CourseInvitationFactory(
+            course=self.sample_course, invited_by=self.instructor_one)
+        self.assertEquals(view.get_invite(invite.uuid), invite)
+
+    def test_accept_invite_form_valid(self):
+        form = AcceptInvitationForm()
+        form.cleaned_data = {
+            'first_name': 'Foo', 'last_name': 'Bar',
+            'password1': 'test', 'password2': 'test',
+            'username': 'testname'}
+
+        invite = CourseInvitationFactory(
+            course=self.sample_course, invited_by=self.instructor_one)
+
+        view = CourseAcceptInvitationView()
+        view.kwargs = {'uidb64': invite.uuid}
+        view.form_valid(form)
+
+        user = User.objects.get(username='testname')
+        self.assertEquals(user.first_name, 'Foo')
+        self.assertEquals(user.last_name, 'Bar')
+        self.assertEquals(user.email, invite.email)
+
+        invite.refresh_from_db()
+        self.assertTrue(invite.accepted())
+        self.assertTrue(invite.accepted_user, user)
+        self.assertTrue(self.sample_course.is_member(user))
+
+        self.assertTrue(
+            self.client.login(username='testname', password='test'))
+
+    def test_resend_invite(self):
+        url = reverse('course-roster-resend-email')
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, {'invite-id': '3'})
+        self.assertEquals(response.status_code, 404)
+
+        invite = CourseInvitationFactory(
+            course=self.sample_course, invited_by=self.instructor_one)
+
+        with self.settings(SERVER_EMAIL='mediathread@example.com'):
+            response = self.client.post(url, {'invite-id': invite.id})
+            self.assertEquals(response.status_code, 302)
+
+            msg = 'A course invitation was resent to {}'.format(invite.email)
+            self.assertTrue(msg in response.cookies['messages'].value)
+
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Course Invitation: Sample Course')
+            self.assertEquals(mail.outbox[0].from_email,
+                              'mediathread@example.com')
+            self.assertTrue(mail.outbox[0].to, [invite.email])
 
 
 class MethCourseListAnonViewTest(TestCase):

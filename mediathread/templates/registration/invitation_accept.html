@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load i18n admin_static %}
+{% block title %}&mdash; Course Invitation{% endblock %}
+
+{% block css %}
+<style>
+    .register-form {
+        width: 600px;
+        margin: 0px 20px;
+     }
+
+    .register-form h2 {
+        padding: 10px 0;
+        border-bottom: solid 1px #EFEFEF;
+        width: 100%;
+        margin-top: 0px;
+    }
+
+    .register-form form {
+        margin: 20px;
+        width: 70%;
+    }
+
+    .register-form input[name='first_name'],
+    .register-form input[name='last_name'],
+    .register-form input[name='password1'],
+    .register-form input[name='password2'] {
+        width: 45%;
+        display: inline;
+        margin: 0 10px 0 0;
+    }
+    .register-form input[name='title'],
+    .register-form input[name='username'] {
+        width: 45%;
+    }
+    .small {
+        margin-top: 5px;
+    }
+    .optional {
+        font-weight: normal !important;
+    }
+    ul.errorlist {
+        clear: both;
+        list-style-type: none;
+        color: #b94a48;
+        margin: 5px 0 20px 0;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            jQuery("#id_password1").attr("placeholder", "Password");
+            jQuery("#id_password2").attr("placeholder", "Confirm Password");
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <h2 class="pagetitle signuptitle">Invitation for {{invite.course.title}}</h2>
+    <br />
+{% if invite.accepted %}
+    <p>This invitation has already been accepted.</p>
+    <p>Log in to <a href="/">Mediathread</a></p>
+{% else %}
+    <form method="post" action="." class="register-form">
+        <p>Your instructor has invited you to join {{invite.course.title}}. Please create a username and password for the Mediathread applicaton.</p>
+        <br />
+
+        {% if form.errors|length %}
+            <div class="alert alert-danger">
+              <strong>Please correct errors before continuing</strong><br /><br />
+              {% if form.non_field_errors %}
+                <div>{{ form.non_field_errors}}</div>
+              {% endif %}
+            </div>
+        {% endif %}
+    
+        <div class="form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
+            <label for="id_first_name"><b>Your name is:</b></label>
+            <div>
+                <span>
+                    <input class="form-control" id="id_first_name" maxlength="50" name="first_name" type="text"
+                     value="{{form.data.first_name}}" placeholder="First Name">
+                </span>&nbsp;
+                <span>
+                    <input class="form-control" id="id_last_name" maxlength="50" name="last_name"
+                     value="{{form.data.last_name}}"
+                     type="text" placeholder="Last Name">
+                </span>
+                {% if form.first_name.errors or form.last_name.errors %}
+                    <ul class="errorlist">
+                        <li>First and last name are required.</li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <br />
+        <div class="form-group {% if form.username.errors %}has-error{% endif %}" >
+            <label>Username:</label>
+            <div>
+                {{ form.username }}
+                {% if not form.username.errors %}
+                    <div class="small">30 characters or fewer.<br /> Usernames may contain alphanumeric, _, @, +, . and - characters.</div>
+                {% endif %}
+            </div>
+            {{ form.username.errors }}
+        </div>
+        <br />
+        <div class="form-group {% if form.password1.errors or form.password2.errors %}has-error{% endif %}">
+            <label>Create a password:</label>
+            <div>
+                <span>
+                    {{ form.password1 }}
+                </span>&nbsp;
+                <span>
+                    {{ form.password2 }}
+                </span>
+            </div>
+            {% if form.password1.errors or form.password2.errors %}
+                <ul class="errorlist">
+                    <li>Please enter your password twice. Passwords must match.</li>
+                </ul>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center">
+        <input class="btn btn-primary btn-large right" type="submit"
+         id="submit-id" value="{% trans 'Register' %}" />
+        </div>
+    </form>
+{% endif %}    
+{% endblock %}

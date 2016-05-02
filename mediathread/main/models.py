@@ -84,13 +84,14 @@ class CourseInvitation(models.Model):
     course = models.ForeignKey(Course)
     uuid = UUIDField(default=uuid.uuid4, editable=False)
 
-    activated_at = models.DateTimeField(null=True)
-
-    invited_by = models.ForeignKey(User)
+    invited_by = models.ForeignKey(User, related_name='invited_by')
     invited_at = models.DateTimeField(auto_now_add=True)
 
-    def activated(self):
-        return self.activated_at is not None
+    accepted_at = models.DateTimeField(null=True)
+    accepted_user = models.ForeignKey(User, null=True)
+
+    def accepted(self):
+        return self.accepted_at is not None
 
 
 class Affil(models.Model):

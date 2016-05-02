@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
 from registration.forms import RegistrationForm
 
@@ -147,7 +148,8 @@ class CourseDeleteMaterialsForm(forms.Form):
         return cleaned_data
 
 
-class ActivateInvitationForm(forms.Form):
+class AcceptInvitationForm(forms.Form):
+
     first_name = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -163,6 +165,25 @@ class ActivateInvitationForm(forms.Form):
     password2 = forms.CharField(
         required=True,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean(self):
+        cleaned_data = super(AcceptInvitationForm, self).clean()
+
+        username = cleaned_data.get('username')
+        if username:
+            if User.objects.filter(username=username).count() > 0:
+                self._errors['username'] = self.error_class([
+                    'This username already exists. Please choose another.'])
+
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 != password2:
+            self._errors['password1'] = self.error_class(
+                ['Passwords must match each other.'])
+            self._errors['password2'] = self.error_class(
+                ['Passwords must match each other.'])
+
+        return cleaned_data
 
 
 class CourseActivateForm(forms.Form):

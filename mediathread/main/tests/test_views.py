@@ -5,6 +5,7 @@ import json
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
+from courseaffils.tests.factories import AffilFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -21,7 +22,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
-    AffilFactory, CourseInvitationFactory
+    CourseInvitationFactory
 )
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \

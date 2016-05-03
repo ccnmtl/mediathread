@@ -26,7 +26,7 @@ python-mimeparse==0.1.4  # tastypie
 python-dateutil==2.5.3  # tastypie
 django-tastypie==0.13.3
 coverage==4.0.3
-logilab-common==0.63.2
+logilab-common==1.2.0
 lazy-object-proxy==1.2.1
 wrapt==1.10.6
 astroid==1.4.5  # pylint

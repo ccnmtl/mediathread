@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.utils import timezone
-from mediathread.main.models import Affil
+from courseaffils.models import Affil
 
 
 class CourseGroupMapper(object):

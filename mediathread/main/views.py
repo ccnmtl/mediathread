@@ -4,7 +4,7 @@ import re
 
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
-from courseaffils.models import Course
+from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
@@ -43,9 +43,7 @@ from mediathread.main.forms import (
     CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm
 )
-from mediathread.main.models import (
-    UserSetting, CourseInvitation, Affil
-)
+from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name, \
     send_course_invitation_email
 from mediathread.mixins import (

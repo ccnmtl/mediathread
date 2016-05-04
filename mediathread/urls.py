@@ -17,7 +17,7 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
-    MethCourseListView, AffilActivateView,
+    MethCourseListView, CourseInstructorDashboardView, AffilActivateView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
@@ -138,6 +138,8 @@ urlpatterns = patterns(
     (r'^contact/success/$',
      TemplateView.as_view(template_name='main/contact_success.html')),
     (r'^contact/$', ContactUsView.as_view()),
+
+    # Course forms
     (r'^course/request/success/$',
      TemplateView.as_view(template_name='main/course_request_success.html')),
     (r'^course/request/', RequestCourseView.as_view()),
@@ -164,8 +166,7 @@ urlpatterns = patterns(
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
-    url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
-        {}, 'dashboard-migrate'),
+
     url(r'^dashboard/roster/promote/', CoursePromoteUserView.as_view(),
         name='course-roster-promote'),
     url(r'^dashboard/roster/demote/', CourseDemoteUserView.as_view(),
@@ -178,13 +179,7 @@ urlpatterns = patterns(
         name='course-roster-invite-email'),
     url(r'^dashboard/roster/resend/email/', CourseResendInviteView.as_view(),
         name='course-roster-resend-email'),
-    url(r'^dashboard/roster/', CourseRosterView.as_view(),
-        name='course-roster'),
 
-    url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
-        name='class-manage-sources'),
-    url(r'^dashboard/settings/', CourseSettingsView.as_view(),
-        name='course-settings'),
     url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),
 
@@ -213,7 +208,24 @@ urlpatterns = patterns(
     # Composition Space
     (r'^project/', include('mediathread.projects.urls')),
 
-    # Instructor Dashboard & reporting
+    # Instructor Dashboard
+    url(r'^course/(?P<pk>\d+)/dashboard/$',
+        CourseInstructorDashboardView.as_view(),
+        name='course-instructor-dashboard'),
+    url(r'^course/(?P<pk>\d+)/dashboard/settings/',
+        CourseSettingsView.as_view(),
+        name='course-dashboard-settings'),
+    url(r'^course/(?P<pk>\d+)/dashboard/sources/',
+        CourseManageSourcesView.as_view(),
+        name='course-dashboard-sources'),
+    url(r'^course/(?P<pk>\d+)/dashboard/migrate/$',
+        MigrateCourseView.as_view(),
+        {}, 'course-dashboard-migrate'),
+    url(r'^course/(?P<pk>\d+)/dashboard/roster/',
+        CourseRosterView.as_view(),
+        name='course-roster'),
+
+    # Reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry

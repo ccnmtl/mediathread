@@ -25,7 +25,7 @@
     You may enable it for just yourself, or enable it for all members of your class.</p>
 
     {% if uploader %}
-        <form name="form-upload-permission" action="{% url 'class-manage-sources' %}" method="POST">
+        <form name="form-upload-permission" action="{% url 'course-dashboard-sources' course.pk %}" method="POST">
             <div class="form-group">
             <label>Set Upload Permission Settings</label>: &nbsp;
             <select name="upload_permission" class="form-control">
@@ -39,7 +39,7 @@
         </form>
         <div class="clearfix"></div>
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
-            <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
+            <input type="hidden" name="redirect-url" value="{% url 'course-dashboard-sources' course.pk %}">
             <input type="hidden" name="collection_id" value="{{uploader.id}}" />
             <input class="btn btn-default left" name="remove" type="submit" value="Disable Video Upload" />
          </form>
@@ -52,7 +52,7 @@
             <input type="hidden" name="uploader" value="1">
             <input type="hidden" name="url" value="https://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
             <input type="hidden" name="thumb" value="https://wardenclyffe.ccnmtl.columbia.edu/media/img/bg_header.jpg">
-            <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
+            <input type="hidden" name="redirect-url" value="{% url 'course-dashboard-sources' course.pk %}">
          </form>
          <div class="visualclear"></div>
      {% endif %}

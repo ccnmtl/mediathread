@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load waffle_tags %}
+
+{% block title %}
+    | Instructor Dashboard: {{object.title}}
+{% endblock %}
+
+{% block coursetitle %}
+    <a href=".">Instructor Dashboard: {{object.title}}</a>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-9" role="main">
+        <h2><a href="{% url 'course-dashboard-settings' object.pk %}">Settings</a></h2>
+        <h2><a href="{% url 'course-dashboard-sources' object.pk %}">Sources</a></h2>
+        <h2><a href="{% url 'course-dashboard-migrate' object.pk %}">Migrations</a></h2>
+        <h2><a href="{% url 'taxonomy-workspace' %}">Vocabulary</a></h2>
+        {% flag "roster_view" %}
+        <h2><a href="{% url 'course-roster' object.pk %}">Roster</a></h2>
+        {% endflag %}
+    </div>
+    <div class="col-md-3" role="complementary">
+        {% include 'main/course_instructor_dashboard_menu.html' %}
+    </div>
+{% endblock %}

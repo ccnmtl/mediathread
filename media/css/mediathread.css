@@ -4362,3 +4362,7 @@ a.btn.btn-default img.left {
     background-color: white;
     color: #337ab7;
 }
+
+.instructor-dashboard-sidebar.affix {
+    position: fixed;
+}

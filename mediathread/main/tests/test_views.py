@@ -5,7 +5,7 @@ import json
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
-from courseaffils.tests.factories import AffilFactory
+from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -105,15 +105,21 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.student_one.username,
                               password='test'))
-        response = self.client.get('/dashboard/migrate/')
+        response = self.client.get(
+            reverse('course-dashboard-migrate',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 403)
 
     def test_not_logged_in(self):
-        response = self.client.get('/dashboard/migrate/')
+        response = self.client.get(
+            reverse('course-dashboard-migrate',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 302)
 
     def test_get_context_data(self):
-        request = RequestFactory().get('/dashboard/migrate/')
+        request = RequestFactory().get(
+            reverse('course-dashboard-migrate',
+                    args=(self.sample_course.pk,)))
         request.user = self.instructor_three
         request.course = self.sample_course
 
@@ -147,7 +153,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
     def test_post_invalidcourse(self):
         data = {'fromCourse': 42}
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -162,7 +170,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
             'on_behalf_of': self.alt_student.id
         }
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -179,7 +189,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
             'on_behalf_of': self.alt_instructor.id
         }
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -197,7 +209,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -238,7 +252,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -271,7 +287,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -304,7 +322,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -345,7 +365,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('course-dashboard-migrate', args=(self.sample_course.pk,)),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -570,18 +592,24 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
 
     def test_not_logged_in(self):
-        response = self.client.get('/dashboard/settings/')
+        response = self.client.get(
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 302)
 
     def test_as_student(self):
         self.assertTrue(
             self.client.login(username=self.student_one.username,
                               password='test'))
-        response = self.client.get('/dashboard/settings/')
+        response = self.client.get(
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 403)
 
     def test_get_context_data(self):
-        request = RequestFactory().get('/dashboard/settings/')
+        request = RequestFactory().get(
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)))
         request.user = self.instructor_one
         request.course = self.sample_course
 
@@ -613,7 +641,8 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
             policy='PublicEditorsAreOwners')
 
         self.client.post(
-            '/dashboard/settings/',
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)),
             {course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 0})
 
         col = project.get_collaboration()
@@ -631,7 +660,10 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
             course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY: 1
         }
 
-        response = self.client.post('/dashboard/settings/', data)
+        response = self.client.post(
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)),
+            data)
         self.assertEquals(response.status_code, 302)
         self.assertEquals(course_information_title(self.sample_course), "Foo")
         self.assertTrue(allow_public_compositions(self.sample_course))
@@ -644,7 +676,10 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
         data = {course_details.ITEM_VISIBILITY_KEY: 0}
 
-        response = self.client.post('/dashboard/settings/', data)
+        response = self.client.post(
+            reverse('course-dashboard-settings',
+                    args=(self.sample_course.pk,)),
+            data)
         self.assertEquals(response.status_code, 302)
 
         # unchanged from defaults
@@ -665,18 +700,24 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
         self.superuser = UserFactory(is_staff=True, is_superuser=True)
 
     def test_not_logged_in(self):
-        response = self.client.get('/dashboard/sources/')
+        response = self.client.get(
+            reverse('course-dashboard-sources',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 302)
 
     def test_as_student(self):
         self.assertTrue(
             self.client.login(username=self.student_one.username,
                               password='test'))
-        response = self.client.get('/dashboard/sources/')
+        response = self.client.get(
+            reverse('course-dashboard-sources',
+                    args=(self.sample_course.pk,)))
         self.assertEquals(response.status_code, 403)
 
     def test_get_context(self):
-        request = RequestFactory().get('/dashboard/sources/')
+        request = RequestFactory().get(
+            reverse('course-dashboard-sources',
+                    args=(self.sample_course.pk,)))
         request.user = self.instructor_one
         request.course = self.sample_course
 
@@ -700,7 +741,10 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
             course_details.UPLOAD_PERMISSION_ADMINISTRATOR
         }
 
-        self.client.post('/dashboard/sources/', data)
+        self.client.post(
+            reverse('course-dashboard-sources',
+                    args=(self.sample_course.pk,)),
+            data)
         self.assertTrue(course_details.can_upload(self.superuser,
                                                   self.sample_course))
         self.assertFalse(course_details.can_upload(self.instructor_one,
@@ -952,7 +996,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
-        self.url = reverse('course-roster')
+        self.url = reverse('course-roster', args=(self.sample_course.pk,))
 
     def test_get(self):
         self.client.login(username=self.instructor_one.username,
@@ -1343,3 +1387,20 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])
+
+
+class CourseInstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
+    def setUp(self):
+        super(CourseInstructorDashboardViewTest, self).setUp()
+        self.course = CourseFactory()
+
+    def test_get(self):
+        response = self.client.get(reverse(
+            'course-instructor-dashboard', kwargs={
+                'pk': self.course.pk
+            }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'Instructor Dashboard: {}'.format(self.course.title))
+        self.assertEqual(response.context['object'], self.course)

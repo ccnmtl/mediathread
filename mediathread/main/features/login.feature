@@ -35,6 +35,11 @@ Feature: Login
         When I type "instructor_one" for username
         When I type "test" for password
         When I click the Log In button
+
+        Then I am at the Switch Course page
+        Then there is an "Sample Course" link
+        When I click the "Sample Course" link
+
         Then I am at the Home page
         When I log out
         Then I am at the Login page

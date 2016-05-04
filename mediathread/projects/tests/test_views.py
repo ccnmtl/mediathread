@@ -575,7 +575,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         # alt course instructor
         self.client.login(username=self.alt_instructor.username,
                           password='test')
-        self.switch_course(self.client, self.sample_course)
+        self.switch_course(self.client, self.alt_course)
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 403)
 
@@ -667,7 +667,7 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         # alt course instructor
         self.client.login(username=self.alt_instructor.username,
                           password='test')
-        self.switch_course(self.client, self.sample_course)
+        self.switch_course(self.client, self.alt_course)
         response = self.client.get(url, {})
         self.assertEquals(response.status_code, 403)
 

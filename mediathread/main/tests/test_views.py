@@ -5,6 +5,7 @@ import json
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Course
+from courseaffils.tests.factories import AffilFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -21,7 +22,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
-    AffilFactory, CourseInvitationFactory
+    CourseInvitationFactory
 )
 from mediathread.main import course_details
 from mediathread.main.course_details import allow_public_compositions, \
@@ -606,6 +607,7 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         project = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='PublicEditorsAreOwners')
@@ -621,6 +623,7 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         data = {
             course_details.COURSE_INFORMATION_TITLE_KEY: "Foo",
             course_details.SELECTION_VISIBILITY_KEY: 0,
@@ -638,6 +641,7 @@ class CourseSettingsViewTest(MediathreadTestMixin, TestCase):
     def test_post_disabled_selection_visibility(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         data = {course_details.ITEM_VISIBILITY_KEY: 0}
 
         response = self.client.post('/dashboard/settings/', data)
@@ -690,6 +694,7 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
                               password='test'))
+        self.switch_course(self.client, self.sample_course)
         data = {
             course_details.UPLOAD_PERMISSION_KEY:
             course_details.UPLOAD_PERMISSION_ADMINISTRATOR
@@ -969,6 +974,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
     def test_promote_demote_users(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
 
         url = reverse('course-roster-promote')
         data = {'student_id': self.student_one.id}
@@ -986,6 +992,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
     def test_remove_user(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
 
         url = reverse('course-roster-remove')
         data = {'user_id': self.student_one.id}
@@ -1014,6 +1021,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
     def test_uni_invite_post(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
 
         url = reverse('course-roster-add-uni')
         response = self.client.post(url, {})
@@ -1045,6 +1053,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': self.student_one.email})
         self.assertEquals(response.status_code, 302)
         self.assertTrue('Student One is already a course member'
@@ -1057,6 +1066,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             url = reverse('course-roster-invite-email')
             self.client.login(username=self.instructor_one.username,
                               password='test')
+            self.switch_course(self.client, self.sample_course)
             response = self.client.post(url,
                                         {'emails': self.alt_student.email})
             self.assertEquals(response.status_code, 302)
@@ -1078,6 +1088,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             url = reverse('course-roster-invite-email')
             self.client.login(username=self.instructor_one.username,
                               password='test')
+            self.switch_course(self.client, self.sample_course)
             response = self.client.post(url, {'emails': 'foo@example.com'})
 
             self.assertEquals(response.status_code, 302)
@@ -1104,6 +1115,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
 
         self.assertEquals(response.status_code, 302)
@@ -1115,6 +1127,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': '#$%^,foo@example.com'})
 
         self.assertEquals(response.status_code, 302)
@@ -1182,6 +1195,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-resend-email')
         self.client.login(username=self.instructor_one.username,
                           password='test')
+        self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'invite-id': '3'})
         self.assertEquals(response.status_code, 404)
 

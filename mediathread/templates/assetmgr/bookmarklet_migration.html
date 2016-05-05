@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load waffle_tags %}
 
 {% block title %}
     Bookmarklet Migration
@@ -29,7 +28,6 @@
                     Try another web browser. If you're using Google Chrome,
                     try Firefox or Safari.
                 </li>
-                {% flag "beta_extensions" %}
                 <li>
                     Use Mediathread's browser extension to collect
                     media instead of the bookmarklet. The Mediathread
@@ -37,14 +35,6 @@
                     Firefox. You can install it using the buttons
                     below.
                 </li>
-                {% else %}
-                <li>
-                    Use Mediathread's browser extension to collect media instead
-                    of the bookmarklet.
-                    Right now, we only have this available for Google Chrome, which
-                    you can install using the button below.
-                </li>
-                {% endflag %}
             </ul>
         </p>
 

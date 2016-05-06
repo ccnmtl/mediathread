@@ -67,6 +67,7 @@ INSTALLED_APPS += [  # noqa
     'reversion',
     'lti_auth',
     'bootstrap3',
+    'django_extensions',
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"

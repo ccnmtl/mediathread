@@ -116,7 +116,7 @@ var CollectionList = function(config) {
         });
 
     self.$el.on(
-        'change select2-removed', 'select.vocabulary', function(evt) {
+        'change', 'select.vocabulary', function(evt) {
             var option = evt.added || evt.removed;
             var vocab = jQuery(option.element).parent().attr('data-id');
             if (!self.current_records.active_filters.hasOwnProperty(vocab)) {
@@ -134,7 +134,7 @@ var CollectionList = function(config) {
         });
 
     self.$el.on(
-        'change select2-removed', 'select.course-tags', function() {
+        'change', 'select.course-tags', function() {
             var $elt = self.$el.find('select.course-tags');
             self.current_records.active_filters.tag = $elt.val();
             return self.filter();

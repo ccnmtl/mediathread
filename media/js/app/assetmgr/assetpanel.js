@@ -227,8 +227,6 @@ AssetPanelHandler.prototype.resize = function() {
     var self = this;
     var $collection = self.$el.find('td.panel-container.collection');
 
-    window.panelManager.verifyLayout(self.$el);
-
     if ($collection.length < 1 || $collection.hasClass('minimized')) {
         jQuery('td.asset-view-header').show();
     } else {
@@ -246,6 +244,9 @@ AssetPanelHandler.prototype.resize = function() {
     q = 'div.mediathread-panel.asset-workspace div.pantab.collection:visible';
     var pantab = self.$el.find(q);
     if (pantab.length > 0) {
+        // shrink the collections window if necessary
+        window.panelManager.verifyLayout(self.$el);
+
         q = 'div.mediathread-panel.asset-workspace ' +
             'td.panhandle-stripe.collection';
         jQuery(q).show();

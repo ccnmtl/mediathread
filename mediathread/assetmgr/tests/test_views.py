@@ -67,12 +67,12 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         data = {'title': 'Good Asset',
                 'asset-source': 'bookmarklet',
-                'image': 'http://www.flickr.com/',
+                'image': 'https://www.flickr.com/',
                 'image-metadata': [u'w720h526;text/html']}
         request = RequestFactory().post('/save/', data)
         sources = AssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
-        self.assertEquals(sources['image'].url, 'http://www.flickr.com/')
+        self.assertEquals(sources['image'].url, 'https://www.flickr.com/')
         self.assertTrue(sources['image'].primary)
         self.assertEquals(sources['image'].width, 720)
         self.assertEquals(sources['image'].height, 526)

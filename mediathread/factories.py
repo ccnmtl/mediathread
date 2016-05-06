@@ -304,7 +304,7 @@ class MediathreadTestMixin(object):
 
     def setup_suggested_collection(self):
         SuggestedExternalCollectionFactory(title='YouTube',
-                                           url='http://www.youtube.com')
+                                           url='https://www.youtube.com')
 
     def setup_sample_assignment(self):
         assignment = ProjectFactory.create(

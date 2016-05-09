@@ -47,7 +47,7 @@ django-contrib-comments==1.7.0
 django-threadedcomments==1.0b1
 django-courseaffils==2.1.5
 django-statsd-mozilla==0.3.16
-raven==5.13.0
+raven==5.15.0
 django-appconf==1.0.2  # django_compressor
 django-compressor==2.0
 django-jenkins==0.18.1

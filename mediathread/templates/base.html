@@ -275,7 +275,7 @@
                 if (BrowserDetect.browser === 'Safari' &&
                         window.location.protocol !== 'https:') {
                     window.location =
-                        window.location.href.replace('http://', 'https://');
+                        window.location.href.replace(/^http:\/\//, 'https://');
                 }
 
                 jQuery("div.settings_menu").click(function(evt) {

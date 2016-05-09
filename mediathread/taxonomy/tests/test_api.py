@@ -213,10 +213,13 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
 
     def test_vocabulary_validation(self):
         vv = VocabularyValidation()
+        request = RequestFactory()
+        request.course = self.sample_course
 
         mock_bundle = Bundle()
         mock_bundle.data['display_name'] = 'Shapes'
-        mock_bundle.data['object_id'] = self.sample_course.id
+        mock_bundle.request = request
+
         errors = vv.is_valid(mock_bundle)
         self.assertTrue('error_message' in errors)
         self.assertTrue(
@@ -225,5 +228,6 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         mock_bundle = Bundle()
         mock_bundle.data['display_name'] = 'Patterns'
         mock_bundle.data['object_id'] = self.sample_course.id
+        mock_bundle.request = request
         errors = vv.is_valid(mock_bundle)
         self.assertFalse('error_message' in errors)

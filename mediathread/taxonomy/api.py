@@ -1,5 +1,4 @@
 # pylint: disable-msg=R0904
-from courseaffils.models import Course
 from django.db.models import Count
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
@@ -43,7 +42,7 @@ class VocabularyValidation(Validation):
 
         a = Vocabulary.objects.filter(
             display_name=bundle.data['display_name'],
-            course__id=bundle.data['object_id'])
+            course=bundle.request.course)
 
         if len(a) > 0:  # vocabulary exists with this name
             if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
@@ -86,7 +85,7 @@ class VocabularyResource(ModelResource):
         return to_be_serialized
 
     def hydrate(self, bundle):
-        bundle.obj.course = Course.objects.get(id=bundle.data['object_id'])
+        bundle.obj.course = bundle.request.course
         return bundle
 
     def render_one(self, request, vocabulary):
@@ -116,6 +115,7 @@ class VocabularyResource(ModelResource):
         for rel in related:
             if rel.term.vocabulary.id not in ctx:
                 vocab_ctx = {'id': rel.term.vocabulary.id,
+                             'vocabulary_id': rel.term.vocabulary.id,
                              'display_name': rel.term.vocabulary.display_name,
                              'term_set': [],
                              'terms': []}

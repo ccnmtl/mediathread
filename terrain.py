@@ -12,6 +12,7 @@ from lettuce import django
 from selenium.common.exceptions import NoSuchElementException, \
     StaleElementReferenceException, InvalidElementStateException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.expected_conditions import (
     visibility_of_element_located, invisibility_of_element_located,
@@ -60,8 +61,14 @@ def setup_browser():
     elif browser == 'Chrome':
         world.browser = webdriver.Chrome()
     elif browser == "Headless":
-        world.browser = webdriver.PhantomJS(
-            desired_capabilities={'handlesAlerts': True})
+        ua = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) '
+              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 '
+              'Safari/537.36')
+
+        dcap = dict(DesiredCapabilities.PHANTOMJS)
+        dcap["phantomjs.page.settings.userAgent"] = ua
+        dcap['handlesAlerts'] = True
+        world.browser = webdriver.PhantomJS(desired_capabilities=dcap)
 
     world.client = client.Client()
     world.using_selenium = False

@@ -50,10 +50,10 @@ all_archives = [
          },
      'sources': {
          'url': {'label': 'url',
-                 'url': 'http://www.flickr.com/',
+                 'url': 'https://www.flickr.com/',
                  },
          'archive': {'label': 'archive',
-                     'url': 'http://www.flickr.com/',
+                     'url': 'https://www.flickr.com/',
                      },
          'thumb': {'label': 'thumb',
                    'url': '/media/img/thumbs/flickr.png',

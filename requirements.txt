@@ -14,7 +14,8 @@ sure==1.2.24  # lettuce
 extras==0.0.3
 linecache2==1.0.0  # traceback2
 traceback2==1.4.0  # testtools
-testtools==1.8.0  # python-subunit
+fixtures==2.0.0
+testtools==2.1.0  # python-subunit
 pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.2.0  # lettuce

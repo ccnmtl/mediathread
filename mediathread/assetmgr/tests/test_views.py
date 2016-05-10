@@ -59,7 +59,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',
                 'image': 'x' * 5000,  # too long
-                'url': 'http://www.youtube.com/abcdefghi'}
+                'url': 'https://www.youtube.com/abcdefghi'}
         request = RequestFactory().post('/save/', data)
         sources = AssetCreateView.sources_from_args(request)
 
@@ -146,9 +146,9 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
     def test_manage_external_collection_add_custom(self):
         data = {
             'title': 'YouTube',
-            'url': 'http://www.youtube.com/',
+            'url': 'https://www.youtube.com/',
             'thumb_url': '/site_media/img/thumbs/youtube.png',
-            'description': 'http://www.youtube.com/'}
+            'description': 'https://www.youtube.com/'}
 
         self.assertTrue(
             self.client.login(username=self.instructor_one.username,
@@ -174,7 +174,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
     def test_asset_create_noasset(self):
         data = {'title': 'Bad Asset',
-                'foobar': 'http://www.youtube.com/abcdefghi'}
+                'foobar': 'https://www.youtube.com/abcdefghi'}
 
         request = RequestFactory().post('/save/', data)
         request.user = self.instructor_one
@@ -187,7 +187,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
     def test_asset_create_via_bookmarklet(self):
         data = {'title': 'YouTube Asset',
-                'youtube': 'http://www.youtube.com/abcdefghi',
+                'youtube': 'https://www.youtube.com/abcdefghi',
                 'asset-source': 'bookmarklet'}
 
         request = RequestFactory().post('/save/', data)

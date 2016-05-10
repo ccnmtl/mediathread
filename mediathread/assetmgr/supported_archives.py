@@ -9,10 +9,10 @@ all_archives = [
                   },
      'sources': {
          'url': {'label': 'url',
-                 'url': 'http://www.youtube.com/',
+                 'url': 'https://www.youtube.com/',
                  },
          'archive': {'label': 'archive',
-                     'url': 'http://www.youtube.com/',
+                     'url': 'https://www.youtube.com/',
                      },
          'thumb': {'label': 'thumb',
                    'url': '/media/img/thumbs/youtube.jpg',

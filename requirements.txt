@@ -44,7 +44,7 @@ djangowind==0.14.3
 django-tagging==0.4.3
 django-reversion==1.9.3
 djangohelpers==0.18.1
-django-contrib-comments==1.7.0
+django-contrib-comments==1.7.1
 django-threadedcomments==1.0b1
 django-courseaffils==2.1.5
 django-statsd-mozilla==0.3.16

@@ -57,47 +57,6 @@
     </div>
     <div class="pull-right">
         <button class="btn btn-default btn-sm"
-            data-toggle="modal" data-target="#add-uni-user">
-            Add by Columbia University Network ID (UNI)
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="add-uni-user" tabindex="-1" role="dialog" aria-labelledby="Add User">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Add by Columbia University Network ID (UNI)</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{% url 'course-roster-add-uni' %}" method="POST">
-                            <p>
-                            <b>About Adding Students</b><br />
-                            Normally, an instructor does not need to add users manually to a Mediathread course.
-                            Registered students are added to their affiliated courses automatically when they login
-                            to Mediathread. But, sometimes students or teaching assistants are not formally registered.
-                            This utility will allow you to add them to the course easily.</p>
-
-                            <p><b>How To Add Students</b><br />
-                            To add students or teaching assistants who are not formally registered, enter a list
-                            of UNIs separated by commas. The users will be added to the course
-                            and receive an email with login instructions.</p>
-                            <br />
-                            <div class="form-group">
-                                <label for="uni">UNI</label>
-                                <textarea class="form-control" name="unis" placeholder="UNIs separated by commas"></textarea>
-                                <div class="help-inline">At least one UNI is required.</div>
-                            </div>
-                            <p class="small"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary btn-add-uni-user">Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button class="btn btn-default btn-sm"
             data-toggle="modal" data-target="#invite-email-user">
             Invite by Email Address
         </button>
@@ -121,11 +80,18 @@
                             To invite students, enter a list of email addresses separated by commas. The users will
                             receive an invitation to the course via email.</p>
 
-                            <p><b>Columbia University Students</b><br />
-                            Do not invite students with Columbia University Network ID via email. Their course affiliations
-                            will not be picked up correctly.
+                            {% if blocked %}
+                            <p><b>Blocked Email Domain</b><br />
+                            Some email domains have been blocked for institutional reasons.<br />
+                            <p>Email invitation is <b>blocked</b> for:
+                                <ul>
+                                {% for e in blocked %}
+                                    <li>{{e}}</li>
+                                {% endfor %}
+                                </ul>
+                            </p>
                             <br />
-
+                            {% endif %}
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <textarea class="form-control" name="emails" placeholder="email addresses separated by commas"></textarea>

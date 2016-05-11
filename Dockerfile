@@ -4,7 +4,7 @@ RUN /ve/bin/pip install --no-index -f /wheelhouse -r /wheelhouse/requirements.tx
 && rm -rf /wheelhouse
 WORKDIR /app
 COPY . /app/
-#RUN /ve/bin/python manage.py test
+RUN /ve/bin/python manage.py test
 EXPOSE 8000
 ADD docker-run.sh /run.sh
 ENV APP mediathread

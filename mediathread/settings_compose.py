@@ -14,6 +14,7 @@ DATABASES = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 try:
     from local_settings import *

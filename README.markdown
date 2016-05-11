@@ -95,9 +95,9 @@ If you have docker set up and docker-compose installed, you can get a
 development environment up and running very quickly. To initialize it,
 the following steps are recommended:
 
-    $ docker pull ccnmtl/mediathread
-    $ docker-compose run web manage syncdb # create a superuser when asked to
-	$ docker-compose run web migrate
+    $ make build
+    $ docker-compose run web migrate
+    $ docker-compose run web manage createsuperuser
 
 After that, a simple:
 
@@ -106,6 +106,32 @@ After that, a simple:
 will bring up a development server on port 8000 (if you are running
 boot2docker, it may end up on a different port) backed by a PostgreSQL
 database.
+
+If requirements have been updated, you can rebuild the image by
+re-running `make build`. Eventually, we'll be automatically publishing
+the Mediathread Docker image to the Docker Hub and you will instead
+be able to just run `docker pull ccnmtl/mediathread` to update.
+
+The usual Django `manage.py` commands can be run inside the docker
+compose container like so:
+
+    $ docker-compose run web manage help
+    $ docker-compose run web manage shell
+
+(Note that it's with `manage`, not `manage.py`; this is the custom
+entrypoint script (`docker-run.sh`) at work.)
+
+You can run the unit tests inside the container with the following
+command:
+
+    $ docker-compose run web manage test --settings=mediathread.settings
+
+That one's a *little* tricky and unintuitive. Normally, running
+Mediathread inside the container via docker compose, it will use the
+`settings_compose.py` settings file, which contains the configuration
+for connecting to the PostgreSQL instance running in the other
+container. For unit tests, you don't want that though, so the command
+above explicitly sets it back to the default dev settings.
 
 Production deployment with Docker is also possible, though even less
 tested than development. The `settings_docker.py` file has the default

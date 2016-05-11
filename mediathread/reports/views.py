@@ -137,7 +137,7 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
                             didx.collaboration._parent.object_pk)]['index']})
 
             # comment --> asset
-            if didx.asset_id:
+            if didx.asset_id and didx.asset_id in self.assets:
                 self.links.append({
                     'source': d_ind,
                     'target': self.assets[didx.asset_id]

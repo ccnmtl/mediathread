@@ -1037,6 +1037,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         user.first_name = 'John'
         user.last_name = 'Smith'
+        user.email = 'jsmith@example.com'
         user.save()
 
         response = self.client.post(url, {'unis': ' abc123 ,efg456,'})
@@ -1044,7 +1045,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         user = User.objects.get(username='efg456')
         self.assertTrue(self.sample_course.is_true_member(user))
-        self.assertTrue('John Smith is already a course member'
+        self.assertTrue('John Smith (abc123) is already a course member'
                         in response.cookies['messages'].value)
         self.assertTrue('efg456 is now a course member'
                         in response.cookies['messages'].value)
@@ -1056,8 +1057,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': self.student_one.email})
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('Student One is already a course member'
-                        in response.cookies['messages'].value)
+        self.assertTrue(
+            'Student One (student_one@example.com) is already a course member'
+            in response.cookies['messages'].value)
 
     def test_email_invite_existing_user(self):
         with self.settings(SERVER_EMAIL='mediathread@example.com'):

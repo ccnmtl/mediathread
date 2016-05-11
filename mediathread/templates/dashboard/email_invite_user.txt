@@ -1,6 +1,6 @@
 Hello,
 
-Your instructor, {{inviter}}, has invited you to join the Mediathread course: {{course.title}}.
+Your instructor has invited you to join the Mediathread course: {{course.title}}.
 
 To create a Mediathread account and join the course, please click the following link, or copy and paste it
 into your web browser:

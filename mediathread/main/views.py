@@ -550,6 +550,7 @@ class CourseRosterView(LoggedInFacultyMixin, ListView):
         ctx = ListView.get_context_data(self, **kwargs)
         ctx['invitations'] = CourseInvitation.objects.filter(
             course=self.request.course)
+        ctx['blocked'] = settings.BLOCKED_EMAIL_DOMAINS
         return ctx
 
 
@@ -631,7 +632,8 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
                 user = self.get_or_create_user(uni)
                 display_name = user_display_name(user)
                 if self.request.course.is_true_member(user):
-                    msg = '{} is already a course member'.format(display_name)
+                    msg = '{} ({}) is already a course member'.format(
+                        display_name, uni)
                     messages.add_message(request, messages.WARNING, msg)
                 else:
                     email = '{}@columbia.edu'.format(uni)
@@ -652,7 +654,8 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         add_template = 'dashboard/email_add_user.txt'
         display_name = user_display_name(user)
         if self.request.course.is_true_member(user):
-            msg = '{} is already a course member'.format(display_name)
+            msg = '{} ({}) is already a course member'.format(
+                display_name, user.email)
             messages.add_message(self.request, messages.INFO, msg)
             return
 
@@ -687,6 +690,18 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         msg = "{} was invited to join the course.".format(email)
         messages.add_message(self.request, messages.INFO, msg)
 
+    def validate_invite(self, email):
+        try:
+            validate_email(email)
+        except ValidationError:
+            msg = "{} is not a valid email address.".format(email)
+            raise ValidationError(msg, code='invalid')
+
+        for suffix in settings.BLOCKED_EMAIL_DOMAINS:
+            if email.endswith(suffix):
+                msg = "{} cannot be invited through email.".format(email)
+                raise ValidationError(msg, code='blocked')
+
     def post(self, request):
         url = reverse('course-roster')
         emails = self.request.POST.get('emails', None)
@@ -699,7 +714,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         for email in emails.split(','):
             try:
                 email = email.strip()
-                validate_email(email)
+                self.validate_invite(email)
 
                 user = User.objects.filter(email=email).first()
                 if user:
@@ -707,9 +722,8 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
                 else:
                     self.invite_new_user(email)
 
-            except ValidationError:
-                msg = '{} is not a valid email address.'.format(email)
-                messages.add_message(request, messages.ERROR, msg)
+            except ValidationError, e:
+                messages.add_message(request, messages.ERROR, e.message)
 
         return HttpResponseRedirect(url)
 

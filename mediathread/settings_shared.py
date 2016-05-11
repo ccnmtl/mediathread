@@ -196,6 +196,8 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
 
+BLOCKED_EMAIL_DOMAINS = []
+
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
 # otherwise, make sure you specify the correct database settings in your

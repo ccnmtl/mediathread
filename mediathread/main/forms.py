@@ -153,6 +153,7 @@ class AcceptInvitationForm(forms.Form):
     first_name = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.CharField(required=False)
     last_name = forms.CharField(
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'}))

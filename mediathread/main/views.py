@@ -21,6 +21,7 @@ from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.template.context import Context
 from django.views.generic.base import TemplateView, View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
@@ -146,7 +147,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         perm = request.POST.get(
             course_details.UPLOAD_PERMISSION_KEY)
         request.course.add_detail(course_details.UPLOAD_PERMISSION_KEY, perm)
@@ -154,7 +155,9 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')
 
-        return HttpResponseRedirect(reverse("class-manage-sources"))
+        return HttpResponseRedirect(
+            reverse("course-dashboard-sources",
+                    args=(request.course.pk,)))
 
 
 class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
@@ -163,6 +166,7 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
     def get_context_data(self, **kwargs):
 
         context = {'course': self.request.course}
+        context['object'] = context['course']
 
         key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
         context[key] = int(self.request.course.get_detail(key,
@@ -186,7 +190,7 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
 
         return context
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         key = course_details.COURSE_INFORMATION_TITLE_KEY
         if key in request.POST:
             value = request.POST.get(key)
@@ -219,7 +223,9 @@ class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')
 
-        return HttpResponseRedirect(reverse('course-settings'))
+        return HttpResponseRedirect(
+            reverse('course-dashboard-settings',
+                    args=(self.request.course.pk,)))
 
 
 @allow_http("POST")
@@ -564,7 +570,8 @@ class CoursePromoteUserView(LoggedInFacultyMixin, View):
         msg = '{} is now faculty'.format(user_display_name(student))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=(request.course.pk,)))
 
 
 class CourseDemoteUserView(LoggedInFacultyMixin, View):
@@ -577,7 +584,8 @@ class CourseDemoteUserView(LoggedInFacultyMixin, View):
         msg = '{} is now a student'.format(user_display_name(faculty))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=(request.course.pk,)))
 
 
 class CourseRemoveUserView(LoggedInFacultyMixin, View):
@@ -595,7 +603,8 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         msg = '{} is no longer a course member'.format(user_display_name(user))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=(request.course.pk,)))
 
 
 class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
@@ -613,7 +622,7 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     def post(self, request):
         unis = request.POST.get('unis', None)
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=(request.course.pk,))
 
         if unis is None:
             msg = 'Please enter a comma-separated list of UNIs'
@@ -645,7 +654,8 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
                     messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=(request.course.pk,)))
 
 
 class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
@@ -703,7 +713,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
                 raise ValidationError(msg, code='blocked')
 
     def post(self, request):
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=(request.course.pk,))
         emails = self.request.POST.get('emails', None)
 
         if emails is None:
@@ -731,7 +741,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
 class CourseResendInviteView(LoggedInFacultyMixin, View):
 
     def post(self, request):
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=(request.course.pk,))
         pk = request.POST.get('invite-id', None)
         invite = get_object_or_404(CourseInvitation, pk=pk)
 
@@ -782,6 +792,17 @@ class CourseAcceptInvitationView(FormView):
 
     def get_success_url(self):
         return reverse('course-invite-complete')
+
+
+class CourseInstructorDashboardView(LoggedInMixin, DetailView):
+    model = Course
+    template_name = 'main/course_instructor_dashboard.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(CourseInstructorDashboardView, self).get_context_data(
+            *args, **kwargs)
+        ctx.update({'course': ctx.get('object')})
+        return ctx
 
 
 class MethCourseListView(LoggedInMixin, CourseListView):

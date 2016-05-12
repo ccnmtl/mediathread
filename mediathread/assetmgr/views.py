@@ -80,8 +80,9 @@ class ManageExternalCollectionView(LoggedInCourseMixin, View):
 
         messages.add_message(request, messages.INFO, msg)
 
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
+        redirect_url = request.POST.get(
+            'redirect-url',
+            reverse('course-dashboard-sources', args=(request.course.pk,)))
         return HttpResponseRedirect(redirect_url)
 
 

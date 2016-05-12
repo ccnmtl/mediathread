@@ -1,0 +1,13 @@
+{% load waffle_tags %}
+
+<nav class="affix instructor-dashboard-sidebar">
+    <ul class="nav">
+        <li><a href="{% url 'course-dashboard-settings' object.pk %}">Settings</a></li>
+        <li><a href="{% url 'course-dashboard-sources' object.pk %}">Sources</a></li>
+        <li><a href="{% url 'course-dashboard-migrate' object.pk %}">Migrations</a></li>
+        <li><a href="{% url 'taxonomy-workspace' %}">Vocabulary</a></li>
+        {% flag "roster_view" %}
+        <li><a href="{% url 'course-roster' object.pk %}">Roster</a></li>
+        {% endflag %}
+    </ul>
+</nav>

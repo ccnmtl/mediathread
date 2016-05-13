@@ -1,0 +1,43 @@
+{% load methtags %}
+
+<tr>
+    <td class="course-choice">
+        <a class="choose-course"
+           {% if not course.is_course %}
+           href="{% url 'affil_activate' course.pk %}"
+           {% else %}
+           href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
+           {% endif %}
+        >{% firstof course.title course.coursedirectory_name %}</a>
+    </td>
+    {% if course.info.termyear %}
+        <td>{{course.info.termyear}}</td>
+    {% elif course.to_dict %}
+        <td>{{course.to_dict.term|int_to_term}} {{course.to_dict.year}}</td>
+    {% endif %}
+    <td>
+        {% if course.details.instructor %}
+            {{course.details.instructor.value}}
+        {% elif course.to_dict %}
+            {% firstof request.user.get_full_name request.user.username %}
+        {% endif %}
+    </td>
+    <td>
+        {% if course in as_instructor %}
+            Instructor
+        {% elif course in as_student %}
+            Student
+        {% elif not course.is_course %}
+            Instructor
+        {% else %}
+            Non-member
+        {% endif %}
+    </td>
+    {% if add_privilege %}
+        <td class="manage-course">
+            <a class="project"
+               href="{% url 'admin:courseaffils_course_change' course.id %}"
+            >manage</a>
+        </td>
+    {% endif %}
+</tr>

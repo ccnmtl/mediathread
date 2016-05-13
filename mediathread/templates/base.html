@@ -96,6 +96,11 @@
 
                             {% if role_in_course == 'instructor' %}
                             <li>
+                                {% flag 'instructor_dashboard' %}
+                                <a href="{% url 'course-instructor-dashboard' course.pk %}">
+                                    Instructor Dashboard
+                                </a>
+                                {% else %}
                                 <div class="settings_menu manage closed">
                                     <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
                                     <div class="left settings_menu_title">Manage</div>
@@ -108,7 +113,7 @@
                                     <a href="/dashboard/migrate/">Migrations</a>
                                     <a href="/taxonomy/">Vocabulary</a>
                                     {% flag "roster_view" %}
-                                        <a href="/dashboard/roster/">Roster</a>
+                                    <a href="/dashboard/roster/">Roster</a>
                                     {% endflag %}
 
                                     {% if user.is_staff %}
@@ -116,6 +121,7 @@
                                         <a href="/dashboard/delete/materials/">Materials</a>
                                     {% endif %}
                                 </div>
+                                {% endflag %}
                             </li>
                             <li>
                                 <div class="settings_menu reports closed">

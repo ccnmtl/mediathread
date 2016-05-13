@@ -5,7 +5,7 @@ import json
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Affil, Course
-from courseaffils.tests.factories import AffilFactory
+from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -1378,3 +1378,20 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])
+
+
+class CourseInstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
+    def setUp(self):
+        super(CourseInstructorDashboardViewTest, self).setUp()
+        self.course = CourseFactory()
+
+    def test_get(self):
+        response = self.client.get(reverse(
+            'course-instructor-dashboard', kwargs={
+                'pk': self.course.pk
+            }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'Instructor Dashboard: {}'.format(self.course.title))
+        self.assertEqual(response.context['object'], self.course)

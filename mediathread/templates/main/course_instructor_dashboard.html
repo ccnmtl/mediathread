@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load waffle_tags %}
+
+{% block title %}
+| Instructor Dashboard: {{object.title}}
+{% endblock %}
+
+{% block coursetitle %}
+    <a href=".">Instructor Dashboard: {{object.title}}</a>
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-9" role="main">
+        <h2><a href="/dashboard/settings/">Settings</a></h2>
+        <h2><a href="/dashboard/sources/">Sources</a></h2>
+        <h2><a href="/dashboard/migrate/">Migrations</a></h2>
+        <h2><a href="/taxonomy/">Vocabulary</a></h2>
+        {% flag "roster_view" %}
+        <h2><a href="/dashboard/roster/">Roster</a></h2>
+        {% endflag %}
+    </div>
+{% endblock %}

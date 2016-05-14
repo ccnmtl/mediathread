@@ -48,7 +48,8 @@ RESPONSE_VIEW_NEVER = (
     'never', 'Never - Responses visible only to instructors')
 RESPONSE_VIEW_SUBMITTED = (
     'submitted',
-    'After Submission - Response required to view other student responses')
+    'After Submission - Response required to view other student responses '
+    'before due date. All responses visible after assignment due date passes.')
 RESPONSE_VIEW_ALWAYS = (
     'always', 'Always - Response not required to view other student responses')
 RESPONSE_VIEW_POLICY = (
@@ -506,6 +507,8 @@ class Project(models.Model):
             return False
 
     def can_cite(self, course, viewer):
+        # for selection assignment responses only
+
         # notes in an unsubmitted project are not citable
         if not self.is_submitted():
             return False
@@ -517,7 +520,11 @@ class Project(models.Model):
             return True
 
         if parent.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:
-            # a bit hacky...but should work unless we get collaborative
+            if parent.due_date and parent.due_date < datetime.today():
+                return True
+
+            # a bit hacky and very SLOW
+            # but should work unless we get collaborative
             # do the visible responses == students
             responses = parent.responses(course, viewer)
             return course.students.count() == len(responses)

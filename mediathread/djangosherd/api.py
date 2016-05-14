@@ -58,7 +58,10 @@ class SherdNoteResource(ModelResource):
                         getattr(bundle.obj, 'author_id', -1))
             citable = bundle.request.GET.get('citable', '') == 'true'
 
-            # assumed: there is only one ProjectNote per annotation
+            # For SelectionAssignment only
+            # If this note is associated with a response, consider
+            # whether it can be cited in a composition or discussion
+            # and whether it can be edited in the item space
             if bundle.obj.projectnote_set.count() > 0:
                 # "first" here kills the prefetch/select_related optimization
                 # use the qs array indexing to keep things fast

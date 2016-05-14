@@ -23,11 +23,12 @@ Feature: Selection Assignment
         I call the selection assignment "Test Selection Assignment"
         I write instructions for the selection assignment
         I click the Next button
-        I take a picture
         Then I see "Set response due date"
         I click the Next button
+        Then I see "Please choose a due date"
         Then I see "Please choose how responses will be viewed"
         I set selection assignment visibility to "never"
+        I set selection assignment due date
         I click the Next button
         Then I see "Publish assignment to students"
         I click the Save button

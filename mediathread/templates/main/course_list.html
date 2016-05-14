@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load coursetags %}
 {% load static %}
-{% load waffle_tags %}
 
 {% block title %}&mdash; Homepage{% endblock %}
 
@@ -38,7 +37,6 @@
 {% endblock %}
 
 {% block content %}
-    {% flag 'course_activation' %}
     <div id="course-list">
         <div id="coursefilter">
             <span class="h5">View courses for:</span>
@@ -75,7 +73,7 @@
         <h2>Current Courses</h2>
     {% endif %}
 
-    {% if object_list|length > 0 %}
+    {% if courses|length > 0 %}
         <table class="table course-choices tablesorter">
             <thead>
                 <tr>
@@ -89,7 +87,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for course in object_list %}
+                {% for course in courses %}
                     {% include 'courseaffils/course_row.html' %}
                 {% endfor %}
             </tbody>
@@ -119,22 +117,6 @@
         </table>
     {% endif %}
 
-    {% if activatable_affils|length > 0 %}
-        <h2>Activatable Courses</h2>
-        <ul>
-            {% for affil in activatable_affils %}
-                <li>
-                    {{affil.coursedirectory_name}}
-                    <a class="btn btn-default btn-xs"
-                       href="{% url 'affil_activate' affil.id %}" role="button"
-                    >Activate</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
     </div>
-    {% else %}
-    The course_activation flag isn't enabled for this user.
-    {% endflag %}
 
 {% endblock %}

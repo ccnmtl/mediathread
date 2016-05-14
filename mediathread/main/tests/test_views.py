@@ -4,8 +4,8 @@ from datetime import datetime
 import json
 
 from courseaffils.columbia import CourseStringMapper
-from courseaffils.models import Course
-from courseaffils.tests.factories import AffilFactory
+from courseaffils.models import Affil, Course
+from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core import mail
@@ -15,6 +15,7 @@ from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
 from threadedcomments.models import ThreadedComment
 from waffle.testutils import override_flag
+from freezegun import freeze_time
 
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
@@ -1226,6 +1227,8 @@ class MethCourseListAnonViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+@freeze_time('2016-05-11')
+@override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
 class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(MethCourseListViewTest, self).setUp()
@@ -1251,7 +1254,20 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('course_list')
-        affil_name = 't1.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        affil_name = 't3.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        aa = AffilFactory(user=self.u, name=affil_name)
+        with override_flag('course_activation', active=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Selection')
+        self.assertNotContains(response, aa.coursedirectory_name)
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_affils']), 1)
+        self.assertEqual(response.context['activatable_affils'][0], aa)
+
+    def test_get_future(self):
+        url = reverse('course_list') + '?semester_view=future'
+        affil_name = 't3.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
@@ -1277,12 +1293,17 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertContains(
             response,
             'Course Activation: {}'.format(self.aa.coursedirectory_name))
+        self.assertEqual(
+            response.context['affil_shortname'],
+            self.aa.to_dict()['dept'].upper() +
+            self.aa.to_dict()['number'])
         self.assertEqual(response.context['affil'], self.aa)
 
     def test_post_no_course_name(self):
         self.assertFalse(self.aa.activated)
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
+                'affil': self.aa.pk,
                 'course_name': '',
                 'consult_or_demo': 'consultation',
             })
@@ -1294,6 +1315,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertFalse(self.aa.activated)
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
+                'affil': self.aa.pk,
                 'course_name': 'My Course',
                 'consult_or_demo': 'consultation',
             })
@@ -1302,23 +1324,33 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(self.aa.activated)
 
         course = Course.objects.last()
-        self.assertEqual(course.title, 'My Course')
-        self.assertEqual(unicode(course.info),
-                         'My Course (Spring 2016) None None-None')
+        shortname = self.aa.to_dict().get('dept').upper() + \
+            self.aa.to_dict().get('number')
+        self.assertEqual(course.title, '%s My Course' % shortname)
+        self.assertEqual(
+            unicode(course.info),
+            '%s My Course (Spring 2016) None None-None' % shortname)
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)
+        self.assertEqual(Affil.objects.count(), 1)
+
+        self.assertTrue(course.is_faculty(self.u))
 
     def test_send_faculty_email(self):
         form = CourseActivateForm({
+            'affil': self.aa.pk,
             'course_name': 'My Course',
             'consult_or_demo': 'consultation',
         })
         self.assertTrue(form.is_valid())
         AffilActivateView.send_faculty_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
+
+        shortname = self.aa.to_dict().get('dept').upper() + \
+            self.aa.to_dict().get('number')
         self.assertEqual(
             mail.outbox[0].subject,
-            'Your Mediathread Course Activation: My Course')
+            'Your Mediathread Course Activation: %s My Course' % shortname)
         self.assertEquals(
             mail.outbox[0].from_email,
             settings.SERVER_EMAIL)
@@ -1328,18 +1360,38 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_send_staff_email(self):
         form = CourseActivateForm({
+            'affil': self.aa.pk,
             'course_name': 'My Course',
             'consult_or_demo': 'consultation',
         })
         self.assertTrue(form.is_valid())
         AffilActivateView.send_staff_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
+        shortname = self.aa.to_dict().get('dept').upper() + \
+            self.aa.to_dict().get('number')
         self.assertEqual(
             mail.outbox[0].subject,
-            'Mediathread Course Activated: My Course')
+            'Mediathread Course Activated: %s My Course' % shortname)
         self.assertEquals(
             mail.outbox[0].from_email,
             'test_user@example.com')
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])
+
+
+class CourseInstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
+    def setUp(self):
+        super(CourseInstructorDashboardViewTest, self).setUp()
+        self.course = CourseFactory()
+
+    def test_get(self):
+        response = self.client.get(reverse(
+            'course-instructor-dashboard', kwargs={
+                'pk': self.course.pk
+            }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'Instructor Dashboard: {}'.format(self.course.title))
+        self.assertEqual(response.context['object'], self.course)

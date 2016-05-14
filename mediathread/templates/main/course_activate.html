@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 {% load bootstrap3 %}
+{% load methtags %}
 
 {% block title %}&mdash; Activate Course{% endblock %}
 
 {% block content %}
+    {% bootstrap_messages %}
     <form action="." method="post" class="form col-md-6">
         {% csrf_token %}
-        <h1>Course Activation: {{affil.coursedirectory_name}}</h1>
-        {% bootstrap_form form %}
+        {% bootstrap_form_errors form %}
+        <h1>Course Activation: {{affil.coursedirectory_name}} ({{term|int_to_term}} {{year}})</h1>
+        <input id="id_affil" name="affil" type="hidden" value="{{affil.pk}}">
+        {% bootstrap_field form.course_name addon_before=affil_shortname %}
+        {% bootstrap_field form.consult_or_demo %}
         {% buttons submit='Submit' %}{% endbuttons %}
     </form>
 {% endblock %}

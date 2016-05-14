@@ -29,13 +29,13 @@ django-tastypie==0.13.3
 coverage==4.0.3
 logilab-common==1.2.0
 lazy-object-proxy==1.2.2
-wrapt==1.10.6
+wrapt==1.10.8
 astroid==1.4.5  # pylint
 pylint==1.5.5
 pyasn1==0.1.9
 pyOpenSSL==16.0.0
 ndg-httpsclient==0.4.0
-requests==2.9.1
+requests==2.10.0
 contextlib2==0.5.3
 rcssmin==1.0.6
 rjsmin==1.0.12
@@ -46,7 +46,7 @@ django-reversion==1.9.3
 djangohelpers==0.18.1
 django-contrib-comments==1.7.1
 django-threadedcomments==1.0b1
-django-courseaffils==2.1.5
+django-courseaffils==2.1.6
 django-statsd-mozilla==0.3.16
 raven==5.15.0
 django-appconf==1.0.2  # django_compressor
@@ -79,7 +79,7 @@ ipython_genutils==0.1.0
 decorator==4.0.9
 pexpect==4.0.1
 ptyprocess==0.5.1
-pickleshare==0.6
+pickleshare==0.7.2
 path.py==8.2.1
 simplegeneric==0.8.1
 backports.shutil_get_terminal_size==1.0.0
@@ -88,4 +88,4 @@ ipdb==0.10.0
 freezegun==0.3.7
 
 ccnmtlsettings==0.2.0
-django-extensions==1.6.1
+django-extensions==1.6.6

@@ -12,9 +12,9 @@
        <key>CFBundleVersion</key>
        <string>1</string>
        <key>CFBundleShortVersionString</key>
-       <string>0.0.7</string>
+       <string>0.1.0</string>
        <key>URL</key>
-       <string>https://github.com/ccnmtl/mediathread-safari/releases/download/0.0.7/Mediathread.safariextz</string>
+       <string>https://github.com/ccnmtl/mediathread-safari/releases/download/0.1.0/Mediathread.safariextz</string>
        <key>Update From Gallery</key>
        <true/>
      </dict>

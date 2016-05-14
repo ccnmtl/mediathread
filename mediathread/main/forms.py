@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
+from django.shortcuts import get_object_or_404
 from registration.forms import RegistrationForm
+from courseaffils.models import Affil
 
 
 TERM_CHOICES = (
@@ -188,6 +190,7 @@ class AcceptInvitationForm(forms.Form):
 
 
 class CourseActivateForm(forms.Form):
+    affil = forms.IntegerField(widget=forms.HiddenInput())
     course_name = forms.CharField(label='Course Name')
     consult_or_demo = forms.ChoiceField(
         label='Will you need a consultation or an in-class demo?',
@@ -199,3 +202,13 @@ class CourseActivateForm(forms.Form):
         widget=forms.RadioSelect,
         initial='none'
     )
+
+    def clean(self):
+        cleaned_data = super(CourseActivateForm, self).clean()
+        affil = get_object_or_404(Affil, pk=cleaned_data.get('affil'))
+        affil_dict = affil.to_dict()
+        affil_shortname = affil_dict['dept'].upper() + affil_dict['number']
+        cleaned_data['course_name'] = '{} {}'.format(
+            affil_shortname,
+            cleaned_data.get('course_name'))
+        return cleaned_data

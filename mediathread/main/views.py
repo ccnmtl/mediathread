@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import re
 
+from smtplib import SMTPRecipientsRefused
 from courseaffils.lib import in_course_or_404, in_course
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
@@ -20,7 +21,9 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.template.context import Context
+from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
+from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
@@ -784,16 +787,42 @@ class CourseAcceptInvitationView(FormView):
         return reverse('course-invite-complete')
 
 
+class CourseInstructorDashboardView(LoggedInMixin, DetailView):
+    model = Course
+    template_name = 'main/course_instructor_dashboard.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(CourseInstructorDashboardView, self).get_context_data(
+            *args, **kwargs)
+        ctx.update({'course': ctx.get('object')})
+        return ctx
+
+
 class MethCourseListView(LoggedInMixin, CourseListView):
     template_name = 'main/course_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(MethCourseListView, self).get_context_data(**kwargs)
+        context.update({'courses': context['object_list']})
         if not waffle.flag_is_active(self.request, 'course_activation'):
             return context
 
+        courses = list(context.get('courses'))
+        semester_view = self.request.GET.get('semester_view')
         affils = Affil.objects.filter(user=self.request.user, activated=False)
-        context.update({'activatable_affils': affils})
+        for affil in affils:
+            affil_semester = affil.past_present_future
+            if affil_semester == -1 and semester_view == 'past':
+                courses.insert(0, affil)
+            elif affil_semester == 0 and semester_view == 'current':
+                courses.insert(0, affil)
+            elif affil_semester == 1 and semester_view == 'future':
+                courses.insert(0, affil)
+
+        context.update({
+            'activatable_affils': affils,
+            'courses': courses,
+        })
         return context
 
 
@@ -801,7 +830,7 @@ class AffilActivateView(LoggedInMixin, FormView):
     """View for activating an affiliation into a Meth Course."""
     template_name = 'main/course_activate.html'
     form_class = CourseActivateForm
-    success_url = '/homepage/'
+    success_url = '/'
 
     @staticmethod
     def send_faculty_email(form, faculty_user):
@@ -851,13 +880,17 @@ Faculty: {} {} <{}>
 
     def create_course(self, form, affil):
         # Create the course.
-        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
+        studentaffil = re.sub(r'\.fc\.', '.st.', affil.name)
         g = Group.objects.get_or_create(name=studentaffil)[0]
-        fg = Group.objects.get_or_create(name=self.affil.name)[0]
+        fg = Group.objects.get_or_create(name=affil.name)[0]
+
         c = Course.objects.create(
-            title=form.cleaned_data.get('course_name'),
             group=g,
-            faculty_group=fg)
+            faculty_group=fg,
+            title=form.cleaned_data.get('course_name'))
+
+        # Add the current user as an instructor.
+        c.faculty_group.user_set.add(self.request.user)
 
         # Get the year and term from the affil string.
         affil_dict = {}
@@ -874,7 +907,26 @@ Faculty: {} {} <{}>
             *args, **kwargs)
         pk = self.kwargs.get('pk')
         self.affil = Affil.objects.get(pk=pk)
-        context.update({'affil': self.affil})
+        affil_dict = self.affil.to_dict()
+
+        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
+        g = Group.objects.filter(name=studentaffil).first()
+        if Course.objects.filter(group=g).exists():
+            c = Course.objects.filter(group=g).first()
+            # If a Course already exists for this group, show an error.
+            msg = ('The {} affil is already connected to the course:'
+                   ' <strong><a href="/?set_course={}">{}</a></strong>'.format(
+                       studentaffil,
+                       c.group.name,
+                       c))
+            messages.error(self.request, mark_safe(msg))
+        context.update({
+            'affil': self.affil,
+            'term': affil_dict['term'],
+            'year': affil_dict['year'],
+            'affil_shortname': affil_dict[
+                'dept'].upper() + affil_dict['number'],
+        })
         return context
 
     def form_valid(self, form):
@@ -885,8 +937,15 @@ Faculty: {} {} <{}>
 
         self.create_course(form, self.affil)
 
-        self.send_faculty_email(form, self.request.user)
-        self.send_staff_email(form, self.request.user)
+        try:
+            self.send_faculty_email(form, self.request.user)
+        except SMTPRecipientsRefused:
+            messages.error(self.request, 'Failed to send faculty email.')
+
+        try:
+            self.send_staff_email(form, self.request.user)
+        except SMTPRecipientsRefused:
+            messages.error(self.request, 'Failed to send staff email.')
 
         return super(AffilActivateView, self).form_valid(form)
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 from courseaffils.models import Course
@@ -326,7 +326,8 @@ class MediathreadTestMixin(object):
         assignment = ProjectFactory.create(
             title='Sample Selection Assignment',
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', project_type='selection-assignment')
+            policy='CourseProtected', project_type='selection-assignment',
+            due_date=datetime.today() + timedelta(1))
 
         item = AssetFactory.create(
                 title='Selection Assignment Item', primary_source='image',

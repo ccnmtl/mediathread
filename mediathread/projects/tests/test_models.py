@@ -1,5 +1,5 @@
 # pylint: disable-msg=R0904
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -47,7 +47,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         self.project_instructor_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='InstructorShared')
+            policy='InstructorShared', date_submitted=datetime.today())
 
         self.project_class_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
@@ -68,6 +68,56 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.draft_assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='PrivateEditorsAreOwners', project_type='assignment')
+
+    def test_can_cite(self):
+        # notes in an unsubmitted project are not citable regardless of viewer
+        self.assertFalse(self.project_private.can_cite(
+            self.sample_course, self.student_two))
+        self.assertTrue(self.project_instructor_shared.can_cite(
+            self.sample_course, self.student_two))
+
+        # parent assignment: responses always visible
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='CourseProtected', parent=self.selection_assignment,
+            date_submitted=datetime.today())
+        self.assertTrue(
+            response.can_cite(self.sample_course, self.student_two))
+
+        # parent assignment: responses never visible
+        self.selection_assignment.response_view_policy = 'never'
+        self.selection_assignment.save()
+        self.assertFalse(
+            response.can_cite(self.sample_course, self.student_two))
+
+        # parent assignment: responses visible after due_date passes
+        # or on viewer submit
+        yesterday = datetime.today() + timedelta(-1)
+        self.selection_assignment.response_view_policy = 'submitted'
+        self.selection_assignment.due_date = yesterday
+        self.selection_assignment.save()
+        self.assertTrue(
+            response.can_cite(self.sample_course, self.student_two))
+
+        tomorrow = datetime.today() + timedelta(1)
+        self.selection_assignment.due_date = tomorrow
+        self.selection_assignment.save()
+        self.assertFalse(
+            response.can_cite(self.sample_course, self.student_two))
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            policy='CourseProtected', parent=self.selection_assignment,
+            date_submitted=datetime.today())
+        self.assertFalse(response.can_cite(
+            self.sample_course, self.student_two))
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_three,
+            policy='CourseProtected', parent=self.selection_assignment,
+            date_submitted=datetime.today())
+        self.assertTrue(response.can_cite(
+            self.sample_course, self.student_two))
 
     def test_description(self):
         project = Project.objects.get(id=self.project_private.id)

@@ -332,6 +332,12 @@ def i_set_selection_assignment_visibility_to_value(step, value):
     elt.click()
 
 
+@step(u'I set selection assignment due date')
+def i_set_selection_assignment_due_date(step):
+    elt = world.browser.find_element_by_name('due_date')
+    elt.send_keys('01/01/2030')
+
+
 @step(u'I publish the selection assignment as "([^"]*)"')
 def i_publish_the_selection_assignment_as_value(step, value):
     if value == 'Whole Class':

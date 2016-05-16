@@ -2453,17 +2453,24 @@ div.gallery-item h4.asset_title {
 }
 
 .sherd-video-wrapper,
-.sherd-video-wrapper div
- {
-    display:inline-block;
+.sherd-video-wrapper div {
+   display: inline-block;
 }
 
-.sherd-flowplayer5-wrapper,
-.sherd-flowplayer5-wrapper div {
+/* flowplayer minimalist skin override */
+.flowplayer.fixed-controls .fp-controls {
+    bottom: 0 !important;
+}
+.flowplayer.fixed-controls .fp-time em {
+    bottom: 10px !important;
+}
+
+.sherd-flowplayer-wrapper,
+.sherd-flowplayer-wrapper div {
     display: block;
 }
 
-.sherd-flowplayer5 {
+.sherd-flowplayer {
     margin: 0 auto;    
 }
 

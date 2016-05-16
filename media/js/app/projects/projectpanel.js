@@ -123,7 +123,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
                 self.onTinyMCEInitialize(editor);
             },
             setup: function(ed) {
-                ed.on('keypress', function(e) {
+                ed.on('change', function(e) {
                     self.setDirty(true);
                 });
             },

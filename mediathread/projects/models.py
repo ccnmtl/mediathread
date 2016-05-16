@@ -3,7 +3,6 @@ from datetime import datetime
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 import reversion
@@ -310,15 +309,6 @@ class Project(models.Model):
 
     response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
                                             default='always')
-
-    def clean(self):
-        today = datetime.today()
-        this_day = datetime(today.year, today.month, today.day, 0, 0)
-        if self.due_date is not None and self.due_date < this_day:
-            msg = "%s is not valid for the Due Date field.\n" % \
-                self.get_due_date()
-            msg = msg + "The date cannot be in the past.\n"
-            raise ValidationError(msg)
 
     @models.permalink
     def get_absolute_url(self):

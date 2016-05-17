@@ -1,7 +1,6 @@
 # pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from mediathread.djangosherd.models import SherdNote
@@ -388,29 +387,6 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                         [response3, response1], [response2])
         self.assert_responses_by_course(self.student_two,
                                         [response3, response1], [response2])
-
-    def test_project_clean_date_field(self):
-        try:
-            self.assignment.due_date = datetime(2012, 3, 13, 0, 0)
-            self.assignment.clean()
-            self.assertTrue(False, 'Due date is in the past')
-        except ValidationError as err:
-            self.assertTrue(
-                err.messages[0].startswith('03/13/12 is not valid'))
-
-        try:
-            today = datetime.today()
-            this_day = datetime(today.year, today.month, today.day, 0, 0)
-            self.assignment.due_date = this_day
-            self.assignment.clean()
-        except ValidationError as err:
-            self.assertTrue(False, "Due date is today. That's okay.")
-
-        try:
-            self.assignment.due_date = datetime(2020, 1, 1, 0, 0)
-            self.assignment.clean()
-        except ValidationError as err:
-            self.assertTrue(False, "Due date is in the future, that's ok")
 
     def test_faculty_compositions(self):
         compositions = Project.objects.faculty_compositions(

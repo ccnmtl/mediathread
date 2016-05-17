@@ -97,7 +97,7 @@
                             {% if role_in_course == 'instructor' %}
                             <li>
                                 {% flag 'instructor_dashboard' %}
-                                <a href="{% url 'course-instructor-dashboard' course.pk %}">
+                                <a href="{% url 'instructor-dashboard' course.pk %}">
                                     Instructor Dashboard
                                 </a>
                                 {% else %}

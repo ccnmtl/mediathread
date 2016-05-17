@@ -18,7 +18,7 @@ from mediathread.assetmgr.views import (
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     MethCourseListView, AffilActivateView,
-    CourseInstructorDashboardView,
+    InstructorDashboardView, InstructorDashboardSettingsView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
@@ -214,10 +214,15 @@ urlpatterns = patterns(
     # Composition Space
     (r'^project/', include('mediathread.projects.urls')),
 
-    # Instructor Dashboard & reporting
+    # Instructor Dashboard
     url(r'^course/(?P<pk>\d+)/dashboard/$',
-        CourseInstructorDashboardView.as_view(),
-        name='course-instructor-dashboard'),
+        InstructorDashboardView.as_view(),
+        name='instructor-dashboard'),
+    url(r'^course/(?P<pk>\d+)/settings/$',
+        InstructorDashboardSettingsView.as_view(),
+        name='instructor-dashboard-settings'),
+
+    # Reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry

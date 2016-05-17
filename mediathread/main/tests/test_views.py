@@ -14,9 +14,11 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
+from django.utils.html import escape
 from threadedcomments.models import ThreadedComment
 from waffle.testutils import override_flag
 from freezegun import freeze_time
+from lti_auth.models import LTICourseContext
 
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
@@ -27,8 +29,11 @@ from mediathread.factories import (
     CourseInvitationFactory
 )
 from mediathread.main import course_details
-from mediathread.main.course_details import allow_public_compositions, \
-    course_information_title, all_items_are_visible, all_selections_are_visible
+from mediathread.main.course_details import (
+    allow_public_compositions,
+    course_information_title,
+    all_items_are_visible, all_selections_are_visible
+)
 from mediathread.main.forms import (
     ContactUsForm, RequestCourseForm, CourseActivateForm, AcceptInvitationForm)
 from mediathread.main.models import CourseInvitation
@@ -1390,14 +1395,14 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             [settings.SERVER_EMAIL])
 
 
-class CourseInstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
+class InstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
-        super(CourseInstructorDashboardViewTest, self).setUp()
+        super(InstructorDashboardViewTest, self).setUp()
         self.course = CourseFactory()
 
     def test_get(self):
         response = self.client.get(reverse(
-            'course-instructor-dashboard', kwargs={
+            'instructor-dashboard', kwargs={
                 'pk': self.course.pk
             }))
         self.assertEqual(response.status_code, 200)
@@ -1405,3 +1410,114 @@ class CourseInstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
             response,
             'Instructor Dashboard: {}'.format(self.course.title))
         self.assertEqual(response.context['object'], self.course)
+
+
+class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
+    def setUp(self):
+        super(InstructorDashboardSettingsViewTest, self).setUp()
+        self.course = CourseFactory()
+
+    def test_get(self):
+        response = self.client.get(reverse(
+            'instructor-dashboard-settings', kwargs={
+                'pk': self.course.pk
+            }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            'Course Settings: {}'.format(self.course.title))
+        self.assertEqual(response.context['object'], self.course)
+
+    def test_post(self):
+        response = self.client.post(
+            reverse('instructor-dashboard-settings', kwargs={
+                'pk': self.course.pk
+            }),
+            {
+                'title': 'New Title',
+                'homepage_title': 'new homepage title',
+            },
+            follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Settings: New Title')
+        self.assertEqual(response.context['object'], self.course)
+        self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
+        course = Course.objects.get(title='New Title')
+        self.assertEqual(allow_public_compositions(course), False)
+        self.assertEqual(course_information_title(course),
+                         'new homepage title')
+        self.assertEqual(all_items_are_visible(course), False)
+        self.assertEqual(all_selections_are_visible(course), False)
+
+        response = self.client.post(
+            reverse('instructor-dashboard-settings', kwargs={
+                'pk': self.course.pk
+            }),
+            {
+                'title': 'New Title',
+                'homepage_title': 'new homepage title',
+                'publish_to_world': True,
+                'see_eachothers_items': True,
+                'see_eachothers_selections': True,
+                'lti_integration': True,
+            },
+            follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Settings: New Title')
+        self.assertEqual(response.context['object'], self.course)
+        self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
+        course = Course.objects.get(title='New Title')
+        self.assertEqual(allow_public_compositions(course), True)
+        self.assertEqual(course_information_title(course),
+                         'new homepage title')
+        self.assertEqual(all_items_are_visible(course), True)
+        self.assertEqual(all_selections_are_visible(course), True)
+        lti_ctx = LTICourseContext.objects.get(
+            group=course.group,
+            faculty_group=course.faculty_group)
+        self.assertTrue(lti_ctx.enable)
+
+        response = self.client.post(
+            reverse('instructor-dashboard-settings', kwargs={
+                'pk': self.course.pk
+            }),
+            {
+                'title': 'New Title',
+                'homepage_title': 'new homepage title',
+                'publish_to_world': True,
+                'see_eachothers_items': True,
+                'see_eachothers_selections': True,
+                'lti_integration': False,
+            },
+            follow=True)
+        lti_ctx.refresh_from_db()
+        self.assertFalse(lti_ctx.enable)
+
+    def test_post_duplicate_title(self):
+        CourseFactory(title='New Title')
+        response = self.client.post(
+            reverse('instructor-dashboard-settings', kwargs={
+                'pk': self.course.pk
+            }),
+            {
+                'title': 'New Title',
+                'homepage_title': 'new homepage title',
+            },
+            follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, 'Course Settings: %s' % self.course.title)
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertContains(response, escape('There\'s already'))
+        self.assertContains(
+            response, escape('There\'s already a course called "New Title"'))
+        self.assertEqual(response.context['object'], self.course)
+        self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
+        course = Course.objects.get(title='New Title')
+        self.assertEqual(allow_public_compositions(course), False)
+        self.assertEqual(course_information_title(course),
+                         'From Your Instructor')
+        self.assertEqual(all_items_are_visible(course), True)
+        self.assertEqual(all_selections_are_visible(course), True)

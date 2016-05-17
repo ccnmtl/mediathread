@@ -9,6 +9,7 @@ from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
@@ -24,7 +25,7 @@ from django.template.context import Context
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
@@ -44,7 +45,7 @@ from mediathread.main.course_details import cached_course_is_faculty, \
 from mediathread.main.forms import (
     RequestCourseForm, ContactUsForm,
     CourseDeleteMaterialsForm, AcceptInvitationForm,
-    CourseActivateForm
+    CourseActivateForm, DashboardSettingsForm
 )
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name, \
@@ -787,14 +788,37 @@ class CourseAcceptInvitationView(FormView):
         return reverse('course-invite-complete')
 
 
-class CourseInstructorDashboardView(LoggedInMixin, DetailView):
+class InstructorDashboardView(LoggedInMixin, DetailView):
     model = Course
-    template_name = 'main/course_instructor_dashboard.html'
+    template_name = 'main/instructor_dashboard.html'
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super(CourseInstructorDashboardView, self).get_context_data(
+        ctx = super(InstructorDashboardView, self).get_context_data(
             *args, **kwargs)
         ctx.update({'course': ctx.get('object')})
+        return ctx
+
+
+class InstructorDashboardSettingsView(
+        LoggedInMixin, SuccessMessageMixin, UpdateView):
+    model = Course
+    template_name_suffix = '_update_form'
+    form_class = DashboardSettingsForm
+    success_message = 'The course was updated successfully.'
+
+    def get_success_url(self):
+        return reverse('instructor-dashboard-settings', kwargs={
+            'pk': self.kwargs.get('pk')
+        })
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(InstructorDashboardSettingsView, self).get_context_data(
+            *args, **kwargs)
+        course = ctx.get('object')
+        lti_context = LTICourseContext.objects.filter(
+            group=course.group.id,
+            faculty_group=course.faculty_group.id).first()
+        ctx['lti_context'] = lti_context
         return ctx
 
 

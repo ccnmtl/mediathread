@@ -9,7 +9,7 @@ mccabe==0.4.0
 flake8==2.5.4
 lxml==3.6.0
 fuzzywuzzy==0.10.0  # lettuce
-mock==1.0.1  # sure
+mock==2.0.0  # sure
 sure==1.2.24  # lettuce
 extras==0.0.3
 linecache2==1.0.0  # traceback2

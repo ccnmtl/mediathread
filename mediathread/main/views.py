@@ -3,7 +3,7 @@ import json
 import re
 
 from smtplib import SMTPRecipientsRefused
-from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
@@ -889,6 +889,8 @@ Faculty: {} {} <{}>
 
         # Add the current user as an instructor.
         c.faculty_group.user_set.add(self.request.user)
+        c.add_detail('instructor',
+                     get_public_name(self.request.user, self.request))
 
         # Get the year and term from the affil string.
         affil_dict = {}

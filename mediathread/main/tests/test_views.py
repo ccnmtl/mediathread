@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 
+from courseaffils.lib import get_public_name
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Affil, Course
 from courseaffils.tests.factories import AffilFactory, CourseFactory
@@ -1325,7 +1326,11 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Course.objects.count(), 0)
 
     def test_post(self):
+        self.u.profile = UserProfileFactory(user=self.u)
+        self.u.save()
         self.assertFalse(self.aa.activated)
+        request = RequestFactory().get(
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}))
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
                 'affil': self.aa.pk,
@@ -1348,6 +1353,8 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Affil.objects.count(), 1)
 
         self.assertTrue(course.is_faculty(self.u))
+        self.assertEqual(course.get_detail('instructor', None),
+                         get_public_name(self.u, request))
 
     def test_send_faculty_email(self):
         form = CourseActivateForm({

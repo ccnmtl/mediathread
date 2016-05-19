@@ -1254,7 +1254,20 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('course_list')
-        affil_name = 't3.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        affil_name = 't1.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        aa = AffilFactory(user=self.u, name=affil_name)
+        with override_flag('course_activation', active=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, aa.coursedirectory_name)
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_affils']), 1)
+        self.assertEqual(response.context['activatable_affils'][0], aa)
+
+    def test_get_past_affil(self):
+        url = reverse('course_list')
+        affil_name = 't1.y2015.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
         with override_flag('course_activation', active=True):
             response = self.client.get(url)

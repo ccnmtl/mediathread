@@ -54,6 +54,7 @@ from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
     LoggedInMixin, LoggedInFacultyMixin,
+    LoggedInFacultyCourseMixin,
     LoggedInSuperuserMixin
 )
 from mediathread.projects.api import ProjectResource
@@ -788,7 +789,7 @@ class CourseAcceptInvitationView(FormView):
         return reverse('course-invite-complete')
 
 
-class InstructorDashboardView(LoggedInMixin, DetailView):
+class InstructorDashboardView(LoggedInFacultyCourseMixin, DetailView):
     model = Course
     template_name = 'main/instructor_dashboard.html'
 
@@ -800,7 +801,7 @@ class InstructorDashboardView(LoggedInMixin, DetailView):
 
 
 class InstructorDashboardSettingsView(
-        LoggedInMixin, SuccessMessageMixin, UpdateView):
+        LoggedInFacultyCourseMixin, SuccessMessageMixin, UpdateView):
     model = Course
     template_name_suffix = '_update_form'
     form_class = DashboardSettingsForm

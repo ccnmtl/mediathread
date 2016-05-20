@@ -2,7 +2,6 @@ import csv
 import json
 
 from courseaffils.lib import in_course_or_404
-from courseaffils.models import Course
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -187,23 +186,6 @@ class LoggedInFacultyMixin(object):
             return HttpResponseForbidden("forbidden")
 
         return super(LoggedInFacultyMixin, self).dispatch(*args, **kwargs)
-
-
-class LoggedInFacultyCourseMixin(object):
-    """
-    Mixin for checking if the current user is the faculty of a course.
-
-    Looks at the 'pk' kwarg in the url to find the course.
-    """
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        pk = self.request.resolver_match.kwargs.get('pk')
-        course = get_object_or_404(Course, pk=pk)
-        if not cached_course_is_faculty(course, self.request.user):
-            return HttpResponseForbidden("forbidden")
-
-        return super(LoggedInFacultyCourseMixin, self).dispatch(
-            *args, **kwargs)
 
 
 class LoggedInSuperuserMixin(object):

@@ -4,7 +4,7 @@
 {% block title %}&mdash; Course Settings{% endblock %}
 
 {% block content %}
-    <h1>Course Settings: {{object}}</h1>
+    <h1>Course Settings: {{object.title}}</h1>
     <form action="" method="post">{% csrf_token %}
         {% bootstrap_field form.title form_group_class='form-group well' %}
         {% bootstrap_field form.homepage_title form_group_class='form-group well' %}

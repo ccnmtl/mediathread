@@ -21,7 +21,7 @@ from mediathread.main.views import (
     InstructorDashboardView, InstructorDashboardSettingsView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
+    CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
@@ -184,8 +184,6 @@ urlpatterns = patterns(
 
     url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
         name='class-manage-sources'),
-    url(r'^dashboard/settings/', CourseSettingsView.as_view(),
-        name='course-settings'),
     url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),
 
@@ -215,10 +213,10 @@ urlpatterns = patterns(
     (r'^project/', include('mediathread.projects.urls')),
 
     # Instructor Dashboard
-    url(r'^course/(?P<pk>\d+)/dashboard/$',
+    url(r'^dashboard/$',
         InstructorDashboardView.as_view(),
         name='instructor-dashboard'),
-    url(r'^course/(?P<pk>\d+)/settings/$',
+    url(r'^dashboard/settings/$',
         InstructorDashboardSettingsView.as_view(),
         name='instructor-dashboard-settings'),
 

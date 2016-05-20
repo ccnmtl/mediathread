@@ -7,7 +7,7 @@ Feature: Manage Sources
         When I open the manage menu
         Then there is a "Settings" link
         When I click the "Settings" link
-        Then I am at the Manage Course Settings page
+        Then I am at the Course Settings page
      
         Then publish to world is disabled
         
@@ -21,7 +21,7 @@ Feature: Manage Sources
         When I open the manage menu
         Then there is a "Settings" link
         When I click the "Settings" link
-        Then I am at the Manage Course Settings page
+        Then I am at the Course Settings page
      
         Then publish to world is enabled
         
@@ -35,7 +35,7 @@ Feature: Manage Sources
         When I open the manage menu
         Then there is a "Settings" link
         When I click the "Settings" link
-        Then I am at the Manage Course Settings page
+        Then I am at the Course Settings page
              
         Then publish to world is disabled
         

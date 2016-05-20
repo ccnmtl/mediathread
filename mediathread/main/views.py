@@ -54,7 +54,6 @@ from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
     LoggedInMixin, LoggedInFacultyMixin,
-    LoggedInFacultyCourseMixin,
     LoggedInSuperuserMixin
 )
 from mediathread.projects.api import ProjectResource
@@ -160,71 +159,6 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
                              'Your changes were saved.')
 
         return HttpResponseRedirect(reverse("class-manage-sources"))
-
-
-class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
-    template_name = 'dashboard/class_settings.html'
-
-    def get_context_data(self, **kwargs):
-
-        context = {'course': self.request.course}
-
-        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
-
-        key = course_details.ITEM_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.ITEM_VISIBILITY_DEFAULT))
-
-        key = course_details.SELECTION_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.SELECTION_VISIBILITY_DEFAULT))
-
-        key = course_details.COURSE_INFORMATION_TITLE_KEY
-        context[key] = self.request.course.get_detail(
-            key, course_details.COURSE_INFORMATION_TITLE_DEFAULT)
-
-        context['lti_context'] = LTICourseContext.objects.filter(
-            group=self.request.course.group.id,
-            faculty_group=self.request.course.faculty_group.id).first()
-
-        return context
-
-    def post(self, request):
-        key = course_details.COURSE_INFORMATION_TITLE_KEY
-        if key in request.POST:
-            value = request.POST.get(key)
-            request.course.add_detail(key, value)
-
-        key = course_details.ITEM_VISIBILITY_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            key = course_details.SELECTION_VISIBILITY_KEY
-            if key in request.POST:
-                value = int(request.POST.get(key))
-            else:
-                value = 0
-
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.limit_response_policy(request.course)
-
-        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.reset_publish_to_world(request.course)
-
-        messages.add_message(request, messages.INFO,
-                             'Your changes were saved.')
-
-        return HttpResponseRedirect(reverse('course-settings'))
 
 
 @allow_http("POST")
@@ -789,9 +723,12 @@ class CourseAcceptInvitationView(FormView):
         return reverse('course-invite-complete')
 
 
-class InstructorDashboardView(LoggedInFacultyCourseMixin, DetailView):
+class InstructorDashboardView(LoggedInFacultyMixin, DetailView):
     model = Course
     template_name = 'main/instructor_dashboard.html'
+
+    def get_object(self):
+        return self.request.course
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(InstructorDashboardView, self).get_context_data(
@@ -801,16 +738,19 @@ class InstructorDashboardView(LoggedInFacultyCourseMixin, DetailView):
 
 
 class InstructorDashboardSettingsView(
-        LoggedInFacultyCourseMixin, SuccessMessageMixin, UpdateView):
+        LoggedInFacultyMixin, SuccessMessageMixin, UpdateView):
     model = Course
     template_name_suffix = '_update_form'
     form_class = DashboardSettingsForm
     success_message = 'The course was updated successfully.'
 
+    def get_object(self):
+        course = self.request.course
+        course.refresh_from_db()
+        return course
+
     def get_success_url(self):
-        return reverse('instructor-dashboard-settings', kwargs={
-            'pk': self.kwargs.get('pk')
-        })
+        return reverse('instructor-dashboard-settings')
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(InstructorDashboardSettingsView, self).get_context_data(

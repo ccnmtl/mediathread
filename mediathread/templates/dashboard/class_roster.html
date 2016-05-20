@@ -37,17 +37,6 @@
 {% endblock %}
 
 {% block dashboard_module %}
-{% if messages %}
-    <div class="alert alert-info alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <div><b>Action Completed</b></div><br />
-      <ul>
-      {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
-    </div>
-{% endif %}
 
 <div class="roster-container">
     <div>

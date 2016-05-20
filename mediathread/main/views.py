@@ -924,8 +924,6 @@ Faculty: {} {} <{}>
             'affil': self.affil,
             'term': affil_dict['term'],
             'year': affil_dict['year'],
-            'affil_shortname': affil_dict[
-                'dept'].upper() + affil_dict['number'],
         })
         return context
 

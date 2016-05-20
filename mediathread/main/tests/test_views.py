@@ -1307,10 +1307,6 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertContains(
             response,
             'Course Activation: {}'.format(self.aa.coursedirectory_name))
-        self.assertEqual(
-            response.context['affil_shortname'],
-            self.aa.to_dict()['dept'].upper() +
-            self.aa.to_dict()['number'])
         self.assertEqual(response.context['affil'], self.aa)
 
     def test_post_no_course_name(self):
@@ -1342,12 +1338,10 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(self.aa.activated)
 
         course = Course.objects.last()
-        shortname = self.aa.to_dict().get('dept').upper() + \
-            self.aa.to_dict().get('number')
-        self.assertEqual(course.title, '%s My Course' % shortname)
+        self.assertEqual(course.title, 'My Course')
         self.assertEqual(
             unicode(course.info),
-            '%s My Course (Spring 2016) None None-None' % shortname)
+            'My Course (Spring 2016) None None-None')
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)
         self.assertEqual(Affil.objects.count(), 1)
@@ -1366,11 +1360,9 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         AffilActivateView.send_faculty_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
 
-        shortname = self.aa.to_dict().get('dept').upper() + \
-            self.aa.to_dict().get('number')
         self.assertEqual(
             mail.outbox[0].subject,
-            'Your Mediathread Course Activation: %s My Course' % shortname)
+            'Your Mediathread Course Activation: My Course')
         self.assertEquals(
             mail.outbox[0].from_email,
             settings.SERVER_EMAIL)
@@ -1387,11 +1379,9 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(form.is_valid())
         AffilActivateView.send_staff_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
-        shortname = self.aa.to_dict().get('dept').upper() + \
-            self.aa.to_dict().get('number')
         self.assertEqual(
             mail.outbox[0].subject,
-            'Mediathread Course Activated: %s My Course' % shortname)
+            'Mediathread Course Activated: My Course')
         self.assertEquals(
             mail.outbox[0].from_email,
             'test_user@example.com')

@@ -11,7 +11,7 @@
         {% bootstrap_form_errors form %}
         <h1>Course Activation: {{affil.coursedirectory_name}} ({{term|int_to_term}} {{year}})</h1>
         <input id="id_affil" name="affil" type="hidden" value="{{affil.pk}}">
-        {% bootstrap_field form.course_name addon_before=affil_shortname %}
+        {% bootstrap_field form.course_name %}
         {% bootstrap_field form.consult_or_demo %}
         {% buttons submit='Submit' %}{% endbuttons %}
     </form>

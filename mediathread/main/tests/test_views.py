@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 
+from courseaffils.lib import get_public_name
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Affil, Course
 from courseaffils.tests.factories import AffilFactory, CourseFactory
@@ -1254,7 +1255,20 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_get(self):
         url = reverse('course_list')
-        affil_name = 't3.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        affil_name = 't1.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
+        aa = AffilFactory(user=self.u, name=affil_name)
+        with override_flag('course_activation', active=True):
+            response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, aa.coursedirectory_name)
+        self.assertEqual(len(response.context['object_list']), 0)
+        self.assertEqual(len(response.context['activatable_affils']), 1)
+        self.assertEqual(response.context['activatable_affils'][0], aa)
+
+    def test_get_past_affil(self):
+        url = reverse('course_list')
+        affil_name = 't1.y2015.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
@@ -1312,7 +1326,11 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Course.objects.count(), 0)
 
     def test_post(self):
+        self.u.profile = UserProfileFactory(user=self.u)
+        self.u.save()
         self.assertFalse(self.aa.activated)
+        request = RequestFactory().get(
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}))
         response = self.client.post(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
                 'affil': self.aa.pk,
@@ -1335,6 +1353,8 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Affil.objects.count(), 1)
 
         self.assertTrue(course.is_faculty(self.u))
+        self.assertEqual(course.get_detail('instructor', None),
+                         get_public_name(self.u, request))
 
     def test_send_faculty_email(self):
         form = CourseActivateForm({

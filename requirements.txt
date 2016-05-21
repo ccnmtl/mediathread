@@ -11,11 +11,11 @@ lxml==3.6.0
 fuzzywuzzy==0.10.0  # lettuce
 mock==2.0.0  # sure
 sure==1.2.24  # lettuce
-extras==0.0.3
+extras==1.0.0
 linecache2==1.0.0  # traceback2
 traceback2==1.4.0  # testtools
 fixtures==3.0.0
-testtools==2.1.0  # python-subunit
+testtools==2.2.0  # python-subunit
 pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.2.0  # lettuce
@@ -48,7 +48,7 @@ django-contrib-comments==1.7.1
 django-threadedcomments==1.0b1
 django-courseaffils==2.1.6
 django-statsd-mozilla==0.3.16
-raven==5.15.0
+raven==5.18.0
 django-appconf==1.0.2  # django_compressor
 django-compressor==2.0
 django-jenkins==0.18.1

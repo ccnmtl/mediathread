@@ -3,7 +3,7 @@ import json
 import re
 
 from smtplib import SMTPRecipientsRefused
-from courseaffils.lib import in_course_or_404, in_course
+from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
@@ -808,15 +808,13 @@ class MethCourseListView(LoggedInMixin, CourseListView):
             return context
 
         courses = list(context.get('courses'))
-        semester_view = self.request.GET.get('semester_view')
+        semester_view = self.request.GET.get('semester_view', 'current')
         affils = Affil.objects.filter(user=self.request.user, activated=False)
         for affil in affils:
             affil_semester = affil.past_present_future
-            if affil_semester == -1 and semester_view == 'past':
-                courses.insert(0, affil)
-            elif affil_semester == 0 and semester_view == 'current':
-                courses.insert(0, affil)
-            elif affil_semester == 1 and semester_view == 'future':
+            if (affil_semester == -1 and semester_view == 'past') or \
+               (affil_semester == 0 and semester_view == 'current') or \
+               (affil_semester == 1 and semester_view == 'future'):
                 courses.insert(0, affil)
 
         context.update({
@@ -891,6 +889,8 @@ Faculty: {} {} <{}>
 
         # Add the current user as an instructor.
         c.faculty_group.user_set.add(self.request.user)
+        c.add_detail('instructor',
+                     get_public_name(self.request.user, self.request))
 
         # Get the year and term from the affil string.
         affil_dict = {}

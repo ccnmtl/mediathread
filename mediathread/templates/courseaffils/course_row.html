@@ -9,6 +9,7 @@
            href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
            {% endif %}
         >{% firstof course.title course.coursedirectory_name %}</a>
+        {% if not course.is_course %}(inactive){% endif %}
     </td>
     {% if course.info.termyear %}
         <td>{{course.info.termyear}}</td>

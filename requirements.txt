@@ -19,7 +19,7 @@ testtools==2.2.0  # python-subunit
 pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.2.0  # lettuce
-lettuce==0.2.21.ccnmtl
+lettuce==0.2.22
 selenium==2.53.1
 six==1.10.0
 sqlparse==0.1.19  # django-debug-toolbar

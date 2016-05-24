@@ -77,7 +77,7 @@ gunicorn==19.5.0
 traitlets==4.2.1
 ipython_genutils==0.1.0
 decorator==4.0.9
-pexpect==4.0.1
+pexpect==4.1.0
 ptyprocess==0.5.1
 pickleshare==0.7.2
 path.py==8.2.1

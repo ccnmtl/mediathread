@@ -5,10 +5,6 @@
 | Instructor Dashboard: {{object.title}}
 {% endblock %}
 
-{% block coursetitle %}
-    <a href=".">Instructor Dashboard: {{object.title}}</a>
-{% endblock %}
-
 {% block content %}
     <div class="col-md-9" role="main">
         <h2><a href="{% url 'instructor-dashboard-settings' %}"

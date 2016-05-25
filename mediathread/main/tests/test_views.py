@@ -1338,9 +1338,8 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def test_get(self):
         response = self.client.get(reverse('instructor-dashboard-settings'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            'Course Settings: {}'.format(self.course.title))
+        self.assertContains(response, self.course.title)
+        self.assertContains(response, 'Course Settings')
         self.assertEqual(response.context['object'], self.course)
 
     def test_post(self):
@@ -1353,7 +1352,8 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Settings: New Title')
+        self.assertContains(response, 'New Title')
+        self.assertContains(response, 'Course Settings')
         self.assertEqual(response.context['object'], self.course)
         self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
         course = Course.objects.get(title='New Title')
@@ -1375,7 +1375,8 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             },
             follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Settings: New Title')
+        self.assertContains(response, 'New Title')
+        self.assertContains(response, 'Course Settings')
         self.assertEqual(response.context['object'], self.course)
         self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
         course = Course.objects.get(title='New Title')
@@ -1414,8 +1415,8 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response, 'Course Settings: %s' % self.course.title)
+        self.assertContains(response, self.course.title)
+        self.assertContains(response, 'Course Settings')
         self.assertFalse(response.context['form'].is_valid())
         self.assertContains(
             response, escape('There\'s already a course called "New Title"'))

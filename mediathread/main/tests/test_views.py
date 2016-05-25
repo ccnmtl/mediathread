@@ -1458,3 +1458,70 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                          'From Your Instructor')
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
+
+    def test_post_reset(self):
+        CourseFactory(title='New Title')
+        response = self.client.post(reverse('course-settings-general'), {
+            'title': '     ',
+            'homepage_title': 'doesnt update',
+            'publish_to_world': False,
+            'see_eachothers_items': True,
+            'see_eachothers_selections': False,
+            'lti_integration': True,
+            'reset': True,
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.course.title)
+        self.assertContains(response, 'Course Settings')
+        self.assertEqual(response.context['object'], self.course)
+
+        self.assertEqual(
+            Course.objects.filter(title=self.course.title).count(), 1)
+        self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
+        course = Course.objects.get(title=self.course.title)
+        self.assertEqual(allow_public_compositions(course), False)
+        self.assertEqual(course_information_title(course),
+                         'From Your Instructor')
+        self.assertEqual(all_items_are_visible(course), True)
+        self.assertEqual(all_selections_are_visible(course), True)
+        lti_ctx = LTICourseContext.objects.get(
+            group=course.group,
+            faculty_group=course.faculty_group)
+        self.assertFalse(lti_ctx.enable)
+
+        response = self.client.post(reverse('course-settings-general'), {
+            'title': 'New Title 1',
+            'homepage_title': 'updated homepage title',
+            'publish_to_world': True,
+            'see_eachothers_items': True,
+            'see_eachothers_selections': True,
+            'lti_integration': True,
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        course.refresh_from_db()
+        self.assertEqual(course.title, 'New Title 1')
+        self.assertEqual(course_information_title(course),
+                         'updated homepage title')
+        lti_ctx.refresh_from_db()
+        self.assertTrue(lti_ctx.enable)
+
+        response = self.client.post(reverse('course-settings-general'), {
+            'title': 'New Title',
+            'homepage_title': 'doesnt update',
+            'publish_to_world': True,
+            'see_eachothers_items': True,
+            'see_eachothers_selections': True,
+            'lti_integration': True,
+            'reset': True,
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        course.refresh_from_db()
+        self.assertEqual(course.title, 'New Title 1')
+        self.assertEqual(allow_public_compositions(course), False)
+        self.assertEqual(course_information_title(course),
+                         'From Your Instructor')
+        self.assertEqual(all_items_are_visible(course), True)
+        self.assertEqual(all_selections_are_visible(course), True)
+        lti_ctx.refresh_from_db()
+        self.assertFalse(lti_ctx.enable)

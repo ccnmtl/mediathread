@@ -238,6 +238,21 @@ class DashboardSettingsForm(forms.ModelForm):
         label='LTI Integration',
         required=False,
         help_text='Allow external tools to access this course')
+    reset = forms.BooleanField(
+        widget=forms.HiddenInput,
+        initial=False,
+        required=False)
+
+    @property
+    def initial_data(self):
+        return {
+            'title': self.instance.title,
+            'homepage_title': 'From Your Instructor',
+            'publish_to_world': False,
+            'see_eachothers_items': True,
+            'see_eachothers_selections': True,
+            'lti_integration': False,
+        }
 
     def __init__(self, *args, **kwargs):
         r = super(DashboardSettingsForm, self).__init__(*args, **kwargs)
@@ -258,7 +273,25 @@ class DashboardSettingsForm(forms.ModelForm):
 
         return r
 
+    def reset(self):
+        try:
+            lti_ctx = LTICourseContext.objects.get(
+                group=self.instance.group,
+                faculty_group=self.instance.faculty_group)
+        except LTICourseContext.DoesNotExist:
+            lti_ctx = None
+
+        if lti_ctx:
+            lti_ctx.enable = False
+            lti_ctx.save()
+
+        return self.initial_data
+
     def clean(self):
+        reset = self.data.get('reset')
+        if reset is True or reset == 'True' or reset == 'true':
+            return self.reset()
+
         cleaned_data = super(DashboardSettingsForm, self).clean()
         title = cleaned_data.get('title')
         if title.strip() == '':

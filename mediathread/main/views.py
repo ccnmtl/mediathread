@@ -40,8 +40,10 @@ from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
-from mediathread.main.course_details import cached_course_is_faculty, \
-    course_information_title
+from mediathread.main.course_details import (
+    cached_course_is_faculty, course_information_title,
+    has_student_activity
+)
 from mediathread.main.forms import (
     RequestCourseForm, ContactUsForm,
     CourseDeleteMaterialsForm, AcceptInvitationForm,
@@ -760,6 +762,7 @@ class InstructorDashboardSettingsView(
             group=course.group.id,
             faculty_group=course.faculty_group.id).first()
         ctx['lti_context'] = lti_context
+        ctx['has_student_activity'] = has_student_activity(course)
         return ctx
 
 

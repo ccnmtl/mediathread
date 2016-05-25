@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}&mdash; Course Settings{% endblock %}
+
+{% block content %}
+    <h2>Course Settings</h2>
+    <form action="" method="post">{% csrf_token %}
+        {% bootstrap_field form.title form_group_class='form-group well' %}
+        {% bootstrap_field form.homepage_title form_group_class='form-group well' %}
+        {% bootstrap_field form.publish_to_world form_group_class='form-group well' %}
+        <div class="well">
+            <h4>Item &amp; Selection Visibility</h4>
+            {% bootstrap_field form.see_eachothers_items %}
+            {% bootstrap_field form.see_eachothers_selections %}
+            <span class="help-block">
+                Turning off item or selection visibility hides
+                individual items or selections from all collections
+                views. Students can still view an item or selection
+                embedded in a visible composition. Faculty always can
+                view all items and selections.
+            </span>
+        </div>
+        <div class="well">
+            {% bootstrap_field form.lti_integration %}
+            {% if lti_context and lti_context.enable %}
+                <h5>Instructions</h5>
+                <ol>
+                    <li>Unique Course Identifier: {{lti_context.uuid}}</li>
+                    <li><a href="https://github.com/ccnmtl/mediathread/wiki/LTI-Integration">Read full configuration instructions</a></li>
+                </ol>
+            {% endif %}
+        </div>
+        {% buttons submit='Save' %}{% endbuttons %}
+    </form>
+{% endblock %}

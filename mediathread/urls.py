@@ -18,10 +18,10 @@ from mediathread.assetmgr.views import (
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     MethCourseListView, AffilActivateView,
-    CourseInstructorDashboardView,
+    InstructorDashboardView, InstructorDashboardSettingsView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseSettingsView, CourseDeleteMaterialsView, course_detail_view,
+    CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
@@ -184,8 +184,6 @@ urlpatterns = patterns(
 
     url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
         name='class-manage-sources'),
-    url(r'^dashboard/settings/', CourseSettingsView.as_view(),
-        name='course-settings'),
     url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),
 
@@ -214,10 +212,15 @@ urlpatterns = patterns(
     # Composition Space
     (r'^project/', include('mediathread.projects.urls')),
 
-    # Instructor Dashboard & reporting
-    url(r'^course/(?P<pk>\d+)/dashboard/$',
-        CourseInstructorDashboardView.as_view(),
-        name='course-instructor-dashboard'),
+    # Instructor Dashboard
+    url(r'^dashboard/$',
+        InstructorDashboardView.as_view(),
+        name='instructor-dashboard'),
+    url(r'^dashboard/settings/$',
+        InstructorDashboardSettingsView.as_view(),
+        name='instructor-dashboard-settings'),
+
+    # Reporting
     (r'^reports/', include('mediathread.reports.urls')),
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry

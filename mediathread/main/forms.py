@@ -2,6 +2,15 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
 from registration.forms import RegistrationForm
+from courseaffils.models import Course
+from lti_auth.models import LTICourseContext
+from mediathread.main import course_details
+from mediathread.main.course_details import (
+    allow_public_compositions,
+    all_items_are_visible, all_selections_are_visible,
+    course_information_title
+)
+from mediathread.projects.models import Project
 
 
 TERM_CHOICES = (
@@ -200,3 +209,103 @@ class CourseActivateForm(forms.Form):
         widget=forms.RadioSelect,
         initial='none'
     )
+
+
+class DashboardSettingsForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['title']
+
+    homepage_title = forms.CharField(
+        max_length=24,
+        label='Homepage "From Your Instructor" Title',
+        help_text='This feature allows faculty to customize the left-hand '
+        'column title on the Mediathread homepage. This must be less than '
+        '25 characters long.')
+    publish_to_world = forms.BooleanField(
+        label='"Publish To The World" Compositions',
+        required=False,
+        help_text='This feature allows authors to publish compositions at a '
+        'public level, via a link that does not require logging into '
+        'Mediathread.')
+    see_eachothers_items = forms.BooleanField(
+        label='Course members can see each other\'s items',
+        required=False)
+    see_eachothers_selections = forms.BooleanField(
+        label='Course members can see each other\'s selections',
+        required=False)
+    lti_integration = forms.BooleanField(
+        label='LTI Integration',
+        required=False,
+        help_text='Allow external tools to access this course')
+
+    def __init__(self, *args, **kwargs):
+        r = super(DashboardSettingsForm, self).__init__(*args, **kwargs)
+        self.fields['publish_to_world'].initial = \
+            allow_public_compositions(self.instance)
+        self.fields['homepage_title'].initial = \
+            course_information_title(self.instance)
+        self.fields['see_eachothers_items'].initial = \
+            all_items_are_visible(self.instance)
+        self.fields['see_eachothers_selections'].initial = \
+            all_selections_are_visible(self.instance)
+
+        lti_context = LTICourseContext.objects.filter(
+            group=self.instance.group.id,
+            faculty_group=self.instance.faculty_group.id).first()
+        self.fields['lti_integration'].initial = \
+            (lti_context and lti_context.enable)
+
+        return r
+
+    def clean(self):
+        cleaned_data = super(DashboardSettingsForm, self).clean()
+        title = cleaned_data.get('title')
+
+        dup_count = Course.objects.filter(title=title).count()
+        if dup_count > 0:
+            course = Course.objects.filter(title=title).first()
+            if (course != self.instance) or (dup_count > 1):
+                self.add_error(
+                    'title',
+                    'There\'s already a course called "%s"' % title)
+
+        return cleaned_data
+
+    def save(self, *args, **kwargs):
+        course = super(DashboardSettingsForm, self).save(*args, **kwargs)
+        cleaned_data = self.cleaned_data
+
+        course.add_detail(
+            course_details.COURSE_INFORMATION_TITLE_KEY,
+            cleaned_data.get('homepage_title'))
+
+        course.add_detail(
+            course_details.ITEM_VISIBILITY_KEY,
+            int(cleaned_data.get('see_eachothers_items')))
+
+        course.add_detail(
+            course_details.ITEM_VISIBILITY_KEY,
+            int(cleaned_data.get('see_eachothers_items')))
+
+        course.add_detail(
+            course_details.SELECTION_VISIBILITY_KEY,
+            int(cleaned_data.get('see_eachothers_selections')))
+
+        if not cleaned_data.get('see_eachothers_selections'):
+            Project.objects.limit_response_policy(course)
+
+        course.add_detail(
+            course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY,
+            int(cleaned_data.get('publish_to_world')))
+
+        if not cleaned_data.get('publish_to_world'):
+            Project.objects.reset_publish_to_world(course)
+
+        lti_ctx, created = LTICourseContext.objects.get_or_create(
+            group=self.instance.group,
+            faculty_group=self.instance.faculty_group)
+        lti_ctx.enable = cleaned_data.get('lti_integration')
+        lti_ctx.save()
+
+        return course

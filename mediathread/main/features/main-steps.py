@@ -47,13 +47,14 @@ def i_allow_level_to_upload_videos(step, level):
 
 @step(u'The selection visibility is "([^"]*)"')
 def the_selection_visibility_is_value(step, value):
-    if value == 'Yes':
-        elt = world.browser.find_element_by_id('selection_visibility_yes')
-    else:
-        elt = world.browser.find_element_by_id('selection_visibility_no')
+    elt = world.browser.find_element_by_id('id_see_eachothers_selections')
 
-    assert elt.get_attribute('checked'), \
-        "The checked attribute was %s" % elt.get_attribute("checked")
+    if value == 'Yes':
+        assert (elt.get_attribute('checked') == 'true'), \
+            "The checked attribute was %s" % elt.get_attribute("checked")
+    else:
+        assert (elt.get_attribute('checked') is None), \
+            "The checked attribute was %s" % elt.get_attribute("checked")
 
 
 @step(u'I can upload on behalf of other users')

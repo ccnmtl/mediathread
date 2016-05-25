@@ -9,6 +9,7 @@ from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.shortcuts import get_current_site
@@ -24,7 +25,7 @@ from django.template.context import Context
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
@@ -44,7 +45,7 @@ from mediathread.main.course_details import cached_course_is_faculty, \
 from mediathread.main.forms import (
     RequestCourseForm, ContactUsForm,
     CourseDeleteMaterialsForm, AcceptInvitationForm,
-    CourseActivateForm
+    CourseActivateForm, DashboardSettingsForm
 )
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import send_template_email, user_display_name, \
@@ -158,71 +159,6 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
                              'Your changes were saved.')
 
         return HttpResponseRedirect(reverse("class-manage-sources"))
-
-
-class CourseSettingsView(LoggedInFacultyMixin, TemplateView):
-    template_name = 'dashboard/class_settings.html'
-
-    def get_context_data(self, **kwargs):
-
-        context = {'course': self.request.course}
-
-        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
-
-        key = course_details.ITEM_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.ITEM_VISIBILITY_DEFAULT))
-
-        key = course_details.SELECTION_VISIBILITY_KEY
-        context[key] = int(self.request.course.get_detail(key,
-                           course_details.SELECTION_VISIBILITY_DEFAULT))
-
-        key = course_details.COURSE_INFORMATION_TITLE_KEY
-        context[key] = self.request.course.get_detail(
-            key, course_details.COURSE_INFORMATION_TITLE_DEFAULT)
-
-        context['lti_context'] = LTICourseContext.objects.filter(
-            group=self.request.course.group.id,
-            faculty_group=self.request.course.faculty_group.id).first()
-
-        return context
-
-    def post(self, request):
-        key = course_details.COURSE_INFORMATION_TITLE_KEY
-        if key in request.POST:
-            value = request.POST.get(key)
-            request.course.add_detail(key, value)
-
-        key = course_details.ITEM_VISIBILITY_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            key = course_details.SELECTION_VISIBILITY_KEY
-            if key in request.POST:
-                value = int(request.POST.get(key))
-            else:
-                value = 0
-
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.limit_response_policy(request.course)
-
-        key = course_details.ALLOW_PUBLIC_COMPOSITIONS_KEY
-        if key in request.POST:
-            value = int(request.POST.get(key))
-            request.course.add_detail(key, value)
-
-            if value == 0:
-                Project.objects.reset_publish_to_world(request.course)
-
-        messages.add_message(request, messages.INFO,
-                             'Your changes were saved.')
-
-        return HttpResponseRedirect(reverse('course-settings'))
 
 
 @allow_http("POST")
@@ -787,14 +723,43 @@ class CourseAcceptInvitationView(FormView):
         return reverse('course-invite-complete')
 
 
-class CourseInstructorDashboardView(LoggedInMixin, DetailView):
+class InstructorDashboardView(LoggedInFacultyMixin, DetailView):
     model = Course
-    template_name = 'main/course_instructor_dashboard.html'
+    template_name = 'main/instructor_dashboard.html'
+
+    def get_object(self):
+        return self.request.course
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super(CourseInstructorDashboardView, self).get_context_data(
+        ctx = super(InstructorDashboardView, self).get_context_data(
             *args, **kwargs)
         ctx.update({'course': ctx.get('object')})
+        return ctx
+
+
+class InstructorDashboardSettingsView(
+        LoggedInFacultyMixin, SuccessMessageMixin, UpdateView):
+    model = Course
+    template_name_suffix = '_update_form'
+    form_class = DashboardSettingsForm
+    success_message = 'The course was updated successfully.'
+
+    def get_object(self):
+        course = self.request.course
+        course.refresh_from_db()
+        return course
+
+    def get_success_url(self):
+        return reverse('instructor-dashboard-settings')
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(InstructorDashboardSettingsView, self).get_context_data(
+            *args, **kwargs)
+        course = ctx.get('object')
+        lti_context = LTICourseContext.objects.filter(
+            group=course.group.id,
+            faculty_group=course.faculty_group.id).first()
+        ctx['lti_context'] = lti_context
         return ctx
 
 

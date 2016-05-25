@@ -577,18 +577,14 @@ def given_publish_to_world_is_value(step, value):
     if world.using_selenium:
         world.browser.get(django.django_url("/dashboard/settings/"))
 
-        if value == "enabled":
-            elt = world.browser.find_element_by_id(
-                "allow_public_compositions_yes")
-            elt.click()
-        else:
-            elt = world.browser.find_element_by_id(
-                "allow_public_compositions_no")
-            elt.click()
+        elt = world.browser.find_element_by_id("id_publish_to_world")
+        if value == 'enabled' and elt.get_attribute('checked') is None:
+                elt.click()
+        elif value != 'enabled' and elt.get_attribute('checked') == 'true':
+                elt.click()
 
-        elt = world.browser.find_element_by_id(
-            "allow_public_compositions_submit")
-
+        elt = world.browser.find_element_by_css_selector(
+            'button[type="submit"]')
         if elt:
             elt.click()
             world.browser.get(django.django_url("/"))
@@ -596,13 +592,14 @@ def given_publish_to_world_is_value(step, value):
 
 @step(u'Then publish to world is ([^"]*)')
 def then_publish_to_world_is_value(step, value):
-    if value == 'enabled':
-        elt = world.browser.find_element_by_id('allow_public_compositions_yes')
-    else:
-        elt = world.browser.find_element_by_id('allow_public_compositions_no')
+    elt = world.browser.find_element_by_id('id_publish_to_world')
 
     msg = "The checked attribute was %s" % elt.get_attribute("checked")
-    assert elt.get_attribute('checked'), msg
+
+    if value == 'enabled':
+        assert (elt.get_attribute('checked') == 'true'), msg
+    else:
+        assert (elt.get_attribute('checked') is None), msg
 
 
 @step(u'The "([^"]*)" project has no delete icon')
@@ -865,14 +862,15 @@ def given_the_selection_visibility_is_value(step, value):
     if world.using_selenium:
         world.browser.get(django.django_url("/dashboard/settings/"))
 
-        if value == "Yes":
-            elt = world.browser.find_element_by_id("selection_visibility_yes")
+        elt = world.browser.find_element_by_id(
+            'id_see_eachothers_selections')
+        if value == 'Yes' and elt.get_attribute('checked') is None:
             elt.click()
-        else:
-            elt = world.browser.find_element_by_id("selection_visibility_no")
+        elif value != 'Yes' and elt.get_attribute('checked') == 'true':
             elt.click()
 
-        elt = world.browser.find_element_by_id("selection_visibility_submit")
+        elt = world.browser.find_element_by_css_selector(
+            'button[type="submit"]')
         if elt:
             elt.click()
             world.browser.get(django.django_url("/"))
@@ -883,16 +881,14 @@ def given_the_item_visibility_is_value(step, value):
     if world.using_selenium:
         world.browser.get(django.django_url("/dashboard/settings/"))
 
-        if value == "Yes":
-            elt = world.browser.find_element_by_id("item_visibility_yes")
+        elt = world.browser.find_element_by_id("id_see_eachothers_items")
+        if value == 'Yes' and elt.get_attribute('checked') is None:
             elt.click()
-        else:
-            elt = world.browser.find_element_by_id("item_visibility_no")
-            elt.click()
-            elt = world.browser.find_element_by_id("selection_visibility_no")
-            elt.click()
+        elif value != 'Yes' and elt.get_attribute('checked') == 'true':
+                elt.click()
 
-        elt = world.browser.find_element_by_id("selection_visibility_submit")
+        elt = world.browser.find_element_by_css_selector(
+            'button[type="submit"]')
         if elt:
             elt.click()
             world.browser.get(django.django_url("/"))

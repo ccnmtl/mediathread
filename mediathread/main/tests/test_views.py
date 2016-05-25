@@ -1421,8 +1421,38 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertContains(
             response, escape('There\'s already a course called "New Title"'))
         self.assertEqual(response.context['object'], self.course)
+
+        self.assertEqual(
+            Course.objects.filter(title=self.course.title).count(), 1)
         self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
-        course = Course.objects.get(title='New Title')
+        course = Course.objects.get(title=self.course.title)
+        self.assertEqual(allow_public_compositions(course), False)
+        self.assertEqual(course_information_title(course),
+                         'From Your Instructor')
+        self.assertEqual(all_items_are_visible(course), True)
+        self.assertEqual(all_selections_are_visible(course), True)
+
+    def test_post_empty_title(self):
+        CourseFactory(title='New Title')
+        response = self.client.post(
+            reverse('instructor-dashboard-settings'),
+            {
+                'title': '     ',
+                'homepage_title': 'new homepage title',
+            },
+            follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.course.title)
+        self.assertContains(response, 'Course Settings')
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertContains(response, escape('Title can\'t be blank.'))
+        self.assertEqual(response.context['object'], self.course)
+
+        self.assertEqual(
+            Course.objects.filter(title=self.course.title).count(), 1)
+        self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
+        course = Course.objects.get(title=self.course.title)
         self.assertEqual(allow_public_compositions(course), False)
         self.assertEqual(course_information_title(course),
                          'From Your Instructor')

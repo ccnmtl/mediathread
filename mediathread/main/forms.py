@@ -261,6 +261,8 @@ class DashboardSettingsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(DashboardSettingsForm, self).clean()
         title = cleaned_data.get('title')
+        if title.strip() == '':
+            self.add_error('title', 'Title can\'t be blank.')
 
         dup_count = Course.objects.filter(title=title).count()
         if dup_count > 0:

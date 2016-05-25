@@ -1,5 +1,7 @@
 language: python
 sudo: false
+addons:
+  firefox: "38.8.0esr"
 env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest1

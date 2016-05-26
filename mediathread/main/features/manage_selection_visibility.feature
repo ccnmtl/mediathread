@@ -8,7 +8,7 @@ Feature: Manage Selection Visibility
         When I open the manage menu
         Then there is a "Settings" link
         When I click the "Settings" link
-        Then I am at the Course Settings page
+        Then I am at the General page
      
         The selection visibility is "Yes"
         
@@ -22,7 +22,7 @@ Feature: Manage Selection Visibility
         When I open the manage menu
         Then there is a "Settings" link
         When I click the "Settings" link
-        Then I am at the Course Settings page
+        Then I am at the General page
      
         The selection visibility is "No"
         

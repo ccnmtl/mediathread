@@ -218,7 +218,7 @@ urlpatterns = patterns(
         name='instructor-dashboard'),
     url(r'^dashboard/settings/$',
         InstructorDashboardSettingsView.as_view(),
-        name='instructor-dashboard-settings'),
+        name='course-settings-general'),
 
     # Reporting
     (r'^reports/', include('mediathread.reports.urls')),

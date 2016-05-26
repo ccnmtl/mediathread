@@ -59,7 +59,7 @@ django-debug-toolbar==1.4
 django-markwhat==1.5
 ipaddress==1.0.16
 fake-factory==0.5.7
-factory_boy==2.6.1
+factory_boy==2.7.0
 django-impersonate==1.0.1
 django-registration-redux==1.4
 django-waffle==0.11

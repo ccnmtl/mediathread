@@ -750,7 +750,7 @@ class InstructorDashboardSettingsView(
         return course
 
     def get_success_url(self):
-        return reverse('instructor-dashboard-settings')
+        return reverse('course-settings-general')
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(InstructorDashboardSettingsView, self).get_context_data(

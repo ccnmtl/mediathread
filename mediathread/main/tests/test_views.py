@@ -1319,7 +1319,7 @@ class InstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(
             response,
-            'Instructor Dashboard: {}'.format(self.course.title))
+            'Course Settings: {}'.format(self.course.title))
         self.assertEqual(response.context['object'], self.course)
 
 
@@ -1336,7 +1336,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.client.get(set_course_url)
 
     def test_get(self):
-        response = self.client.get(reverse('instructor-dashboard-settings'))
+        response = self.client.get(reverse('course-settings-general'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.course.title)
         self.assertContains(response, 'Course Settings')
@@ -1344,7 +1344,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_post(self):
         response = self.client.post(
-            reverse('instructor-dashboard-settings'),
+            reverse('course-settings-general'),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1364,7 +1364,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(all_selections_are_visible(course), False)
 
         response = self.client.post(
-            reverse('instructor-dashboard-settings'),
+            reverse('course-settings-general'),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1391,7 +1391,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(lti_ctx.enable)
 
         response = self.client.post(
-            reverse('instructor-dashboard-settings'),
+            reverse('course-settings-general'),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1407,7 +1407,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def test_post_duplicate_title(self):
         CourseFactory(title='New Title')
         response = self.client.post(
-            reverse('instructor-dashboard-settings'),
+            reverse('course-settings-general'),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1435,7 +1435,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def test_post_empty_title(self):
         CourseFactory(title='New Title')
         response = self.client.post(
-            reverse('instructor-dashboard-settings'),
+            reverse('course-settings-general'),
             {
                 'title': '     ',
                 'homepage_title': 'new homepage title',

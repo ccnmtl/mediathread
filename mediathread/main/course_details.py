@@ -107,3 +107,9 @@ def cached_course_collaboration(course):
 
 def get_guest_sandbox():
     return Course.objects.get(title="Mediathread Guest Sandbox")
+
+
+def has_student_activity(course):
+    """Returns True if the course has any student activity."""
+    # TODO
+    return True

@@ -31,6 +31,13 @@
                 </ol>
             {% endif %}
         </div>
-        {% buttons submit='Save' %}{% endbuttons %}
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Save</button>
+            {% if not has_student_activity %}
+                <button class="btn" type="submit" name="reset" value="true">
+                    Reset to default
+                </button>
+            {% endif %}
+        </div>
     </form>
 {% endblock %}

@@ -216,6 +216,10 @@ class DashboardSettingsForm(forms.ModelForm):
         model = Course
         fields = ['title']
 
+    class Media:
+        js = ('js/lib/jquery.are-you-sure.js',
+              'js/forms/unsaved-notice.js',)
+
     homepage_title = forms.CharField(
         max_length=24,
         label='Homepage "From Your Instructor" Title',

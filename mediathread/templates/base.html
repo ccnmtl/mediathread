@@ -202,7 +202,9 @@
             <div>
                 {% block pagetitle %}{% endblock %}
 
+                {% block messages %}
                 {% bootstrap_messages %}
+                    {% endblock %}
 
                 {% block content %}{% endblock %}
 

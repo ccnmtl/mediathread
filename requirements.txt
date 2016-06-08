@@ -31,7 +31,7 @@ logilab-common==1.2.1
 lazy-object-proxy==1.2.2
 wrapt==1.10.8
 astroid==1.4.6  # pylint
-pylint==1.5.5
+pylint==1.5.6
 pyasn1==0.1.9
 pyOpenSSL==16.0.0
 ndg-httpsclient==0.4.0
@@ -40,7 +40,7 @@ contextlib2==0.5.3
 rcssmin==1.0.6
 rjsmin==1.0.12
 
-djangowind==0.14.3
+djangowind==0.15.0
 django-tagging==0.4.3
 django-reversion==1.9.3
 djangohelpers==0.18.1
@@ -69,7 +69,7 @@ oauth==1.0.1
 oauth2==1.9rc1
 oauthlib==0.6.3
 pylti>=0.1.3
-nameparser==0.3.16
+nameparser==0.4.0
 django-bootstrap3==7.0.1
 ua_parser==0.7.1
 user_agents==1.0.1

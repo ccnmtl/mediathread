@@ -780,8 +780,8 @@ div.column-contents {
     float: left;
 }
 
-#coursefilter .ui-state-active {
-    font-weight: bold !important;
+#coursefilter a.active {
+    font-weight: bold;
 }
 
 #create-course-container {

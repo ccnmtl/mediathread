@@ -86,7 +86,7 @@ path.py==8.2.1
 simplegeneric==0.8.1
 backports.shutil_get_terminal_size==1.0.0
 pathlib2==2.1.0
-ipython==4.2.0
+ipython==4.2.1
 ipdb==0.10.0
 freezegun==0.3.7
 

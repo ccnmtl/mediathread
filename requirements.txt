@@ -76,7 +76,7 @@ ua_parser==0.7.1
 user_agents==1.0.1
 django_user_agents==0.3.0
 gunicorn==19.6.0
-traitlets==4.2.1
+traitlets==4.2.2
 ipython_genutils==0.1.0
 decorator==4.0.10
 pexpect==4.1.0

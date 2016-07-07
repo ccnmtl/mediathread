@@ -79,7 +79,7 @@ gunicorn==19.6.0
 traitlets==4.2.2
 ipython_genutils==0.1.0
 decorator==4.0.10
-pexpect==4.1.0
+pexpect==4.2.0
 ptyprocess==0.5.1
 pickleshare==0.7.2
 simplegeneric==0.8.1

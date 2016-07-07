@@ -88,5 +88,5 @@ ipython==4.2.0
 ipdb==0.10.0
 freezegun==0.3.7
 
-ccnmtlsettings==0.2.0
+ccnmtlsettings==0.3.0
 django-extensions==1.6.7

@@ -540,6 +540,9 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
 
 
 def unis_list(unis):
+    # sometimes people enter line breaks instead of commas. allow it by
+    # normalizing everything to commas
+    unis = re.sub(r'\s+', ',', unis)
     return [u.strip() for u in unis.split(",") if len(u.strip()) > 0]
 
 

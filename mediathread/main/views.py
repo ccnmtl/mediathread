@@ -539,6 +539,10 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
+def unis_list(unis):
+    return unis.split(",")
+
+
 class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     email_template = 'dashboard/email_add_uni_user.txt'
@@ -567,7 +571,7 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
             'domain': get_current_site(self.request).domain
         }
 
-        for uni in unis.split(','):
+        for uni in unis_list(unis):
             uni = uni.strip()
             if len(uni) > 0:
                 user = self.get_or_create_user(uni)

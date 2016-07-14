@@ -42,7 +42,9 @@ from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView,
     RequestCourseView, CourseManageSourcesView,
-    CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView)
+    CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView,
+    unis_list,
+)
 from mediathread.projects.models import Project
 
 
@@ -964,6 +966,21 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertTrue('efg456 is now a course member'
                         in response.cookies['messages'].value)
 
+    def test_uni_invite_post_newlines(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        url = reverse('course-roster-add-uni')
+        # sometimes they enter a newline instead of a comma
+        response = self.client.post(url, {'unis': ' abc123\nefg456,'})
+        self.assertEquals(response.status_code, 302)
+
+        user = User.objects.get(username='efg456')
+        self.assertTrue(self.sample_course.is_true_member(user))
+        self.assertTrue('efg456 is now a course member'
+                        in response.cookies['messages'].value)
+
     def test_email_invite_existing_course_member(self):
         url = reverse('course-roster-invite-email')
         self.client.login(username=self.instructor_one.username,
@@ -1131,6 +1148,17 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, [invite.email])
+
+
+class UnisListTest(TestCase):
+    def test_commas(self):
+        self.assertEqual(unis_list("foo,bar"), ["foo", "bar"])
+
+    def test_whitespace(self):
+        self.assertEqual(unis_list("\tfoo,   bar, \n"), ["foo", "bar"])
+
+    def test_newlines(self):
+        self.assertEqual(unis_list("foo\nbar\n\rbaz"), ["foo", "bar", "baz"])
 
 
 class MethCourseListAnonViewTest(TestCase):

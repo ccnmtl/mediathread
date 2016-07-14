@@ -539,6 +539,13 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
+def unis_list(unis):
+    # sometimes people enter line breaks instead of commas. allow it by
+    # normalizing everything to commas
+    unis = re.sub(r'\s+', ',', unis)
+    return [u.strip() for u in unis.split(",") if len(u.strip()) > 0]
+
+
 class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     email_template = 'dashboard/email_add_uni_user.txt'
@@ -567,24 +574,22 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
             'domain': get_current_site(self.request).domain
         }
 
-        for uni in unis.split(','):
-            uni = uni.strip()
-            if len(uni) > 0:
-                user = self.get_or_create_user(uni)
-                display_name = user_display_name(user)
-                if self.request.course.is_true_member(user):
-                    msg = '{} ({}) is already a course member'.format(
-                        display_name, uni)
-                    messages.add_message(request, messages.WARNING, msg)
-                else:
-                    email = '{}@columbia.edu'.format(uni)
-                    self.request.course.group.user_set.add(user)
-                    send_template_email(subj, self.email_template, ctx, email)
-                    msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(display_name, email)
+        for uni in unis_list(unis):
+            user = self.get_or_create_user(uni)
+            display_name = user_display_name(user)
+            if self.request.course.is_true_member(user):
+                msg = '{} ({}) is already a course member'.format(
+                    display_name, uni)
+                messages.add_message(request, messages.WARNING, msg)
+            else:
+                email = '{}@columbia.edu'.format(uni)
+                self.request.course.group.user_set.add(user)
+                send_template_email(subj, self.email_template, ctx, email)
+                msg = (
+                    '{} is now a course member. An email was sent to '
+                    '{} notifying the user.').format(display_name, email)
 
-                    messages.add_message(request, messages.INFO, msg)
+                messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
 

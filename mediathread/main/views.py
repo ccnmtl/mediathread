@@ -540,7 +540,7 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
 
 
 def unis_list(unis):
-    return unis.split(",")
+    return [u.strip() for u in unis.split(",") if len(u.strip()) > 0]
 
 
 class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
@@ -572,23 +572,21 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
         }
 
         for uni in unis_list(unis):
-            uni = uni.strip()
-            if len(uni) > 0:
-                user = self.get_or_create_user(uni)
-                display_name = user_display_name(user)
-                if self.request.course.is_true_member(user):
-                    msg = '{} ({}) is already a course member'.format(
-                        display_name, uni)
-                    messages.add_message(request, messages.WARNING, msg)
-                else:
-                    email = '{}@columbia.edu'.format(uni)
-                    self.request.course.group.user_set.add(user)
-                    send_template_email(subj, self.email_template, ctx, email)
-                    msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(display_name, email)
+            user = self.get_or_create_user(uni)
+            display_name = user_display_name(user)
+            if self.request.course.is_true_member(user):
+                msg = '{} ({}) is already a course member'.format(
+                    display_name, uni)
+                messages.add_message(request, messages.WARNING, msg)
+            else:
+                email = '{}@columbia.edu'.format(uni)
+                self.request.course.group.user_set.add(user)
+                send_template_email(subj, self.email_template, ctx, email)
+                msg = (
+                    '{} is now a course member. An email was sent to '
+                    '{} notifying the user.').format(display_name, email)
 
-                    messages.add_message(request, messages.INFO, msg)
+                messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
 

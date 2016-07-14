@@ -1157,7 +1157,7 @@ class UnisListTest(TestCase):
     def test_whitespace(self):
         self.assertEqual(unis_list("\tfoo,   bar, \n"), ["foo", "bar"])
 
-    def test_newlines(self)
+    def test_newlines(self):
         self.assertEqual(unis_list("foo\nbar\n\rbaz"), ["foo", "bar", "baz"])
 
 

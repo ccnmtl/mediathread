@@ -1,6 +1,6 @@
 --index-url https://pypi.ccnmtl.columbia.edu/
 Django==1.8.13
-psycopg2==2.6.1
+psycopg2==2.6.2
 #for MySQL: MySQL-python==1.2.5
 statsd==3.2.1
 pep8==1.7.0

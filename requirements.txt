@@ -56,7 +56,7 @@ django-jenkins==0.19.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.0.0
-django-debug-toolbar==1.4
+django-debug-toolbar==1.5
 django-markwhat==1.5
 ipaddress==1.0.16
 fake-factory==0.5.9

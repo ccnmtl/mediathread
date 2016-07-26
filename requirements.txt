@@ -84,7 +84,7 @@ ptyprocess==0.5.1
 pickleshare==0.7.2
 simplegeneric==0.8.1
 pathlib2==2.1.0
-ipython==4.2.0
+ipython==5.0.0
 ipdb==0.10.0
 freezegun==0.3.7
 django-smtp-ssl==1.0

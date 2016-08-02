@@ -5,7 +5,7 @@ psycopg2==2.6.2
 statsd==3.2.1
 pep8==1.7.0
 pyflakes==1.2.3
-mccabe==0.5.0
+mccabe==0.5.2
 pycodestyle==2.0.0
 enum34==1.1.6
 configparser==3.5.0

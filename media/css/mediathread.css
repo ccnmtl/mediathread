@@ -549,12 +549,12 @@ html.busy, html.busy * {
     background-color: #383838;
 }
 
-ul#standardnav
-{
+ul#standardnav {
 	float: right;
     list-style: none;
     z-index: 9998;
-    padding: 10px 0 0 0;
+    padding: 0px;
+    margin: 0 10px 0 0;
     font-size: .857em;
 }
 
@@ -565,7 +565,7 @@ ul#standardnav
     float: left;
     border: 0;
     margin: 0;
-    padding: 0 1.5em 0 .3em;
+    padding: 10px 1.5em 0 .3em;
 }
 
 #standardnav a,
@@ -619,6 +619,15 @@ ul#standardnav
 
 #standardnav li .settings_submenu hr {
     margin: 10px 0;
+}
+
+#standardnav .divider-vertical {
+    height: 35px;
+    width: 1px;
+    margin: 0 9px;
+    border-right: 1px solid #ffffff;
+    border-left: 1px solid #f2f2f2;
+    padding: 0px;
 }
 
 /* ---- Footer block elements ---------- */

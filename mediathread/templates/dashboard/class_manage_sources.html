@@ -1,15 +1,9 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load assetlinks %}
-{% block title %}Manage Sources{% endblock %}
+{% block title %}{{block.super}}&mdash; Manage Sources{% endblock %}
 
-{% block switchcourse %}{% endblock %}
-
-{% block dashboard_module_header %}
-    <h2>Manage Sources</div></h2>
-{% endblock %}
-
-{% block dashboard_module %}
-
+{% block dashboard_content %}
+    <h2>Manage Sources</h2>
     <div class="well">
     <h3>Mediathread Video Uploader</h3>
     <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.

@@ -24,7 +24,6 @@ from django.template import loader
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
@@ -728,20 +727,6 @@ class CourseAcceptInvitationView(FormView):
 
     def get_success_url(self):
         return reverse('course-invite-complete')
-
-
-class InstructorDashboardView(LoggedInFacultyMixin, DetailView):
-    model = Course
-    template_name = 'main/instructor_dashboard.html'
-
-    def get_object(self):
-        return self.request.course
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super(InstructorDashboardView, self).get_context_data(
-            *args, **kwargs)
-        ctx.update({'course': ctx.get('object')})
-        return ctx
 
 
 class InstructorDashboardSettingsView(

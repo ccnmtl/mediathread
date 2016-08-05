@@ -4378,3 +4378,36 @@ a.btn.btn-default img.left {
     background-color: white;
     color: #337ab7;
 }
+
+.layout-horizontal {
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+.layout-horizontal .layout-horizontal-left {
+}
+.layout-horizontal .layout-horizontal-right {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+
+ul.section-tabs {
+    list-style: none;
+    margin: 0;
+    margin-right: 12px;
+    padding: 0;
+}
+
+ul.section-tabs>li>a {
+    display: block;
+    padding: 6px 12px;
+}
+
+ul.section-tabs>li>a.active {
+    background-color: #1b75bc;
+    color: white;
+}

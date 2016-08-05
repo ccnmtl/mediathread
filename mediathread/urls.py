@@ -18,7 +18,7 @@ from mediathread.assetmgr.views import (
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     MethCourseListView, AffilActivateView,
-    InstructorDashboardView, InstructorDashboardSettingsView,
+    InstructorDashboardSettingsView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, course_detail_view,
@@ -211,9 +211,6 @@ urlpatterns = patterns(
     (r'^project/', include('mediathread.projects.urls')),
 
     # Instructor Dashboard
-    url(r'^dashboard/$',
-        InstructorDashboardView.as_view(),
-        name='instructor-dashboard'),
     url(r'^dashboard/settings/$',
         InstructorDashboardSettingsView.as_view(),
         name='course-settings-general'),

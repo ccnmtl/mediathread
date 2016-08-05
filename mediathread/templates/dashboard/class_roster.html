@@ -1,9 +1,7 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load coursetags %}
 {% load static %}
-{% block title %}Course Roster{% endblock %}
-
-{% block switchcourse %}{% endblock %}
+{% block title %}{{block.super}}&mdash; Course Roster{% endblock %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
@@ -13,10 +11,6 @@
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
-{% endblock %}
-
-{% block dashboard_module_header %}
-    <h2>Course Roster</h2>
 {% endblock %}
 
 {% block js %}
@@ -36,8 +30,8 @@
     </script>
 {% endblock %}
 
-{% block dashboard_module %}
-
+{% block dashboard_content %}
+    <h2>Course Roster</h2>
 <div class="roster-container">
     <div>
         <h3>

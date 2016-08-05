@@ -107,7 +107,6 @@ NON_ANONYMOUS_PATHS = (
     '/reports/',
     '/setting/',
     '/taxonomy/',
-    '/upgrade/',
     '/upload/',
     re.compile(r'^/$'),
 )

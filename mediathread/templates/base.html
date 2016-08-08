@@ -62,37 +62,6 @@
                                     <a class="warning" href="/impersonate/stop/">Impersonate Stop</a>
                                 </li>
                             {% endif %}
-                            <li>
-                                <div class="settings_menu user closed">
-                                    <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                    <div class="left settings_menu_title">{% public_name for user %}</div>
-                                </div>
-                                <div class="visualclear"></div>
-                                <!-- Settings Menu -->
-                                <div class="settings_submenu" style="display: none">
-                                    {% if user.is_staff %}
-                                        <a href="/admin/">Admin</a>
-                                    {% endif %}
-                                    {% if user.is_superuser %}
-                                        <a href="/impersonate/search/">Impersonate</a>
-                                    {% endif %}
-
-                                    {% num_courses for user as user_courses %}
-                                    {% if user_courses > 1 or user.is_staff %}
-                                        <a href="/?unset_course">Switch Course</a>
-                                    {% endif %}
-
-                                    {% if user.has_usable_password %}
-                                        <a href="/accounts/password_change/">Change Password</a>
-                                    {% endif %}
-
-                                    {% if role_in_course == 'instructor' %}
-                                        <a href="/course/request/">Request Course</a>
-                                    {% endif %}
-
-                                    <a href="/accounts/logout/?next=/">Log Out</a>
-                                </div>
-                            </li>
 
                             {% if role_in_course == 'instructor' %}
                             <li>
@@ -152,12 +121,41 @@
                                     <!-- Settings Menu -->
                                     <div class="settings_submenu" style="display: none">
                                          <a href="/help/">Knowledge Base</a>
+                                         <a href="/contact/">Contact Us</a>
                                     </div>
                                 {% endblock %}
                             </li>
-
+                            <li class="divider-vertical"></li>
                             <li>
-                              <div unselectable="on"><a href="/contact/">Contact Us</a></div>
+                                <div class="settings_menu user closed">
+                                    <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                    <div class="left settings_menu_title">{% public_name for user %}</div>
+                                </div>
+                                <div class="visualclear"></div>
+                                <!-- Settings Menu -->
+                                <div class="settings_submenu" style="display: none">
+                                    {% if user.is_staff %}
+                                        <a href="/admin/">Admin</a>
+                                    {% endif %}
+                                    {% if user.is_superuser %}
+                                        <a href="/impersonate/search/">Impersonate</a>
+                                    {% endif %}
+
+                                    {% num_courses for user as user_courses %}
+                                    {% if user_courses > 1 or user.is_staff %}
+                                        <a href="/?unset_course">My Courses</a>
+                                    {% endif %}
+
+                                    {% if user.has_usable_password %}
+                                        <a href="/accounts/password_change/">Change Password</a>
+                                    {% endif %}
+
+                                    {% if role_in_course == 'instructor' %}
+                                        <a href="/course/request/">Request Course</a>
+                                    {% endif %}
+
+                                    <a href="/accounts/logout/?next=/">Log Out</a>
+                                </div>
                             </li>
                         {% else %}
                             <li><div unselectable="on"><a href="/help/">Help</a></div></li>
@@ -167,8 +165,6 @@
                                 <li><a href="/accounts/login/">Log In</a></li>
                             {% endif %}
                         {% endif %}
-
-
                     </ul>
                 {% endblock %}
             </div>

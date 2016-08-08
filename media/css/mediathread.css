@@ -113,6 +113,14 @@ ol, ul
     font-size: 100%;
 }
 
+/* Undo default styles on nav tabs */
+ul.nav-tabs {
+    display: inherit;
+    margin: inherit;
+    padding: inherit;
+    font-size: inherit;
+}
+
 a:link, a:active, a:visited {
 	color: #1b75bc;
 	text-decoration: none;
@@ -2772,7 +2780,7 @@ a.hs-control.hs-control-show.plist.float
 }
 
 #course-list {
-    width: 980px;
+    margin-bottom: 10px;
 }
 
 .collection_button {

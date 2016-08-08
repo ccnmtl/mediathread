@@ -1179,7 +1179,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         with override_flag('course_activation', active=False):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, 'My Courses')
         self.assertEqual(len(response.context['object_list']), 0)
         with self.assertRaises(KeyError):
             response.context['activatable_affils']
@@ -1189,7 +1189,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, 'My Courses')
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 0)
 
@@ -1200,7 +1200,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, 'My Courses')
         self.assertContains(response, aa.coursedirectory_name)
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 1)
@@ -1213,7 +1213,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, 'My Courses')
         self.assertNotContains(response, aa.coursedirectory_name)
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 1)
@@ -1226,7 +1226,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         with override_flag('course_activation', active=True):
             response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Course Selection')
+        self.assertContains(response, 'My Courses')
         self.assertContains(response, aa.coursedirectory_name)
         self.assertEqual(len(response.context['object_list']), 0)
         self.assertEqual(len(response.context['activatable_affils']), 1)

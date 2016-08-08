@@ -5,4 +5,4 @@ Your instructor has added you to the Mediathread course: {{course.title}}.
 You can login to Mediathread at https://{{ domain }} with your Columbia University Network ID (UNI).
 
 Thanks,
-The Mediathread Staff
+The Mediathread Team

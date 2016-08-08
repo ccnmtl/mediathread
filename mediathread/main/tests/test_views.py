@@ -870,6 +870,13 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
         self.url = reverse('course-roster')
 
+    def test_validate_uni(self):
+        view = CourseAddUserByUNIView()
+        self.assertTrue(view.validate_uni('abc123'))
+        self.assertTrue(view.validate_uni('ab4567'))
+        self.assertFalse(view.validate_uni('alpha'))
+        self.assertFalse(view.validate_uni('alpha@columbia.edu'))
+
     def test_get(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
@@ -956,14 +963,24 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         user.email = 'jsmith@example.com'
         user.save()
 
-        response = self.client.post(url, {'unis': ' abc123 ,efg456,'})
+        response = self.client.post(
+            url, {'unis': ' abc123 ,efg456,az4@columbia.edu,1234 56'})
         self.assertEquals(response.status_code, 302)
 
         user = User.objects.get(username='efg456')
         self.assertTrue(self.sample_course.is_true_member(user))
+        user = User.objects.get(username='abc123')
+        self.assertTrue(self.sample_course.is_true_member(user))
+
         self.assertTrue('John Smith (abc123) is already a course member'
                         in response.cookies['messages'].value)
         self.assertTrue('efg456 is now a course member'
+                        in response.cookies['messages'].value)
+        self.assertTrue('az4@columbia.edu is not a valid UNI'
+                        in response.cookies['messages'].value)
+        self.assertTrue('1234 is not a valid UNI'
+                        in response.cookies['messages'].value)
+        self.assertTrue('56 is not a valid UNI'
                         in response.cookies['messages'].value)
 
     def test_uni_invite_post_newlines(self):

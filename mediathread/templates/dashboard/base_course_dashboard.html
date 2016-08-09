@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load waffle_tags %}
 
-{% block title %}&mdash; Instructor Dashboard {% endblock %}
+{% block title %}&mdash; Course Settings {% endblock %}
 
 {% block content %}
     {{ block.super }}
+
+    <div class="dashboard-module-header"><h2>Course Settings</h2></div>
 
     <div class="layout-horizontal">
         <div class="layout-horizontal-left">
@@ -43,7 +45,9 @@
         </div>
 
         <div class="layout-horizontal-right">
-            {% block dashboard_content %}{% endblock %}
+            <div class="dashboard-module-body">
+                {% block dashboard_content %}{% endblock %}
+            </div>
         </div>
     </div><!-- .layout-horizontal -->
 {% endblock %}

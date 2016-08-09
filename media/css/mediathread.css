@@ -499,19 +499,7 @@ img
 
 input.autocomplete {
     width: 400px;
-    height: 25px;
-    margin: 12px;
-    padding: 2px 4px;
-    color: black;
-    border: 1px solid #CCC;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;    
-    font-size: 1em;
-}
-
-input.autocomplete.default {
-    color: #999;
+    display: inline;
 }
 
 input[name='decoy'] {
@@ -1545,7 +1533,7 @@ div.collection-help-tab {
 }
 
 td.collection.minimized div.collection-help-tab {
-    left: 249px;
+    left: 254px;
 }
 
 td.collection div.collection-help {
@@ -1570,7 +1558,7 @@ td.collection div.collection-help {
 }
 
 td.collection.minimized div.collection-help {
-    width: 240px;
+    width: 245px;
     left: 37px;
     padding: 10px;    
 }
@@ -2531,7 +2519,6 @@ div.gallery-item h4.asset_title {
     padding: 10px 0;
     margin: 0 10px 10px 10px;
     border-bottom: solid 1px #EFEFEF;
-    width: 75%;
     min-width: 900px;
 }
 
@@ -2539,65 +2526,65 @@ div.gallery-item h4.asset_title {
     margin-right: 15px;
 }
 
-#dashboard-module-body div.help-tab { 
-    top: -42px;
-    width: 25px;
+.dashboard-module-body {
+    min-width: 900px;
+}
+
+.dashboard-module-body .help-tab { 
+    top: 44px;
+    right: 5px;
+    width: 33px;
     border-top: 2px solid #ddd;
     border-left: 2px solid #ddd;
     border-right: 2px solid #ddd;
 }
 
-#dashboard-module-body div.feature-help {
+.dashboard-module-body .feature-help {
     width: 500px;
-    top: -14px;
+    top: 75px;
     right: 0px;
     border: 2px solid #CCC;
     z-index: 10001;
 }
 
-#dashboard-module-body {
-    position: relative;
-    min-width: 900px;
-    min-height: 600px;
-    width: 75%;
-    margin: 0 10px;
+.dashboard-module-body h3 {
+    font-size: 133%;
+    margin: 0 0 20px 0;
 }
 
-#dashboard-module-body .suggested-collection {
-   border: 1px solid #ccc;
+.dashboard-module-body .suggested-collection {
+   border-bottom: 1px solid #ccc;
    margin: 10px 10px;
    width: 95%;
    height: auto;
    max-height: none;
-   background-color: #dedede; 
    padding: 10px 10px 5px;
 }
-   
-#dashboard-module-body .suggested-collection h3 {
+
+.dashboard-module-body .suggested-collection h3 {
    font-size: 100%;
 }
 
-#dashboard-module-body .suggested-collection table,
-#dashboard-module-body .suggested-collection table tr,
-#dashboard-module-body .suggested-collection table tr td {
+.dashboard-module-body .suggested-collection table,
+.dashboard-module-body .suggested-collection table tr,
+.dashboard-module-body .suggested-collection table tr td {
     border: none;
-    
 }
 
-#dashboard-module-body .suggested-collection table,
-#dashboard-module-body .suggested-collection table tr {
+.dashboard-module-body .suggested-collection table,
+.dashboard-module-body .suggested-collection table tr {
     width: 100%;
 }
 
-#dashboard-module-body .suggested-collection table tr td.thumb {
+.dashboard-module-body .suggested-collection table tr td.thumb {
     width: 125px;
-    height: 85px;
+    height: auto;
     vertical-align: top;
 }
 
-#dashboard-module-body .suggested-collection table tr td.thumb img {
-    max-width: 30px;
-    max-height: 30px;
+.dashboard-module-body .suggested-collection table tr td.thumb img {
+    width: 80px;
+    height: auto;
 }
 
 a.collection-link {
@@ -3418,7 +3405,7 @@ div.asset-view-help {
     -moz-border-radius-bottomright: 10px;    
     border-bottom-right-radius: 10px;
     top: -13px;
-    right: -1px;
+    right: -18px;
     border: none;
 }
 
@@ -3440,8 +3427,8 @@ div.asset-view-help-tab {
     z-index: 10002;
     margin: -1px 2px 0 0;
     padding: 2px;
-    right: -1px;
-    top: -38px;
+    right: -20px;
+    top: -37px;
     -webkit-border-top-left-radius: 10px;
     -webkit-border-top-right-radius: 10px;
     -moz-border-radius-topleft: 10px;
@@ -3672,15 +3659,8 @@ input.annotation-listitem-icon.delete {
 }
 
 /** Migrate Course Materials **/
-div#available-courses-selector {
-    height: 60px;
-    background-color: #ddd;
-    margin-top: 5px;
-}
-
 div#course-materials-container {
     margin-top: 5px;
-    
 }
 
 #switch-course {
@@ -3691,16 +3671,6 @@ div#course-materials-container {
 div.course-information-container {
     float: left;
     width: 25%;
-}
-
-div.on-behalf-of-container {
-    background-color: #f5f5f5;
-    padding: 10px;
-}
-
-div.course-information {
-    background-color: #f5f5f5;
-    padding: 10px;
 }
 
 div#course div.meta {
@@ -3715,9 +3685,12 @@ div.course-information input.rounded-button {
 
 div.selected-for-import {
     float: right;
-    margin-top: 
     margin-left: 50px;
-    width: 65%;
+    width: 70%;
+}
+
+#import-selected {
+    margin-left: 5px;
 }
 
 div.selected-for-import div.results {    

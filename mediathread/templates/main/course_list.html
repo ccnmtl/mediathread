@@ -2,10 +2,10 @@
 {% load coursetags %}
 {% load static %}
 
-{% block title %}&mdash; Homepage{% endblock %}
+{% block title %}&mdash; My Courses{% endblock %}
 
 {% block coursetitle %}
-    Course Selection
+    My Courses
 {% endblock %}
 
 {% block css %}
@@ -38,26 +38,27 @@
 
 {% block content %}
     <div id="course-list">
-        <div id="coursefilter">
-            <span class="h5">View courses for:</span>
-
-            <div class="btn-group" role="group" aria-label="select year">
+        <ul class="nav nav-tabs" aria-label="select timeframe">
+            <li class="{% if semester_view == 'past' %}active{% endif %}">
                 <a id="pastsemesters"
                    href="?semester_view=past"
-                   class="btn btn-default {% if semester_view == 'past' %}active{% endif %}"
-                >Past Courses</a>
+                >Past</a>
+            </li>
+            <li class="{% if semester_view == 'current' %}active{% endif %}">
                 <a id="currentsemester"
                    href="?semester_view=current"
-                   class="btn btn-default {% if semester_view == 'current' %}active{% endif %}"
-                >Current Courses</a>
-                <a id="future_semesters"
-                   href="?semester_view=future"
-                   class="btn btn-default {% if semester_view == 'future' %}active{% endif %}"
-                >Future Courses</a>
-            </div>
-        </div>
+                >Current</a>
+            </li>
+            <li class="{% if semester_view == 'future' %}active{% endif %}">
+                <a id="future_semesters" href="?semester_view=future">Future</a>
+            </li>
+            <!-- TODO
+            <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
+                <a href="?semester_view=sandbox">Sandboxes</a>
+            </li>
+            -->
+        </ul>
     </div>
-    <div class="visualclear"></div>
 
     <form role="search">
         <input class="course-search search-box form-control"

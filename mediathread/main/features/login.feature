@@ -37,7 +37,8 @@ Feature: Login
         When I click the Log In button
 
         Then I am at the Switch Course page
-        Then there is an "Sample Course" link
+        When I click the "Sandboxes" link
+        Then there is a "Sample Course" link
         When I click the "Sample Course" link
 
         Then I am at the Home page
@@ -57,6 +58,7 @@ Feature: Login
         When I click the Log In button
 
         Then I am at the Switch Course page
+        When I click the "Sandboxes" link
         Then there is an "Alternate Course" link
         Then there is an "Sample Course" link
 
@@ -68,6 +70,7 @@ Feature: Login
         When I click the "My Courses" link
         Then I am at the Switch Course page
 
+        When I click the "Sandboxes" link
         When I click the "Sample Course" link
         Then I am in the Sample Course class
 

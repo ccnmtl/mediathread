@@ -52,11 +52,9 @@
             <li class="{% if semester_view == 'future' %}active{% endif %}">
                 <a id="future_semesters" href="?semester_view=future">Future</a>
             </li>
-            <!-- TODO
             <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
                 <a href="?semester_view=sandbox">Sandboxes</a>
             </li>
-            -->
         </ul>
     </div>
 
@@ -72,6 +70,10 @@
         <h2>Past Courses</h2>
     {% elif semester_view == 'current' %}
         <h2>Current Courses</h2>
+    {% elif semester_view == 'future' %}
+        <h2>Future Courses</h2>
+    {% elif semester_view == 'sandbox' %}
+        <h2>Sandbox Courses</h2>
     {% endif %}
 
     {% if courses|length > 0 %}
@@ -95,27 +97,6 @@
         </table>
     {% else %}
         No courses match this criteria.
-    {% endif %}
-
-    {% if infoless_courses %}
-        <h2>Sandboxes</h2>
-        <table class="table course-choices tablesorter course-sandboxes">
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Instructor</th>
-                    <th>Role</th>
-                    {% if add_privilege %}
-                        <th class="nosort">Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in infoless_courses %}
-                    {% include 'courseaffils/course_row.html' %}
-                {% endfor %}
-            </tbody>
-        </table>
     {% endif %}
 
     </div>

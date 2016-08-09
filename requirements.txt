@@ -49,7 +49,7 @@ django-reversion==1.9.3
 djangohelpers==0.18.1
 django-contrib-comments==1.7.2
 django-threadedcomments==1.0b1
-django-courseaffils==2.1.8
+django-courseaffils==2.1.9
 django-statsd-mozilla==0.3.16
 raven==5.24.2
 django-appconf==1.0.2  # django_compressor

@@ -1330,31 +1330,10 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             [settings.SERVER_EMAIL])
 
 
-class InstructorDashboardViewTest(LoggedInUserTestMixin, TestCase):
-    def setUp(self):
-        super(InstructorDashboardViewTest, self).setUp()
-        self.url = reverse('instructor-dashboard')
-        self.course = CourseFactory()
-
-        self.u.groups.add(self.course.group)
-        self.u.groups.add(self.course.faculty_group)
-
-        set_course_url = '/?set_course=%s' % self.course.group.name
-        self.client.get(set_course_url)
-
-    def test_get(self):
-        response = self.client.get(reverse('instructor-dashboard'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(
-            response,
-            'Course Settings: {}'.format(self.course.title))
-        self.assertEqual(response.context['object'], self.course)
-
-
 class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(InstructorDashboardSettingsViewTest, self).setUp()
-        self.url = reverse('instructor-dashboard')
+        self.url = reverse('course-settings-general')
         self.course = CourseFactory()
 
         self.u.groups.add(self.course.group)

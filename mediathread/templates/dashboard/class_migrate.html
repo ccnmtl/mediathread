@@ -1,7 +1,7 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load coursetags %}
 
-{% block title %}Migrate Course Materials{% endblock %}
+{% block title %}{{block.super}}&mdash; Migrate Course Materials{% endblock %}
 
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
@@ -225,18 +225,13 @@
     </script>
 {% endblock %}
 
-{% block switchcourse %}{% endblock %}
-
-{% block dashboard_module_header %}
+{% block dashboard_content %}
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
 
     <h2>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h2>
 
     {% endwith %}{% endwith %}
-{% endblock %}
-
-{% block dashboard_module %}
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
 

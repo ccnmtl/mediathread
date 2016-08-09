@@ -8,4 +8,4 @@ into your web browser:
 https://{{ domain }}{% url 'course-invite-accept' uidb64=invite.uuid %}
 
 Thanks,
-The Mediathread Staff
+The Mediathread Team

@@ -549,6 +549,10 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     email_template = 'dashboard/email_add_uni_user.txt'
 
+    def validate_uni(self, uni):
+        pattern = re.compile(r'^[a-z]{1,3}\d+$')
+        return pattern.match(uni) is not None
+
     def get_or_create_user(self, uni):
         try:
             user = User.objects.get(username=uni)
@@ -574,6 +578,12 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
         }
 
         for uni in unis_list(unis):
+            uni = uni.lower().strip()
+            if not self.validate_uni(uni):
+                msg = '{} is not a valid UNI'.format(uni)
+                messages.add_message(request, messages.ERROR, msg)
+                continue
+
             user = self.get_or_create_user(uni)
             display_name = user_display_name(user)
             if self.request.course.is_true_member(user):

@@ -97,4 +97,4 @@ freezegun==0.3.7
 django-smtp-ssl==1.0
 
 ccnmtlsettings==0.3.0
-django-extensions==1.6.7
+django-extensions==1.7.1

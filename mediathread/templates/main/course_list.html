@@ -59,6 +59,7 @@
         </ul>
     </div>
 
+    {% if courses|length > 5 %}
     <form role="search">
         <input class="course-search search-box form-control"
                type="search"
@@ -66,6 +67,7 @@
                autofocus
                placeholder="Filter">
     </form>
+    {% endif %}
 
     {% if semester_view == 'past' %}
         <h2>Past Courses</h2>

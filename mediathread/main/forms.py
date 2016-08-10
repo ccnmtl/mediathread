@@ -199,16 +199,49 @@ class AcceptInvitationForm(forms.Form):
 class CourseActivateForm(forms.Form):
     affil = forms.IntegerField(widget=forms.HiddenInput())
     course_name = forms.CharField(label='Course Name')
-    consult_or_demo = forms.ChoiceField(
-        label='Will you need a consultation or an in-class demo?',
-        required=True,
+    date_range_start = forms.DateField(
+        label='',
+        help_text='Start date',
+        required=False)
+    date_range_end = forms.DateField(
+        label='',
+        help_text='End date',
+        required=False)
+    request_consult_or_demo = forms.MultipleChoiceField(
+        label='Would you like to request...',
+        required=False,
         choices=(
-            ('consultation', 'Consultation'),
-            ('demo', 'In-class demo'),
-            ('none', 'None')),
-        widget=forms.RadioSelect,
-        initial='none'
-    )
+            ('consultation',
+             'an in-class demonstration for your students led by a '
+             'CTL learning designer'),
+            ('setup_consult',
+             'an instructor consultation about setup and use of Mediathread'),
+            ('curricular_consult',
+             'an instructor consultation on curricular and '
+             'assessment design with Mediathread')),
+        widget=forms.CheckboxSelectMultiple)
+    how_will_mediathread_improve_your_class = forms.CharField(
+        label='How do you envision Mediathread improving learning '
+        'in your class? (Your answer will help us direct your inquiry '
+        'to the appropriate CTL learning designer).',
+        required=False,
+        widget=forms.Textarea(
+            attrs={'rows': 5, 'placeholder': ''}))
+    hear_about_mediathread = forms.ChoiceField(
+        label='How did you hear about Mediathread?',
+        required=False,
+        choices=(
+            ('', '------'),
+            ('demo', 'CTL Mediathread demo'),
+            ('workshop', 'CTL Workshop'),
+            ('recommendation_colleague', 'Recommendation from a colleague'),
+            ('recommendation_student', 'Recommendation from a student'),
+            ('other', 'Other')))
+    used_mediathread = forms.ChoiceField(
+        label='Have you used Mediathread before?',
+        required=False,
+        choices=(('yes', 'Yes'), ('no', 'No')),
+        widget=forms.RadioSelect)
 
 
 class DashboardSettingsForm(forms.ModelForm):

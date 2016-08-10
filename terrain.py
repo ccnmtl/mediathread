@@ -190,8 +190,22 @@ def i_am_username_in_course(step, username, coursename):
         form.submit()
 
         if re.match(r'^instructor', username):
-            course = world.browser.find_element_by_css_selector(
-                'a.choose-course')
+            try:
+                course = world.browser.find_element_by_css_selector(
+                    'a.choose-course')
+            except NoSuchElementException:
+                wait.until(
+                    visibility_of_element_located((By.ID, 'sandboxes_link')))
+                sandboxes_link = world.browser.find_element_by_id(
+                    'sandboxes_link')
+                sandboxes_link.click()
+
+                wait = ui.WebDriverWait(world.browser, 5)
+                wait.until(
+                    visibility_of_element_located(
+                        (By.CSS_SELECTOR, 'a.choose-course')))
+                course = world.browser.find_element_by_css_selector(
+                    'a.choose-course')
             course.click()
 
         wait = ui.WebDriverWait(world.browser, 5)

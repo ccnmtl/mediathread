@@ -144,7 +144,8 @@ Feature: Sources
         When I type "superuser" for username
         When I type "test" for password
         When I click the Log In button        
-        Then I am at the Switch Course page        
+        Then I am at the Switch Course page
+        When I click the "Sandboxes" link
         When I click the "Sample Course" link
         Then I am in the Sample Course class
 

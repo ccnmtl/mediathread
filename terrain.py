@@ -546,6 +546,15 @@ def the_collection_panel_has_no_title_item(step, title):
     assert len(elts) == 0
 
 
+def get_icon_from_name(item, name):
+    if name == "delete":
+        return item.find_element_by_css_selector(".%s_icon" % name)
+    elif name == "edit":
+        s = "a.%s-asset-inplace" % name
+        return item.find_element_by_css_selector(s)
+    return None
+
+
 @step(u'I click the "([^"]*)" item ([^"]*) icon')
 def i_click_the_title_item_name_icon(step, title, name):
     time.sleep(1)
@@ -558,12 +567,7 @@ def i_click_the_title_item_name_icon(step, title, name):
             continue
 
         try:
-            if name == "delete":
-                icon = item.find_element_by_css_selector(".%s_icon" % name)
-            elif name == "edit":
-                s = "a.%s-asset-inplace" % name
-                icon = item.find_element_by_css_selector(s)
-
+            icon = get_icon_from_name(item, name)
             icon.click()
             return  # found the link & the icon
         except NoSuchElementException:
@@ -770,6 +774,23 @@ def there_is_a_status_title_reply_by_author(step, status, title, author):
     assert False, "Unable to find assignment response named %s" % title
 
 
+def get_title_and_assignment(e):
+    assignment = False
+    try:
+        title_elt = e.find_element_by_css_selector(
+            "a.asset_title.type-project")
+    except NoSuchElementException:
+        try:
+            title_elt = e.find_element_by_css_selector(
+                "a.asset_title.type-assignment")
+            assignment = True
+        except NoSuchElementException:
+            world.browser.get_screenshot_as_file("/tmp/selenium.png")
+            assert False, "Cannot find the title %s css selector"
+
+    return title_elt, assignment
+
+
 @step(u'there is an? ([^"]*) "([^"]*)" project by ([^"]*)')
 def there_is_a_status_title_project_by_author(step, status, title, author):
     elts = world.browser.find_elements_by_css_selector("li.projectlist")
@@ -777,17 +798,7 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
 
     assignment = False
     for e in elts:
-        try:
-            title_elt = e.find_element_by_css_selector(
-                "a.asset_title.type-project")
-        except NoSuchElementException:
-            try:
-                title_elt = e.find_element_by_css_selector(
-                    "a.asset_title.type-assignment")
-                assignment = True
-            except NoSuchElementException:
-                world.browser.get_screenshot_as_file("/tmp/selenium.png")
-                assert False, "Cannot find the title %s css selector"
+        title_elt, assignment = get_title_and_assignment(e)
 
         if title_elt.text.strip().startswith(title):
             # type
@@ -894,34 +905,43 @@ def given_the_item_visibility_is_value(step, value):
             world.browser.get(django.django_url("/"))
 
 
+def get_selector_from_ftype(ftype):
+    if ftype == "text":
+        return "input[type=text]"
+    elif ftype == "textarea":
+        return "textarea"
+    return None
+
+
+def i_set_the_label_ftype_to_value_selenium(label, ftype, value, sid):
+    parent = world.browser.find_element_by_id(sid)
+
+    selector = get_selector_from_ftype(ftype)
+    elts = parent.find_elements_by_css_selector(selector)
+    for elt in elts:
+        try:
+            label_attr = elt.get_attribute('data-label')
+        except StaleElementReferenceException:
+            continue
+
+        if label_attr == label:
+            try:
+                elt.clear()
+                time.sleep(1)
+                elt.send_keys(value)
+                return
+            except InvalidElementStateException:
+                time.sleep(1)
+                elt.clear()
+                time.sleep(1)
+                elt.send_keys(value)
+
+
 @step(u'I set the "([^"]*)" "([^"]*)" field to "([^"]*)"')
 def i_set_the_label_ftype_to_value(step, label, ftype, value,
                                    sid='asset-view-details'):
     if world.using_selenium:
-        parent = world.browser.find_element_by_id(sid)
-
-        if ftype == "text":
-            selector = "input[type=text]"
-        elif ftype == "textarea":
-            selector = "textarea"
-        elts = parent.find_elements_by_css_selector(selector)
-        for elt in elts:
-            try:
-                label_attr = elt.get_attribute('data-label')
-            except StaleElementReferenceException:
-                continue
-
-            if label_attr == label:
-                try:
-                    elt.clear()
-                    time.sleep(1)
-                    elt.send_keys(value)
-                    return
-                except InvalidElementStateException:
-                    time.sleep(1)
-                    elt.clear()
-                    time.sleep(1)
-                    elt.send_keys(value)
+        i_set_the_label_ftype_to_value_selenium(label, ftype, value, sid)
 
 
 @step(u'I remove the item tags')
@@ -1047,34 +1067,62 @@ def when_i_view_the_title_asset(step, title):
     world.browser.get(django.django_url(url))
 
 
+def get_browser(parent):
+    if parent:
+        return parent
+    else:
+        return world.browser
+
+
+def get_input_submit_elt(e, value, parent):
+    if e is None:
+        selector = "input[type=submit][value='{}']".format(value)
+        try:
+            e = parent.find_element_by_css_selector(selector)
+        except NoSuchElementException:
+            pass  # try something else
+
+    return e
+
+
+def get_input_button_elt(e, value, parent):
+    if e is None:
+        selector = "input[type=button][value='{}']".format(value)
+        try:
+            e = parent.find_element_by_css_selector(selector)
+        except NoSuchElementException:
+            pass  # try something else
+    return e
+
+
+def get_button_contains_elt(e, value, parent):
+    if e is None:
+        selector = "//button[contains(.,'{}')]".format(value)
+        try:
+            e = parent.find_element_by_xpath(selector)
+        except NoSuchElementException:
+            pass  # try something else
+    return e
+
+
+def get_by_partial_link_text(e, value, parent):
+    if e is None:
+        try:
+            e = parent.find_element_by_partial_link_text(value)
+        except NoSuchElementException:
+            pass  # try something else
+    return e
+
+
 def find_button_by_value(value, parent=None):
+    parent = get_browser(parent)
 
-    if not parent:
-        parent = world.browser
+    e = None
+    e = get_input_submit_elt(e, value, parent)
+    e = get_input_button_elt(e, value, parent)
+    e = get_button_contains_elt(e, value, parent)
+    e = get_by_partial_link_text(e, value, parent)
 
-    selector = "input[type=submit][value='{}']".format(value)
-    try:
-        return parent.find_element_by_css_selector(selector)
-    except NoSuchElementException:
-        pass  # try something else
-
-    selector = "input[type=button][value='{}']".format(value)
-    try:
-        return parent.find_element_by_css_selector(selector)
-    except NoSuchElementException:
-        pass  # try something else
-
-    selector = "//button[contains(.,'{}')]".format(value)
-    try:
-        return parent.find_element_by_xpath(selector)
-    except NoSuchElementException:
-        pass  # try something else
-
-    try:
-        return parent.find_element_by_partial_link_text(value)
-    except NoSuchElementException:
-        pass  # try something else
-
-    return None
+    return e
 
 world.find_button_by_value = find_button_by_value

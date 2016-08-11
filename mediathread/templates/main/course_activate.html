@@ -1,17 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap3 %}
 {% load methtags %}
 
 {% block title %}&mdash; Activate Course{% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker3.min.css' %}" />
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/lib/bootstrap-datepicker.min.js' %}"></script>
+    <script>
+    jQuery(document).ready(function() {
+        jQuery('#id_date_range_start,#id_date_range_end').datepicker();
+    });
+    </script>
+{% endblock %}
+
+{% block coursetitle %}
+    Course Activation: {{affil.coursedirectory_name}} ({{term|int_to_term}} {{year}})
+{% endblock %}
+
 {% block content %}
-    <form action="." method="post" class="form col-md-6">
+    <form action="." method="post" class="form col-md-8">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <h1>Course Activation: {{affil.coursedirectory_name}} ({{term|int_to_term}} {{year}})</h1>
         <input id="id_affil" name="affil" type="hidden" value="{{affil.pk}}">
         {% bootstrap_field form.course_name %}
-        {% bootstrap_field form.consult_or_demo %}
+        <hr />
+        <p class="help-block">All the following fields are optional.</p>
+        <label>Anticipated date range of Mediathread use in this course.</label>
+        {% bootstrap_field form.date_range_start form_group_class='form-group col-xs-6' %}
+        {% bootstrap_field form.date_range_end form_group_class='form-group col-xs-6' %}
+        {% bootstrap_field form.request_consult_or_demo %}
+        {% bootstrap_field form.how_will_mediathread_improve_your_class %}
+        {% bootstrap_field form.hear_about_mediathread %}
+        {% bootstrap_field form.used_mediathread %}
         {% buttons submit='Submit' %}{% endbuttons %}
     </form>
 {% endblock %}

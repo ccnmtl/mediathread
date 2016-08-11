@@ -30,7 +30,9 @@
         {% bootstrap_field form.course_name %}
         <hr />
         <p class="help-block">All the following fields are optional.</p>
-        <label>Anticipated date range of Mediathread use in this course.</label>
+        <div>
+            <label>Anticipated date range of Mediathread use in this course.</label>
+        </div>
         {% bootstrap_field form.date_range_start form_group_class='form-group col-xs-6' %}
         {% bootstrap_field form.date_range_end form_group_class='form-group col-xs-6' %}
         {% bootstrap_field form.request_consult_or_demo %}

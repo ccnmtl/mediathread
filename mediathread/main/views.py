@@ -24,7 +24,6 @@ from django.template import loader
 from django.template.context import Context
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
@@ -539,9 +538,20 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         return HttpResponseRedirect(reverse('course-roster'))
 
 
+def unis_list(unis):
+    # sometimes people enter line breaks instead of commas. allow it by
+    # normalizing everything to commas
+    unis = re.sub(r'\s+', ',', unis)
+    return [u.strip() for u in unis.split(",") if len(u.strip()) > 0]
+
+
 class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     email_template = 'dashboard/email_add_uni_user.txt'
+
+    def validate_uni(self, uni):
+        pattern = re.compile(r'^[a-z]{1,3}\d+$')
+        return pattern.match(uni) is not None
 
     def get_or_create_user(self, uni):
         try:
@@ -567,24 +577,28 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
             'domain': get_current_site(self.request).domain
         }
 
-        for uni in unis.split(','):
-            uni = uni.strip()
-            if len(uni) > 0:
-                user = self.get_or_create_user(uni)
-                display_name = user_display_name(user)
-                if self.request.course.is_true_member(user):
-                    msg = '{} ({}) is already a course member'.format(
-                        display_name, uni)
-                    messages.add_message(request, messages.WARNING, msg)
-                else:
-                    email = '{}@columbia.edu'.format(uni)
-                    self.request.course.group.user_set.add(user)
-                    send_template_email(subj, self.email_template, ctx, email)
-                    msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(display_name, email)
+        for uni in unis_list(unis):
+            uni = uni.lower().strip()
+            if not self.validate_uni(uni):
+                msg = '{} is not a valid UNI'.format(uni)
+                messages.add_message(request, messages.ERROR, msg)
+                continue
 
-                    messages.add_message(request, messages.INFO, msg)
+            user = self.get_or_create_user(uni)
+            display_name = user_display_name(user)
+            if self.request.course.is_true_member(user):
+                msg = '{} ({}) is already a course member'.format(
+                    display_name, uni)
+                messages.add_message(request, messages.WARNING, msg)
+            else:
+                email = '{}@columbia.edu'.format(uni)
+                self.request.course.group.user_set.add(user)
+                send_template_email(subj, self.email_template, ctx, email)
+                msg = (
+                    '{} is now a course member. An email was sent to '
+                    '{} notifying the user.').format(display_name, email)
+
+                messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
 
@@ -723,20 +737,6 @@ class CourseAcceptInvitationView(FormView):
 
     def get_success_url(self):
         return reverse('course-invite-complete')
-
-
-class InstructorDashboardView(LoggedInFacultyMixin, DetailView):
-    model = Course
-    template_name = 'main/instructor_dashboard.html'
-
-    def get_object(self):
-        return self.request.course
-
-    def get_context_data(self, *args, **kwargs):
-        ctx = super(InstructorDashboardView, self).get_context_data(
-            *args, **kwargs)
-        ctx.update({'course': ctx.get('object')})
-        return ctx
 
 
 class InstructorDashboardSettingsView(

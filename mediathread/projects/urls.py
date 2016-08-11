@@ -1,14 +1,14 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView,
-    UnsubmitResponseView, ProjectReadOnlyView)
+    UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
+    project_export_html, project_revisions,
+)
 
 
-urlpatterns = patterns(
-    'mediathread.projects.views',
-
+urlpatterns = [
     url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
         name='selection-assignment-create'),
 
@@ -29,11 +29,11 @@ urlpatterns = patterns(
         name='project-save'),
 
     url(r'^export/msword/(?P<project_id>\d+)/$',
-        'project_export_msword',
+        project_export_msword,
         name='project-export-msword'),
 
     url(r'^export/html/(?P<project_id>\d+)/$',
-        'project_export_html',
+        project_export_html,
         name='project-export-html'),
 
     url(r'^delete/(?P<project_id>\d+)/$',
@@ -43,7 +43,7 @@ urlpatterns = patterns(
         UnsubmitResponseView.as_view(), {}, 'unsubmit-response'),
 
     url(r'^revisions/(?P<project_id>\d+)/$',
-        'project_revisions',
+        project_revisions,
         name='project-revisions'),
 
     # view versioned read only
@@ -53,4 +53,4 @@ urlpatterns = patterns(
 
     # instructor information reorder
     url(r'^sort/$', ProjectSortView.as_view(), name='project-sort'),
-)
+]

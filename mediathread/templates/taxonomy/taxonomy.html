@@ -1,6 +1,6 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 
-{% block title %}Course Vocabulary Workspace{% endblock %}
+{% block title %}{{block.super}}&mdash; Course Vocabulary Workspace{% endblock %}
 
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
@@ -176,18 +176,14 @@
     </script>
 {% endblock %}
 
-{% block switchcourse %}{% endblock %}
-
-{% block dashboard_module_header %}
+{% block dashboard_content %}
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
 
-    <h2>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h2>
+    <h3>Course Vocabulary <div class="actions">{% include "help/help_button.html" %}</div></h3>
 
     {% endwith %}{% endwith %}
-{% endblock %}
 
-{% block dashboard_module %}
     {% with "help_taxonomy" as help_id %}
     {% with help_taxonomy as default_help_state %}
 

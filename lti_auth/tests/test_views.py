@@ -44,7 +44,8 @@ class LTIViewTest(TestCase):
             self.assertFalse(request.session[LTI_SESSION_KEY])
 
     def test_launch(self):
-        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
+        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS},
+                           LTI_EXTRA_PARAMETERS=['lti_version']):
             ctx = LTICourseContextFactory(enable=True)
             request = generate_lti_request(ctx)
 
@@ -53,7 +54,9 @@ class LTIViewTest(TestCase):
 
             response = view.dispatch(request)
             self.assertEquals(response.status_code, 302)
-            self.assertEquals(response.url, '/')
+            self.assertEquals(
+                response.url,
+                '/?lti_version=LTI-1p0&'.format(ctx.uuid))
 
             self.assertIsNotNone(request.session[LTI_SESSION_KEY])
             user = request.user
@@ -64,7 +67,8 @@ class LTIViewTest(TestCase):
             self.assertTrue(user in ctx.faculty_group.user_set.all())
 
     def test_launch_custom_landing_page(self):
-        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
+        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS},
+                           LTI_EXTRA_PARAMETERS=['lti_version']):
             ctx = LTICourseContextFactory(enable=True)
             request = generate_lti_request(ctx, 'canvas')
 
@@ -73,7 +77,9 @@ class LTIViewTest(TestCase):
 
             response = view.dispatch(request)
             self.assertEquals(response.status_code, 302)
-            self.assertTrue(response.url.endswith('landing/'))
+            self.assertTrue(
+                response.url,
+                'http://testserver/landing/?lti_version=LTI-1p0&')
 
             self.assertIsNotNone(request.session[LTI_SESSION_KEY])
             user = request.user
@@ -84,7 +90,8 @@ class LTIViewTest(TestCase):
             self.assertTrue(user in ctx.faculty_group.user_set.all())
 
     def test_embed(self):
-        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS}):
+        with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS},
+                           LTI_EXTRA_PARAMETERS=['lti_version']):
             ctx = LTICourseContextFactory(enable=True)
             request = generate_lti_request(ctx, 'canvas', 'embed')
 
@@ -95,7 +102,8 @@ class LTIViewTest(TestCase):
             self.assertEquals(response.status_code, 302)
             self.assertEquals(
                 response.url,
-                'http://testserver/asset/embed/?return_url=/asset/')
+                'http://testserver/asset/embed/?return_url=/asset/'
+                '&lti_version=LTI-1p0&')
 
             self.assertIsNotNone(request.session[LTI_SESSION_KEY])
             user = request.user

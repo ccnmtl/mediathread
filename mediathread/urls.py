@@ -1,7 +1,11 @@
+import django.contrib.auth.views
+import django.views.i18n
+import django.views.static
+import djangowind.views
 import os.path
 
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.views import (password_change, password_change_done,
                                        password_reset, password_reset_done,
@@ -18,14 +22,14 @@ from mediathread.assetmgr.views import (
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     MethCourseListView, AffilActivateView,
-    InstructorDashboardView, InstructorDashboardSettingsView,
+    InstructorDashboardSettingsView,
     ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
-    CourseResendInviteView)
+    CourseResendInviteView, set_user_setting)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -44,32 +48,30 @@ bookmarklet_root = os.path.join(os.path.dirname(__file__),
 
 redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
 
-auth_urls = (r'^accounts/', include('django.contrib.auth.urls'))
+auth_urls = url(r'^accounts/', include('django.contrib.auth.urls'))
 
-logout_page = (r'^accounts/logout/$',
-               'django.contrib.auth.views.logout',
-               {'next_page': redirect_after_logout})
-admin_logout_page = (r'^accounts/logout/$',
-                     'django.contrib.auth.views.logout',
-                     {'next_page': '/admin/'})
+logout_page = url(r'^accounts/logout/$',
+                  django.contrib.auth.views.logout,
+                  {'next_page': redirect_after_logout})
+admin_logout_page = url(r'^accounts/logout/$',
+                        django.contrib.auth.views.logout,
+                        {'next_page': '/admin/'})
 
 if hasattr(settings, 'CAS_BASE'):
-    auth_urls = (r'^accounts/', include('djangowind.urls'))
-    logout_page = (r'^accounts/logout/$',
-                   'djangowind.views.logout',
-                   {'next_page': redirect_after_logout})
-    admin_logout_page = (r'^admin/logout/$',
-                         'djangowind.views.logout',
-                         {'next_page': redirect_after_logout})
+    auth_urls = url(r'^accounts/', include('djangowind.urls'))
+    logout_page = url(r'^accounts/logout/$',
+                      djangowind.views.logout,
+                      {'next_page': redirect_after_logout})
+    admin_logout_page = url(r'^admin/logout/$',
+                            djangowind.views.logout,
+                            {'next_page': redirect_after_logout})
 
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^$', course_detail_view, name='home'),
     admin_logout_page,
     logout_page,
-    (r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
 
     # override the default urls for password
     url(r'^password/change/$',
@@ -101,47 +103,48 @@ urlpatterns = patterns(
     url(r'^accounts/register/$',
         RegistrationView.as_view(form_class=CustomRegistrationForm),
         name='registration_register'),
-    (r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
-    (r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',
-     AssetCollectionView.as_view(), {}, 'assets-by-user'),
-    (r'^api/asset/(?P<asset_id>\d+)/$', AssetDetailView.as_view(),
-     {}, 'asset-detail'),
-    (r'^api/asset/$', AssetCollectionView.as_view(), {}, 'assets-by-course'),
+    url(r'^api/asset/user/(?P<record_owner_name>\w[^/]*)/$',
+        AssetCollectionView.as_view(), {}, 'assets-by-user'),
+    url(r'^api/asset/(?P<asset_id>\d+)/$', AssetDetailView.as_view(),
+        {}, 'asset-detail'),
+    url(r'^api/asset/$', AssetCollectionView.as_view(), {},
+        'assets-by-course'),
     url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
         name='api-user-courses'),
-    (r'^api/tag/$', TagCollectionView.as_view(), {}, 'tag-collection-view'),
-    (r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
-     ProjectCollectionView.as_view(), {}, 'project-by-user'),
-    (r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
-     ProjectItemView.as_view(), {}, 'project-item-view'),
-    (r'^api/project/(?P<project_id>\d+)/$', ProjectDetailView.as_view(),
-     {}, 'asset-detail'),
-    (r'^api/project/$', ProjectCollectionView.as_view(), {}),
-    (r'^api', include(tastypie_api.urls)),
+    url(r'^api/tag/$', TagCollectionView.as_view(), {}, 'tag-collection-view'),
+    url(r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',
+        ProjectCollectionView.as_view(), {}, 'project-by-user'),
+    url(r'^api/project/(?P<project_id>\d+)/(?P<asset_id>\d+)/$',
+        ProjectItemView.as_view(), {}, 'project-item-view'),
+    url(r'^api/project/(?P<project_id>\d+)/$', ProjectDetailView.as_view(),
+        {}, 'asset-detail'),
+    url(r'^api/project/$', ProjectCollectionView.as_view(), {}),
+    url(r'^api', include(tastypie_api.urls)),
 
     # Collections Space
-    (r'^asset/', include('mediathread.assetmgr.urls')),
+    url(r'^asset/', include('mediathread.assetmgr.urls')),
 
     auth_urls,  # see above
 
     # Bookmarklet + cache defeating
-    url(r'^bookmarklets/(?P<path>analyze.js)$', 'django.views.static.serve',
+    url(r'^bookmarklets/(?P<path>analyze.js)$', django.views.static.serve,
         {'document_root': bookmarklet_root}, name='analyze-bookmarklet'),
     url(r'^nocache/\w+/bookmarklets/(?P<path>analyze.js)$',
-        'django.views.static.serve', {'document_root': bookmarklet_root},
+        django.views.static.serve, {'document_root': bookmarklet_root},
         name='nocache-analyze-bookmarklet'),
 
-    (r'^comments/', include('django_comments.urls')),
+    url(r'^comments/', include('django_comments.urls')),
 
     # Contact us forms.
-    (r'^contact/success/$',
-     TemplateView.as_view(template_name='main/contact_success.html')),
-    (r'^contact/$', ContactUsView.as_view()),
-    (r'^course/request/success/$',
-     TemplateView.as_view(template_name='main/course_request_success.html')),
-    (r'^course/request/', RequestCourseView.as_view()),
+    url(r'^contact/success/$',
+        TemplateView.as_view(template_name='main/contact_success.html')),
+    url(r'^contact/$', ContactUsView.as_view()),
+    url(r'^course/request/success/$', TemplateView.as_view(
+        template_name='main/course_request_success.html')),
+    url(r'^course/request/', RequestCourseView.as_view()),
     url(r'^affil/(?P<pk>\d+)/activate/$',
         AffilActivateView.as_view(),
         name='affil_activate'),
@@ -156,12 +159,10 @@ urlpatterns = patterns(
         name='is_logged_in'),
     url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
         name='bookmarklet_migration'),
-    url(r'^upgrade/', 'mediathread.assetmgr.views.upgrade_bookmarklet',
-        name='bookmarklet_upgrade'),
 
-    (r'^crossdomain.xml$', 'django.views.static.serve',
-     {'document_root': os.path.abspath(os.path.dirname(__file__)),
-      'path': 'crossdomain.xml'}),
+    url(r'^crossdomain.xml$', django.views.static.serve,
+        {'document_root': os.path.abspath(os.path.dirname(__file__)),
+         'path': 'crossdomain.xml'}),
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
@@ -188,7 +189,7 @@ urlpatterns = patterns(
         name='course-delete-materials'),
 
     # Discussion
-    (r'^discussion/', include('mediathread.discussions.urls')),
+    url(r'^discussion/', include('mediathread.discussions.urls')),
 
     # External Collections
     url(r'^explore/redirect/(?P<collection_id>\d+)/$',
@@ -202,50 +203,46 @@ urlpatterns = patterns(
 
     url(r'^impersonate/', include('impersonate.urls')),
 
-    (r'^jsi18n', 'django.views.i18n.javascript_catalog'),
+    url(r'^jsi18n', django.views.i18n.javascript_catalog),
 
-    (r'^media/(?P<path>.*)$', 'django.views.static.serve',
-     {'document_root':
-      os.path.abspath(os.path.join(os.path.dirname(admin.__file__), 'media')),
-      'show_indexes': True}),
+    url(r'^media/(?P<path>.*)$', django.views.static.serve,
+        {'document_root':
+         os.path.abspath(
+             os.path.join(os.path.dirname(admin.__file__), 'media')),
+         'show_indexes': True}),
 
     # Composition Space
-    (r'^project/', include('mediathread.projects.urls')),
+    url(r'^project/', include('mediathread.projects.urls')),
 
     # Instructor Dashboard
-    url(r'^dashboard/$',
-        InstructorDashboardView.as_view(),
-        name='instructor-dashboard'),
     url(r'^dashboard/settings/$',
         InstructorDashboardSettingsView.as_view(),
         name='course-settings-general'),
 
     # Reporting
-    (r'^reports/', include('mediathread.reports.urls')),
+    url(r'^reports/', include('mediathread.reports.urls')),
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry
     url(r'^save/$', AssetCreateView.as_view(), name='asset-save'),
 
-    (r'^setting/(?P<user_name>\w[^/]*)/$',
-     'mediathread.main.views.set_user_setting'),
+    url(r'^setting/(?P<user_name>\w[^/]*)/$', set_user_setting),
 
-    (r'^stats/', TemplateView.as_view(template_name='stats.html')),
-    (r'^smoketest/', include('smoketest.urls')),
+    url(r'^stats/', TemplateView.as_view(template_name='stats.html')),
+    url(r'^smoketest/', include('smoketest.urls')),
 
     url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
 
-    (r'^lti/', include('lti_auth.urls')),
+    url(r'^lti/', include('lti_auth.urls')),
 
-    (r'^test/clear/', ClearTestCache.as_view()),
+    url(r'^test/clear/', ClearTestCache.as_view()),
 
     # Public To World Access ###
     url(r'^s/(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/',
         ProjectPublicView.as_view(), name='collaboration-obj-view'),
-)
+]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns += patterns(
-        '',
+    urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
+    ]

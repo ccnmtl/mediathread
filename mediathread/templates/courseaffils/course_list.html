@@ -36,24 +36,25 @@
 
 {% block content %}
     <div id="course-list">
-        <div id="coursefilter">
-            <span class="h5">View courses for:</span>
-
-            <div class="btn-group" role="group" aria-label="select year">
+        <ul class="nav nav-tabs" aria-label="select timeframe">
+            <li class="{% if semester_view == 'past' %}active{% endif %}">
                 <a id="pastsemesters"
                    href="?semester_view=past"
-                   class="btn btn-default {% if semester_view == 'past' %}active{% endif %}"
-                >Past Semesters</a>
+                >Past</a>
+            </li>
+            <li class="{% if semester_view == 'current' %}active{% endif %}">
                 <a id="currentsemester"
                    href="?semester_view=current"
-                   class="btn btn-default {% if semester_view == 'current' %}active{% endif %}"
-                >Current Semester</a>
-                <a id="future_semesters"
-                   href="?semester_view=future"
-                   class="btn btn-default {% if semester_view == 'future' %}active{% endif %}"
-                >Future Semesters</a>
-            </div>
-        </div>
+                >Current</a>
+            </li>
+            <li class="{% if semester_view == 'future' %}active{% endif %}">
+                <a id="future_semesters" href="?semester_view=future">Future</a>
+            </li>
+            <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
+                <a id="sandboxes_link"
+                   href="?semester_view=sandbox">Sandboxes</a>
+            </li>
+        </ul>
         <div id="create-course-container">
             {% if add_privilege %}
                 <a id="create-course" class="create-course"
@@ -78,6 +79,8 @@
         <h2>Current Courses</h2>
     {% elif semester_view == 'future' %}
         <h2>Future Courses</h2>
+    {% elif semester_view == 'sandbox' %}
+        <h2>Sandbox Courses</h2>
     {% endif %}
 
     {% if object_list|length > 0 %}
@@ -103,27 +106,6 @@
         No courses match this criteria.
     {% endif %}
 
-
-    {% if infoless_courses %}
-        <h2>Sandboxes</h2>
-        <table class="table course-choices tablesorter course-sandboxes">
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Instructor</th>
-                    <th>Role</th>
-                    {% if add_privilege %}
-                        <th class="nosort">Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in infoless_courses %}
-                    {% include 'courseaffils/course_row.html' %}
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
     </div>
 
     {% if user.is_staff %}

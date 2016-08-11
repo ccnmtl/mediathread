@@ -272,8 +272,7 @@
 
         importAll: function(evt) {
             var self = this;
-            jQuery('#import-all-dialog').dialog(
-                {
+            jQuery('#import-all-dialog').dialog({
                     buttons: [
                         {
                             text: 'Cancel',
@@ -363,8 +362,7 @@
                     modal: true,
                     width: 600,
                     height: 450,
-                    maxHeight: 450,
-                    position: 'center'
+                    maxHeight: 450
                 });
 
             jQuery(element).parent().appendTo(this.el);

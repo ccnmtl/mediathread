@@ -67,6 +67,20 @@ class LTIRoutingView(LTIAuthMixin, View):
         provider = self.request.POST.get(key, '').lower()
         return 'canvas' in provider or 'blackboard' in provider
 
+    def add_extra_parameters(self, url):
+        if not hasattr(settings, 'LTI_EXTRA_PARAMETERS'):
+            return
+
+        if '?' not in url:
+            url += '?'
+        else:
+            url += '&'
+
+        for key in settings.LTI_EXTRA_PARAMETERS:
+            url += '{}={}&'.format(key, self.request.POST.get(key, ''))
+
+        return url
+
     def post(self, request):
         if request.POST.get('ext_content_intended_use', '') == 'embed':
             domain = self.request.get_host()
@@ -80,6 +94,8 @@ class LTIRoutingView(LTIAuthMixin, View):
             url = reverse('lti-landing-page')
         else:
             url = '/'
+
+        url = self.add_extra_parameters(url)
 
         return HttpResponseRedirect(url)
 

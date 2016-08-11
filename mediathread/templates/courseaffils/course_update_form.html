@@ -1,17 +1,25 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load bootstrap3 %}
 
-{% block title %}&mdash; General{% endblock %}
+{% block title %}{{block.super}}&mdash; Course Settings{% endblock %}
 
-{% block content %}
-    <h2>Course Settings: General</h2>
+{% block dashboard_content %}
     {{ form.media }}
     <form action="" method="post">{% csrf_token %}
-        {% bootstrap_field form.title form_group_class='form-group well' %}
-        {% bootstrap_field form.homepage_title form_group_class='form-group well' %}
-        {% bootstrap_field form.publish_to_world form_group_class='form-group well' %}
         <div class="well">
-            <h4>Item &amp; Selection Visibility</h4>
+            <h3>Course Title</h3>
+            {% bootstrap_field form.title form_group_class='form-group' %}
+        </div>
+        <div class="well">
+            <h3>Homepage</h3>
+            {% bootstrap_field form.homepage_title form_group_class='form-group' %}
+        </div>
+        <div class="well">
+            <h3>Composition Visibility</h3>
+            {% bootstrap_field form.publish_to_world form_group_class='form-group' %}
+        </div>
+        <div class="well">
+            <h3>Item &amp; Selection Visibility</h3>
             {% bootstrap_field form.see_eachothers_items %}
             {% bootstrap_field form.see_eachothers_selections %}
             <span class="help-block">
@@ -23,6 +31,7 @@
             </span>
         </div>
         <div class="well">
+            <h3>LTI</h3>
             {% bootstrap_field form.lti_integration %}
             {% if lti_context and lti_context.enable %}
                 <h5>Instructions</h5>
@@ -34,6 +43,7 @@
         </div>
         <div class="form-group">
             <button class="btn btn-primary" type="submit">Save</button>
+            <a href="." class="btn btn-default" role="button">Cancel</a>
             {% if not has_student_activity %}
                 <button class="btn" type="submit" name="reset" value="true">
                     Reset to default

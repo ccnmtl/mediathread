@@ -1,15 +1,8 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load assetlinks %}
-{% block title %}Manage Sources{% endblock %}
+{% block title %}{{block.super}}&mdash; Manage Sources{% endblock %}
 
-{% block switchcourse %}{% endblock %}
-
-{% block dashboard_module_header %}
-    <h2>Manage Sources</div></h2>
-{% endblock %}
-
-{% block dashboard_module %}
-
+{% block dashboard_content %}
     <div class="well">
     <h3>Mediathread Video Uploader</h3>
     <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
@@ -74,11 +67,9 @@
                                 {{suggested.title}}
                             </a>
                             <br />
-
-                            <span>
-                                {{suggested.description|safe|linebreaks}}
-                            </span>
+                            {{suggested.description|safe|linebreaks}}
                         </td>
+                        <td>&nbsp;&nbsp;</td>
                         <td style="text-align: right">
                             {% if course_collection %}
                                 <input class="btn btn-default" name="remove" type="submit" value="Remove" id="{{suggested.title|slugify}}" />
@@ -121,6 +112,7 @@
         </div>
         <br /><br />
         <input class="btn btn-default right" type="submit" value="Add Source to Class" />
+        <div class="visualclear"></div>
     </form>
 </div>
 
@@ -304,7 +296,5 @@
         </li>
         </ul>
 </div>
-
-      <br class="visualclear" />
 {% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load coursetags %}
 
-{% block title %}Migrate Course Materials{% endblock %}
+{% block title %}{{block.super}}&mdash; Migrate Course Materials{% endblock %}
 
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
@@ -190,8 +190,8 @@
                     </table>
                 <% } %>
             </div>
-            <input id="import-selected" type="button" value="Migrate Selected" class="right" />
-            <input id="clear-selected" type="button" value="Clear Selected" class="right" />
+            <input id="import-selected" type="button" value="Migrate Selected" class="right btn btn-primary" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="right btn btn-default" />
         </form>
     </script>
 {% endblock %}
@@ -225,18 +225,13 @@
     </script>
 {% endblock %}
 
-{% block switchcourse %}{% endblock %}
-
-{% block dashboard_module_header %}
+{% block dashboard_content %}
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
 
-    <h2>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h2>
+    <h3>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h3>
 
     {% endwith %}{% endwith %}
-{% endblock %}
-
-{% block dashboard_module %}
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
 
@@ -245,8 +240,8 @@
     <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
     <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
 
-    <div id="available-courses-selector" style="display: none">
-        <input type="text" class="default autocomplete" id="available-courses" placeholder="Type course name here">
+    <div id="available-courses-selector" class="well" style="display: none">
+        <input type="text" class="form-control autocomplete" id="available-courses" placeholder="Type course name here">
         <input type="submit" id="view-materials" value="View materials" class="btn btn-primary"/>
     </div>
 
@@ -254,10 +249,10 @@
         <div>
             <div class="course-information-container">
                 {% if user.is_staff %}
-                    <div class="on-behalf-of-container">
+                    <div class="on-behalf-of-container well">
                         <div class="helptext right" style="margin-top: -4px;">CCNMTL staff only</div>
                         <h4>Migrate As</h4>
-                        <select id="on_behalf_of">
+                        <select id="on_behalf_of" class="form-control">
                             {% for faculty in current_course_faculty %}
                                 {% ifequal user.id faculty.id %}
                                     <option value="{{faculty.id}}" selected="selected">
@@ -285,7 +280,7 @@
                     </div>
                     <br />
                 {% endif %}
-                <div class="course-information">
+                <div class="course-information well">
                     {% if available_courses|length > 2 %}
                         <div class="right">
                             <a id="switch-course" href="#" class="metadata-value">switch course</a>

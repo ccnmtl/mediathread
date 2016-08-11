@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load waffle_tags %}
+
+{% block title %}&mdash; Course Settings {% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div class="dashboard-module-header"><h2>Course Settings</h2></div>
+
+    <div class="layout-horizontal">
+        <div class="layout-horizontal-left">
+            <nav aria-label="context" role="navigation">
+                <ul class="section-tabs">
+                    <li>
+                        <a
+                            {% if '/settings/' in request.path %}class="active"{% endif %}
+                            href="{% url 'course-settings-general' %}"
+                        >General</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/sources/' in request.path %}class="active"{% endif %}
+                            href="/dashboard/sources/">Sources</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/migrate/' in request.path %}class="active"{% endif %}
+                            href="/dashboard/migrate/">Migrations</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/taxonomy/' in request.path %}class="active"{% endif %}
+                            href="/taxonomy/">Vocabulary</a>
+                    </li>
+                    {% flag "roster_view" %}
+                    <li>
+                        <a
+                            {% if '/roster/' in request.path %}class="active"{% endif %}
+                            href="/dashboard/roster/">Roster</a>
+                    </li>
+                    {% endflag %}
+                </ul>
+            </nav>
+        </div>
+
+        <div class="layout-horizontal-right">
+            <div class="dashboard-module-body">
+                {% block dashboard_content %}{% endblock %}
+            </div>
+        </div>
+    </div><!-- .layout-horizontal -->
+{% endblock %}

@@ -16,7 +16,7 @@ from mediathread.assetmgr.views import (
     asset_workspace_courselookup,
     RedirectToExternalCollectionView,
     RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
-    _parse_domain, AssetEmbedView, upgrade_bookmarklet, annotation_delete,
+    _parse_domain, AssetEmbedView, annotation_delete,
     annotation_create_global, annotation_create)
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
@@ -555,17 +555,6 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get("/asset/scalar/")
         self.assertFalse(isinstance(response, HttpResponseRedirect))
-
-    def test_upgrade_bookmarklet(self):
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-        request.user = self.student_one
-        with self.settings(DJANGOSHERD_FLICKR_APIKEY='flickr api key'):
-            response = upgrade_bookmarklet(request)
-            self.assertEquals(response.status_code, 200)
-            self.assertEquals(
-                response.context_data['bookmarklet_vars']['flickr_apikey'],
-                'flickr api key')
 
     def test_annotation_create(self):
         data = {'annotation-title': 'Annotation Test',

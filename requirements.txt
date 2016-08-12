@@ -61,7 +61,7 @@ django-smoketest==1.0.0
 django-debug-toolbar==1.5
 django-markwhat==1.5
 ipaddress==1.0.16
-fake-factory==0.5.10
+fake-factory==0.6.0
 factory_boy==2.7.0
 django-impersonate==1.0.1
 django-registration-redux==1.4

@@ -824,19 +824,9 @@ Consult or Demo: {}
         data = form.cleaned_data
         subject = 'Mediathread Course Activated: {}'.format(
             data.get('course_name'))
-        body = """
-Course Name: {}
-Term: {}
-Year: {}
-Consult or Demo: {}
-Faculty: {} {} <{}>
-""".format(data.get('course_name'),
-           data.get('term'),
-           data.get('year'),
-           data.get('consult_or_demo'),
-           faculty_user.first_name,
-           faculty_user.last_name,
-           faculty_user.email)
+        body = ""
+        for k in data:
+            body += "{}: {}\n".format(k, data[k])
 
         send_mail(
             subject,

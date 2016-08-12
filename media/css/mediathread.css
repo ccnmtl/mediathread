@@ -802,7 +802,7 @@ a#create-course {
 table.course-choices {
     padding:5px;
     margin-left: 10px;
-    width: 960px;
+    max-width: 960px;
 }
 
 table.course-choices th {
@@ -810,8 +810,6 @@ table.course-choices th {
 }
 
 td.course-choice {
-    max-width:500px;
-    min-width:400px;
     list-style-type:none;
     padding:6px;
 }

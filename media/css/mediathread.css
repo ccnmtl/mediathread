@@ -853,18 +853,16 @@ div.button-form form, div.button-form.inline form {
 	margin: -47px auto;
 }
 
-.login-description {
-	display: inline;
-	float: left;
-	padding: 35px;
-	width: 58%;
-    background: url("../img/login_bg.jpg") center no-repeat;
+.mediathread-background-logo {
+    background: url("../img/login_bg.jpg") -250px 35px no-repeat;
+    min-height: 700px;
 }
 
 .login-description h1 {
     font-weight: 200;
     line-height: 1.5em;
     margin-top: 0;
+    padding-top: 40px;
 }
 
 .login-description p {
@@ -873,26 +871,14 @@ div.button-form form, div.button-form.inline form {
 	line-height: 2em;
 }
 
-.loginbox-container {
-    float: right;
-    height: 265px;
-    margin-top: 10px;
-}
-
-.loginbox-container.columbia {
-    float: left;
-}
-
-.loginbox
-{
+.loginbox {
     display: block;
-    width: 280px;
-    margin: 0 30px 0 20px;
+    margin: 20px 0 0 0;
     padding: 0 0 20px 0;
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-color: #b3d3eb;
-    }
+}
 
 .loginbox h2
 {

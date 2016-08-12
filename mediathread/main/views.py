@@ -44,8 +44,7 @@ from mediathread.main.course_details import (
     has_student_activity
 )
 from mediathread.main.forms import (
-    RequestCourseForm, ContactUsForm,
-    CourseDeleteMaterialsForm, AcceptInvitationForm,
+    ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
 )
 from mediathread.main.models import UserSetting, CourseInvitation
@@ -300,28 +299,6 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         }
 
         return self.render_to_json_response(ctx)
-
-
-class RequestCourseView(FormView):
-    template_name = 'main/course_request.html'
-    form_class = RequestCourseForm
-    success_url = "/course/request/success/"
-
-    def form_valid(self, form):
-        subject = "Mediathread Course Request"
-        form_data = form.cleaned_data
-        tmpl = loader.get_template('main/course_request_description.txt')
-        form_data['description'] = tmpl.render(Context(form_data))
-
-        task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
-        if task_url is not None:
-            response = requests.post(task_url, data=form_data)
-            if not response.status_code == 200:
-                # send to server email instead
-                send_mail(subject, form_data['description'],
-                          form_data['email'], (settings.SERVER_EMAIL,))
-
-        return super(RequestCourseView, self).form_valid(form)
 
 
 class ContactUsView(FormView):

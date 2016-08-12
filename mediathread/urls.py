@@ -23,7 +23,7 @@ from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     MethCourseListView, AffilActivateView,
     InstructorDashboardSettingsView,
-    ContactUsView, RequestCourseView, IsLoggedInView, IsLoggedInDataView,
+    ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
@@ -144,7 +144,6 @@ urlpatterns = [
     url(r'^contact/$', ContactUsView.as_view()),
     url(r'^course/request/success/$', TemplateView.as_view(
         template_name='main/course_request_success.html')),
-    url(r'^course/request/', RequestCourseView.as_view()),
     url(r'^affil/(?P<pk>\d+)/activate/$',
         AffilActivateView.as_view(),
         name='affil_activate'),

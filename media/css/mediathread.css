@@ -803,6 +803,7 @@ table.course-choices {
     padding:5px;
     margin-left: 10px;
     max-width: 960px;
+    border-top: 1px solid #ddd;
 }
 
 table.course-choices th {

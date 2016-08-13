@@ -198,7 +198,9 @@ class AcceptInvitationForm(forms.Form):
 
 class CourseActivateForm(forms.Form):
     affil = forms.IntegerField(widget=forms.HiddenInput())
-    course_name = forms.CharField(label='Course Name')
+    course_name = forms.CharField(
+        label='Course Title (required)',
+        required=True)
     date_range_start = forms.DateField(
         label='',
         help_text='Start date',

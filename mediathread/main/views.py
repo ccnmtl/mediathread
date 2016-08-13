@@ -619,7 +619,8 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         subject = "Mediathread: {}".format(self.request.course.title)
         ctx = {
             'course': self.request.course,
-            'domain': get_current_site(self.request).domain
+            'domain': get_current_site(self.request).domain,
+            'user': user
         }
         send_template_email(subject, add_template, ctx, user.email)
 

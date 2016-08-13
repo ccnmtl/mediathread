@@ -4,5 +4,7 @@ Your instructor has added you to the Mediathread course: {{course.title}}.
 
 You can login to Mediathread at https://{{ domain }} with your existing guest credentials.
 
+As a reminder, your username is {{ user.username }}.
+
 Thanks,
 The Mediathread Team

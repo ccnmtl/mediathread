@@ -805,15 +805,22 @@ class AffilActivateView(LoggedInMixin, FormView):
         subject = 'Your Mediathread Course Activation: {}'.format(
             data.get('course_name'))
         body = """
-Course Name: {}
-Term: {}
-Year: {}
-Consult or Demo: {}
-""".format(data.get('course_name'),
-           data.get('term'),
-           data.get('year'),
-           data.get('consult_or_demo'))
+Dear {},
 
+Thank you for creating your Mediathread course: {}
+You are now ready to get started. Documentation is online here:
+http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread
+
+If you are new to Mediathread, a CTL learning designer or your
+department specialist will check in with you in the coming days to
+make sure all is going well. If you have any pressing questions in the
+meantime, please feel free to contact us at
+ccnmtl-mediathread@ccnmtl.columbia.edu.
+
+Thanks,
+The Mediathread Team
+""".format(user_display_name(faculty_user),
+           data.get('course_name'))
         send_mail(
             subject,
             body,
@@ -828,6 +835,10 @@ Consult or Demo: {}
         body = ""
         for k in data:
             body += "{}: {}\n".format(k, data[k])
+
+        body += 'Faculty: {} <{}>\n'.format(
+            user_display_name(faculty_user),
+            faculty_user.email)
 
         send_mail(
             subject,

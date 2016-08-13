@@ -260,13 +260,13 @@ class DashboardSettingsForm(forms.ModelForm):
         label='Homepage "From Your Instructor" Title',
         help_text='This feature allows faculty to customize the left-hand '
         'column title on the Mediathread homepage. This must be less than '
-        '25 characters long.')
+        '25 characters long. Defaults to "From Your Instructor".')
     publish_to_world = forms.BooleanField(
         label='"Publish To The World" Compositions',
         required=False,
         help_text='This feature allows authors to publish compositions at a '
         'public level, via a link that does not require logging into '
-        'Mediathread.')
+        'Mediathread. Defaults to off.')
     see_eachothers_items = forms.BooleanField(
         label='Course members can see each other\'s items',
         required=False)
@@ -276,7 +276,8 @@ class DashboardSettingsForm(forms.ModelForm):
     lti_integration = forms.BooleanField(
         label='LTI Integration',
         required=False,
-        help_text='Allow external tools to access this course')
+        help_text='Allow external tools to access this course. '
+        'Defaults to off.')
     reset = forms.BooleanField(
         widget=forms.HiddenInput,
         initial=False,

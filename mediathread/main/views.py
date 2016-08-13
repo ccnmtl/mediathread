@@ -828,6 +828,10 @@ Consult or Demo: {}
         for k in data:
             body += "{}: {}\n".format(k, data[k])
 
+        body += 'Faculty: {} <{}>\n'.format(
+            user_display_name(faculty_user),
+            faculty_user.email)
+
         send_mail(
             subject,
             body,

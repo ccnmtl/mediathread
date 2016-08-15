@@ -774,7 +774,16 @@ class AffilActivateView(LoggedInMixin, FormView):
     """View for activating an affiliation into a Meth Course."""
     template_name = 'main/course_activate.html'
     form_class = CourseActivateForm
-    success_url = '/'
+
+    def get_success_url(self):
+        past_present_future = self.affil.past_present_future
+        if past_present_future == 1:
+            return '/?semester_view=future'
+        elif past_present_future == 0:
+            return '/?semester_view=current'
+        elif past_present_future == -1:
+            return '/?semester_view=past'
+        return '/'
 
     @staticmethod
     def send_faculty_email(form, faculty_user):

@@ -1217,6 +1217,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(response.context['activatable_affils'][0], aa)
 
 
+@freeze_time('2015-10-11')
 @override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
 class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
@@ -1278,6 +1279,8 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             response,
             'You&#39;ve activated your course.',
             count=1)
+        self.assertContains(response, 'My Course')
+        self.assertContains(response, 'Future Courses')
 
     def test_send_faculty_email(self):
         form = CourseActivateForm({

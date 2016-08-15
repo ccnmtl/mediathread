@@ -35,13 +35,12 @@ from mediathread.main.course_details import (
     all_items_are_visible, all_selections_are_visible
 )
 from mediathread.main.forms import (
-    ContactUsForm, RequestCourseForm, CourseActivateForm, AcceptInvitationForm)
+    ContactUsForm, CourseActivateForm, AcceptInvitationForm)
 from mediathread.main.models import CourseInvitation
 from mediathread.main.tests.mixins import LoggedInUserTestMixin
 from mediathread.main.views import (
     AffilActivateView,
-    MigrateCourseView, ContactUsView,
-    RequestCourseView, CourseManageSourcesView,
+    MigrateCourseView, ContactUsView, CourseManageSourcesView,
     CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView,
     unis_list,
 )
@@ -539,38 +538,6 @@ class ContactUsViewTest(TestCase):
                               'sender@ccnmtl.columbia.edu')
             self.assertEquals(mail.outbox[0].to,
                               [settings.SUPPORT_DESTINATION])
-
-
-class RequestCourseViewTest(TestCase):
-
-    def test_form_valid(self):
-        view = RequestCourseView()
-        form = RequestCourseForm()
-        form.cleaned_data = {
-            'name': 'Test Instructor',
-            'email': 'test_instructor@ccnmtl.columbia.edu',
-            'uni': 'ttt123',
-            'course': 'Test Course',
-            'course_id': 'Test Course Id',
-            'term': 'Fall',
-            'year': '2014',
-            'instructor': 'Test Instructor',
-            'section_leader': 'Test Teachers Assistant',
-            'start': datetime.now(),
-            'end': datetime.now(),
-            'students': 24,
-            'assignments_required': True,
-            'description': 'Description',
-            'title': 'The Course',
-            'pid': '123',
-            'mid': '456',
-            'type': 'action item',
-            'owner': 'sdreher',
-            'assigned_to': 'sdreher'
-        }
-
-        with self.settings(TASK_ASSIGNMENT_DESTINATION=None):
-            view.form_valid(form)
 
 
 class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):

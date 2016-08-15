@@ -13,61 +13,6 @@ from mediathread.main.course_details import (
 from mediathread.projects.models import Project
 
 
-TERM_CHOICES = (
-    ('Fall', 'Fall'),
-    ('Spring', 'Spring'),
-    ('Summer', 'Summer'))
-
-
-class RequestCourseForm(forms.Form):
-    name = forms.CharField(required=True, max_length=512)
-    email = forms.EmailField(required=True)
-    uni = forms.CharField(required=True, max_length=512)
-
-    course = forms.CharField(required=True, max_length=512)
-    course_id = forms.CharField(required=True, max_length=512)
-
-    term = forms.ChoiceField(
-        required=True, choices=TERM_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'}))
-    year = forms.CharField(required=True, max_length=512)
-
-    instructor = forms.CharField(
-        required=True, max_length=512,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    section_leader = forms.CharField(
-        max_length=512, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    start = forms.DateField(required=True)
-    end = forms.DateField(required=True)
-
-    students = forms.IntegerField(required=True)
-    assignments_required = forms.BooleanField(required=True)
-
-    description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
-        required=True)
-
-    decoy = forms.CharField(widget=forms.Textarea, required=False)
-
-    title = forms.CharField(widget=forms.HiddenInput())
-    pid = forms.CharField(widget=forms.HiddenInput())
-    mid = forms.CharField(widget=forms.HiddenInput())
-    type = forms.CharField(widget=forms.HiddenInput())
-    owner = forms.CharField(widget=forms.HiddenInput())
-    assigned_to = forms.CharField(widget=forms.HiddenInput())
-
-    def clean(self):
-        cleaned_data = super(RequestCourseForm, self).clean()
-
-        if 'decoy' in cleaned_data and len(cleaned_data['decoy']) > 0:
-            self._errors["decoy"] = self.error_class([
-                "Please leave this field blank"])
-
-        return cleaned_data
-
-
 class ContactUsForm(forms.Form):
     name = forms.CharField(required=True, max_length=512)
     email = forms.EmailField(required=True)

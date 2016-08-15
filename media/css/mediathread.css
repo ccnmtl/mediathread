@@ -2529,6 +2529,10 @@ div.gallery-item h4.asset_title {
     min-width: 900px;
 }
 
+.dashboard-module-body p {
+    margin-top: 0;
+}
+
 .dashboard-module-body .help-tab { 
     top: 44px;
     right: 5px;

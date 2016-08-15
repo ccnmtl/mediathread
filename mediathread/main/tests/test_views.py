@@ -1256,8 +1256,8 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
                 'affil': self.aa.pk,
                 'course_name': 'My Course',
                 'consult_or_demo': 'consultation',
-            })
-        self.assertEqual(response.status_code, 302)
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
         self.aa.refresh_from_db()
         self.assertTrue(self.aa.activated)
 
@@ -1273,6 +1273,11 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(course.is_faculty(self.u))
         self.assertEqual(course.get_detail('instructor', None),
                          get_public_name(self.u, request))
+
+        self.assertContains(
+            response,
+            'You&#39;ve activated your course.',
+            count=1)
 
     def test_send_faculty_email(self):
         form = CourseActivateForm({

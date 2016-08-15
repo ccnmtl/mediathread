@@ -892,6 +892,7 @@ The Mediathread Team
         except SMTPRecipientsRefused:
             messages.error(self.request, 'Failed to send staff email.')
 
+        messages.success(self.request, 'You\'ve activated your course.')
         return super(AffilActivateView, self).form_valid(form)
 
 

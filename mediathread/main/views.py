@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -48,8 +49,10 @@ from mediathread.main.forms import (
     CourseActivateForm, DashboardSettingsForm
 )
 from mediathread.main.models import UserSetting, CourseInvitation
-from mediathread.main.util import send_template_email, user_display_name, \
-    send_course_invitation_email
+from mediathread.main.util import (
+    send_template_email, user_display_name, send_course_invitation_email,
+    make_pmt_item,
+)
 from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
@@ -823,7 +826,8 @@ The Mediathread Team
             subject,
             body,
             settings.SERVER_EMAIL,
-            [faculty_user.email])
+            [faculty_user.email],
+            fail_silently=not settings.DEBUG)
 
     @staticmethod
     def send_staff_email(form, faculty_user):
@@ -842,7 +846,8 @@ The Mediathread Team
             subject,
             body,
             faculty_user.email,
-            [settings.SERVER_EMAIL])
+            [settings.SERVER_EMAIL],
+            fail_silently=not settings.DEBUG)
 
     def create_course(self, form, affil):
         # Create the course.
@@ -897,6 +902,46 @@ The Mediathread Team
         })
         return context
 
+    @staticmethod
+    def make_pmt_activation_item(form, faculty_user):
+        """Make a PMT item for course activation.
+
+        Returns the requests object, or None.
+        """
+        milestone_id = getattr(
+            settings, 'MEDIATHREAD_PMT_MILESTONE_ID', None)
+        owner_id = getattr(
+            settings, 'MEDIATHREAD_PMT_OWNER_ID', None)
+        if milestone_id and owner_id:
+            # Prepare data entry into PMT. See
+            # dmt.views.api.ExternalAddItemView.
+            data = form.cleaned_data
+
+            description = ''
+            for k in data:
+                description += '{}: {}\n'.format(k, data[k])
+
+            description += 'Faculty: {} <{}>\n'.format(
+                user_display_name(faculty_user),
+                faculty_user.email)
+
+            pmt_data = {
+                'mid': milestone_id,
+                'owner': owner_id,
+                'assigned_to': owner_id,
+                'type': 'action item',
+                'title': 'Course Activated: {}'.format(
+                    data.get('course_name')),
+                'description': description,
+            }
+            try:
+                return make_pmt_item(milestone_id, owner_id, pmt_data)
+            except ImproperlyConfigured:
+                # If the PMT item creation fails, we'll have the staff email.
+                pass
+
+        return None
+
     def form_valid(self, form):
         pk = self.kwargs.get('pk')
         self.affil = Affil.objects.get(pk=pk)
@@ -916,6 +961,7 @@ The Mediathread Team
             messages.error(self.request, 'Failed to send staff email.')
 
         messages.success(self.request, 'You\'ve activated your course.')
+        self.make_pmt_activation_item(form, self.request.user)
         return super(AffilActivateView, self).form_valid(form)
 
 

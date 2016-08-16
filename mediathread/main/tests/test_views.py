@@ -1219,10 +1219,19 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 
 @freeze_time('2015-10-11')
 @override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
+@override_settings(
+    TASK_ASSIGNMENT_DESTINATION='https://pmt.ccnmtl.columbia.edu/drf/'
+    'external_add_item/')
+@override_settings(MEDIATHREAD_PMT_MILESTONE_ID=12)
+@override_settings(MEDIATHREAD_PMT_OWNER_ID=12)
 class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()
         self.aa = AffilFactory(user=self.u)
+        self.form_data = {
+            'affil': self.aa.pk,
+            'course_name': 'My Course',
+        }
 
     def test_get(self):
         response = self.client.get(reverse('affil_activate', kwargs={
@@ -1236,12 +1245,10 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_post_no_course_name(self):
         self.assertFalse(self.aa.activated)
+        del self.form_data['course_name']
         response = self.client.post(
-            reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
-                'affil': self.aa.pk,
-                'course_name': '',
-                'consult_or_demo': 'consultation',
-            })
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}),
+            self.form_data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
         self.assertEqual(Course.objects.count(), 0)
@@ -1253,12 +1260,11 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         request = RequestFactory().get(
             reverse('affil_activate', kwargs={'pk': self.aa.pk}))
         response = self.client.post(
-            reverse('affil_activate', kwargs={'pk': self.aa.pk}), {
-                'affil': self.aa.pk,
-                'course_name': 'My Course',
-                'consult_or_demo': 'consultation',
-            }, follow=True)
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}),
+            self.form_data,
+            follow=True)
         self.assertEqual(response.status_code, 200)
+
         self.aa.refresh_from_db()
         self.assertTrue(self.aa.activated)
 
@@ -1283,11 +1289,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertContains(response, 'Future Courses')
 
     def test_send_faculty_email(self):
-        form = CourseActivateForm({
-            'affil': self.aa.pk,
-            'course_name': 'My Course',
-            'consult_or_demo': 'consultation',
-        })
+        form = CourseActivateForm(self.form_data)
         self.assertTrue(form.is_valid())
         AffilActivateView.send_faculty_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
@@ -1303,11 +1305,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             ['test_user@example.com'])
 
     def test_send_staff_email(self):
-        form = CourseActivateForm({
-            'affil': self.aa.pk,
-            'course_name': 'My Course',
-            'consult_or_demo': 'consultation',
-        })
+        form = CourseActivateForm(self.form_data)
         self.assertTrue(form.is_valid())
         AffilActivateView.send_staff_email(form, self.u)
         self.assertEqual(len(mail.outbox), 1)
@@ -1320,6 +1318,12 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])
+
+    def test_make_pmt_activation_item(self):
+        form = CourseActivateForm(self.form_data)
+        self.assertTrue(form.is_valid())
+        r = AffilActivateView.make_pmt_activation_item(form, self.u)
+        self.assertIsNotNone(r)
 
 
 class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):

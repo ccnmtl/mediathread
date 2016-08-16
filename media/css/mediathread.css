@@ -789,16 +789,6 @@ div.column-contents {
     font-weight: bold;
 }
 
-#create-course-container {
-    float: right;
-    margin-top: 10px;
-}
-
-a#create-course {
-    font-weight: normal;
-    color: #555;
-}
-
 table.course-choices {
     padding:5px;
     margin-left: 10px;

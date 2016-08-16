@@ -30,8 +30,6 @@
                 }
             });
             jQuery("#coursefilter").buttonset();
-
-            jQuery("#create-course").button();
         });
     </script>
 {% endblock %}
@@ -52,6 +50,13 @@
             <li class="{% if semester_view == 'future' %}active{% endif %}">
                 <a id="future_semesters" href="?semester_view=future">Future</a>
             </li>
+            {% if add_privilege %}
+            <li class="navbar-right">
+                <a id="create-course" class="create-course"
+                   href="{%url 'admin:courseaffils_course_add' %}"
+                >Create new course</a>
+            </li>
+            {% endif %}
             <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
                 <a id="sandboxes_link"
                    href="?semester_view=sandbox">Sandboxes</a>

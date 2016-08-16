@@ -454,7 +454,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
-                          "courseaffils/course_list.html")
+                          "main/course_list.html")
 
     def test_getobject_multiple_class_member_wrongcourse(self):
         self.assertTrue(
@@ -497,7 +497,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/', {})
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.templates[0].name,
-                          "courseaffils/course_list.html")
+                          "main/course_list.html")
 
         # No dice, login to Alternate Course
         self.switch_course(self.client, self.alt_course)

@@ -1,6 +1,8 @@
 {% load methtags %}
 
-<tr>
+<tr {% if new_course == course.pk %}
+        class="info"
+    {% endif %}>
     <td class="course-choice">
         {% if course.is_course %}
         <a class="choose-course"

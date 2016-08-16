@@ -763,9 +763,16 @@ class MethCourseListView(LoggedInMixin, CourseListView):
                (affil_semester == 1 and semester_view == 'future'):
                 courses.insert(0, affil)
 
+        new_course = self.request.GET.get('new_course', None)
+        try:
+            new_course = int(new_course)
+        except (TypeError, ValueError):
+            pass
+
         context.update({
             'activatable_affils': affils,
             'courses': courses,
+            'new_course': new_course,
         })
         return context
 
@@ -777,13 +784,18 @@ class AffilActivateView(LoggedInMixin, FormView):
 
     def get_success_url(self):
         past_present_future = self.affil.past_present_future
+        semester_view = 'current'
         if past_present_future == 1:
-            return '/?semester_view=future'
+            semester_view = 'future'
         elif past_present_future == 0:
-            return '/?semester_view=current'
+            semester_view = 'current'
         elif past_present_future == -1:
-            return '/?semester_view=past'
-        return '/'
+            semester_view = 'past'
+
+        new_course = self.course.pk
+
+        return '/?semester_view={}&new_course={}'.format(
+            semester_view, new_course)
 
     @staticmethod
     def send_faculty_email(form, faculty_user):
@@ -858,6 +870,8 @@ The Mediathread Team
             c.info.term = affil_dict.get('term')
             c.info.save()
 
+        return c
+
     def get_context_data(self, *args, **kwargs):
         context = super(AffilActivateView, self).get_context_data(
             *args, **kwargs)
@@ -889,7 +903,7 @@ The Mediathread Team
         self.affil.activated = True
         self.affil.save()
 
-        self.create_course(form, self.affil)
+        self.course = self.create_course(form, self.affil)
 
         try:
             self.send_faculty_email(form, self.request.user)

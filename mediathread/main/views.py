@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import re
 
-from smtplib import SMTPRecipientsRefused
+from smtplib import SMTPRecipientsRefused, SMTPDataError
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
@@ -51,7 +51,7 @@ from mediathread.main.forms import (
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import (
     send_template_email, user_display_name, send_course_invitation_email,
-    make_pmt_item,
+    make_pmt_item, log_sentry_error,
 )
 from mediathread.mixins import (
     ajax_required,
@@ -826,8 +826,7 @@ The Mediathread Team
             subject,
             body,
             settings.SERVER_EMAIL,
-            [faculty_user.email],
-            fail_silently=not settings.DEBUG)
+            [faculty_user.email])
 
     @staticmethod
     def send_staff_email(form, faculty_user):
@@ -846,8 +845,7 @@ The Mediathread Team
             subject,
             body,
             faculty_user.email,
-            [settings.SERVER_EMAIL],
-            fail_silently=not settings.DEBUG)
+            [settings.SERVER_EMAIL])
 
     def create_course(self, form, affil):
         # Create the course.
@@ -952,13 +950,15 @@ The Mediathread Team
 
         try:
             self.send_faculty_email(form, self.request.user)
-        except SMTPRecipientsRefused:
+        except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send faculty email.')
+            log_sentry_error(str(e))
 
         try:
             self.send_staff_email(form, self.request.user)
-        except SMTPRecipientsRefused:
+        except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send staff email.')
+            log_sentry_error(str(e))
 
         messages.success(self.request, 'You\'ve activated your course.')
         self.make_pmt_activation_item(form, self.request.user)

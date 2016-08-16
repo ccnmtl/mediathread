@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.template import loader
 from django.template.context import Context
 import requests
+from raven import Client
 
 
 def send_template_email(subject, template_name, params, recipient):
@@ -44,3 +45,13 @@ def make_pmt_item(milestone_id, owner_id, data):
         raise ImproperlyConfigured
 
     return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
+
+
+def log_sentry_error(msg):
+    try:
+        client = Client(settings.RAVEN_CONFIG['dsn'])
+    except (AttributeError, KeyError):
+        # If RAVEN_CONFIG isn't set, we can't log the error.
+        return
+
+    return client.captureMessage(msg)

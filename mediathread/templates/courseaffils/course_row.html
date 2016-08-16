@@ -13,11 +13,13 @@
         {% endif %}
 
     </td>
-    {% if course.info.termyear %}
-        <td>{{course.info.termyear}}</td>
-    {% elif course.to_dict %}
-        <td>{{course.to_dict.term|int_to_term}} {{course.to_dict.year}}</td>
-    {% endif %}
+    <td>
+        {% if course.info.termyear %}
+            {{course.info.termyear}}
+        {% elif course.to_dict %}
+            {{course.to_dict.term|int_to_term}} {{course.to_dict.year}}
+        {% endif %}
+    </td>
     <td>
         {% if course.details.instructor %}
             {{course.details.instructor.value}}

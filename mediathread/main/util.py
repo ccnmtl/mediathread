@@ -1,8 +1,11 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
+from django.core.exceptions import ImproperlyConfigured
 from django.template import loader
 from django.template.context import Context
+import requests
+from raven import Client
 
 
 def send_template_email(subject, template_name, params, recipient):
@@ -28,3 +31,27 @@ def send_course_invitation_email(request, invite):
 
 def user_display_name(user):
     return user.get_full_name() or user.username
+
+
+def make_pmt_item(milestone_id, owner_id, data):
+    """Make a PMT item containing the given data.
+
+    This function requires TASK_ASSIGNMENT_DESTINATION to be set.
+    """
+    TASK_ASSIGNMENT_DESTINATION = getattr(
+        settings, 'TASK_ASSIGNMENT_DESTINATION', None)
+
+    if not TASK_ASSIGNMENT_DESTINATION:
+        raise ImproperlyConfigured
+
+    return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
+
+
+def log_sentry_error(msg):
+    try:
+        client = Client(settings.RAVEN_CONFIG['dsn'])
+    except (AttributeError, KeyError):
+        # If RAVEN_CONFIG isn't set, we can't log the error.
+        return
+
+    return client.captureMessage(msg)

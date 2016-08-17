@@ -33,7 +33,7 @@ def user_display_name(user):
     return user.get_full_name() or user.username
 
 
-def make_pmt_item(milestone_id, owner_id, data):
+def make_pmt_item(data):
     """Make a PMT item containing the given data.
 
     This function requires TASK_ASSIGNMENT_DESTINATION to be set.

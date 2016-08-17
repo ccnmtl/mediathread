@@ -908,9 +908,9 @@ The Mediathread Team
         """
         milestone_id = getattr(
             settings, 'MEDIATHREAD_PMT_MILESTONE_ID', None)
-        owner_id = getattr(
-            settings, 'MEDIATHREAD_PMT_OWNER_ID', None)
-        if milestone_id and owner_id:
+        owner_username = getattr(
+            settings, 'MEDIATHREAD_PMT_OWNER_USERNAME', None)
+        if milestone_id and owner_username:
             # Prepare data entry into PMT. See
             # dmt.views.api.ExternalAddItemView.
             data = form.cleaned_data
@@ -925,15 +925,15 @@ The Mediathread Team
 
             pmt_data = {
                 'mid': milestone_id,
-                'owner': owner_id,
-                'assigned_to': owner_id,
+                'owner': owner_username,
+                'assigned_to': owner_username,
                 'type': 'action item',
                 'title': 'Course Activated: {}'.format(
                     data.get('course_name')),
                 'description': description,
             }
             try:
-                return make_pmt_item(milestone_id, owner_id, pmt_data)
+                return make_pmt_item(pmt_data)
             except ImproperlyConfigured:
                 # If the PMT item creation fails, we'll have the staff email.
                 pass

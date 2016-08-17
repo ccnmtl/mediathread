@@ -1,3 +1,4 @@
+from ssl import SSLError
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -44,7 +45,10 @@ def make_pmt_item(data):
     if not TASK_ASSIGNMENT_DESTINATION:
         raise ImproperlyConfigured
 
-    return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
+    try:
+        return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
+    except SSLError as e:
+        log_sentry_error(str(e))
 
 
 def log_sentry_error(msg):

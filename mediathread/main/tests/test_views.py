@@ -1223,7 +1223,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
     TASK_ASSIGNMENT_DESTINATION='https://pmt.ccnmtl.columbia.edu/drf/'
     'external_add_item/')
 @override_settings(MEDIATHREAD_PMT_MILESTONE_ID=12)
-@override_settings(MEDIATHREAD_PMT_OWNER_ID=12)
+@override_settings(MEDIATHREAD_PMT_OWNER_USERNAME='pmt_user')
 class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()

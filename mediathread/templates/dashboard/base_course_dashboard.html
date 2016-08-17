@@ -40,6 +40,12 @@
                             href="/dashboard/roster/">Roster</a>
                     </li>
                     {% endflag %}
+                    {% if user.is_staff %}
+                        <li>
+                            <a {% if '/materials/' in request.path %}class="active"{% endif %}
+                                href="/dashboard/delete/materials/">Materials</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         </div>

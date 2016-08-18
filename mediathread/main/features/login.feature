@@ -36,7 +36,7 @@ Feature: Login
         When I type "test" for password
         When I click the Log In button
 
-        Then I am at the Switch Course page
+        Then I am at the My Courses page
         When I click the "Sandboxes" link
         Then there is a "Sample Course" link
         When I click the "Sample Course" link
@@ -57,7 +57,7 @@ Feature: Login
         When I type "test" for password
         When I click the Log In button
 
-        Then I am at the Switch Course page
+        Then I am at the My Courses page
         When I click the "Sandboxes" link
         Then there is an "Alternate Course" link
         Then there is an "Sample Course" link
@@ -68,7 +68,7 @@ Feature: Login
         When I open the user menu
         Then there is a "My Courses" link
         When I click the "My Courses" link
-        Then I am at the Switch Course page
+        Then I am at the My Courses page
 
         When I click the "Sandboxes" link
         When I click the "Sample Course" link

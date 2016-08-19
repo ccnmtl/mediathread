@@ -12,6 +12,7 @@ include *.mk
 harvest1: $(PY_SENTINAL)
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/main/features
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/assetmgr/features
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/taxonomy/features
 
 harvest2: $(PY_SENTINAL)
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/assignment.feature
@@ -22,4 +23,3 @@ harvest3: $(PY_SENTINAL)
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/quickedit.feature
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/sliding_panels.feature
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/publishtoworld.composition.feature
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/taxonomy/features

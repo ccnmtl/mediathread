@@ -33,11 +33,6 @@ except:
     pass
 
 
-@before.harvest
-def migrate_database(variables):
-    management.call_command('migrate', verbosity=0, interactive=False)
-
-
 @before.each_scenario
 def reset_database(variables):
     world.using_selenium = False
@@ -77,7 +72,7 @@ def setup_browser():
     world.browser.set_window_size(1024, 768)
 
     # Wait implicitly for 2 seconds
-    world.browser.implicitly_wait(2)
+    #world.browser.implicitly_wait(2)
 
     # stash
     world.memory = {}

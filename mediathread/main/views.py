@@ -30,7 +30,6 @@ from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
 import requests
 from threadedcomments.models import ThreadedComment
-import waffle
 
 from lti_auth.models import LTICourseContext
 from mediathread.api import UserResource, CourseInfoResource
@@ -748,13 +747,9 @@ class InstructorDashboardSettingsView(
 
 
 class MethCourseListView(LoggedInMixin, CourseListView):
-    template_name = 'main/course_list.html'
-
     def get_context_data(self, **kwargs):
         context = super(MethCourseListView, self).get_context_data(**kwargs)
         context.update({'courses': context['object_list']})
-        if not waffle.flag_is_active(self.request, 'course_activation'):
-            return context
 
         courses = list(context.get('courses'))
         semester_view = self.request.GET.get('semester_view', 'current')

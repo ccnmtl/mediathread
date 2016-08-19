@@ -1,9 +1,11 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load coursetags %}
 {% load static %}
 
+{% block title %}&mdash; My Courses{% endblock %}
+
 {% block coursetitle %}
-    Select a Course
+    My Courses
 {% endblock %}
 
 {% block css %}
@@ -28,8 +30,6 @@
                 }
             });
             jQuery("#coursefilter").buttonset();
-
-            jQuery("#create-course").button();
         });
     </script>
 {% endblock %}
@@ -50,21 +50,21 @@
             <li class="{% if semester_view == 'future' %}active{% endif %}">
                 <a id="future_semesters" href="?semester_view=future">Future</a>
             </li>
+            {% if add_privilege %}
+            <li class="navbar-right">
+                <a id="create-course" class="create-course"
+                   href="{%url 'admin:courseaffils_course_add' %}"
+                >Create new course</a>
+            </li>
+            {% endif %}
             <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
                 <a id="sandboxes_link"
                    href="?semester_view=sandbox">Sandboxes</a>
             </li>
         </ul>
-        <div id="create-course-container">
-            {% if add_privilege %}
-                <a id="create-course" class="create-course"
-                   href="{%url 'admin:courseaffils_course_add' %}"
-                >Create new course</a>
-            {% endif %}
-        </div>
     </div>
-    <div class="visualclear"></div>
 
+    {% if courses|length > 5 %}
     <form role="search">
         <input class="course-search search-box form-control"
                type="search"
@@ -72,6 +72,7 @@
                autofocus
                placeholder="Filter">
     </form>
+    {% endif %}
 
     {% if semester_view == 'past' %}
         <h2>Past Courses</h2>
@@ -83,7 +84,7 @@
         <h2>Sandbox Courses</h2>
     {% endif %}
 
-    {% if object_list|length > 0 %}
+    {% if courses|length > 0 %}
         <table class="table course-choices tablesorter">
             <thead>
                 <tr>
@@ -97,7 +98,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for course in object_list %}
+                {% for course in courses %}
                     {% include 'courseaffils/course_row.html' %}
                 {% endfor %}
             </tbody>
@@ -119,13 +120,12 @@
             </li>
         </ul>
         <script>
-            function anonymizeStatus() {
-                document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: '
-                    + ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
-            }
-            anonymizeStatus();
+        function anonymizeStatus() {
+            document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: ' +
+                ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
+        }
+        anonymizeStatus();
         </script>
     {% endif %}
-
 
 {% endblock %}

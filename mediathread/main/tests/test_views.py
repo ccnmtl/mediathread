@@ -16,7 +16,6 @@ from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
 from django.utils.html import escape
 from threadedcomments.models import ThreadedComment
-from waffle.testutils import override_flag
 from freezegun import freeze_time
 from lti_auth.models import LTICourseContext
 
@@ -1158,20 +1157,9 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(MethCourseListViewTest, self).setUp()
 
-    def test_get_without_featureflag(self):
-        url = reverse('course_list')
-        with override_flag('course_activation', active=False):
-            response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'My Courses')
-        self.assertEqual(len(response.context['object_list']), 0)
-        with self.assertRaises(KeyError):
-            response.context['activatable_affils']
-
     def test_get_no_affils(self):
         url = reverse('course_list')
-        with override_flag('course_activation', active=True):
-            response = self.client.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'My Courses')
         self.assertEqual(len(response.context['object_list']), 0)
@@ -1181,8 +1169,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         url = reverse('course_list')
         affil_name = 't1.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
-        with override_flag('course_activation', active=True):
-            response = self.client.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'My Courses')
         self.assertContains(response, aa.coursedirectory_name)
@@ -1194,8 +1181,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         url = reverse('course_list')
         affil_name = 't1.y2015.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
-        with override_flag('course_activation', active=True):
-            response = self.client.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'My Courses')
         self.assertNotContains(response, aa.coursedirectory_name)
@@ -1207,8 +1193,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
         url = reverse('course_list') + '?semester_view=future'
         affil_name = 't3.y2016.s001.cf1000.scnc.fc.course:columbia.edu'
         aa = AffilFactory(user=self.u, name=affil_name)
-        with override_flag('course_activation', active=True):
-            response = self.client.get(url)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'My Courses')
         self.assertContains(response, aa.coursedirectory_name)

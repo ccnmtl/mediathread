@@ -1,4 +1,3 @@
-from ssl import SSLError
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -6,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.template import loader
 from django.template.context import Context
 import requests
+from requests.exceptions import SSLError
 from raven import Client
 
 

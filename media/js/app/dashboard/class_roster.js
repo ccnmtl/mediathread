@@ -32,7 +32,7 @@
             this.form = $elt.parents('form').first();
             var name = $elt.data('user-fullname');
             confirmAction(
-                'Are you sure you want to promote ' + name + ' to faculty?',
+                'Are you sure you want to promote ' + name + ' to instructor?',
                  this.onActionConfirmed, 'Confirm');
         },
         onDemote: function(evt) {

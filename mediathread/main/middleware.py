@@ -7,8 +7,6 @@ from mediathread.main.views import MethCourseListView
 
 class MethCourseManagerMiddleware(CourseManagerMiddleware):
     def process_request(self, request):
-        override_view = None
-
         # 'custom_course_context' comes through from lti. set the course.
         uuid = request.GET.get('custom_course_context', None)
         if uuid is not None:
@@ -19,7 +17,5 @@ class MethCourseManagerMiddleware(CourseManagerMiddleware):
             self.decorate_request(request, course)
             return None
 
-        override_view = MethCourseListView
-
         return super(MethCourseManagerMiddleware, self).process_request(
-            request, override_view)
+            request, MethCourseListView)

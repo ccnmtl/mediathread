@@ -856,6 +856,7 @@ The Mediathread Team
             title=form.cleaned_data.get('course_name'))
 
         # Add the current user as an instructor.
+        c.group.user_set.add(self.request.user)
         c.faculty_group.user_set.add(self.request.user)
         c.add_detail('instructor',
                      get_public_name(self.request.user, self.request))

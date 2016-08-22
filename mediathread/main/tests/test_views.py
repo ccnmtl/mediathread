@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 
+import factory
 from courseaffils.lib import get_public_name
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.models import Affil, Course
@@ -1212,10 +1213,14 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(AffilActivateViewTest, self).setUp()
-        self.aa = AffilFactory(user=self.u)
+        self.aa = AffilFactory(
+            name=factory.Sequence(
+                lambda n:
+                't1.y2016.s001.cf100%d.scnc.fc.course:columbia.edu' % n),
+            user=self.u)
         self.form_data = {
             'affil': self.aa.pk,
-            'course_name': 'My Course',
+            'course_name': 'English for Cats',
         }
 
     def test_get(self):
@@ -1254,14 +1259,15 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertTrue(self.aa.activated)
 
         course = Course.objects.last()
-        self.assertEqual(course.title, 'My Course')
+        self.assertEqual(course.title, 'English for Cats')
         self.assertEqual(
             unicode(course.info),
-            'My Course (Spring 2016) None None-None')
+            'English for Cats (Spring 2016) None None-None')
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)
         self.assertEqual(Affil.objects.count(), 1)
 
+        self.assertTrue(course.is_true_member(self.u))
         self.assertTrue(course.is_faculty(self.u))
         self.assertEqual(course.get_detail('instructor', None),
                          get_public_name(self.u, request))
@@ -1270,7 +1276,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             response,
             'You&#39;ve activated your course.',
             count=1)
-        self.assertContains(response, 'My Course')
+        self.assertContains(response, 'English for Cats')
         self.assertContains(response, 'Future Courses')
 
     def test_send_faculty_email(self):
@@ -1281,7 +1287,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
 
         self.assertEqual(
             mail.outbox[0].subject,
-            'Your Mediathread Course Activation: My Course')
+            'Your Mediathread Course Activation: English for Cats')
         self.assertEquals(
             mail.outbox[0].from_email,
             settings.SERVER_EMAIL)
@@ -1296,7 +1302,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(
             mail.outbox[0].subject,
-            'Mediathread Course Activated: My Course')
+            'Mediathread Course Activated: English for Cats')
         self.assertEquals(
             mail.outbox[0].from_email,
             'test_user@example.com')

@@ -803,7 +803,9 @@ class AffilActivateView(LoggedInMixin, FormView):
         body = """
 Dear {},
 
-Thank you for creating your Mediathread course: {}
+Thank you for creating your Mediathread course: {}. You can always access this
+course by going to https://mediathread.ccnmtl.columbia.edu.
+
 You are now ready to get started. Documentation is online here:
 http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread
 

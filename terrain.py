@@ -16,7 +16,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.expected_conditions import (
     visibility_of_element_located, invisibility_of_element_located,
-    visibility_of)
+    visibility_of, presence_of_element_located)
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mediathread.assetmgr.models import Asset
@@ -77,7 +77,7 @@ def setup_browser():
     world.browser.set_window_size(1024, 768)
 
     # Wait implicitly for 2 seconds
-    world.browser.implicitly_wait(2)
+    # world.browser.implicitly_wait(2)
 
     # stash
     world.memory = {}
@@ -694,22 +694,18 @@ def there_is_a_state_name_panel(step, state, name):
     state -- open, closed
     name -- composition, assignment, discussion, collection
     """
-    selector = "td.panel-container.%s.%s" % (state.lower(), name.lower())
+    selector = "td.panel-container.{}.{}".format(state.lower(), name.lower())
 
-    try:
-        panel = world.browser.find_element_by_css_selector(selector)
-    except NoSuchElementException:
-        time.sleep(2)
-        panel = world.browser.find_element_by_css_selector(selector)
-
-    assert panel is not None, "Can't find panel named %s" % panel
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(presence_of_element_located((By.CSS_SELECTOR, selector)))
 
 
 @step(u'I call the ([^"]*) "([^"]*)"')
 def i_call_the_panel_title(step, panel, title):
     selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.browser.find_element_by_css_selector(selector)
-    assert panel is not None, "Can't find panel named %s" % panel
+    wait = ui.WebDriverWait(world.browser, 5)
+    panel = wait.until(
+        presence_of_element_located((By.CSS_SELECTOR, selector)))
 
     elt = panel.find_element_by_name("title")
     elt.clear()
@@ -719,8 +715,9 @@ def i_call_the_panel_title(step, panel, title):
 @step(u'the ([^"]*) is called "([^"]*)"')
 def the_panel_is_called_title(step, panel, title):
     selector = "td.panel-container.open.%s" % panel.lower()
-    panel = world.browser.find_element_by_css_selector(selector)
-    assert panel is not None, "Can't find panel named %s" % panel
+    wait = ui.WebDriverWait(world.browser, 5)
+    panel = wait.until(
+        presence_of_element_located((By.CSS_SELECTOR, selector)))
 
     elt = panel.find_element_by_name("title")
     val = elt.get_attribute("value")

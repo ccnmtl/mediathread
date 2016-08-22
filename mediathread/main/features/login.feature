@@ -24,7 +24,7 @@ Feature: Login
         Then I am at the Home page
         When I log out
         Then I am at the Login page
-        Finished using Selenium      
+        Finished using Selenium
 
     Scenario: login.feature 3. Test Instructor Login
         Using selenium

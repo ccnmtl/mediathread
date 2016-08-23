@@ -559,7 +559,10 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
         for uni in unis_list(unis):
             uni = uni.lower().strip()
             if not self.validate_uni(uni):
-                msg = '{} is not a valid UNI'.format(uni)
+                msg = ('{} is not a valid UNI. To add a student without '
+                       'a UNI, click the "Invite Non-Columbia Affiliate" '
+                       'button below')
+                msg = msg.format(uni)
                 messages.add_message(request, messages.ERROR, msg)
                 continue
 
@@ -622,7 +625,8 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         invite = self.get_or_create_invite(email)
         send_course_invitation_email(self.request, invite)
 
-        msg = "{} was invited to join the course.".format(email)
+        msg = 'An email was sent to {} inviting this user to join the course.'
+        msg = msg.format(email)
         messages.add_message(self.request, messages.INFO, msg)
 
     def validate_invite(self, email):
@@ -634,7 +638,11 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
 
         for suffix in settings.BLOCKED_EMAIL_DOMAINS:
             if email.endswith(suffix):
-                msg = "{} cannot be invited through email.".format(email)
+                msg = ('{} is a Columbia University email address. To invite'
+                       ' a student or instructor with a UNI, click the '
+                       '"Add Columbia Affiliate" button below')
+
+                msg = msg.format(email)
                 raise ValidationError(msg, code='blocked')
 
     def post(self, request):

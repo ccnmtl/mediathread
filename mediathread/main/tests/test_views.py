@@ -1009,8 +1009,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             response = self.client.post(url, {'emails': 'foo@example.com'})
 
             self.assertEquals(response.status_code, 302)
-            self.assertTrue('foo@example.com was invited to join the course'
-                            in response.cookies['messages'].value)
+            self.assertTrue(
+                'An email was sent to foo@example.com inviting this user to '
+                'join the course.' in response.cookies['messages'].value)
 
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,
@@ -1051,8 +1052,10 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             '#$%^ is not a valid email address.'
             in response.cookies['messages'].value)
-        self.assertTrue('foo@example.com was invited to join the course'
-                        in response.cookies['messages'].value)
+        self.assertTrue(
+            'An email was sent to foo@example.com inviting '
+            'this user to join the course.'
+            in response.cookies['messages'].value)
 
     def test_accept_invite_invalid_uuid(self):
         # no uuid

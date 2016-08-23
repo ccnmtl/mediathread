@@ -4303,6 +4303,18 @@ a.btn.btn-default img.left {
     width: 16%;
 }
 
+.roster-messaging {
+     line-height: 1.75em
+}
+
+.roster-messaging .glyphicon-remove {
+    color: #a94442;
+}
+
+.roster-messaging .glyphicon-ok {
+    color: #3c763d;
+}
+
 .search-box {
     -webkit-border-radius: 18px;
     -moz-border-radius: 18px;

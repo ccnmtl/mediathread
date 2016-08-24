@@ -838,13 +838,30 @@ The Mediathread Team
         data = form.cleaned_data
         subject = 'Mediathread Course Activated: {}'.format(
             data.get('course_name'))
-        body = ""
-        for k in data:
-            body += "{}: {}\n".format(k, data[k])
+        body = """
+Course Title: {}
 
-        body += 'Faculty: {} <{}>\n'.format(
-            user_display_name(faculty_user),
-            faculty_user.email)
+Date Range: {} - {}
+
+Consult/Demo request: {}
+
+How will Mediathread be used to improve your class?
+{}
+
+How did you hear about Mediathread? {}
+
+Have you used Mediathread before? {}
+
+Faculty: {} <{}>
+""".format(data.get('course_name'),
+           data.get('date_range_start'),
+           data.get('date_range_end'),
+           data.get('request_consult_or_demo'),
+           data.get('how_will_mediathread_improve_your_class'),
+           data.get('hear_about_mediathread'),
+           data.get('used_mediathread'),
+           user_display_name(faculty_user),
+           faculty_user.email)
 
         send_mail(
             subject,

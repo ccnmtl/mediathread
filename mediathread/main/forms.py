@@ -158,7 +158,7 @@ class CourseActivateForm(forms.Form):
         label='Would you like to request...',
         required=False,
         choices=(
-            ('consultation',
+            ('demo',
              'an in-class demonstration for your students led by a '
              'CTL learning designer'),
             ('setup_consult',

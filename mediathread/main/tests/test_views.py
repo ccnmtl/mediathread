@@ -1158,9 +1158,6 @@ class MethCourseListAnonViewTest(TestCase):
 @freeze_time('2016-05-11')
 @override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
 class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
-    def setUp(self):
-        super(MethCourseListViewTest, self).setUp()
-
     def test_get_no_affils(self):
         url = reverse('course_list')
         response = self.client.get(url)
@@ -1299,6 +1296,16 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             ['test_user@example.com'])
 
     def test_send_staff_email(self):
+        self.form_data = {
+            'affil': self.aa.pk,
+            'course_name': 'English for Cats',
+            'date_range_start': datetime(year=2015, month=10, day=1),
+            'date_range_end': datetime(year=2015, month=12, day=13),
+            'request_consult_or_demo': ['demo'],
+            'how_will_mediathread_improve_your_class': 'Just because!',
+            'hear_about_mediathread': 'recommendation_colleague',
+            'used_mediathread': 'yes',
+        }
         form = CourseActivateForm(self.form_data)
         self.assertTrue(form.is_valid())
         AffilActivateView.send_staff_email(form, self.u)
@@ -1312,6 +1319,28 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])
+        self.assertIn(
+            'Course Title: {}'.format('English for Cats'),
+            mail.outbox[0].body)
+        self.assertIn(
+            'Date Range: 2015-10-01 - 2015-12-13',
+            mail.outbox[0].body)
+        self.assertIn(
+            'Consult/Demo request: [u\'demo\']',
+            mail.outbox[0].body)
+        self.assertIn(
+            'How will Mediathread be used to improve your class?\n' +
+            'Just because!',
+            mail.outbox[0].body)
+        self.assertIn(
+            'How did you hear about Mediathread? recommendation_colleague',
+            mail.outbox[0].body)
+        self.assertIn(
+            'Have you used Mediathread before? yes',
+            mail.outbox[0].body)
+        self.assertIn(
+            'Faculty: {} <{}>'.format('test_user', 'test_user@example.com'),
+            mail.outbox[0].body)
 
     def test_make_pmt_activation_item(self):
         form = CourseActivateForm(self.form_data)

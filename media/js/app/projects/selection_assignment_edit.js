@@ -63,7 +63,7 @@
                 var q1 = 'input[name="due_date"]';
                 var q2 = 'input[name="response_view_policy"]:checked';
                 return jQuery(q1).val() !== undefined &&
-                    jQuery(q2).val() !== undefined;
+                    jQuery(q1).val() !== '' && jQuery(q2).val() !== undefined;
             } else if (pageNo === 5) {
                 q = 'input[name="publish"]:checked';
                 return jQuery(q).val() !== undefined;

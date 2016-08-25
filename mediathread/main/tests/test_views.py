@@ -535,7 +535,7 @@ class ContactUsViewTest(TestCase):
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Contact Us Request')
             self.assertEquals(mail.outbox[0].from_email,
-                              'sender@ccnmtl.columbia.edu')
+                              settings.SERVER_EMAIL)
             self.assertEquals(mail.outbox[0].to,
                               [settings.SUPPORT_DESTINATION])
 

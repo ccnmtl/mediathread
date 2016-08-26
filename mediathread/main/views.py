@@ -338,7 +338,7 @@ class ContactUsView(FormView):
             if not response.status_code == 200:
                 # send to server email instead
                 send_mail(subject, form_data['description'],
-                          form_data['email'], (settings.SERVER_EMAIL,))
+                          settings.SERVER_EMAIL, (settings.SERVER_EMAIL,))
 
         # POST to the support email
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
@@ -347,9 +347,9 @@ class ContactUsView(FormView):
                 subject, 'main/contact_email_response.txt',
                 form_data, form_data['email'])
         else:
-            sender = form_data['email']
             recipients = (support_email,)
-            send_mail(subject, form_data['description'], sender, recipients)
+            send_mail(subject, form_data['description'],
+                      settings.SERVER_EMAIL, recipients)
 
         return super(ContactUsView, self).form_valid(form)
 

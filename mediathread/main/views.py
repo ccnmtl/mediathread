@@ -866,7 +866,7 @@ Faculty: {} <{}>
         send_mail(
             subject,
             body,
-            faculty_user.email,
+            settings.SERVER_EMAIL,
             [settings.SERVER_EMAIL])
 
     def create_course(self, form, affil):

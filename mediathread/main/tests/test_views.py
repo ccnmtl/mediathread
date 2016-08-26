@@ -1315,7 +1315,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             'Mediathread Course Activated: English for Cats')
         self.assertEquals(
             mail.outbox[0].from_email,
-            'test_user@example.com')
+            settings.SERVER_EMAIL)
         self.assertEquals(
             mail.outbox[0].to,
             [settings.SERVER_EMAIL])

@@ -90,7 +90,7 @@
             <div class="asset-thumb">
                 {{^thumbable}}
                     {{^thumb}}
-                        <img class="gallery-item-thumb" src="/media/img/nothumb_{{media_type_label}}.png" alt="Item Thumbnail" />
+                        <img class="gallery-item-thumb" src="{{#staticUrl}}{{/staticUrl}}img/nothumb_{{media_type_label}}.png" alt="Item Thumbnail" />
                         {{/thumb}}
                         {{#thumb}}
                             <img class="gallery-item-thumb" src="{{thumb}}" alt="Item Thumbnail" />

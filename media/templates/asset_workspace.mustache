@@ -9,7 +9,7 @@
                                     type="image" title="Help"
                                     alt="Help"
                                     class="help-button"
-                                    src="/media/img/icons/meth_help.png" />
+                                    src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_help.png" />
                             </div>
                             <h2><a href="/asset">Collection</a></h2>
                         </td>
@@ -20,7 +20,7 @@
                                 <input id="asset-view-help-button" type="image" title="Help"
                                     class="help-button"
                                      onclick="return annotationList.showHelp();"
-                                     alt="Help" src="/media/img/icons/meth_help.png" />
+                                     alt="Help" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_help.png" />
                             </div>
 
                             <div class="asset-view-header">
@@ -38,7 +38,7 @@
                         <td class="panel-container collection subpanel">
                             <div class="ajaxloader">
                                 <div class="message">
-                                <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                                <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
                                 <br /><br />
                                 <div>Refreshing the collection</div>
                                 </div>
@@ -64,18 +64,16 @@
                                         <div class="clipstrip-display"></div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="annotation-ajaxloader">
                                     <div class="message">
-                                    <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                                    <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
                                     <br /><br />
                                     <div>Retrieving selections</div>
                                     </div>
                                 </div>
 
                                 <div class="tabs asset-view-tabs" style="display: none">
-
-                                
                                     <div id="asset-view-help"></div>
 
                                     <ul>

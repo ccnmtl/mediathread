@@ -38,7 +38,7 @@
     
     <a href="#" id="homepage-create-menu" onclick='jQuery("#create-project-menu").toggle();' class="btn btn-default create right">
         Create&nbsp;
-        <img src="/media/img/menuselect.png" width="6" height="12" />
+        <img src="{{#staticUrl}}{{/staticUrl}}img/menuselect.png" width="6" height="12" />
     </a>
     <div id="create-project-menu" style="display: none;">
         {{#is_faculty}}
@@ -67,9 +67,9 @@
                     Respond to <strong>{{title}}</strong>
                 </a>
             {{/assignments}}
-            
+
             <hr class="divideLinks" />
-    
+
             <form action="/project/create/" method="post">
                 <input type="hidden" name="project_type" value="composition"/>
                 <input type="submit" value="Create Composition" />
@@ -211,7 +211,7 @@
                                             {{^display_as_assignment}}
                                                 data-object-type="composition"
                                             {{/display_as_assignment}}">
-                                            <img src="/media/img/icons/meth_delete.png"
+                                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"
                                             width="25" height="25"
                                             class="delete_icon" alt="Delete" />
                                         </a>
@@ -232,7 +232,7 @@
                                         </a>
                                     </h3>
                                     {{/collaboration}}
-                          
+
                                     <div class="meta">
                                         {{#is_response}}
                                         <div class="assignment-listitem response">
@@ -249,7 +249,7 @@
                                                    data-container-id="project-{{id}}"
                                                    data-object-type="assignment_response"
                                                    title="Delete My Response">
-                                                    <img src="/media/img/icons/meth_delete.png"
+                                                    <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"
                                                         class="delete_icon" alt="Delete"
                                                         width="25" height="25" />
                                                 </a>
@@ -258,24 +258,24 @@
                                             </span>
                                         </div>
                                         {{/is_response}}
-                            
+
                                         <div class="metadata">
                                             <span class="metadata-label">by</span>
                                             <span class="metadata-value metadata-value-author">{{#participants}}{{name}}{{^last}}, {{/last}}{{/participants}}</span>
                                             <span class="metadata-label">saved on</span>
                                             <span class="metadata-value">{{modified_date}} at {{modified_time}}</span>
                                         </div>
-                                        
+
                                         {{#is_assignment}}
                                         <div class="metadata">
                                             <span class="metadata-value metadata-value-status">{{{responses}}} responses</span>
                                         </div>
                                         {{/is_assignment}}
-                                        
+
                                         <div class="metadata">
                                             <span class="metadata-value metadata-value-status">{{{status}}}</span>
                                         </div>
-                                    
+
                                         {{#feedback}}
                                         <div class="feedback">
                                             <div class="clearfix"></div><br />

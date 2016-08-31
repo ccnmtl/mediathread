@@ -100,6 +100,8 @@
                     // that eats space and makes the sliding UI work nicely
                     var $lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
+                    panel = jQuery.extend({}, panel,
+                                          MediaThread.mustacheHelpers);
                     $lastCell.before(
                         Mustache.render(MediaThread.templates[panel.template],
                                         panel));

@@ -217,7 +217,7 @@ if (!Sherd.Image.FSIViewer) {
         this.microformat.create = function (obj, doc, options) {
             ///NOTE: we need underscores because this will become a javascript function name
             var fsi_object_id = Sherd.Base.newID('fsiviewer_wrapper');
-            
+
             var broken_url;
             var fpx;
             if (obj.hasOwnProperty('image_fpx')) {
@@ -230,7 +230,11 @@ if (!Sherd.Image.FSIViewer) {
             var presentation = self.presentations[obj.presentation || 'default'];
             obj.image_fpx_base = broken_url.slice(0, 3).join('/') + '/';
             obj.image_fpx_src = broken_url.slice(3).join('/');
-            
+
+            obj.fsiviewer = obj.fsiviewer.replace('http://', 'https://');
+            obj.image_fpx_base =
+                obj.image_fpx_base.replace('http://', 'https://');
+
             var full_fpx_url = obj.fsiviewer +
                 '?FPXBase=' + obj.image_fpx_base +
                 '&amp;FPXSrc=' + obj.image_fpx_src +

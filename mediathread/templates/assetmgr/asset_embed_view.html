@@ -31,6 +31,10 @@
         {% include "djangosherd/annotator_resources.html" %}
     {% endcompress %}
 
+    {% block uncompressable_js %}
+        {% include "djangosherd/player_resources.html" %}
+    {% endblock %}
+
     <script type="text/javascript">
         jQuery(document).ready(function () {
             djangosherd.storage.json_update({{item|safe}});

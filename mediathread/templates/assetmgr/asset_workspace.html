@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block uncompressable_js %}
+    {% include "djangosherd/player_resources.html" %}
     <!--  Generic Functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 

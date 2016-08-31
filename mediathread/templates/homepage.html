@@ -144,7 +144,7 @@
                     </h2>
                     <div class="ajaxloader">
                         <div class="message">
-                        <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                        <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
                         <br /><br />
                         <div>Fetching compositions &amp; assignments</div>
                         </div>
@@ -260,7 +260,7 @@
                             {% if collection.thumb_url %}
                                 <div class="source_thumb">
                                     <a href="/explore/redirect/{{collection.id}}/">
-                                        <img src="{{collection.thumb_url}}" class="collection-link" />
+                                        <img src="{{STATIC_URL}}{{collection.thumb_url}}" class="collection-link" />
                                     </a>
                                 </div>
                             {% endif %}
@@ -276,9 +276,7 @@
             </div>
         {% endwith %}
         </td>
-
         </tr>
     </tbody>
 </table>
-
 {% endblock %}

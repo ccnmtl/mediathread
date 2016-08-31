@@ -17,9 +17,10 @@ class AssetAdmin(admin.ModelAdmin):
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
+
     def queryset(self, request):
         return super(SourceAdmin, self).queryset(
-            request).select_related('asset')
+            request).select_related('asset', 'asset__course')
 
     def course_title(self, obj):
         return obj.asset.course.title
@@ -29,6 +30,8 @@ class SourceAdmin(admin.ModelAdmin):
 
     search_fields = ("label", "asset__title", "url", "asset__course__title")
     list_display = ("label", "asset", "course_title", "primary")
+    raw_id_fields = ("asset",)
+    readonly_fields = ("asset",)
 
 
 @admin.register(ExternalCollection)

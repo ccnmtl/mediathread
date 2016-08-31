@@ -98,3 +98,7 @@ django-smtp-ssl==1.0
 
 ccnmtlsettings==0.3.0
 django-extensions==1.7.2
+
+boto==2.41.0
+django-storages-redux==1.3.2
+django-cacheds3storage==0.1.2

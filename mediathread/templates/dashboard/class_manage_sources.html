@@ -58,7 +58,7 @@
                         <td class="thumb">
                             {% if suggested.thumb_url %}
                                 <a href="{{suggested.url}}">
-                                    <img src="{{suggested.thumb_url}}" alt="thumbnail image" />
+                                    <img src="{{STATIC_URL}}{{suggested.thumb_url}}" alt="thumbnail image" />
                                 </a>
                             {% endif %}
                         </td>

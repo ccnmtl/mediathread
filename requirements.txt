@@ -36,7 +36,7 @@ wrapt==1.10.8
 astroid==1.4.8  # pylint
 pylint==1.6.4
 pyasn1==0.1.9
-pyOpenSSL==16.0.0
+pyOpenSSL==16.1.0
 ndg-httpsclient==0.4.2
 requests==2.11.1
 contextlib2==0.5.4
@@ -49,7 +49,7 @@ django-reversion==1.9.3
 djangohelpers==0.18.1
 django-contrib-comments==1.7.2
 django-threadedcomments==1.0b1
-django-courseaffils==2.1.10
+django-courseaffils==2.1.11
 django-statsd-mozilla==0.3.16
 raven==5.25.0
 django-appconf==1.0.2  # django_compressor
@@ -97,8 +97,9 @@ freezegun==0.3.7
 django-smtp-ssl==1.0
 
 ccnmtlsettings==0.3.0
-django-extensions==1.7.2
+django-extensions==1.7.3
 
 boto==2.41.0
 django-storages-redux==1.3.2
 django-cacheds3storage==0.1.2
+

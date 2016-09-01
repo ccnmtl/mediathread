@@ -50,7 +50,7 @@ from mediathread.main.forms import (
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import (
     send_template_email, user_display_name, send_course_invitation_email,
-    make_pmt_item, log_sentry_error,
+    make_pmt_item, log_sentry_error, course_exists
 )
 from mediathread.mixins import (
     ajax_required,
@@ -761,8 +761,17 @@ class MethCourseListView(LoggedInMixin, CourseListView):
 
         courses = list(context.get('courses'))
         semester_view = self.request.GET.get('semester_view', 'current')
+
         affils = Affil.objects.filter(user=self.request.user, activated=False)
+
+        # Exclude any affils that already have a course associated with
+        # them, but for whatever reason have "activated" set to False.
+        filtered_affils = []
         for affil in affils:
+            if not course_exists(affil):
+                filtered_affils.append(affil)
+
+        for affil in filtered_affils:
             affil_semester = affil.past_present_future
             if (affil_semester == -1 and semester_view == 'past') or \
                (affil_semester == 0 and semester_view == 'current') or \
@@ -776,7 +785,7 @@ class MethCourseListView(LoggedInMixin, CourseListView):
             pass
 
         context.update({
-            'activatable_affils': affils,
+            'activatable_affils': filtered_affils,
             'courses': courses,
             'new_course': new_course,
         })
@@ -905,14 +914,12 @@ Faculty: {} <{}>
         self.affil = Affil.objects.get(pk=pk)
         affil_dict = self.affil.to_dict()
 
-        studentaffil = re.sub(r'\.fc\.', '.st.', self.affil.name)
-        g = Group.objects.filter(name=studentaffil).first()
-        if Course.objects.filter(group=g).exists():
-            c = Course.objects.filter(group=g).first()
-            # If a Course already exists for this group, show an error.
+        c = course_exists(self.affil)
+        if c:
+            # If a Course already exists for this affil, show an error.
             msg = ('The {} affil is already connected to the course:'
                    ' <strong><a href="/?set_course={}">{}</a></strong>'.format(
-                       studentaffil,
+                       self.affil,
                        c.group.name,
                        c))
             messages.error(self.request, mark_safe(msg))

@@ -67,5 +67,5 @@ Feature: Sliding Panels
         | width | height | assignment_subpanel_state | assignment_panel_state | composition_subpanel_state |
         | 800   | 500    | closed                    | closed                 | closed                     |
         | 1024  | 768    | open                      | open                   | closed                     |
-        | 1280  | 800    | open                      | open                   | open                       |
-        | 1440  | 900    | open                      | open                   | open                       |
+        | 1280  | 800    | open                      | open                   | closed                     |
+        | 1440  | 900    | open                      | open                   | closed                     |

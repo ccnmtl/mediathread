@@ -1,4 +1,4 @@
-/* global MediaThread: true */
+/* global MediaThread: true, STATIC_URL: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -127,7 +127,7 @@
     MediaThread.loadTemplate = function(templateName) {
         if (typeof MediaThread.templates[templateName] === 'undefined') {
             return jQuery.ajax({
-                url: '/media/templates/' +
+                url: STATIC_URL + 'templates/' +
                     templateName + '.mustache?nocache=v2',
                 dataType: 'text',
                 cache: false,
@@ -191,6 +191,11 @@
      * switch to handlebars.
      */
     MediaThread.mustacheHelpers = {
+        staticUrl: function() {
+            return function(text, render) {
+                return render(STATIC_URL);
+            };
+        },
         ellipsis18: function() {
             return function(text, render) {
                 return ellipsis(render(text), 18);

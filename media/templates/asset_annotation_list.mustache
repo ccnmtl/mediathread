@@ -27,11 +27,11 @@
             {{#editable}}
               <input style="display: none" type="image" title="Edit Selection"
               onclick="return annotationList.editAnnotation(this);"
-              alt="Edit" src="/media/img/icons/meth_edit.png"
+              alt="Edit" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png"
               class="annotation-listitem-icon edit" />
               <input style="display: none" type="image" title="Delete Selection"
               onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
-              alt="Delete" src="/media/img/icons/meth_delete.png"
+              alt="Delete" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"
               class="annotation-listitem-icon delete" />
             {{/editable}}
 
@@ -39,7 +39,7 @@
               <input name="copy-selection-icon" style="display: none"
               type="image" title="Copy Selection"
               onclick="return annotationList.copyAnnotation(this);"
-              alt="Copy" src="/media/img/icons/meth_copy.png"
+              alt="Copy" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_copy.png"
               class="annotation-listitem-icon" />
             {{/editable}}
           </h3>
@@ -56,7 +56,7 @@
                     <input type="image" title="Play Clip"
                     class="regButton videoplay left"
                     alt="Play Clip"
-                    src="/media/img/icons/meth_video_play.png" />
+                    src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_video_play.png" />
                   </div>
                   <div class="visualclear"></div>
                 {{/annotation.startCode}}

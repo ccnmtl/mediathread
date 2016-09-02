@@ -224,6 +224,8 @@
     {% endblock %}
 
     <script type="text/javascript">
+        var STATIC_URL = '{{STATIC_URL}}';
+
         var lt = String.fromCharCode(60);
         if (window.jQuery) {
             jQuery.noConflict();

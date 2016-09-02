@@ -1,21 +1,20 @@
     <td class="panhandle-left-container">
         <div class="panhandle-left discussion"></div>
     </td>
-    
+
     <td class="panhandle-stripe discussion">
         <div class="label">{{panel_state_label}}</div>
     </td>
-    
+
     <td id="{{context.discussion.id}}-panel-container" class="panel-container {{panel_state}} discussion">
         <div class="mediathread-panel discussion">
             <table class="panel-subcontainer">
                 {{#title}}
                 <tr class="discussion-toolbar-row">
                     <td colspan="4" class="panel-subcontainer-toolbar-column">
-                        
                         <div class="panel-subcontainer-title discussion">
                             <h1 class="discussion-title">
-                                {{title}}        
+                                {{title}}
                             </h1>
                         </div>
                     </td>
@@ -57,7 +56,6 @@
                                                     <span>{{submit_date}}</span>
                                                 </div>
                                             </div>
-                    
                                             <div class="threaded_comment_title">{{title}}</div>
                                             <div class="threaded_comment_text">{{{content}}}</div>
                                         </div>
@@ -70,7 +68,7 @@
                             <form style="display: none" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
                                 <h3 style="display: none">Respond</h3>
                                 <input type="hidden" id="comment-edit-id" name="edit-id" />
-                                <script type="text/javascript" src="/media/js/app/tinymce_init.js"></script>
+                                <script type="text/javascript" src="{{#staticUrl}}{{/staticUrl}}js/app/tinymce_init.js"></script>
                                 <table class="threaded_comments_form_table">
                                     {{{context.form}}}
                                 </table>
@@ -97,16 +95,16 @@
                             <h2>
                                 <div class="collection_button">
                                     <a href="/asset/">View Full Collection</a>
-                                </div>                            
+                                </div>
                                 Collection
                             </h2>
                             <div class="ajaxloader">
                                 <div class="message">
-                                <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                                <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
                                 <br /><br />
                                 <div>Refreshing the collection</div>
                                 </div>
-                            </div>                            
+                            </div>
                             <div id="{{context.discussion.id}}-collection_table" class="collection_table"></div>
                         </div>
                         {{/context.can_edit}}
@@ -119,7 +117,7 @@
                                 <div class="asset-object" style="border: none; background-color: #ededed;"></div><!-- width changes here too if video size changes -->
                                     <div class="asset-display"></div>
                                     <div class="clipstrip-display"></div>
-                                </div>    
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -128,14 +126,12 @@
                     </td>
                     <td class="pantab-container">
                         <div class="pantab collection {{#subpanel_state}}{{subpanel_state}}{{/subpanel_state}} {{^subpanel_state}}closed{{/subpanel_state}}"></div>
-                    </td>                
+                    </td>
                 </tr>
             </table>
         </div>
     </td>
-        
+
     <td class="pantab-container">
         <div class="pantab discussion {{panel_state}}"></div>
     </td>
-    
-    

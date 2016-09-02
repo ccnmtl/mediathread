@@ -14,18 +14,18 @@
 
     {{#asset-current}}
         {{^readOnly}}
-        
+
         <a class="btn btn-default btn-sm create-selection right"
             title="Create Selection"
             onclick="return annotationList.newAnnotation();">
-            <img src="/media/img/icons/meth_addselection.png" />
+            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" />
             Create</a>
         {{/readOnly}}
-        
+
         <div class="btn-group right">
             <button type="button" class="btn btn-default btn-sm dropdown-toggle filter-selections"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="/media/img/icons/meth_view.png" /> View <span class="caret"></span>
+                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_view.png" /> View <span class="caret"></span>
             </button>
             <div id="annotation-filter-menu" class="dropdown-menu dropdown-menu-right">
                 <form name="annotation-list-filter">
@@ -50,7 +50,7 @@
                     <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>
                 </form>
             </div>
-        </div>        
+        </div>
 
         <h2>
             {{^readOnly}}Selections{{/readOnly}}
@@ -62,10 +62,10 @@
                 <br />
                 <div>You have no selections on this item.</div>
                 <br />
-    
+
                 <a class="btn btn-default btn-sm create-selection"
                   onclick="return annotationList.newAnnotation();">
-                  <img src="/media/img/icons/meth_addselection.png"
+                  <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png"
                   alt="Create Selection"></img>
                   Create a selection
                 </a>
@@ -76,7 +76,7 @@
             <a style="display: none"
               class="btn btn-default create-selection"
               onclick="return annotationList.newAnnotation();">
-              <img src="/media/img/icons/meth_addselection.png"
+              <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png"
               alt="Create Selection"></img>
               Create Selection
             </a>

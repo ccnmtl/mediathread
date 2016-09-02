@@ -8,7 +8,7 @@ locals().update(
         base=base,
         STATIC_ROOT=STATIC_ROOT,
         INSTALLED_APPS=INSTALLED_APPS,
-        s3static=False,
+        s3static=True,
     ))
 
 

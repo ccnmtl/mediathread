@@ -26,11 +26,10 @@
 
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
     <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js" type="text/javascript"></script>
-
-
 {% endblock %}
 
 {% block uncompressable_js %}
+    {% include "djangosherd/player_resources.html" %}
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
@@ -59,7 +58,7 @@
                 Selection Assignment
                 {% if assignment_can_edit %}
                     <a class="right" href="{% url 'selection-assignment-edit' assignment.id %}">
-                        <img alt="Edit" src="/media/img/icons/meth_edit.png"></span>
+                        <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"></span>
                     </a>
                 {% endif %}
             </h2>
@@ -293,7 +292,7 @@
                 <div id="asset-workspace-panel-container" class="asset-workspace column-container">
                     <div class="annotation-ajaxloader">
                         <div class="message">
-                        <img alt="Loading..." src="/media/img/ajax-loader.gif">
+                        <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
                         <br /><br />
                         <div>Retrieving responses</div>
                         </div>

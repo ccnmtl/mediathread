@@ -512,10 +512,12 @@ CollectionList.prototype.updateSwitcher = function() {
     self.switcher_context.display_switcher_extras =
         !self.switcher_context.showing_my_items;
 
+    var context =
+        jQuery.extend({}, self.switcher_context, MediaThread.mustacheHelpers);
+
     MediaThread.loadTemplate('collection_chooser')
         .then(function(template) {
-            var rendered =
-                Mustache.render(template, self.switcher_context);
+            var rendered = Mustache.render(template, context);
             jQuery(self.$el)
                 .find('.collection-chooser-container')
                 .html(rendered);

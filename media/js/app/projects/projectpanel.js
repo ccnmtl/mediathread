@@ -1,6 +1,6 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
-/* global SelectFilter: true, showMessage: true */
+/* global SelectFilter: true, showMessage: true, STATIC_URL: true */
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -29,7 +29,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         var select = self.$el.find('select[name="participants"]')[0];
         jQuery(select).addClass('selectfilter');
         SelectFilter.init('id_participants_' + panel.context.project.id,
-            'participants', 0, '/media/admin/');
+            'participants', 0, STATIC_URL + 'admin/');
 
         // HACK: move the save options around due to django form constraints
         var assignment_elt = self.$el.find('label[for="id_publish_2"]')

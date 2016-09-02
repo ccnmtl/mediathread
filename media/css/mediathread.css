@@ -227,7 +227,7 @@ div.arrowIcon {
 }
 
 a.arrowClosed div.arrowIcon {
-    background-image: url(/media/img/arrowOpen.png);
+    background-image: url(../img/arrowOpen.png);
 }
 
 /* form error messaging */
@@ -512,7 +512,7 @@ input[name='decoy'] {
 .ui-icon-reverse { 
     width: 16px; 
     height: 16px; 
-    background-image: url(/media/jquery/css/images/ui-icons_ffffff_256x240.png); 
+    background-image: url(../jquery/css/images/ui-icons_ffffff_256x240.png); 
 }
 
 .help-overlay {
@@ -3239,7 +3239,7 @@ div.collection_table {
     padding:0 0 0 7px;
     margin:0;
     position:absolute;
-    background:url('/media/img/bookendleft.gif') top left no-repeat ;
+    background:url('../img/bookendleft.gif') top left no-repeat ;
     z-index:0;
 }
 
@@ -3260,7 +3260,7 @@ div.collection_table {
     width:0px;
     height:7px;
     padding:0 6px 0 0;
-    background:url('/media/img/bookendright.gif') top right no-repeat;
+    background:url('../img/bookendright.gif') top right no-repeat;
     position:absolute;
     z-index:0;
 }

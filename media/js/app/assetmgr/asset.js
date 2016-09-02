@@ -315,6 +315,8 @@
 
             var grouping = self.grouping;
             var context = {'annotation_list': []};
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
+
             var cats = {};
             var user_listing = false;
             self.layers[grouping].removeAll();
@@ -668,6 +670,8 @@
 
                         var $elt = jQuery('#asset-global-annotation');
                         $elt.hide();
+                        context = jQuery.extend({}, context,
+                            MediaThread.mustacheHelpers);
                         var rendered = Mustache.render(
                             MediaThread.templates.asset_global_annotation,
                             context);
@@ -773,6 +777,8 @@
                 },
                 'project': self.config.projectId
             };
+
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
 
             jQuery(self.eltsAnnotationDisplay)
                 .fadeOut()

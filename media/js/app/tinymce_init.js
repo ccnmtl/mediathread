@@ -1,4 +1,4 @@
-/* global tinymce: true */
+/* global tinymce: true, STATIC_URL: true */
 
 var tinymceSettings = {
     'browser_spellcheck': true,
@@ -10,5 +10,5 @@ var tinymceSettings = {
     'toolbar': 'bold, italic, underline, spacer, bullist, numlist, ' +
         'spacer, outdent, indent, spacer, undo, redo, spacer, link, ' +
         'unlink, image, spacer, code, pasteword',
-    'content_css': '/media/css/project.css'
+    'content_css': STATIC_URL + 'css/project.css'
 };

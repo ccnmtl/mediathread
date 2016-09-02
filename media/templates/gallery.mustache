@@ -1,25 +1,24 @@
     <div class="media-column">
         <div id="collection-overlay" class="ui-widget-overlay help-overlay" style="display: none"></div>
-        
+
         <div id="collection-help-tab" class="ui-widget-content collection-help-tab" style="display: none">
                 <input class="dismiss-help" type="image" title="Dismiss help" 
-                    alt="Dismiss Help" src="/media/img/icons/meth_help.png" />
+                    alt="Dismiss Help" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_help.png" />
         </div>
-        
-        
+
         <div id="collection-help" class="ui-widget-content collection-help" style="display: none">
             <h5>Mediathread collection</h5>
             <div class="feature-help-instructions">
                 <p>A collection is a set of items (images, video, and/or audio) imported into Mediathread.
                 These items can be annotated and embedded into your written analysis.</p>
-        
+
                 <p>By default, this page will display all the items that you have imported into Mediathread.</p>
 
                 <p>To see items imported and analyzed by others in the course, select a person's name (or All Class Members)
                 in the Owner drop down menu. Items displayed here can also be filtered by user tags, 
-                course vocabulary terms (if any), and date last modified.</p>            
+                course vocabulary terms (if any), and date last modified.</p>
             </div>
-            
+
             <h5>How do I build my collection?</h5>
             <div class="feature-help-instructions">
                 <ul>
@@ -36,7 +35,7 @@
                             An <b>Upload from Computer</b> link and directions then appear on the <a href="/">home</a> page.  
                         </li>
                     {{/is_faculty}}
-                    {{^is_faculty}}                                            
+                    {{^is_faculty}}
                             <li style="margin-bottom: 4px"><b>Import</b>: Build your collection 
                             by bookmarking items from sites such as YouTube or Flickr.
                             To install the bookmarklet into your browser, click the <b>Import into Collection</b> 
@@ -45,16 +44,16 @@
                             <li><b>Upload</b>: If this feature is enabled, 
                             you may upload video and audio files from your computer. Click the 
                             <b>Upload from Computer</b> on the <a href="/">home</a> page and 
-                            follow directions.</li>                                            
+                            follow directions.</li>
                     {{/is_faculty}}
-               </ul>                                     
+               </ul>
             </div>
             <div class="visualclear"></div>
             <div style="float: right">    
                 <input class="btn-primary right dismiss-help" type="button" value="Dismiss Help">
-            </div>                         
+            </div>
         </div>
-        
+
         <div class="filter-widget" style="display: none">
             <div class="collection-col-3">
                 <div class="switcher-tool switcher-search-text input-group">
@@ -90,7 +89,7 @@
                     <select class="vocabulary"
                         data-placeholder="Select {{#lower}}{{display_name}}{{/lower}}"
                         multiple="multiple">
-                                        
+
                         {{#active_vocabulary}}
                         <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
                             {{#term_set}}
@@ -99,21 +98,21 @@
                                 </option>
                             {{/term_set}}
                         </optgroup>
-                        {{/active_vocabulary}}     
+                        {{/active_vocabulary}}
                     </select>
                 </div>
             </div>
-                
+
             <div class="collection-col-2">
                 <div class="switcher collection-date-filter switcher-tool">
                     <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                         <span class="switcher-prefix">Date </span>
                         <span class="down-arrow"></span>
-                        
+
                         {{#active_filters.modified}}
                             <span class="title">{{active_filters.modified}}</span>
                         {{/active_filters.modified}}
-                        
+
                         {{^active_filters.modified}}
                             <span class="title">all</span>
                         {{/active_filters.modified}}

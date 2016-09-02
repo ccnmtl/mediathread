@@ -5,13 +5,13 @@
         <input type="image" title="Remove item from collection"
          class="remove-item-icon"
          onclick="return annotationList.deleteItem(event, this, {{id}});"
-         alt="Delete" src="/media/img/icons/meth_delete.png" />
+         alt="Delete" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" />
       {{/global_annotation.id}}
 
       <input type="image" title="Edit item"
        class="edit-item-icon"
        onclick="return annotationList.editItem(this);"
-       alt="Edit" src="/media/img/icons/meth_edit.png" />
+       alt="Edit" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" />
     </div>
   </h2>
 
@@ -31,7 +31,7 @@
                 <br />
                 <a class="btn btn-default btn-sm edit-item"
                   onclick="return annotationList.editItem(this);">
-                  <img src="/media/img/icons/meth_edit.png"
+                  <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png"
                   alt="Edit this item"></img>
                   Edit this item
                 </a>

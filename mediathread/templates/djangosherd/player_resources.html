@@ -1,0 +1,12 @@
+<script type="text/javascript">
+    OpenLayers.ImgPath = '{{STATIC_URL}}js/lib/sherdjs/lib/openlayers/openlayers/img/';
+    OpenLayers._getScriptLocation = function() {
+       return "{{STATIC_URL}}js/lib/sherdjs/lib/openlayers/openlayers/";
+    }
+    flowplayer.swf_location = '{{settings.FLOWPLAYER_SWF_LOCATION}}';
+    flowplayer.html5_swf_location = '{{settings.FLOWPLAYER_HTML5_SWF_LOCATION}}';
+    flowplayer.audio_plugin = '{{settings.FLOWPLAYER_AUDIO_PLUGIN}}';
+    flowplayer.pseudostreaming_plugin = '{{settings.FLOWPLAYER_PSEUDOSTREAMING_PLUGIN}}';
+    flowplayer.rtmp_plugin = '{{settings.FLOWPLAYER_RTMP_PLUGIN}}';
+
+</script>

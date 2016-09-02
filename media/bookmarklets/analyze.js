@@ -1,1 +1,0 @@
-../js/mediathread-bookmarklet/bookmarklet.js

@@ -1,4 +1,4 @@
-/* global jQuery: true */
+/* global jQuery: true, STATIC_URL: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
 /* global Mustache: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
@@ -13,7 +13,8 @@ var ProjectList = function(config) {
     self.space_owner = config.space_owner;
 
     jQuery.ajax({
-        url: '/media/templates/' + config.template + '.mustache?nocache=v2',
+        url: STATIC_URL + 'templates/' +
+            config.template + '.mustache?nocache=v2',
         dataType: 'text',
         cache: false, // Chrome && IE have aggressive caching policies.
         success: function(text) {
@@ -195,8 +196,10 @@ ProjectList.prototype.update = function(the_records) {
     self.switcher_context.display_switcher_extras =
         !self.switcher_context.showing_my_items;
     the_records.switcher_collection_chooser = self.switcher_context;
+    the_records = jQuery.extend({}, the_records, MediaThread.mustacheHelpers);
     var rendered = Mustache.render(MediaThread.templates.homepage,
                                    the_records);
+
     var $el = jQuery('#classwork_table');
     $el.html(rendered).hide().fadeIn('slow');
 

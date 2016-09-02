@@ -1,8 +1,11 @@
 from django.core import mail
 from django.test.testcases import TestCase
+from courseaffils.tests.factories import AffilFactory
 
 from mediathread.factories import UserFactory
-from mediathread.main.util import send_template_email, user_display_name
+from mediathread.main.util import (
+    send_template_email, user_display_name, course_exists
+)
 
 
 class UtilTest(TestCase):
@@ -23,3 +26,7 @@ class UtilTest(TestCase):
 
         user = UserFactory(first_name='John', last_name='Smith')
         self.assertEquals(user_display_name(user), 'John Smith')
+
+    def test_course_exists(self):
+        a = AffilFactory()
+        self.assertIsNone(course_exists(a))

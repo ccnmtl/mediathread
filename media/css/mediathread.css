@@ -4388,3 +4388,8 @@ ul.section-tabs>li>a.active {
     background-color: #1b75bc;
     color: white;
 }
+
+.sherd-flowplayer-download-btn {
+    display: none;
+    margin-right: 10px;
+}

@@ -44,11 +44,6 @@ if (typeof djangosherd === 'undefined') {
 // / when attached to clipform: media.duration,media.timescale (and probably
 // media.time)
 
-function legacy_json(unparsed_json) {
-    //workaround a bug introduced by MochiKit's serializeJSON() method
-    return unparsed_json.replace(/\"wh_ratio\":\sNaN/, '"wh_ratio":null');
-}
-
 function djangosherd_adaptAsset(asset) {
     if (asset.flv || asset.flv_pseudo ||
             asset.mp4 || asset.mp4_pseudo || asset.mp4_rtmp ||
@@ -196,8 +191,8 @@ function DjangoSherd_AnnotationMicroFormat() {
 
 
         try {
-            var ann_data = JSON.parse(legacy_json(
-                    data_elt.getAttribute('data-annotation')));
+            var ann_data = JSON.parse(
+                data_elt.getAttribute('data-annotation'));
 
             // /TODO: remove these--maybe we can with no problem
             ann_data.start = parseInt(data_elt.getAttribute('data-begin'), 10);// CHOP
@@ -536,7 +531,6 @@ function DjangoSherd_Storage() {
                 jQuery.ajax({
                     url: (subject.url || '/api/' + obj_type + '/' + id + '/'),
                     dataType: 'json',
-                    dataFilter: legacy_json,
                     cache: false, // Internet Explorer has aggressive caching policies.
                     success: function (json) {
                         var new_id = self.json_update(json, obj_type);

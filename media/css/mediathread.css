@@ -4390,6 +4390,7 @@ ul.section-tabs>li>a.active {
 }
 
 .sherd-flowplayer-download-btn {
-    display: none;
-    margin-right: 10px;
+    font-size: 1.5em;
+    margin: 10px;
+    float: right;
 }

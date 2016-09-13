@@ -77,7 +77,6 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 durationID: 'totalcliplength' + playerID,
                 playerParams: params,
                 text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' +
-                    '<span class="sherd-flowplayer-download-btn"></span>' +
                       '<span id="currtime' + playerID + '">00:00:00</span>/<span id="totalcliplength' + playerID + '">00:00:00</span></div>' + 
                       '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
                     '<div class="no-brand sherd-flowplayer no-hover fixed-controls" data-ratio="0.68" ' +

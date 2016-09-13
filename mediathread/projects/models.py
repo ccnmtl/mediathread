@@ -470,6 +470,9 @@ class Project(models.Model):
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
+        if collaboration.policy_record.policy_name == PUBLISH_WHOLE_WORLD[0]:
+            return True
+
         # If this project is an assignment response, verify the parent
         # assignment's response policy sanctions a read by the viewer
         if not self.is_composition():

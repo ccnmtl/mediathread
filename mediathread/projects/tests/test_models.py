@@ -7,7 +7,9 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
 from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem
+    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem, \
+    PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD, PUBLISH_DRAFT, \
+    PUBLISH_INSTRUCTOR_SHARED
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -42,19 +44,20 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # Sample Course Projects
         self.project_private = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PrivateEditorsAreOwners')
+            policy=PUBLISH_DRAFT[0])
 
         self.project_instructor_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='InstructorShared', date_submitted=datetime.today())
+            policy=PUBLISH_INSTRUCTOR_SHARED[0],
+            date_submitted=datetime.today())
 
         self.project_class_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='CourseProtected')
+            policy=PUBLISH_WHOLE_CLASS[0])
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', project_type='assignment')
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
         self.add_citation(self.assignment, self.student_note)
         self.add_citation(self.assignment, self.instructor_note)
         self.add_citation(self.assignment, self.student_ga)
@@ -62,11 +65,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         self.selection_assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', project_type='selection-assignment')
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='selection-assignment')
 
         self.draft_assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='PrivateEditorsAreOwners', project_type='assignment')
+            policy=PUBLISH_DRAFT[0], project_type='assignment')
 
     def test_can_cite(self):
         # notes in an unsubmitted project are not citable regardless of viewer
@@ -78,7 +81,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # parent assignment: responses always visible
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='CourseProtected', parent=self.selection_assignment,
+            policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
             date_submitted=datetime.today())
         self.assertTrue(
             response.can_cite(self.sample_course, self.student_two))
@@ -106,14 +109,14 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            policy='CourseProtected', parent=self.selection_assignment,
+            policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
             date_submitted=datetime.today())
         self.assertFalse(response.can_cite(
             self.sample_course, self.student_two))
 
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
-            policy='CourseProtected', parent=self.selection_assignment,
+            policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
             date_submitted=datetime.today())
         self.assertTrue(response.can_cite(
             self.sample_course, self.student_two))
@@ -163,12 +166,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_migrate_selection_assignment(self):
         assignment1 = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', title="Assignment 1",
+            policy=PUBLISH_WHOLE_CLASS[0], title="Assignment 1",
             response_view_policy=RESPONSE_VIEW_NEVER[0],
             project_type='selection-assignment')
         assignment2 = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', title="Assignment 2",
+            policy=PUBLISH_WHOLE_CLASS[0], title="Assignment 2",
             project_type='selection-assignment')
 
         asset = AssetFactory.create(course=self.sample_course,
@@ -314,14 +317,14 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # private response
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PrivateEditorsAreOwners', parent=self.assignment)
+            policy=PUBLISH_DRAFT[0], parent=self.assignment)
 
         self.assert_responses_by_course(self.student_one, [response], [])
         self.assert_responses_by_course(self.instructor_one, [], [response])
         self.assert_responses_by_course(self.student_two, [], [response])
 
         # submit response
-        response.create_or_update_collaboration('PublicEditorsAreOwners')
+        response.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
         response.date_submitted = datetime.now()
         response.save()
 
@@ -348,7 +351,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # student_two submits
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
         self.assert_responses_by_course(self.student_one,
                                         [response, response2], [])
@@ -362,23 +365,23 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # don't line-up by default
         response1 = ProjectFactory.create(
             title='Zeta', course=self.sample_course, author=self.student_three,
-            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
 
         # private response
         response2 = ProjectFactory.create(
             title='Omega', course=self.sample_course, author=self.student_one,
-            policy='PrivateEditorsAreOwners', parent=self.assignment)
+            policy=PUBLISH_DRAFT[0], parent=self.assignment)
 
         response4 = ProjectFactory.create(
             title='Gam', course=self.sample_course, author=self.student_three,
-            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
         response4.delete()
 
         response3 = ProjectFactory.create(
             title='Beta', course=self.sample_course, author=self.student_two,
-            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
 
         self.assert_responses_by_course(self.student_one,
@@ -396,13 +399,13 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # instructor composition
         beta = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', ordinality=2, title='Beta')
+            policy=PUBLISH_WHOLE_CLASS[0], ordinality=2, title='Beta')
         gamma = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', ordinality=3, title='Gamma')
+            policy=PUBLISH_WHOLE_CLASS[0], ordinality=3, title='Gamma')
         alpha = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', ordinality=1, title='Alpha')
+            policy=PUBLISH_WHOLE_CLASS[0], ordinality=1, title='Alpha')
 
         compositions = Project.objects.faculty_compositions(
             self.sample_course, self.student_one)
@@ -414,10 +417,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_responses(self):
         response1 = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='InstructorShared', parent=self.assignment)
+            policy=PUBLISH_INSTRUCTOR_SHARED[0], parent=self.assignment)
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            policy='InstructorShared', parent=self.assignment)
+            policy=PUBLISH_INSTRUCTOR_SHARED[0], parent=self.assignment)
 
         r = self.assignment.responses(self.sample_course, self.instructor_one)
         self.assertEquals(len(r), 2)
@@ -433,7 +436,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_reset_publish_to_world(self):
         public = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PublicEditorsAreOwners')
+            policy=PUBLISH_WHOLE_WORLD[0])
         self.assertEquals(
             public.public_url(),
             '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
@@ -461,7 +464,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         collaboration = project.get_collaboration()
         self.assertEquals(collaboration.policy_record.policy_name,
-                          'PrivateEditorsAreOwners')
+                          PUBLISH_DRAFT[0])
 
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
@@ -493,15 +496,15 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                          author=self.student_one)
         self.assertIsNone(project.get_collaboration())
 
-        project.create_or_update_collaboration('PrivateEditorsAreOwners')
+        project.create_or_update_collaboration(PUBLISH_DRAFT[0])
         collaboration = project.get_collaboration()
         self.assertEquals(collaboration.policy_record.policy_name,
-                          'PrivateEditorsAreOwners')
+                          PUBLISH_DRAFT[0])
 
-        project.create_or_update_collaboration('PublicEditorsAreOwners')
+        project.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
         collaboration = project.get_collaboration()
         self.assertEquals(collaboration.policy_record.policy_name,
-                          'PublicEditorsAreOwners')
+                          PUBLISH_WHOLE_CLASS[0])
 
     def test_create_or_update_item(self):
         project = ProjectFactory.create(
@@ -557,7 +560,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # always
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PublicEditorsAreOwners',
+            policy=PUBLISH_WHOLE_CLASS[0],
             parent=parent)
 
         self.assertTrue(response.can_read(
@@ -599,7 +602,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.sample_course, self.student_two))
 
         # student two submits his response (mock)
-        response2.create_or_update_collaboration('PublicEditorsAreOwners')
+        response2.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
         response2.date_submitted = datetime.now()
         response2.save()
         self.assertTrue(response.can_read(
@@ -621,7 +624,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # add a response & retry
         ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PublicEditorsAreOwners',
+            policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.selection_assignment)
 
         lst = Project.objects.unresponded_assignments(self.sample_course,
@@ -632,7 +635,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # add a response & retry
         ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
-            policy='PrivateEditorsAreOwners',
+            policy=PUBLISH_DRAFT[0],
             parent=self.assignment)
 
         lst = Project.objects.unresponded_assignments(self.sample_course,

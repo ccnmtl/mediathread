@@ -871,7 +871,10 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ctx['panels'] = [{
             'panel_state': 'open',
             'panel_state_label': "Annotate Media",
-            'context': {'type': 'asset'},
+            'context': {
+                'type': 'asset',
+                'is_faculty': self.is_viewer_faculty,
+            },
             'owners': owners,
             'vocabulary': vocabulary,
             'template': 'asset_workspace',

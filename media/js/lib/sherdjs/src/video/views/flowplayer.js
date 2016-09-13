@@ -76,15 +76,15 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 currentTimeID: 'currtime' + playerID,
                 durationID: 'totalcliplength' + playerID,
                 playerParams: params,
-                text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' + 
+                text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' +
                       '<span id="currtime' + playerID + '">00:00:00</span>/<span id="totalcliplength' + playerID + '">00:00:00</span></div>' + 
                       '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
                     '<div class="no-brand sherd-flowplayer no-hover fixed-controls" data-ratio="0.68" ' +
                           'poster="' + posterUrl + '"' +
                            'style="display:block; width:' + obj.options.width + 'px;' +
                            'height:' + obj.options.height + 'px;" id="' + playerID + '">' +
-                      '</div>' +
-                     '</div>'
+                    '</div>' +
+                    '</div>'
             };
             
             if (obj.metadata) {
@@ -241,6 +241,19 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
                     if (self.state.starttime || self.state.autoplay) {
                         self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
+                    }
+
+                    if (api.video.src) {
+                        var $el = jQuery('<a />', {
+                            'href': api.video.src,
+                            'title': 'Download video',
+                            'download': 'download'
+                        });
+                        $el.html('<span class="glyphicon glyphicon-floppy-save" ' +
+                                 'aria-hidden="true"></span>');
+                        var $wrapper = jQuery('.sherd-flowplayer-download-btn');
+                        $wrapper.append($el);
+                        $wrapper.show();
                     }
                 });
                 self.components.player.bind("resume", function(e, api) {

@@ -60,6 +60,9 @@
                                 <div class="asset-view-published">
                                     <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
                                         <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                        {{#context.is_faculty}}
+                                            <span class="sherd-flowplayer-download-btn"></span>
+                                        {{/context.is_faculty}}
                                         <div class="asset-display"></div>
                                         <div class="clipstrip-display"></div>
                                     </div>

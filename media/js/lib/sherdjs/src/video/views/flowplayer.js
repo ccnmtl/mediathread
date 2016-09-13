@@ -251,7 +251,9 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                         });
                         $el.html('<span class="glyphicon glyphicon-floppy-save" ' +
                                  'aria-hidden="true"></span>');
-                        jQuery('.sherd-flowplayer-download-btn').append($el);
+                        var $wrapper = jQuery('.sherd-flowplayer-download-btn');
+                        $wrapper.append($el);
+                        $wrapper.show();
                     }
                 });
                 self.components.player.bind("resume", function(e, api) {

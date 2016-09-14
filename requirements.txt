@@ -78,7 +78,7 @@ ua_parser==0.7.1
 user_agents==1.0.1
 django_user_agents==0.3.0
 gunicorn==19.6.0
-traitlets==4.2.2
+traitlets==4.3.0
 ipython_genutils==0.1.0
 path.py==8.2.1
 backports.shutil_get_terminal_size==1.0.0

@@ -8,7 +8,7 @@ from mediathread.factories import MediathreadTestMixin, ProjectFactory, \
     AssetFactory, AssignmentItemFactory, SherdNoteFactory, ProjectNoteFactory
 from mediathread.mixins import RestrictedMaterialsMixin
 from mediathread.projects.models import RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED
+    RESPONSE_VIEW_SUBMITTED, PUBLISH_WHOLE_CLASS
 
 
 class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
@@ -18,7 +18,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
 
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='PublicEditorsAreOwners',
+            policy=PUBLISH_WHOLE_CLASS[0],
             project_type='selection-assignment')
 
         self.asset = AssetFactory.create(course=self.sample_course,
@@ -65,7 +65,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
 
         # submit student one's response
         self.response_one.create_or_update_collaboration(
-            'PublicEditorsAreOwners')
+            PUBLISH_WHOLE_CLASS[0])
         self.response_one.date_submitted = datetime.now()
         self.response_one.save()
 
@@ -91,7 +91,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
 
         # submit student two's response
         self.response_two.create_or_update_collaboration(
-            'PublicEditorsAreOwners')
+            PUBLISH_WHOLE_CLASS[0])
         self.response_two.date_submitted = datetime.now()
         self.response_two.save()
         self.assert_visible_notes(self.student_one,

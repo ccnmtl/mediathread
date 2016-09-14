@@ -472,7 +472,9 @@ class Project(models.Model):
 
         # If this project is an assignment response, verify the parent
         # assignment's response policy sanctions a read by the viewer
-        if not self.is_composition():
+        if (not self.is_composition() or
+            collaboration.policy_record.policy_name ==
+                PUBLISH_WHOLE_WORLD[0]):
             return True  # this project is an assignment
 
         parent = collaboration.get_parent()

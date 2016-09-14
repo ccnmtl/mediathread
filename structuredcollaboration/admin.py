@@ -8,6 +8,9 @@ admin.site.register(CollaborationPolicyRecord)
 class CollaborationAdmin(admin.ModelAdmin):
     search_fields = ('title', 'slug', )
     list_display = ('title', 'group', 'user', 'policy_record', 'slug', )
+    readonly_fields = ('user', 'policy_record', 'group')
+    raw_id_fields = ('user', 'policy_record', 'group')
+    fields = ('title', 'group', 'user', 'policy_record', 'slug')
 
     def get_search_results(self, request, queryset, search_term):
         queryset, use_distinct = super(

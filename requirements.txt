@@ -54,7 +54,7 @@ django-statsd-mozilla==0.3.16
 raven==5.26.0
 django-appconf==1.0.2  # django_compressor
 django-compressor==2.1
-django-jenkins==0.19.0
+django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.0.0

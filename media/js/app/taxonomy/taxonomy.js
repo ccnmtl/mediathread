@@ -504,7 +504,12 @@
         },
         getTheOnomy: function(onomyURL, selectedVocabulary) {
             var self = this;
-            var url = onomyURL.replace('http://', 'https://');
+            var url = onomyURL;
+
+            // tests are executed w/o ssl
+            if (url.indexOf('test.json') < 0) {
+                url = url.replace('http://', 'https://');
+            }
 
             jQuery.get(url, function(data) {
                 var arrayMax = 0;

@@ -504,11 +504,17 @@
         },
         getTheOnomy: function(onomyURL, selectedVocabulary) {
             var self = this;
+            var url = onomyURL;
 
-            jQuery.get(onomyURL, function(data) {
+            // tests are executed w/o ssl
+            if (url.indexOf('test.json') < 0) {
+                url = url.replace('http://', 'https://');
+            }
+
+            jQuery.get(url, function(data) {
                 var arrayMax = 0;
                 var skosData;
-                if (self.isJSON(onomyURL)) {
+                if (self.isJSON(url)) {
                     arrayMax = data.terms.length;
                 } else {
                     skosData = _.filter(Object.keys(data), function(test) {
@@ -518,7 +524,7 @@
                 }
 
                 var parents = self.createParents(
-                    data, selectedVocabulary, onomyURL, skosData, arrayMax);
+                    data, selectedVocabulary, url, skosData, arrayMax);
 
                 self.createFromParents(parents);
 

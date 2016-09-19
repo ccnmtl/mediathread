@@ -135,7 +135,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         self.assertEquals(the_json["status"], "success")
-        self.assertFalse(the_json["is_assignment"])
+        self.assertFalse(the_json["is_essay_assignment"])
         self.assertEquals(the_json["title"], "Private Student Essay")
         self.assertEquals(the_json["revision"]["visibility"], "Draft")
         self.assertIsNone(the_json["revision"]["public_url"])

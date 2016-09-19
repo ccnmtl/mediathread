@@ -34,12 +34,12 @@
                                     {{/context.project.current_version}}
 
                                     <a class="project-export" href="/project/export/msword/{{context.project.id}}/"
-                                        {{#context.project.is_assignment}}style="display: none"{{/context.project.is_assignment}}>
+                                        {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
                                         <img class="project-export-icon" src="{{#staticUrl}}{{/staticUrl}}img/export.jpeg"/>
                                     </a>
 
                                     <a class="project-print" href="/project/export/html/{{context.project.id}}/" target="_blank"
-                                        {{#context.project.is_assignment}}style="display: none"{{/context.project.is_assignment}}>
+                                        {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
                                         <img class="project-print-icon" src="{{#staticUrl}}{{/staticUrl}}img/printer.png"/>
                                     </a>
                                 </div>
@@ -63,7 +63,7 @@
                                                     {{{context.form.publish}}}
                                                     <div class="small help-inline">Select who can see your work</div>
                                                 </div>
-                                                {{#context.project.is_assignment}}
+                                                {{#context.project.is_essay_assignment}}
                                                 {{#is_faculty}}
                                                     <div class="due-date well">
                                                         <div class="right small">optional</div>
@@ -82,7 +82,7 @@
                                                         </div>
                                                     </div>
                                                 {{/is_faculty}}
-                                                {{/context.project.is_assignment}}
+                                                {{/context.project.is_essay_assignment}}
                                             </div> 
 
                                             <button
@@ -105,7 +105,7 @@
                                         </div>
                                     {{/context.can_edit}}
 
-                                    {{#context.project.is_assignment}}
+                                    {{#context.project.is_essay_assignment}}
                                         {{^is_faculty}}
                                             {{^context.my_responses.length}}
                                                 {{^context.my_response}}
@@ -116,7 +116,7 @@
                                                 {{/context.my_response}}
                                             {{/context.my_responses.length}}
                                         {{/is_faculty}}
-                                    {{/context.project.is_assignment}}
+                                    {{/context.project.is_essay_assignment}}
 
                                     {{#context.my_response}}
                                         {{^context.viewing_my_response}}

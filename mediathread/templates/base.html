@@ -1,5 +1,4 @@
 {% load cache user_projects coursetags compress static bootstrap3 %}
-{% load waffle_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,32 +64,9 @@
 
                             {% if role_in_course == 'instructor' %}
                             <li>
-                                {% flag 'instructor_dashboard' %}
                                 <a href="{% url 'course-settings-general' %}">
                                     Course Settings
                                 </a>
-                                {% else %}
-                                <div class="settings_menu manage closed">
-                                    <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                    <div class="left settings_menu_title">Manage</div>
-                                </div>
-                                <div class="visualclear"></div>
-                                <!-- Settings Menu -->
-                                <div class="settings_submenu" style="display: none">
-                                    <a href="/dashboard/settings/">Settings</a>
-                                    <a href="/dashboard/sources/">Sources</a>
-                                    <a href="/dashboard/migrate/">Migrations</a>
-                                    <a href="/taxonomy/">Vocabulary</a>
-                                    {% flag "roster_view" %}
-                                    <a href="/dashboard/roster/">Roster</a>
-                                    {% endflag %}
-
-                                    {% if user.is_staff %}
-                                        <hr />
-                                        <a href="/dashboard/delete/materials/">Materials</a>
-                                    {% endif %}
-                                </div>
-                                {% endflag %}
                             </li>
                             <li>
                                 <div class="settings_menu reports closed">
@@ -142,7 +118,7 @@
                                     {% endif %}
 
                                     {% num_courses for user as user_courses %}
-                                    {% if user_courses > 1 or user.is_staff %}
+                                    {% if role_in_course == 'instructor' or user_courses > 1 or user.is_staff %}
                                         <a href="/?unset_course">My Courses</a>
                                     {% endif %}
 

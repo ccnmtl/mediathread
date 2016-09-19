@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load waffle_tags %}
 
 {% block title %}&mdash; Course Settings {% endblock %}
 
@@ -33,13 +32,11 @@
                             {% if '/taxonomy/' in request.path %}class="active"{% endif %}
                             href="/taxonomy/">Vocabulary</a>
                     </li>
-                    {% flag "roster_view" %}
                     <li>
                         <a
                             {% if '/roster/' in request.path %}class="active"{% endif %}
                             href="/dashboard/roster/">Roster</a>
                     </li>
-                    {% endflag %}
                     {% if user.is_staff %}
                         <li>
                             <a {% if '/materials/' in request.path %}class="active"{% endif %}

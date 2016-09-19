@@ -194,10 +194,10 @@ class ProjectResource(ModelResource):
         dehydrated = self.full_dehydrate(abundle)
         ctx = self._meta.serializer.to_simple(dehydrated, None)
 
-        if project.is_essay_assignment() or project.is_selection_assignment():
+        if project.is_assignment_type():
             responses = project.responses(course, user)
             ctx['responses'] = len(responses)
-            ctx['is_assignment'] = True
+            ctx['is_assignment_type'] = True
             ctx['display_as_assignment'] = True
         else:
             parent_assignment = project.assignment()

@@ -365,6 +365,9 @@ class Project(models.Model):
         else:
             return "Composition"
 
+    def is_assignment_type(self):
+        return (self.is_essay_assignment() or self.is_selection_assignment())
+
     def is_essay_assignment(self):
         return self.project_type == PROJECT_TYPE_ASSIGNMENT
 

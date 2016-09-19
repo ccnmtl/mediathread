@@ -4,11 +4,7 @@ Feature: Homepage
         Using selenium
         Given I am instructor_one in Sample Course
 
-        When I open the manage menu
-        Then there is a "Settings" link
-        Then there is a "Sources" link
-        Then there is a "Migrations" link
-        Then there is a "Vocabulary" link
+        There is a "Course Settings" link
 
         When I open the reports menu
         Then there is an "Assignment Responses" link
@@ -33,7 +29,8 @@ Feature: Homepage
     Scenario: homepage.feature 2. Student view w/o assignment
         Using selenium
         Given I am student_one in Sample Course
-        Then there is no manage menu
+
+        There is not a "Course Settings" link
         And there is no reports menu
 
         And there is not a From Your Instructor column
@@ -88,9 +85,25 @@ Feature: Homepage
         Finished using Selenium
 
 
-    Scenario Outline: homepage.feature 5. User Settings menu
+    Scenario Outline: homepage.feature 5. Instructor User Settings menu 
         Using selenium
-        Given I am <user_name> in Sample Course
+        Given I am instructor_one in Sample Course
+        Given the home workspace is loaded
+
+        When I open the user menu
+        Then there is a "Log Out" link
+        There is a "My Courses" link
+        There is not an "Admin" link
+
+        When I click the "Log Out" link
+        Then I am at the Login page 
+
+        Finished using Selenium
+
+    Scenario Outline: homepage.feature 5. Student User Settings menu 
+        Using selenium
+        Given I am student_one in Sample Course
+        Given the home workspace is loaded
 
         When I open the user menu
         Then there is a "Log Out" link
@@ -101,8 +114,3 @@ Feature: Homepage
         Then I am at the Login page 
 
         Finished using Selenium
-
-    Examples:
-        | user_name           |
-        | instructor_one     |
-        | student_one    |

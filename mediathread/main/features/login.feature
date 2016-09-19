@@ -65,6 +65,7 @@ Feature: Login
         When I click the "Alternate Course" link
         Then I am in the Alternate Course class
 
+        Given the home workspace is loaded
         When I open the user menu
         Then there is a "My Courses" link
         When I click the "My Courses" link

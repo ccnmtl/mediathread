@@ -4,10 +4,10 @@ Feature: Taxonomy
         Using selenium
         Given I am instructor_one in Sample Course
 
-        When I open the manage menu
-        Then there is a "Vocabulary" link
+        When I click the "Course Settings" link
+        Then I am at the Course Settings page
         When I click the "Vocabulary" link
-        Then I am at the Course Vocabulary page
+        Then I am at the Vocabulary page
 
         Given the taxonomy workspace is loaded
         I see "Create Concept"

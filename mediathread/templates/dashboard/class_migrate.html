@@ -46,11 +46,11 @@
                 <% for (var i = 0; i < projects.length; i++) { %>
                     <% var project = projects.at(i) %>
                     <tr <% if (i % 2 === 0) { %> class="odd" <% } %> >
-                        <td class="composition <% if (project.get('is_assignment') || project.get('is_selection_assignment')) { %>assignment<% } %>">
+                        <td class="composition <% if (project.get('is_essay_assignment') || project.get('is_selection_assignment')) { %>assignment<% } %>">
                         </td>
                         <td><input class="project" type="checkbox" value="<%= project.get('id') %>"/></td>
                         <td class="title">
-                            <% if (project.get('is_assignment')) { %>
+                            <% if (project.get('is_essay_assignment')) { %>
                                 <div class="metadata-value-assignment">Assignment</div>
                             <% } else if (project.get('is_selection_assignment')) { %>
                                 <div class="metadata-value-assignment">Selection Assignment</div>
@@ -140,10 +140,10 @@
                     <% for (var i = 0; i < projects.length; i++) { %>
                         <% var project = projects[i] %>
                         <tr <% if (i % 2 === 0) { %> class="odd" <% } %>>
-                            <td class="composition <% if (project.is_assignment || project.is_selection_assignment) { %>assignment<% } %>">
+                            <td class="composition <% if (project.is_essay_assignment || project.is_selection_assignment) { %>assignment<% } %>">
                             </td>
                             <td class="title">
-                                <% if (project.is_assignment) { %>
+                                <% if (project.is_essay_assignment) { %>
                                     <div class="metadata-value-assignment">Assignment</div>
                                 <% } else if (project.is_selection_assignment) { %>
                                     <div class="metadata-value-assignment">Selection Assignment</div>

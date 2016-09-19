@@ -125,7 +125,7 @@ class ProjectSaveView(LoggedInCourseMixin, AjaxRequiredMixin,
 
             ctx = {
                 'status': 'success',
-                'is_assignment': project.is_assignment(),
+                'is_essay_assignment': project.is_essay_assignment(),
                 'title': project.title,
                 'context': {
                     'project': {
@@ -467,7 +467,7 @@ class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
             # Project Response -- if the requested project is an assignment
             # This is primarily a student view. The student's response should
             # pop up automatically when the parent assignment is viewed.
-            if project.is_assignment():
+            if project.is_essay_assignment():
                 responses = project.responses(request.course,
                                               request.user, request.user)
                 if len(responses) > 0:

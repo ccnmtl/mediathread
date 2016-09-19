@@ -356,7 +356,7 @@ class Project(models.Model):
         return visible
 
     def description(self):
-        if self.is_assignment():
+        if self.is_essay_assignment():
             return "Composition Assignment"
         elif self.is_selection_assignment():
             return "Selection Assignment"
@@ -365,7 +365,10 @@ class Project(models.Model):
         else:
             return "Composition"
 
-    def is_assignment(self):
+    def is_assignment_type(self):
+        return (self.is_essay_assignment() or self.is_selection_assignment())
+
+    def is_essay_assignment(self):
         return self.project_type == PROJECT_TYPE_ASSIGNMENT
 
     def is_selection_assignment(self):

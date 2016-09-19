@@ -780,7 +780,7 @@ ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
                     jQuery(lastVersionPublic).hide();
                 }
 
-                if (json.is_assignment) {
+                if (json.is_essay_assignment) {
                     self.$el.removeClass('composition')
                         .addClass('assignment');
                     self.$el.find('.composition')

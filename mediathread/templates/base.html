@@ -118,7 +118,7 @@
                                     {% endif %}
 
                                     {% num_courses for user as user_courses %}
-                                    {% if user_courses > 1 or user.is_staff %}
+                                    {% if role_in_course == 'instructor' or user_courses > 1 or user.is_staff %}
                                         <a href="/?unset_course">My Courses</a>
                                     {% endif %}
 

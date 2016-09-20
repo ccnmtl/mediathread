@@ -5,7 +5,7 @@
 (function(jQuery) {
     var global = this;
 
-    global.SelectionAssignmentEditView = Backbone.View.extend({
+    global.AssignmentEditView = Backbone.View.extend({
         events: {
             'click .next': 'onNext',
             'click .prev': 'onPrev',
@@ -19,23 +19,8 @@
             _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'onFormKeyPress',
                       'onGalleryItemMouseOver', 'onGalleryMouseOut',
                       'onGalleryItemSelect', 'beforeUnload');
-            var self = this;
-            this.currentPage = 1;
-            this.totalPages = jQuery('.page').length;
 
-            this.tinymceSettings = jQuery.extend(tinymceSettings, {
-                init_instance_callback: function(instance) {
-                    if (instance && !self.tinymce) {
-                        self.tinymce = instance;
-                    }
-                }
-            });
-
-            // hook up behaviors
-            jQuery('input[name="due_date"]').datepicker({
-                minDate: 0,
-                dateFormat: 'mm/dd/yy'
-            });
+            AssignmentEditView.prototype.initialize.apply(this, arguments);
 
             // Setup the media display window.
             this.citationView = new CitationView();
@@ -45,108 +30,27 @@
                 'clipform': false,
                 'autoplay': false
             });
-
-            jQuery(window).bind('beforeunload', self.beforeUnload);
         },
-        beforeUnload: function() {
-            return 'Changes to your assignment have not been saved.';
-        },
-        validate: function(pageNo) {
-            var q;
-            if (pageNo === 2) {
+        validate: function(pageContent) {
+            if (pageContent === 'item-selection') {
                 return jQuery('input[name="item"]').val() !== '';
-            } else if (pageNo === 3) {
-                var title = jQuery(this.el).find('input[name="title"]').val();
-                var body = this.tinymce.getContent();
-                return title.length > 0 && body.length > 0;
-            } else if (pageNo === 4) {
-                var q1 = 'input[name="due_date"]';
-                var q2 = 'input[name="response_view_policy"]:checked';
-                return jQuery(q1).val() !== undefined &&
-                    jQuery(q1).val() !== '' && jQuery(q2).val() !== undefined;
-            } else if (pageNo === 5) {
-                q = 'input[name="publish"]:checked';
-                return jQuery(q).val() !== undefined;
             }
-            return true;
+            return AssignmentEditView.prototype.validate.apply(this, arguments);
         },
-        onNext: function(evt) {
-            var $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            if (!this.validate(this.currentPage)) {
-                $current.addClass('has-error');
-            } else {
-                $current.removeClass('has-error').addClass('hidden');
-
-                this.currentPage = Math.min(this.currentPage + 1,
-                                            this.totalPages);
-                var q = 'div[data-page="' + this.currentPage + '"]';
-                jQuery(q).removeClass('hidden');
-
-                if (this.currentPage === 2) {
-                    jQuery('#sliding-content-container').removeClass('hidden');
-                    jQuery('.asset-view-publish-container').addClass('hidden');
-                    jQuery(window).trigger('resize');
-                } else if (this.currentPage === 3) {
-                    jQuery('#sliding-content-container').addClass('hidden');
-                    jQuery('.asset-view-publish-container').removeClass(
-                        'hidden');
-                    var itemId = jQuery('input[name="item"]').val();
-                    this.citationView.openCitationById(null, itemId, null);
-
-                    if (!this.tinymce) {
-                        tinymce.settings = this.tinymceSettings;
-                        tinymce.execCommand('mceAddEditor', true,
-                                            'assignment-instructions');
-                    }
-                } else if (this.currentPage === 4) {
-                    // if there is only one radio button, select it
-                    var elts = jQuery('input[name="response_view_policy"]');
-                    if (elts.length === 1) {
-                        jQuery(elts).attr('checked', 'checked');
-                    }
-                }
-            }
-        },
-        onPrev: function() {
-            jQuery('#sliding-content-container').addClass('hidden');
-            jQuery('.page').addClass('hidden');
-
-            this.currentPage = Math.max(this.currentPage - 1, 1);
-            var q = 'div[data-page="' + this.currentPage + '"]';
-            jQuery(q).removeClass('hidden');
-
-            if (this.currentPage === 2) {
+        showPage: function(pageContent) {
+            if (pageContent === 'item-selection') {
                 jQuery('#sliding-content-container').removeClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
                 jQuery(window).trigger('resize');
+            } else if (pageContent === 'title') {
+                jQuery('#sliding-content-container').addClass('hidden');
+                jQuery('.asset-view-publish-container').removeClass(
+                    'hidden');
+                var itemId = jQuery('input[name="item"]').val();
+                this.citationView.openCitationById(null, itemId, null);
             }
-        },
-        onSave: function(evt) {
-            var $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            if (!this.validate(this.currentPage)) {
-                $current.addClass('has-error');
-            } else {
-                jQuery(window).unbind('beforeunload');
-                tinymce.activeEditor.save();
-                var frm = jQuery(evt.currentTarget).parents('form')[0];
-                jQuery.ajax({
-                    type: 'POST',
-                    url: frm.action,
-                    dataType: 'json',
-                    data: jQuery(frm).serializeArray(),
-                    success: function(json) {
-                        window.location = json.context.project.url;
-                    },
-                    error: function() {
-                        // do something useful here
-                    }
-                });
-            }
-        },
-        onFormKeyPress: function(evt) {
-            if (evt.keyCode === 13) {
-                evt.preventDefault();
-            }
+
+            AssignmentEditView.prototype.showPage.apply(this, arguments);
         },
         onGalleryItemMouseOver: function(evt) {
             this.hoverItem = evt.currentTarget;

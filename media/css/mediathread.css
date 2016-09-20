@@ -311,7 +311,8 @@ ul#projects li {
 }
 
 #create-project-menu a {
-    margin-left: 6px;
+    margin: 0 0 10px 6px;
+    display: block;
 }
 
 #create-project-menu .divideLinks {

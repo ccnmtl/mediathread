@@ -28,8 +28,9 @@ from mediathread.mixins import (
     ProjectEditableMixin, CreateReversionMixin)
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.forms import ProjectForm
-from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY, ProjectNote, PUBLISH_DRAFT, PUBLISH_WHOLE_CLASS
+from mediathread.projects.generic.views import AssignmentView, \
+    AssignmentEditView
+from mediathread.projects.models import Project, ProjectNote, PUBLISH_DRAFT
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
@@ -315,72 +316,37 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             return self.render_to_json_response(data)
 
 
-class SelectionAssignmentView(LoggedInCourseMixin, ProjectReadableMixin,
-                              TemplateView):
+class SelectionAssignmentEditView(AssignmentEditView):
+    template_name = 'projects/selection_assignment_edit.html'
+
+
+class JuxtapositionAssignmentEditView(AssignmentEditView):
+    template_name = 'projects/juxtaposition_assignment_edit.html'
+
+
+class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
+
+    def dispatch(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        parent = project.assignment()
+        if (project.is_selection_assignment() or
+                (parent and parent.is_selection_assignment())):
+            view = SelectionAssignmentView.as_view()
+        elif (project.is_juxtaposition_assignment() or
+                (parent and parent.is_juxtaposition_assignment())):
+            view = SelectionAssignmentView.as_view()
+        else:
+            view = DefaultProjectView.as_view()
+
+        return view(request, *args, **kwargs)
+
+
+class SelectionAssignmentView(AssignmentView):
     template_name = 'projects/selection_assignment_view.html'
 
-    def get_assignment(self, project):
-        if project.is_selection_assignment():
-            assignment = project
-        else:
-            assignment = project.assignment()
-        return assignment
 
-    def get_my_response(self, responses):
-        for response in responses:
-            if response.is_participant(self.request.user):
-                return response
-        return None
-
-    def get_feedback(self, responses, is_faculty):
-        ctx = {}
-        existing = 0
-        for response in responses:
-            ctx[response.author.username] = {'responseId': response.id}
-
-            feedback = response.feedback_discussion()
-            if feedback and (is_faculty or
-                             response.is_participant(self.request.user)):
-                existing += 1
-                ctx[response.author.username]['comment'] = {
-                    'id': feedback.id,
-                    'content': feedback.comment
-                }
-        return ctx, existing
-
-    def get_context_data(self, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        parent = self.get_assignment(project)
-        can_edit = parent.can_edit(self.request.course, self.request.user)
-        responses = parent.responses(self.request.course, self.request.user)
-        my_response = self.get_my_response(responses)
-        is_faculty = self.request.course.is_faculty(self.request.user)
-
-        item = parent.assignmentitem_set.first().asset
-        item_ctx = AssetResource().render_one_context(self.request, item)
-
-        lst = Vocabulary.objects.filter(course=self.request.course)
-        lst = lst.prefetch_related('term_set')
-        vocabulary_json = VocabularyResource().render_list(
-            self.request, lst)
-
-        feedback, feedback_count = self.get_feedback(responses, is_faculty)
-
-        ctx = {
-            'is_faculty': is_faculty,
-            'assignment': parent,
-            'assignment_can_edit': can_edit,
-            'item': item,
-            'item_json': json.dumps(item_ctx),
-            'my_response': my_response,
-            'response_view_policies': RESPONSE_VIEW_POLICY,
-            'submit_policy': PUBLISH_WHOLE_CLASS[0],
-            'vocabulary': json.dumps(vocabulary_json),
-            'responses': responses,
-            'feedback': json.dumps(feedback),
-            'feedback_count': feedback_count
-        }
-        return ctx
+class JuxtapositionAssignmentView(AssignmentView):
+    template_name = 'projects/juxtaposition_assignment_view.html'
 
 
 class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
@@ -515,20 +481,6 @@ class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
             panels.append(panel)
 
             return self.render_to_json_response(data)
-
-
-class ProjectWorkspaceView(LoggedInCourseMixin, ProjectReadableMixin, View):
-
-    def dispatch(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        parent = project.assignment()
-        if (project.is_selection_assignment() or
-                (parent and parent.is_selection_assignment())):
-            view = SelectionAssignmentView.as_view()
-        else:
-            view = DefaultProjectView.as_view()
-
-        return view(request, *args, **kwargs)
 
 
 @login_required
@@ -679,23 +631,6 @@ class ProjectSortView(LoggedInFacultyMixin, AjaxRequiredMixin,
                 project.save()
 
         return self.render_to_json_response({'sorted': 'true'})
-
-
-class SelectionAssignmentEditView(LoggedInFacultyMixin, TemplateView):
-    template_name = 'projects/selection_assignment_edit.html'
-
-    def get(self, *args, **kwargs):
-        try:
-            project = Project.objects.get(id=kwargs.get('project_id', None))
-            if (not project.can_edit(self.request.course, self.request.user)):
-                return HttpResponseForbidden("forbidden")
-            form = ProjectForm(self.request, instance=project)
-        except Project.DoesNotExist:
-            form = ProjectForm(self.request, instance=None)
-
-        return self.render_to_response({
-            'form': form
-        })
 
 
 class ProjectItemView(LoggedInCourseMixin, JSONResponseMixin,

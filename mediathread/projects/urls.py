@@ -1,14 +1,20 @@
 from django.conf.urls import url
-
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
-    SelectionAssignmentEditView, ProjectSaveView, ProjectWorkspaceView,
+    SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
-)
+    JuxtapositionAssignmentEditView)
 
 
 urlpatterns = [
+    url(r'^create/ja/$', JuxtapositionAssignmentEditView.as_view(), {},
+        name='juxtaposition-assignment-create'),
+
+    url(r'^edit/ja/(?P<project_id>\d+)/$',
+        JuxtapositionAssignmentEditView.as_view(), {},
+        name='juxtaposition-assignment-edit'),
+
     url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
         name='selection-assignment-create'),
 
@@ -19,10 +25,10 @@ urlpatterns = [
     url(r'^create/$', ProjectCreateView.as_view(), {}, "project-create"),
 
     url(r'^view/(?P<project_id>\d+)/$',
-        ProjectWorkspaceView.as_view(), {}, name='project-workspace'),
+        ProjectDispatchView.as_view(), {}, name='project-workspace'),
 
     url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
-        ProjectWorkspaceView.as_view(), {}, name='project-workspace-feedback'),
+        ProjectDispatchView.as_view(), {}, name='project-workspace-feedback'),
 
     url(r'^save/(?P<project_id>\d+)/$',
         ProjectSaveView.as_view(), {},

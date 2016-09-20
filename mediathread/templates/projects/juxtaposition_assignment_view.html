@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+{% load user_projects coursetags %}
+
+{% block title %}
+    {% if assignment.title %}{{assignment.title}}{% else %}New Assignment{% endif %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
+
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+
+    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/juxtaposition_assignment_view.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
+    {% include "djangosherd/player_resources.html" %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+
+    <script type="text/javascript">
+        var view = new SelectionAssignmentView({
+            el: jQuery('.juxtaposition-assignment').first(),
+            viewer: '{{request.user.username}}',
+            isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
+            assignmentId: '{{assignment.id}}',
+            responseId: '{{my_response.id}}',
+            itemId: '{{item.id}}',
+            itemJson: JSON.parse('{{item_json|escapejs}}'),
+            vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
+            submitted: {% if my_response and my_response.is_submitted %}true{% else %}false{% endif %},
+            feedback: JSON.parse('{{feedback|escapejs}}'),
+            feedbackCount: {{feedback_count}}
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="juxtaposition-assignment">
+    <div class="row">
+        <div class="col-md-3 column-container">
+            <h2 class="">
+                Juxtaposition Assignment
+                {% if assignment_can_edit %}
+                    <a class="right" href="{% url 'juxtaposition-assignment-edit' assignment.id %}">
+                        <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"></span>
+                    </a>
+                {% endif %}
+            </h2>
+            <div class="small">
+                <h1 class="project-title">{{assignment.title}}</h1><br />
+                {% if assignment.due_date %}
+                    <div class="meta">
+                        <span class="metadata-label">
+                            <b>Due date</b>:
+                        </span>
+                        <span class="metadata-value">
+                            {{assignment.due_date|date:'m/d/y'}}
+                        </span>
+                    </div>
+                {% endif %}
+                {% if is_faculty %}
+                <div class="meta">
+                    <span class="metadata-label"><b>Response visibility</b>:</span>
+                    {% for key, value in response_view_policies %}
+                        {% ifequal key assignment.response_view_policy %}
+                            <span class="metadata-value">{{value}}</span>
+                        {% endifequal %}
+                    {% endfor %}
+                    </a>
+                </div>
+                {% endif %}
+                <div class="meta">
+                    {% if assignment_can_edit %}
+                        <span class="metadata-label"><b>Publication status</b>:</span>
+                        <span class="metadata-value">
+                            {{assignment.visibility_short}}
+                        </span>
+                    {% else %}{% if my_response %}
+                        <span class="metadata-label"><b>Publication status</b>:</span>
+                        <span class="metadata-value">
+                            {% if my_response.is_submitted %}
+                                Response submitted
+                            {% else %}
+                                Response not submitted
+                            {% endif %}
+                        </span>
+                    {% endif %}{% endif %}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <p>{{assignment.body|safe}}</p>
+        </div>
+        <div class="col-md-6">
+            <div class="asset-view-published affix affix-top" data-spy="affix">
+                <div class="asset-view-header column-container">
+                    <h2>Item
+                        <span class="asset-view-title">
+                            {{assignment.assignmentitem_set.first.asset.title}}
+                         </span>
+                    </h2>
+                </div>
+                <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
+                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                    <div class="asset-display"></div>
+                    <div class="clipstrip-display"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            {% if is_faculty %}
+                <div class="right">
+                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                    <strong>
+                        {% if responses|length > 0 %}
+                            <a href="#" data-toggle="modal" data-target="#unsubmit-response">
+                        {% endif %}
+                        {{responses|length}} Responses |
+                        <span class="feedback-count">{{feedback_count}}</span> Feedback
+                        {% if responses|length > 0 %}
+                            </a>
+                        {% endif %}
+                    </strong>
+                    <div class="modal fade" id="unsubmit-response" tabindex="-1"
+                        role="dialog" aria-labelledby="Cannot Submit Response">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">Unsubmit Response</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>You may allow a student to resubmit their response
+                                    by first selecting their name in the drop-down and then clicking
+                                    Unsubmit. Once you click Unsubmit, the student's response will return to draft
+                                    status, allowing the student to edit and resubmit the response.</p>
+                                    <form action="/project/unsubmit/" method="post">
+                                        <label for="student-response-id">Select Response</label>
+                                        <select name="student-response" class="form-control">
+                                            {% for response in responses %}
+                                                {% if response.is_submitted %}
+                                                    <option value="{{response.id}}">
+                                                        {% public_name for response.author %} (submitted {{ response.modified|date:'m/d/Y h:i a' }})
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <hr />
+                                        <div class="right">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <span class="glyphicon glyphicon-repeat hidden" aria-hidden="true"></span>
+                                                Unsubmit
+                                            </button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}{% if not assignment_can_edit  %}
+                {% if my_response.is_submitted %}
+                    <div class="right">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <strong>
+                            Submitted |
+                        </strong> {{my_response.modified|date:"m/d/Y h:i a"}}
+                    </div>
+                {% else %}{% if my_response %}
+                    <div>
+                        <div class="left">
+                            <!-- Submit -->
+                            <button type="button" class="btn btn-primary btn-show-submit" style="display: inline">
+                                Submit Response
+                            </button>
+                        </div>
+                        <div class="right">
+                            <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+                            <strong>
+                                Draft
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="cannot-submit-project" tabindex="-1"
+                        role="dialog" aria-labelledby="Cannot Submit Response">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Submit Response</h4>
+                          </div>
+                          <div class="modal-body">
+                            <div>TBD</div><br />
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="modal fade" id="submit-project" tabindex="-1"
+                        role="dialog" aria-labelledby="Submit Project">
+                      <div class="modal-dialog" role="document" data-width="620">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">
+                                Submit Response &mdash;
+                                <span class="project-submit-count"></span>
+                                <span class="project-submit-count-label"></span>
+                            </h4>
+                          </div>
+                          <div class="modal-body">
+                            <form method="post" class="project-response-form"
+                                action="{% url 'project-save' my_response.id %}">
+                                <div>Please review assignment instructions before submitting.</div>
+                                <p>
+                                    {% ifequal assignment.response_view_policy 'never' %}
+                                        Your response will be visible to instructors.
+                                    {% else %}{% ifequal assignment.response_view_policy 'always' %}
+                                        Your response will be visible to the whole class.
+                                    {% else %}{% ifequal assignment.response_view_policy 'submitted' %}
+                                        Your response will be visible to the instructor and other students who have submitted.
+                                    {% endifequal %}{% endifequal %}{% endifequal %}
+                                </p>
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>Important!</strong><br /><br />
+                                    Once you submit your response, you will not be able to unsubmit or edit it.
+                                </div>
+                                <input type="hidden" name="publish" value="{{submit_policy}}" />
+                                <input type="hidden" name="title" value="{{my_response.title}}" />
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary submit-response">Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {% endif %}{% endif %}
+                {% endwith %}
+            {% endif %}{% endif %}
+            <div class="clearfix"></div>
+            <br /><br />
+
+            {% if not is_faculty and not my_response %}
+                <div class="text-center">
+                    <form action="/project/create/" method="post">
+                        <input type="hidden" name="parent" value="{{assignment.id}}" />
+                        <input type="hidden" name="project_type" value="composition" />
+                        <input type="hidden" name="title" value="My Response" />
+                        <input class="btn btn-success" type="submit" value="Respond to Assignment" />
+                    </form>
+                </div>
+            {% endif %}
+            {% if my_response or is_faculty %}
+                <div id="asset-workspace-panel-container" class="asset-workspace column-container">
+                    <div class="annotation-ajaxloader">
+                        <div class="message">
+                        <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
+                        <br /><br />
+                        <div>Retrieving responses</div>
+                        </div>
+                    </div>
+                    <div id="asset-view-details" class="asset-view-details"></div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

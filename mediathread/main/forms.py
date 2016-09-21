@@ -282,14 +282,6 @@ class DashboardSettingsForm(forms.ModelForm):
         if title.strip() == '':
             self.add_error('title', 'Title can\'t be blank.')
 
-        dup_count = Course.objects.filter(title=title).count()
-        if dup_count > 0:
-            course = Course.objects.filter(title=title).first()
-            if (course != self.instance) or (dup_count > 1):
-                self.add_error(
-                    'title',
-                    'There\'s already a course called "%s"' % title)
-
         return cleaned_data
 
     def save(self, *args, **kwargs):

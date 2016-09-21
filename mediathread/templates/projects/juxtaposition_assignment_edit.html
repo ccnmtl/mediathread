@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if form.instance %}{{form.instance.title}}{% else %}Create Assignment{% endif %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block js %}
+    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/juxtaposition_assignment_edit.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
+    <!-- required project functionality -->
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            var view = new JuxtapositionAssignmentEditView({
+                el: jQuery('.juxtaposition-assignment').first()
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+{% with item=form.instance.assignmentitem_set.first.asset %}
+<div class="juxtaposition-assignment">
+    <div class="row">
+        <div class="col-md-3 column-container">
+            <div>
+                <form name="juxtaposition-assignment-edit"
+                    {% if form.instance %}
+                        action="{% url 'project-save' form.instance.id %}"
+                    {% else %}
+                        action="{% url 'project-create' %}"
+                    {% endif %}
+                    method="post">
+
+                    {% csrf_token %}
+                    <input type="hidden" name="project_type" value="juxtaposition-assignment" />
+
+                    <h2>
+                        Edit Juxtaposition Assignment
+                        {% if form.instance.id %}
+                        <a class="right" href="{% url 'project-workspace' form.instance.id %}">
+                            <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_view.png"></span>
+                        </a>
+                        {% endif %}
+                    </h2>
+                    <div data-page="1" class="page">
+
+                        <p>A juxtaposition assignment allows students to compare
+                        and contrast a single spine video to a series of video,
+                        image or audio selections.</p>
+
+                        <p>Instructions to students could include:</p>
+                        <ul>
+                        <li><i>tbd</i></li>
+                        <li><i>tbd</i></li>
+                        <li><i>tbd</i></li>
+                        </ul>
+
+                        <p>Visibility of student responses must be set at one of the following levels:</p>
+                        <ul>
+                        <li>Student responses are visible only to instructors</li>
+                        <li>Students can see other responses only after submitting their own</li>
+                        <li>Students can see other responses at any time</li>
+                        </ul>
+
+                        <div class="text-center">
+                        <a href="#" class="btn btn-primary next right">Get Started</a>
+                        </div>
+                    </div>
+                    <div data-page="2" class="hidden page">
+                        <h3>1. Write title &amp; instructions</h3>
+                        <div class="form-group">
+                            <label>Assignment Title</label>
+                            <input type="text" name="title" class="form-control"
+                                placholder="Assignment Title"
+                                value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
+                            <div class="help-inline">Title is a required field</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Assignment Instructions</label>
+                            <div>Instructions to students could include:</div>
+                            <ul>
+                                <li><i>tbd</i></li>
+                                <li><i>tbd</i></li>
+                                <li><i>tbd</i></li>
+                            </ul>
+                            <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
+                                {{form.instance.body}}
+                            </textarea>
+                            <div class="help-inline">Instructions is a required field</div>
+                        </div>
+                        <nav>
+                            <ul class="pager">
+                                <li><a href="#" class="left prev">Previous</a></li>
+                                <li><a href="#" class="right next">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div data-page="3" class="hidden page">
+                        <h3>3. Set response due date &amp; visibility</h3>
+                        <p></p>
+                        <div class="form-group">
+                            <label for="due_date">Due Date</label>
+                            <input class="form-control" type="text"
+                                name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
+                        </div>
+                        <div class="help-inline">Please choose a due date.</div>
+                        <br />
+                        <label for="response_view_policy">Visibility</label>
+                        <p>Choose when students can see responses submitted by other students:</p>
+                        <div class="form-group">
+                            {{form.response_view_policy}}
+                        </div>
+                        <div class="help-inline">Please choose how responses will be viewed.</div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right next">Next</a></li>
+                        </ul>
+                    </div>
+                    <div data-page="4" class="hidden page">
+                        <h3>4. Publish assignment to students</h3>
+                        <p></p>
+                        <div class="form-group">
+                            <div class="radio">
+                                {{form.publish}}
+                            </div>
+                        </div>
+                        <div class="help-inline">Please select who can see your work.</div>
+                        <ul class="pager">
+                            <li><a href="#" class="left prev">Previous</a></li>
+                            <li><a href="#" class="right save">Save</a></li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endblock %}

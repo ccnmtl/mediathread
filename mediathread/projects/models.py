@@ -18,6 +18,7 @@ from structuredcollaboration.models import Collaboration
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
 PROJECT_TYPE_COMPOSITION = 'composition'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
+PROJECT_TYPE_JUXTAPOSITION_ASSIGNMENT = 'juxtaposition-assignment'
 PROJECT_TYPES = (
     (PROJECT_TYPE_ASSIGNMENT, 'Composition Assignment'),
     (PROJECT_TYPE_COMPOSITION, 'Composition'),
@@ -360,19 +361,25 @@ class Project(models.Model):
             return "Composition Assignment"
         elif self.is_selection_assignment():
             return "Selection Assignment"
+        elif self.is_juxtaposition_assignment():
+            return "Juxtaposition Assignment"
         elif self.assignment():
             return "Assignment Response"
         else:
             return "Composition"
 
     def is_assignment_type(self):
-        return (self.is_essay_assignment() or self.is_selection_assignment())
+        return (self.is_essay_assignment() or self.is_selection_assignment() or
+                self.is_juxtaposition_assignment())
 
     def is_essay_assignment(self):
         return self.project_type == PROJECT_TYPE_ASSIGNMENT
 
     def is_selection_assignment(self):
         return self.project_type == PROJECT_TYPE_SELECTION_ASSIGNMENT
+
+    def is_juxtaposition_assignment(self):
+        return self.project_type == PROJECT_TYPE_JUXTAPOSITION_ASSIGNMENT
 
     def is_composition(self):
         return self.project_type == PROJECT_TYPE_COMPOSITION

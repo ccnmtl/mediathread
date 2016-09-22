@@ -39,7 +39,7 @@
             return AssignmentEditView.prototype.validate.apply(this, arguments);
         },
         showPage: function(pageContent) {
-            if (pageContent == 'instructions') {
+            if (pageContent === 'instructions') {
                 jQuery('#sliding-content-container').addClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
             } else if (pageContent === 'choose-item') {

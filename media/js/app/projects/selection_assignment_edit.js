@@ -1,5 +1,6 @@
 /* global _: true, Backbone: true, CitationView: true */
 /* global showMessage: true, tinymce: true, tinymceSettings: true */
+/* global AssignmentEditView: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
@@ -38,14 +39,16 @@
             return AssignmentEditView.prototype.validate.apply(this, arguments);
         },
         showPage: function(pageContent) {
-            if (pageContent === 'choose-item') {
+            if (pageContent == 'instructions') {
+                jQuery('#sliding-content-container').addClass('hidden');
+                jQuery('.asset-view-publish-container').addClass('hidden');
+            } else if (pageContent === 'choose-item') {
                 jQuery('#sliding-content-container').removeClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
                 jQuery(window).trigger('resize');
-            } else if (pageContent === 'title') {
+            } else {
                 jQuery('#sliding-content-container').addClass('hidden');
-                jQuery('.asset-view-publish-container').removeClass(
-                    'hidden');
+                jQuery('.asset-view-publish-container').removeClass('hidden');
                 var itemId = jQuery('input[name="item"]').val();
                 this.citationView.openCitationById(null, itemId, null);
             }

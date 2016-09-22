@@ -78,11 +78,10 @@
             this.showPage($current.data('page-content'));
         },
         onPrev: function() {
-            jQuery('#sliding-content-container').addClass('hidden');
             jQuery('.page').addClass('hidden');
 
             this.currentPage = Math.max(this.currentPage - 1, 1);
-            $current = jQuery('div[data-page="' + this.currentPage + '"]');
+            var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             $current.removeClass('hidden');
             this.showPage($current.data('page-content'));
         },

@@ -5,7 +5,7 @@
 (function(jQuery) {
     var global = this;
 
-    global.AssignmentEditView = Backbone.View.extend({
+    global.SelectionAssignmentEditView = AssignmentEditView.extend({
         events: {
             'click .next': 'onNext',
             'click .prev': 'onPrev',
@@ -32,13 +32,13 @@
             });
         },
         validate: function(pageContent) {
-            if (pageContent === 'item-selection') {
+            if (pageContent === 'choose-item') {
                 return jQuery('input[name="item"]').val() !== '';
             }
             return AssignmentEditView.prototype.validate.apply(this, arguments);
         },
         showPage: function(pageContent) {
-            if (pageContent === 'item-selection') {
+            if (pageContent === 'choose-item') {
                 jQuery('#sliding-content-container').removeClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
                 jQuery(window).trigger('resize');

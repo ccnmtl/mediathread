@@ -1,7 +1,4 @@
-/* global _: true, Backbone: true, djangosherd: true */
-/* global annotationList: true, CitationView: true */
-/* global Mustache: true, MediaThread: true, showMessage: true */
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+/* global _: true, AssignmentView: true */
 
 /**
  * Listens For:
@@ -14,6 +11,21 @@
 (function(jQuery) {
     var global = this;
 
-    global.JuxtapositionAssignmentView = Backbone.View.extend({
+    global.JuxtapositionAssignmentView = AssignmentView.extend({
+        events: {
+            'click .submit-response': 'onSubmitResponse',
+            'click .btn-show-submit': 'onShowSubmitDialog',
+            'click .toggle-feedback': 'onToggleFeedback',
+            'click .save-feedback': 'onSaveFeedback'
+        },
+        initialize: function(options) {
+            _.bindAll(this, 'render', 'onToggleFeedback',
+                    'onShowSubmitDialog', 'onSubmitResponse');
+
+            AssignmentView.prototype.initialize.apply(this, arguments);
+        },
+        readyToSubmit: function() {
+            return true;
+        }
     });
 }(jQuery));

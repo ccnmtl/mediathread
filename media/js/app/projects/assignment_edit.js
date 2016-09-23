@@ -6,7 +6,13 @@
     var global = this;
 
     global.AssignmentEditView = Backbone.View.extend({
+        events: {
+            'click .next': 'onNext',
+            'click .prev': 'onPrev',
+            'click .save': 'onSave'
+        },
         initialize: function(options) {
+            _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'beforeUnload');
             var self = this;
 
             this.currentPage = 1;

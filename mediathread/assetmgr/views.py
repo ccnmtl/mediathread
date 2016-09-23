@@ -19,6 +19,7 @@ from django.db.models.aggregates import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View, TemplateView
@@ -32,13 +33,13 @@ from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation, update_annotation
+from mediathread.main.course_details import allow_item_download
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
     LoggedInSuperuserMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from django.http.response import HttpResponseNotFound
 
 
 def _parse_domain(url):
@@ -874,6 +875,8 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             'context': {
                 'type': 'asset',
                 'is_faculty': self.is_viewer_faculty,
+                'allow_item_download': self.is_viewer_faculty and
+                allow_item_download(request.course)
             },
             'owners': owners,
             'vocabulary': vocabulary,

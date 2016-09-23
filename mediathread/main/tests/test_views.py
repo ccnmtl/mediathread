@@ -3,9 +3,8 @@
 from datetime import datetime
 import json
 
-import factory
-from courseaffils.lib import get_public_name
 from courseaffils.columbia import CourseStringMapper
+from courseaffils.lib import get_public_name
 from courseaffils.models import Affil, Course
 from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
@@ -16,10 +15,11 @@ from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import Client, RequestFactory
 from django.utils.html import escape
-from threadedcomments.models import ThreadedComment
+import factory
 from freezegun import freeze_time
-from lti_auth.models import LTICourseContext
+from threadedcomments.models import ThreadedComment
 
+from lti_auth.models import LTICourseContext
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
@@ -32,8 +32,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
     course_information_title,
-    all_items_are_visible, all_selections_are_visible
-)
+    all_items_are_visible, all_selections_are_visible, allow_item_download)
 from mediathread.main.forms import (
     ContactUsForm, CourseActivateForm, AcceptInvitationForm)
 from mediathread.main.models import CourseInvitation
@@ -1388,6 +1387,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                          'new homepage title')
         self.assertEqual(all_items_are_visible(course), False)
         self.assertEqual(all_selections_are_visible(course), False)
+        self.assertEqual(allow_item_download(course), False)
 
         response = self.client.post(
             reverse('course-settings-general'),
@@ -1398,6 +1398,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
                 'lti_integration': True,
+                'allow_item_download': True
             },
             follow=True)
         self.assertEqual(response.status_code, 200)
@@ -1411,6 +1412,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                          'new homepage title')
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
+        self.assertEqual(allow_item_download(course), True)
         lti_ctx = LTICourseContext.objects.get(
             group=course.group,
             faculty_group=course.faculty_group)
@@ -1425,6 +1427,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
                 'lti_integration': False,
+                'allow_item_download': False
             },
             follow=True)
         lti_ctx.refresh_from_db()

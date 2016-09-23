@@ -25,6 +25,7 @@
     {% include "djangosherd/annotator_resources.html" %}
 
     <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js" type="text/javascript"></script>
     <script src="{{STATIC_URL}}js/app/projects/juxtaposition_assignment_view.js" type="text/javascript"></script>
 {% endblock %}
 
@@ -34,14 +35,12 @@
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script type="text/javascript">
-        var view = new SelectionAssignmentView({
+        var view = new JuxtapositionAssignmentView({
             el: jQuery('.juxtaposition-assignment').first(),
             viewer: '{{request.user.username}}',
             isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
             assignmentId: '{{assignment.id}}',
             responseId: '{{my_response.id}}',
-            itemId: '{{item.id}}',
-            itemJson: JSON.parse('{{item_json|escapejs}}'),
             vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
             submitted: {% if my_response and my_response.is_submitted %}true{% else %}false{% endif %},
             feedback: JSON.parse('{{feedback|escapejs}}'),
@@ -107,20 +106,7 @@
             <p>{{assignment.body|safe}}</p>
         </div>
         <div class="col-md-6">
-            <div class="asset-view-published affix affix-top" data-spy="affix">
-                <div class="asset-view-header column-container">
-                    <h2>Item
-                        <span class="asset-view-title">
-                            {{assignment.assignmentitem_set.first.asset.title}}
-                         </span>
-                    </h2>
-                </div>
-                <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
-                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-                    <div class="asset-display"></div>
-                    <div class="clipstrip-display"></div>
-                </div>
-            </div>
+            <div class="text-center"><h2>The Juxtaposition Tool Goes Here</h2></div>
         </div>
         <div class="col-md-3">
             {% if is_faculty %}
@@ -261,7 +247,6 @@
                       </div>
                     </div>
                 {% endif %}{% endif %}
-                {% endwith %}
             {% endif %}{% endif %}
             <div class="clearfix"></div>
             <br /><br />
@@ -274,18 +259,6 @@
                         <input type="hidden" name="title" value="My Response" />
                         <input class="btn btn-success" type="submit" value="Respond to Assignment" />
                     </form>
-                </div>
-            {% endif %}
-            {% if my_response or is_faculty %}
-                <div id="asset-workspace-panel-container" class="asset-workspace column-container">
-                    <div class="annotation-ajaxloader">
-                        <div class="message">
-                        <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
-                        <br /><br />
-                        <div>Retrieving responses</div>
-                        </div>
-                    </div>
-                    <div id="asset-view-details" class="asset-view-details"></div>
                 </div>
             {% endif %}
         </div>

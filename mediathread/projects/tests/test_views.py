@@ -634,6 +634,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
 
         view = SelectionAssignmentView()
         view.request = request
+        view.project = self.assignment
 
         ctx = view.get_context_data(project_id=self.assignment.id)
         self.assertEquals(ctx['assignment'], self.assignment)
@@ -655,33 +656,6 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.instructor_one,
             policy='PrivateEditorsAreOwners',
             project_type='selection-assignment')
-
-    def test_get_edit(self):
-        url = reverse('selection-assignment-edit',
-                      args=[self.project.id])
-
-        # anonymous
-        response = self.client.get(url, {})
-        self.assertEquals(response.status_code, 302)
-
-        # alt course instructor
-        self.client.login(username=self.alt_instructor.username,
-                          password='test')
-        self.switch_course(self.client, self.alt_course)
-        response = self.client.get(url, {})
-        self.assertEquals(response.status_code, 403)
-
-        # student
-        self.client.login(username=self.student_one.username,
-                          password='test')
-        response = self.client.get(url, {})
-        self.assertEquals(response.status_code, 403)
-
-        # author
-        self.client.login(username=self.instructor_one.username,
-                          password='test')
-        response = self.client.get(url, {})
-        self.assertEquals(response.status_code, 200)
 
     def test_get_create(self):
         url = reverse('selection-assignment-create')
@@ -709,9 +683,6 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
             'body': 'Body Text',
             'item': asset1.id
         }
-        response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 405)
-
         response = self.client.post(url, data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
@@ -734,6 +705,54 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(project.assignmentitem_set.count(), 1)
         self.assertEquals(project.assignmentitem_set.first().asset, asset2)
+
+
+class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        self.project = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='PrivateEditorsAreOwners',
+            project_type='juxtaposition-assignment')
+
+    def test_get_edit(self):
+        url = reverse('juxtaposition-assignment-edit',
+                      args=[self.project.id])
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # alt course instructor
+        self.client.login(username=self.alt_instructor.username,
+                          password='test')
+        self.switch_course(self.client, self.alt_course)
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 403)
+
+        # author
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_create(self):
+        url = reverse('juxtaposition-assignment-create')
+
+        # faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
 
 
 class ProjectItemViewTest(MediathreadTestMixin, TestCase):

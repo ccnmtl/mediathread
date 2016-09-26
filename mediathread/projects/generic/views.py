@@ -4,7 +4,6 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 
-from mediathread.assetmgr.api import AssetResource
 from mediathread.mixins import LoggedInCourseMixin, ProjectReadableMixin, \
     LoggedInFacultyMixin
 from mediathread.projects.forms import ProjectForm
@@ -15,10 +14,9 @@ from mediathread.taxonomy.models import Vocabulary
 
 
 class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
-    extra_context = dict()
 
     def get_extra_context(self):
-        return self.extra_context
+        return dict()
 
     def get_assignment(self, project):
         if project.is_assignment_type():
@@ -57,9 +55,6 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
         my_response = self.get_my_response(responses)
         is_faculty = self.request.course.is_faculty(self.request.user)
 
-        item = parent.assignmentitem_set.first().asset
-        item_ctx = AssetResource().render_one_context(self.request, item)
-
         lst = Vocabulary.objects.filter(course=self.request.course)
         lst = lst.prefetch_related('term_set')
         vocabulary_json = VocabularyResource().render_list(
@@ -71,8 +66,6 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'is_faculty': is_faculty,
             'assignment': parent,
             'assignment_can_edit': can_edit,
-            'item': item,
-            'item_json': json.dumps(item_ctx),
             'my_response': my_response,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': PUBLISH_WHOLE_CLASS[0],

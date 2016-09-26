@@ -334,7 +334,7 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
             view = SelectionAssignmentView.as_view()
         elif (project.is_juxtaposition_assignment() or
                 (parent and parent.is_juxtaposition_assignment())):
-            view = SelectionAssignmentView.as_view()
+            view = JuxtapositionAssignmentView.as_view()
         else:
             view = DefaultProjectView.as_view()
 
@@ -343,6 +343,17 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
 
 class SelectionAssignmentView(AssignmentView):
     template_name = 'projects/selection_assignment_view.html'
+
+    def get_extra_context(self):
+        parent = self.get_assignment(self.project)
+
+        item = parent.assignmentitem_set.first().asset
+        item_ctx = AssetResource().render_one_context(self.request, item)
+
+        return {
+            'item': item,
+            'item_json': json.dumps(item_ctx)
+        }
 
 
 class JuxtapositionAssignmentView(AssignmentView):

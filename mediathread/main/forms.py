@@ -221,7 +221,9 @@ class DashboardSettingsForm(forms.ModelForm):
     allow_item_download = forms.BooleanField(
         label='Course instructors see a download item link',
         initial=False,
-        required=False)
+        required=False,
+        help_text='Allow instructors to see a download link on the '
+        'Item View page. This option is off by default.')
     lti_integration = forms.BooleanField(
         label='LTI Integration',
         required=False,

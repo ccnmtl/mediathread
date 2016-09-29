@@ -73,6 +73,16 @@ COURSE_INFORMATION_TITLE_KEY = "course_information_title"
 COURSE_INFORMATION_TITLE_DEFAULT = "From Your Instructor"
 
 
+def allow_item_download(course):
+    value = int(course.get_detail(ALLOW_ITEM_DOWNLOAD_KEY,
+                                  ALLOW_ITEM_DOWNLOAD_DEFAULT))
+    return bool(value)
+
+
+ALLOW_ITEM_DOWNLOAD_KEY = "allow_item_download"
+ALLOW_ITEM_DOWNLOAD_DEFAULT = 0
+
+
 def course_information_title(course):
     return course.get_detail(COURSE_INFORMATION_TITLE_KEY,
                              COURSE_INFORMATION_TITLE_DEFAULT)

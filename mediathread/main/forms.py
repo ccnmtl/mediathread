@@ -1,15 +1,15 @@
+from courseaffils.models import Course
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
 from registration.forms import RegistrationForm
-from courseaffils.models import Course
+
 from lti_auth.models import LTICourseContext
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
     all_items_are_visible, all_selections_are_visible,
-    course_information_title
-)
+    course_information_title, allow_item_download)
 from mediathread.projects.models import Project
 
 
@@ -218,6 +218,12 @@ class DashboardSettingsForm(forms.ModelForm):
     see_eachothers_selections = forms.BooleanField(
         label='Course members can see each other\'s selections',
         required=False)
+    allow_item_download = forms.BooleanField(
+        label='Course instructors see a download item link',
+        initial=False,
+        required=False,
+        help_text='Allow instructors to see a download link on the '
+        'Item View page. This option is off by default.')
     lti_integration = forms.BooleanField(
         label='LTI Integration',
         required=False,
@@ -237,6 +243,7 @@ class DashboardSettingsForm(forms.ModelForm):
             'see_eachothers_items': True,
             'see_eachothers_selections': True,
             'lti_integration': False,
+            'allow_item_download': False
         }
 
     def __init__(self, *args, **kwargs):
@@ -249,7 +256,8 @@ class DashboardSettingsForm(forms.ModelForm):
             all_items_are_visible(self.instance)
         self.fields['see_eachothers_selections'].initial = \
             all_selections_are_visible(self.instance)
-
+        self.fields['allow_item_download'].initial = \
+            allow_item_download(self.instance)
         lti_context = LTICourseContext.objects.filter(
             group=self.instance.group.id,
             faculty_group=self.instance.faculty_group.id).first()
@@ -297,12 +305,12 @@ class DashboardSettingsForm(forms.ModelForm):
             int(cleaned_data.get('see_eachothers_items')))
 
         course.add_detail(
-            course_details.ITEM_VISIBILITY_KEY,
-            int(cleaned_data.get('see_eachothers_items')))
-
-        course.add_detail(
             course_details.SELECTION_VISIBILITY_KEY,
             int(cleaned_data.get('see_eachothers_selections')))
+
+        course.add_detail(
+            course_details.ALLOW_ITEM_DOWNLOAD_KEY,
+            int(cleaned_data.get('allow_item_download')))
 
         if not cleaned_data.get('see_eachothers_selections'):
             Project.objects.limit_response_policy(course)

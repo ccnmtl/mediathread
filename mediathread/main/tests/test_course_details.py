@@ -7,7 +7,8 @@ from mediathread.main.course_details import can_upload, \
     allow_public_compositions, all_selections_are_visible, \
     all_items_are_visible, \
     course_information_title, COURSE_INFORMATION_TITLE_DEFAULT, \
-    cached_course_is_member, cached_course_is_faculty, is_upload_enabled
+    cached_course_is_member, cached_course_is_faculty, is_upload_enabled, \
+    allow_item_download
 
 
 class TestCourseDetails(MediathreadTestMixin, TestCase):
@@ -47,6 +48,10 @@ class TestCourseDetails(MediathreadTestMixin, TestCase):
     def all_items_are_visible(self):
         # default
         self.assertFalse(all_items_are_visible(self.sample_course))
+
+    def allow_item_download(self):
+        # default
+        self.assertFalse(allow_item_download(self.sample_course))
 
     def test_course_information_title(self):
         # default

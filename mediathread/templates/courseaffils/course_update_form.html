@@ -31,6 +31,12 @@
                 default.
             </span>
         </div>
+        {% if user.is_staff%}
+        <div class="well">
+            <h3>Item Download</h3>
+            {% bootstrap_field form.allow_item_download %}
+        </div>
+        {% endif %}
         <div class="well">
             <h3>LTI</h3>
             {% bootstrap_field form.lti_integration %}

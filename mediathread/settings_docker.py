@@ -43,9 +43,9 @@ SERVER_EMAIL = os.environ.get('SERVER_EMAIL',
 # -------------------------------------------
 
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+TEMPLATES[0]['DEBUG'] = DEBUG
 
-TEMPLATE_DIRS = (
+TEMPLATES[0]['DIRS'] = (
     os.path.join(base, "templates"),
 )
 

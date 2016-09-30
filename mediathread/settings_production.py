@@ -12,7 +12,7 @@ locals().update(
     ))
 
 
-TEMPLATE_DIRS.insert(
+TEMPLATES[0]['DIRS'].insert(
     0,
     "/var/www/mediathread/mediathread/mediathread/deploy_specific/templates")
 

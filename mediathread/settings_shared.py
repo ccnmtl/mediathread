@@ -35,10 +35,9 @@ CACHES = {
     }
 }
 
-TEMPLATE_CONTEXT_PROCESSORS += [  # noqa
-    'django.contrib.messages.context_processors.messages',
-    'mediathread.main.views.django_settings',
-]
+TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
+    'mediathread.main.views.django_settings'
+)
 
 MIDDLEWARE_CLASSES += [  # noqa
     'corsheaders.middleware.CorsMiddleware',
@@ -46,7 +45,8 @@ MIDDLEWARE_CLASSES += [  # noqa
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
-TEMPLATE_DIRS.insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
+
+TEMPLATES[0]['DIRS'].insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
 
 INSTALLED_APPS += [  # noqa
     'courseaffils',

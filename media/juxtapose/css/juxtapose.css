@@ -1,0 +1,237 @@
+button {
+    cursor: pointer;
+}
+
+button.jux-play {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+#jux-container {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.react-grid-item {
+    cursor: move;
+    position: absolute;
+    display: flex;
+    border: 1px dashed blue;
+    background-color: rgba(173, 216, 230, 0.4);
+    text-align: center;
+    overflow: hidden;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.react-grid-item .aux-item-middle {
+    flex-grow: 1;
+}
+
+.react-grid-item img.aux-item-middle {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.react-grid-item video.aux-item-middle {
+    width: 80%;
+}
+
+.jux-flex-horiz {
+    display: flex;
+}
+
+.jux-global-annotation {
+    width: 100%;
+}
+
+#jux-spine-video,
+.jux-aux-video {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#jux-spine-video {
+    margin-right: 3px;
+}
+
+.jux-aux-video {
+    margin-left: 3px;
+}
+
+.jux-container {
+    width: 600px;
+}
+
+.vid-container {
+    display: flex;
+}
+
+.jux-time {
+    line-height: 38px;
+}
+
+.jux-track {
+    border: 1px dashed black;
+    width: 600px;
+    height: 120px;
+    cursor: pointer;
+    margin-top: -1px;
+}
+
+.jux-track>.react-grid-layout {
+    float: left;
+}
+
+.jux-track .jux-snap-column {
+    width: 10px;
+    height: 100%;
+    background-color: transparent;
+    display: inline-block;
+}
+
+.jux-track .jux-snap-column:hover {
+    background-color: yellow;
+}
+
+.jux-spine-display button {
+    display: none;
+    position: absolute;
+}
+
+.jux-spine-display:hover button {
+    display: block;
+}
+
+.jux-spine-display,
+.jux-aux-display {
+    height: 225px;
+    width: 300px;
+    text-align: center;
+}
+
+.jux-spine-display video,
+.jux-spine-display img,
+.jux-aux-display video,
+.jux-aux-display img {
+    max-height: 225px;
+    max-width: 300px;
+}
+
+.jux-text-display {
+    min-height: 54px;
+    height: 100%;
+    background-color: #dedede;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 6px;
+}
+
+.jux-track-item-manager {
+    margin-top: 10px;
+    padding: 10px;
+    border: dashed 1px green;
+    background-color: lightyellow;
+}
+
+.jux-track-item-manager h2 {
+    font-weight: normal;
+}
+
+.jux-track-item-manager textarea {
+    width: 100%;
+}
+
+.jux-remove-track-item {
+    position: relative;
+    float: right;
+}
+
+.jux-popup-close {
+    position: relative;
+    float: right;
+}
+
+.jux-add-item-popup {
+    background-color: lightgreen;
+    z-index: 70;
+    position: fixed;
+    padding: 10px;
+}
+
+.jux-add-item-popup.jux-collection-popup {
+    width: 240px;
+    height: 300px;
+}
+
+.jux-collection-scroll-area {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.jux-collection-item {
+    background-color: #fff;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-bottom: 4px;
+    margin-right: 5px;
+}
+
+.jux-collection-item img {
+    max-height: 80px;
+}
+
+.jux-item-active {
+    background-color: yellow;
+}
+
+/* TimelineRuler */
+.jux-timeline-ruler {
+    height: 21px;
+    position: relative;
+}
+
+.jux-timeline-hline {
+    height: 1px;
+    top: 19px;
+    position: relative;
+    border-bottom: 1px solid #000;
+}
+
+.jux-timeline-tick,
+.jux-timeline-ticklabel {
+    position: absolute;
+}
+
+.jux-timeline-ticklabel {
+    display: inline;
+    width: 46px;
+    text-align: center;
+    font-size: 12px;
+    margin-left: -23px;
+}
+
+.jux-timeline-tick {
+    display: inline-block;
+    top: 15px;
+    width: 3px;
+    height: 11px;
+    background-color: #000;
+}
+
+.jux-duration-controls {
+    margin-left: 5px;
+}
+
+.jux-vid-item-thumb {
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+}

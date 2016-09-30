@@ -12,6 +12,10 @@
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
+
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/juxtapose.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/playhead.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/react-grid-layout.css"  media="screen" />
 {% endblock %}
 
 {% block uncompressable_css %}
@@ -47,6 +51,8 @@
             feedbackCount: {{feedback_count}}
         });
     </script>
+
+    <script type="text/javascript" src="{{STATIC_URL}}juxtapose/bundle.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -106,7 +112,7 @@
             <p>{{assignment.body|safe}}</p>
         </div>
         <div class="col-md-6">
-            <div class="text-center"><h2>The Juxtaposition Tool Goes Here</h2></div>
+            <div id="jux-container"></div>
         </div>
         <div class="col-md-3">
             {% if is_faculty %}

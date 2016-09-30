@@ -20,11 +20,6 @@ body
     font-size: 1em;
 }
 
-.ui-widget-content,
-.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
-    color: #383838;
-}
-
 .ui-widget-overlay-dark {
     opacity:0.60;
     -moz-opacity:0.60;
@@ -174,6 +169,7 @@ button span.glyphicon {
 div#asset-view-details .meta {
     color: #383838;
     float: none;
+    margin-top: 10px;
 }
 
 /* ---- Header Contents ---- */
@@ -3001,6 +2997,10 @@ li.annotation-group {
     border: solid 1px #ccc;
 }
 
+.annotation-group .ui-state-active span.small {
+    color: inherit;
+}
+
 div.materials h4 {
     color: #000;
     font-weight: normal;
@@ -3633,13 +3633,15 @@ div#annotation-filter-menu {
     line-height: 1.5em;
 }
 
-input.annotation-listitem-icon {
+.annotation-listitem-icon {
     float: right;
+    margin-left: 8px;
+    margin-right: 8px;
     margin-top: -5px;
-    border: none;    
+    border: none;
 }
 
-input.annotation-listitem-icon.delete {
+.annotation-listitem-icon.delete {
     margin-right: 0px;
 }
 
@@ -3951,7 +3953,6 @@ div.ui-dialog div.asset-view-details h2 {
     display: block;
 }
 
-
 #taxonomy .ui-tabs-vertical {
     width: 100%;
     border: none;
@@ -4045,9 +4046,9 @@ div.ui-dialog div.asset-view-details h2 {
     padding-right: 2px;
 }
 
-#taxonomy div.vocabulary-display a.create-vocabulary-open img {
+#taxonomy div.vocabulary-display a.create-vocabulary-open .glyphicon {
     float: right;
-    margin: -2px 2px 0 0;
+    right: 6px;
 }
 
 #taxonomy div.term-container a.edit-term-close,
@@ -4223,6 +4224,10 @@ a.btn.btn-default img.left {
 
 .selection-assignment h3.annotation-header a {
     font-size: .9em;
+}
+
+.selection-assignment .annotation-header:not(.ui-state-active) .annotation-listitem-icon {
+    display: none;
 }
 
 .affix-top, .affix {

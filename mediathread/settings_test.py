@@ -2,7 +2,7 @@
 from settings_shared import *
 
 DEBUG = False
-TEMPLATES[0]['DEBUG'] = False
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 DATABASES = {
     'default': {

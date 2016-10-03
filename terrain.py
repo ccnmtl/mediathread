@@ -381,11 +381,7 @@ def i_cancel_the_action(step):
     dialog = world.browser.find_element_by_id("dialog-confirm").parent
     btns = dialog.find_elements_by_tag_name("button")
     for btn in btns:
-        try:
-            span = btn.find_element_by_css_selector("span.ui-button-text")
-        except NoSuchElementException:
-            continue
-        if span.text == "Cancel":
+        if btn.text == "Cancel":
             btn.click()
             time.sleep(2)
             return
@@ -402,11 +398,7 @@ def i_confirm_the_action(step):
     dialog = world.browser.find_element_by_id("dialog-confirm").parent
     btns = dialog.find_elements_by_tag_name("button")
     for btn in btns:
-        try:
-            span = btn.find_element_by_css_selector("span.ui-button-text")
-        except NoSuchElementException:
-            continue
-        if span.text == "OK":
+        if btn.text == "OK":
             btn.click()
             wait = ui.WebDriverWait(world.browser, 5)
             wait.until(invisibility_of_element_located((By.ID,

@@ -25,14 +25,14 @@
             </a>
 
             {{#editable}}
-              <input style="display: none" type="image" title="Edit Selection"
-              onclick="return annotationList.editAnnotation(this);"
-              alt="Edit" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png"
-              class="annotation-listitem-icon edit" />
-              <input style="display: none" type="image" title="Delete Selection"
-              onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
-              alt="Delete" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"
-              class="annotation-listitem-icon delete" />
+                <div class="glyphicon glyphicon-pencil edit annotation-listitem-icon"
+                    onclick="return annotationList.editAnnotation(this);"
+                    aria-label="Edit Selection" title="Edit Selection"
+                    aria-hidden="true"></div>
+                <div class="glyphicon glyphicon-trash delete annotation-listitem-icon"
+                    onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
+                    aria-label="Delete Selection" title="Delete Selection"
+                    aria-hidden="true"></div>
             {{/editable}}
 
             {{^editable}}

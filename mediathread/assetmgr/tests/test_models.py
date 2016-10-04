@@ -4,10 +4,12 @@ from django.test import TestCase
 
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.models import SherdNote
-from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    UserFactory, SherdNoteFactory, ProjectFactory, \
-    SuggestedExternalCollectionFactory, SourceFactory, \
-    ExternalCollectionFactory
+from mediathread.factories import (
+    MediathreadTestMixin, AssetFactory,
+    UserFactory, SherdNoteFactory, ProjectFactory,
+    SuggestedExternalCollectionFactory, SourceFactory,
+    ExternalCollectionFactory,
+)
 
 
 class AssetTest(MediathreadTestMixin, TestCase):
@@ -360,3 +362,11 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(tags), 2)
         self.assertEquals(tags[0].name, 'student_one_item')
         self.assertEquals(tags[1].name, 'student_one_selection')
+
+
+class SourceTest(TestCase):
+    def setUp(self):
+        self.source = SourceFactory()
+
+    def test_is_valid_from_factory(self):
+        self.source.full_clean()

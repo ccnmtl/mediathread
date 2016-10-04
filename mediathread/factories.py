@@ -11,8 +11,10 @@ import factory
 from registration.models import RegistrationProfile
 from threadedcomments.models import ThreadedComment
 
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
-    SuggestedExternalCollection
+from mediathread.assetmgr.models import (
+    Asset, Source, ExternalCollection,
+    SuggestedExternalCollection,
+)
 from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.models import UserProfile, CourseInvitation
@@ -79,6 +81,9 @@ class CourseFactory(factory.DjangoModelFactory):
 class SourceFactory(factory.DjangoModelFactory):
     class Meta:
         model = Source
+
+    asset = factory.SubFactory('mediathread.factories.AssetFactory')
+    label = 'image'
     url = 'sample url'
     media_type = 'ext'
 

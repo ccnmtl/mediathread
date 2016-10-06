@@ -20,15 +20,16 @@
         },
         'your-space': function(username, tag, modified, citable) {
             return '/api/asset/user/' + username + '/?' +
-                (citable ? '&annotations=true' : '') +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
+                (citable ? '&annotations=true' : '') +
                 (citable ? '&citable=' + citable : '');
         },
         'all-space': function(tag, modified, citable) {
             return '/api/asset/?' +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
+                (citable ? '&annotations=true' : '') +
                 (citable ? '&citable=' + citable : '');
         },
         'asset-workspace': function(assetId, annotationId) {

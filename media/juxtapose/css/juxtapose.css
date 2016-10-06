@@ -235,3 +235,19 @@ button.jux-play {
     height: 100%;
     width: 100%;
 }
+
+.jux-save-button {
+    margin-top: 5px;
+}
+
+.jux-collection {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 300px;
+    height: 400px;
+    overflow-y: scroll;
+    z-index: 9;
+    background-color: white;
+    padding: 10px;
+}

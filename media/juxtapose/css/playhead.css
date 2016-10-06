@@ -1,3 +1,7 @@
+.jux-playhead-container {
+    height: 0;
+}
+
 .jux-playhead-line {
     height: 244px;
     width: 2px;
@@ -32,7 +36,6 @@ input[type=range] {
     width: 100%;
     cursor: col-resize;
     position: relative;
-    float: left;
     top: 100px;
     margin: 0;
 }

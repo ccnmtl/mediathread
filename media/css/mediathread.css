@@ -3003,8 +3003,6 @@ li.annotation-group {
 }
 
 div.materials h4 {
-    color: #000;
-    font-weight: normal;
     margin: .3em 0 0 0;
     padding: 0.3em 0;
     text-align: left;
@@ -4405,4 +4403,20 @@ ul.section-tabs>li>a.active {
     font-size: 1.5em;
     margin: 10px;
     float: right;
+}
+
+.collection-widget span.citationTemplate {
+    float: left;
+}
+
+.collection-widget .actions {
+    margin-top: 0;
+}
+
+.collection-widget .asset-title-link.insert {
+    float: left;
+}
+
+.collection-widget table, .collection-widget tr, .collection-widget td {
+    border: none;
 }

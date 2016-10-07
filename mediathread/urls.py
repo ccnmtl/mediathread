@@ -1,7 +1,3 @@
-import django.contrib.auth.views
-import django.views.i18n
-import django.views.static
-import djangowind.views
 import os.path
 
 from django.conf import settings
@@ -11,10 +7,15 @@ from django.contrib.auth.views import (password_change, password_change_done,
                                        password_reset, password_reset_done,
                                        password_reset_complete,
                                        password_reset_confirm)
+import django.contrib.auth.views
 from django.views.generic.base import TemplateView
+import django.views.i18n
+import django.views.static
+import djangowind.views
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
+from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
     AssetCollectionView, AssetDetailView, TagCollectionView,
     RedirectToExternalCollectionView, RedirectToUploaderView,
@@ -39,6 +40,7 @@ from mediathread.taxonomy.api import TermResource, VocabularyResource
 tastypie_api = Api('')
 tastypie_api.register(TermResource())
 tastypie_api.register(VocabularyResource())
+tastypie_api.register(CourseResource())
 
 admin.autodiscover()
 
@@ -137,6 +139,9 @@ urlpatterns = [
         name='nocache-analyze-bookmarklet'),
 
     url(r'^comments/', include('django_comments.urls')),
+
+    url(r'^test/$',
+        TemplateView.as_view(template_name='debug.html')),
 
     # Contact us forms.
     url(r'^contact/success/$',

@@ -169,16 +169,11 @@ class TagResource(ModelResource):
 class CourseMemberAuthorization(Authorization):
 
     def read_detail(self, object_list, bundle):
-        lst = self.read_list(object_list, bundle)
-        return len(lst) > 0
+        return self.read_list(object_list, bundle).exists()
 
     def read_list(self, object_list, bundle):
-        # User must be a member of all courses in the request list
-        for course in object_list:
-            if not course.is_member(bundle.request.user):
-                return Course.objects.none()
-
-        return object_list
+        request = bundle.request
+        return object_list.filter(id=request.course.id)
 
 
 class CourseInfoResource(ModelResource):
@@ -207,8 +202,8 @@ class CourseResource(ModelResource):
 
     class Meta:
         queryset = Course.objects.all()
-        resource_name = "course_summary"
-        list_allowed_methods = []
+        resource_name = 'course'
+        list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
 
         # User is logged into some course

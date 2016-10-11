@@ -140,9 +140,6 @@ urlpatterns = [
 
     url(r'^comments/', include('django_comments.urls')),
 
-    url(r'^test/$',
-        TemplateView.as_view(template_name='debug.html')),
-
     # Contact us forms.
     url(r'^contact/success/$',
         TemplateView.as_view(template_name='main/contact_success.html')),

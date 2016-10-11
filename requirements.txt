@@ -26,7 +26,7 @@ lettuce==0.2.24.ccnmtl
 selenium==2.53.6
 six==1.10.0
 sqlparse==0.2.1  # django-debug-toolbar
-python-mimeparse==1.5.2  # tastypie
+python-mimeparse==1.5.5  # tastypie
 python-dateutil==2.5.3  # tastypie
 django-tastypie==0.13.3
 coverage==4.2

@@ -26,13 +26,12 @@ Feature: Composition
 
         # Save
         When I click the Save button
-        Then I see a Save Changes dialog
         There is a project visibility "Draft - only you can view"
         There is a project visibility "Whole Class - all class members can view"
         There is not a project visibility "Whole World - a public url is provided"
         And the project visibility is "Draft - only you can view"
 
-        Then I save the changes
+        Then I save the project changes
         Then there is a "Draft" link
         And the Composition panel has a Saved button
 
@@ -80,7 +79,7 @@ Feature: Composition
 
         # Save
         When I click the Save button
-        Then I save the changes
+        Then I save the project changes
 
         # Toggle Preview Mode
         When I click the Preview button
@@ -112,7 +111,7 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I set the project visibility to "<visibility>"
-        When I save the changes
+        When I save the project changes
         Then there is a "<status>" link
 
         # Try to view as student one
@@ -141,7 +140,7 @@ Feature: Composition
         # Save
         When I click the Save button
         Then I set the project visibility to "<visibility>"
-        When I save the changes
+        When I save the project changes
         Then I see "<status>"
 
         # Try to view as student two

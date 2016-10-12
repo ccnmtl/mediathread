@@ -15,7 +15,7 @@ Feature: QuickEdit
         Then I call the Composition "Quick Edit Composition"
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
-        I save the changes
+        I save the project changes
 
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
@@ -52,7 +52,7 @@ Feature: QuickEdit
         Then I call the Composition "Quick Edit Composition"
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
-        I save the changes
+        I save the project changes
 
         # Verify asset exists
         And there is a "Mediathread: Introduction" link
@@ -95,7 +95,7 @@ Feature: QuickEdit
         Then I call the Composition "Quick Edit Composition"
         # Save the project (otherwise an "Unsaved" alert pops up)
         When I click the Save button
-        I save the changes
+        I save the project changes
 
         # Verify asset exists
         And there is a "Mediathread: Introduction" link

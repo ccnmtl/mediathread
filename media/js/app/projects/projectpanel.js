@@ -59,15 +59,12 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
             self.onClosePanel(jQuery(this).hasClass('subpanel'));
         });
 
-    self._bind(self.$el, 'form[name="editproject"]', 'keypress keydown keyup',
-        function(e) {
-            if (e.keyCode === 13) {
-                e.preventDefault();
-            }
-        });
-
     self._bind(self.$el, '.project-savebutton', 'click', function(evt) {
-        return self.showSaveOptions(evt);
+        self.showSaveOptions(evt);
+        return false;
+    });
+    self._bind(self.$el, '.save-publish-status .btn-primary', 'click', function(evt) {
+        return self.saveProject();
     });
     self._bind(self.$el, 'a.project-visibility-link', 'click', function(evt) {
         self.$el.find('.project-savebutton').click();
@@ -328,8 +325,6 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function(evt) {
 
 ProjectPanelHandler.prototype.showRevisions = function(evt) {
     var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var frm = srcElement.form;
 
     // close any outstanding citation windows
     if (self.tinymce) {
@@ -351,7 +346,7 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
             if (self._save) {
                 self._save = false;
                 var q = 'select[name="revisions"] option:selected';
-                var opts = self.$el.find(q);
+                var opts = jQuery(event.target).find(q);
                 if (opts.length < 1) {
                     showMessage('Please select a revision', null, 'Error');
                     return false;
@@ -374,15 +369,11 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
         },
         zIndex: 10000
     });
-
-    jQuery(element).parent().appendTo(frm);
     return false;
 };
 
 ProjectPanelHandler.prototype.showResponses = function(evt) {
     var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var frm = srcElement.form;
 
     // close any outstanding citation windows
     if (self.tinymce) {
@@ -403,7 +394,7 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
         beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
-                var opts = self.$el.find(
+                var opts = jQuery(event.target).find(
                     'select[name="responses"] option:selected');
                 if (opts.length < 1) {
                     showMessage('Please select a response', null, 'Error');
@@ -428,15 +419,12 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
         zIndex: 10000
     });
 
-    jQuery(element).parent().appendTo(frm);
     return false;
 };
 
 // Multiple responses.
 ProjectPanelHandler.prototype.showMyResponses = function(evt) {
     var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var frm = srcElement.form;
 
     // close any outstanding citation windows
     if (self.tinymce) {
@@ -457,7 +445,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
         beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
-                var opts = self.$el.find(
+                var opts = jQuery(event.target).find(
                     'select[name="my-responses"] option:selected');
                 if (opts.length < 1) {
                     showMessage('Please select a response', null, 'Error');
@@ -482,7 +470,6 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
         zIndex: 10000
     });
 
-    jQuery(element).parent().appendTo(frm);
     return false;
 };
 
@@ -624,67 +611,38 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         return false;
     }
 
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var frm = srcElement.form;
-    var element = jQuery(frm).find('div.save-publish-status')[0];
+    var elt = this.$el.find('.save-publish-status').first();
 
-    jQuery(element).dialog({
-        buttons: [{text: 'Cancel',
-                   click: function() {
-                       jQuery(this).dialog('close');
-                   }},
-                  {text: 'Save',
-                   click: function() {
-                       self._save = true;
-                       jQuery(this).dialog('close');
-                   }}
-              ],
-        create: function(event, ui) {
-            jQuery('#id_due_date').datepicker({
-                minDate: 0,
-                dateFormat: 'mm/dd/yy',
-                beforeShow: function(input, inst) {
-                    inst.dpDiv.css({
-                        top: (input.offsetHeight) + 'px'
-                    });
-                }
+    jQuery(elt).find('#id_due_date').datepicker({
+        minDate: 0,
+        dateFormat: 'mm/dd/yy',
+        beforeShow: function(input, inst) {
+            inst.dpDiv.css({
+                top: (input.offsetHeight) + 'px'
             });
-        },
-        beforeClose: function(event, ui) {
-            if (self._save) {
-                self.saveProject(frm);
-            }
-
-            self._save = false;
-            return true;
-        },
-        draggable: true,
-        resizable: false,
-        modal: true,
-        width: 450,
-        position: {
-            my: 'center top',
-            at: 'center top',
-            of: window,
-            collision: 'none'
-        },
-        zIndex: 10000
+        }
     });
 
-    jQuery(element).parent().appendTo(frm);
-    return false;
+    var dlg = jQuery(elt).modal('show');
 };
 
-ProjectPanelHandler.prototype.saveProject = function(frm) {
+ProjectPanelHandler.prototype.serializeData = function() {
+    var q = '[name="title"], [name="participants"], [name="body"], ' +
+        '[name="publish"], [name="due_date"], [name="response_view_policy"]';
+    return this.$el.find(q).serializeArray();
+}
+
+ProjectPanelHandler.prototype.saveProject = function() {
     var self = this;
+
+    var elt = this.$el.find('.save-publish-status').first();
+    jQuery(elt).modal('hide');
 
     tinymce.activeEditor.save();
 
     if (!self._validTitle() || !self._validAuthors()) {
         return false;
     }
-
-    var data = jQuery(frm).serializeArray();
 
     var saveButton = self.$el.find('.project-savebutton').get(0);
     jQuery(saveButton).attr('disabled', 'disabled')
@@ -693,8 +651,8 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
 
     jQuery.ajax({
         type: 'POST',
-        url: frm.action,
-        data: data,
+        url: '/project/save/' + self.panel.context.project.id + '/',
+        data: self.serializeData(),
         dataType: 'json',
         error: function() {
             jQuery(saveButton).removeAttr('disabled')
@@ -794,8 +752,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         // Clear the timer variable at the end
         if (self.dirtyTimer === undefined) {
             self.dirtyTimer = window.setTimeout(function() {
-                var frm = self.$el.find('form[name=editproject]');
-                self.saveProject(frm[0]);
+                self.saveProject();
                 self.dirtyTimer = undefined;
             }, 10000);
         }

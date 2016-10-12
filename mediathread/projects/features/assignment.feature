@@ -16,14 +16,13 @@ Feature: Assignment
 
         # Add a title and some text
         Then I call the Assignment "Assignment: Scenario 1"
-        And there is a Save button
         Then I write some text for the Assignment
+        And there is a Save button
 
         # Save as an Assignment
         When I click the Save button
-        Then I see a Save Changes dialog
         Then I set the project visibility to "Whole Class - all class members can view"
-        When I save the changes
+        When I save the project changes
         Then there is an "Published to Class" link
         Then there is an open Assignment panel
         And the composition "Assignment: Scenario 1" has text 
@@ -103,7 +102,7 @@ Feature: Assignment
         # Save as submitted to the instructor
         When I click the Save button
         Then I set the project visibility to "Instructor - only author(s) and instructor can view"
-        When I save the changes
+        When I save the project changes
         Then there is a "Submitted to Instructor" link
 
         # Verify home page display
@@ -185,7 +184,7 @@ Feature: Assignment
         Then I call the Composition "Sample Assignment Response"
         Then I click the Save button
         Then I set the project visibility to "<visibility>"
-        When I save the changes
+        When I save the project changes
         Then there is a "<status>" link
 
         Give I am <username> in Sample Course 
@@ -199,7 +198,7 @@ Feature: Assignment
         Given the composition workspace is loaded
         When I click the Saved button
         Then I set the project visibility to "Draft - only you can view"
-        Then I save the changes
+        Then I save the project changes
 
         When I click the "Sample Course" link
         Given the home workspace is loaded
@@ -255,7 +254,7 @@ Feature: Assignment
         Given the composition workspace is loaded
         When I click the Saved button
         Then I set the project visibility to "Whole Class - all class members can view"
-        When I save the changes
+        When I save the project changes
         Then there is a "Published to Class" link
 
         # Now, student_two can see the response
@@ -286,7 +285,7 @@ Feature: Assignment
         And there is an open Composition panel
         Then I call the Composition "Assignment Response: Scenario 6"
         When I click the Save button
-        Then I save the changes
+        Then I save the project changes
         Then there is a "Draft" link
 
         Finished using Selenium
@@ -304,12 +303,12 @@ Feature: Assignment
 
         When I click the Save button
         Then I set the project visibility to "Instructor - only author(s) and instructor can view"
-        When I save the changes
+        When I save the project changes
         Then there is a "Submitted to Instructor" link
 
         When I click the Saved button
         Then I set the project visibility to "Whole Class - all class members can view"
-        When I save the changes
+        When I save the project changes
         Then there is a "Published to Class" link
 
         Finished using Selenium

@@ -861,14 +861,21 @@ def the_panel_title_is_value(step, panel, value):
 
 @step(u'i save the changes')
 def i_save_the_changes(step):
-    elts = world.browser.find_elements_by_tag_name("button")
-    for e in elts:
-        if e.get_attribute("type") == "button" and e.text == "Save":
-            e.click()
-            time.sleep(2)
-            return
+    elt = get_button_contains_elt(None, 'Save', world.browser)
+    assert elt is not None, "Unable to locate the dialog's save button"
+    elt.click()
+    time.sleep(2)
 
-    assert False, "Unable to locate the dialog's save button"
+
+@step(u'i save the project changes')
+def i_save_the_project_changes(step):
+    selector = '.btn-save-project'
+    wait = WebDriverWait(world.browser, 5)
+    elt = wait.until(
+            visibility_of_element_located((By.CSS_SELECTOR, selector)))
+
+    elt.click()
+    time.sleep(2)
 
 
 @step(u'Given the selection visibility is set to "([^"]*)"')
@@ -986,6 +993,10 @@ def i_insert_title_into_the_text(step, title):
 
 @step(u'Then I set the project visibility to "([^"]*)"')
 def i_set_the_project_visibility_to_level(step, level):
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located(
+        (By.CSS_SELECTOR, '.save-publish-status')))
+
     elts = world.browser.find_elements_by_name("publish")
     assert len(elts) > 0
 

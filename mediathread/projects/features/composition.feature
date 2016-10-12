@@ -19,7 +19,7 @@ Feature: Composition
         The Composition panel has a Revisions button
         And the Composition panel has a Preview button
         And the Composition panel has a Saved button
-        And the Composition panel has a +/- Author button
+        And the Composition panel has an author edit area
 
         # Add a title and some text
         Then I call the Composition "Composition: Scenario 1"
@@ -43,7 +43,7 @@ Feature: Composition
         And the Composition panel does not have a Preview button
         And the Composition panel has a Saved button
         And the Composition panel has a Revisions button
-        And the Composition panel does not have a +/- Author button
+        And the Composition panel does not have an author edit area
 
         # The project shows on Home
         When I click the "Sample Course" link
@@ -72,7 +72,7 @@ Feature: Composition
         And the Composition panel has a Preview button
         And the Composition panel does not have an Edit button
         And the Composition panel has a Saved button
-        And the Composition panel has a +/- Author button
+        And the Composition panel has an author edit area
 
         # Add a title and some text
         Then I call the Composition "Composition: Scenario 2"
@@ -89,7 +89,7 @@ Feature: Composition
         And the Composition panel does not have a Preview button
         And the Composition panel has a Saved button
         And the Composition panel has a Revisions button
-        And the Composition panel does not have a +/- Author button
+        And the Composition panel does not have an author edit area
 
         # The project shows on Home
         When I click the "Sample Course" link

@@ -69,6 +69,31 @@ def the_panel_does_not_have_a_name_button(step, panel, name):
     except NoSuchElementException:
         pass  # expected
 
+@step(u'the ([^"]*) panel does not have an author edit area')
+def the_panel_does_not_have_an_author_edit_area(step, panel):
+    selector = "td.panel-container.open.%s" % panel.lower()
+    panel = world.browser.find_element_by_css_selector(selector)
+    assert panel is not None, "Can't find panel named %s" % panel
+
+    try:
+        elt = panel.find_element_by_css_selector('.participant_list')
+        if elt is not None and elt.is_displayed():
+            assert False, "Found a visible panel named %s. [%s]" % \
+                (name, elt.get_attribute('value'))
+    except NoSuchElementException:
+        pass  # expected
+
+@step(u'the ([^"]*) panel has an author edit area')
+def the_panel_has_an_author_edit_area(step, panel):
+    selector = "td.panel-container.open.%s" % panel.lower()
+    panel = world.browser.find_element_by_css_selector(selector)
+    assert panel is not None, "Can't find panel named %s" % panel
+
+    elt = panel.find_element_by_css_selector('.participant_list')
+    if elt is None:
+        assert False, "Can't find an author edit area"
+    if not elt.is_displayed():
+        assert False, "Can't find an author edit area"
 
 @step(u'I see a ([^"]*) dialog')
 def i_see_a_name_dialog(step, name):

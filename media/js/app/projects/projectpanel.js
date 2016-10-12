@@ -26,10 +26,16 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     var self = this;
 
     if (panel.context.can_edit) {
-        var select = self.$el.find('select[name="participants"]')[0];
-        jQuery(select).addClass('selectfilter');
-        SelectFilter.init('id_participants_' + panel.context.project.id,
-            'participants', 0, STATIC_URL + 'admin/');
+        self.$el.find('select[name="participants"]').select2({
+            width: '50%',
+            placeholder: 'Select one or more authors'
+        });
+
+        self.$el.on('change', 'select[name="participants"]', function(evt) {
+            self.setDirty(true);
+            self._validAuthors();
+            return self.updateParticipantsLabel();
+        });
 
         // HACK: move the save options around due to django form constraints
         var assignment_elt = self.$el.find('label[for="id_publish_2"]')
@@ -68,9 +74,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     });
     self._bind(self.$el, '.project-previewbutton', 'click', function(evt) {
         return self.preview(evt);
-    });
-    self._bind(self.$el, '.participants_toggle', 'click', function(evt) {
-        return self.showParticipantList(evt);
     });
 
     self._bind(self.$el, '.project-revisionbutton', 'click',
@@ -180,9 +183,10 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
             self.tinymce.show();
             var title = self.$el.find('input.project-title');
             title.focus();
-        }
 
-        self.$el.find('.participants_toggle').removeAttr('disabled');
+            self.$el.find('.participants_chosen').parent().hide();
+            self.$el.find('.participant_list').show();
+        }
 
         self.render();
     }
@@ -320,49 +324,6 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function(evt) {
 
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
     jQuery(srcElement).remove();
-};
-
-ProjectPanelHandler.prototype.showParticipantList = function(evt) {
-    var self = this;
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    var frm = srcElement.form;
-
-    // close any outstanding citation windows
-    if (self.tinymce) {
-        self.tinymce.plugins.editorwindow._closeWindow();
-    }
-
-    var element = self.$el.find('.participant_list')[0];
-    jQuery(element).dialog({
-        buttons: [{text: 'Update',
-                   click: function() {
-                       jQuery(this).dialog('close');
-                   }}
-                 ],
-        beforeClose: function(event, ui) {
-            self._save = false;
-            if (!self._validAuthors()) {
-                return false;
-            } else {
-                self.updateParticipantList();
-                return true;
-            }
-        },
-        draggable: true,
-        resizable: false,
-        modal: true,
-        width: 860,
-        position: {
-            my: 'center top',
-            at: 'center top',
-            of: window,
-            collision: 'none'
-        },
-        zIndex: 10000
-    });
-
-    jQuery(element).parent().appendTo(frm);
-    return false;
 };
 
 ProjectPanelHandler.prototype.showRevisions = function(evt) {
@@ -531,35 +492,10 @@ ProjectPanelHandler.prototype.showMyResponse = function(evt) {
     window.location = jQuery(srcElement).data('url');
 };
 
-ProjectPanelHandler.prototype.updateParticipantList = function(evt) {
-    var self = this;
-
-    // Compare the participants label with the results from the new list
-    var opts = self.$el.find('select[name="participants"] option');
-    var old_list = self.$el.find('.participants_chosen')
-        .text()
-        .replace(/^\s*/, '')
-        .replace(/\s*$/, '')
-        .replace(/,\s+/g, ',')
-        .split(',');
-
-    var matches = old_list.length === opts.length;
-    for (var i = 0; i < opts.length && matches; i++) {
-        matches = jQuery.inArray(opts[i].innerHTML, old_list) >= 0;
-    }
-
-    if (!matches) {
-        self.updateParticipantsLabel();
-        self.setDirty(true);
-    }
-
-    return false;
-};
-
 ProjectPanelHandler.prototype.updateParticipantsLabel = function() {
     var self = this;
 
-    var opts = self.$el.find('select[name="participants"] option');
+    var opts = self.$el.find('select[name="participants"] option:selected');
     var participant_list = '';
     for (var i = 0; i < opts.length; i++) {
         if (participant_list.length > 0) {
@@ -608,8 +544,13 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         self.$el.find('div.collection-materials').show();
         self.$el.find('input.project-title').show();
-        self.$el.find('.participants_toggle').show();
         self.$el.find('span.project-current-version').show();
+
+        var $elt = self.$el.find('.participant_list').first();
+        if ($elt) {
+            self.$el.find('.participants_chosen').parent().hide();
+            $elt.show();
+        }
 
         // Highlight toolbar
         self.$el.find(
@@ -626,8 +567,8 @@ ProjectPanelHandler.prototype.preview = function(evt) {
             self.tinymce.show();
         }
     } else {
+        // Switch to Preview View
         if (self.tinymce) {
-            // Switch to Preview View
             self.tinymce.hide();
             self.tinymce.plugins.editorwindow._closeWindow();
         }
@@ -638,8 +579,10 @@ ProjectPanelHandler.prototype.preview = function(evt) {
         self.$el.find('textarea.mceEditor').hide();
         self.$el.find('div.collection-materials').hide();
         self.$el.find('input.project-title').hide();
-        self.$el.find('.participants_toggle').hide();
         self.$el.find('span.project-current-version').hide();
+
+        self.$el.find('.participant_list').hide();
+        self.$el.find('.participants_chosen').parent().show();
 
         // De-Highlight toolbar
         self.$el.find(
@@ -677,7 +620,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
     var self = this;
 
     // Validate title. Not empty or 'Untitled'. At least one author
-    if (!self._validTitle() || !self._validAuthors()) {
+    if (!self._validTitle(true) || !self._validAuthors(true)) {
         return false;
     }
 
@@ -732,19 +675,16 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
     return false;
 };
 
-ProjectPanelHandler.prototype.saveProject = function(frm, skipValidation) {
+ProjectPanelHandler.prototype.saveProject = function(frm) {
     var self = this;
 
     tinymce.activeEditor.save();
 
-    if (skipValidation === undefined) {
-        if (!self._validTitle() || !self._validAuthors()) {
-            return false;
-        }
+    if (!self._validTitle() || !self._validAuthors()) {
+        return false;
     }
 
-    self.$el.find('select[name="participants"] option')
-        .attr('selected', 'selected');
+    self.$el.find('select[name="participants"] option:selected');
     var data = jQuery(frm).serializeArray();
     data = data.concat(jQuery(document.forms.editparticipants)
         .serializeArray());
@@ -858,7 +798,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         if (self.dirtyTimer === undefined) {
             self.dirtyTimer = window.setTimeout(function() {
                 var frm = self.$el.find('form[name=editproject]');
-                self.saveProject(frm[0], true);
+                self.saveProject(frm[0]);
                 self.dirtyTimer = undefined;
             }, 10000);
         }
@@ -932,33 +872,41 @@ ProjectPanelHandler.prototype._bind = function($parent, elementSelector,
     }
 };
 
-ProjectPanelHandler.prototype._validAuthors = function() {
+ProjectPanelHandler.prototype._validAuthors = function(interactive) {
     var self = this;
+    var $select = self.$el.find('select[name="participants"]');
     // Make sure there's at least one author
-    var options = self.$el.find('select[name="participants"] option');
+    var options = $select.find('option:selected');
     if (options.length < 1) {
-        showMessage(
-            'This project has no authors. Please select at least one author.',
-            null, 'Error');
+        if (interactive) {
+            showMessage(
+                'This project has no authors. ' +
+                'Please select at least one author.',
+                null, 'Error');
+        }
         return false;
     } else {
         return true;
     }
 };
 
-ProjectPanelHandler.prototype._validTitle = function() {
+ProjectPanelHandler.prototype._validTitle = function(interactive) {
     var self = this;
 
-    var title = self.$el.find('input.project-title');
-    var value = title.val();
+    var $title = self.$el.find('input.project-title');
+    var value = $title.val();
     if (!value || value.length < 1) {
-        showMessage('Please specify a project title.', null, 'Error');
-        title.focus();
+        if (interactive) {
+            showMessage('Please specify a project title.', null, 'Error');
+        }
+        $title.focus();
         return false;
     } else if (value === 'Untitled') {
-        showMessage('Please update your "Untitled" project title.',
-                    null, 'Error');
-        title.focus();
+        if (interactive) {
+            showMessage('Please update your "Untitled" project title.',
+                        null, 'Error');
+        }
+        $title.focus();
         return false;
     } else {
         return true;

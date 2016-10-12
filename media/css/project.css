@@ -73,10 +73,6 @@ div.mce_editorwindow {
     border: 1px solid #ccc;
 }
  
-.participants_toggle {
-    margin: 0 10px 5px 0;
-}
-
 #id_participants {*height: 15em;}
 
 div.save-publish-status {

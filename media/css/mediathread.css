@@ -1995,6 +1995,7 @@ div a.switcher-top {
     overflow-x: hidden;
 }
 
+span.author-prefix,
 span.course-tags-prefix,
 span.concept-prefix,
 span.switcher-prefix {
@@ -2015,6 +2016,7 @@ span.switcher-prefix {
     border-bottom-left-radius: 4px;    
 }
 
+span.author-prefix,
 span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;

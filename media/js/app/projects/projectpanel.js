@@ -684,10 +684,7 @@ ProjectPanelHandler.prototype.saveProject = function(frm) {
         return false;
     }
 
-    self.$el.find('select[name="participants"] option:selected');
     var data = jQuery(frm).serializeArray();
-    data = data.concat(jQuery(document.forms.editparticipants)
-        .serializeArray());
 
     var saveButton = self.$el.find('.project-savebutton').get(0);
     jQuery(saveButton).attr('disabled', 'disabled')

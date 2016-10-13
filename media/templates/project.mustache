@@ -179,9 +179,10 @@
                             <div class="panel-subcontainer-title">
                                 {{#context.can_edit}}
                                     <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
+                                        placeholder="Specify a title"
                                         class="project-title form-control" style="display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
                                 {{/context.can_edit}}
-                                <h1 class="project-title" 
+                                <h1 class="project-title"
                                     style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">
                                     {{context.project.title}}
                                 </h1>
@@ -193,17 +194,13 @@
                     <tr class="project-participant-row">
                         <td colspan="5" style="padding-top: 5px">
                             {{#context.can_edit}}
-                                <button class="project participants_toggle btn btn-default btn-xs"
-                                    type="submit"
-                                    disabled="disabled"
-                                    style="float: left; display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
-                                    +/- Author
-                                </button>
-
                                 <div class="participant_list" style="display: none" title="Update Authors">
+                                    <span class="author-prefix">Authors </span>
                                     <div>{{{context.form.participants}}}</div>
                                 </div>
+                                <br />
                             {{/context.can_edit}}
+
                             <h5>
                                 by <span class="participants_chosen">
                                     {{#context.project.participants}}

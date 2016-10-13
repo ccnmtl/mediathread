@@ -36,7 +36,7 @@ Feature: Assignment
         And the Assignment panel does not have a Preview button
         And the Assignment panel has a Saved button
         And the Assignment panel has a Revisions button
-        And the Assignment panel does not have a +/- Author button
+        And the Assignment panel does not have an author edit area
 
         # The project shows on Home
         When I click the "Sample Course" link
@@ -59,7 +59,7 @@ Feature: Assignment
         And the Assignment panel does not have a Preview button
         And the Assignment panel has a Saved button
         And the Assignment panel has a Revisions button
-        And the Assignment panel does not have a +/- Author button
+        And the Assignment panel does not have an author edit area
         And the Assignment panel does not have a Respond To Assignment button
         And the Assignment panel does not have a Responses (1) button
 
@@ -82,7 +82,7 @@ Feature: Assignment
         And the Assignment panel does not have a Preview button
         And the Assignment panel does not have a Saved button
         And the Assignment panel does not have a Revisions button
-        And the Assignment panel does not have a +/- Author button
+        And the Assignment panel does not have an author edit area
         And there is not an "Published to Class" link
         And the Assignment panel has a Respond to Assignment button
 
@@ -95,7 +95,7 @@ Feature: Assignment
         And the Composition panel has a Preview button
         And the Composition panel does not have an Edit button
         And the Composition panel has a Saved button
-        And the Composition panel has a +/- Author button 
+        And the Assignment panel does not have an author edit area 
 
         # Add a title & text
         Then I call the Composition "Sample Assignment Response"

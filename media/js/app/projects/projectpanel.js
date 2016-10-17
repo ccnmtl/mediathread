@@ -63,9 +63,11 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         self.showSaveOptions(evt);
         return false;
     });
-    self._bind(self.$el, '.save-publish-status .btn-primary', 'click', function(evt) {
-        return self.saveProject();
-    });
+    self._bind(self.$el, '.save-publish-status .btn-primary', 'click',
+        function(evt) {
+            return self.saveProject();
+        }
+    );
     self._bind(self.$el, 'a.project-visibility-link', 'click', function(evt) {
         self.$el.find('.project-savebutton').click();
     });
@@ -630,7 +632,7 @@ ProjectPanelHandler.prototype.serializeData = function() {
     var q = '[name="title"], [name="participants"], [name="body"], ' +
         '[name="publish"], [name="due_date"], [name="response_view_policy"]';
     return this.$el.find(q).serializeArray();
-}
+};
 
 ProjectPanelHandler.prototype.saveProject = function() {
     var self = this;

@@ -8,7 +8,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.select import Select
 import selenium.webdriver.support.ui as ui
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
 
 
 @step(u'there is not an? ([^"]*) ([^"]*) panel')

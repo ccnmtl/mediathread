@@ -118,7 +118,7 @@ Feature: Single Asset View
         # Save
         When I click the Save button
         Then I set the project visibility to "Whole Class - all class members can view"
-        Then I save the changes
+        Then I save the project changes
         And there is a "Published to Class" link
 
         # Navigate to the asset

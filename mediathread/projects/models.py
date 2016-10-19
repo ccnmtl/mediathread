@@ -10,6 +10,7 @@ from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
+from mediathread.juxtapose.models import JuxtaposeAsset
 from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.main.util import user_display_name
 from structuredcollaboration.models import Collaboration
@@ -276,6 +277,12 @@ class ProjectManager(models.Manager):
 
 
 class Project(models.Model):
+    """The Project model handles assignments and responses.
+
+    A Project can be an assignment assigned by an instructor
+    that can contain any number of responses (which are also
+    Projects), created by the students.
+    """
     DEFAULT_TITLE = 'Untitled'
 
     objects = ProjectManager()  # custom manager
@@ -615,4 +622,10 @@ class AssignmentItem(models.Model):
 
 class ProjectNote(models.Model):
     annotation = models.ForeignKey(SherdNote)
+    project = models.ForeignKey(Project)
+
+
+class ProjectJuxtaposeAsset(models.Model):
+    """This model connects the JuxtaposeAsset to the Project."""
+    juxtapose_asset = models.ForeignKey(JuxtaposeAsset)
     project = models.ForeignKey(Project)

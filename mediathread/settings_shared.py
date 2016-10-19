@@ -69,6 +69,7 @@ INSTALLED_APPS += [  # noqa
     'lti_auth',
     'bootstrap3',
     'django_extensions',
+    'rest_framework',
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"

@@ -129,6 +129,8 @@ urlpatterns = [
     # Collections Space
     url(r'^asset/', include('mediathread.assetmgr.urls')),
 
+    url(r'^juxtapose/', include('mediathread.juxtapose.urls')),
+
     auth_urls,  # see above
 
     # Bookmarklet + cache defeating

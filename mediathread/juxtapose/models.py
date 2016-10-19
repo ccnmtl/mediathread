@@ -18,9 +18,9 @@ class JuxtaposeMediaElement(models.Model):
     modified = models.DateTimeField(auto_now=True)
     juxtaposition = models.ForeignKey(JuxtaposeAsset)
     start_time = models.DecimalField(
-        max_digits=8, decimal_places=5)
+        max_digits=12, decimal_places=5)
     end_time = models.DecimalField(
-        max_digits=8, decimal_places=5)
+        max_digits=12, decimal_places=5)
     media = models.ForeignKey(SherdNote)
 
 
@@ -29,7 +29,7 @@ class JuxtaposeTextElement(models.Model):
     modified = models.DateTimeField(auto_now=True)
     juxtaposition = models.ForeignKey(JuxtaposeAsset)
     start_time = models.DecimalField(
-        max_digits=8, decimal_places=5)
+        max_digits=12, decimal_places=5)
     end_time = models.DecimalField(
-        max_digits=8, decimal_places=5)
+        max_digits=12, decimal_places=5)
     text = models.TextField()

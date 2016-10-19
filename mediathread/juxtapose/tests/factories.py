@@ -32,6 +32,6 @@ class JuxtaposeTextElementFactory(factory.DjangoModelFactory):
         model = JuxtaposeTextElement
 
     juxtaposition = factory.SubFactory(JuxtaposeAssetFactory)
-    start_time = fuzzy.FuzzyDecimal(0.0, 3.0)
-    end_time = fuzzy.FuzzyDecimal(3.01, 6.0)
+    start_time = fuzzy.FuzzyDecimal(5.0, 105.0)
+    end_time = fuzzy.FuzzyDecimal(1000.01, 6000.0)
     text = fuzzy.FuzzyText()

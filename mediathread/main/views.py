@@ -1003,3 +1003,7 @@ class ClearTestCache(View):
             ContentType.objects.clear_cache()
 
         return HttpResponse()
+
+
+def error_500(request):
+    raise Exception('Test exception')

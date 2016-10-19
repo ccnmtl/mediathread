@@ -58,6 +58,10 @@ class SimpleViewTest(TestCase):
         # are just making sure it's not a 500 error
         # at this point
 
+    def test_500(self):
+        with self.assertRaises(Exception):
+            self.client.get('/500')
+
     def test_smoke(self):
         # run the smoketests. we don't care if they pass
         # or fail, we just want to make sure that the

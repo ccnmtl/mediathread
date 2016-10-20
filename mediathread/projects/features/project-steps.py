@@ -119,16 +119,9 @@ def the_project_visibility_is_level(step, level):
 
 @step(u'There is a project visibility "([^"]*)"')
 def there_is_a_project_visibility_level(step, level):
-    elts = world.browser.find_elements_by_name("publish")
-    assert len(elts) > 0
-
-    for e in elts:
-        label_selector = "label[for=%s]" % e.get_attribute("id")
-        label = world.browser.find_element_by_css_selector(label_selector)
-        if label.text.strip() == level:
-            return
-
-    assert False, "No %s option found" % (level)
+    q = '//ul/li/label[contains(text(),"{}")]'.format(level)
+    wait = ui.WebDriverWait(world.browser, 5)
+    wait.until(visibility_of_element_located((By.XPATH, q)))
 
 
 @step(u'There is not a project visibility "([^"]*)"')

@@ -8,275 +8,289 @@
 
     <td id="{{context.project.id}}-panel-container" class="panel-container {{panel_state}} {{context.project.type}} parent">
         <div class="mediathread-panel {{context.project.type}}">
-            <form name="editproject" method="POST" action="/project/save/{{context.project.id}}/">
-                <table class="panel-subcontainer">
-                    <tr class="project-visibility-row">
-                        <td colspan="4">
-                            {{#context.project.visibility}}
-                                <div class="project-visibility">
-                                    {{#context.can_edit}}
-                                        <a href="#" class="project-visibility-link">
-                                    {{/context.can_edit}}
-                                        <span class="project-visibility-description">
-                                            {{context.project.visibility}}
-                                        </span>
-                                        <span class="project-due-date">
-                                            {{#context.project.due_date}}Due {{context.project.due_date}}{{/context.project.due_date}}
-                                        </span>
-                                    {{#context.can_edit}}</a>{{/context.can_edit}}
-                                    &nbsp;
-                                    <a class="last-version-public"
-                                        style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
-                                    {{#context.project.current_version}}
-                                        <span class="project-current-version" style="display: inline">
-                                            | Version {{context.project.modified}}
-                                        </span>
-                                    {{/context.project.current_version}}
+            <table class="panel-subcontainer">
+                <tr class="project-visibility-row">
+                    <td colspan="4">
+                        {{#context.project.visibility}}
+                            <div class="project-visibility">
+                                {{#context.can_edit}}
+                                    <a href="#" class="project-visibility-link">
+                                {{/context.can_edit}}
+                                    <span class="project-visibility-description">
+                                        {{context.project.visibility}}
+                                    </span>
+                                    <span class="project-due-date">
+                                        {{#context.project.due_date}}Due {{context.project.due_date}}{{/context.project.due_date}}
+                                    </span>
+                                {{#context.can_edit}}</a>{{/context.can_edit}}
+                                &nbsp;
+                                <a class="last-version-public"
+                                    style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
+                                {{#context.project.current_version}}
+                                    <span class="project-current-version" style="display: inline">
+                                        | Version {{context.project.modified}}
+                                    </span>
+                                {{/context.project.current_version}}
 
-                                    <a class="project-export" href="/project/export/msword/{{context.project.id}}/"
-                                        {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
-                                        <img class="project-export-icon" src="{{#staticUrl}}{{/staticUrl}}img/export.jpeg"/>
-                                    </a>
+                                <a class="project-export" href="/project/export/msword/{{context.project.id}}/"
+                                    {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
+                                    <img class="project-export-icon" src="{{#staticUrl}}{{/staticUrl}}img/export.jpeg"/>
+                                </a>
 
-                                    <a class="project-print" href="/project/export/html/{{context.project.id}}/" target="_blank"
-                                        {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
-                                        <img class="project-print-icon" src="{{#staticUrl}}{{/staticUrl}}img/printer.png"/>
-                                    </a>
-                                </div>
-                            {{/context.project.visibility}}
-                        </td>
-                    </tr>
-                    <tr class="project-toolbar-row">
-                        <td colspan="4" class="panel-subcontainer-toolbar-column {{context.project.type}} {{#context.editing}}editing{{/context.editing}}">
-                            <div class="panel-subcontainer-toolbar {{context.project.type}}">
-                                <div>
-                                    {{#context.can_edit}}
-                                        <button class="{{context.project.type}} project project-savebutton btn btn-default btn-xs"
-                                            type="submit">
-                                            Save
-                                        </button>
-                                            <div class="save-publish-status" style="display: none" title="Save Changes">
-                                                <div class="well">
-                                                    <div class="right small">required</div>
-                                                    <label for="due_date">Visibility</label><br />
-                                                    <div class="small">Select who can see your work</div><br />
-                                                    {{{context.form.publish}}}
-                                                    <div class="small help-inline">Select who can see your work</div>
+                                <a class="project-print" href="/project/export/html/{{context.project.id}}/" target="_blank"
+                                    {{#context.project.is_essay_assignment}}style="display: none"{{/context.project.is_essay_assignment}}>
+                                    <img class="project-print-icon" src="{{#staticUrl}}{{/staticUrl}}img/printer.png"/>
+                                </a>
+                            </div>
+                        {{/context.project.visibility}}
+                    </td>
+                </tr>
+                <tr class="project-toolbar-row">
+                    <td colspan="4" class="panel-subcontainer-toolbar-column {{context.project.type}} {{#context.editing}}editing{{/context.editing}}">
+                        <div class="panel-subcontainer-toolbar {{context.project.type}}">
+                            <div>
+                                {{#context.can_edit}}
+                                    <button class="{{context.project.type}} project project-savebutton btn btn-default btn-xs"
+                                        type="submit">
+                                        Save
+                                    </button>
+
+                                    <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">Save Changes</h4>
                                                 </div>
-                                                {{#context.project.is_essay_assignment}}
-                                                {{#is_faculty}}
-                                                    <div class="due-date well">
-                                                        <div class="right small">optional</div>
-                                                        <label for="due_date">Due Date</label><br />
-                                                        <input class="form-control" type="text" name="due_date"
-                                                            value="{{context.project.due_date}}" id="id_due_date">
-                                                        <br />
-                                                    </div>
-                                                    <div class="response-visibility well">
+                                                <div class="modal-body">
+                                                    <div class="well">
                                                         <div class="right small">required</div>
-                                                        <label for="response_view_policy">Responses</label>
-                                                        <div class="small">Choose when students can see responses submitted by other students</div><br />
-                                                        <div class="form-group">
-                                                            {{{context.form.response_view_policy}}}
-                                                            <div class="small help-inline">Select a response visibility level</div> 
-                                                        </div>
+                                                        <label for="due_date">Visibility</label><br />
+                                                        <div class="small">Select who can see your work</div><br />
+                                                        {{{context.form.publish}}}
+                                                        <div class="small help-inline">Select who can see your work</div>
                                                     </div>
-                                                {{/is_faculty}}
-                                                {{/context.project.is_essay_assignment}}
-                                            </div> 
-
-                                            <button
-                                                class="{{context.project.type}} project project-previewbutton btn btn-default btn-xs"
-                                                type="submit">
-                                                {{#context.editing}}
-                                                    Preview
-                                                {{/context.editing}}
-                                                {{^context.editing}}
-                                                    Edit
-                                                {{/context.editing}}
-                                            </button>
-
-                                            <button class="{{context.project.type}} project project-revisionbutton btn btn-default btn-xs"
-                                            type="button">
-                                            Revisions
-                                            </button>
-
-                                        <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
-                                        </div>
-                                    {{/context.can_edit}}
-
-                                    {{#context.project.is_essay_assignment}}
-                                        {{^is_faculty}}
-                                            {{^context.my_responses.length}}
-                                                {{^context.my_response}}
-                                                    <button class="{{context.project.type}} project project-create-assignment-response btn btn-default btn-xs"
-                                                        type="button">
-                                                        Respond to Assignment
-                                                    </button>
-                                                {{/context.my_response}}
-                                            {{/context.my_responses.length}}
-                                        {{/is_faculty}}
-                                    {{/context.project.is_essay_assignment}}
-
-                                    {{#context.my_response}}
-                                        {{^context.viewing_my_response}}
-                                            <button class="project project-my-response btn btn-default btn-xs"
-                                                type="button" data-url="{{context.my_response.url}}">
-                                                My Response
-                                            </button>
-                                        {{/context.viewing_my_response}}
-                                    {{/context.my_response}}
-
-                                    {{#context.my_responses.length}}
-                                        <button class="project project-my-responses btn btn-default btn-xs"
-                                            type="button">
-                                            My Responses ({{context.my_responses_count}})
-                                        </button>
-                                            <div class="my-response-list" style="display: none" title="My Responses">
-                                                <div>Select an assignment response, then click "View"</div>
-                                                <select name="my-responses" multiple="multiple">
-                                                    {{#context.my_responses}}
-                                                        <option value="{{url}}">
-                                                            {{ modified }} &mdash;
-                                                            {{#attribution_list}}
-                                                                {{ name }}{{^last}}, {{/last}} 
-                                                            {{/attribution_list}}
-                                                        </option>
-                                                    {{/context.my_responses}}
-                                                </select> 
-                                            </div>  
-                                    {{/context.my_responses.length}}
-
-                                    {{#context.responses.length}}
-                                        <button class="project project-responsesbutton btn btn-default btn-xs"
-                                            type="button">
-                                            Class Responses ({{context.response_count}})
-                                        </button>
-                                      <div class="response-list" style="display: none" title="Responses">
-                                        <div>Select an assignment response, then click "View"</div>
-                                        <select name="responses" multiple="multiple">
-                                          {{#context.responses}}
-                                            <option value="{{url}}">
-                                              {{#attribution_list}}
-                                                {{ name }}{{^last}}, {{/last}} 
-                                              {{/attribution_list}}
-                                               &mdash; {{ submitted }}
-                                            </option>
-                                          {{/context.responses}}
-                                        </select>
-                                      </div>
-                                    {{/context.responses.length}}
-
-                                    {{#context.create_instructor_feedback}}
-                                        <button class="{{context.project.type}} project project-create-instructor-feedback btn btn-default btn-xs"
-                                            type="button">
-                                            Create Instructor Feedback
-                                        </button>
-                                    {{/context.create_instructor_feedback}}
-
-                                </div>
-                            </div>
-                            <div class="panel-subcontainer-title">
-                                {{#context.can_edit}}
-                                    <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
-                                        placeholder="Specify a title"
-                                        class="project-title form-control" style="display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
-                                {{/context.can_edit}}
-                                <h1 class="project-title"
-                                    style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">
-                                    {{context.project.title}}
-                                </h1>
-                            </div>
-
-                        </td>
-                    </tr>
-
-                    <tr class="project-participant-row">
-                        <td colspan="5" style="padding-top: 5px">
-                            {{#context.can_edit}}
-                                <div class="participant_list" style="display: none" title="Update Authors">
-                                    <span class="author-prefix">Authors </span>
-                                    <div>{{{context.form.participants}}}</div>
-                                </div>
-                                <br />
-                            {{/context.can_edit}}
-
-                            <h5>
-                                by <span class="participants_chosen">
-                                    {{#context.project.participants}}
-                                        {{public_name}}{{^last}}, {{/last}}
-                                    {{/context.project.participants}}
-                                </span>
-                            </h5>
-                        </td>
-                    </tr>
-
-                    <tr class="project-content-row">
-                        <td class="panel-content 
-                            {{#context.editing}}fluid{{/context.editing}}{{^context.editing}}fixed{{/context.editing}} 
-                            {{context.project.type}}">
-                            <div class="essay-space-container">
-                                {{#context.can_edit}}
-                                    <textarea id="{{context.project.id}}-project-content"
-                                        tabindex="0" name="body"
-                                        class="mceEditor project-content"
-                                        style="display: none;">
-                                        {{{context.project.body}}}
-                                    </textarea>
-                                {{/context.can_edit}}
-                                <div id="{{context.project.id}}-essay-space" class="essay-space" 
-                                    style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
-                                    {{{context.project.body}}}
-                                </div>
-                            </div>
-                        </td>
-                        {{! Media Display Window and or a Collections box }}
-                        <td class="panel-container 
-                            {{#subpanel_state}}{{subpanel_state}}{{/subpanel_state}} {{^subpanel_state}}open{{/subpanel_state}}
-                            {{#context.editing}} fixed {{/context.editing}}{{^context.editing}} fluid {{/context.editing}} 
-                            collection subpanel">
-                            {{#context.can_edit}}
-                            <div class="collection-materials" style="display:{{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
-                                <h2>
-                                    <div class="button-form inline">
-                                        <div class="collection_button">
-                                            <a href="/asset/">View Full Collection</a>
+                                                    {{#context.project.is_essay_assignment}}
+                                                    {{#is_faculty}}
+                                                        <div class="due-date well">
+                                                            <div class="right small">optional</div>
+                                                            <label for="due_date">Due Date</label><br />
+                                                            <input class="form-control" type="text" name="due_date"
+                                                                value="{{context.project.due_date}}" id="id_due_date">
+                                                            <br />
+                                                        </div>
+                                                        <div class="response-visibility well">
+                                                            <div class="right small">required</div>
+                                                            <label for="response_view_policy">Responses</label>
+                                                            <div class="small">Choose when students can see responses submitted by other students</div><br />
+                                                            <div class="form-group">
+                                                                {{{context.form.response_view_policy}}}
+                                                                <div class="small help-inline">Select a response visibility level</div> 
+                                                            </div>
+                                                        </div>
+                                                    {{/is_faculty}}
+                                                    {{/context.project.is_essay_assignment}}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    Collection
-                                </h2>
-                                <div class="ajaxloader">
-                                    <div class="message">
-                                    <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
-                                    <br /><br />
-                                    <div>Refreshing the collection</div>
+
+                                    <button
+                                        class="{{context.project.type}} project project-previewbutton btn btn-default btn-xs"
+                                        type="submit">
+                                        {{#context.editing}}
+                                            Preview
+                                        {{/context.editing}}
+                                        {{^context.editing}}
+                                            Edit
+                                        {{/context.editing}}
+                                    </button>
+
+                                    <button class="{{context.project.type}} project project-revisionbutton btn btn-default btn-xs"
+                                    type="button">
+                                    Revisions
+                                    </button>
+
+                                    <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
                                     </div>
-                                </div>
-                                <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
+                                {{/context.can_edit}}
+
+                                {{#context.project.is_essay_assignment}}
+                                    {{^is_faculty}}
+                                        {{^context.my_responses.length}}
+                                            {{^context.my_response}}
+                                                <button class="{{context.project.type}} project project-create-assignment-response btn btn-default btn-xs"
+                                                    type="button">
+                                                    Respond to Assignment
+                                                </button>
+                                            {{/context.my_response}}
+                                        {{/context.my_responses.length}}
+                                    {{/is_faculty}}
+                                {{/context.project.is_essay_assignment}}
+
+                                {{#context.my_response}}
+                                    {{^context.viewing_my_response}}
+                                        <button class="project project-my-response btn btn-default btn-xs"
+                                            type="button" data-url="{{context.my_response.url}}">
+                                            My Response
+                                        </button>
+                                    {{/context.viewing_my_response}}
+                                {{/context.my_response}}
+
+                                {{#context.my_responses.length}}
+                                    <button class="project project-my-responses btn btn-default btn-xs"
+                                        type="button">
+                                        My Responses ({{context.my_responses_count}})
+                                    </button>
+                                        <div class="my-response-list" style="display: none" title="My Responses">
+                                            <div>Select an assignment response, then click "View"</div>
+                                            <select name="my-responses" multiple="multiple">
+                                                {{#context.my_responses}}
+                                                    <option value="{{url}}">
+                                                        {{ modified }} &mdash;
+                                                        {{#attribution_list}}
+                                                            {{ name }}{{^last}}, {{/last}} 
+                                                        {{/attribution_list}}
+                                                    </option>
+                                                {{/context.my_responses}}
+                                            </select> 
+                                        </div>  
+                                {{/context.my_responses.length}}
+
+                                {{#context.responses.length}}
+                                    <button class="project project-responsesbutton btn btn-default btn-xs"
+                                        type="button">
+                                        Class Responses ({{context.response_count}})
+                                    </button>
+                                  <div class="response-list" style="display: none" title="Responses">
+                                    <div>Select an assignment response, then click "View"</div>
+                                    <select name="responses" multiple="multiple">
+                                      {{#context.responses}}
+                                        <option value="{{url}}">
+                                          {{#attribution_list}}
+                                            {{ name }}{{^last}}, {{/last}} 
+                                          {{/attribution_list}}
+                                           &mdash; {{ submitted }}
+                                        </option>
+                                      {{/context.responses}}
+                                    </select>
+                                  </div>
+                                {{/context.responses.length}}
+
+                                {{#context.create_instructor_feedback}}
+                                    <button class="{{context.project.type}} project project-create-instructor-feedback btn btn-default btn-xs"
+                                        type="button">
+                                        Create Instructor Feedback
+                                    </button>
+                                {{/context.create_instructor_feedback}}
+
                             </div>
+                        </div>
+                        <div class="panel-subcontainer-title">
+                            {{#context.can_edit}}
+                                <input type="text" name="title" value="{{context.project.title}}" maxlength="80"
+                                    placeholder="Specify a title"
+                                    class="project-title form-control" style="display: {{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
                             {{/context.can_edit}}
-                            <div class="asset-view-published" 
+                            <h1 class="project-title"
                                 style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">
+                                {{context.project.title}}
+                            </h1>
+                        </div>
 
-                                <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
-                                    <div class="annotation-title publishedCitation" style="margin-left: 5px; margin-top: 5px;"></div>
-                                    <div class="asset-title" style="margin-left: 5px; margin-bottom: 5px; margin-top: 5px; font-size: 80%;"></div>
-                                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-                                        <div class="asset-display"></div>
-                                        <div class="clipstrip-display"></div>
-                                    </div>    
+                    </td>
+                </tr>
+
+                <tr class="project-participant-row">
+                    <td colspan="5" style="padding-top: 5px">
+                        {{#context.can_edit}}
+                            <div class="participant_list" style="display: none" title="Update Authors">
+                                <span class="author-prefix">Authors </span>
+                                <div>{{{context.form.participants}}}</div>
+                            </div>
+                            <br />
+                        {{/context.can_edit}}
+
+                        <h5>
+                            by <span class="participants_chosen">
+                                {{#context.project.participants}}
+                                    {{public_name}}{{^last}}, {{/last}}
+                                {{/context.project.participants}}
+                            </span>
+                        </h5>
+                    </td>
+                </tr>
+
+                <tr class="project-content-row">
+                    <td class="panel-content 
+                        {{#context.editing}}fluid{{/context.editing}}{{^context.editing}}fixed{{/context.editing}} 
+                        {{context.project.type}}">
+                        <div class="essay-space-container">
+                            {{#context.can_edit}}
+                                <textarea id="{{context.project.id}}-project-content"
+                                    tabindex="0" name="body"
+                                    class="mceEditor project-content"
+                                    style="display: none;">
+                                    {{{context.project.body}}}
+                                </textarea>
+                            {{/context.can_edit}}
+                            <div id="{{context.project.id}}-essay-space" class="essay-space" 
+                                style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
+                                {{{context.project.body}}}
+                            </div>
+                        </div>
+                    </td>
+                    {{! Media Display Window and or a Collections box }}
+                    <td class="panel-container 
+                        {{#subpanel_state}}{{subpanel_state}}{{/subpanel_state}} {{^subpanel_state}}open{{/subpanel_state}}
+                        {{#context.editing}} fixed {{/context.editing}}{{^context.editing}} fluid {{/context.editing}} 
+                        collection subpanel">
+                        {{#context.can_edit}}
+                        <div class="collection-materials" style="display:{{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
+                            <h2>
+                                <div class="button-form inline">
+                                    <div class="collection_button">
+                                        <a href="/asset/">View Full Collection</a>
+                                    </div>
+                                </div>
+                                Collection
+                            </h2>
+                            <div class="ajaxloader">
+                                <div class="message">
+                                <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
+                                <br /><br />
+                                <div>Refreshing the collection</div>
                                 </div>
                             </div>
-                        </td>
-                        <td class="panhandle-stripe collection">
-                            <div class="label">{{#context.editing}}Insert Selections{{/context.editing}}{{^context.editing}}View Inserted Selections{{/context.editing}}</div>
-                        </td>
-                        <td class="pantab-container">
-                            <div class="pantab collection {{#subpanel_state}}{{subpanel_state}}{{/subpanel_state}} {{^subpanel_state}}open{{/subpanel_state}}"></div>
-                        </td>
-                    </tr>
-                </table>
-            </form>
+                            <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
+                        </div>
+                        {{/context.can_edit}}
+                        <div class="asset-view-published" 
+                            style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">
+
+                            <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                                <div class="annotation-title publishedCitation" style="margin-left: 5px; margin-top: 5px;"></div>
+                                <div class="asset-title" style="margin-left: 5px; margin-bottom: 5px; margin-top: 5px; font-size: 80%;"></div>
+                                <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                    <div class="asset-display"></div>
+                                    <div class="clipstrip-display"></div>
+                                </div>    
+                            </div>
+                        </div>
+                    </td>
+                    <td class="panhandle-stripe collection">
+                        <div class="label">{{#context.editing}}Insert Selections{{/context.editing}}{{^context.editing}}View Inserted Selections{{/context.editing}}</div>
+                    </td>
+                    <td class="pantab-container">
+                        <div class="pantab collection {{#subpanel_state}}{{subpanel_state}}{{/subpanel_state}} {{^subpanel_state}}open{{/subpanel_state}}"></div>
+                    </td>
+                </tr>
+            </table>
+
         </div>
     </td>
 

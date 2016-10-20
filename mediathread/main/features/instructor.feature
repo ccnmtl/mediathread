@@ -79,7 +79,7 @@ Feature: Instructor Dashboard
         I call the Composition "Instructor Feature 4"
         Then the Composition is called "Instructor Feature 4"
         Then I click the Save button
-        And I save the changes
+        And I save the project changes
         Then the Composition is called "Instructor Feature 4"
 
         When I click the "Sample Course" link

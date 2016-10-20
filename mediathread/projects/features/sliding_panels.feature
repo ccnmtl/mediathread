@@ -17,7 +17,7 @@ Feature: Sliding Panels
         # other tests will get a save dialog
         Then I call the Composition "Sliding Panel: Scenario 1 <width> x <height>"
         Then I click the Save button
-        Then I save the changes
+        Then I save the project changes
 
         Finished using Selenium
 
@@ -52,7 +52,7 @@ Feature: Sliding Panels
         # other tests will get a save dialog
         Then I call the Composition "Sliding Panel: Scenario 2 <width> x <height>"
         When I click the Save button
-        Then I save the changes
+        Then I save the project changes
 
         # Delete the response from the home screen
         When I click the "Sample Course" link

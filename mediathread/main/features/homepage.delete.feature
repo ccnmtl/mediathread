@@ -54,7 +54,7 @@ Feature: Homepage Delete Operations. Project, Item
         # Save
         When I click the Saved button
         Then I set the project visibility to "Draft - only you can view"
-        Then I save the changes
+        Then I save the project changes
         Then there is a "Draft" link
 
         When I click the "Sample Course" link

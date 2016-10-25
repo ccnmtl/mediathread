@@ -17,11 +17,11 @@ from mediathread.assetmgr.views import (
     RedirectToExternalCollectionView,
     RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
     _parse_domain, AssetEmbedView, annotation_delete,
-    annotation_create_global, annotation_create)
+    annotation_create_global, annotation_create, AssetUpdateView)
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
-    SuggestedExternalCollectionFactory
+    SuggestedExternalCollectionFactory, SourceFactory
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -863,3 +863,73 @@ class TagCollectionViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(the_json['tags']), 2)
         self.assertEquals(the_json['tags'][0]['name'], 'student_one_item')
         self.assertEquals(the_json['tags'][1]['name'], 'student_one_selection')
+
+
+class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.asset = AssetFactory(course=self.sample_course,
+                                  primary_source='flv')
+        SourceFactory(asset=self.asset, label='thumb', url='foo')
+
+        self.url = reverse('asset-update-view')
+
+        self.params = {
+            'secret': 'something secret',
+            'metadata-uuid': '1234567',
+            'metadata-tag': 'update',
+            'thumb': 'new thumb',
+            'mp4_pseudo': 'new primary'
+        }
+
+    def test_get_asset_id(self):
+        url = 'http://mediathread.ccnmtl.columbia.edu/asset/'
+        self.assertIsNone(AssetUpdateView().get_asset_id(url))
+
+        url = 'http://mediathread.ccnmtl.columbia.edu/asset/53/'
+        aid = AssetUpdateView().get_asset_id(url)
+        self.assertEquals(int(aid), 53)
+
+    def test_not_allowed(self):
+        # anonymous get or post
+        response = self.client.get(self.url, self.params)
+        self.assertEquals(response.status_code, 405)
+        response = self.client.post(self.url, self.params)
+        self.assertEquals(response.status_code, 403)
+
+        # logged in get or post
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.get(self.url, self.params)
+        self.assertEquals(response.status_code, 405)
+
+        response = self.client.post(self.url, self.params)
+        self.assertEquals(response.status_code, 403)
+
+    def test_not_found(self):
+        secrets = {'http://testserver/': self.params['secret']}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            # None
+            response = self.client.post(self.url, self.params, follow=True)
+            self.assertEquals(response.status_code, 404)
+
+            # Invalid
+            self.params['asset-url'] = reverse('asset-view', args=[999])
+            response = self.client.post(self.url, self.params, follow=True)
+            self.assertEquals(response.status_code, 404)
+
+    def test_update_primary_and_thumb(self):
+        self.params['asset-url'] = reverse('asset-view', args=[self.asset.id])
+        secrets = {'http://testserver/': self.params['secret']}
+        with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            response = self.client.post(self.url, self.params, follow=True)
+            self.assertEquals(response.status_code, 200)
+
+            s = self.asset.primary
+            self.assertEquals(s.label, 'mp4_pseudo')
+            self.assertEquals(s.url, self.params['mp4_pseudo'])
+
+            self.assertEquals(self.asset.thumb_url, 'new thumb')

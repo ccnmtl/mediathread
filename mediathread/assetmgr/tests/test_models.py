@@ -363,6 +363,18 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(tags[0].name, 'student_one_item')
         self.assertEquals(tags[1].name, 'student_one_selection')
 
+    def test_update_primary(self):
+        s = self.asset1.primary
+        self.assertEquals(s.label, 'image')
+
+        # update
+        self.asset1.update_primary('mp4_pseudo', 'something new')
+        s = self.asset1.primary
+
+        # verify the new value is returned
+        self.assertEquals(s.label, 'mp4_pseudo')
+        self.assertEquals(s.url, 'something new')
+
 
 class SourceTest(TestCase):
     def setUp(self):

@@ -19,7 +19,7 @@ from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
     AssetCollectionView, AssetDetailView, TagCollectionView,
     RedirectToExternalCollectionView, RedirectToUploaderView,
-    AssetCreateView, BookmarkletMigrationView)
+    AssetCreateView, BookmarkletMigrationView, AssetUpdateView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     error_500,
@@ -229,6 +229,7 @@ urlpatterns = [
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry
     url(r'^save/$', AssetCreateView.as_view(), name='asset-save'),
+    url(r'^update/$', AssetUpdateView.as_view(), name='asset-update-view'),
 
     url(r'^setting/(?P<user_name>\w[^/]*)/$', set_user_setting),
 

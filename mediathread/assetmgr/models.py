@@ -176,14 +176,26 @@ class Asset(models.Model):
     def sources(self):
         return dict([(s.label, s) for s in Source.objects.filter(asset=self)])
 
+    def _primary_cache_key(self):
+        return '%s:primary' % (self.id)
+
     @property
     def primary(self):
-        key = "%s:primary" % (self.id)
+        key = self._primary_cache_key()
         the_primary = cache.get(key)
         if the_primary is None:
             the_primary = self.source_set.get(primary=True)
             cache.set(key, the_primary)
         return the_primary
+
+    def update_primary(self, label, url):
+        s = self.primary
+        s.label = label
+        s.url = url
+        s.save()
+
+        # reset cached values
+        cache.set(self._primary_cache_key(), s)
 
     @property
     def thumb_url(self):

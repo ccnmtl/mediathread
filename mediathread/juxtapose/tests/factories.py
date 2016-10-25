@@ -14,7 +14,6 @@ class JuxtaposeAssetFactory(factory.DjangoModelFactory):
 
     author = factory.SubFactory(UserFactory)
     course = factory.SubFactory(CourseFactory)
-    title = fuzzy.FuzzyText()
 
 
 class JuxtaposeMediaElementFactory(factory.DjangoModelFactory):

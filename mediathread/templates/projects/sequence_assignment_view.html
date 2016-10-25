@@ -112,7 +112,9 @@
             <p>{{assignment.body|safe}}</p>
         </div>
         <div class="col-md-6">
-            <div id="jux-container"></div>
+            {% if my_response %}
+                <div id="jux-container"></div>
+            {% endif %}
         </div>
         <div class="col-md-3">
             {% if is_faculty %}

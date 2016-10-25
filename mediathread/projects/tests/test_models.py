@@ -9,10 +9,12 @@ from mediathread.factories import (
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
 )
 from mediathread.projects.tests.factories import ProjectJuxtaposeAssetFactory
-from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
-    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem, \
-    PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD, PUBLISH_DRAFT, \
+from mediathread.projects.models import (
+    Project, RESPONSE_VIEW_NEVER,
+    RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem,
+    PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD, PUBLISH_DRAFT,
     PUBLISH_INSTRUCTOR_SHARED
+)
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -655,7 +657,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
 class ProjectJuxtaposeAssetTest(TestCase):
     def setUp(self):
-        self.pj = ProjectJuxtaposeAssetFactory()
+        self.pja = ProjectJuxtaposeAssetFactory()
 
     def test_is_valid_from_factory(self):
-        self.pj.full_clean()
+        self.pja.full_clean()

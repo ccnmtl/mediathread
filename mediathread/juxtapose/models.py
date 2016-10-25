@@ -9,7 +9,6 @@ class JuxtaposeAsset(models.Model):
     modified = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User)
     course = models.ForeignKey(Course)
-    title = models.TextField()
     spine = models.ForeignKey(SherdNote, blank=True, null=True)
 
 

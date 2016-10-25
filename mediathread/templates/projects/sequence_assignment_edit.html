@@ -30,7 +30,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             var view = new AssignmentEditView({
-                el: jQuery('.juxtaposition-assignment').first()
+                el: jQuery('.sequence-assignment').first()
             });
         });
     </script>
@@ -38,11 +38,11 @@
 
 {% block content %}
 {% with item=form.instance.assignmentitem_set.first.asset %}
-<div class="juxtaposition-assignment">
+<div class="sequence-assignment">
     <div class="row">
         <div class="col-md-3 column-container">
             <div>
-                <form name="juxtaposition-assignment-edit"
+                <form name="sequence-assignment-edit"
                     {% if form.instance %}
                         action="{% url 'project-save' form.instance.id %}"
                     {% else %}
@@ -51,7 +51,7 @@
                     method="post">
 
                     {% csrf_token %}
-                    <input type="hidden" name="project_type" value="juxtaposition-assignment" />
+                    <input type="hidden" name="project_type" value="sequence-assignment" />
 
                     <h2>
                         Edit Sequence Assignment

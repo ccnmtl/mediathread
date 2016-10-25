@@ -40,7 +40,7 @@
 
     <script type="text/javascript">
         var view = new JuxtapositionAssignmentView({
-            el: jQuery('.juxtaposition-assignment').first(),
+            el: jQuery('.sequence-assignment').first(),
             viewer: '{{request.user.username}}',
             isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
             assignmentId: '{{assignment.id}}',
@@ -56,13 +56,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="juxtaposition-assignment">
+<div class="sequence-assignment">
     <div class="row">
         <div class="col-md-3 column-container">
             <h2 class="">
                 Sequence Assignment
                 {% if assignment_can_edit %}
-                    <a class="right" href="{% url 'juxtaposition-assignment-edit' assignment.id %}">
+                    <a class="right" href="{% url 'sequence-assignment-edit' assignment.id %}">
                         <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"></span>
                     </a>
                 {% endif %}

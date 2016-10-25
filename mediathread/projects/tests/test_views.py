@@ -716,10 +716,10 @@ class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.project = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
             policy='PrivateEditorsAreOwners',
-            project_type='juxtaposition-assignment')
+            project_type='sequence-assignment')
 
     def test_get_edit(self):
-        url = reverse('juxtaposition-assignment-edit',
+        url = reverse('sequence-assignment-edit',
                       args=[self.project.id])
 
         # anonymous
@@ -746,7 +746,7 @@ class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
 
     def test_get_create(self):
-        url = reverse('juxtaposition-assignment-create')
+        url = reverse('sequence-assignment-create')
 
         # faculty
         self.client.login(username=self.instructor_one.username,

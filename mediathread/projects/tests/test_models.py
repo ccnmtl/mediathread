@@ -4,8 +4,11 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 
 from mediathread.djangosherd.models import SherdNote
-from mediathread.factories import MediathreadTestMixin, \
+from mediathread.factories import (
+    MediathreadTestMixin,
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
+)
+from mediathread.projects.tests.factories import ProjectJuxtaposeAssetFactory
 from mediathread.projects.models import Project, RESPONSE_VIEW_NEVER, \
     RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem, \
     PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD, PUBLISH_DRAFT, \
@@ -648,3 +651,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         self.project_private.participants.add(self.student_two)
         self.assertTrue(self.project_private.is_participant(self.student_two))
+
+
+class ProjectJuxtaposeAssetTest(TestCase):
+    def setUp(self):
+        self.pj = ProjectJuxtaposeAssetFactory()
+
+    def test_is_valid_from_factory(self):
+        self.pj.full_clean()

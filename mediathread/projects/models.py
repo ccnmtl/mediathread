@@ -362,7 +362,7 @@ class Project(models.Model):
         elif self.is_selection_assignment():
             return "Selection Assignment"
         elif self.is_juxtaposition_assignment():
-            return "Juxtaposition Assignment"
+            return "Sequence Assignment"
         elif self.assignment():
             return "Assignment Response"
         else:

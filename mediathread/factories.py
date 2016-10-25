@@ -99,9 +99,8 @@ class AssetFactory(factory.DjangoModelFactory):
     def primary_source(self, create, extracted, **kwargs):
         if create and extracted:
             # A list of groups were passed in, use them
-            source = SourceFactory(primary=True,
-                                   label=extracted,
-                                   asset=self)
+            source = SourceFactory(
+                primary=True, label=extracted, url='source url', asset=self)
             self.source_set.add(source)
 
 

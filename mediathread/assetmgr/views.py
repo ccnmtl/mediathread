@@ -263,6 +263,41 @@ class AssetCreateView(View):
             return HttpResponseRedirect(asset_url)
 
 
+class AssetUpdateView(View):
+
+    def get_asset_id(self, url):
+        matches = re.findall(r'/(\d+)/', url)
+
+        if len(matches) > 0:
+            return int(matches[0])
+
+        return None
+
+    ''' No login required so server2server interface is possible'''
+    ''' Authentication is managed via courseaffils CourseAccess '''
+    ''' which validates a shared secret '''
+    def post(self, request, *args, **kwargs):
+        if not CourseAccess.allowed(request):
+            return HttpResponseForbidden()
+
+        try:
+            arg = self.request.POST.get('asset-url', None)
+            asset = Asset.objects.get(id=self.get_asset_id(arg))
+        except (TypeError, Asset.DoesNotExist):
+            return HttpResponseNotFound()
+
+        for key, value in request.POST.items():
+            # replace primary source completely. the labels will differ
+            if key in Asset.primary_labels:
+                asset.update_primary(key, value)
+            else:
+                # update a secondary source based on label
+                sources = asset.source_set.filter(label=key)
+                sources.update(url=value)
+
+        return HttpResponse('updated')
+
+
 @login_required
 @allow_http("GET", "POST")
 @ajax_required

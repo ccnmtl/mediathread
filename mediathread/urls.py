@@ -22,6 +22,7 @@ from mediathread.assetmgr.views import (
     AssetCreateView, BookmarkletMigrationView)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
+    error_500,
     MethCourseListView, AffilActivateView,
     InstructorDashboardSettingsView,
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
@@ -71,6 +72,7 @@ if hasattr(settings, 'CAS_BASE'):
 
 urlpatterns = [
     url(r'^$', course_detail_view, name='home'),
+    url(r'^500$', error_500, name='error_500'),
     admin_logout_page,
     logout_page,
     url(r'^admin/', admin.site.urls),

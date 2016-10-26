@@ -4,16 +4,16 @@ from mediathread.projects.views import (
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
-    JuxtapositionAssignmentEditView)
+    SequenceAssignmentEditView)
 
 
 urlpatterns = [
-    url(r'^create/ja/$', JuxtapositionAssignmentEditView.as_view(), {},
-        name='juxtaposition-assignment-create'),
+    url(r'^create/ja/$', SequenceAssignmentEditView.as_view(), {},
+        name='sequence-assignment-create'),
 
     url(r'^edit/ja/(?P<project_id>\d+)/$',
-        JuxtapositionAssignmentEditView.as_view(), {},
-        name='juxtaposition-assignment-edit'),
+        SequenceAssignmentEditView.as_view(), {},
+        name='sequence-assignment-edit'),
 
     url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
         name='selection-assignment-create'),

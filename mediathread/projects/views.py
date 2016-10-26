@@ -320,8 +320,8 @@ class SelectionAssignmentEditView(AssignmentEditView):
     template_name = 'projects/selection_assignment_edit.html'
 
 
-class JuxtapositionAssignmentEditView(AssignmentEditView):
-    template_name = 'projects/juxtaposition_assignment_edit.html'
+class SequenceAssignmentEditView(AssignmentEditView):
+    template_name = 'projects/sequence_assignment_edit.html'
 
 
 class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
@@ -334,7 +334,7 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
             view = SelectionAssignmentView.as_view()
         elif (project.is_juxtaposition_assignment() or
                 (parent and parent.is_juxtaposition_assignment())):
-            view = JuxtapositionAssignmentView.as_view()
+            view = SequenceAssignmentView.as_view()
         else:
             view = DefaultProjectView.as_view()
 
@@ -356,8 +356,8 @@ class SelectionAssignmentView(AssignmentView):
         }
 
 
-class JuxtapositionAssignmentView(AssignmentView):
-    template_name = 'projects/juxtaposition_assignment_view.html'
+class SequenceAssignmentView(AssignmentView):
+    template_name = 'projects/sequence_assignment_view.html'
 
 
 class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,

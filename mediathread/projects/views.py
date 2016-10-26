@@ -22,7 +22,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.juxtapose.models import JuxtaposeAsset
+from mediathread.sequence.models import SequenceAsset
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
@@ -32,7 +32,7 @@ from mediathread.projects.forms import ProjectForm
 from mediathread.projects.generic.views import AssignmentView, \
     AssignmentEditView
 from mediathread.projects.models import (
-    Project, ProjectNote, PUBLISH_DRAFT, ProjectJuxtaposeAsset
+    Project, ProjectNote, PUBLISH_DRAFT, ProjectSequenceAsset
 )
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
@@ -56,18 +56,18 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
         return formatted
 
     def save_sequence_assignment_data(self, project, request):
-        ja = JuxtaposeAsset.objects.filter(
+        ja = SequenceAsset.objects.filter(
             author=request.user,
             course=request.course)
 
-        pja = ProjectJuxtaposeAsset.objects.filter(
-            project=project, juxtapose_asset__author=request.user).first()
+        pja = ProjectSequenceAsset.objects.filter(
+            project=project, sequence_asset__author=request.user).first()
         if pja is None:
-            ja = JuxtaposeAsset.objects.create(
+            ja = SequenceAsset.objects.create(
                 author=request.user,
                 course=request.course)
-            pja = ProjectJuxtaposeAsset.objects.create(
-                juxtapose_asset=ja,
+            pja = ProjectSequenceAsset.objects.create(
+                sequence_asset=ja,
                 project=project)
 
         # TODO update asset data from React application.

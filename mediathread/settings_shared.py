@@ -57,6 +57,7 @@ INSTALLED_APPS += [  # noqa
     'mediathread.projects',
     'mediathread.discussions',
     'mediathread.juxtapose',
+    'mediathread.sequence',
     'threadedcomments',
     'django_comments',
     'djangohelpers',

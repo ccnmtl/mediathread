@@ -1,12 +1,12 @@
 import factory
-from mediathread.juxtapose.tests.factories import JuxtaposeAssetFactory
-from mediathread.projects.models import ProjectJuxtaposeAsset
+from mediathread.sequence.tests.factories import SequenceAssetFactory
+from mediathread.projects.models import ProjectSequenceAsset
 from mediathread.factories import ProjectFactory
 
 
-class ProjectJuxtaposeAssetFactory(factory.DjangoModelFactory):
+class ProjectSequenceAssetFactory(factory.DjangoModelFactory):
     class Meta:
-        model = ProjectJuxtaposeAsset
+        model = ProjectSequenceAsset
 
-    juxtapose_asset = factory.SubFactory(JuxtaposeAssetFactory)
+    sequence_asset = factory.SubFactory(SequenceAssetFactory)
     project = factory.SubFactory(ProjectFactory)

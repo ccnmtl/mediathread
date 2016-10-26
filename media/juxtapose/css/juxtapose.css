@@ -29,16 +29,16 @@ button.jux-play {
     padding-bottom: 5px;
 }
 
-.react-grid-item .aux-item-middle {
+.react-grid-item .jux-media-item-middle {
     flex-grow: 1;
 }
 
-.react-grid-item img.aux-item-middle {
+.react-grid-item img.jux-media-item-middle {
     max-width: 100%;
     max-height: 100%;
 }
 
-.react-grid-item video.aux-item-middle {
+.react-grid-item video.jux-media-item-middle {
     width: 80%;
 }
 
@@ -51,7 +51,7 @@ button.jux-play {
 }
 
 #jux-spine-video,
-.jux-aux-video {
+.jux-media-video {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
@@ -61,7 +61,7 @@ button.jux-play {
     margin-right: 3px;
 }
 
-.jux-aux-video {
+.jux-media-video {
     margin-left: 3px;
 }
 
@@ -110,7 +110,7 @@ button.jux-play {
 }
 
 .jux-spine-display,
-.jux-aux-display {
+.jux-media-display {
     height: 225px;
     width: 300px;
     text-align: center;
@@ -118,8 +118,8 @@ button.jux-play {
 
 .jux-spine-display video,
 .jux-spine-display img,
-.jux-aux-display video,
-.jux-aux-display img {
+.jux-media-display video,
+.jux-media-display img {
     max-height: 225px;
     max-width: 300px;
 }
@@ -133,22 +133,22 @@ button.jux-play {
     margin-bottom: 6px;
 }
 
-.jux-track-item-manager {
+.jux-track-element-manager {
     margin-top: 10px;
     padding: 10px;
     border: dashed 1px green;
     background-color: lightyellow;
 }
 
-.jux-track-item-manager h2 {
+.jux-track-element-manager h2 {
     font-weight: normal;
 }
 
-.jux-track-item-manager textarea {
+.jux-track-element-manager textarea {
     width: 100%;
 }
 
-.jux-remove-track-item {
+.jux-remove-track-element {
     position: relative;
     float: right;
 }
@@ -161,7 +161,7 @@ button.jux-play {
 .jux-add-item-popup {
     background-color: lightgreen;
     z-index: 70;
-    position: fixed;
+    position: absolute;
     padding: 10px;
 }
 
@@ -244,8 +244,8 @@ button.jux-play {
     position: absolute;
     top: 50px;
     left: 50px;
-    width: 300px;
-    height: 400px;
+    width: 400px;
+    height: 500px;
     overflow-y: scroll;
     z-index: 9;
     background-color: white;

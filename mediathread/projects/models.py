@@ -628,4 +628,5 @@ class ProjectNote(models.Model):
 class ProjectJuxtaposeAsset(models.Model):
     """This model connects the JuxtaposeAsset to the Project."""
     juxtapose_asset = models.ForeignKey(JuxtaposeAsset)
+    # Points to an "Assignment" Project.
     project = models.ForeignKey(Project)

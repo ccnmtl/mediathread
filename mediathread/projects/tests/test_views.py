@@ -1,21 +1,24 @@
 # pylint: disable-msg=R0904
 from datetime import datetime
-from json import loads
 import json
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.test import TestCase
-from django.test.client import RequestFactory
+from django.test import TestCase, RequestFactory
 import reversion
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
-from mediathread.projects.models import Project, \
-    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED, \
+from mediathread.juxtapose.models import JuxtaposeAsset
+from mediathread.projects.models import (
+    Project, ProjectJuxtaposeAsset,
+    RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
     PUBLISH_WHOLE_WORLD
-from mediathread.projects.views import SelectionAssignmentView, ProjectItemView
+)
+from mediathread.projects.views import (
+    SelectionAssignmentView, ProjectItemView, ProjectCreateView
+)
 from structuredcollaboration.models import Collaboration
 
 
@@ -246,7 +249,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post('/project/create/', data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
-        the_json = loads(response.content)
+        the_json = json.loads(response.content)
         project = the_json['context']['project']
         self.assertTrue(project['is_response'])
 
@@ -377,7 +380,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
-        the_json = loads(response.content)
+        the_json = json.loads(response.content)
         self.assertEquals(len(the_json['revisions']), 1)
 
     def test_project_view_readonly(self):
@@ -803,7 +806,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.view.request.user = viewer
         response = self.view.get(None, project_id=self.assignment.id,
                                  asset_id=self.asset.id)
-        the_json = loads(response.content)
+        the_json = json.loads(response.content)
         self.assertEquals(len(the_json['assets']), 1)
 
         notes = the_json['assets'].values()[0]['annotations']
@@ -872,3 +875,36 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.assert_visible_notes(self.instructor_one,
                                   [(self.note_one.id, False, True),
                                    (self.note_two.id, False, True)])
+
+
+class ProjectCreateViewTest(MediathreadTestMixin, TestCase):
+    def setUp(self):
+        self.setup_sample_course()
+        self.rf = RequestFactory()
+        self.assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='juxtaposition-assignment')
+
+    def test_save_sequence_assignment_data(self):
+        url = reverse('project-create')
+        request = self.rf.get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+        view = ProjectCreateView()
+
+        self.assertEqual(JuxtaposeAsset.objects.count(), 0)
+        self.assertEqual(ProjectJuxtaposeAsset.objects.count(), 0)
+        view.save_sequence_assignment_data(self.assignment, request)
+        self.assertEqual(
+            JuxtaposeAsset.objects.count(), 1,
+            'The JuxtaposeAsset is created when not present.')
+        self.assertEqual(
+            ProjectJuxtaposeAsset.objects.count(), 1,
+            'The ProjectJuxtaposeAsset is created when not present.')
+
+        ja = JuxtaposeAsset.objects.first()
+        self.assertEqual(ja.course, self.sample_course)
+        self.assertEqual(ja.author, self.student_one)
+        pja = ProjectJuxtaposeAsset.objects.first()
+        self.assertEqual(pja.juxtapose_asset, ja)
+        self.assertEqual(pja.project, self.assignment)

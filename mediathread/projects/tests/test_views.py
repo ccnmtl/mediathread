@@ -10,9 +10,9 @@ import reversion
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
-from mediathread.juxtapose.models import JuxtaposeAsset
+from mediathread.sequence.models import SequenceAsset
 from mediathread.projects.models import (
-    Project, ProjectJuxtaposeAsset,
+    Project, ProjectSequenceAsset,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
     PUBLISH_WHOLE_WORLD
 )
@@ -892,19 +892,19 @@ class ProjectCreateViewTest(MediathreadTestMixin, TestCase):
         request.user = self.student_one
         view = ProjectCreateView()
 
-        self.assertEqual(JuxtaposeAsset.objects.count(), 0)
-        self.assertEqual(ProjectJuxtaposeAsset.objects.count(), 0)
+        self.assertEqual(SequenceAsset.objects.count(), 0)
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 0)
         view.save_sequence_assignment_data(self.assignment, request)
         self.assertEqual(
-            JuxtaposeAsset.objects.count(), 1,
-            'The JuxtaposeAsset is created when not present.')
+            SequenceAsset.objects.count(), 1,
+            'The SequenceAsset is created when not present.')
         self.assertEqual(
-            ProjectJuxtaposeAsset.objects.count(), 1,
-            'The ProjectJuxtaposeAsset is created when not present.')
+            ProjectSequenceAsset.objects.count(), 1,
+            'The ProjectSequenceAsset is created when not present.')
 
-        ja = JuxtaposeAsset.objects.first()
+        ja = SequenceAsset.objects.first()
         self.assertEqual(ja.course, self.sample_course)
         self.assertEqual(ja.author, self.student_one)
-        pja = ProjectJuxtaposeAsset.objects.first()
-        self.assertEqual(pja.juxtapose_asset, ja)
+        pja = ProjectSequenceAsset.objects.first()
+        self.assertEqual(pja.sequence_asset, ja)
         self.assertEqual(pja.project, self.assignment)

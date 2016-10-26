@@ -8,7 +8,7 @@ from mediathread.factories import (
     MediathreadTestMixin,
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory
 )
-from mediathread.projects.tests.factories import ProjectJuxtaposeAssetFactory
+from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.models import (
     Project, RESPONSE_VIEW_NEVER,
     RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem,
@@ -655,9 +655,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertTrue(self.project_private.is_participant(self.student_two))
 
 
-class ProjectJuxtaposeAssetTest(TestCase):
+class ProjectSequenceAssetTest(TestCase):
     def setUp(self):
-        self.pja = ProjectJuxtaposeAssetFactory()
+        self.psa = ProjectSequenceAssetFactory()
 
     def test_is_valid_from_factory(self):
-        self.pja.full_clean()
+        self.psa.full_clean()

@@ -10,7 +10,7 @@ from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from mediathread.juxtapose.models import JuxtaposeAsset
+from mediathread.sequence.models import SequenceAsset
 from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.main.util import user_display_name
 from structuredcollaboration.models import Collaboration
@@ -625,8 +625,8 @@ class ProjectNote(models.Model):
     project = models.ForeignKey(Project)
 
 
-class ProjectJuxtaposeAsset(models.Model):
-    """This model connects the JuxtaposeAsset to the Project."""
-    juxtapose_asset = models.ForeignKey(JuxtaposeAsset)
+class ProjectSequenceAsset(models.Model):
+    """This model connects the SequenceAsset to the Project."""
+    sequence_asset = models.ForeignKey(SequenceAsset)
     # Points to an "Assignment" Project.
     project = models.ForeignKey(Project)

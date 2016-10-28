@@ -880,14 +880,14 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
             'metadata-uuid': '1234567',
             'metadata-tag': 'update',
             'thumb': 'new thumb',
-            'mp4_pseudo': 'new primary'
+            'mp4_pseudo': ''
         }
 
     def test_get_asset_id(self):
-        url = 'http://mediathread.ccnmtl.columbia.edu/asset/'
+        url = 'http://testserver/asset/'
         self.assertIsNone(AssetUpdateView().get_asset_id(url))
 
-        url = 'http://mediathread.ccnmtl.columbia.edu/asset/53/'
+        url = 'http://testserver/asset/53/'
         aid = AssetUpdateView().get_asset_id(url)
         self.assertEquals(int(aid), 53)
 
@@ -923,8 +923,16 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
 
     def test_update_primary_and_thumb(self):
         self.params['asset-url'] = reverse('asset-view', args=[self.asset.id])
+
         secrets = {'http://testserver/': self.params['secret']}
         with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
+            # invalid primary source
+            response = self.client.post(self.url, self.params, follow=True)
+            self.assertEquals(response.status_code, 400)
+
+            # valid primary source
+            self.params['mp4_pseudo'] = 'new primary'
+
             response = self.client.post(self.url, self.params, follow=True)
             self.assertEquals(response.status_code, 200)
 

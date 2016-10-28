@@ -19,7 +19,7 @@ from django.db.models.aggregates import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
-from django.http.response import HttpResponseNotFound
+from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from django.views.generic.base import View, TemplateView
@@ -289,6 +289,11 @@ class AssetUpdateView(View):
         for key, value in request.POST.items():
             # replace primary source completely. the labels will differ
             if key in Asset.primary_labels:
+                if len(value) < 1:
+                    # don't empty out a primary source
+                    msg = 'Invalid primary source for {}'.format(key)
+                    return HttpResponseBadRequest(msg)
+
                 asset.update_primary(key, value)
             else:
                 # update a secondary source based on label

@@ -963,15 +963,14 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
 
 class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
-                          AjaxRequiredMixin, JSONResponseMixin, View):
+                          JSONResponseMixin, View):
     """
     An ajax-only request to retrieve assets for a course or a specified user
     Example:
         /api/asset/user/sld2131/
-        /api/asset/a/
         /api/asset/
     """
-    valid_filters = ['tag', 'modified', 'search_text']
+    valid_filters = ['tag', 'modified', 'search_text', 'media_type']
 
     def get_context(self, request, assets, notes):
         # Allow the logged in user to add assets to his composition

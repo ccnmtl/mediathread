@@ -589,3 +589,46 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(lst[5]['count'], 0)
         self.assertEquals(lst[5]['last'], True)
         self.assertEquals(lst[5]['name'], 'video')
+
+    def test_filter_by_media_type(self):
+        self.assertTrue(
+            self.client.login(username=self.student_two.username,
+                              password="test"))
+
+        url = '/api/asset/?media_type=image'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 1)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+
+        url = '/api/asset/?media_type=test'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 0)
+
+        url = '/api/asset/?media_type=video'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 1)
+        self.assertEqual(objects[0]['primary_type'], 'video')
+
+        url = '/api/asset/?media_type=all'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 2)
+
+        url = '/api/asset/?media_type='
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 2)
+
+        url = '/api/asset/'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 2)

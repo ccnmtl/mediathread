@@ -114,6 +114,15 @@ class SherdNoteQuerySet(models.query.QuerySet):
         return self.filter(Q(added__range=[startdate, enddate]) |
                            Q(modified__range=[startdate, enddate]))
 
+    def filter_by_media_type(self, media_type='all'):
+        if media_type == '' or media_type is None or media_type == 'all':
+            return self
+
+        notes = filter(
+            (lambda n: n.asset.media_type() == media_type), self)
+        note_ids = [note.id for note in notes]
+        return self.filter(id__in=note_ids)
+
     def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,
                           tag_string=None, modified=None, vocabulary=None):

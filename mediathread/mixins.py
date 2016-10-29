@@ -104,6 +104,8 @@ class RestrictedMaterialsMixin(object):
         visible_notes = SherdNote.objects.get_related_notes(
             assets, self.record_owner or None, self.visible_authors,
             self.all_items_are_visible, tag_string, modified, vocabulary)
+        visible_notes = visible_notes.filter_by_media_type(
+            request.GET.get('media_type'))
 
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:

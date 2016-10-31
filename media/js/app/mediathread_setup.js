@@ -18,19 +18,21 @@
         'sort-projects': function() {
             return '/project/sort/';
         },
-        'your-space': function(username, tag, modified, citable) {
+        'your-space': function(username, tag, modified, citable, mediaType) {
             return '/api/asset/user/' + username + '/?' +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
                 (citable ? '&annotations=true' : '') +
-                (citable ? '&citable=' + citable : '');
+                (citable ? '&citable=' + citable : '') +
+                (mediaType ? '&media_type=' + mediaType : '');
         },
-        'all-space': function(tag, modified, citable) {
+        'all-space': function(tag, modified, citable, mediaType) {
             return '/api/asset/?' +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
                 (citable ? '&annotations=true' : '') +
-                (citable ? '&citable=' + citable : '');
+                (citable ? '&citable=' + citable : '') +
+                (mediaType ? '&media_type=' + mediaType : '');
         },
         'asset-workspace': function(assetId, annotationId) {
             var base = '/asset/';

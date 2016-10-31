@@ -21,6 +21,7 @@ var CollectionWidget = function(config) {
     this.template = 'collectionwidget';
     this.limits = {offset: 0, limit: 20};
     this.currentRecords = {'space_owner': config.spaceOwner};
+    this.mediaType = config.mediaType;
     this.$quickEditView = jQuery(
         '<div class="quick-edit" style="display: none"></div>');
 
@@ -543,9 +544,11 @@ CollectionWidget.prototype.baseUrl = function() {
     var owner = this.selectedOwner();
 
     if (owner) {
-        return MediaThread.urls['your-space'](owner.username, null, null, true);
+        return MediaThread.urls['your-space'](
+            owner.username, null, null, true, this.mediaType);
     } else {
-        return MediaThread.urls['all-space'](null, null, true);
+        return MediaThread.urls['all-space'](
+            null, null, true, this.mediaType);
     }
 };
 

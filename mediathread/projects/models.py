@@ -365,15 +365,22 @@ class Project(models.Model):
 
     def description(self):
         if self.is_essay_assignment():
-            return "Composition Assignment"
-        elif self.is_selection_assignment():
-            return "Selection Assignment"
-        elif self.is_sequence_assignment():
-            return "Sequence Assignment"
-        elif self.assignment():
-            return "Assignment Response"
-        else:
-            return "Composition"
+            return 'Composition Assignment'
+        if self.is_selection_assignment():
+            return 'Selection Assignment'
+        if self.is_sequence_assignment():
+            return 'Sequence Assignment'
+
+        assignment = self.assignment()
+        if not assignment:
+            return 'Composition'
+
+        if assignment.is_selection_assignment():
+            return 'Selection Assignment Response'
+        if assignment.is_sequence_assignment():
+            return 'Sequence Assignment Response'
+
+        return 'Composition Assignment Response'
 
     def is_assignment_type(self):
         return (self.is_essay_assignment() or self.is_selection_assignment() or

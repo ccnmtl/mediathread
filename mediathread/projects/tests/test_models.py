@@ -13,8 +13,8 @@ from mediathread.projects.models import (
     Project, RESPONSE_VIEW_NEVER,
     RESPONSE_VIEW_SUBMITTED, RESPONSE_VIEW_ALWAYS, AssignmentItem,
     PUBLISH_WHOLE_CLASS, PUBLISH_WHOLE_WORLD, PUBLISH_DRAFT,
-    PUBLISH_INSTRUCTOR_SHARED
-)
+    PUBLISH_INSTRUCTOR_SHARED, PROJECT_TYPE_SELECTION_ASSIGNMENT,
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 
 
 class ProjectTest(MediathreadTestMixin, TestCase):
@@ -70,7 +70,13 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         self.selection_assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy=PUBLISH_WHOLE_CLASS[0], project_type='selection-assignment')
+            policy=PUBLISH_WHOLE_CLASS[0],
+            project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+
+        self.sequence_assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy=PUBLISH_WHOLE_CLASS[0],
+            project_type=PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 
         self.draft_assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
@@ -146,6 +152,21 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         sassignment = Project.objects.get(id=self.selection_assignment.id)
         self.assertEquals(sassignment.description(), 'Selection Assignment')
+
+        r = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            parent=self.selection_assignment)
+        self.assertEquals(r.description(), 'Selection Assignment Response')
+
+        r = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            parent=self.assignment)
+        self.assertEquals(r.description(), 'Composition Assignment Response')
+
+        r = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            parent=self.sequence_assignment)
+        self.assertEquals(r.description(), 'Sequence Assignment Response')
 
     def test_migrate_one(self):
         new_project = Project.objects.migrate_one(self.project_private,

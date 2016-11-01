@@ -14,8 +14,7 @@ from mediathread.sequence.models import SequenceAsset
 from mediathread.projects.models import (
     Project, ProjectSequenceAsset,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
-    PUBLISH_WHOLE_WORLD
-)
+    PUBLISH_WHOLE_WORLD, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 from mediathread.projects.views import (
     SelectionAssignmentView, ProjectItemView, ProjectCreateView
 )
@@ -883,7 +882,8 @@ class ProjectCreateViewTest(MediathreadTestMixin, TestCase):
         self.rf = RequestFactory()
         self.assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected', project_type='juxtaposition-assignment')
+            policy='CourseProtected',
+            project_type=PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 
     def test_save_sequence_assignment_data(self):
         url = reverse('project-create')

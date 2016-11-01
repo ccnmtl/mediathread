@@ -44,8 +44,8 @@ class ProjectResource(ModelResource):
         bundle.data['is_essay_assignment'] = bundle.obj.is_essay_assignment()
         bundle.data['is_selection_assignment'] = \
             bundle.obj.is_selection_assignment()
-        bundle.data['is_juxtaposition_assignment'] = \
-            bundle.obj.is_juxtaposition_assignment()
+        bundle.data['is_sequence_assignment'] = \
+            bundle.obj.is_sequence_assignment()
         bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()

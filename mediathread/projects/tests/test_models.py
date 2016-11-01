@@ -281,9 +281,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_visible_by_course(self):
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_one)
-        self.assertEquals(len(visible_projects), 5)
+        self.assertEquals(len(visible_projects), 6)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.sequence_assignment in visible_projects)
         self.assertTrue(self.project_class_shared in visible_projects)
         self.assertTrue(self.project_instructor_shared in visible_projects)
         self.assertTrue(self.project_private in visible_projects)
@@ -291,19 +292,21 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_two)
 
-        self.assertEquals(len(visible_projects), 3)
+        self.assertEquals(len(visible_projects), 4)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.sequence_assignment in visible_projects)
         self.assertTrue(self.project_class_shared, visible_projects)
 
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.instructor_one)
-        self.assertEquals(len(visible_projects), 5)
+        self.assertEquals(len(visible_projects), 6)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.draft_assignment in visible_projects)
         self.assertTrue(self.project_class_shared in visible_projects)
         self.assertTrue(self.project_instructor_shared in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.sequence_assignment in visible_projects)
 
     def test_visible_by_course_and_user(self):
         visible_projects = Project.objects.visible_by_course_and_user(
@@ -315,9 +318,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_one, self.instructor_one, True)
-        self.assertEquals(len(visible_projects), 2)
+        self.assertEquals(len(visible_projects), 3)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
+        self.assertTrue(self.sequence_assignment in visible_projects)
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_two, self.student_one, False)
@@ -643,8 +647,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_unresponded_assignments(self):
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 2)
+        self.assertEquals(len(lst), 3)
         self.assertTrue(self.selection_assignment in lst)
+        self.assertTrue(self.sequence_assignment in lst)
         self.assertTrue(self.assignment in lst)
 
         # add a response & retry
@@ -655,8 +660,9 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 1)
+        self.assertEquals(len(lst), 2)
         self.assertTrue(self.assignment in lst)
+        self.assertTrue(self.sequence_assignment in lst)
 
         # add a response & retry
         ProjectFactory.create(
@@ -666,7 +672,8 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 0)
+        self.assertEquals(len(lst), 1)
+        self.assertTrue(self.sequence_assignment in lst)
 
     def test_is_participant(self):
         self.assertTrue(self.project_private.is_participant(self.student_one))

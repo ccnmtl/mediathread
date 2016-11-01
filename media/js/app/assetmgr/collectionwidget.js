@@ -236,7 +236,7 @@ CollectionWidget.prototype.refresh = function() {
 };
 
 CollectionWidget.prototype.nextPage = function() {
-    this.limits.offset += self.limits.limit;
+    this.limits.offset += this.limits.limit;
 
     var url = this.filteredUrl();
     url += '&offset=' + this.limits.offset + '&limit=' + this.limits.limit;

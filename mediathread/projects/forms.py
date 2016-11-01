@@ -30,7 +30,8 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ('title', 'body', 'participants',
                   'submit', 'publish', 'due_date',
-                  'response_view_policy')
+                  'response_view_policy',
+                  'custom_instructions_1', 'custom_instructions_2')
 
     def __init__(self, request, *args, **kwargs):
         super(ProjectForm, self).__init__(*args, **kwargs)

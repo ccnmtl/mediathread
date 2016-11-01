@@ -77,10 +77,13 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
         body = request.POST.get('body', '')
         response_policy = request.POST.get('response_view_policy', 'always')
         due_date = self.format_date(self.request.POST.get('due_date', None))
+        instructions1 = self.request.POST.get('custom_instructions_1', None)
+        instructions2 = self.request.POST.get('custom_instructions_2', None)
         project = Project.objects.create(
             author=request.user, course=request.course, title=self.get_title(),
             project_type=project_type, response_view_policy=response_policy,
-            body=body, due_date=due_date)
+            body=body, due_date=due_date, custom_instructions_1=instructions1,
+            custom_instructions_2=instructions2)
 
         project.participants.add(request.user)
 

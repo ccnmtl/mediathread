@@ -19,6 +19,7 @@
 var CollectionWidget = function(config) {
     this.loading = false;
     this.template = 'collectionwidget';
+    this.view_callback = config.view_callback;
     this.limits = {offset: 0, limit: 20};
     this.currentRecords = {'space_owner': config.spaceOwner};
     this.mediaType = config.mediaType;
@@ -451,6 +452,10 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
     jQuery('.filter-widget').show();
 
     $elt.fadeIn('slow');
+
+    if (self.view_callback) {
+        self.view_callback(the_records.assets.length);
+    }
 
     $window.trigger('resize');
     self.setLoading(false);

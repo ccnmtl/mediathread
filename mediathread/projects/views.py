@@ -22,7 +22,6 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.sequence.models import SequenceAsset
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
@@ -32,8 +31,9 @@ from mediathread.projects.forms import ProjectForm
 from mediathread.projects.generic.views import AssignmentView, \
     AssignmentEditView
 from mediathread.projects.models import (
-    Project, ProjectNote, PUBLISH_DRAFT, ProjectSequenceAsset
-)
+    Project, ProjectNote, PUBLISH_DRAFT, ProjectSequenceAsset,
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
+from mediathread.sequence.models import SequenceAsset
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
@@ -87,7 +87,7 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
         item_id = request.POST.get('item', None)
         project.create_or_update_item(item_id)
 
-        if project_type == 'juxtaposition-assignment':
+        if project_type == PROJECT_TYPE_SEQUENCE_ASSIGNMENT:
             self.save_sequence_assignment_data(project, request)
 
         policy = request.POST.get('publish', PUBLISH_DRAFT[0])
@@ -355,8 +355,8 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
         if (project.is_selection_assignment() or
                 (parent and parent.is_selection_assignment())):
             view = SelectionAssignmentView.as_view()
-        elif (project.is_juxtaposition_assignment() or
-                (parent and parent.is_juxtaposition_assignment())):
+        elif (project.is_sequence_assignment() or
+                (parent and parent.is_sequence_assignment())):
             view = SequenceAssignmentView.as_view()
         else:
             view = DefaultProjectView.as_view()

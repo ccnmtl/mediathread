@@ -19,7 +19,7 @@ from structuredcollaboration.models import Collaboration
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
 PROJECT_TYPE_COMPOSITION = 'composition'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
-PROJECT_TYPE_JUXTAPOSITION_ASSIGNMENT = 'juxtaposition-assignment'
+PROJECT_TYPE_SEQUENCE_ASSIGNMENT = 'sequence-assignment'
 PROJECT_TYPES = (
     (PROJECT_TYPE_ASSIGNMENT, 'Composition Assignment'),
     (PROJECT_TYPE_COMPOSITION, 'Composition'),
@@ -368,7 +368,7 @@ class Project(models.Model):
             return "Composition Assignment"
         elif self.is_selection_assignment():
             return "Selection Assignment"
-        elif self.is_juxtaposition_assignment():
+        elif self.is_sequence_assignment():
             return "Sequence Assignment"
         elif self.assignment():
             return "Assignment Response"
@@ -377,7 +377,7 @@ class Project(models.Model):
 
     def is_assignment_type(self):
         return (self.is_essay_assignment() or self.is_selection_assignment() or
-                self.is_juxtaposition_assignment())
+                self.is_sequence_assignment())
 
     def is_essay_assignment(self):
         return self.project_type == PROJECT_TYPE_ASSIGNMENT
@@ -385,8 +385,8 @@ class Project(models.Model):
     def is_selection_assignment(self):
         return self.project_type == PROJECT_TYPE_SELECTION_ASSIGNMENT
 
-    def is_juxtaposition_assignment(self):
-        return self.project_type == PROJECT_TYPE_JUXTAPOSITION_ASSIGNMENT
+    def is_sequence_assignment(self):
+        return self.project_type == PROJECT_TYPE_SEQUENCE_ASSIGNMENT
 
     def is_composition(self):
         return self.project_type == PROJECT_TYPE_COMPOSITION

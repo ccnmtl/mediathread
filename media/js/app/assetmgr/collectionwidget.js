@@ -14,6 +14,7 @@
  * Signals:
  * asset.edit > when edit in place is clicked
  * asset.on_delete > after ajaxDelete is called
+ * asset.select > when an asset is selected
  */
 
 var CollectionWidget = function(config) {
@@ -198,6 +199,12 @@ CollectionWidget.prototype.mapEvents = function() {
         self.quickEdit(
             'Edit Selection', 'annotation.edit', assetId, annotationId);
         return false;
+    });
+
+    self.$el.on('click', '.clickableCitation', function(e) {
+        var assetEvent = new CustomEvent('asset.select',
+                                         {'detail': this.name});
+        document.dispatchEvent(assetEvent);
     });
 };
 

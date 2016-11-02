@@ -182,6 +182,8 @@ class ProjectNoteFactory(factory.DjangoModelFactory):
     class Meta:
         model = ProjectNote
 
+    project = factory.SubFactory(ProjectFactory)
+
 
 class CourseInvitationFactory(factory.DjangoModelFactory):
     class Meta:

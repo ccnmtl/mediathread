@@ -1,10 +1,12 @@
 # pylint: disable-msg=R0904
+from django.db.models.query_utils import Q
 from tastypie import fields
 from tastypie.resources import ModelResource
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.sequence.models import SequenceAsset
 from mediathread.taxonomy.api import TermResource
 
 
@@ -58,22 +60,23 @@ class SherdNoteResource(ModelResource):
                         getattr(bundle.obj, 'author_id', -1))
             citable = bundle.request.GET.get('citable', '') == 'true'
 
-            # For SelectionAssignment only
-            # If this note is associated with a response, consider
-            # whether it can be cited in a composition or discussion
-            # and whether it can be edited in the item space
-            if bundle.obj.projectnote_set.count() > 0:
+            if self.in_selection_assignment_response(bundle.obj):
                 # "first" here kills the prefetch/select_related optimization
                 # use the qs array indexing to keep things fast
                 reference = bundle.obj.projectnote_set.all()[0]
 
-                # notes in a submitted response are not editable
                 editable = editable and not reference.project.is_submitted()
 
+                # notes in a draft or submitted response may/may not be citable
+                # based on its assignment visibility settings
                 if citable:
                     # this is a heavy operation. don't call it unless needed
                     citable = reference.project.can_cite(bundle.request.course,
                                                          bundle.request.user)
+
+            if self.in_sequence_assignment_response(bundle.obj):
+                # notes in a submitted response are not editable
+                editable = False
 
             bundle.data['editable'] = editable
             bundle.data['citable'] = citable
@@ -81,6 +84,7 @@ class SherdNoteResource(ModelResource):
         except Asset.DoesNotExist:
             bundle.data['asset_id'] = ''
             bundle.data['metadata'] = {'title': 'Item Deleted'}
+
         return bundle
 
     def render_one(self, request, selection, asset_key):
@@ -90,6 +94,17 @@ class SherdNoteResource(ModelResource):
         bundle.data['asset_key'] = '%s_%s' % (asset_key,
                                               bundle.data['asset_id'])
         return self._meta.serializer.to_simple(dehydrated, None)
+
+    def in_selection_assignment_response(self, note):
+        return note.projectnote_set.exists()
+
+    def in_sequence_assignment_response(self, note):
+        # For SequenceAssignmentResponses only
+        # Do not allow editing or deleting when used as a primary video
+        # or as a secondary media element
+        return SequenceAsset.objects.filter(
+            Q(projectsequenceasset__project__date_submitted__isnull=False),
+            Q(spine=note) | Q(sequencemediaelement__media=note)).exists()
 
 
 class DiscussionIndexResource(object):

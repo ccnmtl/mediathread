@@ -930,7 +930,7 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
 
 class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
-                      AjaxRequiredMixin, JSONResponseMixin, View):
+                      JSONResponseMixin, View):
 
     def get(self, request, asset_id):
         the_assets = Asset.objects.filter(pk=asset_id, course=request.course)

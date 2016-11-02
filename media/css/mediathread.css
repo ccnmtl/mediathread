@@ -4189,7 +4189,7 @@ a.btn.btn-default img.left {
 
 .project-response-form ul,
 .selection-assignment .page ul,
-.juxtaposition-assignment .page ul {
+.sequence-assignment .page ul {
     margin:  .4em 0em 0.7em 2em;
 }
 
@@ -4198,8 +4198,8 @@ a.btn.btn-default img.left {
     display: none !important;
 }
 
-.juxtaposition-assignment #id_response_view_policy,
-.juxtaposition-assignment #id_publish,
+.sequence-assignment #id_response_view_policy,
+.sequence-assignment #id_publish,
 .selection-assignment #id_response_view_policy,
 .selection-assignment #id_publish {
     margin: 0 4em 0.7em .7em;
@@ -4207,8 +4207,8 @@ a.btn.btn-default img.left {
     width: 100%;
 }
 
-.juxtaposition-assignment #id_response_view_policy label,
-.juxtaposition-assignment #id_publish label,
+.sequence-assignment #id_response_view_policy label,
+.sequence-assignment #id_publish label,
 .selection-assignment #id_response_view_policy label,
 .selection-assignment #id_publish label {
     font-weight: normal;

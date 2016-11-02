@@ -302,6 +302,11 @@ class Project(models.Model):
 
     body = models.TextField(blank=True)
 
+    custom_instructions_1 = models.CharField(
+        max_length=140, null=True, blank=True)
+    custom_instructions_2 = models.CharField(
+        max_length=140, null=True, blank=True)
+
     date_submitted = models.DateTimeField(null=True, blank=True)
 
     modified = models.DateTimeField('date modified', editable=False,

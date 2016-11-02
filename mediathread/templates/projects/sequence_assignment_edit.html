@@ -40,8 +40,8 @@
 {% with item=form.instance.assignmentitem_set.first.asset %}
 <div class="sequence-assignment">
     <div class="row">
-        <div class="col-md-3 column-container">
-            <div>
+        <div class="col-md-7">
+            <div class="centered-div">
                 <form name="sequence-assignment-edit"
                     {% if form.instance %}
                         action="{% url 'project-save' form.instance.id %}"
@@ -88,7 +88,7 @@
                         <div class="form-group">
                             <label>Assignment Title</label>
                             <input type="text" name="title" class="form-control"
-                                placholder="Assignment Title"
+                                placeholder="Assignment Title"
                                 value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                             <div class="help-inline">Title is a required field</div>
                         </div>
@@ -113,7 +113,34 @@
                             </ul>
                         </nav>
                     </div>
-                    <div data-page="3" data-page-content="due-date" class="hidden page">
+                    <div data-page="3" data-page-content="custom-instructions" class="hidden page">
+                        <h3>2. Write custom instructions</h3>
+                        <div class="form-group">
+                            <label>Primary Video Instructions</label>
+                            <div>Offer directed instructions on the primary video a student should use:</div>
+                            <ul>
+                                <li>@todo</li>
+                                <li>140 character limit</li>
+                            </ul>
+                            <textarea name="custom_instructions_1" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Secondary Media Instructions</label>
+                            <div>Offer directed instructions on the secondary media a student should use:</div>
+                            <ul>
+                                <li>@todo</li>
+                                <li>140 character limit</li>
+                            </ul>
+                            <textarea name="custom_instructions_2" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
+                        </div>
+                        <nav>
+                            <ul class="pager">
+                                <li><a href="#" class="left prev">Previous</a></li>
+                                <li><a href="#" class="right next">Next</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div data-page="4" data-page-content="due-date" class="hidden page">
                         <h3>3. Set response due date &amp; visibility</h3>
                         <p></p>
                         <div class="form-group">
@@ -134,7 +161,7 @@
                             <li><a href="#" class="right next">Next</a></li>
                         </ul>
                     </div>
-                    <div data-page="4" data-page-content="publish" class="hidden page">
+                    <div data-page="5" data-page-content="publish" class="hidden page">
                         <h3>4. Publish assignment to students</h3>
                         <p></p>
                         <div class="form-group">

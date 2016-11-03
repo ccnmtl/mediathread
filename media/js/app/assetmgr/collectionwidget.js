@@ -206,6 +206,10 @@ CollectionWidget.prototype.mapEvents = function() {
                                          {'detail': this.name});
         document.dispatchEvent(assetEvent);
     });
+
+    self.$el.on('click', 'button[name="close-modal"]', function(e) {
+        self.$el.hide();
+    });
 };
 
 CollectionWidget.prototype.filter = function() {

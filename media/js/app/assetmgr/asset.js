@@ -278,25 +278,25 @@
             this.resetHighlightLayer();
 
             switch (grouping) {
-            case 'tag':
-                this.layers[grouping].color_by = function(ann) {
-                    if (ann.metadata.tags.length) {
-                        var tags = [];
-                        for (var k = 0; k < ann.metadata.tags.length; k++) {
-                            tags.push(ann.metadata.tags[k].name);
+                case 'tag':
+                    this.layers[grouping].color_by = function(ann) {
+                        if (ann.metadata.tags.length) {
+                            var tags = [];
+                            for (var k = 0; k < ann.metadata.tags.length; k++) {
+                                tags.push(ann.metadata.tags[k].name);
+                            }
+                            return tags;
+                        } else {
+                            //127 ensures that None is last
+                            return [String.fromCharCode(127) + 'No Tags'];
                         }
-                        return tags;
-                    } else {
-                        //127 ensures that None is last
-                        return [String.fromCharCode(127) + 'No Tags'];
-                    }
-                };
-                break;
-            case 'author':
-                this.layers[grouping].color_by = function(ann) {
-                    return [ann.author.public_name];
-                };
-                break;
+                    };
+                    break;
+                case 'author':
+                    this.layers[grouping].color_by = function(ann) {
+                        return [ann.author.public_name];
+                    };
+                    break;
             }
 
             self.updateAnnotationList();
@@ -371,7 +371,8 @@
 
             for (var k = 0; k < context.annotation_list.length; k++) {
                 context.annotation_list[k] = {
-                'category': cats[context.annotation_list[k]]};
+                    'category': cats[context.annotation_list[k]]
+                };
             }
 
             var $elt = jQuery('#asset-details-annotations-list');

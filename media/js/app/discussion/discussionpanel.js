@@ -419,12 +419,12 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
 
     info.mode = ((info['edit-id'] === '') ? 'post' : 'update');
     switch (info.mode) {
-    case 'update':
-        info.url = MediaThread.urls['comment-edit'](info['edit-id']);
-        break;
-    case 'post':
-        info.url = MediaThread.urls['comment-create']();
-        break;
+        case 'update':
+            info.url = MediaThread.urls['comment-edit'](info['edit-id']);
+            break;
+        case 'post':
+            info.url = MediaThread.urls['comment-create']();
+            break;
     }
     jQuery.ajax({
         type: 'POST',
@@ -462,31 +462,32 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             };
 
             switch (this.info.mode) {
-            case 'post':
-                var parentHtml = jQuery('#comment-' + form_vals.parent).get(0);
-                if (!parentHtml) {
-                    parentHtml = self.$el.find(
+                case 'post':
+                    var parentHtml = jQuery(
+                        '#comment-' + form_vals.parent).get(0);
+                    if (!parentHtml) {
+                        parentHtml = self.$el.find(
                             'div.threadedcomments-container')[0];
-                }
-                var ul = this.info.target = document.createElement('ul');
-                ul.setAttribute('class', 'comment-thread');
-                parentHtml.appendChild(ul);
-                ul.innerHTML = self.create(newObj).text;
-                // decorate respond listener
-                jQuery('.respond_prompt', ul).click(function(evt) {
-                    self.open_respond(evt);
-                });
-                jQuery('.edit_prompt', ul).click(function(evt) {
-                    self.open_edit(evt);
-                });
-                break;
-            case 'update':
-                var comment_html = jQuery('#comment-' + form_vals['edit-id'])
-                        .get(0);
-                var comp = self.components(comment_html);
-                self.update(newObj, comment_html);
-                this.info.target = comp.comment;
-                break;
+                    }
+                    var ul = this.info.target = document.createElement('ul');
+                    ul.setAttribute('class', 'comment-thread');
+                    parentHtml.appendChild(ul);
+                    ul.innerHTML = self.create(newObj).text;
+                    // decorate respond listener
+                    jQuery('.respond_prompt', ul).click(function(evt) {
+                        self.open_respond(evt);
+                    });
+                    jQuery('.edit_prompt', ul).click(function(evt) {
+                        self.open_edit(evt);
+                    });
+                    break;
+                case 'update':
+                    var comment_html = jQuery(
+                        '#comment-' + form_vals['edit-id']).get(0);
+                    var comp = self.components(comment_html);
+                    self.update(newObj, comment_html);
+                    this.info.target = comp.comment;
+                    break;
             }
             // 2. decorate citations
             self.citationView.decorateElementLinks(this.info.target);

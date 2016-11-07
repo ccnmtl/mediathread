@@ -64,16 +64,16 @@ var SherdReport = function() {
         .fillStyle(function(d) {
             var color;
             switch (d.group) {
-            case 1:
-                return new pv.Color.Rgb(256, 256, 0, 1); //tag
-            case 2:
-                return domainColors(d.domain); //asset
-            case 3:
-                return new pv.Color.Rgb(0, 100, 256, 1); //project
-            case 4:
-                return new pv.Color.Rgb(0, 100, 0, 1); //comment
-            default:
-                return new pv.Color.Rgb(0, 0, 0, 1);
+                case 1:
+                    return new pv.Color.Rgb(256, 256, 0, 1); //tag
+                case 2:
+                    return domainColors(d.domain); //asset
+                case 3:
+                    return new pv.Color.Rgb(0, 100, 256, 1); //project
+                case 4:
+                    return new pv.Color.Rgb(0, 100, 0, 1); //comment
+                default:
+                    return new pv.Color.Rgb(0, 0, 0, 1);
             }
         })
         .strokeStyle(function(d) {
@@ -83,13 +83,13 @@ var SherdReport = function() {
         .lineWidth(self.nodeDefaultLineWidth)
         .shape(function(d) {
             switch (d.group) {
-            case 1:
-            case 2:
-                return 'circle'; //asset
-            case 3:
-                return 'square'; //project
-            case 4:
-                return 'diamond'; //comment
+                case 1:
+                case 2:
+                    return 'circle'; //asset
+                case 3:
+                    return 'square'; //project
+                case 4:
+                    return 'diamond'; //comment
             }
         })
         .title(function(d) { return d.nodeName; })

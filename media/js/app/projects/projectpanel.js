@@ -335,15 +335,20 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
 
     var element = self.$el.find('.revision-list')[0];
     jQuery(element).dialog({
-        buttons: [{text: 'Cancel',
-                   click: function() {
-                       jQuery(this).dialog('close');
-                   }},
-                  {text: 'View',
-                   click: function() {
-                       self._save = true; jQuery(this).dialog('close');
-                   }}
-              ],
+        buttons: [
+            {
+                text: 'Cancel',
+                click: function() {
+                    jQuery(this).dialog('close');
+                }
+            },
+            {
+                text: 'View',
+                click: function() {
+                    self._save = true; jQuery(this).dialog('close');
+                }
+            }
+        ],
         beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
@@ -384,15 +389,20 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
 
     var element = self.$el.find('.response-list')[0];
     jQuery(element).dialog({
-        buttons: [{text: 'Cancel',
-                   click: function() {
-                       jQuery(this).dialog('close');
-                   }},
-                  {text: 'View Response',
-                   click: function() {
-                       self._save = true; jQuery(this).dialog('close');
-                   }}
-                 ],
+        buttons: [
+            {
+                text: 'Cancel',
+                click: function() {
+                    jQuery(this).dialog('close');
+                }
+            },
+            {
+                text: 'View Response',
+                click: function() {
+                    self._save = true; jQuery(this).dialog('close');
+                }
+            }
+        ],
         beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;
@@ -435,15 +445,21 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
 
     var element = self.$el.find('.my-response-list')[0];
     jQuery(element).dialog({
-        buttons: [{text: 'Cancel',
-                   click: function() {
-                       jQuery(this).dialog('close');
-                   }},
-                  {text: 'View',
-                   click: function() {
-                       self._save = true; jQuery(this).dialog('close');
-                   }}
-                 ],
+        buttons: [
+            {
+                text: 'Cancel',
+                click: function() {
+                    jQuery(this).dialog('close');
+                }
+            },
+            {
+                text: 'View',
+                click: function() {
+                    self._save = true;
+                    jQuery(this).dialog('close');
+                }
+            }
+        ],
         beforeClose: function(event, ui) {
             if (self._save) {
                 self._save = false;

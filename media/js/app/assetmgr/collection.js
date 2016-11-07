@@ -433,12 +433,12 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
         } else {
             var view;
             switch (asset.type) {
-            case 'image':
-                view = new Sherd.Image.OpenLayers();
-                break;
-            case 'fsiviewer':
-                view = new Sherd.Image.FSIViewer();
-                break;
+                case 'image':
+                    view = new Sherd.Image.OpenLayers();
+                    break;
+                case 'fsiviewer':
+                    view = new Sherd.Image.FSIViewer();
+                    break;
             }
             djangosherd.thumbs.push(view);
 
@@ -478,12 +478,12 @@ CollectionList.prototype.createThumbs = function(assets) {
 
                 var view;
                 switch (asset.type) {
-                case 'image':
-                    view = new Sherd.Image.OpenLayers();
-                    break;
-                case 'fsiviewer':
-                    view = new Sherd.Image.FSIViewer();
-                    break;
+                    case 'image':
+                        view = new Sherd.Image.OpenLayers();
+                        break;
+                    case 'fsiviewer':
+                        view = new Sherd.Image.FSIViewer();
+                        break;
                 }
                 djangosherd.thumbs.push(view);
                 var objDiv = document.createElement('div');

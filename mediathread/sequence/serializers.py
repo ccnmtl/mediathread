@@ -7,7 +7,7 @@ from mediathread.sequence.models import (
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('id', 'title', 'spine', 'course',
+        fields = ('id', 'spine', 'course',
                   'sequencemediaelement_set',
                   'sequencetextelement_set',)
 

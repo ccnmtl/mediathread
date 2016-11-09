@@ -118,7 +118,7 @@
                                                     <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
                                                 {% endif %}
                                             </div>
-                                            <a href="/discussion/{{disc.id}}">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                                            <a href="/discussion/{{disc.id}}/">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
                                             {% get_comment_count for disc.content_object as comment_count%}
                                             ({{comment_count}})
                                         </li>

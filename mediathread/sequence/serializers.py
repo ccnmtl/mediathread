@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from mediathread.djangosherd.models import SherdNote
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
@@ -8,10 +9,12 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
         fields = ('id', 'spine', 'course',
+                  'author',
                   'sequencemediaelement_set',
                   'sequencetextelement_set',)
 
-    spine = serializers.StringRelatedField()
+    spine = serializers.PrimaryKeyRelatedField(
+        queryset=SherdNote.objects.all(), allow_null=True)
     sequencemediaelement_set = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name='sequencemediaelement-detail')
     sequencetextelement_set = serializers.HyperlinkedRelatedField(

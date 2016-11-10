@@ -10,7 +10,8 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
         model = SequenceMediaElement
         fields = ('id', 'media', 'juxtaposition', 'start_time', 'end_time')
 
-    media = serializers.StringRelatedField()
+    media = serializers.PrimaryKeyRelatedField(
+        queryset=SherdNote.objects.all())
 
 
 class SequenceTextElementSerializer(serializers.HyperlinkedModelSerializer):

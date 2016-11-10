@@ -5,6 +5,20 @@ from mediathread.sequence.models import (
 )
 
 
+class SequenceMediaElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SequenceMediaElement
+        fields = ('id', 'media', 'juxtaposition', 'start_time', 'end_time')
+
+    media = serializers.StringRelatedField()
+
+
+class SequenceTextElementSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = SequenceTextElement
+        fields = ('id', 'text', 'juxtaposition', 'start_time', 'end_time')
+
+
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
@@ -15,21 +29,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
 
     spine = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all(), allow_null=True)
-    sequencemediaelement_set = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, view_name='sequencemediaelement-detail')
-    sequencetextelement_set = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, view_name='sequencetextelement-detail')
-
-
-class SequenceMediaElementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SequenceMediaElement
-        fields = ('id', 'media',)
-
-    media = serializers.StringRelatedField()
-
-
-class SequenceTextElementSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = SequenceTextElement
-        fields = ('id', 'text',)
+    sequencemediaelement_set = SequenceMediaElementSerializer(
+        many=True, read_only=True)
+    sequencetextelement_set = SequenceTextElementSerializer(
+        many=True, read_only=True)

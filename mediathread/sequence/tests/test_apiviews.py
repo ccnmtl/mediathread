@@ -4,7 +4,9 @@ from courseaffils.tests.factories import CourseFactory
 from mediathread.factories import SherdNoteFactory, UserFactory
 from mediathread.sequence.models import SequenceAsset
 from mediathread.sequence.tests.mixins import LoggedInTestMixin
-from mediathread.sequence.tests.factories import SequenceAssetFactory
+from mediathread.sequence.tests.factories import (
+    SequenceAssetFactory, SequenceTextElementFactory,
+)
 
 
 class AssetViewSetTest(LoggedInTestMixin, APITestCase):
@@ -25,6 +27,30 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         )
         self.assertEqual(r.status_code, 200)
         self.assertIsNone(r.data.get('spine'))
+
+        note = SherdNoteFactory()
+        asset = SequenceAssetFactory(author=self.u, spine=note)
+        r = self.client.get(
+            reverse('sequenceasset-detail', args=(asset.pk,))
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data.get('spine'), note.pk)
+
+    def test_retrieve_with_text_elements(self):
+        note = SherdNoteFactory()
+        asset = SequenceAssetFactory(author=self.u, spine=note)
+        e1 = SequenceTextElementFactory(juxtaposition=asset)
+        e2 = SequenceTextElementFactory(juxtaposition=asset)
+        e3 = SequenceTextElementFactory(juxtaposition=asset)
+        r = self.client.get(
+            reverse('sequenceasset-detail', args=(asset.pk,))
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data.get('spine'), note.pk)
+        textelements = r.data.get('sequencetextelement_set')
+        self.assertEqual(textelements[0]['text'], e1.text)
+        self.assertEqual(textelements[1]['text'], e2.text)
+        self.assertEqual(textelements[2]['text'], e3.text)
 
     def test_create(self):
         course = CourseFactory()

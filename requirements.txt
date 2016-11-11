@@ -27,7 +27,7 @@ selenium==3.0.1
 six==1.10.0
 sqlparse==0.2.2  # django-debug-toolbar
 python-mimeparse==1.5.5  # tastypie
-python-dateutil==2.5.3  # tastypie
+python-dateutil==2.6.0  # tastypie
 defusedxml==0.4.1  # tastypie
 django-tastypie==0.13.3
 coverage==4.2

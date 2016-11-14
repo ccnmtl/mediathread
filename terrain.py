@@ -1050,7 +1050,7 @@ def contextual_help_is_not_visible_for_the_area(step, area):
 @step(u'I set the quickedit "([^"]*)" "([^"]*)" field to "([^"]*)"')
 def i_set_the_quickedit_label_ftype_to_value(step, label, ftype, value):
     return i_set_the_label_ftype_to_value(step, label, ftype, value,
-                                          sid='asset-view-details-quick-edit')
+                                          sid='ui-dialog-quick-edit')
 
 
 @step('there is a Create button')

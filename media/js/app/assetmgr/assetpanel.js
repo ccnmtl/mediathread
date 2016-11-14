@@ -149,6 +149,7 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
 
             // Setup the edit view
             window.annotationList.init({
+                'parent': $dlg,
                 'asset_id': assetId,
                 'annotation_id': annotationId,
                 'edit_state': event.type + '.' + event.namespace,
@@ -176,7 +177,7 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
         position: 'top',
         zIndex: 10000
     });
-
+    self.dialogWindow.parent().attr('id', 'ui-dialog-quick-edit');
     return false;
 };
 
@@ -203,6 +204,7 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
 
     // Setup the edit view
     window.annotationList.init({
+        'parent': self.$el,
         'asset_id': asset_id,
         'annotation_id': annotation_id,
         'update_history': self.panel.update_history,

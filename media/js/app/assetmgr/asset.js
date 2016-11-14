@@ -10,6 +10,7 @@
 
         this.init = function(config) {
             var self = this;
+            self.$parent = config.parent;
 
             var templates = [
                 'asset_view_help',
@@ -44,12 +45,14 @@
                 config.update_history : true;
             this.user_settings = {'help_item_detail_view': true};
 
-            this.eltsAssetDisplay = '#asset-header, #annotation-current, ' +
+            this.eltsAssetDisplay = self.$parent.find(
+                '#asset-header, #annotation-current, ' +
                 '#annotations-organized-container, ' +
                 '#asset-view-help-button,' +
-                '#asset-global-annotation div.actions';
-            this.eltsAnnotationDisplay = '#asset-view-help-button,' +
-                '#asset-global-annotation, #annotations-organized';
+                '#asset-global-annotation div.actions');
+            this.eltsAnnotationDisplay = self.$parent.find(
+                '#asset-view-help-button,' +
+                '#asset-global-annotation, #annotations-organized');
 
             if (String(window.location.hash).match(/edit_state=new/)) {
                 self.config.edit_state = 'annotation.create';
@@ -180,19 +183,23 @@
                             }
                         }
 
-                        if (jQuery('#asset-view-details').length > 0) {
-                            self._update(opts, 'asset-view-details', true);
+                        var selector = 'asset-view-details';
+                        if (self.$parent.find('#' + selector).length > 0) {
+                            self._update(opts, selector, true);
                         }
-                        var selector = 'asset-view-details-quick-edit';
-                        if (jQuery('#' + selector).length > 0) {
+                        selector = 'asset-view-details-quick-edit';
+                        if (self.$parent.find('#' + selector).length > 0) {
                             self._update(opts, selector, true);
                         }
                         self._addHistory(/*replace=*/true);
 
                         // Saved Annotations Form -- setup based on
                         // showAll/Group preferences in local storage
-                        var frm = document.forms['annotation-list-filter'];
-                        if (frm) {
+                        var frm = self.$parent.find(
+                            'form[name="annotation-list-filter"]');
+
+                        if (frm.length > 0) {
+                            frm = frm.get(0);  // get the underlying element
                             frm.elements.showall.checked = retrieveData(
                                 'annotation-list-filter__showall');
 
@@ -375,7 +382,7 @@
                 };
             }
 
-            var $elt = jQuery('#asset-details-annotations-list');
+            var $elt = self.$parent.find('#asset-details-annotations-list');
             $elt.hide();
             jQuery('.accordion').accordion('destroy');
             var rendered = Mustache.render(
@@ -399,7 +406,7 @@
                 'activate': self.showAnnotation});
 
             if (self.active_annotation) {
-                var active = jQuery('#accordion-' +
+                var active = self.$parent.find('#accordion-' +
                                     self.active_annotation.id)[0];
                 var parent = jQuery(active).parents('.accordion');
 
@@ -521,15 +528,16 @@
         };
 
         this.showHelp = function() {
-            jQuery('#asset-view-overlay, #asset-view-help, ' +
+            self.$parent.find('#asset-view-overlay, #asset-view-help, ' +
                    '#asset-view-help-tab').show();
             return false;
         };
 
         this.dismissHelp = function() {
-            jQuery('#asset-view-overlay, #asset-view-help, ' +
-                   '#asset-view-help-tab').hide();
-            var checked = jQuery('#asset-view-show-help').is(':checked');
+            self.$parent.find('#asset-view-overlay, #asset-view-help, ' +
+                 '#asset-view-help-tab').hide();
+            var checked = self.$parent.find(
+                '#asset-view-show-help').is(':checked');
             updateUserSetting(MediaThread.current_username,
                               'help_item_detail_view', !checked);
             return false;
@@ -550,7 +558,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    var elt = jQuery('#edit-global-annotation-form');
+                    var elt = self.$parent.find('#edit-global-annotation-form');
                     jQuery(elt).fadeIn();
                 });
         };
@@ -558,7 +566,7 @@
         this.cancelItem = function() {
             jQuery(window).trigger('annotation.on_cancel', []);
 
-            var form = jQuery('#edit-global-annotation-form');
+            var form = self.$parent.find('#edit-global-annotation-form');
 
             jQuery(form).fadeOut(function() {
                 jQuery(self.eltsAssetDisplay).fadeIn();
@@ -669,7 +677,8 @@
                         jQuery('.asset-view-title').text(
                             context['asset-current'].title);
 
-                        var $elt = jQuery('#asset-global-annotation');
+                        var $elt = self.$parent.find(
+                            '#asset-global-annotation');
                         $elt.hide();
                         context = jQuery.extend({}, context,
                             MediaThread.mustacheHelpers);
@@ -679,8 +688,9 @@
                         $elt.html(rendered);
 
                         $elt.fadeIn('slow', function() {
-                            jQuery('#annotations-organized-container' +
-                                   ', #annotation-current')
+                            self.$parent.find(
+                                '#annotations-organized-container' +
+                                ', #annotation-current')
                                 .fadeIn()
                                 .promise()
                                 .done(function() {
@@ -746,14 +756,15 @@
 
             var annotation_id = self.active_annotation ?
                 self.active_annotation.id : null;
-            jQuery('#asset-details-annotations-current').fadeOut(function() {
+            self.$parent.find('#asset-details-annotations-current').fadeOut(
+                function() {
                 self._update({
                     'annotation_id': annotation_id,
                     'editing': false
                 }, 'asset-annotation-current', false);
 
                 if (self.active_annotation) {
-                    var active = jQuery('#accordion-' +
+                    var active = self.$parent.find('#accordion-' +
                                      self.active_annotation.id)[0];
                     var parent = jQuery(active).parents('.accordion');
                     var idx = jQuery(parent).find('h3').index(active);
@@ -788,7 +799,7 @@
                     var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
                         context);
-                    jQuery('#annotation-current').html(rendered);
+                    self.$parent.find('#annotation-current').html(rendered);
                     djangosherd.assetview.clipform
                         .setState({'start': 0, 'end': 0},
                                   {'mode': 'create'});
@@ -797,13 +808,13 @@
                     jQuery('select.vocabulary').select2({
                         width: '70%'
                     });
-                    jQuery('#asset-details-annotations-current')
+                    self.$parent.find('#asset-details-annotations-current')
                         .fadeIn(function() {
                             djangosherd.assetview.clipform.html.push(
                                 'clipform-display', {
                                     asset: {}
                                 });
-                            jQuery('#clipform').show();
+                            self.$parent.find('#clipform').show();
                         });
                     jQuery(window).trigger('resize');
                 });
@@ -851,7 +862,7 @@
                 .fadeOut()
                 .promise()
                 .done(function() {
-                    var $elt = jQuery('#annotation-current');
+                    var $elt = self.$parent.find('#annotation-current');
                     $elt.hide();
                     var rendered = Mustache.render(
                         MediaThread.templates.asset_annotation_current,
@@ -873,7 +884,7 @@
                                 'clipform-display', {
                                     asset: {}
                                 });
-                            jQuery('#clipform').show();
+                            self.$parent.find('#clipform').show();
                         });
                         jQuery(window).trigger('resize');
                     }
@@ -1038,7 +1049,7 @@
 
             var elt;
             if (self.active_asset && self.active_asset.global_annotation) {
-                elt = jQuery('#edit-global-annotation-form');
+                elt = self.$parent.find('#edit-global-annotation-form');
                 self._selectConcepts(elt,
                     self.active_asset.global_annotation.vocabulary);
             }
@@ -1070,7 +1081,7 @@
                 success: function(json, textStatus, xhr) {
                     var rendered = Mustache.render(
                         MediaThread.templates.asset_references, json);
-                    jQuery('#asset-references').html(rendered);
+                    self.$parent.find('#asset-references').html(rendered);
                 }
             });
         };
@@ -1158,38 +1169,40 @@
             var tpl = MediaThread.templates[template_label.replace(/-/g, '_')];
             var rendered = Mustache.render(tpl, context);
             if (template_label === 'asset-view-details') {
-                jQuery('#asset-view-details').html(rendered);
+                self.$parent.find('#asset-view-details').html(rendered);
 
                 rendered = Mustache.render(
                     MediaThread.templates.asset_sources, context);
-                jQuery('#asset-sources').html(rendered);
+                self.$parent.find('#asset-sources').html(rendered);
             } else if (template_label === 'asset-view-details-quick-edit') {
                 rendered = Mustache.render(
                     MediaThread.templates.asset_view_details_quick_edit,
                     context);
-                var $el = jQuery('#asset-view-details-quick-edit');
+                var $el = self.$parent.find('#asset-view-details-quick-edit');
                 $el.closest('.asset-view-tabs').show();
                 $el.html(rendered);
             } else if (template_label === 'asset-annotation-current') {
-                jQuery('#annotation-current').html(rendered);
+                self.$parent.find('#annotation-current').html(rendered);
             } else {
                 console.error('Didn\'t attach template for:', template_label);
             }
 
             rendered = Mustache.render(MediaThread.templates.asset_view_help,
-                                        context);
-            jQuery('#asset-view-help').html(rendered);
-            jQuery('.asset-view-title').text(context['asset-current'].title);
+                                       context);
+            self.$parent.find('#asset-view-help').html(rendered);
+            self.$parent.find('.asset-view-title').text(
+                context['asset-current'].title);
 
             rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation,
                 context);
-            jQuery('#asset-global-annotation').html(rendered);
+            self.$parent.find('#asset-global-annotation').html(rendered);
 
             rendered = Mustache.render(
                 MediaThread.templates.asset_global_annotation_quick_edit,
                 context);
-            jQuery('#asset-global-annotation-quick-edit').html(rendered);
+            self.$parent.find(
+                '#asset-global-annotation-quick-edit').html(rendered);
 
             if (self.active_annotation) {
                 djangosherd.assetview
@@ -1207,13 +1220,13 @@
                 self._initReferences();
             }
 
-            var $elt = jQuery('#asset-workspace-panel-container');
+            var $elt = self.$parent.find('#asset-workspace-panel-container');
             $elt.fadeIn('slow', function() {
                 djangosherd.assetview.clipform.html.push(
                     'clipform-display', {
                         asset: {}
                     });
-                jQuery('#clipform').show();
+                self.$parent.find('#clipform').show();
 
                 if (self.active_annotation) {
                     djangosherd.assetview.clipform

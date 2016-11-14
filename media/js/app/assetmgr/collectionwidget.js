@@ -10,6 +10,7 @@
  * annotation.on_create > refresh
  * annotation.on_save > refresh
  * annotation.on_delete > refresh
+ * collection.open >
  *
  * Signals:
  * asset.edit > when edit in place is clicked
@@ -17,17 +18,16 @@
  * asset.select > when an asset is selected
  */
 
-var CollectionWidget = function(config) {
+var CollectionWidget = function() {
     this.loading = false;
     this.template = 'collectionwidget';
     this.limits = {offset: 0, limit: 20};
-    this.currentRecords = {'space_owner': config.spaceOwner};
-    this.mediaType = config.mediaType;
-    this.$quickEditView = jQuery(
-        '<div class="quick-edit" style="display: none"></div>');
+    this.currentRecords = {'space_owner': MediaThread.currentOwner};
+    this.mediaType = 'all';
 
-    this.$el = config.$el;
-    this.$el.before(this.$quickEditView);
+    this.$modal = jQuery('#collection-modal');
+    this.$el = this.$modal.find('.collection-view');
+    this.$quickEditView = this.$modal.find('.quick-edit');
 
     this.switcher_context = jQuery.extend({}, MediaThread.mustacheHelpers);
 
@@ -86,6 +86,10 @@ CollectionWidget.prototype.mapSignals = function() {
         self.$quickEditView.fadeOut();
         self.$el.fadeIn();
         event.data.self.refresh();
+    });
+    jQuery(window).on('collection.open', {'self': this}, function(event) {
+        var self = event.data.self;
+        self.open();
     });
 };
 
@@ -201,15 +205,23 @@ CollectionWidget.prototype.mapEvents = function() {
         return false;
     });
 
-    self.$el.on('click', '.clickableCitation', function(e) {
-        var assetEvent = new CustomEvent('asset.select',
-                                         {'detail': this.name});
+    self.$el.on('click', '.clickableCitation', function(evt) {
+        var ctx = {
+            'detail': self.decodeCitation(this)
+        };
+        var assetEvent = new CustomEvent('asset.select', ctx);
         document.dispatchEvent(assetEvent);
+        self.$modal.modal('hide');
     });
 
     self.$el.on('click', 'button[name="close-modal"]', function(e) {
         self.$el.hide();
     });
+};
+
+CollectionWidget.prototype.open = function() {
+    // incoming parameters include owner & mediaType
+    this.$modal.modal('show');
 };
 
 CollectionWidget.prototype.filter = function() {
@@ -605,4 +617,31 @@ CollectionWidget.prototype.setLoading = function(isLoading) {
     } else {
         this.$el.find('.ajaxloader').hide();
     }
+};
+
+CollectionWidget.prototype.decodeCitation = function(imgElt) {
+    var annotationDict = false;
+    var reg = String(imgElt.src).match(/#(annotation=.+)$/);
+    if (reg !== null) {
+        annotationDict = {};
+        //stolen from Mochi
+        var pairs = reg[1].replace(
+            /\+/g, '%20').split(/\&amp\;|\&\#38\;|\&#x26;|\&/);
+        pairs.forEach(function(p) {
+            var kv = p.split('=');
+            var key = kv.shift();
+            annotationDict[key] = kv.join('=');
+        });
+        //removing extraneous 0's in the timecode
+        annotationDict.title = (annotationDict.title
+                                  .replace(/([ -])0:/g, '$1')
+                                  .replace(/([ -])0/g, '$1'));
+    } else {
+        var annotationHref = imgElt.getAttribute('name');
+        var linkTitle = imgElt.getAttribute('title');
+        if (linkTitle && annotationHref) {
+            annotationDict = {annotation: annotationHref, title: linkTitle};
+        }
+    }
+    return annotationDict;
 };

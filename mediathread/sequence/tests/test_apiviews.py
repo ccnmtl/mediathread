@@ -71,13 +71,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
     def test_create(self):
         course = CourseFactory()
-        author = UserFactory()
         note = SherdNoteFactory()
         r = self.client.post(
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
-                'author': author.pk,
                 'spine': note.pk,
             })
 
@@ -85,17 +83,15 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
         sa = SequenceAsset.objects.first()
         self.assertEqual(sa.course, sa.course)
-        self.assertEqual(sa.author, sa.author)
+        self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
 
     def test_create_without_spine(self):
         course = CourseFactory()
-        author = UserFactory()
         r = self.client.post(
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
-                'author': author.pk,
                 'spine': '',
             })
 
@@ -103,7 +99,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
         sa = SequenceAsset.objects.first()
         self.assertEqual(sa.course, sa.course)
-        self.assertEqual(sa.author, sa.author)
+        self.assertEqual(sa.author, self.u)
         self.assertIsNone(sa.spine)
 
     def test_update(self):
@@ -113,7 +109,6 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             reverse('sequenceasset-detail', args=(sa.pk,)),
             {
                 'course': sa.course.pk,
-                'author': sa.author.pk,
                 'spine': note.pk,
             })
 
@@ -121,7 +116,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
         sa.refresh_from_db()
         self.assertEqual(sa.course, sa.course)
-        self.assertEqual(sa.author, sa.author)
+        self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
 
 

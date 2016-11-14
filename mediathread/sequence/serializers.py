@@ -24,7 +24,6 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
         fields = ('id', 'spine', 'course',
-                  'author',
                   'sequencemediaelement_set',
                   'sequencetextelement_set',)
 

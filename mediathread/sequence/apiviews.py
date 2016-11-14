@@ -13,6 +13,9 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
     queryset = SequenceAsset.objects.all()
     serializer_class = SequenceAssetSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
 
 class SequenceMediaElementViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)

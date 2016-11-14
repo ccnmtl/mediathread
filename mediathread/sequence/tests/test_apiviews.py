@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 from courseaffils.tests.factories import CourseFactory
-from mediathread.factories import SherdNoteFactory, UserFactory
+from mediathread.factories import SherdNoteFactory, UserFactory, ProjectFactory
+from mediathread.projects.models import ProjectSequenceAsset
 from mediathread.sequence.models import SequenceAsset
 from mediathread.sequence.tests.mixins import LoggedInTestMixin
 from mediathread.sequence.tests.factories import (
@@ -72,11 +73,13 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
     def test_create(self):
         course = CourseFactory()
         note = SherdNoteFactory()
+        project = ProjectFactory()
         r = self.client.post(
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
                 'spine': note.pk,
+                'project': project.pk,
             })
 
         self.assertEqual(r.status_code, 201)
@@ -86,13 +89,20 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
 
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        psa = ProjectSequenceAsset.objects.first()
+        self.assertEqual(psa.sequence_asset, sa)
+        self.assertEqual(psa.project, project)
+
     def test_create_without_spine(self):
         course = CourseFactory()
+        project = ProjectFactory()
         r = self.client.post(
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
                 'spine': '',
+                'project': project.pk,
             })
 
         self.assertEqual(r.status_code, 201)
@@ -101,6 +111,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, self.u)
         self.assertIsNone(sa.spine)
+
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        psa = ProjectSequenceAsset.objects.first()
+        self.assertEqual(psa.sequence_asset, sa)
+        self.assertEqual(psa.project, project)
 
     def test_update(self):
         sa = SequenceAssetFactory(author=self.u)

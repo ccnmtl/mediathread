@@ -4422,3 +4422,22 @@ ul.section-tabs>li>a.active {
 .collection-widget table, .collection-widget tr, .collection-widget td {
     border: none;
 }
+
+.mce-i-icon-collection {
+    width:100px;
+    display:block;
+    height:20px;
+    background:black;
+    color:white;
+    text-decoration:none;
+    padding-left:20px;
+}
+.mce-i-icon-collection:before{
+    content: '';
+    background: url('../img/viewfullcollection.png');
+    background-size:cover;
+    position:absolute;
+    width: 12px;
+    height: 12px;
+    margin-top: 2px;
+}

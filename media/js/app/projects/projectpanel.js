@@ -4,6 +4,14 @@
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
+/**
+ * Listens For:
+ * asset.select > when an asset is selected
+ *
+ * Signals:
+ * collection.open
+ */
+
 var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
     var self = this;
 
@@ -103,6 +111,10 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         self.setDirty(true);
     });
 
+    document.addEventListener('asset.select', function(event) {
+        self.insertCitation(event.detail);
+    });
+
     // Setup the media display window.
     self.citationView = new CitationView();
     self.citationView.init({
@@ -128,6 +140,17 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
                 ed.on('change', function(e) {
                     self.setDirty(true);
                 });
+
+                if (MediaThread.flags.indexOf('collection-widget') > -1) {
+                    ed.addButton('opencollection', {
+                        text: 'Open Collection',
+                        icon: 'icon-collection',
+                        tooltip: 'Open Collection',
+                        onclick: function() {
+                            jQuery(window).trigger('collection.open', []);
+                        }
+                    });
+                }
             },
             selector: '#' + panel.context.project.id + '-project-content'
         });
@@ -883,4 +906,18 @@ ProjectPanelHandler.prototype._validTitle = function(interactive) {
     } else {
         return true;
     }
+};
+
+ProjectPanelHandler.prototype.insertCitation = function(annotation) {
+    var klass = 'materialCitation';
+    var rv = ' <a href="' + annotation.annotation + '" class="' + klass + '';
+    if (annotation.type) {
+        rv += ' asset-' + annotation.type;
+    }
+    if (annotation.range1 === 0) {
+        rv += ' asset-whole';
+    }
+    rv += '">' + decodeURI(annotation.title) + '</a> ';
+
+    tinymce.activeEditor.insertContent(rv);
 };

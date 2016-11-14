@@ -51,6 +51,7 @@
 
             if (jQuery('#asset-view-details').length > 0) {
                 window.annotationList.init({
+                    'parent': this.$el,
                     'asset_id': options.itemId,
                     'annotation_id': undefined,
                     'update_history': false,

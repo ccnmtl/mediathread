@@ -141,7 +141,6 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
     }
 
     var $dlg = jQuery('#asset-workspace-panel-container');
-    var elt = $dlg.find('div.asset-view-tabs').hide();
 
     self.dialogWindow = $dlg.dialog({
         open: function() {
@@ -156,12 +155,8 @@ AssetPanelHandler.prototype.dialog = function(event, assetId, annotationId) {
                 'update_history': false,
                 'vocabulary': self.panel.vocabulary,
                 'view_callback': function() {
-                    if (assetId !== self.citationView.asset_id ||
-                            annotationId !== self.citationView.annotation_id) {
-                        self.citationView.openCitationById(
-                            null, assetId, annotationId);
-                    }
-                    jQuery(elt).fadeIn('slow');
+                    self.citationView.openCitationById(
+                        null, assetId, annotationId);
                 }
             });
         },

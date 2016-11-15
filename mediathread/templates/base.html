@@ -230,7 +230,13 @@
             {% if request.user.is_authenticated %}
                 this.current_user = {{request.user.id}};
                 this.current_username = "{{request.user.username}}";
-                this.user_full_name = "{%public_name for request.user %}";
+                this.user_full_name = "{% public_name for request.user %}";
+                {% if course %}
+                    this.current_course = {{ course.pk }};
+                {% endif %}
+                {% if assignment %}
+                    this.current_project = {{ assignment.pk }};
+                {% endif %}
                 this.flags = [
                     {% flag "collection-widget" %}
                         'collection-widget'
@@ -248,7 +254,7 @@
         <script type="text/javascript" src='{% static "js/app/browserdetect.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/mediathread_setup.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/panel.js" %}'></script>
-        <script  type="text/javascript" src='{% static "js/app/shield.js" %}'></script>
+        <script type="text/javascript" src='{% static "js/app/shield.js" %}'></script>
 
         <!--  Asset related -->
         <script type="text/javascript" src='{% static "js/app/assetmgr/asset.js" %}'></script>

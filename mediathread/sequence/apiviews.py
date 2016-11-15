@@ -1,4 +1,6 @@
 from rest_framework import viewsets, permissions
+from django.shortcuts import get_object_or_404
+from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
@@ -14,7 +16,11 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
     serializer_class = SequenceAssetSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        instance = serializer.save(author=self.request.user)
+        assignment_pid = serializer.context['request'].data.get('project')
+        p = get_object_or_404(Project, pk=assignment_pid)
+        ProjectSequenceAsset.objects.get_or_create(
+            sequence_asset=instance, project=p)
 
 
 class SequenceMediaElementViewSet(viewsets.ReadOnlyModelViewSet):

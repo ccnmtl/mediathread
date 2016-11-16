@@ -1,13 +1,19 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
+from rest_framework import routers
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
     SequenceAssignmentEditView)
+from mediathread.projects.apiviews import ProjectSequenceAssetViewSet
+
+router = routers.DefaultRouter()
+router.register(r'projectsequenceassets', ProjectSequenceAssetViewSet)
 
 
 urlpatterns = [
+    url(r'^api/', include(router.urls)),
     url(r'^create/ja/$', SequenceAssignmentEditView.as_view(), {},
         name='sequence-assignment-create'),
 

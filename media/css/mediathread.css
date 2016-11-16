@@ -1297,6 +1297,15 @@ div.mediathread-panel.asset-workspace-dialog div.asset-view-tabs {
     width: 285px;
 }
 
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    background-color: white;
+    border-color: rgb(170, 170, 170);
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+    color: #333333;
+}
+
 form#edit-global-annotation-form input[name="asset-title"],
 #id_annotation-title {
     height: 24px;
@@ -3497,7 +3506,22 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
     outline: 0;
-    padding-bottom: 0.6em;
+    padding-bottom: 1em;
+    background-color: white;
+    border: 1px solid #aaa;
+    border-bottom: 0;
+}
+
+ul#asset-details-annotations-list h3.ui-accordion-header-active a {
+    color: #333;
+}
+
+.ui-widget-content {
+    border: 1px solid #aaa;
+}
+
+.ui-state-active .ui-icon, .ui-button:active .ui-icon {
+    background-image: url('../jquery/css/images/ui-icons_444444_256x240.png');
 }
 
 div.asset-view-con  tainer div.asset-view-details h1 {
@@ -3638,12 +3662,17 @@ div#annotation-filter-menu {
     float: right;
     margin-left: 8px;
     margin-right: 8px;
-    margin-top: -5px;
+    margin-top: 0px;
     border: none;
+    color: #333;
 }
 
 .annotation-listitem-icon.delete {
     margin-right: 0px;
+}
+
+input[name="copy-selection-icon"] {
+    margin-top: -5px;
 }
 
 /** Migrate Course Materials **/

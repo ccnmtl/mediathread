@@ -861,6 +861,8 @@
                 }
             };
 
+            context = jQuery.extend({}, context, MediaThread.mustacheHelpers);
+
             self.getAnnotationDisplayElements()
                 .fadeOut()
                 .promise()

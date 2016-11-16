@@ -12,5 +12,10 @@ class ProjectSequenceAssetViewSet(viewsets.ReadOnlyModelViewSet):
     def list(self, request):
         queryset = ProjectSequenceAsset.objects.filter(
             sequence_asset__author=request.user)
+
+        project = request.query_params.get('project', None)
+        if project is not None:
+            queryset = queryset.filter(project__pk=project)
+
         serializer = ProjectSequenceAssetSerializer(queryset, many=True)
         return Response(serializer.data)

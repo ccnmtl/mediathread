@@ -54,15 +54,16 @@
             <input type="hidden" class="record" value="{{id}}" name="record-id" />
             <div class="actions">
                 {{#editable}}
-                    <a class="collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
+                    <a class="btn btn-xs btn-default collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
                         <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
                     </a>
-                    <a class="collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
+                    <a class="btn btn-xs btn-default collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
                         <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
                     </a>
                 {{/editable}}
-                <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
-                    <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                <a class="btn btn-xs btn-default collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                    <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection" />
+                    Create selection
                 </a>
             </div>
             {{#citable}}
@@ -173,11 +174,13 @@
                                             {{#editable}}
                                                 <td class="selection-trash">
                                                     <div class="actions">
-                                                        <a class="collection-choice delete-annotation" href="{{id}}" title="Delete selection">
-                                                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Delete selection"  />
-                                                        </a>
-                                                        <a class="collection-choice edit-annotation" href="{{id}}" title="Quick edit selection attributes">
+                                                        <a class="btn btn-xs btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
                                                             <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
+                                                            Edit Selection
+                                                        </a>
+                                                        <a class="btn btn-xs btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
+                                                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Remove selection from your collection" />
+                                                            Remove Selection
                                                         </a>
                                                     </div>
                                                 </td>

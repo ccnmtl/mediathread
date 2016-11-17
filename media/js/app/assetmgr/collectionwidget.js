@@ -65,7 +65,7 @@ CollectionWidget.prototype.mapSignals = function() {
     var self = this;
 
     jQuery(window).on('asset.on_delete', {'self': this}, function(event) {
-        event.data.self.refresh();
+        self.refresh();
     });
     jQuery(window).on('annotation.on_cancel', {'self': this}, function(event) {
         self.$quickEditView.hide();
@@ -74,7 +74,7 @@ CollectionWidget.prototype.mapSignals = function() {
     jQuery(window).on('annotation.on_create', {'self': this}, function(event) {
         self.$quickEditView.fadeOut();
         self.$el.fadeIn();
-        event.data.self.refresh();
+        self.refresh();
     });
     jQuery(window).on('annotation.on_delete', {'self': this}, function(event) {
         self.refresh();

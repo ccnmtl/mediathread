@@ -4510,8 +4510,8 @@ ul.section-tabs>li>a.active {
 #collection-modal .collection-choice {
     display: block;
     margin-top: 7px;
-    margin-right: 10px;
-    width: 132px;
+    margin-right: 5px;
+    width: 140px;
     text-align: left;
 }
 

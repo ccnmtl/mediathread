@@ -100,12 +100,11 @@ button.jux-play {
     background-color: yellow;
 }
 
-.jux-spine-display button {
+.jux-spine-display .jux-spine-revise {
     display: none;
-    position: absolute;
 }
 
-.jux-spine-display:hover button {
+.jux-spine-display:hover .jux-spine-revise {
     display: block;
 }
 
@@ -129,8 +128,8 @@ button.jux-play {
     height: 100%;
     background-color: #dedede;
     text-align: center;
-    margin-top: 2px;
-    margin-bottom: 6px;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .jux-track-element-manager {
@@ -225,7 +224,7 @@ button.jux-play {
     background-color: #000;
 }
 
-.jux-duration-controls {
+.jux-time-controls {
     margin-left: 5px;
 }
 
@@ -247,7 +246,8 @@ button.jux-play {
     width: 400px;
     height: 500px;
     overflow-y: scroll;
-    z-index: 9;
+    z-index: 51;
     background-color: white;
     padding: 10px;
+    border: 1px solid black;
 }

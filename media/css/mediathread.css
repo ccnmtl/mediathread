@@ -4470,3 +4470,59 @@ ul.section-tabs>li>a.active {
     height: 12px;
     margin-top: 2px;
 }
+
+#collection-modal .modal-dialog {
+    width: 650px !important;
+}
+
+#collection-modal .modal-body {
+    max-height: 85vh; /* Sets the height to 80/100ths of the viewport. */
+    overflow-y: auto;
+    margin-bottom: 2px;
+}
+
+#collection-modal .materials {
+    background-color: white;
+    margin: 0;
+}
+
+#collection-modal .gallery-item-project {
+    margin-left: 0;
+    width: 100%;
+}
+
+#collection-modal .collection-widget span.citationTemplate {
+    float: left;
+}
+
+#collection-modal .collection-widget .actions {
+    margin-top: 0;
+}
+
+#collection-modal .collection-widget .asset-title-link.insert {
+    float: left;
+}
+
+#collection-modal .collection-widget table, .collection-widget tr, .collection-widget td {
+    border: none;
+}
+
+#collection-modal .collection-choice {
+    display: block;
+    margin-top: 7px;
+    margin-right: 10px;
+    width: 132px;
+    text-align: left;
+}
+
+#collection-modal .selection-level-info {
+    padding: 5px 0px 5px 20px;
+}
+
+#collection-modal img.materialCitation {
+    margin: 1px 0 0 -5px;
+}
+
+.spacer {
+    margin-top: 10px;
+}

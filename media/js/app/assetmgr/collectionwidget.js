@@ -62,34 +62,34 @@ CollectionWidget.prototype.postInitialize = function() {
 };
 
 CollectionWidget.prototype.mapSignals = function() {
+    var self = this;
+
     jQuery(window).on('asset.on_delete', {'self': this}, function(event) {
-        var self = event.data.self;
         event.data.self.refresh();
     });
     jQuery(window).on('annotation.on_cancel', {'self': this}, function(event) {
-        var self = event.data.self;
         self.$quickEditView.hide();
         self.$el.fadeIn();
     });
     jQuery(window).on('annotation.on_create', {'self': this}, function(event) {
-        var self = event.data.self;
         self.$quickEditView.fadeOut();
         self.$el.fadeIn();
         event.data.self.refresh();
     });
     jQuery(window).on('annotation.on_delete', {'self': this}, function(event) {
-        var self = event.data.self;
-        event.data.self.refresh();
+        self.refresh();
     });
     jQuery(window).on('annotation.on_save', {'self': this}, function(event) {
-        var self = event.data.self;
         self.$quickEditView.fadeOut();
         self.$el.fadeIn();
-        event.data.self.refresh();
+        self.refresh();
     });
     jQuery(window).on('collection.open', {'self': this}, function(event) {
-        var self = event.data.self;
         self.open();
+    });
+    self.$modal.on('hidden.bs.modal', function() {
+        self.$quickEditView.fadeOut();
+        self.$el.fadeIn();
     });
 };
 
@@ -161,8 +161,7 @@ CollectionWidget.prototype.mapEvents = function() {
 
     self.$el.on(
         'click', 'a.collection-choice.edit-asset', function(evt) {
-            var src = evt.srcElement || evt.target || evt.originalTarget;
-            var bits = src.parentNode.href.split('/');
+            var bits = evt.currentTarget.href.split('/');
             var assetId = bits[bits.length - 1];
             self.quickEdit('Edit Item', 'asset.edit', assetId);
             return false;
@@ -170,8 +169,7 @@ CollectionWidget.prototype.mapEvents = function() {
 
     self.$el.on(
         'click', 'a.collection-choice.delete-asset', function(evt) {
-            var src = evt.srcElement || evt.target || evt.originalTarget;
-            var bits = src.parentNode.href.split('/');
+            var bits = evt.currentTarget.href.split('/');
             var asset_id = bits[bits.length - 1];
             self.deleteAsset(asset_id);
             return false;
@@ -179,23 +177,20 @@ CollectionWidget.prototype.mapEvents = function() {
 
     self.$el.on(
         'click', 'a.collection-choice.delete-annotation', function(evt) {
-            var src = evt.srcElement || evt.target || evt.originalTarget;
-            var bits = src.parentNode.href.split('/');
+            var bits = evt.currentTarget.href.split('/');
             return self.deleteAnnotation(bits[bits.length - 1]);
         });
 
     self.$el.on(
         'click', 'a.collection-choice.create-annotation', function(evt) {
-            var src = evt.srcElement || evt.target || evt.originalTarget;
-            var bits = src.parentNode.href.split('/');
+            var bits = evt.currentTarget.href.split('/');
             var assetId = bits[bits.length - 1];
             self.quickEdit('Create Selection', 'annotation.create', assetId);
             return false;
         });
 
     self.$el.on('click', 'a.collection-choice.edit-annotation', function(evt) {
-        var src = evt.srcElement || evt.target || evt.originalTarget;
-        var bits = src.parentNode.href.split('/');
+        var bits = evt.currentTarget.href.split('/');
         var annotationId = bits[bits.length - 1];
         var assetId = jQuery('#annotation-' + annotationId)
                            .parents('div.record')
@@ -212,10 +207,6 @@ CollectionWidget.prototype.mapEvents = function() {
         var assetEvent = new CustomEvent('asset.select', ctx);
         document.dispatchEvent(assetEvent);
         self.$modal.modal('hide');
-    });
-
-    self.$el.on('click', 'button[name="close-modal"]', function(e) {
-        self.$el.hide();
     });
 };
 
@@ -484,8 +475,8 @@ CollectionWidget.prototype.initCitationView = function() {
         // Setup the media display window.
         this.citationView = new CitationView();
         this.citationView.init({
-            'default_target': 'asset-workspace-videoclipbox',
-            'presentation': 'medium',
+            'default_target': 'asset-workspace-videoclipbox2',
+            'presentation': 'small',
             'clipform': true,
             'autoplay': false,
             'winHeight': function() {
@@ -513,11 +504,7 @@ CollectionWidget.prototype.quickEdit = function(title, evtType,
         'update_history': false,
         'vocabulary': self.vocabulary,
         'view_callback': function() {
-            if (assetId !== self.citationView.asset_id ||
-                    annotationId !== self.citationView.annotation_id) {
-                self.citationView.openCitationById(
-                    null, assetId, annotationId);
-            }
+            self.citationView.openCitationById(null, assetId, annotationId);
         }
     });
 };

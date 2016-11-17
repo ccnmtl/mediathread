@@ -92,6 +92,8 @@ ANONYMOUS_PATHS = (
     '/admin/',
     '/help/',
     '/api/user/courses',
+    '/sequence/api/',
+    '/project/api/',
 )
 
 NON_ANONYMOUS_PATHS = (

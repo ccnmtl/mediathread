@@ -378,7 +378,7 @@ if (!Sherd.Image.OpenLayers) {
                 }
             },
             'small': {
-                height: function () { return '240px'; },
+                height: function () { return '390px'; },
                 width: function () { return '320px'; },
                 initialize: function () {/*noop*/},
                 resize: function () {}

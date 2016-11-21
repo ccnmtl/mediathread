@@ -497,7 +497,7 @@ CollectionWidget.prototype.quickEdit = function(title, evtType,
     // Setup the edit view
     var self = this;
     window.annotationList.init({
-        'parent': this.$el,
+        'parent': this.$modal,
         'asset_id': assetId,
         'annotation_id': annotationId,
         'edit_state': evtType,

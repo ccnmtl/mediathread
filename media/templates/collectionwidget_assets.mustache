@@ -53,201 +53,184 @@
         <div id="record-{{id}}" class="record record-{{primary_type}} gallery-item-project">
             <input type="hidden" class="record" value="{{id}}" name="record-id" />
             <div class="actions">
-                {{#editable}}
-                    <a class="btn btn-xs btn-default collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
-                    </a>
-                    <a class="btn btn-xs btn-default collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
-                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                    </a>
-                {{/editable}}
                 <a class="btn btn-xs btn-default collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
                     <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection" />
                     Create selection
                 </a>
+                {{#editable}}
+                    <a class="btn btn-xs btn-default collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
+                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
+                        Edit Item
+                    </a>
+                    <a class="btn btn-xs btn-default collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
+                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
+                        Remove Item
+                    </a>
+                {{/editable}}
             </div>
-            {{#citable}}
-                <span class="citationTemplate">
-                    <img class="materialCitation clickableCitation" alt=""
-                    src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0"
-                    title="Add item to the composition"
-                    name="{{local_url}}"/>
-                </span>
-            {{/citable}}
-            <a class="asset-title-link insert"
-                {{#title}}
-                    title="{{title}}"
-                {{/title}}
-                {{^title}}
-                    title="-Untitled-"
-                {{/title}}
-                target="_blank" href="{{local_url}}">
-                <h4 id="asset-item-{{id}}" class="asset_title">
+            <div class="pull-left">
+                {{#citable}}
+                    <span class="citationTemplate">
+                        <img class="materialCitation clickableCitation" alt=""
+                        src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0"
+                        title="Add item to the composition"
+                        name="{{local_url}}"/>
+                    </span>
+                {{/citable}}
+                <a class="asset-title-link insert"
                     {{#title}}
-                        {{#ellipsis35}}{{title}}{{/ellipsis35}}
+                        title="{{title}}"
                     {{/title}}
                     {{^title}}
-                        -Untitled-
+                        title="-Untitled-"
                     {{/title}}
-                </h4>
-            </a>
-            <table class="item-level-info">
-                <tr>
-                    <td class="item-thumb">
-                        {{#thumb}}
-                            <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
-                        {{/thumb}}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="item-meta">
-                        {{#global_annotation}}
-                            <ul class="record-metadata-list">
-                                {{#vocabulary}}
-                                    <li class="annotation-global-body meta">
-                                        <span class="metadata-label">{{display_name}}: </span>
-                                        <span class="metadata-value">
-                                            {{#terms}}
-                                                {{display_name}}
-                                            {{/terms}}
-                                        </span>
-                                    </li>
-                                {{/vocabulary}}
+                    target="_blank" href="{{local_url}}">
+                    <h4 id="asset-item-{{id}}" class="asset_title">
+                        {{#title}}
+                            {{#ellipsis35}}{{title}}{{/ellipsis35}}
+                        {{/title}}
+                        {{^title}}
+                            -Untitled-
+                        {{/title}}
+                    </h4>
+                </a>
+                <table class="item-level-info">
+                    <tr>
+                        <td class="item-thumb">
+                            {{#thumb}}
+                                <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
+                            {{/thumb}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="item-meta">
+                            {{#global_annotation}}
+                                <ul class="record-metadata-list">
+                                    {{#vocabulary}}
+                                        <li class="annotation-global-body meta">
+                                            <span class="metadata-label">{{display_name}}: </span>
+                                            <span class="metadata-value">
+                                                {{#terms}}
+                                                    {{display_name}}
+                                                {{/terms}}
+                                            </span>
+                                        </li>
+                                    {{/vocabulary}}
 
-                                {{#metadata.tags.length}}
-                                    <li class="annotation-global-tags meta">
-                                        <span class="metadata-label">Item Tags:</span>
-                                        <span class="metadata-value">
-                                            {{#metadata.tags}}
-                                                <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                            {{/metadata.tags}}
-                                        </span>
-                                    </li>
-                                {{/metadata.tags.length}}
+                                    {{#metadata.tags.length}}
+                                        <li class="annotation-global-tags meta">
+                                            <span class="metadata-label">Item Tags:</span>
+                                            <span class="metadata-value">
+                                                {{#metadata.tags}}
+                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                {{/metadata.tags}}
+                                            </span>
+                                        </li>
+                                    {{/metadata.tags.length}}
 
-                                {{#metadata.body}}
-                                    <li class="annotation-global-body meta">
-                                        <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{metadata.body}}</span>
-                                    </li>
-                                {{/metadata.body}}
-                            </ul>
-                        {{/global_annotation}}
-                    </td>
-                </tr>
-            </table>
-
+                                    {{#metadata.body}}
+                                        <li class="annotation-global-body meta">
+                                            <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{metadata.body}}</span>
+                                        </li>
+                                    {{/metadata.body}}
+                                </ul>
+                            {{/global_annotation}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="clearfix"></div>
             <div id="record-{{id}}-metadata" class="record-metadata">
                 {{#annotation_count}}
                     <div class="asset-clips">
                         {{#annotations}}
                             {{^is_null}}
-                                <div id="annotation-{{id}}">
-                                    <table class="selection-level-info">
-                                        <tr>
-                                            <td class="selection-inserter">
-                                                {{#citable}}
-                                                    <span class="citationTemplate">
-                                                        <img class="materialCitation clickableCitation" alt=""
-                                                        src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}"
-                                                        title="Add selection to the composition"
-                                                        name="{{url}}"/>
+                                <div id="annotation-{{id}}" class="selection-level-info">
+                                    {{#editable}}
+                                        <div class="actions">
+                                            <a class="btn btn-xs btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
+                                                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
+                                                Edit Selection
+                                            </a>
+                                            <a class="btn btn-xs btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
+                                                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Remove selection from your collection" />
+                                                Remove Selection
+                                            </a>
+                                        </div>
+                                    {{/editable}}
+                                    <div class="pull-left">
+                                        <div>
+                                            {{#citable}}
+                                                <img class="materialCitation clickableCitation" alt=""
+                                                    src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}"
+                                                    title="Add selection to the composition"
+                                                    name="{{url}}"/>
+                                            {{/citable}}
+                                            <h4><a target="_blank"
+                                                class="materialCitationLink"
+                                                title="Full Selection Details"
+                                                href="{{url}}">
+                                                {{#metadata.title}}
+                                                    {{{metadata.title}}}
+                                                {{/metadata.title}}
+                                                {{^metadata.title}}
+                                                    -Untitled-
+                                                {{/metadata.title}}
+                                            </a></h4>
+                                        </div>
+                                        <div class="annotation-thumb-{{id}}"></div>
+                                        <div class="metadata-container">
+                                            <div class="meta">
+                                                <span class="metadata-label">Author:</span>
+                                                <span class="metadata-value">{{author.public_name}}</span>
+                                            </div>
+                                        </div>
+                                        {{#metadata}}
+                                            {{#timecode}}
+                                                <div class="annotation-timecode meta">
+                                                    <span class="metadata-label">Time code:</span>
+                                                    <span class="metadata-value">{{timecode}}</span>
+                                                </div>
+                                            {{/timecode}}
+                                        {{/metadata}}
+                                        <div id="annotation-body-{{id}}" class="meta">
+                                            {{#vocabulary}}
+                                                <div>
+                                                    <span class="metadata-label">{{display_name}}: </span>
+                                                    <span class="metadata-value">
+                                                        {{#terms}}
+                                                            {{display_name}}
+                                                        {{/terms}}
                                                     </span>
-                                                {{/citable}}
-                                            </td>
-                                            <td class="selection-meta-title">
-                                                <div class="metadata-container">
-                                                    <a target="_blank"
-                                                        class="materialCitationLink"
-                                                        title="Full Selection Details"
-                                                        href="{{url}}">
-                                                        {{#metadata.title}}
-                                                            {{{metadata.title}}}
-                                                        {{/metadata.title}}
-                                                        {{^metadata.title}}
-                                                            -Untitled-
-                                                        {{/metadata.title}}
-                                                    </a>
                                                 </div>
-                                            </td>
+                                            {{/vocabulary}}
 
-
-                                            {{#editable}}
-                                                <td class="selection-trash">
-                                                    <div class="actions">
-                                                        <a class="btn btn-xs btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
-                                                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
-                                                            Edit Selection
-                                                        </a>
-                                                        <a class="btn btn-xs btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
-                                                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Remove selection from your collection" />
-                                                            Remove Selection
-                                                        </a>
+                                            {{#metadata}}
+                                                {{#tags.length}}
+                                                    <div><span class="metadata-label">Tags:</span>
+                                                    <span class="metadata-value">
+                                                        {{#tags}}
+                                                            <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                        {{/tags}}
+                                                    </span>
                                                     </div>
-                                                </td>
-                                            {{/editable}}
-                                        </tr>
-                                        <tr>
-                                            <td />
-                                            <td class="selection-thumb" colspan="3">
-                                                <div class="annotation-thumb-{{id}}"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="selection-meta" colspan="4">
-                                                <div class="metadata-container">
-                                                    <div class="meta">
-                                                        <span class="metadata-label">Author:</span>
-                                                        <span class="metadata-value">{{author.public_name}}</span></div>
-                                                </div>
-                                                {{#metadata}}
-                                                    {{#timecode}}
-                                                        <div class="annotation-timecode meta">
-                                                            <span class="metadata-label">Time code:</span>
-                                                            <span class="metadata-value">{{timecode}}</span></div>
-                                                    {{/timecode}}
-                                                {{/metadata}}
-
-                                                <div id="annotation-body-{{id}}" class="meta">
-
-                                                    {{#vocabulary}}
-                                                        <div>
-                                                            <span class="metadata-label">{{display_name}}: </span>
-                                                            <span class="metadata-value">
-                                                                {{#terms}}
-                                                                    {{display_name}}
-                                                                {{/terms}}
-                                                            </span>
-                                                        </div>
-                                                    {{/vocabulary}}
-
-                                                    {{#metadata}}
-                                                        {{#tags.length}}
-                                                            <div><span class="metadata-label">Tags:</span>
-                                                            <span class="metadata-value">
-                                                                {{#tags}}
-                                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
-                                                                {{/tags}}
-                                                            </span>
-                                                            </div>
-                                                        {{/tags.length}}
-                                                        {{#body}}
-                                                            <div>
-                                                                <span class="metadata-label">Note:</span>
-                                                                <span class="metadata-value">{{body}}</span>
-                                                            </div>
-                                                        {{/body}}
-                                                    {{/metadata}}
-                                                </div>
+                                                {{/tags.length}}
+                                                {{#body}}
+                                                    <div>
+                                                        <span class="metadata-label">Note:</span>
+                                                        <span class="metadata-value">{{body}}</span>
+                                                    </div>
+                                                {{/body}}
+                                            {{/metadata}}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
                                 </div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                    </div>
-                    {{/is_null}} {{! annotation is not null }}
+                            {{/is_null}} {{! annotation is not null }}
                         {{/annotations}} {{! iterate annotations }}
-            </div>{{! class="asset-clips" }}
-                        {{/annotation_count}}
-                        {{! annotations exist }}
+                    </div>{{! class="asset-clips" }}
+                {{/annotation_count}}
+            {{! annotations exist }}
         </div> {{! end record metadata }}
     </div> {{! end id="record-id" }}
     </div> {{! end class="materials column-contents scroll" }}

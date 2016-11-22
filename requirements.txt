@@ -81,7 +81,7 @@ django_user_agents==0.3.0
 gunicorn==19.6.0
 traitlets==4.3.1
 ipython_genutils==0.1.0
-path.py==8.2.1
+path.py==9.0
 backports.shutil_get_terminal_size==1.0.0
 decorator==4.0.10
 pexpect==4.2.1

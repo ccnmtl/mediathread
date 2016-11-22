@@ -451,13 +451,13 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
 
     this.updateSwitcher();
 
-    var $window = jQuery(window);
-    var $document = jQuery(document);
-
     var self = this;
-    $window.scroll(function() {
-        var height = $document.height() - $window.height() - 300;
-        if (!self.getLoading() && $window.scrollTop() >= height) {
+    var $body = this.$modal.find('.modal-body');
+
+    $body.scroll(function() {
+        if (!self.getLoading() &&
+            (jQuery(this).scrollTop() + jQuery(this).outerHeight() >=
+             jQuery(this)[0].scrollHeight - 10)) {
             self.nextPage(self.current_records);
         }
     });
@@ -466,7 +466,7 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
 
     $elt.fadeIn('slow');
 
-    $window.trigger('resize');
+    jQuery(window).trigger('resize');
     self.setLoading(false);
 };
 

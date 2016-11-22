@@ -642,3 +642,6 @@ class ProjectSequenceAsset(models.Model):
     sequence_asset = models.ForeignKey(SequenceAsset)
     # Points to an "Assignment" Project.
     project = models.ForeignKey(Project)
+
+    class Meta:
+        unique_together = ('sequence_asset', 'project')

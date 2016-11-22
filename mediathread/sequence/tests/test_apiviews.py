@@ -94,6 +94,102 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(psa.sequence_asset, sa)
         self.assertEqual(psa.project, project)
 
+    def test_create_with_track_elements(self):
+        course = CourseFactory()
+        note = SherdNoteFactory()
+        project = ProjectFactory()
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'sequencemediaelement_set': [
+                ],
+                'sequencetextelement_set': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ]
+            })
+
+        self.assertEqual(r.status_code, 201)
+
+        sa = SequenceAsset.objects.first()
+        self.assertEqual(sa.course, sa.course)
+        self.assertEqual(sa.author, self.u)
+        self.assertEqual(sa.spine, note)
+
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        psa = ProjectSequenceAsset.objects.first()
+        self.assertEqual(psa.sequence_asset, sa)
+        self.assertEqual(psa.project, project)
+
+        # TODO
+        # self.assertEqual(SequenceTextElement.objects.count(), 1)
+
+    def test_create_duplicate(self):
+        course = CourseFactory()
+        note = SherdNoteFactory()
+        project = ProjectFactory()
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'sequencemediaelement_set': [
+                ],
+                'sequencetextelement_set': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ]
+            })
+
+        self.assertEqual(r.status_code, 201)
+
+        sa = SequenceAsset.objects.first()
+        self.assertEqual(sa.course, sa.course)
+        self.assertEqual(sa.author, self.u)
+        self.assertEqual(sa.spine, note)
+
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        psa = ProjectSequenceAsset.objects.first()
+        self.assertEqual(psa.sequence_asset, sa)
+        self.assertEqual(psa.project, project)
+
+        # TODO
+        # self.assertEqual(SequenceTextElement.objects.count(), 1)
+
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'sequencemediaelement_set': [
+                ],
+                'sequencetextelement_set': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ]
+            })
+
+        # TODO
+        # self.assertEqual(
+        #     r.status_code, 400,
+        #     'Creating two SequenceAssets for the same combination '
+        #     'of author / project should be invalid.')
+        # self.assertEqual(SequenceAsset.objects.count(), 1)
+
     def test_create_without_spine(self):
         course = CourseFactory()
         project = ProjectFactory()
@@ -116,6 +212,38 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         psa = ProjectSequenceAsset.objects.first()
         self.assertEqual(psa.sequence_asset, sa)
         self.assertEqual(psa.project, project)
+
+    def test_create_without_spine_with_track_elements(self):
+        course = CourseFactory()
+        project = ProjectFactory()
+        note = SherdNoteFactory()
+        self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': '',
+                'project': project.pk,
+                'sequencemediaelement_set': [
+                    {
+                        'media': note.pk,
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ],
+                'sequencetextelement_set': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ]
+            })
+
+        # TODO
+        # self.assertEqual(
+        #     r.status_code, 400,
+        #     'Attempting to create a SequenceAsset without a spine but '
+        #     'with track elements should be invalid.')
 
     def test_update(self):
         sa = SequenceAssetFactory(author=self.u)

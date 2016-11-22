@@ -3113,12 +3113,13 @@ table.item-level-info td.item-meta {
     float: left;
 }
 
-table.selection-level-info {
+.selection-level-info {
     margin: 8px 0 0 0;
     border: none;
     width: 100%;
     border-collapse: collapse;
     background-color:#f7f7f7;
+    text-align: left;
 }
 
 table.selection-level-info td {
@@ -4515,12 +4516,16 @@ ul.section-tabs>li>a.active {
     text-align: left;
 }
 
+#collection-modal .actions a {
+    float: none;
+}
+
 #collection-modal .selection-level-info {
-    padding: 5px 0px 5px 20px;
+    padding: 5px 10px 5px 20px;
 }
 
 #collection-modal img.materialCitation {
-    margin: 1px 0 0 -5px;
+    margin: 1px 5px 0 -5px;
 }
 
 .spacer {

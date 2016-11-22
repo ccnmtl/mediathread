@@ -9,7 +9,7 @@ mccabe==0.5.2
 pycodestyle==2.0
 enum34==1.1.6
 configparser==3.5.0
-flake8==3.2.0
+flake8==3.2.1
 lxml==3.6.4
 fuzzywuzzy==0.14.0  # lettuce
 mock==2.0.0  # sure
@@ -26,7 +26,7 @@ lettuce==0.2.24.ccnmtl
 selenium==3.0.1
 six==1.10.0
 sqlparse==0.2.2  # django-debug-toolbar
-python-mimeparse==1.5.5  # tastypie
+python-mimeparse==1.6.0  # tastypie
 python-dateutil==2.6.0  # tastypie
 defusedxml==0.4.1  # tastypie
 django-tastypie==0.13.3
@@ -81,7 +81,7 @@ django_user_agents==0.3.0
 gunicorn==19.6.0
 traitlets==4.3.1
 ipython_genutils==0.1.0
-path.py==8.2.1
+path.py==9.0
 backports.shutil_get_terminal_size==1.0.0
 decorator==4.0.10
 pexpect==4.2.1

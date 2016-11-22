@@ -130,7 +130,7 @@ if (!Sherd.Image.FSIViewer) {
                 }
             },
             'small': {
-                height: function () { return '240px'; },
+                height: function () { return '390px'; },
                 width: function () { return '320px'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=undefined&amp;MenuAlign=BL&amp;HideUI=false',
                 resize: function () {/*noop*/}

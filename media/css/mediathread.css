@@ -4528,6 +4528,21 @@ ul.section-tabs>li>a.active {
     margin: 1px 5px 0 -5px;
 }
 
+#collection-modal .asset-view-tabs {
+    width: 45%;
+    float: left;
+    margin-left: 20px;
+}
+
+#collection-modal .asset-view-tabs h2 {
+    margin-top: 0px;
+}
+
+#collection-modal .videoclipbox {
+    float: left;
+    width: 51%;
+}
+
 .spacer {
     margin-top: 10px;
 }

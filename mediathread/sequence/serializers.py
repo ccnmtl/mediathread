@@ -9,7 +9,7 @@ from mediathread.sequence.models import (
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('id', 'media', 'juxtaposition', 'start_time', 'end_time')
+        fields = ('media', 'start_time', 'end_time')
 
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
@@ -18,7 +18,7 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
 class SequenceTextElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceTextElement
-        fields = ('id', 'text', 'juxtaposition', 'start_time', 'end_time')
+        fields = ('text', 'start_time', 'end_time')
 
 
 class CurrentProjectDefault(object):
@@ -36,17 +36,16 @@ class CurrentProjectDefault(object):
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('id', 'spine', 'author', 'course',
-                  'project',
-                  'sequencemediaelement_set',
-                  'sequencetextelement_set',)
+        fields = ('spine', 'author', 'course',
+                  'project', 'media_elements', 'text_elements',)
 
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.PrimaryKeyRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault())
     project = serializers.HiddenField(default=CurrentProjectDefault())
     spine = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all(), allow_null=True)
-    sequencemediaelement_set = SequenceMediaElementSerializer(many=True)
-    sequencetextelement_set = SequenceTextElementSerializer(many=True)
+    media_elements = SequenceMediaElementSerializer(many=True)
+    text_elements = SequenceTextElementSerializer(many=True)
 
     def validate(self, data):
         # Only one SequenceAsset should ever be created for a given
@@ -67,6 +66,15 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
             course=validated_data.get('course'),
             spine=validated_data.get('spine'))
         instance.full_clean()
+
+        # Create nested resources
+        for track_data in validated_data.get('media_elements'):
+            SequenceMediaElement.objects.create(
+                sequence_asset=instance, **track_data)
+        for track_data in validated_data.get('text_elements'):
+            SequenceTextElement.objects.create(
+                sequence_asset=instance, **track_data)
+
         return instance
 
     def update(self, instance, validated_data):

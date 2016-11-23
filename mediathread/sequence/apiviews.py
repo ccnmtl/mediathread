@@ -17,11 +17,11 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         assignment_pid = serializer.context['request'].data.get('project')
+        project = get_object_or_404(Project, pk=assignment_pid)
         instance = serializer.save(
             author=self.request.user, project=assignment_pid)
-        p = get_object_or_404(Project, pk=assignment_pid)
         ProjectSequenceAsset.objects.get_or_create(
-            sequence_asset=instance, project=p)
+            sequence_asset=instance, project=project)
 
 
 class SequenceMediaElementViewSet(viewsets.ModelViewSet):

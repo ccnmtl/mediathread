@@ -20,7 +20,7 @@ class SequenceMediaElementFactory(factory.DjangoModelFactory):
     class Meta:
         model = SequenceMediaElement
 
-    juxtaposition = factory.SubFactory(SequenceAssetFactory)
+    sequence_asset = factory.SubFactory(SequenceAssetFactory)
     start_time = fuzzy.FuzzyDecimal(0.0, 3.0)
     end_time = fuzzy.FuzzyDecimal(3.01, 6.0)
     media = factory.SubFactory(SherdNoteFactory)
@@ -30,7 +30,7 @@ class SequenceTextElementFactory(factory.DjangoModelFactory):
     class Meta:
         model = SequenceTextElement
 
-    juxtaposition = factory.SubFactory(SequenceAssetFactory)
+    sequence_asset = factory.SubFactory(SequenceAssetFactory)
     start_time = fuzzy.FuzzyDecimal(5.0, 105.0)
     end_time = fuzzy.FuzzyDecimal(1000.01, 6000.0)
     text = fuzzy.FuzzyText()

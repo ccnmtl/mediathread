@@ -78,7 +78,7 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
         psa.project.save()
         self.assertTrue(res.in_sequence_assignment_response(self.note1))
 
-        SequenceMediaElementFactory(juxtaposition=sa, media=self.note2)
+        SequenceMediaElementFactory(sequence_asset=sa, media=self.note2)
         self.assertTrue(res.in_sequence_assignment_response(self.note2))
 
         request = RequestFactory().get('/?citable=true')

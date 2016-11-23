@@ -16,8 +16,9 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
     serializer_class = SequenceAssetSerializer
 
     def perform_create(self, serializer):
-        instance = serializer.save(author=self.request.user)
         assignment_pid = serializer.context['request'].data.get('project')
+        instance = serializer.save(
+            author=self.request.user, project=assignment_pid)
         p = get_object_or_404(Project, pk=assignment_pid)
         ProjectSequenceAsset.objects.get_or_create(
             sequence_asset=instance, project=p)

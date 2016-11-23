@@ -1,6 +1,7 @@
 # pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 
+from django.db import IntegrityError
 from django.test import TestCase
 
 from mediathread.djangosherd.models import SherdNote
@@ -689,3 +690,9 @@ class ProjectSequenceAssetTest(TestCase):
 
     def test_is_valid_from_factory(self):
         self.psa.full_clean()
+
+    def test_prevent_duplicate(self):
+        with self.assertRaises(IntegrityError):
+            ProjectSequenceAssetFactory(
+                sequence_asset=self.psa.sequence_asset,
+                project=self.psa.project)

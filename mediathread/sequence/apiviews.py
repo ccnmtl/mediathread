@@ -23,13 +23,13 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
             sequence_asset=instance, project=p)
 
 
-class SequenceMediaElementViewSet(viewsets.ReadOnlyModelViewSet):
+class SequenceMediaElementViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = SequenceMediaElement.objects.all()
     serializer_class = SequenceMediaElementSerializer
 
 
-class SequenceTextElementViewSet(viewsets.ReadOnlyModelViewSet):
+class SequenceTextElementViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = SequenceTextElement.objects.all()
     serializer_class = SequenceTextElementSerializer

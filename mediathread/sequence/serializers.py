@@ -29,7 +29,18 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
 
     spine = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all(), allow_null=True)
-    sequencemediaelement_set = SequenceMediaElementSerializer(
-        many=True, read_only=True)
-    sequencetextelement_set = SequenceTextElementSerializer(
-        many=True, read_only=True)
+    sequencemediaelement_set = SequenceMediaElementSerializer(many=True)
+    sequencetextelement_set = SequenceTextElementSerializer(many=True)
+
+    def create(self, validated_data):
+        instance = SequenceAsset.objects.create(
+            author=validated_data.get('author'),
+            course=validated_data.get('course'),
+            spine=validated_data.get('spine'))
+        instance.full_clean()
+        return instance
+
+    def update(self, instance, validated_data):
+        instance.spine = validated_data.get('spine')
+        instance.save()
+        return instance

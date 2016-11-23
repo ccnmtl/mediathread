@@ -183,12 +183,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 ]
             })
 
-        # TODO
-        # self.assertEqual(
-        #     r.status_code, 400,
-        #     'Creating two SequenceAssets for the same combination '
-        #     'of author / project should be invalid.')
-        # self.assertEqual(SequenceAsset.objects.count(), 1)
+        self.assertEqual(
+            r.status_code, 400,
+            'Creating two SequenceAssets for the same combination '
+            'of author / project should be invalid.')
+        self.assertEqual(SequenceAsset.objects.count(), 1)
 
     def test_create_without_spine(self):
         course = CourseFactory()

@@ -64,33 +64,38 @@ CollectionWidget.prototype.postInitialize = function() {
 CollectionWidget.prototype.mapSignals = function() {
     var self = this;
 
-    jQuery(window).on('asset.on_delete', {'self': this}, function(event) {
-        self.refresh();
-    });
     jQuery(window).on('annotation.on_cancel', {'self': this}, function(event) {
-        self.$quickEditView.hide();
-        self.$el.fadeIn();
+        self.onCancel();
     });
-    jQuery(window).on('annotation.on_create', {'self': this}, function(event) {
-        self.$quickEditView.fadeOut();
-        self.$el.fadeIn();
-        self.refresh();
-    });
-    jQuery(window).on('annotation.on_delete', {'self': this}, function(event) {
-        self.refresh();
-    });
-    jQuery(window).on('annotation.on_save', {'self': this}, function(event) {
-        self.$quickEditView.fadeOut();
-        self.$el.fadeIn();
-        self.refresh();
-    });
+
+    jQuery(window).on('asset.on_delete annotation.on_delete', {'self': this},
+        function(event) {
+            self.refresh();
+        });
+
+    jQuery(window).on('annotation.on_create annotation.on_save', {'self': this},
+        function(event) {
+            self.onSave();
+        });
+
     jQuery(window).on('collection.open', {'self': this}, function(event) {
-        self.open();
+        self.$quickEditView.hide();
+        self.$el.show();
+        self.open('gallery');
     });
-    self.$modal.on('hidden.bs.modal', function() {
-        self.$quickEditView.fadeOut();
-        self.$el.fadeIn();
-    });
+    jQuery(window).on('collection.asset.edit', {'self': this},
+        function(event, assetId) {
+            self.open('edit');
+            self.quickEdit('Edit Item', 'asset.edit', assetId);
+        }
+    );
+    jQuery(window).on('collection.annotation.edit', {'self': this},
+        function(event, assetId, annotationId) {
+            self.open('edit');
+            self.quickEdit(
+                'Edit Selection', 'annotation.edit', assetId, annotationId);
+        }
+    );
 };
 
 CollectionWidget.prototype.mapEvents = function() {
@@ -210,9 +215,29 @@ CollectionWidget.prototype.mapEvents = function() {
     });
 };
 
-CollectionWidget.prototype.open = function() {
-    // incoming parameters include owner & mediaType
+CollectionWidget.prototype.open = function(displayMode) {
+    this.displayMode = displayMode;
     this.$modal.modal('show');
+};
+
+CollectionWidget.prototype.onCancel = function() {
+    if (this.displayMode !== 'gallery') {
+        this.$modal.modal('hide');
+    } else {
+        this.$quickEditView.fadeOut();
+        this.$el.fadeIn();
+    }
+};
+
+CollectionWidget.prototype.onSave = function() {
+    this.refresh();
+
+    if (this.displayMode !== 'gallery') {
+        this.$modal.modal('hide');
+    } else {
+        this.$quickEditView.fadeOut();
+        this.$el.fadeIn();
+    }
 };
 
 CollectionWidget.prototype.filter = function() {
@@ -497,7 +522,7 @@ CollectionWidget.prototype.quickEdit = function(title, evtType,
     // Setup the edit view
     var self = this;
     window.annotationList.init({
-        'parent': this.$modal,
+        'parent': this.$modal.find('.modal-body'),
         'asset_id': assetId,
         'annotation_id': annotationId,
         'edit_state': evtType,

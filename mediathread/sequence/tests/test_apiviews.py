@@ -3,7 +3,9 @@ from rest_framework.test import APITestCase
 from courseaffils.tests.factories import CourseFactory
 from mediathread.factories import SherdNoteFactory, UserFactory, ProjectFactory
 from mediathread.projects.models import ProjectSequenceAsset
-from mediathread.sequence.models import SequenceAsset, SequenceTextElement
+from mediathread.sequence.models import (
+    SequenceAsset, SequenceTextElement, SequenceMediaElement
+)
 from mediathread.sequence.tests.mixins import LoggedInTestMixin
 from mediathread.sequence.tests.factories import (
     SequenceAssetFactory, SequenceTextElementFactory,
@@ -295,6 +297,75 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
+
+    def test_update_with_overlapping_elements(self):
+        sa = SequenceAssetFactory(author=self.u)
+        note = SherdNoteFactory()
+        r = self.client.put(
+            reverse('sequenceasset-detail', args=(sa.pk,)),
+            {
+                'course': sa.course.pk,
+                'spine': note.pk,
+                'media_elements': [
+                ],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 0.3,
+                    },
+                    {
+                        'text': 'My text',
+                        'start_time': 0.35,
+                        'end_time': 0.5,
+                    },
+                    {
+                        'text': 'My text',
+                        'start_time': 0.55,
+                        'end_time': 0.9,
+                    },
+                    {
+                        'text': 'My text',
+                        'start_time': 1,
+                        'end_time': 11,
+                    },
+                    {
+                        'text': 'Overlapping!',
+                        'start_time': 2,
+                        'end_time': 12,
+                    }
+                ]
+            }, format='json')
+
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(SequenceTextElement.objects.count(), 0)
+
+        note = SherdNoteFactory()
+        media_note1 = SherdNoteFactory()
+        media_note2 = SherdNoteFactory()
+        r = self.client.put(
+            reverse('sequenceasset-detail', args=(sa.pk,)),
+            {
+                'course': sa.course.pk,
+                'spine': note.pk,
+                'media_elements': [
+                    {
+                        'media': media_note1.pk,
+                        'start_time': 0,
+                        'end_time': 10,
+                    },
+                    {
+                        'media': media_note2.pk,
+                        'start_time': 1,
+                        'end_time': 11,
+                    }
+                ],
+                'text_elements': [
+                ]
+            }, format='json')
+
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(SequenceMediaElement.objects.count(), 0)
 
 
 class AssetViewSetUnAuthedTest(APITestCase):

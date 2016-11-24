@@ -4,6 +4,9 @@ from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
+from mediathread.sequence.validators import (
+    prevent_overlap, valid_start_end_times
+)
 
 
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
@@ -48,11 +51,18 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     text_elements = SequenceTextElementSerializer(many=True)
 
     def validate(self, data):
+        text_elements = data.get('text_elements')
+        media_elements = data.get('media_elements')
+
         if not data.get('spine') and (
-                len(data.get('text_elements')) > 0 or
-                len(data.get('media_elements')) > 0):
+                len(text_elements) > 0 or len(media_elements) > 0):
             raise serializers.ValidationError(
                 'A SequenceAsset with track elements and no spine is invalid.')
+
+        valid_start_end_times(text_elements + media_elements)
+
+        prevent_overlap(text_elements)
+        prevent_overlap(media_elements)
 
         if data.get('project'):
             project = Project.objects.get(pk=data.get('project'))

@@ -48,8 +48,12 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     text_elements = SequenceTextElementSerializer(many=True)
 
     def validate(self, data):
-        # Only one SequenceAsset should ever be created for a given
-        # author / project.
+        if not data.get('spine') and (
+                len(data.get('text_elements')) > 0 or
+                len(data.get('media_elements')) > 0):
+            raise serializers.ValidationError(
+                'A SequenceAsset with track elements and no spine is invalid.')
+
         if data.get('project'):
             project = Project.objects.get(pk=data.get('project'))
             if ProjectSequenceAsset.objects.filter(
@@ -58,6 +62,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'A SequenceAsset already exists for this project '
                     'and user.')
+
         return data
 
     def create(self, validated_data):

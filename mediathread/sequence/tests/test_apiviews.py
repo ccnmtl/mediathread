@@ -218,7 +218,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         course = CourseFactory()
         project = ProjectFactory()
         note = SherdNoteFactory()
-        self.client.post(
+        r = self.client.post(
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
@@ -240,11 +240,10 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 ]
             }, format='json')
 
-        # TODO
-        # self.assertEqual(
-        #     r.status_code, 400,
-        #     'Attempting to create a SequenceAsset without a spine but '
-        #     'with track elements should be invalid.')
+        self.assertEqual(
+            r.status_code, 400,
+            'Attempting to create a SequenceAsset without a spine but '
+            'with track elements should be invalid.')
 
     def test_update(self):
         sa = SequenceAssetFactory(author=self.u)

@@ -6,21 +6,44 @@
         <div>Refreshing the collection</div>
         </div>
     </div>
-    <div class="media-column" >
+    <div class="media-column">
         <div class="filter-widget" style="display: none">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="switcher-tool switcher-search-text input-group">
                         <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
                         <input type="text" class="form-control" name="search-text"
-                            value="{{active_filters.search_text}}" placeholder="Item &amp; selection titles"/>
+                            value="{{active_filters.search_text}}" placeholder="Search"/>
                         <span class="input-group-btn">
                             <button class="btn btn-default btn-search-text" type="button">Go</button>
                         </span>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <div class="collection-chooser-container"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="switcher collection-media-filter switcher-tool
+                     {{#disable_media_type}}disabled{{/disable_media_type}}">
+                        <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
+                            <span class="switcher-prefix">Type </span>
+                            <span class="down-arrow"></span>
+
+                            {{#active_filters.media_type}}
+                                <span class="title">{{active_filters.media_type}}</span>
+                            {{/active_filters.media_type}}
+
+                            {{^active_filters.media_type}}
+                                <span class="title">all</span>
+                            {{/active_filters.media_type}}
+                        </a>
+                        <ul class="switcher-options">
+                            <li><a class="switcher-choice filterbymedia" href="all">all</a></li>
+                            <li><a class="switcher-choice filterbymedia" href="audio">audio</a></li>
+                            <li><a class="switcher-choice filterbymedia" href="image">image</a></li>
+                            <li><a class="switcher-choice filterbymedia" href="video">video</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="spacer"></div>

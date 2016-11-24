@@ -23,7 +23,6 @@ var CollectionWidget = function() {
     this.template = 'collectionwidget';
     this.limits = {offset: 0, limit: 20};
     this.currentRecords = {'space_owner': MediaThread.currentOwner};
-    this.mediaType = 'all';
 
     this.$modal = jQuery('#collection-modal');
     this.$el = this.$modal.find('.collection-view');
@@ -78,11 +77,12 @@ CollectionWidget.prototype.mapSignals = function() {
             self.onSave();
         });
 
-    jQuery(window).on('collection.open', {'self': this}, function(event) {
-        self.$quickEditView.hide();
-        self.$el.show();
-        self.open('gallery');
-    });
+    jQuery(window).on('collection.open', {'self': this},
+        function(event, filters) {
+            self.$quickEditView.hide();
+            self.$el.show();
+            self.open('gallery', filters);
+        });
     jQuery(window).on('collection.asset.edit', {'self': this},
         function(event, assetId) {
             self.open('edit');
@@ -138,6 +138,20 @@ CollectionWidget.prototype.mapEvents = function() {
             }
             return self.filter();
         });
+
+    self.$el.on(
+            'click', 'a.switcher-choice.filterbymedia', function(evt) {
+                var src = evt.srcElement || evt.target || evt.originalTarget;
+                var bits = src.href.split('/');
+                var filterName = bits[bits.length - 1];
+
+                if (filterName === 'all') {
+                    self.currentRecords.active_filters.media_type = '';
+                } else {
+                    self.currentRecords.active_filters.media_type = filterName;
+                }
+                return self.filter();
+            });
 
     self.$el.on(
         'change', '.switcher-tool select.vocabulary', function(evt) {
@@ -215,7 +229,11 @@ CollectionWidget.prototype.mapEvents = function() {
     });
 };
 
-CollectionWidget.prototype.open = function(displayMode) {
+CollectionWidget.prototype.open = function(displayMode, params) {
+    this.disable = params && params.disable || [];
+    this.currentRecords.active_filters = params;
+    this.filter();
+
     this.displayMode = displayMode;
     this.$modal.modal('show');
 };
@@ -380,7 +398,7 @@ CollectionWidget.prototype.updateSwitcher = function() {
             self.$el.find('select.course-tags')
                 .select2({
                     placeholder: 'Select tag',
-                    width: '70%'
+                    width: '75%'
                 });
             if ('tag' in self.currentRecords.active_filters &&
                 self.currentRecords.active_filters.tag.length > 0) {
@@ -391,7 +409,7 @@ CollectionWidget.prototype.updateSwitcher = function() {
 
             var vocabulary = self.$el.find('select.vocabulary')[0];
             jQuery(vocabulary).select2({
-                width: '70%'
+                width: '76%'
             });
 
             var values = [];
@@ -443,6 +461,10 @@ CollectionWidget.prototype.updateAssets = function(the_records) {
     var n = _propertyCount(the_records.active_filters);
     if (n > 0) {
         the_records.active_filter_count = n;
+    }
+
+    for (var i = 0; i < this.disable.length; i++) {
+        this.currentRecords['disable_' + this.disable[i]] = true;
     }
 
     var self = this;
@@ -581,10 +603,10 @@ CollectionWidget.prototype.baseUrl = function() {
 
     if (owner) {
         return MediaThread.urls['your-space'](
-            owner.username, null, null, true, this.mediaType);
+            owner.username, null, null, true);
     } else {
         return MediaThread.urls['all-space'](
-            null, null, true, this.mediaType);
+            null, null, true);
     }
 };
 

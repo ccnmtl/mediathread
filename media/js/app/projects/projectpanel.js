@@ -147,7 +147,22 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
                         icon: 'icon-collection',
                         tooltip: 'Open Collection',
                         onclick: function() {
-                            jQuery(window).trigger('collection.open', []);
+                            var params = ['gallery'];
+                            jQuery(window).trigger('collection.open', params);
+                        }
+                    });
+                    ed.addButton('editasset', {
+                        text: 'Edit Item',
+                        onclick: function() {
+                            jQuery(window).trigger(
+                            'collection.asset.edit', ['36973']);
+                        }
+                    });
+                    ed.addButton('editannotation', {
+                        text: 'Edit Selection',
+                        onclick: function() {
+                            jQuery(window).trigger(
+                            'collection.annotation.edit', ['36973', '203444']);
                         }
                     });
                 }

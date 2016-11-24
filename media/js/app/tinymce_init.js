@@ -9,6 +9,7 @@ var tinymceSettings = {
     'selector': '.mceEditor',
     'toolbar': 'bold, italic, underline, spacer, bullist, numlist, ' +
         'spacer, outdent, indent, spacer, undo, redo, spacer, link, ' +
-        'unlink, image, spacer, code, spacer, opencollection',
+        'unlink, image, spacer, code, spacer, opencollection, ' +
+        'editasset, editannotation',
     'content_css': STATIC_URL + 'css/project.css',
 };

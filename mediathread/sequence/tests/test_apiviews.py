@@ -301,6 +301,37 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(SequenceMediaElement.objects.count(), 1)
         self.assertEqual(SequenceTextElement.objects.count(), 1)
 
+        r = self.client.put(
+            reverse('sequenceasset-detail', args=(sa.pk,)),
+            {
+                'course': sa.course.pk,
+                'spine': note.pk,
+                'media_elements': [
+                    {
+                        'media': element_note.pk,
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ]
+            }, format='json')
+
+        self.assertEqual(r.status_code, 200)
+
+        sa.refresh_from_db()
+        self.assertEqual(sa.course, sa.course)
+        self.assertEqual(sa.author, self.u)
+        self.assertEqual(sa.spine, note)
+
+        self.assertEqual(SequenceMediaElement.objects.count(), 1)
+        self.assertEqual(SequenceTextElement.objects.count(), 1)
+
     def test_update_with_overlapping_elements(self):
         sa = SequenceAssetFactory(author=self.u)
         note = SherdNoteFactory()

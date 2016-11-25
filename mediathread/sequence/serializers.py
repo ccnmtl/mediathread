@@ -12,7 +12,7 @@ from mediathread.sequence.validators import (
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('id', 'media', 'start_time', 'end_time')
+        fields = ('media', 'start_time', 'end_time')
 
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
@@ -21,7 +21,7 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
 class SequenceTextElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceTextElement
-        fields = ('id', 'text', 'start_time', 'end_time')
+        fields = ('text', 'start_time', 'end_time')
 
 
 class CurrentProjectDefault(object):
@@ -84,11 +84,11 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
 
         # Create nested resources
         for track_data in validated_data.get('media_elements'):
-            SequenceMediaElement.objects.create(
-                sequence_asset=instance, **track_data)
+            e = SequenceMediaElement(sequence_asset=instance, **track_data)
+            e.save()
         for track_data in validated_data.get('text_elements'):
-            SequenceTextElement.objects.create(
-                sequence_asset=instance, **track_data)
+            e = SequenceTextElement(sequence_asset=instance, **track_data)
+            e.save()
 
         return instance
 
@@ -97,11 +97,14 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
         instance.save()
 
         # Create nested resources
+        SequenceMediaElement.objects.filter(sequence_asset=instance).delete()
         for track_data in validated_data.get('media_elements'):
-            SequenceMediaElement.objects.create(
-                sequence_asset=instance, **track_data)
+            e = SequenceMediaElement(sequence_asset=instance, **track_data)
+            e.save()
+
+        SequenceTextElement.objects.filter(sequence_asset=instance).delete()
         for track_data in validated_data.get('text_elements'):
-            SequenceTextElement.objects.create(
-                sequence_asset=instance, **track_data)
+            e = SequenceTextElement(sequence_asset=instance, **track_data)
+            e.save()
 
         return instance

@@ -298,6 +298,9 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
 
+        self.assertEqual(SequenceMediaElement.objects.count(), 1)
+        self.assertEqual(SequenceTextElement.objects.count(), 1)
+
     def test_update_with_overlapping_elements(self):
         sa = SequenceAssetFactory(author=self.u)
         note = SherdNoteFactory()

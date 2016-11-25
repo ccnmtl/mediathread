@@ -12,7 +12,7 @@ from mediathread.sequence.validators import (
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('media', 'start_time', 'end_time')
+        fields = ('id', 'media', 'start_time', 'end_time')
 
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
@@ -21,7 +21,7 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
 class SequenceTextElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceTextElement
-        fields = ('text', 'start_time', 'end_time')
+        fields = ('id', 'text', 'start_time', 'end_time')
 
 
 class CurrentProjectDefault(object):
@@ -95,4 +95,13 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.spine = validated_data.get('spine')
         instance.save()
+
+        # Create nested resources
+        for track_data in validated_data.get('media_elements'):
+            SequenceMediaElement.objects.create(
+                sequence_asset=instance, **track_data)
+        for track_data in validated_data.get('text_elements'):
+            SequenceTextElement.objects.create(
+                sequence_asset=instance, **track_data)
+
         return instance

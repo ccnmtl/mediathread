@@ -18,6 +18,24 @@ class SequenceAsset(models.Model):
     course = models.ForeignKey(Course)
     spine = models.ForeignKey(SherdNote, blank=True, null=True)
 
+    def update_track_elements(self, media_elements, text_elements):
+        """Updates the SequenceAsset's track elements.
+
+        Takes media_elements and text_elements as JSON-style objects and
+        creates Django objects.
+        """
+        SequenceMediaElement.objects.filter(sequence_asset=self).delete()
+        a = []
+        for track_data in media_elements:
+            a.append(SequenceMediaElement(sequence_asset=self, **track_data))
+        SequenceMediaElement.objects.bulk_create(a)
+
+        SequenceTextElement.objects.filter(sequence_asset=self).delete()
+        a = []
+        for track_data in text_elements:
+            a.append(SequenceTextElement(sequence_asset=self, **track_data))
+        SequenceTextElement.objects.bulk_create(a)
+
 
 class SequenceMediaElement(models.Model):
     added = models.DateTimeField(auto_now_add=True)

@@ -82,13 +82,9 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
             spine=validated_data.get('spine'))
         instance.full_clean()
 
-        # Create nested resources
-        for track_data in validated_data.get('media_elements'):
-            e = SequenceMediaElement(sequence_asset=instance, **track_data)
-            e.save()
-        for track_data in validated_data.get('text_elements'):
-            e = SequenceTextElement(sequence_asset=instance, **track_data)
-            e.save()
+        instance.update_track_elements(
+            validated_data.get('media_elements'),
+            validated_data.get('text_elements'))
 
         return instance
 
@@ -96,15 +92,8 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
         instance.spine = validated_data.get('spine')
         instance.save()
 
-        # Create nested resources
-        SequenceMediaElement.objects.filter(sequence_asset=instance).delete()
-        for track_data in validated_data.get('media_elements'):
-            e = SequenceMediaElement(sequence_asset=instance, **track_data)
-            e.save()
-
-        SequenceTextElement.objects.filter(sequence_asset=instance).delete()
-        for track_data in validated_data.get('text_elements'):
-            e = SequenceTextElement(sequence_asset=instance, **track_data)
-            e.save()
+        instance.update_track_elements(
+            validated_data.get('media_elements'),
+            validated_data.get('text_elements'))
 
         return instance

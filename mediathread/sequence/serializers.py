@@ -4,12 +4,15 @@ from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
+from mediathread.sequence.validators import (
+    prevent_overlap, valid_start_end_times
+)
 
 
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('id', 'media', 'juxtaposition', 'start_time', 'end_time')
+        fields = ('media', 'start_time', 'end_time')
 
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
@@ -18,7 +21,7 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
 class SequenceTextElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceTextElement
-        fields = ('id', 'text', 'juxtaposition', 'start_time', 'end_time')
+        fields = ('text', 'start_time', 'end_time')
 
 
 class CurrentProjectDefault(object):
@@ -36,21 +39,31 @@ class CurrentProjectDefault(object):
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('id', 'spine', 'author', 'course',
-                  'project',
-                  'sequencemediaelement_set',
-                  'sequencetextelement_set',)
+        fields = ('spine', 'author', 'course',
+                  'project', 'media_elements', 'text_elements',)
 
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = serializers.PrimaryKeyRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault())
     project = serializers.HiddenField(default=CurrentProjectDefault())
     spine = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all(), allow_null=True)
-    sequencemediaelement_set = SequenceMediaElementSerializer(many=True)
-    sequencetextelement_set = SequenceTextElementSerializer(many=True)
+    media_elements = SequenceMediaElementSerializer(many=True)
+    text_elements = SequenceTextElementSerializer(many=True)
 
     def validate(self, data):
-        # Only one SequenceAsset should ever be created for a given
-        # author / project.
+        text_elements = data.get('text_elements')
+        media_elements = data.get('media_elements')
+
+        if not data.get('spine') and (
+                len(text_elements) > 0 or len(media_elements) > 0):
+            raise serializers.ValidationError(
+                'A SequenceAsset with track elements and no spine is invalid.')
+
+        valid_start_end_times(text_elements + media_elements)
+
+        prevent_overlap(text_elements)
+        prevent_overlap(media_elements)
+
         if data.get('project'):
             project = Project.objects.get(pk=data.get('project'))
             if ProjectSequenceAsset.objects.filter(
@@ -59,6 +72,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'A SequenceAsset already exists for this project '
                     'and user.')
+
         return data
 
     def create(self, validated_data):
@@ -67,9 +81,19 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
             course=validated_data.get('course'),
             spine=validated_data.get('spine'))
         instance.full_clean()
+
+        instance.update_track_elements(
+            validated_data.get('media_elements'),
+            validated_data.get('text_elements'))
+
         return instance
 
     def update(self, instance, validated_data):
         instance.spine = validated_data.get('spine')
         instance.save()
+
+        instance.update_track_elements(
+            validated_data.get('media_elements'),
+            validated_data.get('text_elements'))
+
         return instance

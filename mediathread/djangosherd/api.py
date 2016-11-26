@@ -104,7 +104,7 @@ class SherdNoteResource(ModelResource):
         # or as a secondary media element
         return SequenceAsset.objects.filter(
             Q(projectsequenceasset__project__date_submitted__isnull=False),
-            Q(spine=note) | Q(sequencemediaelement__media=note)).exists()
+            Q(spine=note) | Q(media_elements__media=note)).exists()
 
 
 class DiscussionIndexResource(object):

@@ -23,15 +23,4 @@ class Migration(migrations.Migration):
                     to='sequence.SequenceAsset')),
             ],
         ),
-        migrations.RemoveField(
-            model_name='projectjuxtaposeasset',
-            name='juxtapose_asset',
-        ),
-        migrations.RemoveField(
-            model_name='projectjuxtaposeasset',
-            name='project',
-        ),
-        migrations.DeleteModel(
-            name='ProjectJuxtaposeAsset',
-        ),
     ]

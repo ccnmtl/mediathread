@@ -1993,6 +1993,14 @@ div.homepage-column-info {
     width: 100%;
 }
 
+.switcher.disabled a.switcher-top {
+    background-color: #EFEFEF;
+}
+
+.switcher.disabled .down-arrow {
+    display: none;
+}
+
 div.collection-chooser a.switcher-top {
     font-weight: normal;
     background-color: white;
@@ -2142,7 +2150,7 @@ div.media-column .select2-container-multi .select2-choices {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    
+
     border: 1px solid #CCCCCC; 
     padding: 0 3px 0 0; 
     border-radius: 4px;
@@ -4474,6 +4482,20 @@ ul.section-tabs>li>a.active {
 
 #collection-modal .modal-dialog {
     width: 650px !important;
+}
+
+#collection-modal .filter-widget .row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+#collection-modal .ajaxloader {
+    width: 96%;
+}
+
+#collection-modal .col-md-5, .col-md-4, .col-md-3, .col-md-2 {
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 #collection-modal .modal-body {

@@ -1,5 +1,5 @@
 {{^assets}}
-    <div class="default-content intro-text feature-help">
+    <div class="default-content intro-text">
         {{^active_filter_count}}
             {{#showing_my_items}}
                 You have not collected any materials.<br /><br />
@@ -40,11 +40,17 @@
                 </div>
             {{/showing_my_items}}
             {{^showing_my_items}}
-                <center>{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</center>
+                <br /><br />
+                <div class="well">
+                <div class="text-center">{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</div>
+                </div>
             {{/showing_my_items}}
             {{/active_filter_count}}
             {{#active_filter_count}}
-                <center>No items matched your search. Please try again.</center>
+                <br /><br />
+                <div class="well">
+                <div class="text-center">No items matched your search. Please try again.</div>
+                </div>
             {{/active_filter_count}}
     </div>
 {{/assets}}

@@ -41,6 +41,9 @@ function switcher(event, a) {
     event.preventDefault();
     event.stopPropagation();
     var $a = jQuery(a);
+    if ($a.parent().hasClass('disabled')) {
+        return false;
+    }
     if ($a.hasClass('menuclosed')) {
         // we're going to open. make sure everyone else is CLOSED
         jQuery('.menuopen').toggleClass('menuopen menuclosed');

@@ -4,6 +4,7 @@ from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
+from mediathread.sequence.permissions import SingleAuthorPermission
 from mediathread.sequence.serializers import (
     SequenceAssetSerializer, SequenceMediaElementSerializer,
     SequenceTextElementSerializer,
@@ -11,7 +12,8 @@ from mediathread.sequence.serializers import (
 
 
 class SequenceAssetViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated,
+                          SingleAuthorPermission,)
     queryset = SequenceAsset.objects.all()
     serializer_class = SequenceAssetSerializer
 

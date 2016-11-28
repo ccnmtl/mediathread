@@ -7,6 +7,7 @@ from mediathread.sequence.models import (
     SequenceAsset, SequenceTextElement, SequenceMediaElement
 )
 from mediathread.sequence.tests.mixins import LoggedInTestMixin
+from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.sequence.tests.factories import (
     SequenceAssetFactory, SequenceTextElementFactory,
     SequenceMediaElementFactory
@@ -250,11 +251,13 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
     def test_update(self):
         sa = SequenceAssetFactory(author=self.u)
+        psa = ProjectSequenceAssetFactory(sequence_asset=sa)
         note = SherdNoteFactory()
         r = self.client.put(
             reverse('sequenceasset-detail', args=(sa.pk,)),
             {
                 'course': sa.course.pk,
+                'project': psa.project.pk,
                 'spine': note.pk,
                 'media_elements': [],
                 'text_elements': [],
@@ -266,15 +269,19 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
+        self.assertEqual(SequenceAsset.objects.count(), 1)
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
 
     def test_update_with_track_elements(self):
         sa = SequenceAssetFactory(author=self.u)
+        psa = ProjectSequenceAssetFactory(sequence_asset=sa)
         note = SherdNoteFactory()
         element_note = SherdNoteFactory()
         r = self.client.put(
             reverse('sequenceasset-detail', args=(sa.pk,)),
             {
                 'course': sa.course.pk,
+                'project': psa.project.pk,
                 'spine': note.pk,
                 'media_elements': [
                     {

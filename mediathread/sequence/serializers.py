@@ -64,18 +64,17 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
         prevent_overlap(text_elements)
         prevent_overlap(media_elements)
 
-        if data.get('project'):
-            project = Project.objects.get(pk=data.get('project'))
-            if ProjectSequenceAsset.objects.filter(
-                    sequence_asset__author=data.get('author'),
-                    project=project).exists():
-                raise serializers.ValidationError(
-                    'A SequenceAsset already exists for this project '
-                    'and user.')
-
         return data
 
     def create(self, validated_data):
+        project = Project.objects.get(pk=validated_data.get('project'))
+        if ProjectSequenceAsset.objects.filter(
+                sequence_asset__author=validated_data.get('author'),
+                project=project).exists():
+            raise serializers.ValidationError(
+                'A SequenceAsset already exists for this project '
+                'and user.')
+
         instance = SequenceAsset.objects.create(
             author=validated_data.get('author'),
             course=validated_data.get('course'),

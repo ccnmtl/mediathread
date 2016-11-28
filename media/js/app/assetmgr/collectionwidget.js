@@ -463,8 +463,10 @@ CollectionWidget.prototype.updateAssets = function(the_records) {
         the_records.active_filter_count = n;
     }
 
-    for (var i = 0; i < this.disable.length; i++) {
-        this.currentRecords['disable_' + this.disable[i]] = true;
+    if (this.disable) {
+        for (var i = 0; i < this.disable.length; i++) {
+            this.currentRecords['disable_' + this.disable[i]] = true;
+        }
     }
 
     var self = this;

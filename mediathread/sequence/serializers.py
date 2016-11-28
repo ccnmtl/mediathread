@@ -39,7 +39,7 @@ class CurrentProjectDefault(object):
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('spine', 'author', 'course',
+        fields = ('id', 'spine', 'author', 'course',
                   'project', 'media_elements', 'text_elements',)
 
     author = serializers.PrimaryKeyRelatedField(

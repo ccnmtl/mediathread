@@ -31,6 +31,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         )
         self.assertEqual(r.status_code, 200)
         self.assertIsNone(r.data.get('spine'))
+        self.assertEqual(r.data.get('id'), asset.pk)
 
         note = SherdNoteFactory()
         asset = SequenceAssetFactory(author=self.u, spine=note)

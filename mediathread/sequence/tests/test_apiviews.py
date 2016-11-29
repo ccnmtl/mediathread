@@ -447,7 +447,25 @@ class AssetViewSetUnAuthedTest(APITestCase):
         SequenceAssetFactory()
 
         r = self.client.get(reverse('sequenceasset-list'), format='json')
-        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 2)
+
+    def test_retrieve(self):
+        asset = SequenceAssetFactory()
+        r = self.client.get(
+            reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertIsNone(r.data.get('spine'))
+        self.assertEqual(r.data.get('id'), asset.pk)
+
+        note = SherdNoteFactory()
+        asset = SequenceAssetFactory(spine=note)
+        r = self.client.get(
+            reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.data.get('spine'), note.pk)
 
     def test_create(self):
         course = CourseFactory()

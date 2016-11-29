@@ -272,6 +272,37 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(SequenceAsset.objects.count(), 1)
         self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
 
+    def test_update_someone_elses_sequence_asset(self):
+        someone_else = UserFactory()
+        sa = SequenceAssetFactory(author=someone_else)
+        psa = ProjectSequenceAssetFactory(sequence_asset=sa)
+        note = SherdNoteFactory()
+        r = self.client.put(
+            reverse('sequenceasset-detail', args=(sa.pk,)),
+            {
+                'course': sa.course.pk,
+                'project': psa.project.pk,
+                'spine': note.pk,
+                'media_elements': [],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0,
+                        'end_time': 10,
+                    }
+                ],
+            }, format='json')
+
+        self.assertEqual(r.status_code, 403)
+
+        sa.refresh_from_db()
+        self.assertEqual(sa.course, sa.course)
+        self.assertEqual(sa.author, someone_else)
+        self.assertEqual(sa.spine, None)
+        self.assertEqual(SequenceAsset.objects.count(), 1)
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        self.assertEqual(SequenceTextElement.objects.count(), 0)
+
     def test_update_with_track_elements(self):
         sa = SequenceAssetFactory(author=self.u)
         psa = ProjectSequenceAssetFactory(sequence_asset=sa)

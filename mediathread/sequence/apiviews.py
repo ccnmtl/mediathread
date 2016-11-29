@@ -4,7 +4,7 @@ from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
 )
-from mediathread.sequence.permissions import SingleAuthorPermission
+from mediathread.sequence.permissions import SingleAuthor, ReadOnly
 from mediathread.sequence.serializers import (
     SequenceAssetSerializer, SequenceMediaElementSerializer,
     SequenceTextElementSerializer,
@@ -12,8 +12,7 @@ from mediathread.sequence.serializers import (
 
 
 class SequenceAssetViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,
-                          SingleAuthorPermission,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, SingleAuthor,)
     queryset = SequenceAsset.objects.all()
     serializer_class = SequenceAssetSerializer
 
@@ -27,12 +26,12 @@ class SequenceAssetViewSet(viewsets.ModelViewSet):
 
 
 class SequenceMediaElementViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (ReadOnly,)
     queryset = SequenceMediaElement.objects.all()
     serializer_class = SequenceMediaElementSerializer
 
 
 class SequenceTextElementViewSet(viewsets.ModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (ReadOnly,)
     queryset = SequenceTextElement.objects.all()
     serializer_class = SequenceTextElementSerializer

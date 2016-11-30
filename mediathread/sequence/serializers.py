@@ -85,6 +85,9 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
             validated_data.get('media_elements'),
             validated_data.get('text_elements'))
 
+        ProjectSequenceAsset.objects.get_or_create(
+            sequence_asset=instance, project=project)
+
         return instance
 
     def update(self, instance, validated_data):

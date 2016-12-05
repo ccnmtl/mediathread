@@ -58,29 +58,24 @@
 {% endblock %}
 
 {% block content %}
+{% with submitted=my_response.is_submitted %}
 <div class="sequence-assignment">
     <div class="row">
-        <div class="col-md-3 column-container">
-            <h2 class="">
-                Sequence Assignment
-                {% if assignment_can_edit %}
-                    <a class="right" href="{% url 'sequence-assignment-edit' assignment.id %}">
-                        <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"></span>
-                    </a>
-                {% endif %}
+        <div class="col-md-12">
+            {% if assignment_can_edit %}
+                <a class="small right" href="{% url 'sequence-assignment-edit' assignment.id %}">
+                    <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"><span>Edit Assignment</span>
+                </a>
+            {% endif %}
+            <h2>
+                Sequence Assignment: {{assignment.title}}
             </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
             <div class="small">
-                <h1 class="project-title">{{assignment.title}}</h1><br />
-                {% if assignment.due_date %}
-                    <div class="meta">
-                        <span class="metadata-label">
-                            <b>Due date</b>:
-                        </span>
-                        <span class="metadata-value">
-                            {{assignment.due_date|date:'m/d/y'}}
-                        </span>
-                    </div>
-                {% endif %}
                 {% if is_faculty %}
                 <div class="meta">
                     <span class="metadata-label"><b>Response visibility</b>:</span>
@@ -92,32 +87,19 @@
                     </a>
                 </div>
                 {% endif %}
-                <div class="meta">
-                    {% if assignment_can_edit %}
-                        <span class="metadata-label"><b>Publication status</b>:</span>
-                        <span class="metadata-value">
-                            {{assignment.visibility_short}}
+                {% if assignment.due_date %}
+                    <div class="meta">
+                        <span class="metadata-label">
+                            <b>Due date</b>:
                         </span>
-                    {% else %}{% if my_response %}
-                        <span class="metadata-label"><b>Publication status</b>:</span>
                         <span class="metadata-value">
-                            {% if my_response.is_submitted %}
-                                Response submitted
-                            {% else %}
-                                Response not submitted
-                            {% endif %}
+                            {{assignment.due_date|date:'m/d/y'}}
                         </span>
-                    {% endif %}{% endif %}
-                </div>
-                <div class="clearfix"></div>
+                    </div>
+                {% endif %}
             </div>
-            <p>{{assignment.body|safe}}</p>
         </div>
-        <div class="col-md-6">
-            {% if my_response %}
-                <div id="jux-container"></div>
-            {% endif %}
-        </div>
+        <div class="col-md-6"></div>
         <div class="col-md-3">
             {% if is_faculty %}
                 <div class="right">
@@ -258,20 +240,87 @@
                     </div>
                 {% endif %}{% endif %}
             {% endif %}{% endif %}
-            <div class="clearfix"></div>
-            <br /><br />
-
-            {% if not is_faculty and not my_response %}
-                <div class="text-center">
-                    <form action="/project/create/" method="post">
-                        <input type="hidden" name="parent" value="{{assignment.id}}" />
-                        <input type="hidden" name="project_type" value="composition" />
-                        <input type="hidden" name="title" value="My Response" />
-                        <input class="btn btn-success" type="submit" value="Respond to Assignment" />
-                    </form>
+        </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Instructions
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <p>{{assignment.body|safe}}</p>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="meta right">
+                {% if assignment_can_edit %}
+                    <span class="metadata-label"><b>Publication status</b>:</span>
+                    <span class="metadata-value">
+                        {{assignment.visibility_short}}
+                    </span>
+                {% else %}{% if my_response %}
+                    <span class="metadata-label"><b>Publication status</b>:</span>
+                    <span class="metadata-value">
+                        {% if my_response.is_submitted %}
+                            Response submitted
+                        {% else %}
+                            Response not submitted
+                        {% endif %}
+                    </span>
+                {% endif %}{% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            {% if submitted %}
+                <h3>{{the_response.title}}</h3>
+            {% else %}
+                <div>
+                    <label>Response Title</label>&nbsp;
+                    <input type="text" name="title" value="{{my_response.title}}" maxlength="80"
+                        placeholder="Specify a title"
+                        class="project-title form-control" />
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="clearfix"></div>
+            <ul class="nav nav-pills right">
+              <li role="presentation" class="active"><a href="#">Sequence Editor</a></li>
+              <li role="presentation"><a href="#">Reflection</a></li>
+              <li role="presentation"><a href="#">Save</a></li>
+              <li role="presentation"><a href="#">Submit</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% if my_response %}
+                <div id="jux-container"></div>
             {% endif %}
         </div>
     </div>
 </div>
+{% endwith %}
 {% endblock %}

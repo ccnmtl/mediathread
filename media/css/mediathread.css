@@ -4274,13 +4274,18 @@ a.btn.btn-default img.left {
     width: 100%;
 }
 
+.sequence-assignment .col-half {
+    width: 49%;
+}
+
 .sequence-assignment input[name='title'] {
     display: inline;
-    width: 80%;
+    width: 75%;
 }
 
 .sequence-assignment .nav {
     margin-right: 0;
+    margin-left: 0;
 }
 
 .sequence-assignment .nav>li {

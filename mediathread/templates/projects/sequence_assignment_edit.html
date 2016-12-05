@@ -41,7 +41,7 @@
 <div class="sequence-assignment">
     <div class="row">
         <div class="col-md-7">
-            <div class="centered-div">
+            <div class="centered-div column-container">
                 <form name="sequence-assignment-edit"
                     {% if form.instance %}
                         action="{% url 'project-save' form.instance.id %}"
@@ -53,16 +53,16 @@
                     {% csrf_token %}
                     <input type="hidden" name="project_type" value="sequence-assignment" />
 
-                    <h2>
-                        Edit Sequence Assignment
-                        {% if form.instance.id %}
-                        <a class="right" href="{% url 'project-workspace' form.instance.id %}">
-                            <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_view.png"></span>
+                    {% if form.instance.id %}
+                        <a class="right small" href="{% url 'project-workspace' form.instance.id %}">
+                             <img alt="View Assignment" src="{{STATIC_URL}}img/icons/item_project.gif"> View Assignment 
                         </a>
-                        {% endif %}
-                    </h2>
-                    <div data-page="1" data-page-content="instructions" class="page">
+                    {% endif %}
 
+                    <h2>Edit Sequence Assignment</h2>
+
+                    <div data-page="1" data-page-content="instructions" class="page">
+                        <h3>Step 1: Introduction</h3><br />
                         <p>A sequence assignment allows students to compare and contrast a single spine video to a series of video, image or audio selections.</p>
 
                         <p>Instructions to students could include:</p>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div data-page="2" data-page-content="title" class="hidden page">
-                        <h3>2. Write title &amp; instructions</h3>
+                        <h3>Step 2. Write title &amp; instructions</h3><br />
                         <div class="form-group">
                             <label>Assignment Title</label>
                             <input type="text" name="title" class="form-control"
@@ -114,7 +114,7 @@
                         </nav>
                     </div>
                     <div data-page="3" data-page-content="custom-instructions" class="hidden page">
-                        <h3>2. Write custom instructions</h3>
+                        <h3>Step 3. Write custom instructions</h3><br />
                         <div class="form-group">
                             <label>Primary Video Instructions</label>
                             <div>Offer directed instructions on the primary video a student should use:</div>
@@ -141,7 +141,7 @@
                         </nav>
                     </div>
                     <div data-page="4" data-page-content="due-date" class="hidden page">
-                        <h3>3. Set response due date &amp; visibility</h3>
+                        <h3>Step 4. Set response due date &amp; visibility</h3><br />
                         <p></p>
                         <div class="form-group">
                             <label for="due_date">Due Date</label>
@@ -162,7 +162,7 @@
                         </ul>
                     </div>
                     <div data-page="5" data-page-content="publish" class="hidden page">
-                        <h3>4. Publish assignment to students</h3>
+                        <h3>Step 5. Publish assignment to students</h3><br />
                         <p></p>
                         <div class="form-group">
                             <div class="radio">

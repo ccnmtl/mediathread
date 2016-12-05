@@ -4269,6 +4269,32 @@ a.btn.btn-default img.left {
     display: none;
 }
 
+.sequence-assignment {
+    min-width: 970px;
+    width: 100%;
+}
+
+.sequence-assignment input[name='title'] {
+    display: inline;
+    width: 80%;
+}
+
+.sequence-assignment .nav {
+    margin-right: 0;
+}
+
+.sequence-assignment .nav>li {
+    margin-left: 10px;
+}
+
+.sequence-assignment .nav>li>a {
+    border: 1px solid #ddd;
+}
+
+.sequence-assignment .nav>li.active>a {
+    border: none;
+}
+
 .affix-top, .affix {
     position: static;
     width: inherit;
@@ -4493,7 +4519,10 @@ ul.section-tabs>li>a.active {
     width: 96%;
 }
 
-#collection-modal .col-md-5, .col-md-4, .col-md-3, .col-md-2 {
+#collection-modal .col-md-5,
+collection-modal .col-md-4,
+collection-modal .col-md-3,
+collection-modal .col-md-2 {
     padding-right: 5px;
     padding-left: 5px;
 }

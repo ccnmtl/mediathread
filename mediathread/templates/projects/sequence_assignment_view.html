@@ -60,49 +60,45 @@
 {% block content %}
 {% with submitted=my_response.is_submitted %}
 <div class="sequence-assignment">
-    <div class="row">
-        <div class="col-md-12">
-            {% if assignment_can_edit %}
-                <a class="small right" href="{% url 'sequence-assignment-edit' assignment.id %}">
-                    <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_edit.png"><span>Edit Assignment</span>
-                </a>
-            {% endif %}
-            <h2>
-                Sequence Assignment: {{assignment.title}}
-            </h2>
-        </div>
-    </div>
+    <div style="width: 970px; background-color: red; height: 2px"></div>
+    <h2>
+        Sequence Assignment: {{assignment.title}}
+    </h2>
 
-    <div class="row">
-        <div class="col-md-3">
-            <div class="small">
-                {% if is_faculty %}
-                <div class="meta">
-                    <span class="metadata-label"><b>Response visibility</b>:</span>
-                    {% for key, value in response_view_policies %}
-                        {% ifequal key assignment.response_view_policy %}
-                            <span class="metadata-value">{{value}}</span>
-                        {% endifequal %}
-                    {% endfor %}
+    <div>
+        <div class="left small col-half">
+            {% if assignment_can_edit %}
+                <div>
+                    <a class="small" href="{% url 'sequence-assignment-edit' assignment.id %}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Assignment
                     </a>
                 </div>
-                {% endif %}
-                {% if assignment.due_date %}
-                    <div class="meta">
-                        <span class="metadata-label">
-                            <b>Due date</b>:
-                        </span>
-                        <span class="metadata-value">
-                            {{assignment.due_date|date:'m/d/y'}}
-                        </span>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-md-6"></div>
-        <div class="col-md-3">
+            {% endif %}
             {% if is_faculty %}
-                <div class="right">
+            <div class="meta">
+                <span class="metadata-label"><b>Response visibility</b>:</span>
+                {% for key, value in response_view_policies %}
+                    {% ifequal key assignment.response_view_policy %}
+                        <span class="metadata-value">{{value}}</span>
+                    {% endifequal %}
+                {% endfor %}
+                </a>
+            </div>
+            {% endif %}
+            {% if assignment.due_date %}
+                <div class="meta">
+                    <span class="metadata-label">
+                        <b>Due date</b>:
+                    </span>
+                    <span class="metadata-value">
+                        {{assignment.due_date|date:'m/d/y'}}
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+        <div class="right text-right col-half">
+            {% if is_faculty %}
+                <div>
                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                     <strong>
                         {% if responses|length > 0 %}
@@ -242,23 +238,22 @@
             {% endif %}{% endif %}
         </div>
     </div>
+
+    <div class="clearfix"></div>
     <div class="spacer"></div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
-                        <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Instructions
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                        <div class="panel-body">
-                            <p>{{assignment.body|safe}}</p>
-                        </div>
-                    </div>
+
+    <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Instructions
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                    <p>{{assignment.body|safe}}</p>
                 </div>
             </div>
         </div>
@@ -266,32 +261,29 @@
 
     <div class="spacer"></div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="meta right">
-                {% if assignment_can_edit %}
-                    <span class="metadata-label"><b>Publication status</b>:</span>
-                    <span class="metadata-value">
-                        {{assignment.visibility_short}}
-                    </span>
-                {% else %}{% if my_response %}
-                    <span class="metadata-label"><b>Publication status</b>:</span>
-                    <span class="metadata-value">
-                        {% if my_response.is_submitted %}
-                            Response submitted
-                        {% else %}
-                            Response not submitted
-                        {% endif %}
-                    </span>
-                {% endif %}{% endif %}
-            </div>
-        </div>
+    <div class="meta right">
+        {% if assignment_can_edit %}
+            <span class="metadata-label"><b>Publication status</b>:</span>
+            <span class="metadata-value">
+                {{assignment.visibility_short}}
+            </span>
+        {% else %}{% if my_response %}
+            <span class="metadata-label"><b>Publication status</b>:</span>
+            <span class="metadata-value">
+                {% if my_response.is_submitted %}
+                    Response submitted
+                {% else %}
+                    Response not submitted
+                {% endif %}
+            </span>
+        {% endif %}{% endif %}
     </div>
 
+    <div class="clearfix"></div>
     <div class="spacer"></div>
 
-    <div class="row">
-        <div class="col-md-6">
+    <div>
+        <div class="left col-half">
             {% if submitted %}
                 <h3>{{the_response.title}}</h3>
             {% else %}
@@ -303,8 +295,7 @@
                 </div>
             {% endif %}
         </div>
-        <div class="col-md-6">
-            <div class="clearfix"></div>
+        <div class="right col-half">
             <ul class="nav nav-pills right">
               <li role="presentation" class="active"><a href="#">Sequence Editor</a></li>
               <li role="presentation"><a href="#">Reflection</a></li>

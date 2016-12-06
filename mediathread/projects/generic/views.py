@@ -20,16 +20,25 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
 
     def get_assignment(self, project):
         if project.is_assignment_type():
-            assignment = project
+            return project
         else:
-            assignment = project.assignment()
-        return assignment
+            return project.assignment()
 
     def get_my_response(self, responses):
         for response in responses:
             if response.is_participant(self.request.user):
                 return response
         return None
+
+    def get_peer_response(self, project):
+        if not project.is_assignment_type():
+            return project
+
+        return None
+
+    def response_can_edit(self, my_response, peer_response):
+        return (my_response and peer_response and
+                my_response.id == peer_response.id)
 
     def get_feedback(self, responses, is_faculty):
         ctx = {}
@@ -48,25 +57,33 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
         return ctx, existing
 
     def get_context_data(self, **kwargs):
+        # passed project may identify the assignment or a response
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         parent = self.get_assignment(project)
-        can_edit = parent.can_edit(self.request.course, self.request.user)
+        peer_response = self.get_peer_response(project)
+
         responses = parent.responses(self.request.course, self.request.user)
         my_response = self.get_my_response(responses)
-        is_faculty = self.request.course.is_faculty(self.request.user)
+
+        assignment_can_edit = \
+            parent.can_edit(self.request.course, self.request.user)
+        response_can_edit = self.response_can_edit(my_response, peer_response)
 
         lst = Vocabulary.objects.filter(course=self.request.course)
         lst = lst.prefetch_related('term_set')
         vocabulary_json = VocabularyResource().render_list(
             self.request, lst)
 
+        is_faculty = self.request.course.is_faculty(self.request.user)
         feedback, feedback_count = self.get_feedback(responses, is_faculty)
 
         ctx = {
             'is_faculty': is_faculty,
             'assignment': parent,
-            'assignment_can_edit': can_edit,
+            'assignment_can_edit': assignment_can_edit,
             'my_response': my_response,
+            'peer_response': peer_response,
+            'response_can_edit': response_can_edit,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': PUBLISH_WHOLE_CLASS[0],
             'vocabulary': json.dumps(vocabulary_json),

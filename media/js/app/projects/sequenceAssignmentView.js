@@ -11,7 +11,7 @@
 (function(jQuery) {
     var global = this;
 
-    global.JuxtapositionAssignmentView = AssignmentView.extend({
+    global.SequenceAssignmentView = AssignmentView.extend({
         events: {
             'click .submit-response': 'onSubmitResponse',
             'click .btn-show-submit': 'onShowSubmitDialog',
@@ -20,7 +20,7 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                    'onShowSubmitDialog', 'onSubmitResponse');
+                      'onShowSubmitDialog', 'onSubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
         },

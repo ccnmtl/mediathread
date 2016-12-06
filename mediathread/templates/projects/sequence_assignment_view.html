@@ -41,7 +41,7 @@
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script>
-        var view = new JuxtapositionAssignmentView({
+        var view = new SequenceAssignmentView({
             el: jQuery('.sequence-assignment').first(),
             viewer: '{{request.user.username}}',
             isFaculty: {% if is_faculty %}true{% else %}false{% endif %},

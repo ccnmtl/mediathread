@@ -4293,30 +4293,34 @@ a.btn.btn-default img.left {
     width: 75%;
 }
 
-.sequence-assignment .nav {
-    margin-right: 0;
-    margin-left: 0;
-}
-
-.sequence-assignment .nav>li {
-    margin-left: 10px;
-}
-
-.sequence-assignment .nav>li>a {
-    border: 1px solid #ddd;
-    padding: 5px 10px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px
-}
-
-.sequence-assignment .nav>li.active>a {
-    border: none;
-}
-
 .sequence-assignment .panel-title a {
     color: #383838;
     font-size: 14px;
+}
+
+.sequence-assignment .btn-tab {
+    line-height: 1;
+    border-radius: 3px;
+    margin-left: 5px;
+    padding: 7px 9px;
+margin-top: 5px;
+}
+
+.sequence-assignment .btn-tab:hover,
+.sequence-assignment .btn-tab:active,
+.sequence-assignment .btn-tab:focus {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.sequence-assignment .tab-content {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: -1px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 
 .affix-top, .affix {

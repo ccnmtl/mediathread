@@ -138,7 +138,7 @@
 
     {% if the_response %}
         <div class="assignment-response">
-            {% if the_response and response_can_edit and not the_response.is_submitted %}
+            {% if response_can_edit and not the_response.is_submitted %}
                 <div class="right">
                     <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
                     <strong>
@@ -165,7 +165,7 @@
                 {% endif %}{% endif %}
             </div>
             <div class="right col-half">
-                {% if the_response and the_response.is_submitted %}
+                {% if the_response.is_submitted %}
                     <div class="right">
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <strong>
@@ -175,46 +175,53 @@
                     <div class="clearfix"></div>
                     <div class="spacer"></div>
                 {% endif %}
-                <ul class="nav nav-pills right">
+
+                <ul class="nav nav-tabs navbar-right" role="tablist">
                     <li role="presentation" class="active editor">
-                        <a href="#">
+                        <a href="#sequence-editor" aria-controls="sequence-editor" role="tab" data-toggle="tab">
                             {% if not the_response.is_submitted and response_can_edit %}
-                                Sequence Editor
-                            {% else %}
-                                The Sequence
-                            {% endif %}
+                                Edit
+                            {% endif %} Sequence
                         </a>
                     </li>
                     <li role="presentation">
-                        <a href="#" class="reflection">Reflection</a>
+                        <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
+                        {% if not the_response.is_submitted and response_can_edit %}
+                            Edit
+                        {% endif %} Reflection</a>
                     </li>
                     {% if not the_response.is_submitted and response_can_edit %}
                         <li role="presentation">
-                            <a href="#" class="btn-save">Save</a>
+                            <a href="#" class="btn btn-primary btn-tab btn-save">Save</a>
                         </li>
                         <li role="presentation">
-                            <a href="#" class="btn-show-submit">Submit</a>
+                            <a href="#" class="btn btn-primary btn-tab btn-show-submit">Submit</a>
                         </li>
                     {% endif %}
                     {% if is_faculty and the_response.is_submitted %}
                         <li role="presentation">
-                            <a href="#" class="response-feedback">{% if not feedback %}Add {% else %}Edit {% endif %}Feedback</a>
+                            <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
+                                {% if not feedback %}Add {% else %}Edit {% endif %}Feedback
+                            </a>
                         </li>
                         <li role="presentation">
-                            <a href="#" class="unsubmit">Unsubmit</a>
+                            <a href="#" class="btn btn-primary btn-tab btn-unsubmit">Unsubmit</a>
                         </li>
-                    {% endif %}
-                    {% if is_faculty or response.is_submitted and response_can_edit %}
                     {% endif %}
                 </ul>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                {% if the_response %}
+            <div class="clearfix"></div>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="selection-editor">
                     <div id="jux-container"></div>
-                {% endif %}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="reflection">
+                    <textarea></textarea>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="feedback">
+                    <textarea></textarea>
+                </div>
             </div>
         </div>
     {% endif %}

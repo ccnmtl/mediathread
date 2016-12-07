@@ -24,7 +24,8 @@
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
                       'onShowSubmitDialog', 'onSubmitResponse',
-                      'decrementSelectionCount', 'incrementSelectionCount');
+                      'decrementSelectionCount', 'incrementSelectionCount',
+                      'onSaveFeedbackSuccess');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -130,6 +131,20 @@
 
             var label = value === 1 ? 'Selection' : 'Selections';
             jQuery('.project-note-count-label').html(label);
+        },
+        onSaveFeedbackSuccess: function(frm, json) {
+            // rerender the form based on the return context
+            var username = jQuery(frm).attr('data-username');
+            if (this.feedback[username].comment === undefined) {
+                this.feedbackCount++;
+            }
+            this.feedback[username].comment = {
+                'id': json.context.discussion.thread[0].id,
+                'content': json.context.discussion.thread[0].content
+            };
+            jQuery(frm).fadeOut('slow', function() {
+                this.trigger('render');
+            });
         }
     });
 }(jQuery));

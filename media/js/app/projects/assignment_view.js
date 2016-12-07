@@ -12,18 +12,13 @@
     var global = this;
 
     global.AssignmentView = Backbone.View.extend({
-        events: {
-            'click .submit-response': 'onSubmitResponse',
-            'click .btn-show-submit': 'onShowSubmitDialog',
-            'click .toggle-feedback': 'onToggleFeedback',
-            'click .save-feedback': 'onSaveFeedback'
-        },
         initialize: function(options) {
             var self = this;
             self.viewer = options.viewer;
             self.isFaculty = options.isFaculty;
             self.feedback = options.feedback;
             self.feedbackCount = options.feedbackCount;
+            self.responseId = options.responseId;
             self.myResponse = parseInt(options.responseId, 10);
 
             // bind beforeunload so user won't forget to submit response
@@ -63,18 +58,7 @@
                 dataType: 'json',
                 data: jQuery(frm).serializeArray(),
                 success: function(json) {
-                    // rerender the form based on the return context
-                    var username = jQuery(frm).attr('data-username');
-                    if (self.feedback[username].comment === undefined) {
-                        self.feedbackCount++;
-                    }
-                    self.feedback[username].comment = {
-                        'id': json.context.discussion.thread[0].id,
-                        'content': json.context.discussion.thread[0].content
-                    };
-                    jQuery(frm).fadeOut('slow', function() {
-                        self.trigger('render');
-                    });
+                    self.onSaveFeedbackSuccess(frm, json);
                 },
                 error: function() {
                     var msg = 'An error occurred while saving the feedback. ' +
@@ -87,6 +71,8 @@
                     self.idle(evt.currentTarget);
                 }
             });
+        },
+        onSaveFeedbackSuccess: function(json) {
         },
         readyToSubmit: function() {
             return true;

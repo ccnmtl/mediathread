@@ -4323,6 +4323,15 @@ margin-top: 5px;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 
+.sequence-assignment textarea[name='comment'] {
+    height: 200px;
+}
+
+.sequence-assignment .alert-success {
+    padding: 5px;
+    margin-right: 10px;
+}
+
 .affix-top, .affix {
     position: static;
     width: inherit;

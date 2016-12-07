@@ -658,7 +658,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(ctx['assignment_can_edit'])
         self.assertFalse(ctx['response_can_edit'])
         self.assertEquals(ctx['my_response'], response)
-        self.assertIsNone(ctx['peer_response'])
+        self.assertEquals(ctx['the_response'], response)
         self.assertEquals(ctx['item'], self.asset)
         self.assertEquals(ctx['response_view_policies'], RESPONSE_VIEW_POLICY)
         self.assertEquals(ctx['submit_policy'], 'CourseProtected')
@@ -684,7 +684,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(ctx['assignment_can_edit'])
         self.assertTrue(ctx['response_can_edit'])
         self.assertEquals(ctx['my_response'], response)
-        self.assertEquals(ctx['peer_response'], response)
+        self.assertEquals(ctx['the_response'], response)
 
     def test_get_context_data_for_a_response(self):
         response = ProjectFactory.create(
@@ -705,7 +705,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(ctx['assignment_can_edit'])
         self.assertFalse(ctx['response_can_edit'])
         self.assertIsNone(ctx['my_response'])
-        self.assertEquals(ctx['peer_response'], response)
+        self.assertEquals(ctx['the_response'], response)
 
 
 class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):

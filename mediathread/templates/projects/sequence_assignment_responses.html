@@ -37,7 +37,9 @@
                                     </td>
                                     {% if is_faculty %}
                                         <td>
-                                            {{response.feedback_date|date:'m/d/Y h:i a'}}
+                                            <span data-id="feedback-date-{{the_response.id}}">
+                                                {{response.feedback_date|date:'m/d/Y h:i a'}}
+                                            </span>
                                         </td>
                                     {% endif %}
                                 </tr>

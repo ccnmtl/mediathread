@@ -1,4 +1,6 @@
-/* global _: true, AssignmentView: true */
+/* global _: true, AssignmentView: true, updateUserSetting: true */
+/* global MediaThread: true */
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
  * Listens For:
@@ -23,6 +25,15 @@
                       'onShowSubmitDialog', 'onSubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
+
+            var key = 'assignment_instructions_' + options.assignmentId;
+            jQuery('#accordion').on('hidden.bs.collapse', function() {
+                updateUserSetting(MediaThread.current_username, key, false);
+            });
+
+            jQuery('#accordion').on('shown.bs.collapse', function() {
+                updateUserSetting(MediaThread.current_username, key, true);
+            });
         },
         readyToSubmit: function() {
             return true;

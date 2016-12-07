@@ -1,20 +1,13 @@
 {% load coursetags %}
 
-{% if is_faculty %}
-    <div>
-        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
-        <strong>
-            {% if responses|length > 0 %}
-                <a href="#" data-toggle="modal" data-target="#unsubmit-response">
-            {% endif %}
-            {{responses|length}} Responses |
-            <span class="feedback-count">{{feedback_count}}</span> Feedback
-            {% if responses|length > 0 %}
-                </a>
-            {% endif %}
-        </strong>
-        <div class="modal fade" id="unsubmit-response" tabindex="-1"
-            role="dialog" aria-labelledby="Cannot Submit Response">
+{% if is_faculty or the_response and the_response.is_submitted %}
+{% if responses|length > 0 %}
+    <div class="right">
+        <button class="btn btn-primary btn-sm right" type="button" data-toggle="modal" data-target="#response-list">
+            Responses &nbsp;<span class="badge">{{responses|length}}</span>
+        </button>
+        <div class="modal fade" id="response-list" tabindex="-1"
+            role="dialog" aria-labelledby="Responses">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -22,34 +15,35 @@
                             data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title">Unsubmit Response</h4>
+                        <h4 class="modal-title">Responses</h4>
                     </div>
                     <div class="modal-body">
-                        <p>You may allow a student to resubmit their response
-                        by first selecting their name in the drop-down and then clicking
-                        Unsubmit. Once you click Unsubmit, the student's response will return to draft
-                        status, allowing the student to edit and resubmit the response.</p>
-                        <form action="/project/unsubmit/" method="post">
-                            <label for="student-response-id">Select Response</label>
-                            <select name="student-response" class="form-control">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Author</th>
+                                    <th>Submitted</th>
+                                    {% if is_faculty %}<th>Feedback Given</th>{% endif %}
+                                </tr>
                                 {% for response in responses %}
-                                    {% if response.is_submitted %}
-                                        <option value="{{response.id}}">
-                                            {% public_name for response.author %} (submitted {{ response.modified|date:'m/d/Y h:i a' }})
-                                        </option>
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'project-workspace' response.id %}">
+                                            {% public_name for response.author %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{response.date_submitted|date:'m/d/Y h:i a'}}
+                                    </td>
+                                    {% if is_faculty %}
+                                        <td>
+                                            {{response.feedback_date|date:'m/d/Y h:i a'}}
+                                        </td>
                                     {% endif %}
+                                </tr>
                                 {% endfor %}
-                            </select>
-                            <hr />
-                            <div class="right">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">
-                                    <span class="glyphicon glyphicon-repeat hidden" aria-hidden="true"></span>
-                                    Unsubmit
-                                </button>
-                            </div>
-                            <div class="clearfix"></div>
-                        </form>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -57,21 +51,7 @@
     </div>
 {% endif %}
 
-{% if the_response.is_submitted %}
-    <div class="right">
-        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-        <strong>
-            Submitted |
-        </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
-    </div>
-{% else %}{% if the_response and response_can_edit %}
-    <div class="right">
-        <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
-        <strong>
-            Draft
-        </strong>
-    </div>
-
+{% if the_response and response_can_edit and not the_response.is_submitted %}
     <div class="modal fade" id="cannot-submit-project" tabindex="-1"
         role="dialog" aria-labelledby="Cannot Submit Response">
       <div class="modal-dialog" role="document">
@@ -128,4 +108,5 @@
         </div>
       </div>
     </div>
-{% endif %}{% endif %}
+{% endif %}
+{% endif %}

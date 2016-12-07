@@ -624,6 +624,21 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
                                               self.student_one)
         self.assertEquals(response, view.get_my_response(responses))
 
+    def test_get_peer_response(self):
+        view = SelectionAssignmentView()
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[response.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+        view.request = request
+
+        self.assertEquals(response, view.get_peer_response(response))
+
     def test_get_context_data(self):
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
@@ -640,12 +655,57 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
 
         ctx = view.get_context_data(project_id=self.assignment.id)
         self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertFalse(ctx['response_can_edit'])
         self.assertEquals(ctx['my_response'], response)
+        self.assertIsNone(ctx['peer_response'])
         self.assertEquals(ctx['item'], self.asset)
         self.assertEquals(ctx['response_view_policies'], RESPONSE_VIEW_POLICY)
         self.assertEquals(ctx['submit_policy'], 'CourseProtected')
         self.assertTrue('vocabulary' in ctx)
         self.assertTrue('item_json' in ctx)
+
+    def test_get_context_data_for_my_response(self):
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[response.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+
+        view = SelectionAssignmentView()
+        view.request = request
+        view.project = response
+
+        ctx = view.get_context_data(project_id=response.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertTrue(ctx['response_can_edit'])
+        self.assertEquals(ctx['my_response'], response)
+        self.assertEquals(ctx['peer_response'], response)
+
+    def test_get_context_data_for_a_response(self):
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[response.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_two
+
+        view = SelectionAssignmentView()
+        view.request = request
+        view.project = response
+
+        ctx = view.get_context_data(project_id=response.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertFalse(ctx['response_can_edit'])
+        self.assertIsNone(ctx['my_response'])
+        self.assertEquals(ctx['peer_response'], response)
 
 
 class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):

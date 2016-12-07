@@ -22,7 +22,7 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                    'onShowSubmitDialog', 'onSubmitResponse');
+                      'onShowSubmitDialog', 'onSubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 

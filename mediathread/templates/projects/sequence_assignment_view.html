@@ -60,9 +60,9 @@
 {% block content %}
 
 <div class="sequence-assignment">
-    <div style="width: 970px; background-color: red; height: 2px"></div>
+    <div style="width: 970px; background-color: red; height: 2px; display: none"></div>
     <h2>
-        Sequence Assignment: {{assignment.title}}
+        Sequence Assignment <span class="project-view-title">{{assignment.title}}</span>
     </h2>
 
     <div>
@@ -72,32 +72,9 @@
                     <a href="{% url 'sequence-assignment-edit' assignment.id %}">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Assignment
                     </a>
-                </div>
-                <div class="meta">
-                    <span class="metadata-label"><b>Publication Status</b>:</span>
+                    &nbsp;|&nbsp;
                     <span class="metadata-value">
                         {{assignment.visibility_short}}
-                    </span>
-                </div>
-            {% endif %}
-
-            <div class="meta">
-                <span class="metadata-label"><b>Response Visibility</b>:</span>
-                {% for key, value in response_view_policies %}
-                    {% ifequal key assignment.response_view_policy %}
-                        <span class="metadata-value">{{value}}</span>
-                    {% endifequal %}
-                {% endfor %}
-                </a>
-            </div>
-
-            {% if assignment.due_date %}
-                <div class="meta">
-                    <span class="metadata-label">
-                        <b>Due Date</b>:
-                    </span>
-                    <span class="metadata-value">
-                        {{assignment.due_date|date:'m/d/y'}}
                     </span>
                 </div>
             {% endif %}
@@ -132,6 +109,25 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
+                    {% if assignment.due_date %}
+                        <div class="small">
+                            <span class="metadata-label">
+                                <b>Due Date</b>:
+                            </span>
+                            <span class="metadata-value">
+                                {{assignment.due_date|date:'m/d/y'}}
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="small">
+                        <span class="metadata-label"><b>Response Visibility</b>:</span>
+                        {% for key, value in response_view_policies %}
+                            {% ifequal key assignment.response_view_policy %}
+                                <span class="metadata-value">{{value}}</span>
+                            {% endifequal %}
+                        {% endfor %}
+                        </a>
+                    </div>
                     <p>{{assignment.body|safe}}</p>
                 </div>
             </div>
@@ -140,27 +136,24 @@
 
     <div class="spacer"></div>
 
-    {% if is_faculty or the_response %}
-        <div class="meta right">
-            {% if response_can_edit %}
-                <span class="metadata-label"><b>Publication status</b>:</span>
-                <span class="metadata-value">
-                    {% if the_response.is_submitted %}
-                        Response submitted
-                    {% else %}
-                        Response not submitted
-                    {% endif %}
-                </span>
+    {% if the_response %}
+        <div class="assignment-response">
+            {% if the_response and response_can_edit and not the_response.is_submitted %}
+                <div class="right">
+                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
+                    <strong>
+                        Draft
+                    </strong>
+                </div>
+                <div class="clearfix"></div>
+                <div class="spacer"></div>
             {% endif %}
-        </div>
-
-        <div class="clearfix"></div>
-        <div class="spacer"></div>
-
-        <div>
             <div class="left col-half">
                 {% if the_response.is_submitted %}
-                    <h3>{{the_response.title}}</h3>
+                    <div class="assignment-response-title">{{the_response.title}}</div>
+                    <div class="assignment-response-author">
+                        by {% public_name for the_response.author %}
+                    </div>
                 {% else %}{% if response_can_edit %}
                     <div>
                         <label>Response Title</label>&nbsp;
@@ -172,9 +165,25 @@
                 {% endif %}{% endif %}
             </div>
             <div class="right col-half">
+                {% if the_response and the_response.is_submitted %}
+                    <div class="right">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <strong>
+                            Submitted |
+                        </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="spacer"></div>
+                {% endif %}
                 <ul class="nav nav-pills right">
                     <li role="presentation" class="active editor">
-                        <a href="#">Sequence Editor</a>
+                        <a href="#">
+                            {% if not the_response.is_submitted and response_can_edit %}
+                                Sequence Editor
+                            {% else %}
+                                The Sequence
+                            {% endif %}
+                        </a>
                     </li>
                     <li role="presentation">
                         <a href="#" class="reflection">Reflection</a>
@@ -187,10 +196,15 @@
                             <a href="#" class="btn-show-submit">Submit</a>
                         </li>
                     {% endif %}
-                    {% if is_faculty or response.is_submitted and response_can_edit %}
+                    {% if is_faculty and the_response.is_submitted %}
                         <li role="presentation">
-                            <a href="#" class="response-feedback">Feedback</a>
+                            <a href="#" class="response-feedback">{% if not feedback %}Add {% else %}Edit {% endif %}Feedback</a>
                         </li>
+                        <li role="presentation">
+                            <a href="#" class="unsubmit">Unsubmit</a>
+                        </li>
+                    {% endif %}
+                    {% if is_faculty or response.is_submitted and response_can_edit %}
                     {% endif %}
                 </ul>
             </div>

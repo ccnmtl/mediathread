@@ -82,7 +82,7 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'assignment': parent,
             'assignment_can_edit': assignment_can_edit,
             'my_response': my_response,
-            'peer_response': peer_response,
+            'the_response': peer_response or my_response,
             'response_can_edit': response_can_edit,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': PUBLISH_WHOLE_CLASS[0],

@@ -22,6 +22,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.main.models import UserSetting
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
     JSONResponseMixin, LoggedInFacultyMixin, ProjectReadableMixin,
@@ -384,6 +385,14 @@ class SelectionAssignmentView(AssignmentView):
 
 class SequenceAssignmentView(AssignmentView):
     template_name = 'projects/sequence_assignment_view.html'
+
+    def get_extra_context(self):
+        parent = self.get_assignment(self.project)
+        key = 'assignment_instructions_{}'.format(parent.id)
+        return {
+            'show_instructions': UserSetting.get_setting(
+                self.request.user, key, True)
+        }
 
 
 class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,

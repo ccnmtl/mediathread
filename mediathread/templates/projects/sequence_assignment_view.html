@@ -41,7 +41,7 @@
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script>
-        var view = new JuxtapositionAssignmentView({
+        var view = new SequenceAssignmentView({
             el: jQuery('.sequence-assignment').first(),
             viewer: '{{request.user.username}}',
             isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
@@ -251,7 +251,7 @@
                     </a>
                 </h4>
             </div>
-            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
                     <p>{{assignment.body|safe}}</p>
                 </div>

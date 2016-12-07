@@ -4278,6 +4278,16 @@ a.btn.btn-default img.left {
     width: 49%;
 }
 
+.sequence-assignment .assignment-response-title {
+    margin-top: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.sequence-assignment .assignment-response-author {
+    margin-top: 10px;
+    font-size: 110%;
+}
 .sequence-assignment input[name='title'] {
     display: inline;
     width: 75%;
@@ -4294,10 +4304,19 @@ a.btn.btn-default img.left {
 
 .sequence-assignment .nav>li>a {
     border: 1px solid #ddd;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px
 }
 
 .sequence-assignment .nav>li.active>a {
     border: none;
+}
+
+.sequence-assignment .panel-title a {
+    color: #383838;
+    font-size: 14px;
 }
 
 .affix-top, .affix {

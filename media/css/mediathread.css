@@ -4326,6 +4326,13 @@ margin-top: 5px;
 .sequence-assignment textarea[name='comment'] {
     height: 200px;
 }
+.sequence-assignment textarea[name='body'] {
+    height: 300px;
+}
+
+.sequence-assignment textarea[name='body'] {
+    height: 300px;
+}
 
 .sequence-assignment .alert-success {
     padding: 5px;

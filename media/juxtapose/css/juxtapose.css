@@ -48,6 +48,7 @@ button.jux-play {
 
 .jux-global-annotation {
     width: 100%;
+    display: none;
 }
 
 #jux-spine-video,

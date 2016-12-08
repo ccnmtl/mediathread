@@ -142,8 +142,10 @@
                 'id': json.context.discussion.thread[0].id,
                 'content': json.context.discussion.thread[0].content
             };
+
+            var self = this;
             jQuery(frm).fadeOut('slow', function() {
-                this.trigger('render');
+                self.trigger('render');
             });
         }
     });

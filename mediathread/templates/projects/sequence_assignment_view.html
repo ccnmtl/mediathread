@@ -192,15 +192,6 @@
                             Edit
                         {% endif %} Reflection</a>
                     </li>
-                    {% if not the_response.is_submitted and response_can_edit %}
-                        <li role="presentation">
-                            <a href="#" class="btn btn-primary btn-tab btn-save">Saved</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#" class="btn btn-primary btn-tab btn-show-submit">Submit</a>
-                        </li>
-                    {% endif %}
-                    
                     {% if is_faculty or response_can_edit and the_feedback %}
                         <li role="presentation">
                             <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
@@ -210,12 +201,23 @@
                             </a>
                         </li>
                     {% endif %}
-                    {% if is_faculty %}
+                    {% if not the_response.is_submitted and response_can_edit %}
                         <li role="presentation">
-                            <a href="#" class="btn btn-warning btn-tab btn-unsubmit">Unsubmit</a>
+                            <a href="#" class="btn btn-primary btn-tab btn-save">Saved</a>
+                        </li>
+                        <li role="presentation">
+                            <a href="#" class="btn btn-primary btn-tab btn-show-submit">Submit</a>
                         </li>
                     {% endif %}
-                    {% if is_faculty or response.is_submitted and response_can_edit %}
+                    {% if is_faculty %}
+                        <li role="presentation">
+                            <form class='unsubmit-response-form'
+                                action="{% url 'unsubmit-response' %}"
+                                    method="post">
+                                <input name="student-response" type="hidden" value="{{the_response.id}}" />
+                                <a href="#" class="btn btn-warning btn-tab btn-unsubmit">Unsubmit</a>
+                            </form>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -226,12 +228,12 @@
                     <div id="jux-container"></div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="reflection">
-                    {% if not the_response.is_submitted and response_can_edit %}
+                    {% if the_response.is_submitted %}
+                        {{the_response.body|safe}}
+                    {% else %}{% if response_can_edit %}
                         <textarea name="body" class="form-control mceEditor"
                             placeholder="Reflect on your sequence creation and intent">{{the_response.body|safe}}</textarea>
-                    {% else %}
-                        {{the_response.body|safe}}
-                    {% endif %}
+                    {% endif %}{% endif %}
                 </div>
 
                 {% if is_faculty or response_can_edit and the_feedback %}

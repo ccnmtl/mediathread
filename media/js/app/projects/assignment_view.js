@@ -19,6 +19,7 @@
             self.feedback = options.feedback;
             self.feedbackCount = options.feedbackCount;
             self.responseId = options.responseId;
+            self.assignmentId = options.assignmentId;
             self.myResponse = parseInt(options.responseId, 10);
 
             // bind beforeunload so user won't forget to submit response
@@ -72,13 +73,11 @@
                 }
             });
         },
-        onSaveFeedbackSuccess: function(json) {
-        },
-        readyToSubmit: function() {
-            return true;
-        },
         onShowSubmitDialog: function(evt) {
             evt.preventDefault();
+            if (jQuery(evt.currentTarget).attr('disabled') === 'disabled') {
+                return;
+            }
 
             var opts = {'show': true, 'backdrop': 'static'};
 
@@ -87,29 +86,6 @@
             } else {
                 jQuery('#cannot-submit-project').modal(opts);
             }
-        },
-        onSubmitResponse: function(evt) {
-            evt.preventDefault();
-            var frm = jQuery(this.el).find('.project-response-form')[0];
-            jQuery.ajax({
-                type: 'POST',
-                url: frm.action,
-                dataType: 'json',
-                data: jQuery(frm).serializeArray(),
-                success: function(json) {
-                    jQuery(window).unbind('beforeunload');
-                    window.location = json.context.project.url;
-                },
-                error: function() {
-                    var msg = 'An error occurred while submitting your ' +
-                        'response. Please try again';
-                    var pos = {
-                        my: 'center', at: 'center',
-                        of: jQuery('.container')
-                    };
-                    showMessage(msg, undefined, 'Error', pos);
-                }
-            });
         },
         onToggleFeedback: function(evt) {
             evt.preventDefault();

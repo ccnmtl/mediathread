@@ -1,6 +1,6 @@
 /* global _: true, Backbone: true, djangosherd: true */
 /* global AssignmentView: true, CitationView: true */
-/* global Mustache: true, MediaThread: true */
+/* global Mustache: true, MediaThread: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -145,6 +145,29 @@
             var self = this;
             jQuery(frm).fadeOut('slow', function() {
                 self.trigger('render');
+            });
+        },
+        onSubmitResponse: function(evt) {
+            evt.preventDefault();
+            var frm = jQuery(this.el).find('.project-response-form')[0];
+            jQuery.ajax({
+                type: 'POST',
+                url: frm.action,
+                dataType: 'json',
+                data: jQuery(frm).serializeArray(),
+                success: function(json) {
+                    jQuery(window).unbind('beforeunload');
+                    window.location = json.context.project.url;
+                },
+                error: function() {
+                    var msg = 'An error occurred while submitting your ' +
+                        'response. Please try again';
+                    var pos = {
+                        my: 'center', at: 'center',
+                        of: jQuery('.container')
+                    };
+                    showMessage(msg, undefined, 'Error', pos);
+                }
             });
         }
     });

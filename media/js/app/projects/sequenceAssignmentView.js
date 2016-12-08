@@ -1,6 +1,6 @@
 /* global _: true, AssignmentView: true, updateUserSetting: true */
 /* global MediaThread: true, tinymceSettings:true, tinymce: true */
-/* global showMessage: true */
+/* global showMessage: true, confirmAction: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -88,9 +88,11 @@
 
             if (isDirty) {
                 $elt.text('Save');
+                jQuery('.btn-show-submit').attr('disabled', 'disabled');
             } else {
                 tinymce.activeEditor.isNotDirty = true;
                 $elt.text('Saved');
+                jQuery('.btn-show-submit').removeAttr('disabled');
             }
         },
         validTitle: function() {
@@ -117,6 +119,8 @@
                 .text('Saving...')
                 .addClass('saving');
 
+            var data = this.serializeData();
+
             var self = this;
             jQuery.ajax({
                 type: 'POST',
@@ -138,6 +142,41 @@
                     $saveButton.removeAttr('disabled')
                         .removeClass('saving', 1200, function() {
                             jQuery(self).text('Saved'); });
+                }
+            });
+
+            return true;
+        },
+        readyToSubmit: function() {
+            return true;
+        },
+        onSubmitResponse: function(evt) {
+            evt.preventDefault();
+
+            var data = this.serializeData();
+            data.push({
+                'name': 'publish',
+                'value': this.$el.find('input[name="publish"]').val()
+            });
+
+            var self = this;
+            jQuery.ajax({
+                type: 'POST',
+                url: '/project/save/' + this.responseId + '/',
+                data: data,
+                dataType: 'json',
+                success: function(json) {
+                    jQuery(window).unbind('beforeunload');
+                    window.location = json.context.project.url;
+                },
+                error: function() {
+                    var msg = 'An error occurred while submitting your ' +
+                        'response. Please try again';
+                    var pos = {
+                        my: 'center', at: 'center',
+                        of: jQuery('.container')
+                    };
+                    showMessage(msg, undefined, 'Error', pos);
                 }
             });
 

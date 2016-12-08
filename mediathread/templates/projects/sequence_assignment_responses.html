@@ -84,9 +84,7 @@
             </h4>
           </div>
           <div class="modal-body">
-            <form method="post" class="project-response-form"
-                action="{% url 'project-save' the_response.id %}">
-                <div>Please review assignment instructions before submitting.</div>
+            <div>Please review assignment instructions before submitting.</div>
                 <p>
                     {% ifequal assignment.response_view_policy 'never' %}
                         Your response will be visible to instructors.
@@ -101,8 +99,6 @@
                     Once you submit your response, you will not be able to unsubmit or edit it.
                 </div>
                 <input type="hidden" name="publish" value="{{submit_policy}}" />
-                <input type="hidden" name="title" value="{{the_response.title}}" />
-            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

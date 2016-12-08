@@ -4330,10 +4330,6 @@ margin-top: 5px;
     height: 300px;
 }
 
-.sequence-assignment textarea[name='body'] {
-    height: 300px;
-}
-
 .sequence-assignment .alert-success {
     padding: 5px;
     margin-right: 10px;

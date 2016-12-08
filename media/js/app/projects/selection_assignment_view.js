@@ -142,7 +142,6 @@
                 'id': json.context.discussion.thread[0].id,
                 'content': json.context.discussion.thread[0].content
             };
-
             var self = this;
             jQuery(frm).fadeOut('slow', function() {
                 self.trigger('render');

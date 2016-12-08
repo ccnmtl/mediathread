@@ -1,56 +1,57 @@
 {% load coursetags %}
 
 {% if is_faculty or the_response and the_response.is_submitted %}
-{% if responses|length > 0 %}
-    <div class="right">
-        <button class="btn btn-primary btn-sm right" type="button" data-toggle="modal" data-target="#response-list">
-            Responses &nbsp;<span class="badge">{{responses|length}}</span>
-        </button>
-        <div class="modal fade" id="response-list" tabindex="-1"
-            role="dialog" aria-labelledby="Responses">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close"
-                            data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">Responses</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th>Author</th>
-                                    <th>Submitted</th>
-                                    {% if is_faculty %}<th>Feedback Given</th>{% endif %}
-                                </tr>
-                                {% for response in responses %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'project-workspace' response.id %}">
-                                            {% public_name for response.author %}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{response.date_submitted|date:'m/d/Y h:i a'}}
-                                    </td>
-                                    {% if is_faculty %}
+    {% if responses|length > 0 %}
+        <div class="right">
+            <button class="btn btn-primary btn-sm right" type="button" data-toggle="modal" data-target="#response-list">
+                Responses &nbsp;<span class="badge">{{responses|length}}</span>
+            </button>
+            <div class="modal fade" id="response-list" tabindex="-1"
+                role="dialog" aria-labelledby="Responses">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Responses</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th>Author</th>
+                                        <th>Submitted</th>
+                                        {% if is_faculty %}<th>Feedback Given</th>{% endif %}
+                                    </tr>
+                                    {% for response in responses %}
+                                    <tr>
                                         <td>
-                                            <span data-id="feedback-date-{{the_response.id}}">
-                                                {{response.feedback_date|date:'m/d/Y h:i a'}}
-                                            </span>
+                                            <a href="{% url 'project-workspace' response.id %}">
+                                                {% public_name for response.author %}
+                                            </a>
                                         </td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                            </table>
+                                        <td>
+                                            {{response.date_submitted|date:'m/d/Y h:i a'}}
+                                        </td>
+                                        {% if is_faculty %}
+                                            <td>
+                                                <span data-id="feedback-date-{{the_response.id}}">
+                                                    {{response.feedback_date|date:'m/d/Y h:i a'}}
+                                                </span>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 {% endif %}
 
 {% if the_response and response_can_edit and not the_response.is_submitted %}
@@ -110,5 +111,4 @@
         </div>
       </div>
     </div>
-{% endif %}
 {% endif %}

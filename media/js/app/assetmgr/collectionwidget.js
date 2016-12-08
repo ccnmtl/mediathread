@@ -398,7 +398,7 @@ CollectionWidget.prototype.updateSwitcher = function() {
             self.$el.find('select.course-tags')
                 .select2({
                     placeholder: 'Select tag',
-                    width: '75%'
+                    width: '72%'
                 });
             if ('tag' in self.currentRecords.active_filters &&
                 self.currentRecords.active_filters.tag.length > 0) {

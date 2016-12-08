@@ -39,6 +39,8 @@
     {% include "djangosherd/player_resources.html" %}
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
 
     <script>
         var view = new SequenceAssignmentView({
@@ -60,7 +62,7 @@
 {% block content %}
 
 <div class="sequence-assignment">
-    <div style="width: 970px; background-color: red; height: 2px;"></div>
+    <div style="width: 970px; background-color: red; height: 2px; display: none"></div>
     <h2>
         Sequence Assignment <span class="project-view-title">{{assignment.title}}</span>
     </h2>
@@ -192,7 +194,7 @@
                     </li>
                     {% if not the_response.is_submitted and response_can_edit %}
                         <li role="presentation">
-                            <a href="#" class="btn btn-primary btn-tab btn-save">Save</a>
+                            <a href="#" class="btn btn-primary btn-tab btn-save">Saved</a>
                         </li>
                         <li role="presentation">
                             <a href="#" class="btn btn-primary btn-tab btn-show-submit">Submit</a>
@@ -224,10 +226,9 @@
                     <div id="jux-container"></div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="reflection">
-                    <h4>Reflection</h4>
                     {% if not the_response.is_submitted and response_can_edit %}
-                        <textarea>
-                        </textarea>
+                        <textarea name="body" class="form-control mceEditor"
+                            placeholder="Reflect on your sequence creation and intent">{{the_response.body|safe}}</textarea>
                     {% else %}
                         {{the_response.body|safe}}
                     {% endif %}

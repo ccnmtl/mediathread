@@ -63,9 +63,6 @@
                 return 'Changes to your project have not been saved.';
             }
         },
-        readyToSubmit: function() {
-            return true;
-        },
         onChange: function() {
             this.setDirty(true);
             this.$el.find('.alert-success').fadeOut();

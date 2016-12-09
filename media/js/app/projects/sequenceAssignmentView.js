@@ -168,7 +168,7 @@
             data.push({
                 'name': 'publish',
                 'value': this.$el.find(
-                    '#submit-project" input[name="publish"]').val()
+                    '#submit-project input[name="publish"]').val()
             });
 
             var self = this;

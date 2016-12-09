@@ -10,14 +10,14 @@ import reversion
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
-from mediathread.sequence.models import SequenceAsset
 from mediathread.projects.models import (
     Project, ProjectSequenceAsset,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
     PUBLISH_WHOLE_WORLD, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 from mediathread.projects.views import (
-    SelectionAssignmentView, ProjectItemView, ProjectCreateView
-)
+    SelectionAssignmentView, ProjectItemView, ProjectCreateView,
+    SequenceAssignmentView)
+from mediathread.sequence.models import SequenceAsset
 from structuredcollaboration.models import Collaboration
 
 
@@ -678,7 +678,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         ctx = view.get_context_data(project_id=self.assignment.id)
         self.assertEquals(ctx['assignment'], self.assignment)
         self.assertFalse(ctx['assignment_can_edit'])
-        self.assertFalse(ctx['response_can_edit'])
+        self.assertTrue(ctx['response_can_edit'])
         self.assertEquals(ctx['my_response'], response)
         self.assertEquals(ctx['the_response'], response)
         self.assertEquals(ctx['item'], self.asset)
@@ -728,6 +728,15 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(ctx['response_can_edit'])
         self.assertIsNone(ctx['my_response'])
         self.assertEquals(ctx['the_response'], response)
+
+    def test_public_view(self):
+        assignment_response = ProjectFactory.create(
+            date_submitted=datetime.now(),
+            course=self.sample_course, author=self.student_one,
+            policy=PUBLISH_WHOLE_WORLD[0], parent=self.assignment)
+
+        response = self.client.get(assignment_response.public_url(), {})
+        self.assertEquals(response.status_code, 403)
 
 
 class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
@@ -789,6 +798,107 @@ class SelectionAssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(project.assignmentitem_set.count(), 1)
         self.assertEquals(project.assignmentitem_set.first().asset, asset2)
+
+
+class SequenceAssignmentViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='sequence-assignment')
+
+    def test_get_context_data_for_assignment(self):
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[self.assignment.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+
+        view = SequenceAssignmentView()
+        view.request = request
+        view.project = self.assignment
+
+        ctx = view.get_context_data(project_id=self.assignment.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertTrue(ctx['response_can_edit'])
+        self.assertEquals(ctx['my_response'], response)
+        self.assertEquals(ctx['the_response'], response)
+        self.assertEquals(ctx['responses'], [response])
+        self.assertTrue(ctx['show_instructions'])
+
+    def test_get_context_data_my_response(self):
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[response.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+
+        view = SequenceAssignmentView()
+        view.request = request
+        view.project = self.assignment
+
+        ctx = view.get_context_data(project_id=response.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertTrue(ctx['response_can_edit'])
+        self.assertEquals(ctx['my_response'], response)
+        self.assertEquals(ctx['the_response'], response)
+        self.assertEquals(ctx['responses'], [response])
+        self.assertTrue(ctx['show_instructions'])
+
+    def test_get_context_data_a_response(self):
+        my_response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+
+        url = reverse('project-workspace', args=[response.id])
+        request = RequestFactory().get(url)
+        request.course = self.sample_course
+        request.user = self.student_one
+
+        view = SequenceAssignmentView()
+        view.request = request
+        view.project = self.assignment
+
+        ctx = view.get_context_data(project_id=response.id)
+        self.assertEquals(ctx['assignment'], self.assignment)
+        self.assertFalse(ctx['assignment_can_edit'])
+        self.assertFalse(ctx['response_can_edit'])
+        self.assertEquals(ctx['my_response'], my_response)
+        self.assertEquals(ctx['the_response'], response)
+        self.assertEquals(ctx['responses'], [my_response])
+        self.assertTrue(ctx['show_instructions'])
+
+    def test_public_view(self):
+        assignment_response = ProjectFactory.create(
+            date_submitted=datetime.now(),
+            course=self.sample_course, author=self.student_one,
+            policy=PUBLISH_WHOLE_WORLD[0], parent=self.assignment)
+
+        response = self.client.get(assignment_response.public_url(), {})
+        self.assertEquals(response.status_code, 200)
+
+        self.assertEquals(response.context['the_response'],
+                          assignment_response)
+        self.assertFalse(response.context['response_can_edit'])
+        self.assertFalse(response.context['assignment_can_edit'])
+        self.assertFalse(response.context['is_faculty'])
+        self.assertIsNone(response.context['my_response'])
+        self.assertIsNone(response.context['feedback'])
+        self.assertEquals(response.context['responses'], [])
 
 
 class AssignmentEditViewTest(MediathreadTestMixin, TestCase):

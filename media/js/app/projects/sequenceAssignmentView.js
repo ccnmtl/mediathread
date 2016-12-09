@@ -167,7 +167,8 @@
             var data = this.serializeData();
             data.push({
                 'name': 'publish',
-                'value': this.$el.find('input[name="publish"]').val()
+                'value': this.$el.find(
+                    '#submit-project" input[name="publish"]').val()
             });
 
             var self = this;

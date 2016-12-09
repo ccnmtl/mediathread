@@ -23,8 +23,8 @@
             'change textarea[name="comment"]': 'onChange',
             'keyup textarea[name="comment"]': 'onChange',
             'paste textarea[name="comment"]': 'onChange',
-            'keyup input[name="title"]': 'onChange',
-            'click .btn-save': 'onSaveProject'
+            'click .btn-save': 'onSaveProject',
+            'click .btn-unsubmit': 'onConfirmUnsubmitResponse',
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
@@ -32,7 +32,8 @@
                       'onSaveFeedback', 'onSaveFeedbackSuccess',
                       'onChange', 'onSaveProject', 'serializeData',
                       'isDirty', 'setDirty', 'beforeUnload',
-                      'validTitle');
+                      'validTitle',
+                      'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -143,6 +144,35 @@
             });
 
             return true;
+        },
+        onConfirmUnsubmitResponse: function() {
+            confirmAction(
+                'Are you sure? Once you unsubmit, you will no ' +
+                'longer have access to this student\'s response',
+                this.onUnsubmitResponse, 'Unsubmit Response');
+        },
+        onUnsubmitResponse: function(evt) {
+            var self = this;
+            var frm = jQuery(this.el).find('.unsubmit-response-form')[0];
+            jQuery.ajax({
+                type: 'POST',
+                url: frm.action,
+                dataType: 'json',
+                data: jQuery(frm).serializeArray(),
+                success: function(json) {
+                    window.location(
+                        '/project/view/' + self.assignmentId + '/');
+                },
+                error: function() {
+                    var msg = 'An error occurred while unsubmitting the ' +
+                        'response. Please try again';
+                    var pos = {
+                        my: 'center', at: 'center',
+                        of: jQuery('.container')
+                    };
+                    showMessage(msg, undefined, 'Error', pos);
+                }
+            });
         },
         readyToSubmit: function() {
             return true;

@@ -36,9 +36,9 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
 
         return None
 
-    def response_can_edit(self, my_response, peer_response):
-        return (my_response and peer_response and
-                my_response.id == peer_response.id)
+    def response_can_edit(self, the_response):
+        return (the_response is not None and
+                the_response.author == self.request.user)
 
     def get_feedback(self, responses, is_faculty):
         ctx = {}
@@ -60,14 +60,15 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
         # passed project may identify the assignment or a response
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         parent = self.get_assignment(project)
-        peer_response = self.get_peer_response(project)
-
-        responses = parent.responses(self.request.course, self.request.user)
-        my_response = self.get_my_response(responses)
-
         assignment_can_edit = \
             parent.can_edit(self.request.course, self.request.user)
-        response_can_edit = self.response_can_edit(my_response, peer_response)
+
+        responses = parent.responses(self.request.course, self.request.user)
+
+        peer_response = self.get_peer_response(project)
+        my_response = self.get_my_response(responses)
+        the_response = peer_response or my_response
+        response_can_edit = self.response_can_edit(the_response)
 
         lst = Vocabulary.objects.filter(course=self.request.course)
         lst = lst.prefetch_related('term_set')
@@ -82,7 +83,7 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'assignment': parent,
             'assignment_can_edit': assignment_can_edit,
             'my_response': my_response,
-            'the_response': peer_response or my_response,
+            'the_response': the_response,
             'response_can_edit': response_can_edit,
             'response_view_policies': RESPONSE_VIEW_POLICY,
             'submit_policy': PUBLISH_WHOLE_CLASS[0],

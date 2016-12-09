@@ -49,9 +49,10 @@
             isFaculty: {% if is_faculty %}true{% else %}false{% endif %},
             assignmentId: '{{assignment.id}}',
             responseId: '{{the_response.id}}',
-            vocabulary: JSON.parse('{{vocabulary|escapejs}}'),
             submitted: {% if the_response and the_response.is_submitted %}true{% else %}false{% endif %},
-            feedback: JSON.parse('{{feedback|escapejs}}'),
+            {% if feedback %}
+                feedback: JSON.parse('{{feedback|escapejs}}'),
+            {% endif %}
             feedbackCount: {{feedback_count}}
         });
     </script>

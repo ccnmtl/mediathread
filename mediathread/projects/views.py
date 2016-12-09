@@ -258,7 +258,10 @@ def project_revisions(request, project_id):
 
 class ProjectPublicView(View):
 
-    def get(self, request, context_slug, obj_type, obj_id):
+    def dispatch(self, request, *args, **kwargs):
+        context_slug = self.kwargs.get('context_slug', None)
+        obj_id = self.kwargs.get('obj_id', None)
+
         context = get_object_or_404(Collaboration, slug=context_slug)
         request.collaboration_context = context
         collab = get_object_or_404(
@@ -268,10 +271,38 @@ class ProjectPublicView(View):
             object_pk=obj_id)
 
         if not collab.permission_to('read', request.course, request.user):
-            return HttpResponseForbidden("forbidden")
+            return HttpResponseForbidden('forbidden')
 
-        return ProjectReadOnlyView.as_view()(request,
-                                             project_id=int(collab.object_pk))
+        project_id = int(collab.object_pk)
+        project = Project.objects.get(id=project_id)
+        parent = project.assignment()
+        if (project.is_selection_assignment() or
+                (parent and parent.is_selection_assignment())):
+            return HttpResponseForbidden('forbidden')
+        elif (project.is_sequence_assignment() or
+                (parent and parent.is_sequence_assignment())):
+            return SequenceAssignmentReadOnlyView.as_view()(
+                request, project_id=project_id)
+        else:
+            return ProjectReadOnlyView.as_view()(
+                request, project_id=project_id)
+
+
+class SequenceAssignmentReadOnlyView(ProjectReadableMixin, TemplateView):
+    template_name = 'projects/sequence_assignment_view.html'
+
+    def get_context_data(self, project_id):
+        return {
+            'is_faculty': False,
+            'assignment': self.project.assignment(),
+            'assignment_can_edit': False,
+            'my_response': None,
+            'the_response': self.project,
+            'response_can_edit': False,
+            'responses': [],
+            'feedback': None,
+            'feedback_count': 0
+        }
 
 
 class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,

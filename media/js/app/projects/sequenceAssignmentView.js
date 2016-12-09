@@ -148,31 +148,15 @@
         onConfirmUnsubmitResponse: function() {
             confirmAction(
                 'Are you sure? Once you unsubmit, you will no ' +
-                'longer have access to this student\'s response',
+                'longer have access to this student\'s response. And, you ' +
+                'will be taken to the main assignment page to choose ' +
+                'another response.',
                 this.onUnsubmitResponse, 'Unsubmit Response');
         },
         onUnsubmitResponse: function(evt) {
             var self = this;
             var frm = jQuery(this.el).find('.unsubmit-response-form')[0];
-            jQuery.ajax({
-                type: 'POST',
-                url: frm.action,
-                dataType: 'json',
-                data: jQuery(frm).serializeArray(),
-                success: function(json) {
-                    window.location(
-                        '/project/view/' + self.assignmentId + '/');
-                },
-                error: function() {
-                    var msg = 'An error occurred while unsubmitting the ' +
-                        'response. Please try again';
-                    var pos = {
-                        my: 'center', at: 'center',
-                        of: jQuery('.container')
-                    };
-                    showMessage(msg, undefined, 'Error', pos);
-                }
-            });
+            jQuery(frm.submit());
         },
         readyToSubmit: function() {
             return true;

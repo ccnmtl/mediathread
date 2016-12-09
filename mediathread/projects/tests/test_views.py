@@ -355,6 +355,28 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(collaboration.policy_record.policy_name,
                           'PrivateEditorsAreOwners')
 
+    def test_update_visibility_view(self):
+        assignment_response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy='CourseProtected', parent=self.assignment)
+
+        url = reverse('project-visibility', args=[assignment_response.id])
+
+        # anonymous
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 302)
+
+        # as owner, no data
+        self.client.login(username=self.student_one.username, password='test')
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 403)
+
+        # with data
+        data = {'publish': PUBLISH_WHOLE_WORLD[0]}
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertIsNotNone(assignment_response.public_url())
+
     def test_project_revisions(self):
         url = reverse('project-revisions', args=[self.project_private.id])
 

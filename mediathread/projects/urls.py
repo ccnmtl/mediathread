@@ -1,12 +1,14 @@
 from django.conf.urls import url, include
 from rest_framework import routers
+
+from mediathread.projects.apiviews import ProjectSequenceAssetViewSet
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
-    SequenceAssignmentEditView)
-from mediathread.projects.apiviews import ProjectSequenceAssetViewSet
+    SequenceAssignmentEditView, UpdateVisibilityView)
+
 
 router = routers.DefaultRouter()
 router.register(r'projectsequenceassets', ProjectSequenceAssetViewSet)
@@ -53,6 +55,9 @@ urlpatterns = [
 
     url(r'^unsubmit/$',
         UnsubmitResponseView.as_view(), {}, 'unsubmit-response'),
+
+    url(r'^visibility/(?P<project_id>\d+)/$',
+        UpdateVisibilityView.as_view(), {}, 'project-visibility'),
 
     url(r'^revisions/(?P<project_id>\d+)/$',
         project_revisions,

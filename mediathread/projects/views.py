@@ -218,6 +218,22 @@ class UnsubmitResponseView(LoggedInFacultyMixin, CreateReversionMixin, View):
             reverse('project-workspace', kwargs={'project_id': assignment.id}))
 
 
+class UpdateVisibilityView(LoggedInCourseMixin, ProjectEditableMixin,
+                           CreateReversionMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        policy = request.POST.get('publish', None)
+
+        if policy is None:
+            return HttpResponseForbidden('Must specify publish policy')
+
+        self.project.create_or_update_collaboration(policy)
+
+        return HttpResponseRedirect(
+            reverse('project-workspace',
+                    kwargs={'project_id': self.project.id}))
+
+
 @login_required
 def project_revisions(request, project_id):
     project = get_object_or_404(Project, pk=project_id, course=request.course)

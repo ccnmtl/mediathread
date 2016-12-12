@@ -240,10 +240,34 @@ button.jux-play span.glyphicon {
 }
 
 .jux-add-item-popup {
-    background-color: lightgreen;
+    padding: 0;
+    background-color: white;
+    border: 1px solid #ddd;
     z-index: 70;
     position: absolute;
+    width: 300px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -50px 0 0 -100px;
+    border-radius: 4px;
+}
+
+.jux-add-item-popup h2 {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
     padding: 10px;
+    margin: 0;
+}
+
+.jux-add-item-popup form {
+    padding: 10px;
+}
+
+.jux-add-item-popup textarea {
+    height: 90px;
+    margin-bottom: 10px;
 }
 
 .jux-add-item-popup.jux-collection-popup {

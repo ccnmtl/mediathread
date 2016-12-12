@@ -60,7 +60,7 @@ django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.0.0
 django-debug-toolbar==1.6
-django-markwhat==1.5
+django-markwhat==1.5.1
 ipaddress==1.0.17
 Faker==0.7.3
 factory_boy==2.7.0

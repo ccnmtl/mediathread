@@ -1,7 +1,3 @@
-button {
-    cursor: pointer;
-}
-
 button.jux-play {
     font-size: 1.5em;
     margin-bottom: 5px;
@@ -13,8 +9,9 @@ button.jux-play {
 }
 
 #jux-container {
-    max-width: 600px;
-    margin: 20px auto;
+    width: 970px;
+    border: 1px solid red;
+    margin: 0 auto; 
 }
 
 .react-grid-item {
@@ -64,10 +61,6 @@ button.jux-play {
 
 .jux-media-video {
     margin-left: 3px;
-}
-
-.jux-container {
-    width: 600px;
 }
 
 .vid-container {

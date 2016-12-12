@@ -73,7 +73,6 @@ button.jux-play {
 
 .jux-track {
     border: 1px dashed black;
-    width: 600px;
     height: 120px;
     cursor: pointer;
     margin-top: -1px;
@@ -185,6 +184,10 @@ button.jux-play {
 }
 
 /* TimelineRuler */
+.jux-timeline {
+    margin: 0 30px;
+}
+
 .jux-timeline-ruler {
     height: 21px;
     position: relative;

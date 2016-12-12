@@ -17,7 +17,6 @@ button.jux-play span.glyphicon {
 
 #jux-container {
     width: 970px;
-    border: 1px solid red;
     margin: 0 auto; 
 }
 
@@ -70,6 +69,7 @@ button.jux-play span.glyphicon {
 
 .vid-container {
     display: flex;
+    border: 1px solid #ddd;
 }
 
 .jux-time {
@@ -141,6 +141,14 @@ button.jux-play span.glyphicon {
     background-color: yellow;
 }
 
+.jux-spine-display {
+    background-color: #bbb;
+    border-right: 10px solid black;
+    height: 360px;
+    width: 490px;
+    text-align: center;
+}
+
 .jux-spine-display .jux-spine-revise {
     display: none;
 }
@@ -149,8 +157,35 @@ button.jux-play span.glyphicon {
     display: block;
 }
 
-.jux-spine-display,
+.jux-spine-display .help-text {
+    width: 80%;
+    margin: 29% auto;
+}
+
+.jux-spine-display h1 {
+    color: white;
+    float: left;
+}
+
+.jux-spine-display button.add-spine {
+    background-color: #bbb;
+    border: 0;
+    outline: 0;
+    float: left;
+    margin-right: 15px;
+}
+
+.jux-spine-display button.add-spine:before {
+    content:"\e081";
+    font-family:"Glyphicons Halflings";
+    line-height: 1;
+    display:inline-block;
+    font-size: 50px;
+    margin: 20% 25%;
+}
+
 .jux-media-display {
+    background-color: #ddd;
     height: 360px;
     width: 480px;
     text-align: center;

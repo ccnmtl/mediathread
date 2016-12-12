@@ -1,7 +1,9 @@
 button.jux-play {
-    font-size: 1.5em;
-    margin-bottom: 5px;
-    margin-right: 5px;
+    background-color: #bbb;
+    float: left;
+    border: 0;
+    height: 50px;
+    width: 30px;
 }
 
 .form-group {
@@ -68,14 +70,17 @@ button.jux-play {
 }
 
 .jux-time {
-    line-height: 38px;
+    background-color: #bbb;
+    line-height: 30px;
+    width: 100%;
+    padding: 0 10px;
 }
 
 .jux-track {
     border: 1px dashed black;
-    height: 120px;
+    height: 50px;
     cursor: pointer;
-    margin-top: -1px;
+    margin: 0 30px 0 0;
 }
 
 .jux-track>.react-grid-layout {
@@ -103,8 +108,8 @@ button.jux-play {
 
 .jux-spine-display,
 .jux-media-display {
-    height: 225px;
-    width: 300px;
+    height: 360px;
+    width: 480px;
     text-align: center;
 }
 
@@ -112,8 +117,8 @@ button.jux-play {
 .jux-spine-display img,
 .jux-media-display video,
 .jux-media-display img {
-    max-height: 225px;
-    max-width: 300px;
+    max-height: 360px;
+    max-width: 480px;
 }
 
 .jux-text-display-container {
@@ -191,12 +196,13 @@ button.jux-play {
 
 /* TimelineRuler */
 .jux-timeline {
-    margin: 0 30px;
+
 }
 
 .jux-timeline-ruler {
     height: 21px;
     position: relative;
+    margin: 0 30px 0 55px;
 }
 
 .jux-timeline-hline {
@@ -221,11 +227,11 @@ button.jux-play {
 
 .jux-timeline-tick {
     display: inline-block;
-    top: 15px;
-    width: 3px;
-    height: 11px;
+    top: 19px;
+    width: 2px;
+    height: 9px;
     background-color: #000;
-}
+ }
 
 .jux-time-controls {
     margin-left: 5px;

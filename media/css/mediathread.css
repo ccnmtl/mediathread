@@ -4278,6 +4278,14 @@ a.btn.btn-default img.left {
     width: 49%;
 }
 
+.sequence-assignment .title-container {
+    width: 40%;
+}
+
+.sequence-assignment .tabs-container {
+    width: 59%;
+}
+
 .sequence-assignment .assignment-response-title {
     margin-top: 0;
     font-size: 22px;
@@ -4290,7 +4298,7 @@ a.btn.btn-default img.left {
 }
 .sequence-assignment input[name='title'] {
     display: inline;
-    width: 75%;
+    width: 72%;
 }
 
 .sequence-assignment .panel-title a {

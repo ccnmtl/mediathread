@@ -49,11 +49,11 @@
                 </div>
             </div>
         </div>
-    {% else %}
+    {% else %}{% if is_faculty %}
         <div class="right">
             <h2><span class="label label-primary">No responses yet</h2>
         </div>
-    {% endif %}
+    {% endif %}{% endif %}
 {% endif %}
 
 {% comment %} Submit & Unsubmit Modals {% endcomment %}

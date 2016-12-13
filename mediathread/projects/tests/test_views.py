@@ -831,6 +831,7 @@ class SequenceAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['the_response'], response)
         self.assertEquals(ctx['responses'], [response])
         self.assertTrue(ctx['show_instructions'])
+        self.assertFalse(ctx['allow_public_compositions'])
 
     def test_get_context_data_my_response(self):
         response = ProjectFactory.create(

@@ -38,6 +38,7 @@ from mediathread.sequence.models import SequenceAsset
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
+from mediathread.main.course_details import allow_public_compositions
 
 
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
@@ -438,7 +439,9 @@ class SequenceAssignmentView(AssignmentView):
         key = 'assignment_instructions_{}'.format(parent.id)
         return {
             'show_instructions': UserSetting.get_setting(
-                self.request.user, key, True)
+                self.request.user, key, True),
+            'allow_public_compositions': allow_public_compositions(
+                self.request.course)
         }
 
 

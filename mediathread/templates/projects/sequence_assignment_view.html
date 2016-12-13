@@ -177,7 +177,7 @@
                             Submitted
                         </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
 
-                        {% if response_can_edit %}
+                        {% if response_can_edit and allow_public_compositions %}
                             <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">
                                 <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
                                 {% if public_url %}Permalink{% else %}Share{% endif %}

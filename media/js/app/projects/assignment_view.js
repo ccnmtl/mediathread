@@ -75,9 +75,6 @@
         },
         onShowSubmitDialog: function(evt) {
             evt.preventDefault();
-            if (jQuery(evt.currentTarget).attr('disabled') === 'disabled') {
-                return;
-            }
 
             var opts = {'show': true, 'backdrop': 'static'};
 

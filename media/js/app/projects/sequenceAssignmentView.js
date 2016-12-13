@@ -87,11 +87,13 @@
 
             if (isDirty) {
                 $elt.text('Save');
-                jQuery('.btn-show-submit').attr('disabled', 'disabled');
+                $elt.removeClass('disabled');
+                jQuery('.btn-show-submit').addClass('disabled');
             } else {
                 tinymce.activeEditor.isNotDirty = true;
                 $elt.text('Saved');
-                jQuery('.btn-show-submit').removeAttr('disabled');
+                $elt.addClass('disabled');
+                jQuery('.btn-show-submit').removeClass('disabled');
             }
         },
         validTitle: function() {

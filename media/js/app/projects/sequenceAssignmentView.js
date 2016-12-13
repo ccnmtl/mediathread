@@ -20,9 +20,6 @@
             'click .btn-show-submit': 'onShowSubmitDialog',
             'click .toggle-feedback': 'onToggleFeedback',
             'click .save-feedback': 'onSaveFeedback',
-            'change textarea[name="comment"]': 'onChange',
-            'keyup textarea[name="comment"]': 'onChange',
-            'paste textarea[name="comment"]': 'onChange',
             'keyup input[name="title"]': 'onChange',
             'click .btn-save': 'onSaveProject',
             'click .btn-unsubmit': 'onConfirmUnsubmitResponse',
@@ -57,6 +54,13 @@
                 }
             });
             tinymce.init(settings);
+
+            this.dirty = false;
+
+            // bind beforeunload for faculty to ensure feedback is saved
+            if (options.isFaculty) {
+                jQuery(window).bind('beforeunload', this.beforeUnload);
+            }
         },
         beforeUnload: function() {
             // Check tinymce dirty state.
@@ -70,6 +74,7 @@
             this.$el.find('.alert-success').fadeOut();
         },
         onSaveFeedbackSuccess: function(frm, json) {
+            this.setDirty(false);
             this.$el.find('.alert-success').show();
             var today = Date().toLocaleString();
             var dataId = 'feedback-date-' + this.responseId;
@@ -80,11 +85,11 @@
             return this.$el.find(q).serializeArray();
         },
         isDirty: function() {
-            return tinymce.activeEditor.isDirty();
+            return this.dirty;
         },
         setDirty: function(isDirty) {
+            this.dirty = isDirty;
             var $elt = this.$el.find('.btn-save');
-
             if (isDirty) {
                 $elt.text('Save');
                 $elt.removeClass('disabled');

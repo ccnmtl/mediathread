@@ -1,4 +1,5 @@
 /* global _: true, Backbone: true, MediaThread: true, showMessage: true */
+/* global tinymce: true */
 
 /**
  * Listens For:
@@ -47,6 +48,10 @@
         },
         onSaveFeedback: function(evt) {
             var self = this;
+            if (typeof(tinymce) !== 'undefined') {
+                tinymce.activeEditor.save();
+            }
+
             evt.preventDefault();
             self.busy(evt.currentTarget);
 

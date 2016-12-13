@@ -23,6 +23,7 @@
             'change textarea[name="comment"]': 'onChange',
             'keyup textarea[name="comment"]': 'onChange',
             'paste textarea[name="comment"]': 'onChange',
+            'keyup input[name="title"]': 'onChange',
             'click .btn-save': 'onSaveProject',
             'click .btn-unsubmit': 'onConfirmUnsubmitResponse',
         },

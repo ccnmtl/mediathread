@@ -118,6 +118,11 @@ button.jux-play span.glyphicon {
     background-color: #ddd;
 }
 
+.jux-track-container.media .react-grid-item.jux-item-active,
+.jux-track-container.txt .react-grid-item.jux-item-active {
+    background-color: lightyellow;
+}
+
 .jux-track {
     border: 1px solid #ddd;
     height: 50px;
@@ -288,10 +293,6 @@ button.jux-play span.glyphicon {
 
 .jux-collection-item img {
     max-height: 80px;
-}
-
-.jux-item-active {
-    background-color: yellow;
 }
 
 /* TimelineRuler */

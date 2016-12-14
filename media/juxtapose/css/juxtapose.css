@@ -217,7 +217,6 @@ button.jux-play span.glyphicon {
 .jux-track-element-manager {
     margin-top: 10px;
     padding: 10px;
-    border: dashed 1px green;
     background-color: lightyellow;
 }
 
@@ -225,13 +224,12 @@ button.jux-play span.glyphicon {
     font-weight: normal;
 }
 
-.jux-track-element-manager textarea {
-    width: 100%;
+.jux-track-element-manager .form-group {
+    margin-left: 10px;
 }
 
 .jux-remove-track-element {
-    position: relative;
-    float: right;
+    margin-top: 10px;
 }
 
 .jux-popup-close {

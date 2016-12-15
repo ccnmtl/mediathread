@@ -130,6 +130,11 @@ button span.glyphicon {
     color: #1b75bc;
 }
 
+/* Disable the above glyphicon color override for the Sequence application */                                   
+#jux-container button span.glyphicon {
+    color: inherit;
+}
+
 /* ---- block elements ---------- */
 
 #container

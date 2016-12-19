@@ -29,10 +29,19 @@ button.jux-play span.glyphicon {
     padding-bottom: 5px;
 }
 
+.react-grid-item .jux-track-manager-button {
+    visibility: hidden;
+}
+
+.react-grid-item:hover .jux-track-manager-button {
+    visibility: visible;
+}
+
 .jux-track-manager-button {
     cursor: pointer;
     position: relative;
     top: 42px;
+    width: 0;
 }
 
 .react-grid-item .jux-media-item-middle {

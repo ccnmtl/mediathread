@@ -39,7 +39,7 @@ pylint==1.6.4
 pyasn1==0.1.9
 pyOpenSSL==16.2.0
 ndg-httpsclient==0.4.2
-requests==2.12.3
+requests==2.12.4
 contextlib2==0.5.4
 rcssmin==1.0.6
 rjsmin==1.0.12

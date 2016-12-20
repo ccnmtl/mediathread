@@ -5,10 +5,10 @@
 
 /**
  * Listens For:
- * Nothing
+ * sequenceassignment.set_dirty
  *
  * Signals:
- * Nothing
+ * sequenceassignment.save
  */
 
 (function(jQuery) {
@@ -61,6 +61,17 @@
             if (options.isFaculty) {
                 jQuery(window).bind('beforeunload', this.beforeUnload);
             }
+
+            this.mapSignals();
+        },
+        mapSignals: function() {
+            var self = this;
+
+            jQuery(window).on(
+                'sequenceassignment.set_dirty',
+                function(e, data) {
+                    self.setDirty(data.dirty);
+                });
         },
         beforeUnload: function() {
             // Check tinymce dirty state.
@@ -148,6 +159,9 @@
                     $saveButton.removeAttr('disabled')
                         .removeClass('saving', 1200, function() {
                             jQuery(self).text('Saved'); });
+
+                    document.dispatchEvent(
+                        new CustomEvent('sequenceassignment.save'));
                 }
             });
 

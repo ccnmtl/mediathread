@@ -6,7 +6,8 @@
 /**
  * Listens For:
  * sequenceassignment.set_dirty
- * sequenceassignment.on_save_complete
+ * sequenceassignment.on_save_success
+ * sequenceassignment.on_save_error
  *
  * Signals:
  * sequenceassignment.save
@@ -76,13 +77,22 @@
 
             var $saveButton = this.$el.find('.btn-save');
             jQuery(window).on(
-                'sequenceassignment.on_save_complete',
+                'sequenceassignment.on_save_success',
                 function(e, data) {
                     self.setDirty(false);
                     $saveButton.removeAttr('disabled')
                         .removeClass('saving', 1200, function() {
                             jQuery(self).text('Saved');
                         });
+                });
+
+            jQuery(window).on(
+                'sequenceassignment.on_save_error',
+                function(e, data) {
+                    $saveButton.removeAttr('disabled')
+                        .text('Save').removeClass('saving');
+                    showMessage('There was an error saving your project.',
+                                null, 'Error');
                 });
         },
         beforeUnload: function() {

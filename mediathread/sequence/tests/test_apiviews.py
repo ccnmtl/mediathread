@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
 from courseaffils.tests.factories import CourseFactory
@@ -134,6 +135,66 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(psa.project, project)
 
         self.assertEqual(SequenceTextElement.objects.count(), 1)
+
+    def test_create_with_track_elements_with_large_floats(self):
+        course = CourseFactory()
+        note = SherdNoteFactory()
+        note2 = SherdNoteFactory()
+        project = ProjectFactory()
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'media_elements': [
+                    {
+                        'media': note2.pk,
+                        'start_time': 0.9999999999992222,
+                        'end_time': 10.15955395959359395,
+                    }
+                ],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0.19898591249142984912849218,
+                        'end_time': 10.853598923859285928598958392,
+                    },
+                    {
+                        'text': 'My text 2',
+                        'start_time': 11,
+                        'end_time': 14,
+                    },
+                ]
+            }, format='json')
+
+        self.assertEqual(r.status_code, 201)
+
+        sa = SequenceAsset.objects.first()
+        self.assertEqual(sa.course, sa.course)
+        self.assertEqual(sa.author, self.u)
+        self.assertEqual(sa.spine, note)
+
+        self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
+        psa = ProjectSequenceAsset.objects.first()
+        self.assertEqual(psa.sequence_asset, sa)
+        self.assertEqual(psa.project, project)
+
+        self.assertEqual(SequenceTextElement.objects.count(), 2)
+        e0 = SequenceTextElement.objects.first()
+        e1 = SequenceTextElement.objects.last()
+        self.assertEqual(e0.text, 'My text')
+        self.assertEqual(e0.start_time, Decimal('0.19899'))
+        self.assertEqual(e0.end_time, Decimal('10.85360'))
+        self.assertEqual(e1.text, 'My text 2')
+        self.assertEqual(e1.start_time, Decimal('11'))
+        self.assertEqual(e1.end_time, Decimal('14'))
+
+        self.assertEqual(SequenceMediaElement.objects.count(), 1)
+        e0 = SequenceMediaElement.objects.first()
+        self.assertEqual(e0.media, note2)
+        self.assertEqual(e0.start_time, Decimal('1.00000'))
+        self.assertEqual(e0.end_time, Decimal('10.15955'))
 
     def test_create_duplicate(self):
         course = CourseFactory()

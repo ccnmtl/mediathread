@@ -55,7 +55,7 @@
 
                     {% if form.instance.id %}
                         <a class="right small" href="{% url 'project-workspace' form.instance.id %}">
-                             <img alt="View Assignment" src="{{STATIC_URL}}img/icons/item_project.gif"> View Assignment 
+                            <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment 
                         </a>
                     {% endif %}
 
@@ -63,16 +63,19 @@
 
                     <div data-page="1" data-page-content="instructions" class="page">
                         <h3>Step 1: Introduction</h3><br />
-                        <p>A sequence assignment allows students to compare and contrast a single spine video to a series of video, image or audio selections.</p>
 
-                        <p>Instructions to students could include:</p>
-                        <ul>
-                        <li>tbd</li>
-                        <li>tbd</li>
-                        <li>tbd</li>
-                        </ul>
+                        <p>A sequence assignment allows students to line up a "primary"
+                        selection of video or audio against multiple "secondary" selections
+                        and/or annotations. The secondary selections will appear at designated
+                        points when the primary selection plays.</p>
 
-                        <p>Visibility of student responses must be set at one of the following levels:</p>
+                        <p>This assignment is good for assessing how students juxtapose a primary
+                        media object against other media selections (ie, visual annotations) or a
+                        series of thoughts (ie, textual annotations). Students may be asked to display
+                        correlations or contrasts in context, or to prepare a set of annotations that
+                        appear as a media selection plays.</p>
+
+                        <p>Visibility of student responses can be set at one of the following levels:</p>
                         <ul>
                         <li>Student responses are visible only to instructors</li>
                         <li>Students can see other responses only after submitting their own</li>
@@ -86,20 +89,22 @@
                     <div data-page="2" data-page-content="title" class="hidden page">
                         <h3>Step 2. Write title &amp; instructions</h3><br />
                         <div class="form-group">
-                            <label>Assignment Title</label>
+                            <label>Assignment Title</label><br />
                             <input type="text" name="title" class="form-control"
-                                placeholder="Assignment Title"
                                 value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                             <div class="help-inline">Title is a required field</div>
                         </div>
                         <div class="form-group">
                             <label>Assignment Instructions</label>
-                            <div>Instructions to students could include:</div>
+                            <p>
+                            Add instructions to guide students as they select a primary 
+                            media object and decide how to line up a series of visual or 
+                            textual annotations against it, which will appear as the primary 
+                            media object plays. Instructions may include:</p>
                             <ul>
-                                <li>How many selections to create</li>
-                                <li>How to title selections</li>
-                                <li>How to annotate selections in the notes field</li>
-                                <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
+                            <li>Criteria for selecting the primary media object</li>
+                            <li>Criteria for type, timing, or amount of secondary media selections, aka visual annotations</li>
+                            <li>Criteria for type, timing, or amount of student-authored notes, aka textual annotations</li>
                             </ul>
                             <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                 {{form.instance.body}}
@@ -117,20 +122,13 @@
                         <h3>Step 3. Write custom instructions</h3><br />
                         <div class="form-group">
                             <label>Primary Video Instructions</label>
-                            <div>Offer directed instructions on the primary video a student should use:</div>
-                            <ul>
-                                <li>@todo</li>
-                                <li>140 character limit</li>
-                            </ul>
+                            <p>Add brief, targeted instructions to guide the primary video choice. (140 character limit)</p>
                             <textarea name="custom_instructions_1" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
                         </div>
+                        <br />
                         <div class="form-group">
                             <label>Secondary Media Instructions</label>
-                            <div>Offer directed instructions on the secondary media a student should use:</div>
-                            <ul>
-                                <li>@todo</li>
-                                <li>140 character limit</li>
-                            </ul>
+                            <p>Add brief, targeted instructions to guide secondary media choices. (140 character limit)</p>
                             <textarea name="custom_instructions_2" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
                         </div>
                         <nav>
@@ -142,7 +140,6 @@
                     </div>
                     <div data-page="4" data-page-content="due-date" class="hidden page">
                         <h3>Step 4. Set response due date &amp; visibility</h3><br />
-                        <p></p>
                         <div class="form-group">
                             <label for="due_date">Due Date</label>
                             <input class="form-control" type="text"
@@ -163,13 +160,16 @@
                     </div>
                     <div data-page="5" data-page-content="publish" class="hidden page">
                         <h3>Step 5. Publish assignment to students</h3><br />
-                        <p></p>
                         <div class="form-group">
                             <div class="radio">
                                 {{form.publish}}
                             </div>
                         </div>
                         <div class="help-inline">Please select who can see your work.</div>
+
+                        <div><i>Note: After students respond to an assignment, they cannot edit their 
+                        response unless an instructor "unsubmits it" for further editing.</i></div><br />
+
                         <ul class="pager">
                             <li><a href="#" class="left prev">Previous</a></li>
                             <li><a href="#" class="right save">Save</a></li>

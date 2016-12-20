@@ -6,6 +6,7 @@
 /**
  * Listens For:
  * sequenceassignment.set_dirty
+ * sequenceassignment.on_save_complete
  *
  * Signals:
  * sequenceassignment.save
@@ -71,6 +72,17 @@
                 'sequenceassignment.set_dirty',
                 function(e, data) {
                     self.setDirty(data.dirty);
+                });
+
+            var $saveButton = this.$el.find('.btn-save');
+            jQuery(window).on(
+                'sequenceassignment.on_save_complete',
+                function(e, data) {
+                    self.setDirty(false);
+                    $saveButton.removeAttr('disabled')
+                        .removeClass('saving', 1200, function() {
+                            jQuery(self).text('Saved');
+                        });
                 });
         },
         beforeUnload: function() {
@@ -154,14 +166,9 @@
                     if (json.status === 'error') {
                         showMessage(json.msg, null, 'Error');
                     } else {
-                        self.setDirty(false);
+                        document.dispatchEvent(
+                            new CustomEvent('sequenceassignment.save'));
                     }
-                    $saveButton.removeAttr('disabled')
-                        .removeClass('saving', 1200, function() {
-                            jQuery(self).text('Saved'); });
-
-                    document.dispatchEvent(
-                        new CustomEvent('sequenceassignment.save'));
                 }
             });
 

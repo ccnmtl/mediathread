@@ -102,7 +102,7 @@ button.jux-play span.glyphicon {
     border: 1px solid #ccc;
 }
 
-.jux-track-container.txt .track-icon:before {
+.jux-track-container.jux-txt .track-icon:before {
     content: "T";
     font-family: "Georgia, serif";
     margin: 34% 28%;
@@ -111,11 +111,11 @@ button.jux-play span.glyphicon {
     font-weight: bold;
 }
 
-.jux-track-container.media {
+.jux-track-container.jux-media {
     margin-top: 0;
 }
 
-.jux-track-container.media .track-icon:before {
+.jux-track-container.jux-media .track-icon:before {
     content:"\e009";
     font-family:"Glyphicons Halflings";
     line-height: 1;
@@ -124,16 +124,16 @@ button.jux-play span.glyphicon {
     margin: 20% 25%;
 }
 
-.jux-track-container.media .react-grid-item {
+.jux-track-container.jux-media .react-grid-item {
     background-color: #ccc;
 }
 
-.jux-track-container.txt .react-grid-item {
+.jux-track-container.jux-txt .react-grid-item {
     background-color: #ddd;
 }
 
-.jux-track-container.media .react-grid-item.jux-item-active,
-.jux-track-container.txt .react-grid-item.jux-item-active {
+.jux-track-container.jux-media .react-grid-item.jux-item-active,
+.jux-track-container.jux-txt .react-grid-item.jux-item-active {
     background-color: lightyellow;
 }
 

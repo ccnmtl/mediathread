@@ -4241,7 +4241,10 @@ a.btn.btn-default img.left {
     display: none !important;
 }
 
-.sequence-assignment #id_response_view_policy,
+.sequence-assignment .radio {
+    margin-top: 0;
+}
+
 .sequence-assignment #id_publish,
 .selection-assignment #id_response_view_policy,
 .selection-assignment #id_publish {
@@ -4340,12 +4343,21 @@ margin-top: 5px;
     height: 200px;
 }
 .sequence-assignment textarea[name='body'] {
-    height: 300px;
+    height: 200px;
 }
 
 .sequence-assignment .alert-success {
     padding: 5px;
     margin-right: 10px;
+}
+
+form[name="sequence-assignment-edit"] p {
+    margin-top: 0;
+}
+
+form[name="sequence-assignment-edit"] input[type=checkbox], 
+form[name="sequence-assignment-edit"] input[type=radio] {
+    margin: 0 0 0 -20px;
 }
 
 .affix-top, .affix {

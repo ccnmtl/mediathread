@@ -17,11 +17,23 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
 
+    def to_internal_value(self, data):
+        data['start_time'] = round(data['start_time'], 5)
+        data['end_time'] = round(data['end_time'], 5)
+        return super(SequenceMediaElementSerializer, self).to_internal_value(
+            data)
+
 
 class SequenceTextElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceTextElement
         fields = ('text', 'start_time', 'end_time')
+
+    def to_internal_value(self, data):
+        data['start_time'] = round(data['start_time'], 5)
+        data['end_time'] = round(data['end_time'], 5)
+        return super(SequenceTextElementSerializer, self).to_internal_value(
+            data)
 
 
 class CurrentProjectDefault(object):

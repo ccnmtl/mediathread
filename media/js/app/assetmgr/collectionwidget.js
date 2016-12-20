@@ -78,10 +78,10 @@ CollectionWidget.prototype.mapSignals = function() {
         });
 
     jQuery(window).on('collection.open', {'self': this},
-        function(event, filters) {
+        function(event, params) {
             self.$quickEditView.hide();
             self.$el.show();
-            self.open('gallery', filters);
+            self.open('gallery', params);
         });
     jQuery(window).on('collection.asset.edit', {'self': this},
         function(event, assetId) {
@@ -220,9 +220,9 @@ CollectionWidget.prototype.mapEvents = function() {
     });
 
     self.$el.on('click', '.clickableCitation', function(evt) {
-        var ctx = {
-            'detail': self.decodeCitation(this)
-        };
+        var ctx = {'detail': self.decodeCitation(this)};
+        ctx.detail.caller = self.caller;
+
         var assetEvent = new CustomEvent('asset.select', ctx);
         document.dispatchEvent(assetEvent);
         self.$modal.modal('hide');
@@ -233,7 +233,7 @@ CollectionWidget.prototype.open = function(displayMode, params) {
     this.disable = params && params.disable || [];
     this.currentRecords.active_filters = params;
     this.filter();
-
+    this.caller = params.caller;
     this.displayMode = displayMode;
     this.$modal.modal('show');
 };

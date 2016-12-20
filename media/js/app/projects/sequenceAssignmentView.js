@@ -113,7 +113,8 @@
             }
             return true;
         },
-        onSaveProject: function() {
+        onSaveProject: function(e) {
+            e.preventDefault();
             tinymce.activeEditor.save();
 
             if (!this.validTitle()) {

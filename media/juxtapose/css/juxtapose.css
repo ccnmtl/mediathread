@@ -146,7 +146,8 @@ button.jux-play span.glyphicon {
 }
 
 .jux-track>.react-grid-layout {
-    float: left;
+    position: relative;
+    bottom: 51px;
 }
 
 .jux-track .jux-snap-column {

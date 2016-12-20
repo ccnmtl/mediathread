@@ -172,8 +172,14 @@ button.jux-play span.glyphicon {
     display: none;
 }
 
+.jux-spine-revise:hover,
 .jux-spine-display:hover .jux-spine-revise {
     display: block;
+}
+
+.jux-spine-display .jux-spine-revise {
+    position: relative;
+    bottom: 34px;
 }
 
 .jux-spine-display .help-text {

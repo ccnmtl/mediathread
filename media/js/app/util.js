@@ -155,7 +155,9 @@ function showMessage(msg, onclose, customTitle, position) {
             }
         },
         buttons: {
-            'OK': function() {
+            'OK': function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 jQuery(this).dialog('close');
             }
         }

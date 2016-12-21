@@ -238,6 +238,7 @@ button.jux-play span.glyphicon {
     margin: 0 auto;
     width: 500px;
     height: 70px;
+    overflow-wrap: break-word;
 }
 
 .jux-track-element-manager {

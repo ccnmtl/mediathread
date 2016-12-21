@@ -58,6 +58,7 @@
             tinymce.init(settings);
 
             this.dirty = false;
+            this.submitted = options.submitted;
 
             // bind beforeunload for faculty to ensure feedback is saved
             if (options.isFaculty) {

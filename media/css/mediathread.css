@@ -4662,3 +4662,12 @@ collection-modal .col-md-2 {
 .spacer {
     margin-top: 10px;
 }
+
+/* Sequence assignment submitted state */
+#sequence.submitted .jux-playhead-line .jux-playhead-bottom-cutpoint {
+    display: none;
+}
+
+#sequence.submitted .jux-playhead-line {
+    height: 10px;
+}

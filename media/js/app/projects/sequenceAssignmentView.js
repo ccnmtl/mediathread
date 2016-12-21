@@ -5,10 +5,12 @@
 
 /**
  * Listens For:
- * Nothing
+ * sequenceassignment.set_dirty
+ * sequenceassignment.on_save_success
+ * sequenceassignment.on_save_error
  *
  * Signals:
- * Nothing
+ * sequenceassignment.save
  */
 
 (function(jQuery) {
@@ -61,6 +63,37 @@
             if (options.isFaculty) {
                 jQuery(window).bind('beforeunload', this.beforeUnload);
             }
+
+            this.mapSignals();
+        },
+        mapSignals: function() {
+            var self = this;
+
+            jQuery(window).on(
+                'sequenceassignment.set_dirty',
+                function(e, data) {
+                    self.setDirty(data.dirty);
+                });
+
+            var $saveButton = this.$el.find('.btn-save');
+            jQuery(window).on(
+                'sequenceassignment.on_save_success',
+                function(e, data) {
+                    self.setDirty(false);
+                    $saveButton.removeAttr('disabled')
+                        .removeClass('saving', 1200, function() {
+                            jQuery(self).text('Saved');
+                        });
+                });
+
+            jQuery(window).on(
+                'sequenceassignment.on_save_error',
+                function(e, data) {
+                    $saveButton.removeAttr('disabled')
+                        .text('Save').removeClass('saving');
+                    showMessage('There was an error saving your project.',
+                                null, 'Error');
+                });
         },
         beforeUnload: function() {
             // Check tinymce dirty state.
@@ -144,11 +177,9 @@
                     if (json.status === 'error') {
                         showMessage(json.msg, null, 'Error');
                     } else {
-                        self.setDirty(false);
+                        document.dispatchEvent(
+                            new CustomEvent('sequenceassignment.save'));
                     }
-                    $saveButton.removeAttr('disabled')
-                        .removeClass('saving', 1200, function() {
-                            jQuery(self).text('Saved'); });
                 }
             });
 

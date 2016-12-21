@@ -54,10 +54,8 @@
                 feedback: JSON.parse('{{feedback|escapejs}}'),
             {% endif %}
             feedbackCount: {{feedback_count}},
-            instructions: [
-                {{assignment.custom_instructions_1}},
-                {{assignment.custom_instructions_2}}
-            ]
+            primaryInstructions: '{{assignment.custom_instructions_1}}',
+            secondaryInstructions: '{{assignment.custom_instructions_2}}'
         });
     </script>
 

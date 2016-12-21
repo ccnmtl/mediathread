@@ -233,7 +233,9 @@
             <div class="clearfix"></div>
             <!-- Tab panes -->
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="sequence">
+                <div role="tabpanel"
+                     class="tab-pane fade in active {% if the_response.is_submitted %}submitted{% endif %}"
+                     id="sequence">
                     <div id="jux-container"></div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="reflection">

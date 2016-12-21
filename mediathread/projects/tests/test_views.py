@@ -11,13 +11,13 @@ from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
 from mediathread.projects.models import (
-    Project, ProjectSequenceAsset,
+    Project,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
-    PUBLISH_WHOLE_WORLD, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
+    PUBLISH_WHOLE_WORLD
+)
 from mediathread.projects.views import (
-    SelectionAssignmentView, ProjectItemView, ProjectCreateView,
+    SelectionAssignmentView, ProjectItemView,
     SequenceAssignmentView)
-from mediathread.sequence.models import SequenceAsset
 from structuredcollaboration.models import Collaboration
 
 
@@ -1067,37 +1067,3 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.assert_visible_notes(self.instructor_one,
                                   [(self.note_one.id, False, True),
                                    (self.note_two.id, False, True)])
-
-
-class ProjectCreateViewTest(MediathreadTestMixin, TestCase):
-    def setUp(self):
-        self.setup_sample_course()
-        self.rf = RequestFactory()
-        self.assignment = ProjectFactory.create(
-            course=self.sample_course, author=self.instructor_one,
-            policy='CourseProtected',
-            project_type=PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
-
-    def test_save_sequence_assignment_data(self):
-        url = reverse('project-create')
-        request = self.rf.get(url)
-        request.course = self.sample_course
-        request.user = self.student_one
-        view = ProjectCreateView()
-
-        self.assertEqual(SequenceAsset.objects.count(), 0)
-        self.assertEqual(ProjectSequenceAsset.objects.count(), 0)
-        view.save_sequence_assignment_data(self.assignment, request)
-        self.assertEqual(
-            SequenceAsset.objects.count(), 1,
-            'The SequenceAsset is created when not present.')
-        self.assertEqual(
-            ProjectSequenceAsset.objects.count(), 1,
-            'The ProjectSequenceAsset is created when not present.')
-
-        ja = SequenceAsset.objects.first()
-        self.assertEqual(ja.course, self.sample_course)
-        self.assertEqual(ja.author, self.student_one)
-        pja = ProjectSequenceAsset.objects.first()
-        self.assertEqual(pja.sequence_asset, ja)
-        self.assertEqual(pja.project, self.assignment)

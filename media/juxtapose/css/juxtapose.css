@@ -102,6 +102,7 @@ button.jux-play span.glyphicon {
     border: 1px solid #ccc;
 }
 
+.jux-media-display .text-track-icon:before,
 .jux-track-container.jux-txt .track-icon:before {
     content: "T";
     font-family: "Georgia, serif";
@@ -115,6 +116,7 @@ button.jux-play span.glyphicon {
     margin-top: 0;
 }
 
+.jux-media-display .media-track-icon:before,
 .jux-track-container.jux-media .track-icon:before {
     content:"\e009";
     font-family:"Glyphicons Halflings";
@@ -122,6 +124,15 @@ button.jux-play span.glyphicon {
     display:inline-block;
     font-size: 28px;
     margin: 20% 25%;
+}
+
+.jux-media-display .media-track-icon:before {
+    font-size: 16px;
+    margin: 0 5px 0 0;
+}
+.jux-media-display .text-track-icon:before {
+    font-size: 20px;
+    margin: 0 5px;
 }
 
 .jux-track-container.jux-media .react-grid-item {
@@ -173,6 +184,13 @@ button.jux-play span.glyphicon {
     display: none;
 }
 
+.jux-spine-display .instructions,
+.jux-media-display .instructions {
+    font-size: 1.2em;
+    clear: both;
+    line-height: 1.4em;
+}
+
 .jux-spine-revise:hover,
 .jux-spine-display:hover .jux-spine-revise {
     display: block;
@@ -183,14 +201,23 @@ button.jux-play span.glyphicon {
     bottom: 34px;
 }
 
+.jux-media-display .help-text {
+    width: 80%;
+    margin: 22% auto;
+}
+
 .jux-spine-display .help-text {
     width: 80%;
-    margin: 29% auto;
+    margin: 18% auto;
 }
 
 .jux-spine-display h1 {
     color: white;
     float: left;
+}
+
+.jux-media-display h1 {
+    color: #777;
 }
 
 .jux-spine-display button.add-spine {

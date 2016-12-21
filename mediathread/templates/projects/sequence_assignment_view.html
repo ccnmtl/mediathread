@@ -53,7 +53,9 @@
             {% if feedback %}
                 feedback: JSON.parse('{{feedback|escapejs}}'),
             {% endif %}
-            feedbackCount: {{feedback_count}}
+            feedbackCount: {{feedback_count}},
+            primaryInstructions: '{{assignment.custom_instructions_1}}',
+            secondaryInstructions: '{{assignment.custom_instructions_2}}'
         });
     </script>
 
@@ -133,7 +135,22 @@
                         {% endfor %}
                         </a>
                     </div>
-                    <p>{{assignment.body|safe}}</p>
+                    {% if assignment.custom_instructions_1|length > 0 %}
+                        <p>
+                        <strong>Selecting Your Primary Video</strong><br />
+                        {{assignment.custom_instructions_1}}
+                        </p>
+                    {% endif %}
+                    {% if assignment.custom_instructions_2|length > 0 %}
+                        <p>
+                        <strong>Selecting Secondary Materials</strong><br />
+                        {{assignment.custom_instructions_2}}
+                        </p>
+                    {% endif %}
+                        <p>
+                        <strong>General Instructions</strong><br />
+                        {{assignment.body|safe}}
+                        </p>
                 </div>
             </div>
         </div>

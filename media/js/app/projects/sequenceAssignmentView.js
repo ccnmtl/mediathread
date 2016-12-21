@@ -59,6 +59,8 @@
 
             this.dirty = false;
             this.submitted = options.submitted;
+            this.primaryInstructions = options.primaryInstructions;
+            this.secondaryInstructions = options.secondaryInstructions;
 
             // bind beforeunload for faculty to ensure feedback is saved
             if (options.isFaculty) {

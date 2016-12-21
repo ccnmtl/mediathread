@@ -32,9 +32,8 @@ from mediathread.projects.forms import ProjectForm
 from mediathread.projects.generic.views import AssignmentView, \
     AssignmentEditView
 from mediathread.projects.models import (
-    Project, ProjectNote, PUBLISH_DRAFT, ProjectSequenceAsset,
-    PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
-from mediathread.sequence.models import SequenceAsset
+    Project, ProjectNote, PUBLISH_DRAFT
+)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
@@ -57,23 +56,6 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
             formatted = datetime.strptime(due_date, '%m/%d/%Y')
         return formatted
 
-    def save_sequence_assignment_data(self, project, request):
-        ja = SequenceAsset.objects.filter(
-            author=request.user,
-            course=request.course)
-
-        pja = ProjectSequenceAsset.objects.filter(
-            project=project, sequence_asset__author=request.user).first()
-        if pja is None:
-            ja = SequenceAsset.objects.create(
-                author=request.user,
-                course=request.course)
-            pja = ProjectSequenceAsset.objects.create(
-                sequence_asset=ja,
-                project=project)
-
-        # TODO update asset data from React application.
-
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
         body = request.POST.get('body', '')
@@ -91,9 +73,6 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
 
         item_id = request.POST.get('item', None)
         project.create_or_update_item(item_id)
-
-        if project_type == PROJECT_TYPE_SEQUENCE_ASSIGNMENT:
-            self.save_sequence_assignment_data(project, request)
 
         policy = request.POST.get('publish', PUBLISH_DRAFT[0])
         collaboration = project.create_or_update_collaboration(policy)

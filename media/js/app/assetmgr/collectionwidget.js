@@ -692,3 +692,9 @@ CollectionWidget.prototype.decodeCitation = function(imgElt) {
     }
     return annotationDict;
 };
+
+jQuery(document).ready(function() {
+    if (typeof djangosherd !== 'undefined') {
+        MediaThread.collection = new CollectionWidget();
+    }
+});

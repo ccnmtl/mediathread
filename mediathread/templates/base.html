@@ -256,7 +256,6 @@
         <script type="text/javascript" src='{% static "js/app/assetmgr/asset.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/assetmgr/assetpanel.js" %}'></script>
         <script type="text/javascript" src='{% static "js/app/assetmgr/collection.js" %}'></script>
-        <script type="text/javascript" src='{% static "js/app/assetmgr/collectionwidget.js" %}'></script>
 
         <!--  Discussion related -->
         <script type="text/javascript" src='{% static "js/app/discussion/discussionpanel.js" %}'></script>
@@ -267,9 +266,6 @@
 
         <script type="text/javascript">
             jQuery(document).ready(function() {
-                if (typeof djangosherd !== 'undefined') {
-                    MediaThread.collection = new CollectionWidget();
-                }
 
                 // setup some ajax progress indicator
                 jQuery("html").ajaxStart(function() {

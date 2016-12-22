@@ -1001,17 +1001,12 @@
                     },
                     false,
                     function(asset_full) {
-                        if (creating) {
-                            jQuery(window).trigger('annotation.on_create', []);
-                        } else {
-                            jQuery(window).trigger('annotation.on_save', []);
-                        }
+                        self.refresh({
+                            asset_id: self.active_asset.id,
+                            annotation_id: json.annotation.id
+                        });
 
-                        self.refresh(
-                            {
-                                asset_id: self.active_asset.id,
-                                annotation_id: json.annotation.id
-                            });
+                        self.signalSaveComplete(json.annotation.creating);
                     });
                 }
             });

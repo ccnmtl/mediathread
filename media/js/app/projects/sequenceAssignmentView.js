@@ -78,11 +78,18 @@
                     self.setDirty(data.dirty);
                 });
 
+            jQuery(window).on(
+                'sequenceassignment.set_submittable',
+                function(e, data) {
+                    self.setSubmittable(data.submittable);
+                });
+
             var $saveButton = this.$el.find('.btn-save');
             jQuery(window).on(
                 'sequenceassignment.on_save_success',
                 function(e, data) {
                     self.setDirty(false);
+                    self.setSubmittable(data.submittable);
                     $saveButton.removeAttr('disabled')
                         .removeClass('saving', 1200, function() {
                             jQuery(self).text('Saved');
@@ -131,10 +138,18 @@
                 $elt.removeClass('disabled');
                 jQuery('.btn-show-submit').addClass('disabled');
             } else {
-                tinymce.activeEditor.isNotDirty = true;
+                if (tinymce && tinymce.activeEditor) {
+                    tinymce.activeEditor.isNotDirty = true;
+                }
                 $elt.text('Saved');
                 $elt.addClass('disabled');
+            }
+        },
+        setSubmittable: function(isSubmittable) {
+            if (isSubmittable) {
                 jQuery('.btn-show-submit').removeClass('disabled');
+            } else {
+                jQuery('.btn-show-submit').addClass('disabled');
             }
         },
         validTitle: function() {

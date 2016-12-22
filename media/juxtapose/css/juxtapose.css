@@ -40,8 +40,15 @@ button.jux-play span.glyphicon {
 .jux-track-manager-button {
     cursor: pointer;
     position: relative;
-    top: 42px;
     width: 0;
+}
+
+.jux-media .jux-track-manager-button {
+    top: -24px;
+}
+
+.jux-txt .jux-track-manager-button {
+    top: 42px;
 }
 
 .react-grid-item .jux-media-item-middle {

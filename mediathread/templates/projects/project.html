@@ -27,7 +27,7 @@
 
 {% block uncompressable_js %}
     {% include "djangosherd/player_resources.html" %}
-    <script type="text/javascript" src='{% static "js/app/assetmgr/collectionwidget.js" %}'></script>
+    <script type="text/javascript" src='{{STATIC_URL}}js/app/assetmgr/collectionwidget.js'></script>
 
     <!-- required project functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>

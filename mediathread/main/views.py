@@ -50,7 +50,7 @@ from mediathread.main.forms import (
 from mediathread.main.models import UserSetting, CourseInvitation
 from mediathread.main.util import (
     send_template_email, user_display_name, send_course_invitation_email,
-    make_pmt_item, log_sentry_error, course_exists
+    make_pmt_item, log_sentry_error
 )
 from mediathread.mixins import (
     ajax_required,
@@ -768,7 +768,7 @@ class MethCourseListView(LoggedInMixin, CourseListView):
         # them, but for whatever reason have "activated" set to False.
         filtered_affils = []
         for affil in affils:
-            if not course_exists(affil):
+            if not affil.get_course():
                 filtered_affils.append(affil)
 
         for affil in filtered_affils:
@@ -914,7 +914,7 @@ Faculty: {} <{}>
         self.affil = Affil.objects.get(pk=pk)
         affil_dict = self.affil.to_dict()
 
-        c = course_exists(self.affil)
+        c = self.affil.get_course()
         if c:
             # If a Course already exists for this affil, show an error.
             msg = ('The {} affil is already connected to the course:'

@@ -42,6 +42,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         )
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.data.get('spine'), note.pk)
+        self.assertEqual(r.data.get('spine_asset'), note.asset.pk)
 
     def test_retrieve_with_text_elements(self):
         note = SherdNoteFactory()

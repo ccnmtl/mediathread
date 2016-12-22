@@ -51,7 +51,7 @@ class CurrentProjectDefault(object):
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('id', 'spine', 'author', 'course',
+        fields = ('id', 'spine', 'spine_asset', 'author', 'course',
                   'project', 'media_elements', 'text_elements',)
 
     author = serializers.PrimaryKeyRelatedField(
@@ -59,6 +59,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     project = serializers.HiddenField(default=CurrentProjectDefault())
     spine = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all(), allow_null=True)
+    spine_asset = serializers.ReadOnlyField(source='spine.asset.id')
     media_elements = SequenceMediaElementSerializer(many=True)
     text_elements = SequenceTextElementSerializer(many=True)
 

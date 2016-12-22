@@ -12,10 +12,11 @@ from mediathread.sequence.validators import (
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('media', 'start_time', 'end_time')
+        fields = ('media', 'media_asset', 'start_time', 'end_time')
 
     media = serializers.PrimaryKeyRelatedField(
         queryset=SherdNote.objects.all())
+    media_asset = serializers.ReadOnlyField(source='media.asset.id')
 
     def to_internal_value(self, data):
         data['start_time'] = round(data['start_time'], 5)

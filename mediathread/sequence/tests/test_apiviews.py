@@ -73,6 +73,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(r.data.get('spine'), note.pk)
         mediaelements = r.data.get('media_elements')
         self.assertEqual(mediaelements[0]['media'], e1.media.pk)
+        self.assertEqual(mediaelements[0]['media_asset'], e1.media.asset.pk)
         self.assertEqual(mediaelements[1]['media'], e2.media.pk)
         self.assertEqual(mediaelements[2]['media'], e3.media.pk)
 

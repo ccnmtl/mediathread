@@ -252,16 +252,17 @@ CollectionWidget.prototype.onCancel = function() {
 CollectionWidget.prototype.onSave = function(evt, params) {
     this.refresh();
 
-    if (this.displayMode !== 'gallery') {
-        this.$modal.modal('hide');
-    } else {
+    if (this.displayMode === 'gallery') {
         this.$quickEditView.fadeOut();
         this.$el.fadeIn();
-    }
+    } else {
+        this.$modal.modal('hide');
 
-    var ctx = {'detail': params};
-    ctx.detail.caller = this.caller;
-    document.dispatchEvent(new CustomEvent('asset.save', ctx));
+        var ctx = {'detail': params};
+        ctx.detail.caller = this.caller;
+        document.dispatchEvent(new CustomEvent('asset.save', ctx));
+
+    }
 };
 
 CollectionWidget.prototype.filter = function() {

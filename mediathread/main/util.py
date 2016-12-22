@@ -1,6 +1,4 @@
-import re
 from django.conf import settings
-from django.contrib.auth.models import Group
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.core.exceptions import ImproperlyConfigured
@@ -9,7 +7,6 @@ from django.template.context import Context
 import requests
 from requests.exceptions import SSLError
 from raven import Client
-from courseaffils.models import Course
 
 
 def send_template_email(subject, template_name, params, recipient):
@@ -62,20 +59,3 @@ def log_sentry_error(msg):
         return
 
     return client.captureMessage(msg)
-
-
-def course_exists(affil):
-    """Returns an associated course for the affil, if it exists.
-
-    TODO: move this to courseaffils.
-    """
-    fgroup = Group.objects.filter(name=affil.name).first()
-    if Course.objects.filter(faculty_group=fgroup).exists():
-        return Course.objects.filter(faculty_group=fgroup).first()
-
-    studentaffil = re.sub(r'\.fc\.', '.st.', affil.name)
-    sgroup = Group.objects.filter(name=studentaffil).first()
-    if Course.objects.filter(group=sgroup).exists():
-        return Course.objects.filter(group=sgroup).first()
-
-    return None

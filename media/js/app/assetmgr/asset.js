@@ -144,6 +144,23 @@
             self.active_asset = theAsset;
         };
 
+        this.signalSaveComplete = function(creating) {
+            var eventName = creating ?
+                'annotation.on_create' : 'annotation.on_save';
+
+            var params = {'assetId': self.active_asset.id};
+
+            if (self.active_annotation) {
+                params.annotationId = self.active_annotation.id;
+                params.startTime = self.active_annotation.range1;
+                params.duration = self.active_annotation.duration;
+            } else {
+                params.startTime = 0;
+                params.duration = self.active_asset.duration;
+            }
+            jQuery(window).trigger(eventName, params);
+        };
+
         this.refresh = function(opts) {
             if (opts.asset_id) {
                 jQuery('.annotation-ajaxloader').show();
@@ -662,13 +679,8 @@
                     },
                     false,
                     function(asset_full) {
-                        if (json.annotation.creating) {
-                            jQuery(window).trigger('annotation.on_create', []);
-                        } else {
-                            jQuery(window).trigger('annotation.on_save', []);
-                        }
-
                         self.processAsset(asset_full);
+                        self.signalSaveComplete(json.annotation.creating);
 
                         jQuery(saveButton).removeAttr('disabled');
                         jQuery(saveButton).removeClass('saving');
@@ -989,17 +1001,12 @@
                     },
                     false,
                     function(asset_full) {
-                        if (creating) {
-                            jQuery(window).trigger('annotation.on_create', []);
-                        } else {
-                            jQuery(window).trigger('annotation.on_save', []);
-                        }
+                        self.refresh({
+                            asset_id: self.active_asset.id,
+                            annotation_id: json.annotation.id
+                        });
 
-                        self.refresh(
-                            {
-                                asset_id: self.active_asset.id,
-                                annotation_id: json.annotation.id
-                            });
+                        self.signalSaveComplete(json.annotation.creating);
                     });
                 }
             });

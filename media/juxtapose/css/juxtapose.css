@@ -184,11 +184,6 @@ button.jux-play span.glyphicon {
     border-right: 10px solid black;
     height: 360px;
     width: 490px;
-    text-align: center;
-}
-
-.jux-spine-display .jux-spine-revise {
-    display: none;
 }
 
 .jux-spine-display .instructions,
@@ -198,14 +193,19 @@ button.jux-play span.glyphicon {
     line-height: 1.4em;
 }
 
-.jux-spine-revise:hover,
-.jux-spine-display:hover .jux-spine-revise {
-    display: block;
-}
-
+.jux-spine-display .jux-spine-edit,
 .jux-spine-display .jux-spine-revise {
+    display: none;
+    width: 40px;
     position: relative;
     bottom: 34px;
+    margin-right: 5px;
+}
+
+.jux-spine-revise:hover,
+.jux-spine-display:hover .jux-spine-revise,
+.jux-spine-display:hover .jux-spine-edit {
+    display: inline;
 }
 
 .jux-media-display .help-text {

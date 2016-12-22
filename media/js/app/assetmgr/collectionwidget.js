@@ -16,6 +16,7 @@
  * asset.edit > when edit in place is clicked
  * asset.on_delete > after ajaxDelete is called
  * asset.select > when an asset is selected
+ * asset.update > when an asset was updated
  */
 
 var CollectionWidget = function() {
@@ -73,8 +74,8 @@ CollectionWidget.prototype.mapSignals = function() {
         });
 
     jQuery(window).on('annotation.on_create annotation.on_save', {'self': this},
-        function(event) {
-            self.onSave();
+        function(event, params) {
+            self.onSave(event, params);
         });
 
     jQuery(window).on('collection.open', {'self': this},
@@ -84,16 +85,17 @@ CollectionWidget.prototype.mapSignals = function() {
             self.open('gallery', params);
         });
     jQuery(window).on('collection.asset.edit', {'self': this},
-        function(event, assetId) {
-            self.open('edit');
-            self.quickEdit('Edit Item', 'asset.edit', assetId);
+        function(event, params) {
+            self.open('edit', params);
+            self.quickEdit('Edit Item', 'asset.edit', params.assetId);
         }
     );
     jQuery(window).on('collection.annotation.edit', {'self': this},
-        function(event, assetId, annotationId) {
-            self.open('edit');
+        function(event, params) {
+            self.open('edit', params);
             self.quickEdit(
-                'Edit Selection', 'annotation.edit', assetId, annotationId);
+                'Edit Selection', 'annotation.edit',
+                params.assetId, params.annotationId);
         }
     );
 };
@@ -233,7 +235,7 @@ CollectionWidget.prototype.open = function(displayMode, params) {
     this.disable = params && params.disable || [];
     this.currentRecords.active_filters = params;
     this.filter();
-    this.caller = params.caller;
+    this.caller = params && params.caller;
     this.displayMode = displayMode;
     this.$modal.modal('show');
 };
@@ -247,7 +249,7 @@ CollectionWidget.prototype.onCancel = function() {
     }
 };
 
-CollectionWidget.prototype.onSave = function() {
+CollectionWidget.prototype.onSave = function(evt, params) {
     this.refresh();
 
     if (this.displayMode !== 'gallery') {
@@ -256,6 +258,10 @@ CollectionWidget.prototype.onSave = function() {
         this.$quickEditView.fadeOut();
         this.$el.fadeIn();
     }
+
+    var ctx = {'detail': params};
+    ctx.detail.caller = this.caller;
+    document.dispatchEvent(new CustomEvent('asset.save', ctx));
 };
 
 CollectionWidget.prototype.filter = function() {
@@ -612,17 +618,21 @@ CollectionWidget.prototype.baseUrl = function() {
     }
 };
 
+CollectionWidget.prototype.isValidFilter = function(filter) {
+    var filters = ['tag', 'modified', 'search_text', 'media_type'];
+    return filters.indexOf(filter) > -1 || filter.startsWith('vocabulary-');
+};
+
 CollectionWidget.prototype.filteredUrl = function() {
     var url = this.baseUrl();
 
     // tack on all the filters
     if (this.currentRecords.hasOwnProperty('active_filters')) {
         for (var filter in this.currentRecords.active_filters) {
-            if (this.currentRecords.active_filters.hasOwnProperty(filter)) {
+            if (this.currentRecords.active_filters.hasOwnProperty(filter) &&
+                    this.isValidFilter(filter)) {
                 var val = this.currentRecords.active_filters[filter];
-                if (val !== null && val.length > 0) {
-                    url += '&' + filter + '=' + escape(val.toString());
-                }
+                url += '&' + filter + '=' + escape(val.toString());
             }
         }
     }
@@ -682,3 +692,9 @@ CollectionWidget.prototype.decodeCitation = function(imgElt) {
     }
     return annotationDict;
 };
+
+jQuery(document).ready(function() {
+    if (typeof djangosherd !== 'undefined') {
+        MediaThread.collection = new CollectionWidget();
+    }
+});

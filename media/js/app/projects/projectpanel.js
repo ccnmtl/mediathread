@@ -140,44 +140,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
                 ed.on('change', function(e) {
                     self.setDirty(true);
                 });
-
-                if (MediaThread.flags.indexOf('collection-widget') > -1) {
-                    ed.addButton('openvideos', {
-                        text: 'Open Videos',
-                        onclick: function() {
-                            var params = [{
-                                'media_type': 'video',
-                                'disable': ['media_type']
-                            }];
-                            jQuery(window).trigger('collection.open', params);
-                        }
-                    });
-                    ed.addButton('opencollection', {
-                        text: 'Open Collection',
-                        icon: 'icon-collection',
-                        tooltip: 'Open Collection',
-                        onclick: function() {
-                            jQuery(window).trigger('collection.open', []);
-                        }
-                    });
-                    // CCNMTL Internal Automated QA
-                    // selenium_instructor
-                    // The Muppets Popcorn item + Popcorn Shrimp selection
-                    ed.addButton('editasset', {
-                        text: 'Edit Item',
-                        onclick: function() {
-                            jQuery(window).trigger(
-                            'collection.asset.edit', ['4014']);
-                        }
-                    });
-                    ed.addButton('editannotation', {
-                        text: 'Edit Selection',
-                        onclick: function() {
-                            jQuery(window).trigger(
-                            'collection.annotation.edit', ['4014', '10543']);
-                        }
-                    });
-                }
             },
             selector: '#' + panel.context.project.id + '-project-content'
         });

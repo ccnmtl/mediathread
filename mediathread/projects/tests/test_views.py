@@ -13,8 +13,10 @@ from mediathread.factories import MediathreadTestMixin, UserFactory, \
 from mediathread.projects.models import (
     Project,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
-    PUBLISH_WHOLE_WORLD
-)
+    PUBLISH_WHOLE_WORLD, PUBLISH_WHOLE_CLASS,
+    PROJECT_TYPE_SELECTION_ASSIGNMENT,
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT, ProjectNote, ProjectSequenceAsset)
+from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.views import (
     SelectionAssignmentView, ProjectItemView,
     SequenceAssignmentView)
@@ -312,6 +314,52 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         self.assertIsNone(response1.assignment())
         self.assertIsNone(response2.assignment())
+
+    def test_selection_assignment_delete(self):
+        selection_assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy=PUBLISH_WHOLE_CLASS[0],
+            project_type=PROJECT_TYPE_SELECTION_ASSIGNMENT)
+
+        project_note = ProjectNoteFactory(project=selection_assignment,
+                                          annotation=self.instructor_note)
+
+        url = reverse('project-delete', args=[selection_assignment.id])
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        with self.assertRaises(Project.DoesNotExist):
+            Project.objects.get(id=selection_assignment.id)
+
+        with self.assertRaises(ProjectNote.DoesNotExist):
+            ProjectNote.objects.get(id=project_note.id)
+
+    def test_sequence_assignment_response_delete(self):
+        sequence_assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy=PUBLISH_WHOLE_CLASS[0],
+            project_type=PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
+        response1 = ProjectFactory.create(
+            title='Zeta', course=self.sample_course, author=self.student_one,
+            parent=sequence_assignment)
+        self.assertEquals(response1.assignment(), sequence_assignment)
+
+        psa = ProjectSequenceAssetFactory(project=response1)
+
+        url = reverse('project-delete', args=[response1.id])
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.post(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        with self.assertRaises(Project.DoesNotExist):
+            Project.objects.get(id=response1.id)
+
+        with self.assertRaises(ProjectSequenceAsset.DoesNotExist):
+            ProjectSequenceAsset.objects.get(id=psa.id)
 
     def test_unsubmit_response(self):
         assignment_response = ProjectFactory.create(

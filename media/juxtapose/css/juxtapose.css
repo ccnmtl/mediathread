@@ -416,3 +416,7 @@ button.jux-play span.glyphicon {
     padding: 10px;
     border: 1px solid black;
 }
+
+.jux-timecode-editor.input-group input[type="number"] {
+    width: 54px;
+}

@@ -65,11 +65,14 @@
 {% block content %}
 {% with public_url=the_response.public_url %}
 {% with the_feedback=the_response.feedback_discussion %}
+{% with "help_sequence_assignment" as help_id %}
 
 <div class="sequence-assignment">
-    <div style="width: 970px; background-color: red; height: 2px; display: none"></div>
+    
+    {% include "help/help_contentarea.html" %}
     <h2>
         Sequence Assignment <span class="project-view-title">{{assignment.title}}</span>
+        <div class="actions">{% include "help/help_button.html" %}</div>
     </h2>
 
     <div>
@@ -316,5 +319,5 @@
         </div>
     {% endif %}
 </div>
-{% endwith %}{% endwith %}
+{% endwith %}{% endwith %}{% endwith %}
 {% endblock %}

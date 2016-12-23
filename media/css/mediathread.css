@@ -1886,8 +1886,8 @@ td#explore input.help-tab-icon {
 
 td#explore div.help-tab {
    right: 7px;
-    top: 16px;
-    width: 30px;
+   top: 16px;
+   width: 30px;
 }
 
 td.collection.subpanel div.feature-help,
@@ -1902,6 +1902,18 @@ div#media_gallery div.feature-help {
     width: 60%;
     margin-left: 20px;
     z-index: 100;
+}
+
+.sequence-assignment #help_sequence_assignment-content {
+    top: 26px;
+    right: 6px;
+    width: 50%;
+}
+
+.sequence-assignment #help_sequence_assignment-tab {
+    right: 6px;
+    top: -6px;
+    width: 30px;
 }
 
 div#media_gallery div.intro-text {

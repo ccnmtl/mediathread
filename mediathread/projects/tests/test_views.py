@@ -13,7 +13,8 @@ from mediathread.factories import MediathreadTestMixin, UserFactory, \
 from mediathread.projects.models import (
     Project,
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
-    PUBLISH_WHOLE_WORLD, PUBLISH_WHOLE_CLASS, PROJECT_TYPE_SELECTION_ASSIGNMENT,
+    PUBLISH_WHOLE_WORLD, PUBLISH_WHOLE_CLASS,
+    PROJECT_TYPE_SELECTION_ASSIGNMENT,
     PROJECT_TYPE_SEQUENCE_ASSIGNMENT, ProjectNote, ProjectSequenceAsset)
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.views import (

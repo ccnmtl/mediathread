@@ -655,6 +655,7 @@ CollectionWidget.prototype.filteredUrl = function() {
             }
         }
     }
+    url += '&primary_type=image_fpxid'; // exclude ARTStor for the moment
     return url;
 };
 

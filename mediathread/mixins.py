@@ -106,6 +106,8 @@ class RestrictedMaterialsMixin(object):
             self.all_items_are_visible, tag_string, modified, vocabulary)
         visible_notes = visible_notes.filter_by_media_type(
             request.GET.get('media_type'))
+        visible_notes = visible_notes.exclude_primary_type(
+            request.GET.get('primary_type'))
 
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:

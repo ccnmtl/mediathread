@@ -279,7 +279,8 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
 
         self.asset = AssetFactory(course=self.sample_course,
-                                  author=self.student_one)
+                                  author=self.student_one,
+                                  primary_source='image',)
 
         self.student_one_ga = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
@@ -396,6 +397,27 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(assets.count(), 2)
         self.assertTrue(self.asset in assets)
         self.assertTrue(asset2 in assets)
+
+    def test_exclude_primary_type(self):
+        asset2 = AssetFactory(course=self.sample_course,
+                              author=self.student_one,
+                              primary_source='youtube',)
+
+        youtube_note = SherdNoteFactory(
+            asset=asset2, author=self.student_one,
+            tags=',student_one_selection', range1=0, range2=1)
+
+        qs = SherdNote.objects.filter(author=self.student_one)
+        self.assertEquals(qs.count(), 3)
+
+        notes = qs.exclude_primary_type('youtube')
+        self.assertEquals(notes.count(), 2)
+        self.assertTrue(self.student_one_ga in notes)
+        self.assertTrue(self.student_one_note in notes)
+
+        notes = qs.exclude_primary_type('image')
+        self.assertEquals(notes.count(), 1)
+        self.assertEquals(notes[0], youtube_note)
 
 
 class DiscussionIndexTest(MediathreadTestMixin, TestCase):

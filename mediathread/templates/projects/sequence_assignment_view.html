@@ -130,13 +130,18 @@
                         </div>
                     {% endif %}
                     <div class="small">
-                        <span class="metadata-label"><b>Response Visibility</b>:</span>
+                        <span class="metadata-label"><strong>Response Visibility</strong>:</span>
                         {% for key, value in response_view_policies %}
                             {% ifequal key assignment.response_view_policy %}
                                 <span class="metadata-value">{{value}}</span>
                             {% endifequal %}
                         {% endfor %}
-                        </a>
+                    </div>
+                    <div class="small">
+                        <span class="metadata-label"><strong>Response Requirements</strong>:</span>
+                        There must be a primary video and at least one
+                        secondary element in order for this response
+                        to be submitted.
                     </div>
                     {% if assignment.custom_instructions_1|length > 0 %}
                         <p>

@@ -230,8 +230,8 @@
                 {% if course %}
                     this.current_course = {{ course.pk }};
                 {% endif %}
-                {% if assignment %}
-                    this.current_project = {{ assignment.pk }};
+                {% if the_response %}
+                    this.current_project = {{the_response.pk }};
                 {% endif %}
                 this.flags = [
                     {% flag "collection-widget" %}

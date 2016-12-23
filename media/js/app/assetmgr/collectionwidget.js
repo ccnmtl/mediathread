@@ -1,7 +1,7 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
 /* global Mustache: true, Sherd: true, console: true */
-/* global CitationView: true */
+/* global CitationView: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -222,12 +222,30 @@ CollectionWidget.prototype.mapEvents = function() {
     });
 
     self.$el.on('click', '.clickableCitation', function(evt) {
-        var ctx = {'detail': self.decodeCitation(this)};
-        ctx.detail.caller = self.caller;
+        var $elt = jQuery(this);
+        var annotationId = $elt.data('annotation-id');
+        var assetId = $elt.data('asset-id');
 
-        var assetEvent = new CustomEvent('asset.select', ctx);
-        document.dispatchEvent(assetEvent);
-        self.$modal.modal('hide');
+        if (annotationId) {
+            self.signalInsert(assetId, annotationId);
+            self.$modal.modal('hide');
+            return;
+        }
+
+        // get or create the user's global annotation
+        jQuery.ajax({
+            type: 'POST',
+            url: MediaThread.urls['annotation-create-global'](assetId),
+            dataType: 'json',
+            error: function() {
+                showMessage('There was an error adding your item');
+            },
+            success: function(json, textStatus, xhr) {
+                self.signalInsert(assetId, json.annotation.id);
+                self.$modal.modal('hide');
+                return;
+            }
+        });
     });
 };
 
@@ -667,31 +685,13 @@ CollectionWidget.prototype.setLoading = function(isLoading) {
     }
 };
 
-CollectionWidget.prototype.decodeCitation = function(imgElt) {
-    var annotationDict = false;
-    var reg = String(imgElt.src).match(/#(annotation=.+)$/);
-    if (reg !== null) {
-        annotationDict = {};
-        //stolen from Mochi
-        var pairs = reg[1].replace(
-            /\+/g, '%20').split(/\&amp\;|\&\#38\;|\&#x26;|\&/);
-        pairs.forEach(function(p) {
-            var kv = p.split('=');
-            var key = kv.shift();
-            annotationDict[key] = kv.join('=');
-        });
-        //removing extraneous 0's in the timecode
-        annotationDict.title = (annotationDict.title
-                                  .replace(/([ -])0:/g, '$1')
-                                  .replace(/([ -])0/g, '$1'));
-    } else {
-        var annotationHref = imgElt.getAttribute('name');
-        var linkTitle = imgElt.getAttribute('title');
-        if (linkTitle && annotationHref) {
-            annotationDict = {annotation: annotationHref, title: linkTitle};
-        }
-    }
-    return annotationDict;
+CollectionWidget.prototype.signalInsert = function(assetId, annotationId) {
+    var ctx = {'detail': {
+        'assetId': assetId,
+        'annotationId': annotationId,
+        'caller': this.caller
+    }};
+    document.dispatchEvent(new CustomEvent('asset.select', ctx));
 };
 
 jQuery(document).ready(function() {

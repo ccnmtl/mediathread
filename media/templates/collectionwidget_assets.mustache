@@ -78,7 +78,8 @@
                 {{#citable}}
                     <span class="citationTemplate">
                         <img class="materialCitation clickableCitation" alt=""
-                        src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0"
+                         data-asset-id="{{id}}"
+                         src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0"
                         title="Add item to the composition"
                         name="{{local_url}}"/>
                     </span>
@@ -168,6 +169,7 @@
                                         <div>
                                             {{#citable}}
                                                 <img class="materialCitation clickableCitation" alt=""
+                                                    data-annotation-id="{{id}}" data-asset-id="{{asset_id}}"
                                                     src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}"
                                                     title="Add selection to the composition"
                                                     name="{{url}}"/>

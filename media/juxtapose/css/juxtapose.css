@@ -17,7 +17,8 @@ button.jux-play span.glyphicon {
 
 #jux-container {
     width: 970px;
-    margin: 0 auto; 
+    margin: 0 auto;
+    display: none;
 }
 
 .react-grid-item {

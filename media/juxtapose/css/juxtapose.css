@@ -46,11 +46,6 @@ button.jux-play span.glyphicon {
     display: flex;
 }
 
-.jux-global-annotation {
-    width: 100%;
-    display: none;
-}
-
 #jux-spine-video,
 .jux-media-video {
     position: relative;
@@ -414,7 +409,6 @@ button.jux-play span.glyphicon {
     border: 1px solid black;
 }
 
-.jux-timecode-editor.input-group input[type="number"] {
-    width: 54px;
-    margin-right: 3px;
+.jux-timecode-editor input {
+    width: 60px;
 }

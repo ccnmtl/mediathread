@@ -98,6 +98,14 @@ CollectionWidget.prototype.mapSignals = function() {
                 params.assetId, params.annotationId);
         }
     );
+    jQuery(window).on('collection.annotation.create', {'self': this},
+            function(event, params) {
+                self.open('create', params);
+                self.quickEdit(
+                    'Create Selection', 'annotation.create',
+                    params.assetId);
+            }
+        );
 };
 
 CollectionWidget.prototype.mapEvents = function() {

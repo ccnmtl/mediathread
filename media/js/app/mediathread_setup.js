@@ -78,6 +78,10 @@
             return '/asset/delete/' + assetId +
                 '/annotations/' + annotationId + '/';
         },
+        'annotation-copy': function(assetId, annotationId) {
+            return '/asset/copy/' + assetId +
+            '/annotations/' + annotationId + '/';
+        },
         'project-view': function(projectId) {
             return '/project/view/' + projectId + '/';
         },

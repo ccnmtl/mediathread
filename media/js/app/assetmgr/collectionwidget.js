@@ -234,14 +234,35 @@ CollectionWidget.prototype.mapEvents = function() {
         var $elt = jQuery(this);
         var annotationId = $elt.data('annotation-id');
         var assetId = $elt.data('asset-id');
+        var editable = $elt.data('editable');
+        var url = MediaThread.urls['annotation-copy'](assetId, annotationId);
 
-        if (annotationId) {
+        if (annotationId && editable) {
             self.signalInsert(assetId, annotationId);
             self.$modal.modal('hide');
             return;
         }
 
+        if (annotationId) {
+            // copy the annotation for the user to ensure they can
+            // edit the annotation's start & end times if neeed.
+            jQuery.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                error: function() {
+                    showMessage('There was an error adding your item');
+                },
+                success: function(json, textStatus, xhr) {
+                    self.signalInsert(assetId, json.annotation.id);
+                    self.$modal.modal('hide');
+                    return;
+                }
+            });
+        }
+
         // get or create the user's global annotation
+        // return the global annotation instead of the item
         jQuery.ajax({
             type: 'POST',
             url: MediaThread.urls['annotation-create-global'](assetId),

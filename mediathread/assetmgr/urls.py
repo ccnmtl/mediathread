@@ -7,7 +7,7 @@ from mediathread.assetmgr.views import (
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
     most_recent, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
-)
+    AnnotationCopyView)
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -34,6 +34,9 @@ urlpatterns = [
     url(r'^create/(?P<asset_id>\d+)/annotations/$', annotation_create),
 
     url(r'^create/(?P<asset_id>\d+)/global/$', annotation_create_global),
+
+    url(r'^copy/(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
+        AnnotationCopyView.as_view(), {}, 'annotation-copy-view'),
 
     url(r'^save/(?P<asset_id>\d+)/annotations/(?P<annot_id>\d+)/$',
         annotation_save,

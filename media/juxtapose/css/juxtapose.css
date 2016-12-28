@@ -134,23 +134,39 @@ button.jux-play span.glyphicon {
     height: 50px;
     cursor: pointer;
     margin-left: 55px;
-    background-color: #f5f5f5
+    background-color: #f5f5f5;
+    position: relative;
+}
+
+.jux-track-instructions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    width: 100%;
+    color: #aaa;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 15px;
+    z-index: 0;
+}
+
+.jux-track .jux-snap-column {
+    position: relative;
+    width: 10px;
+    height: 100%;
+    display: inline-block;
+    z-index: 1;
+}
+
+.jux-track .jux-snap-column:hover {
+    background-color: yellow;
 }
 
 .jux-track>.react-grid-layout {
     position: relative;
     bottom: 51px;
-}
-
-.jux-track .jux-snap-column {
-    width: 10px;
-    height: 100%;
-    background-color: transparent;
-    display: inline-block;
-}
-
-.jux-track .jux-snap-column:hover {
-    background-color: yellow;
+    z-index: 2;
 }
 
 .jux-spine-display {

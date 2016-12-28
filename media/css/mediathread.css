@@ -4628,6 +4628,10 @@ collection-modal .col-md-2 {
     margin-top: 0;
 }
 
+#collection-modal .record-asset-properties {
+    width: 75%;
+}
+
 #collection-modal .collection-widget .asset-title-link.insert {
     float: left;
 }

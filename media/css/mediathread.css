@@ -1488,8 +1488,8 @@ div.asset-view-container .annotation-ajaxloader {
 } 
 
 tr.asset-workspace-content-row div.ajaxloader {
-    top: 46px;    
-    width: 98%;   
+    top: 46px;
+    width: 98%;
 }
 
 tr.asset-workspace-content-row td.collection.minimized div.ajaxloader {
@@ -1500,6 +1500,17 @@ tr.asset-workspace-content-row td.collection.minimized div.ajaxloader {
 tr.discussion-content-row div.ajaxloader,
 tr.project-content-row div.ajaxloader {
     width: 380px;
+}
+
+.next-page-loader {
+    position: absolute;
+    bottom: 1px;
+    background-color: #ededed;
+    text-align: center;
+    opacity: 0.85;
+    width: 100%;
+    padding: 10px 0;
+    font-weight: bold;
 }
 
 td.collection.minimized div#collection-overlay {

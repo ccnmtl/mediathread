@@ -326,6 +326,8 @@ CollectionWidget.prototype.refresh = function() {
 };
 
 CollectionWidget.prototype.nextPage = function() {
+    this.setLoading(true);
+    this.$modal.find('.next-page-loader').show();
     this.limits.offset += this.limits.limit;
 
     var url = this.filteredUrl();
@@ -349,6 +351,9 @@ CollectionWidget.prototype.nextPage = function() {
             self.createThumbs(the_records.assets);
 
             jQuery(window).trigger('assets.refresh', [html]);
+
+            self.$modal.find('.next-page-loader').hide();
+            self.setLoading(false);
         }
     });
 };
@@ -537,9 +542,9 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
     var $body = this.$modal.find('.modal-body');
 
     $body.scroll(function() {
-        if (!self.getLoading() &&
-            (jQuery(this).scrollTop() + jQuery(this).outerHeight() >=
-             jQuery(this)[0].scrollHeight - 10)) {
+        if ((jQuery(this).scrollTop() + jQuery(this).outerHeight() >=
+             jQuery(this)[0].scrollHeight - 10) &&
+                 !self.getLoading()) {
             self.nextPage(self.current_records);
         }
     });

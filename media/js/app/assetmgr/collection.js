@@ -269,6 +269,7 @@ CollectionList.prototype.refresh = function(config) {
 
 CollectionList.prototype.appendItems = function(config) {
     var self = this;
+    self.loading = true;
     self.limits.offset += self.limits.limit;
 
     var url = self.constructUrl(config, true);
@@ -280,6 +281,7 @@ CollectionList.prototype.appendItems = function(config) {
     false,
     function(the_records) {
         self.appendAssets(the_records);
+        self.loading = false;
     });
 };
 
@@ -654,8 +656,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
         $window.scroll(function() {
             if (!self.getLoading() &&
                 $window.scrollTop() >=
-                $document.height() -
-                $window.height() - 300) {
+                    ($document.height() - $window.height() - 300)) {
                 self.appendItems(self.current_records);
             }
         });

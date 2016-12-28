@@ -23,7 +23,8 @@ var CollectionWidget = function() {
     this.loading = false;
     this.template = 'collectionwidget';
     this.limits = {offset: 0, limit: 20};
-    this.currentRecords = {'space_owner': MediaThread.currentOwner};
+    this.currentRecords =
+        {'space_owner': {'username': MediaThread.current_username}};
 
     this.$modal = jQuery('#collection-modal');
     this.$el = this.$modal.find('.collection-view');

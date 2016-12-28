@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/juxtapose.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/playhead.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/react-grid-layout.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/loaders.min.css"  media="screen" />
 {% endblock %}
 
 {% block uncompressable_css %}
@@ -59,7 +60,8 @@
         });
     </script>
 
-    <script type="text/javascript" src="{{STATIC_URL}}juxtapose/bundle.js"></script>
+    <script src="{{STATIC_URL}}juxtapose/loaders.css.js"></script>
+    <script src="{{STATIC_URL}}juxtapose/bundle.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -261,6 +263,13 @@
                 <div role="tabpanel"
                      class="tab-pane fade in active {% if the_response.is_submitted %}submitted{% endif %}"
                      id="sequence">
+                    <div class="loader">
+                        <div class="ball-pulse">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
                     <div id="jux-container"></div>
                 </div>
                 <div role="tabpanel" class="tab-pane fade" id="reflection">

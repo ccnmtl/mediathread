@@ -429,3 +429,12 @@ button.jux-play span.glyphicon {
 .jux-timecode-editor input {
     width: 60px;
 }
+
+/* loader.css styles */
+#sequence .loader {
+    text-align: center;
+}
+
+#sequence .loader>.ball-pulse>div {
+    background-color: #555;
+}

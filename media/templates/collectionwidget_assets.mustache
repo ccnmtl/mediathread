@@ -170,6 +170,9 @@
                                             {{#citable}}
                                                 <img class="materialCitation clickableCitation" alt=""
                                                     data-annotation-id="{{id}}" data-asset-id="{{asset_id}}"
+                                                    {{#editable}}
+                                                    data-editable=1
+                                                    {{/editable}}
                                                     src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}"
                                                     title="Add selection to the composition"
                                                     name="{{url}}"/>

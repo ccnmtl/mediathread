@@ -614,6 +614,33 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = annotation_delete(request, asset.id, note.id)
         self.assertEquals(response.status_code, 404)
 
+    def test_copy_annotation(self):
+        asset = AssetFactory(course=self.sample_course, primary_source='image')
+        note = SherdNoteFactory(
+            asset=asset, author=self.student_one,
+            title='Sample Note', annotation_data='{1:2}',
+            body='student one notes',
+            tags=',student_one_selection', range1=0, range2=1)
+
+        params = {'asset_id': asset.id, 'annotation_id': note.id}
+
+        url = reverse('annotation-copy-view', args=[asset.id, note.id])
+        self.client.login(username=self.student_two.username,
+                          password='test')
+        response = self.client.post(url, params,
+                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        the_json = loads(response.content)
+
+        self.assertEquals(the_json['asset']['id'], asset.id)
+        self.assertNotEquals(the_json['annotation']['id'], note.id)
+
+        self.assertEquals(response.status_code, 200)
+        note = SherdNote.objects.get(author=self.student_two, title=note.title,
+                                     range1=note.range1, range2=note.range2,
+                                     annotation_data=note.annotation_data)
+        self.assertEquals(note.tags, '')
+        self.assertIsNone(note.body)
+
 
 class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 

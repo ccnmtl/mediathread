@@ -405,6 +405,27 @@ def annotation_delete(request, asset_id, annot_id):
         return HttpResponseNotFound()
 
 
+class AnnotationCopyView(LoggedInCourseMixin, AjaxRequiredMixin,
+                         JSONResponseMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        annot_id = kwargs.get('annot_id', None)
+        note = get_object_or_404(SherdNote, pk=annot_id)
+
+        data = {
+            'author': self.request.user, 'asset': note.asset,
+            'range1': note.range1, 'range2': note.range2,
+            'annotation_data': note.annotation_data, 'title': note.title
+        }
+
+        new_note = SherdNote(**data)
+        new_note.save()
+
+        ctx = {'asset': {'id': new_note.asset.id},
+               'annotation': {'id': new_note.id}}
+        return self.render_to_json_response(ctx)
+
+
 class RedirectToExternalCollectionView(LoggedInCourseMixin, View):
     """
         simple way to redirect to a stored (thus obfuscated) url

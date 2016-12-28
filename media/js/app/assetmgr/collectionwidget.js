@@ -348,7 +348,7 @@ CollectionWidget.prototype.refresh = function() {
 };
 
 CollectionWidget.prototype.nextPage = function() {
-    this.setLoading(true);
+    this.loading = true;
     this.$modal.find('.next-page-loader').show();
     this.limits.offset += this.limits.limit;
 
@@ -373,10 +373,9 @@ CollectionWidget.prototype.nextPage = function() {
             self.createThumbs(the_records.assets);
 
             jQuery(window).trigger('assets.refresh', [html]);
-
-            self.$modal.find('.next-page-loader').hide();
-            self.setLoading(false);
         }
+        self.$modal.find('.next-page-loader').hide();
+        self.loading = false;
     });
 };
 

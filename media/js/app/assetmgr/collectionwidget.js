@@ -256,9 +256,9 @@ CollectionWidget.prototype.mapEvents = function() {
                 success: function(json, textStatus, xhr) {
                     self.signalInsert(assetId, json.annotation.id);
                     self.$modal.modal('hide');
-                    return;
                 }
             });
+            return;
         }
 
         // get or create the user's global annotation

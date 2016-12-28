@@ -144,20 +144,11 @@
             self.active_asset = theAsset;
         };
 
-        this.signalSaveComplete = function(creating) {
+        this.signalSaveComplete = function(creating, assetId, annotationId) {
             var eventName = creating ?
                 'annotation.on_create' : 'annotation.on_save';
 
-            var params = {'assetId': self.active_asset.id};
-
-            if (self.active_annotation) {
-                params.annotationId = self.active_annotation.id;
-                params.startTime = self.active_annotation.range1;
-                params.duration = self.active_annotation.duration;
-            } else {
-                params.startTime = 0;
-                params.duration = self.active_asset.duration;
-            }
+            var params = {'assetId': assetId, 'annotationId': annotationId};
             jQuery(window).trigger(eventName, params);
         };
 
@@ -680,7 +671,6 @@
                     false,
                     function(asset_full) {
                         self.processAsset(asset_full);
-                        self.signalSaveComplete(json.annotation.creating);
 
                         jQuery(saveButton).removeAttr('disabled');
                         jQuery(saveButton).removeClass('saving');
@@ -1006,7 +996,9 @@
                             annotation_id: json.annotation.id
                         });
 
-                        self.signalSaveComplete(json.annotation.creating);
+                        self.signalSaveComplete(
+                            creating,
+                            self.active_asset.id, json.annotation.id);
                     });
                 }
             });

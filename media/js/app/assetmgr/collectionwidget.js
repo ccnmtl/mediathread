@@ -283,7 +283,7 @@ CollectionWidget.prototype.open = function(displayMode, params) {
     // disable requested filters
     this.disable = params && params.disable || [];
 
-    // filter by requested filters 
+    // filter by requested filters
     this.currentRecords.active_filters = params;
     this.filter();
 

@@ -63,16 +63,6 @@
                     <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection" />
                     Create selection
                 </a>
-                {{#editable}}
-                    <a class="btn btn-xs btn-default collection-choice edit-asset" href="{{id}}" title="Quick edit item attributes">
-                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon" alt="Edit item attributes"  />
-                        Edit Item
-                    </a>
-                    <a class="btn btn-xs btn-default collection-choice delete-asset" href="{{id}}" title="Remove item from your collection">
-                        <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" class="delete_icon" alt="Remove item from your collection"  />
-                        Remove Item
-                    </a>
-                {{/editable}}
             </div>
             <div class="record-asset-properties pull-left">
                 {{#citable}}
@@ -101,6 +91,7 @@
                         {{/title}}
                     </h4>
                 </a>
+                <div class="clearfix"></div>
                 <table class="item-level-info">
                     <tr>
                         <td class="item-thumb">

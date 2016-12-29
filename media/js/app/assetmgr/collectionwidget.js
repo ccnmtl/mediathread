@@ -280,11 +280,25 @@ CollectionWidget.prototype.mapEvents = function() {
 };
 
 CollectionWidget.prototype.open = function(displayMode, params) {
+    // disable requested filters
     this.disable = params && params.disable || [];
+
+    // filter by requested filters
     this.currentRecords.active_filters = params;
     this.filter();
+
+    // store some callback information
     this.caller = params && params.caller;
+
+    // show the full collection or an edit view
     this.displayMode = displayMode;
+
+    if (params && params.allowAssets) {
+        this.$modal.addClass('show-assets');
+    } else {
+        this.$modal.removeClass('show-assets');
+    }
+
     this.$modal.modal('show');
 };
 

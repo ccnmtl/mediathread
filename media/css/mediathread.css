@@ -4686,6 +4686,14 @@ collection-modal .col-md-2 {
     width: 51%;
 }
 
+#collection-modal .record-asset-properties .clickableCitation {
+    display: none;
+}
+
+#collection-modal.show-assets .record-asset-properties .clickableCitation {
+    display: inline;
+}
+
 .spacer {
     margin-top: 10px;
 }

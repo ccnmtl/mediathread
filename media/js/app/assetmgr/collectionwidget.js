@@ -36,14 +36,14 @@ var CollectionWidget = function() {
     jQuery.when(
         self.getCourse(),
         self.getVocabulary(),
-        MediaThread.loadTemplates(
-            [self.template, self.template + '_quickedit'])
+        MediaThread.loadTemplate([self.template]),
+        MediaThread.loadTemplate([self.template + '_quickedit'])
     ).done(function(courseReq, vocabularyReq) {
         self.owners = courseReq[0].objects[0].group.user_set;
         self.vocabulary = vocabularyReq[0].objects;
         self.postInitialize();
     }).fail(function() {
-        // handle errors
+        console.error('Loading error in CollectionWidget constructor');
     });
 };
 

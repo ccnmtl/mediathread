@@ -9,8 +9,8 @@ def prevent_overlap(value):
     for i in range(len(value) - 1):
         a = value[i]
         b = value[i + 1]
-        overlap = a.get('start_time') <= b.get('end_time') and \
-            b.get('start_time') <= a.get('end_time')
+        overlap = a.get('start_time') < b.get('end_time') and \
+            b.get('start_time') < a.get('end_time')
         if overlap:
             raise ValidationError('Elements can\'t overlap.')
 

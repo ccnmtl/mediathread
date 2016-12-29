@@ -420,6 +420,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                         'text': 'My text',
                         'start_time': 0,
                         'end_time': 10,
+                    },
+                    {
+                        'text': 'My text',
+                        'start_time': 10,
+                        'end_time': 12,
                     }
                 ]
             }, format='json')
@@ -432,7 +437,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.spine, note)
 
         self.assertEqual(SequenceMediaElement.objects.count(), 1)
-        self.assertEqual(SequenceTextElement.objects.count(), 1)
+        self.assertEqual(SequenceTextElement.objects.count(), 2)
 
     def test_update_with_overlapping_elements(self):
         sa = SequenceAssetFactory(author=self.u)

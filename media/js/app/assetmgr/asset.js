@@ -670,6 +670,10 @@
                     },
                     false,
                     function(asset_full) {
+                        self.signalSaveComplete(
+                            json.annotation.creating,
+                            json.asset.id, json.annotation.id);
+
                         self.processAsset(asset_full);
 
                         jQuery(saveButton).removeAttr('disabled');

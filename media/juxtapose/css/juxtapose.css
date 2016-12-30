@@ -17,8 +17,9 @@ button.jux-play span.glyphicon {
 
 #jux-container {
     width: 970px;
+    min-height: 600px;
     margin: 0 auto;
-    display: none;
+    opacity: 0;
 }
 
 .react-grid-item {
@@ -433,6 +434,8 @@ button.jux-play span.glyphicon {
 /* loader.css styles */
 #sequence .loader {
     text-align: center;
+    position: relative;
+    top: 100px;
 }
 
 #sequence .loader>.ball-pulse>div {

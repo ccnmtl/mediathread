@@ -1,6 +1,8 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
-from mediathread.projects.models import ProjectSequenceAsset
+
+from mediathread.projects.models import ProjectSequenceAsset, Project
 from mediathread.projects.serializers import ProjectSequenceAssetSerializer
 
 
@@ -9,13 +11,24 @@ class ProjectSequenceAssetViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ProjectSequenceAsset.objects.all()
     serializer_class = ProjectSequenceAssetSerializer
 
-    def list(self, request):
-        queryset = ProjectSequenceAsset.objects.filter(
-            sequence_asset__author=request.user)
+    def filter_by_project(self, viewer, project_id):
+        # request psa for a readable project
+        project = get_object_or_404(Project, id=project_id)
+        if project.can_read(project.course, viewer):
+            return ProjectSequenceAsset.objects.filter(project=project)
+        else:
+            return ProjectSequenceAsset.objects.none()
 
-        project = request.query_params.get('project', None)
-        if project is not None:
-            queryset = queryset.filter(project__pk=project)
+    def filter_by_user(self, viewer):
+        return ProjectSequenceAsset.objects.filter(
+            sequence_asset__author=viewer)
+
+    def list(self, request):
+        project_id = request.query_params.get('project', None)
+        if project_id is not None:
+            queryset = self.filter_by_project(request.user, project_id)
+        else:
+            queryset = self.filter_by_user(request.user)
 
         serializer = ProjectSequenceAssetSerializer(queryset, many=True)
         return Response(serializer.data)

@@ -2952,8 +2952,6 @@ input {
     border: 1px solid #333333;
 }
 
-border: 1px solid #333333;
-
 input[type="checkbox"] {
     border: none; /* IE 8,9 look very very odd with a border */
 }

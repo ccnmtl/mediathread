@@ -242,6 +242,11 @@ button.jux-play span.glyphicon {
     text-align: center;
 }
 
+.jux-media-display .image-player {
+    height: 360px;
+    width: 480px;
+}
+
 .jux-spine-display video,
 .jux-spine-display img,
 .jux-media-display video,

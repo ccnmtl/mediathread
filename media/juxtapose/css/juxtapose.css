@@ -169,6 +169,11 @@ button.jux-play span.glyphicon {
     bottom: 51px;
     z-index: 2;
 }
+@-moz-document url-prefix() {
+    .jux-track>.react-grid-layout {
+        bottom: 49px;
+    }
+}
 
 .jux-spine-display {
     background-color: #bbb;

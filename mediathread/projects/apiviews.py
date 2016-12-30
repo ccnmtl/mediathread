@@ -7,7 +7,7 @@ from mediathread.projects.serializers import ProjectSequenceAssetSerializer
 
 
 class ProjectSequenceAssetViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     queryset = ProjectSequenceAsset.objects.all()
     serializer_class = ProjectSequenceAssetSerializer
 

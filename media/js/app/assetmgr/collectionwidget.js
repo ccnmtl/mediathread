@@ -744,7 +744,7 @@ CollectionWidget.prototype.signalInsert = function(assetId, annotationId) {
 };
 
 jQuery(document).ready(function() {
-    if (typeof djangosherd !== 'undefined') {
+    if (typeof djangosherd !== 'undefined' && MediaThread.current_user) {
         MediaThread.collection = new CollectionWidget();
     }
 });

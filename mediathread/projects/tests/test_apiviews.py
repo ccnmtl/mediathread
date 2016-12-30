@@ -53,4 +53,5 @@ class ProjectSequenceAssetViewSetUnAuthedTest(APITestCase):
         ProjectSequenceAssetFactory()
 
         r = self.client.get(reverse('projectsequenceasset-list'))
-        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 0)

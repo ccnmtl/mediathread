@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, mixins
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from mediathread.projects.models import ProjectSequenceAsset, Project
 from mediathread.projects.serializers import ProjectSequenceAssetSerializer
 
 
-class ProjectSequenceAssetViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = (permissions.IsAuthenticated,)
+class ProjectSequenceAssetViewSet(mixins.ListModelMixin, GenericViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     queryset = ProjectSequenceAsset.objects.all()
     serializer_class = ProjectSequenceAssetSerializer
 
@@ -27,8 +28,10 @@ class ProjectSequenceAssetViewSet(viewsets.ReadOnlyModelViewSet):
         project_id = request.query_params.get('project', None)
         if project_id is not None:
             queryset = self.filter_by_project(request.user, project_id)
-        else:
+        elif request.user.is_authenticated():
             queryset = self.filter_by_user(request.user)
+        else:
+            queryset = ProjectSequenceAsset.objects.none()
 
         serializer = ProjectSequenceAssetSerializer(queryset, many=True)
         return Response(serializer.data)

@@ -38,14 +38,6 @@ class ProjectSequenceAssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(len(r.data), 1)
 
-    def test_retrieve(self):
-        psa = ProjectSequenceAssetFactory()
-        r = self.client.get(
-            reverse('projectsequenceasset-detail', args=(psa.pk,)))
-        self.assertEqual(r.status_code, 200)
-        self.assertEqual(len(r.data), 3)
-        self.assertEqual(r.data['project'], psa.project.pk)
-
 
 class ProjectSequenceAssetViewSetUnAuthedTest(APITestCase):
     def test_list(self):
@@ -53,4 +45,5 @@ class ProjectSequenceAssetViewSetUnAuthedTest(APITestCase):
         ProjectSequenceAssetFactory()
 
         r = self.client.get(reverse('projectsequenceasset-list'))
-        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 0)

@@ -237,14 +237,14 @@
                 {% if course %}
                     this.current_course = {{ course.pk }};
                 {% endif %}
-                {% if the_response %}
-                    this.current_project = {{the_response.pk }};
-                {% endif %}
                 this.flags = [
                     {% flag "collection-widget" %}
                         'collection-widget'
                     {% endflag %}
                 ];
+            {% endif %}
+            {% if the_response %}
+                this.current_project = {{the_response.pk }};
             {% endif %}
         })();
     </script>

@@ -616,6 +616,9 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
     def test_copy_annotation(self):
         asset = AssetFactory(course=self.sample_course, primary_source='image')
+
+        self.assertIsNone(asset.global_annotation(self.student_two, False))
+
         note = SherdNoteFactory(
             asset=asset, author=self.student_one,
             title='Sample Note', annotation_data='{1:2}',
@@ -640,6 +643,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
                                      annotation_data=note.annotation_data)
         self.assertEquals(note.tags, '')
         self.assertIsNone(note.body)
+        self.assertIsNotNone(asset.global_annotation(self.student_two, False))
 
 
 class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):

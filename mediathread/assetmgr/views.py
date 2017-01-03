@@ -411,6 +411,9 @@ class AnnotationCopyView(LoggedInCourseMixin, AjaxRequiredMixin,
         annot_id = kwargs.get('annot_id', None)
         note = get_object_or_404(SherdNote, pk=annot_id)
 
+        # add this to the user's collection
+        note.asset.global_annotation(request.user, True)
+
         data = {
             'author': self.request.user, 'asset': note.asset,
             'range1': note.range1, 'range2': note.range2,

@@ -4,6 +4,9 @@
 .jux-playhead-container input[type=range] {
     cursor: col-resize;
     width: 930px;
+    -webkit-appearance: none;
+    background: transparent;
+    outline: none;
 }
 
 .jux-playhead-line {

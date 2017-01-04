@@ -66,13 +66,13 @@ function djangosherd_adaptAsset(asset) {
             var poster = document.createElement('img');
             poster.src = asset.poster;
             if (!poster.width) {
-                asset.poster = '/media/js/sherdjs/media/images/click_to_play.jpg';
+                asset.poster = '/media/js/lib/sherdjs/media/images/click_to_play.jpg';
             }
         } else {
-            asset.poster = '/media/js/sherdjs/media/images/click_to_play.jpg';
+            asset.poster = '/media/js/lib/sherdjs/media/images/click_to_play.jpg';
         }
         asset.url = asset.quicktime;  //TODO remove this and make sure quicktime.js uses .quicktime
-        asset.loadingposter = '/media/js/sherdjs/media/images/poster.gif';
+        asset.loadingposter = '/media/js/lib/sherdjs/media/images/poster.gif';
     } else if (asset.realplayer) {
         asset.type = 'realplayer';
     } else if (asset.ogg) {

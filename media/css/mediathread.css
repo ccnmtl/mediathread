@@ -4339,9 +4339,9 @@ a.btn.btn-default img.left {
 margin-top: 5px;
 }
 
-.sequence-assignment .btn-tab:hover,
-.sequence-assignment .btn-tab:active,
-.sequence-assignment .btn-tab:focus {
+.sequence-assignment .btn-primary:hover,
+.sequence-assignment .btn-primary:active,
+.sequence-assignment .btn-primary:focus {
   color: #fff;
   background-color: #286090;
   border-color: #204d74;

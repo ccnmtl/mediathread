@@ -4602,9 +4602,9 @@ ul.section-tabs>li>a.active {
 }
 
 #collection-modal .col-md-5,
-collection-modal .col-md-4,
-collection-modal .col-md-3,
-collection-modal .col-md-2 {
+#collection-modal .col-md-4,
+#collection-modal .col-md-3,
+#collection-modal .col-md-2 {
     padding-right: 5px;
     padding-left: 5px;
 }

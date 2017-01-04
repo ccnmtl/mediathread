@@ -234,7 +234,7 @@ button.jux-play span.glyphicon {
     border: 0;
     outline: 0;
     float: left;
-    margin-right: 15px;
+    margin-right: 0px;
 }
 
 .jux-spine-display button.add-spine:before {
@@ -243,7 +243,7 @@ button.jux-play span.glyphicon {
     line-height: 1;
     display:inline-block;
     font-size: 50px;
-    margin: 20% 25%;
+    margin: 10px 5px 10px 0px;
 }
 
 .jux-media-display {

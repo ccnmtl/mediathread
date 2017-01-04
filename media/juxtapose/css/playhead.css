@@ -4,9 +4,15 @@
 .jux-playhead-container input[type=range] {
     cursor: col-resize;
     width: 930px;
+    /* Hide range slider in webkit */
     -webkit-appearance: none;
     background: transparent;
     outline: none;
+}
+
+.jux-playhead-container input[type=range]::-moz-range-track {
+    /* Hide range slider in Firefox */
+    opacity: 0;
 }
 
 .jux-playhead-line {

@@ -153,9 +153,7 @@
                                         <form action="/project/create/" method="post">
                                             <input type="hidden" name="parent" value="{{id}}" />
                                             <input type="hidden" name="project_type" value="composition" />
-                                            {{#is_selection_assignment}}
-                                                <input type="hidden" name="title" value="My Response" />
-                                            {{/is_selection_assignment}}
+                                            <input type="hidden" name="title" value="My Response" />
                                             <input class="btn btn-success" type="submit" value="Respond to Assignment" />
                                         </form>
                                     {{/is_faculty}}

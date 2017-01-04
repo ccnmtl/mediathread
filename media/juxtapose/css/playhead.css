@@ -1,5 +1,6 @@
 .jux-playhead-container {
     margin-left: 48px;
+    position: relative; /* needed for zindex */
 }
 .jux-playhead-container input[type=range] {
     cursor: col-resize;

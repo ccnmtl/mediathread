@@ -192,6 +192,7 @@ button.jux-play span.glyphicon {
     font-size: 1.2em;
     clear: both;
     line-height: 1.4em;
+    text-align: center;
 }
 
 .jux-spine-display .jux-spine-edit,

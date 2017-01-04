@@ -699,7 +699,9 @@ CollectionWidget.prototype.filteredUrl = function() {
             if (this.currentRecords.active_filters.hasOwnProperty(filter) &&
                     this.isValidFilter(filter)) {
                 var val = this.currentRecords.active_filters[filter];
-                url += '&' + filter + '=' + escape(val.toString());
+                if (val) {
+                    url += '&' + filter + '=' + escape(val.toString());
+                }
             }
         }
     }

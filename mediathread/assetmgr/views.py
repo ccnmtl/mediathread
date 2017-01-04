@@ -32,7 +32,7 @@ from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
 from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
-    delete_annotation, update_annotation
+    delete_annotation
 from mediathread.main.course_details import allow_item_download
 from mediathread.main.models import UserSetting
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
@@ -350,7 +350,6 @@ def annotation_create(request, asset_id):
 def annotation_create_global(request, asset_id):
     asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
     global_annotation = asset.global_annotation(request.user, True)
-    update_annotation(request, global_annotation)
 
     response = {
         'asset': {'id': asset_id},
@@ -411,6 +410,9 @@ class AnnotationCopyView(LoggedInCourseMixin, AjaxRequiredMixin,
     def post(self, request, *args, **kwargs):
         annot_id = kwargs.get('annot_id', None)
         note = get_object_or_404(SherdNote, pk=annot_id)
+
+        # add this to the user's collection
+        note.asset.global_annotation(request.user, True)
 
         data = {
             'author': self.request.user, 'asset': note.asset,

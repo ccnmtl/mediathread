@@ -332,6 +332,7 @@ button.jux-play span.glyphicon {
     height: 21px;
     position: relative;
     margin-left: 55px;
+    z-index: 0;
 }
 
 .jux-timeline-hline {

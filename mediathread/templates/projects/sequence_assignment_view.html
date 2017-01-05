@@ -145,6 +145,10 @@
                         secondary element in order for this response
                         to be submitted.
                     </div>
+                    <p>
+                        <strong>General Instructions</strong>
+                        {{assignment.body|safe}}
+                    </p>
                     {% if assignment.custom_instructions_1|length > 0 %}
                         <p>
                         <strong>Selecting Your Primary Video</strong><br />
@@ -157,10 +161,6 @@
                         {{assignment.custom_instructions_2}}
                         </p>
                     {% endif %}
-                        <p>
-                        <strong>General Instructions</strong><br />
-                        {{assignment.body|safe}}
-                        </p>
                 </div>
             </div>
         </div>

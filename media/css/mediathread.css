@@ -4270,6 +4270,11 @@ a.btn.btn-default img.left {
     width: 100%;
 }
 
+.selection-assignment #id_response_view_policy li,
+.sequence-assignment #id_response_view_policy li {
+    list-style-type: none;
+}
+
 .sequence-assignment #id_response_view_policy label,
 .sequence-assignment #id_publish label,
 .selection-assignment #id_response_view_policy label,

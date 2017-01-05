@@ -4693,6 +4693,10 @@ ul.section-tabs>li>a.active {
     display: inline;
 }
 
+#collection-modal .clipstrip-display {
+    display: none;
+}
+
 .spacer {
     margin-top: 10px;
 }

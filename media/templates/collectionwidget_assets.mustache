@@ -83,29 +83,20 @@
                         name="{{local_url}}"/>
                     </span>
                 {{/citable}}
-                <a class="asset-title-link insert"
+                <h4 id="asset-item-{{id}}" class="asset_title">
                     {{#title}}
-                        title="{{title}}"
+                        {{#ellipsis35}}{{title}}{{/ellipsis35}}
                     {{/title}}
                     {{^title}}
-                        title="-Untitled-"
+                        -Untitled-
                     {{/title}}
-                    target="_blank" href="{{local_url}}">
-                    <h4 id="asset-item-{{id}}" class="asset_title">
-                        {{#title}}
-                            {{#ellipsis35}}{{title}}{{/ellipsis35}}
-                        {{/title}}
-                        {{^title}}
-                            -Untitled-
-                        {{/title}}
-                    </h4>
-                </a>
+                </h4>
                 <div class="clearfix"></div>
                 <table class="item-level-info">
                     <tr>
                         <td class="item-thumb">
                             {{#thumb}}
-                                <a href="{{local_url}}"><img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" /></a>
+                                <img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" />
                             {{/thumb}}
                         </td>
                     </tr>
@@ -129,7 +120,7 @@
                                             <span class="metadata-label">Item Tags:</span>
                                             <span class="metadata-value">
                                                 {{#metadata.tags}}
-                                                    <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                    {{name}}&nbsp;
                                                 {{/metadata.tags}}
                                             </span>
                                         </li>
@@ -177,17 +168,14 @@
                                                     title="Add selection to the composition"
                                                     name="{{url}}"/>
                                             {{/citable}}
-                                            <h4><a target="_blank"
-                                                class="materialCitationLink"
-                                                title="Full Selection Details"
-                                                href="{{url}}">
+                                            <h4>
                                                 {{#metadata.title}}
                                                     {{{metadata.title}}}
                                                 {{/metadata.title}}
                                                 {{^metadata.title}}
                                                     -Untitled-
                                                 {{/metadata.title}}
-                                            </a></h4>
+                                            </h4>
                                         </div>
                                         <div class="annotation-thumb-{{id}}"></div>
                                         <div class="metadata-container">
@@ -221,7 +209,7 @@
                                                     <div><span class="metadata-label">Tags:</span>
                                                     <span class="metadata-value">
                                                         {{#tags}}
-                                                            <a class="switcher-choice filterbytag" href="{{name}}" title='Filter collection by "{{name}}"'>{{name}}</a>&nbsp;
+                                                            {{name}}&nbsp;
                                                         {{/tags}}
                                                     </span>
                                                     </div>

@@ -330,7 +330,7 @@ button.jux-play span.glyphicon {
 }
 
 .jux-timeline-ruler {
-    height: 21px;
+    height: 10px;
     position: relative;
     margin-left: 55px;
     z-index: 0;
@@ -338,7 +338,6 @@ button.jux-play span.glyphicon {
 
 .jux-timeline-hline {
     height: 1px;
-    top: 20px;
     position: relative;
     border-bottom: 1px solid #000;
 }
@@ -349,6 +348,7 @@ button.jux-play span.glyphicon {
 }
 
 .jux-timeline-ticklabel {
+    top: 10px;
     display: inline;
     width: 46px;
     text-align: center;
@@ -358,7 +358,6 @@ button.jux-play span.glyphicon {
 
 .jux-timeline-tick {
     display: inline-block;
-    top: 20px;
     width: 2px;
     height: 9px;
     background-color: #000;

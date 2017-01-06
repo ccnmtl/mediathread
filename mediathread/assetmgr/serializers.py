@@ -9,6 +9,11 @@ class SourceSerializer(serializers.ModelSerializer):
         model = Source
         fields = ('width', 'height', 'url', 'label')
 
+    url = SerializerMethodField()
+
+    def get_url(self, source):
+        return source.url_processed(None)
+
 
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:

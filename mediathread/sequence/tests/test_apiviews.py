@@ -1,18 +1,21 @@
 from decimal import Decimal
+from json import loads
+
+from courseaffils.tests.factories import CourseFactory
 from django.core.urlresolvers import reverse
 from rest_framework.test import APITestCase
-from courseaffils.tests.factories import CourseFactory
+
 from mediathread.factories import SherdNoteFactory, UserFactory, ProjectFactory
 from mediathread.projects.models import ProjectSequenceAsset
+from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.sequence.models import (
     SequenceAsset, SequenceTextElement, SequenceMediaElement
 )
-from mediathread.sequence.tests.mixins import LoggedInTestMixin
-from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.sequence.tests.factories import (
     SequenceAssetFactory, SequenceTextElementFactory,
     SequenceMediaElementFactory
 )
+from mediathread.sequence.tests.mixins import LoggedInTestMixin
 
 
 class AssetViewSetTest(LoggedInTestMixin, APITestCase):
@@ -41,8 +44,9 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.data.get('spine'), note.pk)
-        self.assertEqual(r.data.get('spine_asset'), note.asset.pk)
+        the_json = loads(r.content)
+        self.assertEqual(the_json['spine']['id'], note.pk)
+        self.assertEqual(the_json['spine_asset'], note.asset.pk)
 
     def test_retrieve_with_text_elements(self):
         note = SherdNoteFactory()
@@ -54,8 +58,9 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.data.get('spine'), note.pk)
-        textelements = r.data.get('text_elements')
+        the_json = loads(r.content)
+        self.assertEqual(the_json['spine']['id'], note.pk)
+        textelements = the_json['text_elements']
         self.assertEqual(textelements[0]['text'], e1.text)
         self.assertEqual(textelements[1]['text'], e2.text)
         self.assertEqual(textelements[2]['text'], e3.text)
@@ -70,12 +75,15 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.data.get('spine'), note.pk)
-        mediaelements = r.data.get('media_elements')
-        self.assertEqual(mediaelements[0]['media'], e1.media.pk)
+
+        the_json = loads(r.content)
+        self.assertEqual(the_json['spine']['id'], note.pk)
+
+        mediaelements = the_json['media_elements']
+        self.assertEqual(mediaelements[0]['media']['id'], e1.media.pk)
         self.assertEqual(mediaelements[0]['media_asset'], e1.media.asset.pk)
-        self.assertEqual(mediaelements[1]['media'], e2.media.pk)
-        self.assertEqual(mediaelements[2]['media'], e3.media.pk)
+        self.assertEqual(mediaelements[1]['media']['id'], e2.media.pk)
+        self.assertEqual(mediaelements[2]['media']['id'], e3.media.pk)
 
     def test_create(self):
         course = CourseFactory()
@@ -263,7 +271,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             reverse('sequenceasset-list'),
             {
                 'course': course.pk,
-                'spine': '',
+                'spine': None,
                 'project': project.pk,
                 'media_elements': [],
                 'text_elements': [],
@@ -533,7 +541,7 @@ class AssetViewSetUnAuthedTest(APITestCase):
             reverse('sequenceasset-detail', args=(asset.pk,)), format='json'
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.data.get('spine'), note.pk)
+        self.assertEqual(r.data.get('spine')['id'], note.pk)
 
     def test_create(self):
         course = CourseFactory()

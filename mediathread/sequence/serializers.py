@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from mediathread.djangosherd.models import SherdNote
 from mediathread.djangosherd.serializers import SherdNoteSerializer
 from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
@@ -16,9 +15,8 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
         model = SequenceMediaElement
         fields = ('media', 'media_asset', 'start_time', 'end_time')
 
-    media = serializers.PrimaryKeyRelatedField(
-        queryset=SherdNote.objects.all())
-    media_asset = SherdNoteSerializer(read_only=True)
+    media = SherdNoteSerializer()
+    media_asset = serializers.ReadOnlyField(source='media.asset.id')
 
     def to_internal_value(self, data):
         data['start_time'] = round(data['start_time'], 5)
@@ -60,7 +58,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
     project = serializers.HiddenField(default=CurrentProjectDefault())
-    spine = SherdNoteSerializer(read_only=True)
+    spine = SherdNoteSerializer(required=False, allow_null=True)
     spine_asset = serializers.ReadOnlyField(source='spine.asset.id')
     media_elements = SequenceMediaElementSerializer(many=True)
     text_elements = SequenceTextElementSerializer(many=True)

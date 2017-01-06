@@ -129,7 +129,7 @@ class SherdNoteFactory(factory.DjangoModelFactory):
     title = factory.Sequence(lambda n: 'note %d' % n)
     range1 = 0.0
     range2 = 0.0
-    asset = factory.SubFactory(AssetFactory)
+    asset = factory.SubFactory(AssetFactory, primary_source='image')
     author = factory.SubFactory(UserFactory)
 
 

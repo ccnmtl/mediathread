@@ -16,6 +16,10 @@
     opacity: 0;
 }
 
+.jux-playhead-container input[type=range]::-ms-tooltip {
+    display: none;
+}
+
 .jux-playhead-line {
     height: 104px;
     width: 2px;

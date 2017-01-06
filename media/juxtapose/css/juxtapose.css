@@ -288,6 +288,7 @@ button.jux-play span.glyphicon {
 .jux-updated-text {
     display: none;
     margin-top: 4px;
+    color: #666;
 }
 
 .jux-track-element-manager {

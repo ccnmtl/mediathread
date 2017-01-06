@@ -285,6 +285,10 @@ button.jux-play span.glyphicon {
     line-height: 1.3em;
 }
 
+.jux-updated-text {
+    display: none;
+}
+
 .jux-track-element-manager {
     border: 1px solid #ccc;
     padding: 10px;

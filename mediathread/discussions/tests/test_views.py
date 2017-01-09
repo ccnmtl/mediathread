@@ -136,3 +136,34 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         the_json = loads(response.content)
         self.assertEquals(the_json['space_owner'],
                           self.instructor_one.username)
+
+    def test_comment_save(self):
+        self.setup_sample_course()
+        self.create_discussion(self.sample_course, self.instructor_one)
+        discussion = get_course_discussions(self.sample_course)[0]
+
+        data = {
+            u'comment': [u'update'],
+            u'name': [u''],
+            u'parent': [u''],
+            u'title': [u''],
+            u'url': [u''],
+            u'object_pk': [discussion.id],
+            u'content_type': [u'structuredcollaboration.collaboration'],
+        }
+
+        url = reverse('comment-save', args=[discussion.id])
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)  # login required
+
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 405)  # course required
+
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, data, HTTP_ACCEPT='text/html')
+        self.assertEquals(response.status_code, 200)
+
+        discussion.refresh_from_db()
+        self.assertEquals(discussion.comment, 'update')

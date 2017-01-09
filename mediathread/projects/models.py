@@ -364,7 +364,8 @@ class Project(models.Model):
 
         for child in children:
             response = child.content_object
-            if response.can_read(course, viewer, child, viewer_response):
+            if (response and
+                    response.can_read(course, viewer, child, viewer_response)):
                 visible.append(response)
         return visible
 

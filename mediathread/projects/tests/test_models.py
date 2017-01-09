@@ -464,6 +464,15 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                       self.student_two)
         self.assertEquals(r[0], response2)
 
+    def test_responses_for_bad_assignment_state(self):
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy=PUBLISH_INSTRUCTOR_SHARED[0], parent=self.assignment)
+        self.assignment.get_collaboration().delete()
+
+        r = self.assignment.responses(self.sample_course, self.instructor_one)
+        self.assertEquals(len(r), 0)
+
     def test_reset_publish_to_world(self):
         public = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,

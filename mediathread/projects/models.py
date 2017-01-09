@@ -352,7 +352,12 @@ class Project(models.Model):
 
     def responses(self, course, viewer, author=None):
         visible = []
-        children = self.get_collaboration().get_children_for_object(
+        collaboration = self.get_collaboration()
+
+        if not collaboration:
+            return visible
+
+        children = collaboration.get_children_for_object(
             self).prefetch_related('content_object__author')
 
         viewer_response = None

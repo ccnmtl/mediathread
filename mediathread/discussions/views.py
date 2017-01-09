@@ -4,6 +4,7 @@ from random import choice
 from string import letters
 
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -198,6 +199,7 @@ class DiscussionView(LoggedInCourseMixin, View):
 
 
 @allow_http("POST")
+@login_required
 @rendered_with('comments/posted.html')
 def comment_save(request, comment_id, next_url=None):
     "save comment, since comments/post only does add, no edit"

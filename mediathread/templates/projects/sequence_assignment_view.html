@@ -217,23 +217,17 @@
                 <ul class="nav nav-tabs navbar-right" role="tablist">
                     <li role="presentation" class="active editor">
                         <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
-                            {% if not the_response.is_submitted and response_can_edit %}
-                                Edit
-                            {% endif %} Sequence
+                            Sequence
                         </a>
                     </li>
                     <li role="presentation">
                         <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
-                        {% if not the_response.is_submitted and response_can_edit %}
-                            Edit
-                        {% endif %} Reflection</a>
+                        Reflection</a>
                     </li>
                     {% if is_faculty or response_can_edit and the_feedback %}
                         <li role="presentation">
                             <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
-                                {% if is_faculty %}
-                                    {% if not the_feedback %}Add {% else %}Edit {% endif %}
-                                {% endif %}Feedback
+                                Feedback
                             </a>
                         </li>
                     {% endif %}

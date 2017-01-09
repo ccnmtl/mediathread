@@ -187,6 +187,10 @@ button.jux-play span.glyphicon {
     width: 490px;
 }
 
+.jux-spine-display iframe {
+    pointer-events: none;
+}
+
 .jux-spine-display .instructions,
 .jux-media-display .instructions {
     font-size: 1.2em;

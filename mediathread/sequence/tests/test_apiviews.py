@@ -126,8 +126,8 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ]
             }, format='json')
@@ -146,7 +146,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
 
         self.assertEqual(SequenceTextElement.objects.count(), 1)
 
-    def test_create_with_track_elements_with_large_floats(self):
+    def test_create_with_track_elements_with_large_decimals(self):
         course = CourseFactory()
         note = SherdNoteFactory()
         note2 = SherdNoteFactory()
@@ -160,20 +160,20 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': note2.pk,
-                        'start_time': 0.9999999999992222,
-                        'end_time': 10.15955395959359395,
+                        'start_time': Decimal('0.9999999999992222'),
+                        'end_time': Decimal('10.15955395959359395'),
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0.19898591249142984912849218,
-                        'end_time': 10.853598923859285928598958392,
+                        'start_time': Decimal('0.19898591249142984912849218'),
+                        'end_time': Decimal('10.853598923859285928598958392'),
                     },
                     {
                         'text': 'My text 2',
-                        'start_time': 11,
-                        'end_time': 14,
+                        'start_time': Decimal('11'),
+                        'end_time': Decimal('148744.835739573575'),
                     },
                 ]
             }, format='json')
@@ -198,7 +198,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(e0.end_time, Decimal('10.85360'))
         self.assertEqual(e1.text, 'My text 2')
         self.assertEqual(e1.start_time, Decimal('11'))
-        self.assertEqual(e1.end_time, Decimal('14'))
+        self.assertEqual(e1.end_time, Decimal('148744.83574'))
 
         self.assertEqual(SequenceMediaElement.objects.count(), 1)
         e0 = SequenceMediaElement.objects.first()
@@ -220,20 +220,20 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': note2.pk,
-                        'start_time': 0.9999,
+                        'start_time': Decimal('0.9999'),
                         'end_time': None,
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0.198985,
+                        'start_time': Decimal('0.198985'),
                         'end_time': None,
                     },
                     {
                         'text': 'My text 2',
-                        'start_time': 11,
-                        'end_time': 14,
+                        'start_time': Decimal('11'),
+                        'end_time': Decimal('14'),
                     },
                 ]
             }, format='json')
@@ -258,19 +258,19 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                     {
                         'media': note2.pk,
                         'start_time': None,
-                        'end_time': 0.9999,
+                        'end_time': Decimal('0.9999'),
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
                         'start_time': None,
-                        'end_time': 0.198985,
+                        'end_time': Decimal('0.198985'),
                     },
                     {
                         'text': 'My text 2',
-                        'start_time': 11,
-                        'end_time': 14,
+                        'start_time': Decimal('11'),
+                        'end_time': Decimal('14'),
                     },
                 ]
             }, format='json')
@@ -295,8 +295,8 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ]
             }, format='json')
@@ -326,8 +326,8 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ]
             }, format='json')
@@ -376,15 +376,15 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': note.pk,
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ]
             }, format='json')
@@ -432,8 +432,8 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ],
             }, format='json')
@@ -462,15 +462,15 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': element_note.pk,
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ]
             }, format='json')
@@ -493,20 +493,20 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': element_note.pk,
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     }
                 ],
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     },
                     {
                         'text': 'My text',
-                        'start_time': 10,
-                        'end_time': 12,
+                        'start_time': Decimal('10'),
+                        'end_time': Decimal('12'),
                     }
                 ]
             }, format='json')
@@ -534,28 +534,28 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'text_elements': [
                     {
                         'text': 'My text',
-                        'start_time': 0,
-                        'end_time': 0.3,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('0.3'),
                     },
                     {
                         'text': 'My text',
-                        'start_time': 0.35,
-                        'end_time': 0.5,
+                        'start_time': Decimal('0.35'),
+                        'end_time': Decimal('0.5'),
                     },
                     {
                         'text': 'My text',
-                        'start_time': 0.55,
-                        'end_time': 0.9,
+                        'start_time': Decimal('0.55'),
+                        'end_time': Decimal('0.9'),
                     },
                     {
                         'text': 'My text',
-                        'start_time': 1,
-                        'end_time': 11,
+                        'start_time': Decimal('1'),
+                        'end_time': Decimal('11'),
                     },
                     {
                         'text': 'Overlapping!',
-                        'start_time': 2,
-                        'end_time': 12,
+                        'start_time': Decimal('2'),
+                        'end_time': Decimal('12'),
                     }
                 ]
             }, format='json')
@@ -574,13 +574,13 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'media_elements': [
                     {
                         'media': media_note1.pk,
-                        'start_time': 0,
-                        'end_time': 10,
+                        'start_time': Decimal('0'),
+                        'end_time': Decimal('10'),
                     },
                     {
                         'media': media_note2.pk,
-                        'start_time': 1,
-                        'end_time': 11,
+                        'start_time': Decimal('1'),
+                        'end_time': Decimal('11'),
                     }
                 ],
                 'text_elements': [

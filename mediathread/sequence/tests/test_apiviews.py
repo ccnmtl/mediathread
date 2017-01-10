@@ -206,6 +206,80 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(e0.start_time, Decimal('1.00000'))
         self.assertEqual(e0.end_time, Decimal('10.15955'))
 
+    def test_create_with_track_elements_with_no_end_time(self):
+        course = CourseFactory()
+        note = SherdNoteFactory()
+        note2 = SherdNoteFactory()
+        project = ProjectFactory()
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'media_elements': [
+                    {
+                        'media': note2.pk,
+                        'start_time': 0.9999,
+                        'end_time': None,
+                    }
+                ],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': 0.198985,
+                        'end_time': None,
+                    },
+                    {
+                        'text': 'My text 2',
+                        'start_time': 11,
+                        'end_time': 14,
+                    },
+                ]
+            }, format='json')
+
+        self.assertEqual(
+            r.status_code, 400,
+            'Attempting to create track elements with no end time should '
+            'be invalid.')
+
+    def test_create_with_track_elements_with_no_start_time(self):
+        course = CourseFactory()
+        note = SherdNoteFactory()
+        note2 = SherdNoteFactory()
+        project = ProjectFactory()
+        r = self.client.post(
+            reverse('sequenceasset-list'),
+            {
+                'course': course.pk,
+                'spine': note.pk,
+                'project': project.pk,
+                'media_elements': [
+                    {
+                        'media': note2.pk,
+                        'start_time': None,
+                        'end_time': 0.9999,
+                    }
+                ],
+                'text_elements': [
+                    {
+                        'text': 'My text',
+                        'start_time': None,
+                        'end_time': 0.198985,
+                    },
+                    {
+                        'text': 'My text 2',
+                        'start_time': 11,
+                        'end_time': 14,
+                    },
+                ]
+            }, format='json')
+
+        self.assertEqual(
+            r.status_code, 400,
+            'Attempting to create track elements with no start time should '
+            'be invalid.')
+
     def test_create_duplicate(self):
         course = CourseFactory()
         note = SherdNoteFactory()

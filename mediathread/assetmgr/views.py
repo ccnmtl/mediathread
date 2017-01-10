@@ -218,7 +218,9 @@ class AssetCreateView(View):
             req_dict, asset__course=request.course)
 
         if success is False:
-            raise AssertionError("no arguments were supplied to make an asset")
+            return HttpResponseBadRequest(
+                'The selected asset didn\'t have the correct data to be ' +
+                'imported into Mediathread.')
 
         if asset is None:
             asset = Asset(title=title[:1020],  # max title length

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from rest_framework import serializers
 
 from mediathread.djangosherd.serializers import SherdNoteSerializer
@@ -19,8 +20,18 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
     media_asset = serializers.ReadOnlyField(source='media.asset.id')
 
     def to_internal_value(self, data):
-        data['start_time'] = round(data['start_time'], 5)
-        data['end_time'] = round(data['end_time'], 5)
+        try:
+            data['start_time'] = Decimal(data['start_time']).quantize(
+                Decimal('.00001'))
+        except TypeError:
+            data['start_time'] = None
+
+        try:
+            data['end_time'] = Decimal(data['end_time']).quantize(
+                Decimal('.00001'))
+        except TypeError:
+            data['end_time'] = None
+
         return super(SequenceMediaElementSerializer, self).to_internal_value(
             data)
 
@@ -31,8 +42,18 @@ class SequenceTextElementSerializer(serializers.ModelSerializer):
         fields = ('text', 'start_time', 'end_time')
 
     def to_internal_value(self, data):
-        data['start_time'] = round(data['start_time'], 5)
-        data['end_time'] = round(data['end_time'], 5)
+        try:
+            data['start_time'] = Decimal(data['start_time']).quantize(
+                Decimal('.00001'))
+        except TypeError:
+            data['start_time'] = None
+
+        try:
+            data['end_time'] = Decimal(data['end_time']).quantize(
+                Decimal('.00001'))
+        except TypeError:
+            data['end_time'] = None
+
         return super(SequenceTextElementSerializer, self).to_internal_value(
             data)
 

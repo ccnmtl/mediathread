@@ -35,6 +35,7 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation
 from mediathread.main.course_details import allow_item_download
 from mediathread.main.models import UserSetting
+from mediathread.main.util import log_sentry_error
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
     LoggedInSuperuserMixin
@@ -218,6 +219,8 @@ class AssetCreateView(View):
             req_dict, asset__course=request.course)
 
         if success is False:
+            log_sentry_error(
+                'Asset creation failed with request data: ' + str(req_dict))
             return HttpResponseBadRequest(
                 'The selected asset didn\'t have the correct data to be ' +
                 'imported into Mediathread.')

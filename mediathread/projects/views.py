@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 
 from courseaffils.lib import get_public_name
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -22,6 +23,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
+from mediathread.main.course_details import allow_public_compositions
 from mediathread.main.models import UserSetting
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
@@ -32,12 +34,10 @@ from mediathread.projects.forms import ProjectForm
 from mediathread.projects.generic.views import AssignmentView, \
     AssignmentEditView
 from mediathread.projects.models import (
-    Project, ProjectNote, PUBLISH_DRAFT
-)
+    Project, ProjectNote, PUBLISH_DRAFT, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from structuredcollaboration.models import Collaboration
-from mediathread.main.course_details import allow_public_compositions
 
 
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
@@ -55,6 +55,14 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
             # convert mm/dd/yyyy into a datetime
             formatted = datetime.strptime(due_date, '%m/%d/%Y')
         return formatted
+
+    def get_confirmation_message(self, policy):
+        if policy == PUBLISH_DRAFT[0]:
+            return ('<strong>Complete</strong>! Your assignment has '
+                    'been saved as <strong>Draft</strong>.')
+        else:
+            return ('<strong>Complete</strong>! Your assignment has been '
+                    '<strong>published to the course</strong>.')
 
     def post(self, request):
         project_type = request.POST.get('project_type', 'composition')
@@ -82,6 +90,10 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
 
         parent_id = request.POST.get('parent', None)
         project.set_parent(parent_id)
+
+        if project_type == PROJECT_TYPE_SEQUENCE_ASSIGNMENT:
+            messages.add_message(request, messages.SUCCESS,
+                                 self.get_confirmation_message(policy))
 
         if not request.is_ajax():
             return HttpResponseRedirect(project.get_absolute_url())

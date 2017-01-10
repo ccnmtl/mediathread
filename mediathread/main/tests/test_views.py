@@ -1277,7 +1277,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
 
         self.assertContains(
             response,
-            'You&#39;ve activated your course.',
+            'You\'ve activated your course.',
             count=1)
         self.assertContains(response, 'English for Cats')
         self.assertContains(response, 'Future Courses')

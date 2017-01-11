@@ -88,7 +88,7 @@ pexpect==4.2.1
 ptyprocess==0.5.1
 pickleshare==0.7.4
 simplegeneric==0.8.1
-pathlib2==2.1.0
+pathlib2==2.2.0
 wcwidth==0.1.7
 prompt_toolkit==1.0.9
 pygments==2.1.3

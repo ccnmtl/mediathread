@@ -55,6 +55,22 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(self.client.get(item_url).status_code, 404)
         self.assertEquals(self.client.get(note_url).status_code, 404)
 
+    def test_post_noasset(self):
+        self.client.login(username=self.student_one.username, password='test')
+        r = self.client.post(
+            reverse('asset-save'), {
+                'asset-source': 'bookmarklet',
+                'title': 'Untitled',
+                'url': 'http://stagely.artstor.org/library/#3|search|6'
+                '|All20Collections3A20ruben|Filtered20Search|||type3D3'
+                '626kw3Druben26geoIds3D26clsIds3D26collTypes3D26id3Dal'
+                'l26bDate3D26eDate3D26dExact3D3126prGeoId3D26origKW3D'
+            }, format='json')
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(
+            r.content, 'The selected asset didn\'t have the '
+            'correct data to be imported into Mediathread.')
+
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
                 'asset-source': 'bookmarklet',
@@ -171,19 +187,6 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         ExternalCollection.objects.get(course=self.sample_course,
                                        title=suggested.title)
-
-    def test_asset_create_noasset(self):
-        data = {'title': 'Bad Asset',
-                'foobar': 'https://www.youtube.com/abcdefghi'}
-
-        request = RequestFactory().post('/save/', data)
-        request.user = self.instructor_one
-        request.course = self.sample_course
-
-        with self.assertRaises(AssertionError):
-            view = AssetCreateView()
-            view.request = request
-            view.post(request)
 
     def test_asset_create_via_bookmarklet(self):
         data = {'title': 'YouTube Asset',

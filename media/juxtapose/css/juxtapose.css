@@ -171,12 +171,12 @@ button.jux-play span.glyphicon {
 
 .jux-track>.react-grid-layout {
     position: relative;
-    bottom: 51px;
+    bottom: 52px;
     z-index: 2;
 }
 @-moz-document url-prefix() {
     .jux-track>.react-grid-layout {
-        bottom: 49px;
+        bottom: 50px;
     }
 }
 

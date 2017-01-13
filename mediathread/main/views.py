@@ -274,7 +274,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         assets = Asset.objects.by_course(course)
         assets = assets.filter(sherdnote_set__author__id__in=faculty)
         notes = SherdNote.objects.get_related_notes(
-            assets, None, faculty, True).exclude_primary_type('flv_pseudo')
+            assets, None, faculty, True).exclude_primary_types(['flv_pseudo'])
 
         ares = AssetResource(include_annotations=False)
         asset_ctx = ares.render_list(request, None, None, assets, notes)

@@ -107,13 +107,9 @@ class RestrictedMaterialsMixin(object):
         visible_notes = visible_notes.filter_by_media_type(
             request.GET.get('media_type'))
 
-        if request.GET.get('primary_type'):
-            visible_notes = visible_notes.exclude_primary_type(
-                request.GET.get('primary_type'))
-        elif request.GET.getlist('primary_type[]'):
+        if request.GET.getlist('primary_type[]'):
             filtered_types = request.GET.getlist('primary_type[]')
-            for t in filtered_types:
-                visible_notes = visible_notes.exclude_primary_type(t)
+            visible_notes = visible_notes.exclude_primary_types(filtered_types)
 
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:

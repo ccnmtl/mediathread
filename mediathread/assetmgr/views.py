@@ -1028,6 +1028,10 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             if (key in self.valid_filters or key.startswith('vocabulary-')):
                 ctx['active_filters'][key] = val
 
+        filtered_types = request.GET.getlist('primary_type[]')
+        if filtered_types:
+            ctx['active_filters']['primary_types'] = filtered_types
+
         ctx['editable'] = self.viewing_own_records
         ctx['citable'] = citable
 

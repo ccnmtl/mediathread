@@ -489,10 +489,12 @@ CollectionWidget.prototype.updateSwitcher = function() {
             for (var key in self.currentRecords.active_filters) {
                 if (self.currentRecords.active_filters.hasOwnProperty(key) &&
                     self.currentRecords.active_filters[key].length > 0) {
-                    var val = self.currentRecords.active_filters[key]
-                        .split(',');
-                    self.currentRecords.active_filters[key] = val;
-                    values = values.concat(val);
+                    if (self.currentRecords.active_filters[key].split) {
+                        var val = self.currentRecords.active_filters[key]
+                            .split(',');
+                        self.currentRecords.active_filters[key] = val;
+                        values = values.concat(val);
+                    }
                 }
             }
             jQuery(vocabulary).select2('val', values);
@@ -705,7 +707,11 @@ CollectionWidget.prototype.filteredUrl = function() {
             }
         }
     }
-    url += '&primary_type=image_fpxid'; // exclude ARTStor for the moment
+    var filters = jQuery.param({
+        // Excludes artstor and vimeo
+        primary_type: ['image_fpxid', 'vimeo']
+    });
+    url += '&' + filters;
     return url;
 };
 

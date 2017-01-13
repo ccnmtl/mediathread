@@ -399,6 +399,10 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 403)
 
     def test_migrate_materials_sample_course(self):
+        flv = AssetFactory.create(course=self.sample_course,
+                                  primary_source='flv_pseudo')
+        SherdNoteFactory(asset=flv, author=self.instructor_one)
+
         self.project1 = ProjectFactory.create(course=self.sample_course,
                                               author=self.instructor_one,
                                               policy='PrivateEditorsAreOwners')

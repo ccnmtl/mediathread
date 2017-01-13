@@ -65,9 +65,14 @@ button.jux-play span.glyphicon {
     margin-left: 3px;
 }
 
-.vid-container {
+.jux-vid-container {
     display: flex;
     border: 1px solid #ddd;
+}
+
+.jux-media-separator {
+    width: 10px;
+    background-color: black;
 }
 
 .jux-time {
@@ -182,9 +187,9 @@ button.jux-play span.glyphicon {
 
 .jux-spine-display {
     background-color: #bbb;
-    border-right: 10px solid black;
     height: 360px;
-    width: 490px;
+    width: 480px;
+    margin: 0 auto;
 }
 
 .jux-spine-display iframe {

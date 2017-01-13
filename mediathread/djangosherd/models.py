@@ -123,11 +123,11 @@ class SherdNoteQuerySet(models.query.QuerySet):
         note_ids = [note.id for note in notes]
         return self.filter(id__in=note_ids)
 
-    def exclude_primary_type(self, primary_type):
-        if primary_type == '' or primary_type is None:
+    def exclude_primary_types(self, primary_type):
+        if primary_type == [] or primary_type == '' or primary_type is None:
             return self
 
-        return self.exclude(asset__source__label=primary_type)
+        return self.exclude(asset__source__label__in=primary_type)
 
     def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,
@@ -185,7 +185,7 @@ class SherdNoteManager(models.Manager):
         return self.get_queryset().filter_by_vocabulary(vocabulary)
 
     def exclude_primary_type(self, primary_type):
-        return self.get_queryset().exclude_primary_type(primary_type)
+        return self.get_queryset().exclude_primary_types([primary_type])
 
     def get_related_notes(self, assets, record_owner, visible_authors=None,
                           all_items_are_visible=False,

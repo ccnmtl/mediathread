@@ -398,7 +398,7 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         self.assertTrue(self.asset in assets)
         self.assertTrue(asset2 in assets)
 
-    def test_exclude_primary_type(self):
+    def test_exclude_primary_types(self):
         asset2 = AssetFactory(course=self.sample_course,
                               author=self.student_one,
                               primary_source='youtube',)
@@ -410,12 +410,12 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
         qs = SherdNote.objects.filter(author=self.student_one)
         self.assertEquals(qs.count(), 3)
 
-        notes = qs.exclude_primary_type('youtube')
+        notes = qs.exclude_primary_types(['youtube'])
         self.assertEquals(notes.count(), 2)
         self.assertTrue(self.student_one_ga in notes)
         self.assertTrue(self.student_one_note in notes)
 
-        notes = qs.exclude_primary_type('image')
+        notes = qs.exclude_primary_types(['image'])
         self.assertEquals(notes.count(), 1)
         self.assertEquals(notes[0], youtube_note)
 

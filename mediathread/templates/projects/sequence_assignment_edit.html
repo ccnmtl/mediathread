@@ -39,7 +39,7 @@
 {% with item=form.instance.assignmentitem_set.first.asset %}
 <div class="sequence-assignment">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-xs-9">
             <div class="centered-div column-container">
                 <form name="sequence-assignment-edit"
                     {% if form.instance %}
@@ -61,18 +61,37 @@
                     <h2>Edit Sequence Assignment</h2>
 
                     <div data-page="1" data-page-content="instructions" class="page">
+                        <div class="text-center">
+                        <a href="#" class="btn btn-primary next right">Get Started</a>
+                        </div>
+
                         <h3>Step 1: Introduction</h3><br />
 
-                        <p>A sequence assignment allows students to line up a "primary"
-                        selection of video or audio against multiple "secondary" selections
-                        and/or annotations. The secondary selections will appear at designated
-                        points when the primary selection plays.</p>
+                        <p>A sequence assignment allows students to line up a 
+                        "primary" selection of video or audio against multiple 
+                        "secondary" selections and/or annotations. The 
+                        secondary selections will appear at designated points 
+                        when the primary selection plays.</p>
+                        
+                        <p>This type of assignment is good for assessing how 
+                        students juxtapose a primary media object against other 
+                        media selections (ie, visual annotations) or a series 
+                        of thoughts (ie, textual annotations).</p>
+                        
+                        <p>The assignment has two workspaces as described 
+                        below.</p>
+                        
+                        <h4>Sequence workspace:</h4>
 
-                        <p>This assignment is good for assessing how students juxtapose a primary
-                        media object against other media selections (ie, visual annotations) or a
-                        series of thoughts (ie, textual annotations). Students may be asked to display
-                        correlations or contrasts in context, or to prepare a set of annotations that
-                        appear as a media selection plays.</p>
+                        <p><img src="{{STATIC_URL}}img/screenshot-sequence.jpg" style="width:500px; border: 1px solid #ccc;" /></p>
+
+                        <p>In the sequence workspace, students may be asked to display correlations or contrasts in context, or to prepare a set of annotations that appear as a media selection plays.</p>
+
+                        <h4>Reflection workspace:</h4>
+
+                        <p><img src="{{STATIC_URL}}img/screenshot-reflection.jpg" style="width:500px; border: 1px solid #ccc;" /></p>
+
+                        <p>Instructors have the option of asking students for an overall reflection on a complete sequence.</p>
 
                         <p>Visibility of student responses can be set at one of the following levels:</p>
                         <ul>
@@ -80,10 +99,7 @@
                         <li>Students can see other responses only after submitting their own</li>
                         <li>Students can see other responses at any time</li>
                         </ul>
-
-                        <div class="text-center">
-                        <a href="#" class="btn btn-primary next right">Get Started</a>
-                        </div>
+                        <br />
                     </div>
                     <div data-page="2" data-page-content="title" class="hidden page">
                         <h3>Step 2. Write title &amp; instructions</h3><br />
@@ -94,16 +110,26 @@
                             <div class="help-inline">Title is a required field</div>
                         </div>
                         <div class="form-group">
-                            <label>Assignment Instructions</label>
+                            <label>Instructions for completing assignment</label>
                             <p>
-                            Add instructions to guide students as they select a primary 
-                            media object and decide how to line up a series of visual or 
-                            textual annotations against it, which will appear as the primary 
-                            media object plays. Instructions may include:</p>
-                            <ul>
+                            Add instructions to guide students as they select a 
+                            primary media object and decide how to line up a 
+                            series of visual or textual annotations against it, 
+                            which will appear as the primary media object 
+                            plays.
+                            </p>
+                            
+                            <p>Instructions may include:</p>
+                            
+                           <span><b>Sequence workspace:</b></span>
+                           <ul>
                             <li>Criteria for selecting the primary media object</li>
                             <li>Criteria for type, timing, or amount of secondary media selections, aka visual annotations</li>
                             <li>Criteria for type, timing, or amount of student-authored notes, aka textual annotations</li>
+                            </ul>
+                           <span><b>Reflection workspace (optional):</b></span>
+                           <ul>
+                            <li>Criteria for overall characterization or justification of sequence</li>
                             </ul>
                             <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                 {{form.instance.body}}
@@ -120,15 +146,32 @@
                     <div data-page="3" data-page-content="custom-instructions" class="hidden page">
                         <h3>Step 3. Write custom instructions</h3><br />
                         <div class="form-group">
-                            <label>Primary Video Instructions</label>
-                            <p>Add brief, targeted instructions to guide the primary video choice. (140 character limit)</p>
-                            <textarea name="custom_instructions_1" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
+                            <label>Additional criteria for selecting primary media object</label>
+                            <p>Add brief, targeted instructions to provide guidance on how to choose a primary video or audio. (140 character limit)</p>
+                            <div class="row">
+                                <div class="col-xs-6" style="max-width: 330px;">
+                                <img src="{{STATIC_URL}}img/screenshot-custom1.jpg" style="width:300px; border: 1px solid #ccc;" />
+                                </div>
+                                <div class="col-xs-6">
+                                <textarea name="custom_instructions_1" class="form-control mceEditor" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                </div>
+                            </div>
                         </div>
-                        <br />
+
+                        <p>&nbsp;</p>
+
                         <div class="form-group">
-                            <label>Secondary Media Instructions</label>
-                            <p>Add brief, targeted instructions to guide secondary media choices. (140 character limit)</p>
-                            <textarea name="custom_instructions_2" class="form-control mceEditor" maxlength="140">{{form.instance.custom_instructions_2}}</textarea>
+                            <label>Additional criteria for selecting secondary media objects</label>
+                            <p>Add brief, targeted instructions to provide guidance on how to choose secondary media objects. (140 character limit)</p>
+                            <div class="row">
+                                <div class="col-xs-6" style="max-width: 330px;">
+                                <img src="{{STATIC_URL}}img/screenshot-custom2.jpg" style="width:300px; border: 1px solid #ccc;" />
+                                </div>
+                                <div class="col-xs-6">
+                                <textarea name="custom_instructions_2" class="form-control mceEditor" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                </div>
+                            </div>
+                            
                         </div>
                         <nav>
                             <ul class="pager">

@@ -165,9 +165,10 @@ urlpatterns = [
     url(r'^bookmarklet_migration/$', BookmarkletMigrationView.as_view(), {},
         name='bookmarklet_migration'),
 
-    url(r'^crossdomain.xml$', django.views.static.serve,
-        {'document_root': os.path.abspath(os.path.dirname(__file__)),
-         'path': 'crossdomain.xml'}),
+    url(r'^crossdomain.xml$', django.views.static.serve, {
+        'document_root': os.path.join(os.path.dirname(__file__), '../media/'),
+        'path': 'crossdomain.xml'
+    }),
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),

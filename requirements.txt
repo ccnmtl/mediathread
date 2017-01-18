@@ -64,7 +64,7 @@ django-markwhat==1.5.1
 ipaddress==1.0.18
 Faker==0.7.7
 factory_boy==2.8.1
-django-impersonate==1.0.1
+django-impersonate==1.1
 django-registration-redux==1.4
 django-waffle==0.11.1
 django-cors-headers==2.0.0

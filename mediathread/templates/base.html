@@ -237,11 +237,10 @@
                 {% if course %}
                     this.current_course = {{ course.pk }};
                 {% endif %}
-                this.flags = [
-                    {% flag "collection-widget" %}
-                        'collection-widget'
-                    {% endflag %}
-                ];
+                this.flags = {
+                    enableVimeo:
+                    {% flag "enable_vimeo" %}true{% else %}false{% endflag %}
+                }
             {% endif %}
             {% if the_response %}
                 this.current_project = {{the_response.pk }};

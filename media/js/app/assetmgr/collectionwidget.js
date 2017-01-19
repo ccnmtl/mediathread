@@ -707,9 +707,13 @@ CollectionWidget.prototype.filteredUrl = function() {
             }
         }
     }
+
+    var excludeTypes = ['image_fpxid'];
+    if (!MediaThread.flags.enableVimeo) {
+        excludeTypes.push('vimeo');
+    }
     var filters = jQuery.param({
-        // Excludes artstor and vimeo
-        primary_type: ['image_fpxid', 'vimeo']
+        primary_type: excludeTypes
     });
     url += '&' + filters;
     return url;

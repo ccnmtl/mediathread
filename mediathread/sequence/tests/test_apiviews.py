@@ -428,6 +428,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'course': sa.course.pk,
                 'project': psa.project.pk,
                 'spine': note.pk,
+                'spine_volume': 100,
                 'media_elements': [],
                 'text_elements': [
                     {
@@ -444,6 +445,7 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, someone_else)
         self.assertEqual(sa.spine, None)
+        self.assertEqual(sa.spine_volume, 80)
         self.assertEqual(SequenceAsset.objects.count(), 1)
         self.assertEqual(ProjectSequenceAsset.objects.count(), 1)
         self.assertEqual(SequenceTextElement.objects.count(), 0)
@@ -459,11 +461,13 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
                 'course': sa.course.pk,
                 'project': psa.project.pk,
                 'spine': note.pk,
+                'spine_volume': 0,
                 'media_elements': [
                     {
                         'media': element_note.pk,
                         'start_time': Decimal('0'),
                         'end_time': Decimal('10'),
+                        'volume': 0,
                     }
                 ],
                 'text_elements': [
@@ -481,8 +485,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
+        self.assertEqual(sa.spine_volume, 0)
 
         self.assertEqual(SequenceMediaElement.objects.count(), 1)
+        element = SequenceMediaElement.objects.first()
+        self.assertEqual(element.volume, 0)
         self.assertEqual(SequenceTextElement.objects.count(), 1)
 
         r = self.client.put(
@@ -490,11 +497,13 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
             {
                 'course': sa.course.pk,
                 'spine': note.pk,
+                'spine_volume': 65,
                 'media_elements': [
                     {
                         'media': element_note.pk,
                         'start_time': Decimal('0'),
                         'end_time': Decimal('10'),
+                        'volume': 30,
                     }
                 ],
                 'text_elements': [
@@ -517,8 +526,11 @@ class AssetViewSetTest(LoggedInTestMixin, APITestCase):
         self.assertEqual(sa.course, sa.course)
         self.assertEqual(sa.author, self.u)
         self.assertEqual(sa.spine, note)
+        self.assertEqual(sa.spine_volume, 65)
 
         self.assertEqual(SequenceMediaElement.objects.count(), 1)
+        element = SequenceMediaElement.objects.first()
+        self.assertEqual(element.volume, 30)
         self.assertEqual(SequenceTextElement.objects.count(), 2)
 
     def test_update_with_overlapping_elements(self):

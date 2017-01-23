@@ -14,7 +14,7 @@ from mediathread.sequence.validators import (
 class SequenceMediaElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceMediaElement
-        fields = ('media', 'media_asset', 'start_time', 'end_time')
+        fields = ('media', 'media_asset', 'start_time', 'end_time', 'volume')
 
     media = SherdNoteSerializer()
     media_asset = serializers.ReadOnlyField(source='media.asset.id')
@@ -73,8 +73,9 @@ class CurrentProjectDefault(object):
 class SequenceAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = SequenceAsset
-        fields = ('id', 'spine', 'spine_asset', 'author', 'course',
-                  'project', 'media_elements', 'text_elements',)
+        fields = ('id', 'spine', 'spine_asset', 'spine_volume',
+                  'author', 'course', 'project', 'media_elements',
+                  'text_elements',)
 
     author = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
@@ -112,7 +113,8 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
         instance = SequenceAsset.objects.create(
             author=validated_data.get('author'),
             course=validated_data.get('course'),
-            spine=validated_data.get('spine'))
+            spine=validated_data.get('spine'),
+            spine_volume=validated_data.get('spine_volume', 80))
         instance.full_clean()
 
         instance.update_track_elements(
@@ -126,6 +128,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.spine = validated_data.get('spine')
+        instance.spine_volume = validated_data.get('spine_volume', 80)
         instance.save()
 
         instance.update_track_elements(

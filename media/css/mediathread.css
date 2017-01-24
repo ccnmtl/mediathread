@@ -312,7 +312,8 @@ ul#projects li {
 }
 
 #create-project-menu a {
-    margin: 0 0 10px 6px;
+    margin-bottom: 8px;
+    margin-left: 6px;
     display: block;
 }
 
@@ -321,14 +322,17 @@ ul#projects li {
     margin-bottom: 5px;
 }
 
-#create-project-menu input {
+form.create-form:not(:last-child) {
+    margin-bottom: 8px;
+}
+#create-project-menu input[type="submit"] {
     font: 1em 'helvetica neue', helvetica, arial, sans-serif;
-	font-weight: bold;
-	border: none;
-	background-color: transparent;
-	cursor: pointer;
-	color: #1b75bc;
-	margin: 0 0 5px 0;
+    font-weight: bold;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #1b75bc;
+    line-height: 15.75px;
 }
 
 .linkRespond {

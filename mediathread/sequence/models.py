@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from courseaffils.models import Course
@@ -17,6 +18,10 @@ class SequenceAsset(models.Model):
     # for those SequenceAssets.
     course = models.ForeignKey(Course)
     spine = models.ForeignKey(SherdNote, blank=True, null=True)
+    # Default is 80 instead of 100 because that's react-player's default
+    # volume.
+    spine_volume = models.PositiveSmallIntegerField(
+        default=80, validators=[MaxValueValidator(100)])
 
     def update_track_elements(self, media_elements, text_elements):
         """Updates the SequenceAsset's track elements.
@@ -44,10 +49,10 @@ class SequenceMediaElement(models.Model):
         SequenceAsset,
         related_name='media_elements',
         on_delete=models.CASCADE)
-    start_time = models.DecimalField(
-        max_digits=12, decimal_places=5)
-    end_time = models.DecimalField(
-        max_digits=12, decimal_places=5)
+    volume = models.PositiveSmallIntegerField(
+        default=80, validators=[MaxValueValidator(100)])
+    start_time = models.DecimalField(max_digits=12, decimal_places=5)
+    end_time = models.DecimalField(max_digits=12, decimal_places=5)
     media = models.ForeignKey(SherdNote)
 
 
@@ -58,8 +63,6 @@ class SequenceTextElement(models.Model):
         SequenceAsset,
         related_name='text_elements',
         on_delete=models.CASCADE)
-    start_time = models.DecimalField(
-        max_digits=12, decimal_places=5)
-    end_time = models.DecimalField(
-        max_digits=12, decimal_places=5)
+    start_time = models.DecimalField(max_digits=12, decimal_places=5)
+    end_time = models.DecimalField(max_digits=12, decimal_places=5)
     text = models.TextField()

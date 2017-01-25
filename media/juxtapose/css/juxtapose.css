@@ -75,12 +75,25 @@ button.jux-play span.glyphicon {
     background-color: black;
 }
 
-.jux-time {
+.jux-time-display {
     background-color: #bbb;
     line-height: 30px;
     width: 100%;
     padding: 0 10px;
     font-size: 1.3em;
+    display: flex;
+}
+
+.jux-volume-control {
+    margin-left: 10px;
+    display: flex;
+}
+.jux-volume-control label {
+    white-space: nowrap;
+    margin-bottom: 0;
+}
+.jux-volume-control input {
+    margin-left: 5px;
 }
 
 .jux-track-container .track-icon {

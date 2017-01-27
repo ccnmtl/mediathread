@@ -81,19 +81,6 @@ button.jux-play span.glyphicon {
     width: 100%;
     padding: 0 10px;
     font-size: 1.3em;
-    display: flex;
-}
-
-.jux-volume-control {
-    margin-left: 10px;
-    display: flex;
-}
-.jux-volume-control label {
-    white-space: nowrap;
-    margin-bottom: 0;
-}
-.jux-volume-control input {
-    margin-left: 5px;
 }
 
 .jux-track-container .track-icon {
@@ -205,6 +192,38 @@ button.jux-play span.glyphicon {
     margin: 0 auto;
 }
 
+.jux-spine-controls {
+    background-color: black;
+    position: relative;
+    bottom: 34px;
+    color: white;
+}
+
+.jux-spine-controls .jux-spine-edit,
+.jux-spine-controls .jux-spine-revise,
+.jux-spine-controls .jux-spine-vol-display,
+.jux-spine-controls .jux-spine-vol-input {
+    display: inline-block;
+    position: relative;
+}
+
+.jux-spine-display .jux-spine-controls {
+    display: none;
+}
+.jux-spine-display:hover .jux-spine-controls {
+    display: block;
+}
+
+.jux-spine-controls .jux-spine-vol-display {
+    top: 6px;
+    font-size: 24px;
+}
+.jux-spine-controls .jux-spine-vol-input {
+    top: 6px;
+    margin-left: 5px;
+    width: 100px;
+}
+
 .jux-spine-display iframe {
     pointer-events: none;
 }
@@ -219,17 +238,8 @@ button.jux-play span.glyphicon {
 
 .jux-spine-display .jux-spine-edit,
 .jux-spine-display .jux-spine-revise {
-    display: none;
     width: 40px;
-    position: relative;
-    bottom: 34px;
     margin-right: 5px;
-}
-
-.jux-spine-revise:hover,
-.jux-spine-display:hover .jux-spine-revise,
-.jux-spine-display:hover .jux-spine-edit {
-    display: inline;
 }
 
 .jux-media-display .help-text {

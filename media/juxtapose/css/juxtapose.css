@@ -193,7 +193,7 @@ button.jux-play span.glyphicon {
 }
 
 .jux-spine-controls {
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.5);
     position: relative;
     bottom: 34px;
     color: white;
@@ -208,15 +208,31 @@ button.jux-play span.glyphicon {
 }
 
 .jux-spine-display .jux-spine-controls {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.2s, opacity 0.2s linear;
 }
 .jux-spine-display:hover .jux-spine-controls {
-    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+.jux-spine-display .jux-spine-controls button {
+    color: white;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 2px;
+}
+
+.jux-spine-display .jux-spine-controls button:focus {
+    color: inherit;
+    background-color: inherit;
 }
 
 .jux-spine-controls .jux-spine-vol-display {
     top: 6px;
     font-size: 24px;
+    margin-left: 5px;
 }
 .jux-spine-controls .jux-spine-vol-input {
     top: 6px;
@@ -238,8 +254,7 @@ button.jux-play span.glyphicon {
 
 .jux-spine-display .jux-spine-edit,
 .jux-spine-display .jux-spine-revise {
-    width: 40px;
-    margin-right: 5px;
+    width: 35px;
 }
 
 .jux-media-display .help-text {

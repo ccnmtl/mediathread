@@ -23,6 +23,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.template.context import Context
+from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
@@ -879,21 +880,28 @@ Faculty: {} <{}>
             [settings.SERVER_EMAIL])
 
     def create_course(self, form, affil):
+        """Creates a Course for this form.
+
+        Returns (course, created) as a tuple.
+        """
         # Create the course.
         studentaffil = re.sub(r'\.fc\.', '.st.', affil.name)
         g = Group.objects.get_or_create(name=studentaffil)[0]
         fg = Group.objects.get_or_create(name=affil.name)[0]
 
-        c = Course.objects.create(
+        c, created = Course.objects.get_or_create(
             group=g,
             faculty_group=fg,
-            title=form.cleaned_data.get('course_name'))
+            defaults={'title': form.cleaned_data.get('course_name')})
 
+        return c, created
+
+    def init_created_course(self, course, affil):
         # Add the current user as an instructor.
-        c.group.user_set.add(self.request.user)
-        c.faculty_group.user_set.add(self.request.user)
-        c.add_detail('instructor',
-                     get_public_name(self.request.user, self.request))
+        course.group.user_set.add(self.request.user)
+        course.faculty_group.user_set.add(self.request.user)
+        course.add_detail('instructor',
+                          get_public_name(self.request.user, self.request))
 
         # Get the year and term from the affil string.
         affil_dict = {}
@@ -901,11 +909,9 @@ Faculty: {} <{}>
             affil_dict = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(
                 affil.name)
         if affil_dict:
-            c.info.year = affil_dict.get('year')
-            c.info.term = affil_dict.get('term')
-            c.info.save()
-
-        return c
+            course.info.year = affil_dict.get('year')
+            course.info.term = affil_dict.get('term')
+            course.info.save()
 
     def get_context_data(self, *args, **kwargs):
         context = super(AffilActivateView, self).get_context_data(
@@ -976,7 +982,26 @@ Faculty: {} <{}>
         self.affil.activated = True
         self.affil.save()
 
-        self.course = self.create_course(form, self.affil)
+        course, created = self.create_course(form, self.affil)
+
+        self.course = course
+
+        if created:
+            self.init_created_course(self.course, self.affil)
+        else:
+            log_sentry_error(
+                'Attempted to create duplicate course for affil: ' +
+                '{} - {}  Course: {}'.format(
+                    self.affil.pk, self.affil.name,
+                    self.course.title))
+            messages.error(
+                self.request,
+                'There was an error activating your course. The ' +
+                '<strong><a href="?{}">{}</a></strong> ' +
+                'course already exists.'.format(
+                    urlencode({'set_course': self.course.group.name}),
+                    self.course.title))
+            return super(AffilActivateView, self).form_valid(form)
 
         try:
             self.send_faculty_email(form, self.request.user)

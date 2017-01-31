@@ -2,13 +2,14 @@
 # pylint: disable-msg=E1103
 from datetime import datetime
 import json
+import re
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.lib import get_public_name
 from courseaffils.models import Affil, Course
 from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User, AnonymousUser, Group
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
@@ -1249,6 +1250,26 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
         self.assertEqual(Course.objects.count(), 0)
+
+    def test_post_duplicate_course(self):
+        self.u.profile = UserProfileFactory(user=self.u)
+        self.u.save()
+        self.assertFalse(self.aa.activated)
+
+        studentaffil = re.sub(r'\.fc\.', '.st.', self.aa.name)
+        g = Group.objects.create(name=studentaffil)
+        fg = Group.objects.create(name=self.aa.name)
+        Course.objects.create(
+            group=g,
+            faculty_group=fg,
+            title='Already created')
+
+        response = self.client.post(
+            reverse('affil_activate', kwargs={'pk': self.aa.pk}),
+            self.form_data,
+            follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Course.objects.count(), 1)
 
     def test_post(self):
         self.u.profile = UserProfileFactory(user=self.u)

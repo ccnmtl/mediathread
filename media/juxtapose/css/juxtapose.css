@@ -195,7 +195,7 @@ button.jux-play span.glyphicon {
 .jux-spine-controls {
     background-color: rgba(0, 0, 0, 0.75);
     position: relative;
-    bottom: 36px;
+    bottom: 33px;
     color: white;
 }
 
@@ -228,10 +228,9 @@ button.jux-play span.glyphicon {
     background-color: inherit;
 }
 
-.jux-spine-controls .jux-spine-vol-display {
-    top: 6px;
-    font-size: 24px;
-    margin-left: 6px;
+.jux-spine-controls button.jux-spine-vol-display {
+    font-size: 18px;
+    line-height: 0.5;
 }
 .jux-spine-controls .jux-spine-vol-input {
     top: 6px;

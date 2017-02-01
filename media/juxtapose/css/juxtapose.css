@@ -193,7 +193,7 @@ button.jux-play span.glyphicon {
 }
 
 .jux-spine-controls {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.75);
     position: relative;
     bottom: 34px;
     color: white;

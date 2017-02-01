@@ -195,7 +195,7 @@ button.jux-play span.glyphicon {
 .jux-spine-controls {
     background-color: rgba(0, 0, 0, 0.75);
     position: relative;
-    bottom: 34px;
+    bottom: 36px;
     color: white;
 }
 
@@ -221,7 +221,6 @@ button.jux-play span.glyphicon {
     color: white;
     background-color: rgba(0, 0, 0, 0);
     border: none;
-    padding: 2px;
 }
 
 .jux-spine-display .jux-spine-controls button:focus {
@@ -232,7 +231,7 @@ button.jux-play span.glyphicon {
 .jux-spine-controls .jux-spine-vol-display {
     top: 6px;
     font-size: 24px;
-    margin-left: 5px;
+    margin-left: 6px;
 }
 .jux-spine-controls .jux-spine-vol-input {
     top: 6px;

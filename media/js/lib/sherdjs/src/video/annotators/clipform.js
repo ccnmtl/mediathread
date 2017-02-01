@@ -311,7 +311,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
                            '<div class="helptext timecode">HH:MM:SS</div>' +
                          '</td>' +
                          '<td class="sherd-clipform-play">' + 
-                         '<input type="image" title="Play Clip" class="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png"/>' +
+                         '<input type="image" title="Play Clip" class="regButton videoplay" id="btnPlayClip" src="' + STATIC_URL + 'img/icons/meth_video_play.png"/>' +
                          '</td>' +
                        '</tr>' +
                       '</table>' +

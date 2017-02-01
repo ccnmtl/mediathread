@@ -65,7 +65,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             if (obj.poster) {
                 posterUrl = obj.poster;
             } else if (params.provider === "audio") {
-                posterUrl = "http://mediathread.ccnmtl.columbia.edu/media/img/poster_audio.png";
+                posterUrl = STATIC_URL + "img/poster_audio.png";
             }
             
             var create_obj = {

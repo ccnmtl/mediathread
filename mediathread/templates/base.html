@@ -16,6 +16,27 @@
 
         <script type="text/javascript" src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
+
+        {% if not debug %}
+        <script src="https://cdn.ravenjs.com/3.10.0/raven.min.js" crossorigin="anonymous"></script>
+        <script>
+        Raven.config('https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468', {
+            whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
+        }).install();
+        {% if user.is_anonymous %}
+        Raven.setUserContext({
+            email: 'none',
+            id: 'anonymous'
+        });
+        {% else %}
+        Raven.setUserContext({
+            email: '{{user.email}}',
+            id: '{{user.username}}'
+        });
+        {% endif %}
+        </script>
+        {% endif %}
+
         <script src='{% static 'js/app/extension_updater.js' %}'></script>
 
         {% bootstrap_css %}
@@ -337,26 +358,6 @@
 <div class="alert alert-error" style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px; width: 100%;">
 <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>
 </div>
-{% endif %}
-
-{% if not debug %}
-<script src="https://cdn.ravenjs.com/3.8.1/raven.min.js"></script>
-<script>
- Raven.config('https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468', {
-     whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
- }).install();
- {% if user.is_anonymous %}
- Raven.setUserContext({
-     email: 'none',
-     id: 'anonymous'
- });
- {% else %}
- Raven.setUserContext({
-     email: '{{user.email}}',
-     id: '{{user.username}}'
- });
- {% endif %}
-</script>
 {% endif %}
 
 </body>

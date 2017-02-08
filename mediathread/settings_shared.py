@@ -202,3 +202,6 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
     )
 
 BLOCKED_EMAIL_DOMAINS = []
+
+# django-tagging
+MAX_TAG_LENGTH = 255

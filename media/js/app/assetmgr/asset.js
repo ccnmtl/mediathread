@@ -1109,7 +1109,7 @@
                     self.$parent.find(selector).select2({
                         tags: tags,
                         tokenSeparators: [','],
-                        maximumInputLength: 20,
+                        maximumInputLength: 50,
                         width: '70%'
                     });
                 }

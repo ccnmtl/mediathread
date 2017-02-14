@@ -5,6 +5,7 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.db import models
 from tagging.models import Tag
 
@@ -161,9 +162,8 @@ class Asset(models.Model):
                 return {}
         return {}
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('asset-view', (), {'asset_id': self.pk, })
+        return reverse('asset-view', args=(self.pk,))
 
     @property
     def html_source(self):

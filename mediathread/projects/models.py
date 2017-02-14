@@ -3,6 +3,7 @@ from datetime import datetime
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 import reversion
@@ -323,9 +324,8 @@ class Project(models.Model):
     response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
                                             default='always')
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('project-workspace', (), {'project_id': self.pk})
+        return reverse('project-workspace', args=(self.pk,))
 
     def get_due_date(self):
         if self.due_date is None:

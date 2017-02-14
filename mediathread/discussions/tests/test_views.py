@@ -1,10 +1,13 @@
 from json import loads
+import re
 
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
+from django_comments.forms import CommentSecurityForm
+from django_comments.models import Comment
 
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.discussions.views import \
@@ -167,3 +170,32 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
 
         discussion.refresh_from_db()
         self.assertEquals(discussion.comment, 'update')
+
+    def test_comments_post(self):
+        self.setup_sample_course()
+        self.create_discussion(self.sample_course, self.instructor_one)
+        discussion = get_course_discussions(self.sample_course)[0]
+
+        url = reverse('comments-post-comment')
+        data = {
+            u'comment': [u'posted'],
+            u'parent': [discussion.id],  # threadedcomment
+            u'name': [],
+            u'title': [u''],
+            u'url': [u'']
+        }
+
+        frm = CommentSecurityForm(target_object=discussion.content_object)
+        data.update(frm.generate_security_data())
+
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+
+        comment_id = re.search(r'\d+', response.url).group()
+        obj = Comment.objects.get(id=comment_id)
+        self.assertEquals(obj.comment, 'posted')
+        self.assertEquals(obj.content_object, discussion.content_object)
+        self.assertEquals(obj.user_name, 'Instructor One')

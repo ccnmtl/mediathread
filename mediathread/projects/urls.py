@@ -7,7 +7,9 @@ from mediathread.projects.views import (
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
-    SequenceAssignmentEditView, UpdateVisibilityView)
+    SequenceAssignmentEditView,
+    UpdateVisibilityView
+)
 
 
 router = routers.DefaultRouter()

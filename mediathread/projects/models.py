@@ -19,6 +19,7 @@ from structuredcollaboration.models import Collaboration
 
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
 PROJECT_TYPE_COMPOSITION = 'composition'
+PROJECT_TYPE_SEQUENCE = 'sequence'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
 PROJECT_TYPE_SEQUENCE_ASSIGNMENT = 'sequence-assignment'
 PROJECT_TYPES = (
@@ -408,6 +409,9 @@ class Project(models.Model):
 
     def is_composition(self):
         return self.project_type == PROJECT_TYPE_COMPOSITION
+
+    def is_sequence(self):
+        return self.project_type == PROJECT_TYPE_SEQUENCE
 
     def assignment(self):
         """

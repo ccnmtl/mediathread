@@ -46,6 +46,7 @@ class ProjectResource(ModelResource):
             bundle.obj.is_selection_assignment()
         bundle.data['is_sequence_assignment'] = \
             bundle.obj.is_sequence_assignment()
+        bundle.data['is_sequence'] = bundle.obj.is_sequence()
         bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()

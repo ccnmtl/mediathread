@@ -16,35 +16,21 @@
 (function(jQuery) {
     var global = this;
 
-    global.SequenceAssignmentView = AssignmentView.extend({
+    global.SequenceView = AssignmentView.extend({
         events: {
-            'click .submit-response': 'onSubmitResponse',
-            'click .btn-show-submit': 'onShowSubmitDialog',
             'click .toggle-feedback': 'onToggleFeedback',
             'click .save-feedback': 'onSaveFeedback',
             'keyup input[name="title"]': 'onChange',
-            'click .btn-save': 'onSaveProject',
-            'click .btn-unsubmit': 'onConfirmUnsubmitResponse',
+            'click .btn-save': 'onSaveProject'
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onShowSubmitDialog', 'onSubmitResponse',
                       'onSaveFeedback', 'onSaveFeedbackSuccess',
                       'onChange', 'onSaveProject', 'serializeData',
                       'isDirty', 'setDirty', 'beforeUnload',
-                      'validTitle',
-                      'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
+                      'validTitle');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
-
-            var key = 'assignment_instructions_' + options.assignmentId;
-            jQuery('#accordion').on('hidden.bs.collapse', function() {
-                updateUserSetting(MediaThread.current_username, key, false);
-            });
-
-            jQuery('#accordion').on('shown.bs.collapse', function() {
-                updateUserSetting(MediaThread.current_username, key, true);
-            });
 
             var self = this;
             var settings = jQuery.extend(tinymceSettings, {
@@ -58,14 +44,6 @@
             tinymce.init(settings);
 
             this.dirty = false;
-            this.submitted = options.submitted;
-            this.primaryInstructions = options.primaryInstructions;
-            this.secondaryInstructions = options.secondaryInstructions;
-
-            // bind beforeunload for faculty to ensure feedback is saved
-            if (options.isFaculty) {
-                jQuery(window).bind('beforeunload', this.beforeUnload);
-            }
 
             this.mapSignals();
         },
@@ -78,18 +56,11 @@
                     self.setDirty(data.dirty);
                 });
 
-            jQuery(window).on(
-                'sequence.set_submittable',
-                function(e, data) {
-                    self.setSubmittable(data.submittable);
-                });
-
             var $saveButton = this.$el.find('.btn-save');
             jQuery(window).on(
                 'sequence.on_save_success',
                 function(e, data) {
                     self.setDirty(false);
-                    self.setSubmittable(data.submittable);
                     $saveButton.removeAttr('disabled')
                         .removeClass('saving', 1200, function() {
                             jQuery(self).text('Saved');
@@ -135,21 +106,15 @@
             var $elt = this.$el.find('.btn-save');
             if (isDirty) {
                 $elt.text('Save');
+                $elt.removeAttr('disabled');
                 $elt.removeClass('disabled');
-                jQuery('.btn-show-submit').addClass('disabled');
             } else {
                 if (tinymce && tinymce.activeEditor) {
                     tinymce.activeEditor.isNotDirty = true;
                 }
                 $elt.text('Saved');
+                $elt.attr('disabled', 'disabled');
                 $elt.addClass('disabled');
-            }
-        },
-        setSubmittable: function(isSubmittable) {
-            if (isSubmittable) {
-                jQuery('.btn-show-submit').removeClass('disabled');
-            } else {
-                jQuery('.btn-show-submit').addClass('disabled');
             }
         },
         validTitle: function() {
@@ -198,55 +163,6 @@
                         document.dispatchEvent(
                             new CustomEvent('sequence.save'));
                     }
-                }
-            });
-
-            return true;
-        },
-        onConfirmUnsubmitResponse: function() {
-            confirmAction(
-                'Are you sure? Once you unsubmit, you will no ' +
-                'longer have access to this student\'s response. And, you ' +
-                'will be taken to the main assignment page to choose ' +
-                'another response.',
-                this.onUnsubmitResponse, 'Unsubmit Response');
-        },
-        onUnsubmitResponse: function(evt) {
-            var self = this;
-            var frm = jQuery(this.el).find('.unsubmit-response-form')[0];
-            jQuery(frm.submit());
-        },
-        readyToSubmit: function() {
-            return true;
-        },
-        onSubmitResponse: function(evt) {
-            evt.preventDefault();
-
-            var data = this.serializeData();
-            data.push({
-                'name': 'publish',
-                'value': this.$el.find(
-                    '#submit-project input[name="publish"]').val()
-            });
-
-            var self = this;
-            jQuery.ajax({
-                type: 'POST',
-                url: '/project/save/' + this.responseId + '/',
-                data: data,
-                dataType: 'json',
-                success: function(json) {
-                    jQuery(window).unbind('beforeunload');
-                    window.location = json.context.project.url;
-                },
-                error: function() {
-                    var msg = 'An error occurred while submitting your ' +
-                        'response. Please try again';
-                    var pos = {
-                        my: 'center', at: 'center',
-                        of: jQuery('.container')
-                    };
-                    showMessage(msg, undefined, 'Error', pos);
                 }
             });
 

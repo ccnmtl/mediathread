@@ -390,6 +390,36 @@ class SequenceAssignmentEditView(AssignmentEditView):
     template_name = 'projects/sequence_assignment_edit.html'
 
 
+class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
+                       TemplateView):
+
+    template_name = 'projects/sequence.html'
+
+    def get(self, request, *args, **kwargs):
+        """
+        A multi-panel editable view for the specified project
+        Legacy note: Ideally, this function would be named project_view but
+        StructuredCollaboration requires the view name
+        to be  <class>-view to do a reverse lookup
+
+        Panel 1: Parent Assignment (if applicable)
+        Panel 2: Project
+        Panel 3: Instructor Feedback (if applicable & exists)
+
+        Keyword arguments:
+        project_id -- the model id
+        """
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        show_feedback = kwargs.get('feedback', None) == "feedback"
+        data = {'space_owner': request.user.username,
+                'show_feedback': show_feedback}
+
+        data['project'] = project
+        data['the_response'] = project
+        data['response_can_edit'] = request.user == project.author
+        return self.render_to_response(data)
+
+
 class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
@@ -401,7 +431,10 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
         elif (project.is_sequence_assignment() or
                 (parent and parent.is_sequence_assignment())):
             view = SequenceAssignmentView.as_view()
+        elif (project.is_sequence()):
+            view = SequenceEditView.as_view()
         else:
+            # Composition view
             view = DefaultProjectView.as_view()
 
         return view(request, *args, **kwargs)
@@ -438,6 +471,7 @@ class SequenceAssignmentView(AssignmentView):
 
 class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
                          JSONResponseMixin, TemplateView):
+    """Displays the Composition project view."""
 
     def get(self, request, *args, **kwargs):
         """
@@ -676,7 +710,8 @@ class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             'space_viewer': ures.render_one(request, self.record_viewer),
             'editable': self.viewing_own_records,
             'course': course_res.render_one(request, request.course),
-            'is_faculty': self.is_viewer_faculty
+            'is_faculty': self.is_viewer_faculty,
+            'is_superuser': request.user.is_superuser,
         }
 
         if self.record_owner:

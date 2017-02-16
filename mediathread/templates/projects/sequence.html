@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load user_projects coursetags %}
+
+{% block title %}
+    {% if project.title %}{{project.title}}{% else %}Sequence{% endif %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
+
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/juxtapose.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/playhead.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/react-grid-layout.css"  media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}juxtapose/css/loaders.min.css"  media="screen" />
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+
+    <script src="{{STATIC_URL}}js/app/assetmgr/collectionwidget.js"></script>
+
+    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}js/app/projects/sequenceView.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block uncompressable_js %}
+    {% include "djangosherd/player_resources.html" %}
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
+
+    <script>
+    var view = new SequenceView({
+        el: jQuery('.sequence').first(),
+        viewer: '{{request.user.username}}',
+        responseId: '{{the_response.id}}'
+    });
+    </script>
+
+    <script src="{{STATIC_URL}}juxtapose/loaders.css.js"></script>
+    <script src="{{STATIC_URL}}juxtapose/bundle-a.js"></script>
+{% endblock %}
+
+{% block content %}
+{% with public_url=the_response.public_url %}
+{% with the_feedback=the_response.feedback_discussion %}
+
+<div class="sequence">
+    <div class="spacer"></div>
+    <div class="sequence-composition">
+        <div class="left title-container">
+            <div>
+                <label>Sequence Title</label>&nbsp;
+                <input type="text" name="title"
+                       value="{{project.title}}" maxlength="80"
+                       placeholder="Specify a title"
+                       class="project-title form-control" />
+            </div>
+        </div>
+        <div class="right tabs-container">
+            {% if project.is_submitted %}
+                <div class="right">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    <strong>
+                        Submitted
+                    </strong> {{project.modified|date:"m/d/Y h:i a"}}
+
+                    {% if response_can_edit and allow_public_compositions %}
+                        <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">
+                            <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                            {% if public_url %}Permalink{% else %}Share{% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="clearfix"></div>
+                <div class="spacer"></div>
+            {% endif %}
+            <ul class="nav nav-tabs navbar-right" role="tablist">
+                <li role="presentation" class="active editor">
+                    <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
+                        Sequence
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
+                        Reflection</a>
+                </li>
+                {% if is_faculty or response_can_edit and the_feedback %}
+                    <li role="presentation">
+                        <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
+                            Feedback
+                        </a>
+                    </li>
+                {% endif %}
+                {% if response_can_edit %}
+                    <button class="btn btn-primary btn-tab btn-save disabled" disabled="disabled">Save</button>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+        <div class="spacer"></div>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel"
+                 class="tab-pane fade in active {% if project.is_submitted %}submitted{% endif %}"
+                 id="sequence">
+                <div class="loader">
+                    <div class="ball-pulse">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                <div id="jux-container"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="reflection">
+                {% if project.is_submitted %}
+                    {{project.body|safe}}
+                {% else %}{% if response_can_edit %}
+                    <textarea name="body" class="form-control mceEditor"
+                              placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
+                {% endif %}{% endif %}
+            </div>
+
+            {% if is_faculty or response_can_edit and the_feedback %}
+                <div role="tabpanel" class="tab-pane fade" id="feedback">
+                    {% if is_faculty %}
+                        <form method="post" data-username="{{project.author.username}}"
+                              {% if the_feedback %}
+                              action="/discussion/comment/{{the_feedback.id}}/">
+                              {% else %}
+                            action="/discussion/create/">
+                              {% endif %}
+
+                              {% if the_feedback %}
+                                  <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
+                                  <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
+                                  <div class="clearfix"></div>
+                                  <div class="spacer"></div>
+                              {% else %}
+                                  <input type="hidden" name="comment_html" value="{{project.title}} feedback" />
+                                  <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                  <input type="hidden" name="inherit" value="true" />
+                                  <input type="hidden" name="app_label" value="projects" />
+                                  <input type="hidden" name="model" value="project" />
+                                  <input type="hidden" name="obj_pk" value="{{project.id}}" />
+                                  <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                              {% endif %}
+
+                              <textarea name="comment" class="form-control mceEditor"
+                                        placeholder="Offer feedback on this student's work">{{the_feedback.comment}}</textarea>
+
+                              <div class="spacer"></div>
+
+                              <div class="right">
+                                  <span class="alert alert-success" role="alert" style="display: none">
+                                      Your feedback was saved
+                                  </span>
+                                  <button class="btn btn-primary btn-sm save-feedback">
+                                      Save Feedback
+                                  </button>
+                              </div>
+                        </form>
+                        <div class="clearfix"></div>
+                    {% else %}
+                        <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
+                        <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
+                        <div class="clearfix"></div>
+                        <p>{{the_feedback.comment|safe}}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endwith %}
+{% endblock %}

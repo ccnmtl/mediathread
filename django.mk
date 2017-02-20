@@ -1,6 +1,7 @@
 # VERSION=1.1.0
 
 # CHANGES:
+# 1.2.0 - 2016-12-15 - bump wheel version to 0.29
 # 1.1.0 - 2016-11-08 - run flake8 tests before unit tests
 # 1.0.1 - 2016-05-02 - Remove deprecated syncdb command from make install
 
@@ -12,7 +13,7 @@ SYS_PYTHON ?= python
 PIP ?= $(VE)/bin/pip
 PY_SENTINAL ?= $(VE)/sentinal
 PYPI_URL ?= https://pypi.ccnmtl.columbia.edu/
-WHEEL_VERSION ?= 0.24.0
+WHEEL_VERSION ?= 0.29.0
 VIRTUALENV ?= virtualenv.py
 SUPPORT_DIR ?= requirements/virtualenv_support/
 MAX_COMPLEXITY ?= 10

@@ -10,7 +10,7 @@ pycodestyle==2.0
 enum34==1.1.6
 configparser==3.5.0
 flake8==3.3.0
-lxml==3.7.2
+lxml==3.7.3
 fuzzywuzzy==0.14.0  # lettuce
 mock==2.0.0  # sure
 sure==1.4.1  # lettuce

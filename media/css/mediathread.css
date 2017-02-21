@@ -277,6 +277,7 @@ ul#projects li {
     float: left;
 }
 
+.metadata-value-sequence,
 .metadata-value-composition {
     padding: 0 0 10px 0;
     font-size: .75em;
@@ -837,6 +838,7 @@ div.button-form form, div.button-form.inline form {
     border-left: solid 10px #39b54a;
 }
 
+.projectlist.sequence-composition,
 .projectlist.composition {
     padding-bottom: .5em;
     border-left: solid 10px #1e77bd;
@@ -4303,19 +4305,23 @@ a.btn.btn-default img.left {
     display: none;
 }
 
+.sequence,
 .sequence-assignment {
     min-width: 970px;
     width: 100%;
 }
 
+.sequence .col-half,
 .sequence-assignment .col-half {
     width: 49%;
 }
 
+.sequence .title-container,
 .sequence-assignment .title-container {
     width: 40%;
 }
 
+.sequence .tabs-container,
 .sequence-assignment .tabs-container {
     width: 59%;
 }
@@ -4340,12 +4346,13 @@ a.btn.btn-default img.left {
     font-size: 14px;
 }
 
+.sequence .btn-tab,
 .sequence-assignment .btn-tab {
     line-height: 1;
     border-radius: 3px;
     margin-left: 5px;
     padding: 7px 9px;
-margin-top: 5px;
+    margin-top: 5px;
 }
 
 .sequence-assignment .btn-primary:hover,

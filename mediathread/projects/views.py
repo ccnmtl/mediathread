@@ -396,27 +396,14 @@ class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
     template_name = 'projects/sequence.html'
 
     def get(self, request, *args, **kwargs):
-        """
-        A multi-panel editable view for the specified project
-        Legacy note: Ideally, this function would be named project_view but
-        StructuredCollaboration requires the view name
-        to be  <class>-view to do a reverse lookup
-
-        Panel 1: Parent Assignment (if applicable)
-        Panel 2: Project
-        Panel 3: Instructor Feedback (if applicable & exists)
-
-        Keyword arguments:
-        project_id -- the model id
-        """
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        show_feedback = kwargs.get('feedback', None) == "feedback"
-        data = {'space_owner': request.user.username,
-                'show_feedback': show_feedback}
 
-        data['project'] = project
-        data['the_response'] = project
-        data['response_can_edit'] = request.user == project.author
+        data = {
+            'project': project,
+            'the_response': project,
+            'response_can_edit': request.user == project.author,
+        }
+
         return self.render_to_response(data)
 
 

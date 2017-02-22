@@ -21,14 +21,15 @@
             'click .toggle-feedback': 'onToggleFeedback',
             'click .save-feedback': 'onSaveFeedback',
             'keyup input[name="title"]': 'onChange',
-            'click .btn-save': 'onSaveProject'
+            'click .btn-save': 'showSaveOptions',
+            'click .save-publish-status .btn-primary': 'saveProject'
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
                       'onSaveFeedback', 'onSaveFeedbackSuccess',
-                      'onChange', 'onSaveProject', 'serializeData',
-                      'isDirty', 'setDirty', 'beforeUnload',
-                      'validTitle');
+                      'onChange', 'showSaveOptions', 'saveProject',
+                      'serializeData', 'isDirty', 'setDirty',
+                      'beforeUnload', 'validTitle');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -95,7 +96,7 @@
             this.$el.find('span[data-id=' + dataId + ']').html(today);
         },
         serializeData: function() {
-            var q = '[name="title"], [name="body"]';
+            var q = '[name="title"], [name="body"], [name="publish"]';
             return this.$el.find(q).serializeArray();
         },
         isDirty: function() {
@@ -129,8 +130,12 @@
             }
             return true;
         },
-        onSaveProject: function(e) {
+        saveProject: function(e) {
             e.preventDefault();
+
+            var $elt = this.$el.find('.save-publish-status');
+            $elt.modal('hide');
+
             tinymce.activeEditor.save();
 
             if (!this.validTitle()) {
@@ -167,6 +172,10 @@
             });
 
             return true;
+        },
+        showSaveOptions: function(evt) {
+            var $elt = this.$el.find('.save-publish-status');
+            $elt.modal('show');
         }
     });
 }(jQuery));

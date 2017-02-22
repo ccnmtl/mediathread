@@ -71,6 +71,46 @@
             </div>
         </div>
         <div class="right tabs-container">
+
+            <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Save Changes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="well">
+                                <div class="right small">required</div>
+                                <label for="due_date">Visibility</label><br />
+                                <div class="small">Select who can see your work</div><br />
+                                <ul id="id_publish">
+                                    <li>
+                                        <label for="id_publish_0">
+                                            <input checked="checked" id="id_publish_0" name="publish" type="radio" value="PrivateEditorsAreOwners"> Draft - only you can view
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label for="id_publish_1">
+                                            <input id="id_publish_1" name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label for="id_publish_2">
+                                            <input id="id_publish_2" name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided
+                                        </label>
+                                    </li>
+                                </ul>
+                                <div class="small help-inline">Select who can see your work</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% if project.is_submitted %}
                 <div class="right">
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -127,12 +167,10 @@
                 <div id="jux-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="reflection">
-                {% if project.is_submitted %}
-                    {{project.body|safe}}
-                {% else %}{% if response_can_edit %}
+                {% if response_can_edit %}
                     <textarea name="body" class="form-control mceEditor"
                               placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
-                {% endif %}{% endif %}
+                {% endif %}
             </div>
 
             {% if is_faculty or response_can_edit and the_feedback %}
@@ -186,6 +224,7 @@
         </div>
     </div>
 </div>
+
 {% endwith %}
 {% endwith %}
 {% endblock %}

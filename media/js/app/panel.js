@@ -1,7 +1,6 @@
 /* global AssetPanelHandler: true, getVisibleContentHeight: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
 /* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
-/* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {

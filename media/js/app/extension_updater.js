@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
                     command: 'updatesettings'
                 }, function(response) {
                     var $el = jQuery('.update-chrome-extension-feedback');
-                    var defaultResponse = 'Settings updated.';
+                    var defaultResponse = 'Error updating settings.';
                     var msg = response ? response : defaultResponse;
 
                     $el.hide();

@@ -63,7 +63,6 @@
         {% block masthead %}
             <!-- ###### Site banner ###### -->
             <div id="header">
-
                 <div id="standardnav_container">
                 <div id="mediathread_logo">
                     <a href="/">
@@ -163,14 +162,16 @@
                 {% endblock %}
             </div>
             {% block courseinformation %}
-            <div id="course_information">
-                <h1 id="course_title">
-                {% block coursetitle %}
-                    <a href="/" id="course_title_link">{{course.title}}</a>
-                {% endblock %}
-                </h1>
-                <div class="clear: right;"></div>
-            </div>
+                {% if not read_only_view %}
+                <div id="course_information">
+                    <h1 id="course_title">
+                    {% block coursetitle %}
+                        <a href="/" id="course_title_link">{{course.title}}</a>
+                    {% endblock %}
+                    </h1>
+                    <div class="clear: right;"></div>
+                </div>
+                {% endif %}
             {% endblock %}
 
             </div><!-- id="header" -->

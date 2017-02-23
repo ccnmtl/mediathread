@@ -208,7 +208,9 @@
                                 <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
                                 {% if public_url %}Permalink{% else %}Share{% endif %}
                             </a>
-                        {% endif %}
+                        {% else %}{% if public_url %}
+                            <a href="{{public_url}}">Permalink</a>
+                        {% endif %}{% endif %}
                     </div>
                     <div class="clearfix"></div>
                     <div class="spacer"></div>

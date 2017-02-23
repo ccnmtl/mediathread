@@ -238,8 +238,10 @@ button.jux-play span.glyphicon {
     width: 100px;
 }
 
-.jux-spine-display iframe {
-    pointer-events: none;
+@supports (-ms-ime-align:auto) {
+    .jux-spine-display iframe {
+        pointer-events: none;
+    }
 }
 
 .jux-spine-display .instructions,

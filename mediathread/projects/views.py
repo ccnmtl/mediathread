@@ -286,6 +286,7 @@ class SequenceAssignmentReadOnlyView(ProjectReadableMixin, TemplateView):
     def get_context_data(self, project_id):
         return {
             'is_faculty': False,
+            'read_only_view': True,
             'assignment': self.project.assignment(),
             'assignment_can_edit': False,
             'my_response': None,

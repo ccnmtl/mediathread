@@ -69,11 +69,15 @@
 {% with "help_sequence_assignment" as help_id %}
 
 <div class="sequence-assignment">
-    
+    {% if not read_only_view %}
     {% include "help/help_contentarea.html" %}
+    {% endif %}
+
     <h2>
         Sequence Assignment <span class="project-view-title">{{assignment.title}}</span>
-        <div class="actions">{% include "help/help_button.html" %}</div>
+        {% if not read_only_view %}
+            <div class="actions">{% include "help/help_button.html" %}</div>
+        {% endif %}
     </h2>
 
     <div>
@@ -109,6 +113,7 @@
     <div class="clearfix"></div>
     <div class="spacer"></div>
 
+    {% if not read_only_view %}
     <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
@@ -164,7 +169,7 @@
             </div>
         </div>
     </div>
-
+    {% endif %}
     <div class="spacer"></div>
 
     {% if the_response %}
@@ -198,10 +203,16 @@
             <div class="right tabs-container">
                 {% if the_response.is_submitted %}
                     <div class="right">
+                        {% if read_only_view %}
+                        <strong>
+                            {{the_response.modified|date:"m/d/Y h:i a"}}
+                        </strong> 
+                        {% else %}
                         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         <strong>
                             Submitted
                         </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
+                        {% endif %}
 
                         {% if response_can_edit and allow_public_compositions %}
                             <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">

@@ -1,3 +1,4 @@
+button.jux-rewind,
 button.jux-play {
     background-color: #bbb;
     float: left;
@@ -5,10 +6,6 @@ button.jux-play {
     height: 30px;
     width: 35px;
     outline: none;
-}
-
-button.jux-play span.glyphicon {
-    color: black;
 }
 
 .form-group {

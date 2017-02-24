@@ -3,12 +3,16 @@
     position: relative; /* needed for zindex */
 }
 .jux-playhead-container input[type=range] {
-    cursor: col-resize;
+    cursor: pointer;
     width: 930px;
     /* Hide range slider in webkit */
     -webkit-appearance: none;
     background: transparent;
     outline: none;
+}
+
+.jux-playhead-container input[type=range]:hover {
+    background-color: rgba(200, 200, 200, 0.25);
 }
 
 .jux-playhead-container input[type=range]::-moz-range-track {

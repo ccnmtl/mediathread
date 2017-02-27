@@ -170,6 +170,8 @@
                 {% if response_can_edit %}
                     <textarea name="body" class="form-control mceEditor"
                               placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
+                {% else %}
+                    {{project.body|safe}}
                 {% endif %}
             </div>
 

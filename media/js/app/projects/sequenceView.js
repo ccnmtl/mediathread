@@ -18,15 +18,12 @@
 
     global.SequenceView = AssignmentView.extend({
         events: {
-            'click .toggle-feedback': 'onToggleFeedback',
-            'click .save-feedback': 'onSaveFeedback',
             'keyup input[name="title"]': 'onChange',
             'click .btn-save': 'showSaveOptions',
             'click .save-publish-status .btn-primary': 'saveProject'
         },
         initialize: function(options) {
-            _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onSaveFeedback', 'onSaveFeedbackSuccess',
+            _.bindAll(this, 'render',
                       'onChange', 'showSaveOptions', 'saveProject',
                       'serializeData', 'isDirty', 'setDirty',
                       'beforeUnload', 'validTitle');
@@ -88,13 +85,6 @@
             this.setDirty(true);
             this.$el.find('.alert-success').fadeOut();
         },
-        onSaveFeedbackSuccess: function(frm, json) {
-            this.setDirty(false);
-            this.$el.find('.alert-success').show();
-            var today = Date().toLocaleString();
-            var dataId = 'feedback-date-' + this.responseId;
-            this.$el.find('span[data-id=' + dataId + ']').html(today);
-        },
         serializeData: function() {
             var q = '[name="title"], [name="body"], [name="publish"]';
             return this.$el.find(q).serializeArray();
@@ -123,7 +113,7 @@
             var value = $title.val();
             if (!value || value.length < 1) {
                 showMessage(
-                    'Please specify a title for your response',
+                    'Please specify a title for your composition',
                     null, 'Error');
                 $title.focus();
                 return false;

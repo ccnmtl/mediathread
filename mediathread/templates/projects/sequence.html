@@ -46,7 +46,7 @@
     var view = new SequenceView({
         el: jQuery('.sequence').first(),
         viewer: '{{request.user.username}}',
-        responseId: '{{the_response.id}}'
+        responseId: '{{project.id}}'
     });
     </script>
 
@@ -55,8 +55,6 @@
 {% endblock %}
 
 {% block content %}
-{% with public_url=the_response.public_url %}
-{% with the_feedback=the_response.feedback_discussion %}
 
 <div class="sequence">
     <div class="spacer"></div>
@@ -71,23 +69,48 @@
             </div>
         </div>
         <div class="right tabs-container">
-            {% if project.is_submitted %}
-                <div class="right">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    <strong>
-                        Submitted
-                    </strong> {{project.modified|date:"m/d/Y h:i a"}}
 
-                    {% if response_can_edit and allow_public_compositions %}
-                        <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">
-                            <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
-                            {% if public_url %}Permalink{% else %}Share{% endif %}
-                        </a>
-                    {% endif %}
+            <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Save Changes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="well">
+                                <div class="right small">required</div>
+                                <label for="due_date">Visibility</label><br />
+                                <div class="small">Select who can see your work</div><br />
+                                <ul id="id_publish">
+                                    <li>
+                                        <label for="id_publish_0">
+                                            <input checked="checked" id="id_publish_0" name="publish" type="radio" value="PrivateEditorsAreOwners"> Draft - only you can view
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label for="id_publish_1">
+                                            <input id="id_publish_1" name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
+                                        </label>
+                                    </li>
+                                    {% if allow_public_compositions %}
+                                    <li>
+                                        <label for="id_publish_2">
+                                            <input id="id_publish_2" name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided
+                                        </label>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                                <div class="small help-inline">Select who can see your work</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="clearfix"></div>
-                <div class="spacer"></div>
-            {% endif %}
+            </div>
             <ul class="nav nav-tabs navbar-right" role="tablist">
                 <li role="presentation" class="active editor">
                     <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
@@ -98,13 +121,6 @@
                     <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
                         Reflection</a>
                 </li>
-                {% if is_faculty or response_can_edit and the_feedback %}
-                    <li role="presentation">
-                        <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
-                            Feedback
-                        </a>
-                    </li>
-                {% endif %}
                 {% if response_can_edit %}
                     <button class="btn btn-primary btn-tab btn-save disabled" disabled="disabled">Save</button>
                 {% endif %}
@@ -127,65 +143,15 @@
                 <div id="jux-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="reflection">
-                {% if project.is_submitted %}
-                    {{project.body|safe}}
-                {% else %}{% if response_can_edit %}
+                {% if response_can_edit %}
                     <textarea name="body" class="form-control mceEditor"
                               placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
-                {% endif %}{% endif %}
+                {% else %}
+                    {{project.body|safe}}
+                {% endif %}
             </div>
-
-            {% if is_faculty or response_can_edit and the_feedback %}
-                <div role="tabpanel" class="tab-pane fade" id="feedback">
-                    {% if is_faculty %}
-                        <form method="post" data-username="{{project.author.username}}"
-                              {% if the_feedback %}
-                              action="/discussion/comment/{{the_feedback.id}}/">
-                              {% else %}
-                            action="/discussion/create/">
-                              {% endif %}
-
-                              {% if the_feedback %}
-                                  <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
-                                  <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
-                                  <div class="clearfix"></div>
-                                  <div class="spacer"></div>
-                              {% else %}
-                                  <input type="hidden" name="comment_html" value="{{project.title}} feedback" />
-                                  <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
-                                  <input type="hidden" name="inherit" value="true" />
-                                  <input type="hidden" name="app_label" value="projects" />
-                                  <input type="hidden" name="model" value="project" />
-                                  <input type="hidden" name="obj_pk" value="{{project.id}}" />
-                                  <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
-                              {% endif %}
-
-                              <textarea name="comment" class="form-control mceEditor"
-                                        placeholder="Offer feedback on this student's work">{{the_feedback.comment}}</textarea>
-
-                              <div class="spacer"></div>
-
-                              <div class="right">
-                                  <span class="alert alert-success" role="alert" style="display: none">
-                                      Your feedback was saved
-                                  </span>
-                                  <button class="btn btn-primary btn-sm save-feedback">
-                                      Save Feedback
-                                  </button>
-                              </div>
-                        </form>
-                        <div class="clearfix"></div>
-                    {% else %}
-                        <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
-                        <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
-                        <div class="clearfix"></div>
-                        <p>{{the_feedback.comment|safe}}</p>
-                    {% endif %}
-                </div>
-            {% endif %}
         </div>
     </div>
 </div>
-{% endwith %}
-{% endwith %}
+
 {% endblock %}

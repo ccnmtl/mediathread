@@ -403,6 +403,8 @@ class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
             'project': project,
             'the_response': project,
             'response_can_edit': request.user == project.author,
+            'allow_public_compositions': allow_public_compositions(
+                self.request.course)
         }
 
         return self.render_to_response(data)

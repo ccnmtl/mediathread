@@ -111,23 +111,6 @@
                     </div>
                 </div>
             </div>
-            {% if project.is_submitted %}
-                <div class="right">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                    <strong>
-                        Submitted
-                    </strong> {{project.modified|date:"m/d/Y h:i a"}}
-
-                    {% if response_can_edit and allow_public_compositions %}
-                        <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">
-                            <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
-                            {% if public_url %}Permalink{% else %}Share{% endif %}
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="clearfix"></div>
-                <div class="spacer"></div>
-            {% endif %}
             <ul class="nav nav-tabs navbar-right" role="tablist">
                 <li role="presentation" class="active editor">
                     <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">

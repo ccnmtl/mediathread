@@ -95,11 +95,13 @@
                                             <input id="id_publish_1" name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
                                         </label>
                                     </li>
+                                    {% if allow_public_compositions %}
                                     <li>
                                         <label for="id_publish_2">
                                             <input id="id_publish_2" name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided
                                         </label>
                                     </li>
+                                    {% endif %}
                                 </ul>
                                 <div class="small help-inline">Select who can see your work</div>
                             </div>

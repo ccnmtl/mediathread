@@ -380,7 +380,7 @@ button.jux-play {
 }
 
 .jux-timeline-ruler {
-    height: 10px;
+    height: 8px;
     position: relative;
     margin-left: 55px;
     z-index: 0;

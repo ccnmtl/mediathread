@@ -9,5 +9,7 @@ env:
   - TEST_SUITE=harvest3
 python:
   - "2.7"
+before_install:
+  - pip install --upgrade setuptools pip wheel
 script:
   - make $TEST_SUITE

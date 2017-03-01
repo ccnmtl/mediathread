@@ -692,6 +692,21 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.project_private.participants.add(self.student_two)
         self.assertTrue(self.project_private.is_participant(self.student_two))
 
+    def test_visibility_policy(self):
+        self.assertEqual(
+            self.project_private.visibility_policy(),
+            'PrivateEditorsAreOwners')
+
+    def test_visibility(self):
+        self.assertEqual(
+            self.project_private.visibility(), 'Draft - only you can view')
+
+    def test_visibility_short(self):
+        self.assertEqual(self.project_private.visibility_short(), 'Draft')
+
+    def test_visibility_status(self):
+        self.assertEqual(self.project_private.status(), 'Draft')
+
 
 class ProjectSequenceAssetTest(TestCase):
     def setUp(self):

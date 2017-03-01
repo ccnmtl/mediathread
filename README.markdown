@@ -3,6 +3,7 @@ Mediathread
 ===========================================================
 
 [![Build Status](https://travis-ci.org/ccnmtl/mediathread.svg?branch=master)](https://travis-ci.org/ccnmtl/mediathread)
+[![Documentation Status](https://readthedocs.org/projects/mediathread/badge/?version=latest)](https://mediathread.readthedocs.io/en/latest/?badge=latest)
 
 Mediathread is a Django site for multimedia annotations facilitating
 collaboration on video and image analysis. Developed at the Columbia

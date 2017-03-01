@@ -138,7 +138,7 @@
             var self = this;
             jQuery.ajax({
                 type: 'POST',
-                url: '/project/save/' + this.responseId + '/',
+                url: '/project/save/' + this.projectId + '/',
                 data: this.serializeData(),
                 dataType: 'json',
                 error: function() {

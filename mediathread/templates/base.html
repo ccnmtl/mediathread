@@ -264,8 +264,11 @@
                     {% flag "enable_vimeo" %}true{% else %}false{% endflag %}
                 }
             {% endif %}
+
             {% if the_response %}
-                this.current_project = {{ the_response.pk }};
+            this.current_project = {{ the_response.pk }};
+            {% elif project %}
+            this.current_project = {{ project.pk }};
             {% endif %}
         })();
     </script>

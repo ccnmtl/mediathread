@@ -97,15 +97,11 @@
             var $elt = this.$el.find('.btn-save');
             if (isDirty) {
                 $elt.text('Save');
-                $elt.removeAttr('disabled');
-                $elt.removeClass('disabled');
             } else {
                 if (tinymce && tinymce.activeEditor) {
                     tinymce.activeEditor.isNotDirty = true;
                 }
                 $elt.text('Saved');
-                $elt.attr('disabled', 'disabled');
-                $elt.addClass('disabled');
             }
         },
         validTitle: function() {

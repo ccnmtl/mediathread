@@ -86,8 +86,8 @@ class ProjectForm(forms.ModelForm):
             choices.append(PUBLISH_INSTRUCTOR_SHARED)
             choices.append(PUBLISH_WHOLE_CLASS)
 
-        if course_details.allow_public_compositions(request.course):
-            if project and project.is_composition():
-                choices.append(PUBLISH_WHOLE_WORLD)
+        if course_details.allow_public_compositions(request.course) and \
+           project and (project.is_composition() or project.is_sequence()):
+            choices.append(PUBLISH_WHOLE_WORLD)
 
         return choices

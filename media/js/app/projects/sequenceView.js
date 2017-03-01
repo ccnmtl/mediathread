@@ -148,6 +148,15 @@
                                 null, 'Error');
                 },
                 success: function(json, textStatus, xhr) {
+                    jQuery('.sequence-proj-status').text(
+                        json.revision.visibility);
+
+                    if (json.revision.public_url) {
+                        jQuery('.sequence-proj-status').append(
+                            ' (<a href="' + json.revision.public_url + '">' +
+                                'public url</a>)');
+                    }
+
                     if (json.status === 'error') {
                         showMessage(json.msg, null, 'Error');
                     } else {

@@ -85,18 +85,37 @@
                                 <ul id="id_publish">
                                     <li>
                                         <label for="id_publish_0">
-                                            <input checked="checked" id="id_publish_0" name="publish" type="radio" value="PrivateEditorsAreOwners"> Draft - only you can view
+                                            <input
+                                                {% if project.visibility_policy == 'PrivateEditorsAreOwners' %}
+                                                checked="checked"
+                                                {% endif %}
+                                                id="id_publish_0"
+                                                name="publish" type="radio"
+                                                value="PrivateEditorsAreOwners">
+                                            Draft - only you can view
                                         </label>
                                     </li>
                                     <li>
                                         <label for="id_publish_1">
-                                            <input id="id_publish_1" name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
+                                            <input
+                                                {% if project.visibility_policy == 'CourseProtected' %}
+                                                checked="checked"
+                                                {% endif %}
+                                                id="id_publish_1" name="publish"
+                                                type="radio" value="CourseProtected">
+                                            Whole Class - all class members can view
                                         </label>
                                     </li>
                                     {% if allow_public_compositions %}
                                     <li>
                                         <label for="id_publish_2">
-                                            <input id="id_publish_2" name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided
+                                            <input
+                                                {% if project.visibility_policy == 'PublicEditorsAreOwners' %}
+                                                checked="checked"
+                                                {% endif %}
+                                                id="id_publish_2" name="publish"
+                                                type="radio" value="PublicEditorsAreOwners">
+                                            Whole World - a public url is provided
                                         </label>
                                     </li>
                                     {% endif %}

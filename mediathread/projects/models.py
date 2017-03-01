@@ -440,6 +440,14 @@ class Project(models.Model):
 
         return thread
 
+    def visibility_policy(self):
+        """Returns the project's policy name, e.g. 'PrivateEditorsAreOwners'"""
+        col = self.get_collaboration()
+        if col:
+            return col.policy_record.policy_name
+        else:
+            return PUBLISH_DRAFT[0]
+
     def visibility(self):
         col = self.get_collaboration()
         if col:

@@ -46,7 +46,7 @@
     var view = new SequenceView({
         el: jQuery('.sequence').first(),
         viewer: '{{request.user.username}}',
-        responseId: '{{project.id}}'
+        projectId: {{project.id}}
     });
     </script>
 
@@ -121,7 +121,7 @@
                     <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
                         Reflection</a>
                 </li>
-                {% if response_can_edit %}
+                {% if can_edit %}
                     <button class="btn btn-primary btn-tab btn-save">Save</button>
                 {% endif %}
             </ul>
@@ -143,7 +143,7 @@
                 <div id="jux-container"></div>
             </div>
             <div role="tabpanel" class="tab-pane fade" id="reflection">
-                {% if response_can_edit %}
+                {% if can_edit %}
                     <textarea name="body" class="form-control mceEditor"
                               placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
                 {% else %}

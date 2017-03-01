@@ -20,11 +20,14 @@
             self.feedback = options.feedback;
             self.feedbackCount = options.feedbackCount;
             self.responseId = options.responseId;
+            self.projectId = options.projectId;
             self.assignmentId = options.assignmentId;
             self.myResponse = parseInt(options.responseId, 10);
 
             // bind beforeunload so user won't forget to submit response
-            if (options.responseId.length > 0 && !options.submitted) {
+            if (options.responseId && options.responseId.length > 0 &&
+                !options.submitted
+               ) {
                 jQuery(window).bind('beforeunload', this.beforeUnload);
             }
 

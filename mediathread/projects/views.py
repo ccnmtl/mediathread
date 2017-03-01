@@ -401,8 +401,7 @@ class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
 
         data = {
             'project': project,
-            'the_response': project,
-            'response_can_edit': request.user == project.author,
+            'can_edit': request.user == project.author,
             'allow_public_compositions': allow_public_compositions(
                 self.request.course)
         }

@@ -102,7 +102,7 @@ html_sidebars = {
 #
 html_theme_options = {
     'logo': 'mediathread-logo.png',
-    'description': 'Course-based media annotation',
+    'description': 'Course-based media analysis',
     'github_user': 'ccnmtl',
     'github_repo': 'mediathread',
 }

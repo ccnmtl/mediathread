@@ -28,6 +28,10 @@ class LTI(object):
             (self.lti_params['oauth_consumer_key'],
              self.lti_params['user_id'])
 
+    def user_identifier(self):
+        if 'lis_person_sourcedid' in self.lti_params:
+            return self.lti_params['lis_person_sourcedid']
+
     def user_email(self):
         """
         Returns user email as provided by LTI

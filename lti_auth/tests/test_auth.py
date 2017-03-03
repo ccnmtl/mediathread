@@ -43,13 +43,20 @@ class LTIBackendTest(TestCase):
         self.assertEquals(self.backend.find_or_create_user(self.lti), user)
 
     def test_find_or_create_user2(self):
+        # via lms username
+        username = 'uni123'
+        self.lti.lti_params['lis_person_sourcedid'] = username
+        user = UserFactory(username=username)
+        self.assertEquals(self.backend.find_or_create_user(self.lti), user)
+
+    def test_find_or_create_user3(self):
         # via hashed username
         self.lti.lti_params['oauth_consumer_key'] = '1234567890'
         username = self.backend.get_hashed_username(self.lti)
         user = UserFactory(username=username)
         self.assertEquals(self.backend.find_or_create_user(self.lti), user)
 
-    def test_find_or_create_user3(self):
+    def test_find_or_create_user4(self):
         # new user
         self.lti.lti_params['oauth_consumer_key'] = '1234567890'
         user = self.backend.find_or_create_user(self.lti)

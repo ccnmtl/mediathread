@@ -2,7 +2,7 @@
 from django.core.cache import cache
 from django.test import TestCase
 
-from mediathread.assetmgr.models import Asset, Source
+from mediathread.assetmgr.models import Asset, Source, METADATA_ORIGINAL_OWNER
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     MediathreadTestMixin, AssetFactory,
@@ -24,7 +24,8 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         # Sample Course Image Asset
         self.asset1 = AssetFactory.create(course=self.sample_course,
-                                          primary_source='image')
+                                          primary_source='image',
+                                          author=self.instructor_one)
 
         self.student_note = SherdNoteFactory(
             asset=self.asset1, author=self.student_one,
@@ -168,6 +169,16 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEquals(gann.tags, '')
         self.assertEquals(gann.body, None)
 
+        self.assertEquals(
+            asset.metadata()[METADATA_ORIGINAL_OWNER], 'Instructor One')
+
+        asset2 = Asset.objects.migrate_one(
+            asset, self.sample_course, self.instructor_two)
+        self.assertEquals(asset2.author, self.instructor_two)
+        self.assertEquals(asset2.course, self.sample_course)
+        self.assertEquals(
+            asset2.metadata()[METADATA_ORIGINAL_OWNER], 'Instructor One')
+
     def test_migrate_note_global_annotations(self):
         alt_asset = AssetFactory.create(course=self.alt_course,
                                         primary_source='image')
@@ -205,10 +216,14 @@ class AssetTest(MediathreadTestMixin, TestCase):
             self.asset1, self.alt_course, self.alt_instructor)
         self.assertEquals(new_asset.author, self.alt_instructor)
         self.assertEquals(new_asset.course, self.alt_course)
+        self.assertEquals(new_asset.get_metadata(
+            METADATA_ORIGINAL_OWNER), 'Instructor One')
 
         duplicate_asset = Asset.objects.migrate_one(
             self.asset1, self.alt_course, self.alt_instructor)
         self.assertEquals(new_asset, duplicate_asset)
+        self.assertEquals(duplicate_asset.get_metadata(
+            METADATA_ORIGINAL_OWNER), 'Instructor One')
 
         new_note = SherdNote.objects.migrate_one(
             self.instructor_note, new_asset, self.alt_instructor, True, True)

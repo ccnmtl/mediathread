@@ -58,7 +58,7 @@
             tinymce.init(settings);
 
             this.dirty = false;
-            this.submitted = options.submitted;
+            this.readOnly = options.readOnly;
             this.primaryInstructions = options.primaryInstructions;
             this.secondaryInstructions = options.secondaryInstructions;
 

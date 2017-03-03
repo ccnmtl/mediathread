@@ -275,6 +275,9 @@ class ProjectPublicView(View):
                 (parent and parent.is_sequence_assignment())):
             return SequenceAssignmentReadOnlyView.as_view()(
                 request, project_id=project_id)
+        elif project.is_sequence():
+            return SequenceReadOnlyView.as_view()(
+                request, project_id=project_id)
         else:
             return ProjectReadOnlyView.as_view()(
                 request, project_id=project_id)
@@ -295,6 +298,17 @@ class SequenceAssignmentReadOnlyView(ProjectReadableMixin, TemplateView):
             'responses': [],
             'feedback': None,
             'feedback_count': 0
+        }
+
+
+class SequenceReadOnlyView(ProjectReadableMixin, TemplateView):
+    template_name = 'projects/sequence.html'
+
+    def get_context_data(self, project_id):
+        return {
+            'is_faculty': False,
+            'read_only_view': True,
+            'project': self.project,
         }
 
 

@@ -42,6 +42,7 @@
             tinymce.init(settings);
 
             this.dirty = false;
+            this.readOnly = options.readOnly;
 
             this.mapSignals();
         },

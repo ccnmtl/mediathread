@@ -38,6 +38,7 @@
             <a href="#roster-table">{{object_list|length}} Members</a>{% if invitations|length > 0 %}, <a href="#invite-table">{{invitations|length}} Invitations</a>{% endif %}
         </h3>
     </div>
+    {% if can_edit %}
     <div class="pull-right">
         <button class="btn btn-default btn-sm"
             data-toggle="modal" data-target="#invite-email-user">
@@ -90,6 +91,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <div class="visualclear"></div>
     <a name="roster-table"></a>
     <div class="table-responsive">
@@ -108,7 +110,9 @@
                 <th>
                     Role
                 </th>
+                {% if can_edit %}
                 <th class="nosort">Actions</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -125,6 +129,7 @@
                     <td class="role">
                         {% if role == "instructor" %}
                             Faculty &nbsp;
+                            {% if can_edit %}
                             <form class="inline" action="{% url 'course-roster-demote' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="faculty_id" value="{{user.id}}" />
@@ -133,8 +138,10 @@
                                     <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> Demote
                                 </button>
                             </form>
+                            {% endif %}
                         {% else %}
                             Student &nbsp;
+                            {% if can_edit %}
                             <form class="inline" action="{% url 'course-roster-promote' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="student_id" value="{{user.id}}" />
@@ -143,8 +150,10 @@
                                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> Promote
                                 </button>
                             </form>
+                            {% endif %}
                         {% endif %}
                     </td>
+                    {% if can_edit %}
                     <td>
                         <form class="inline" action="{% url 'course-roster-remove' %}" method="post">
                             {% csrf_token %}
@@ -155,6 +164,7 @@
                             </button>
                         </form>
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

@@ -37,7 +37,7 @@
                             {% if '/roster/' in request.path %}class="active"{% endif %}
                             href="/dashboard/roster/">Roster</a>
                     </li>
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
                         <li>
                             <a {% if '/materials/' in request.path %}class="active"{% endif %}
                                 href="/dashboard/delete/materials/">Materials</a>

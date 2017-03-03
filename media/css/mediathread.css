@@ -4713,10 +4713,12 @@ ul.section-tabs>li>a.active {
 }
 
 /* Sequence assignment submitted state */
+#sequence.read-only .jux-playhead-line .jux-playhead-bottom-cutpoint,
 #sequence.submitted .jux-playhead-line .jux-playhead-bottom-cutpoint {
     display: none;
 }
 
+#sequence.read-only .jux-playhead-line,
 #sequence.submitted .jux-playhead-line {
     height: 10px;
 }

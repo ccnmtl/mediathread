@@ -46,7 +46,8 @@
     var view = new SequenceView({
         el: jQuery('.sequence').first(),
         viewer: '{{request.user.username}}',
-        projectId: {{project.id}}
+        projectId: {{project.id}},
+        readOnly: {% if read_only_view %}true{% else %}false{% endif %}
     });
     </script>
 
@@ -60,6 +61,10 @@
     <div class="spacer"></div>
     <div class="sequence-composition">
         <div class="left title-container">
+            {% if read_only_view %}
+                <h1>{{project.title}}</h1>
+                by {% public_name for project.author %}
+            {% else %}
             <div>
                 <label>Sequence Title</label>&nbsp;
                 <input type="text" name="title"
@@ -67,6 +72,7 @@
                        placeholder="Specify a title"
                        class="project-title form-control" />
             </div>
+            {% endif %}
         </div>
         <div class="right tabs-container">
 
@@ -157,7 +163,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel"
-                 class="tab-pane fade in active"
+                 class="tab-pane fade in active {% if read_only_view %}read-only{% endif %}"
                  id="sequence">
                 <div class="loader">
                     <div class="ball-pulse">

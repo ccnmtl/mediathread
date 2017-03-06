@@ -113,7 +113,28 @@
     <div class="clearfix"></div>
     <div class="spacer"></div>
 
-    {% if not read_only_view %}
+    {% if read_only_view %}
+        {% if assignment.summary|length > 0 %}
+            <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Background
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <p>
+                                {{assignment.summary|safe}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
     <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">

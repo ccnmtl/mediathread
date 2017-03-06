@@ -72,15 +72,15 @@
                         "secondary" selections and/or annotations. The 
                         secondary selections will appear at designated points 
                         when the primary selection plays.</p>
-                        
+
                         <p>This type of assignment is good for assessing how 
                         students juxtapose a primary media object against other 
                         media selections (ie, visual annotations) or a series 
                         of thoughts (ie, textual annotations).</p>
-                        
+
                         <p>The assignment has two workspaces as described 
                         below.</p>
-                        
+
                         <h4>Sequence workspace:</h4>
 
                         <p><img src="{{STATIC_URL}}img/screenshot-sequence.jpg" style="width:500px; border: 1px solid #ccc;" /></p>
@@ -118,16 +118,16 @@
                             which will appear as the primary media object 
                             plays.
                             </p>
-                            
+
                             <p>Instructions may include:</p>
-                            
-                           <span><b>Sequence workspace:</b></span>
+
+                           <span>Sequence workspace:</span>
                            <ul>
                             <li>Criteria for selecting the primary media object</li>
                             <li>Criteria for type, timing, or amount of secondary media selections, aka visual annotations</li>
                             <li>Criteria for type, timing, or amount of student-authored notes, aka textual annotations</li>
                             </ul>
-                           <span><b>Reflection workspace (optional):</b></span>
+                           <span>Reflection workspace (optional):</span>
                            <ul>
                             <li>Criteria for overall characterization or justification of sequence</li>
                             </ul>
@@ -144,7 +144,7 @@
                         </nav>
                     </div>
                     <div data-page="3" data-page-content="custom-instructions" class="hidden page">
-                        <h3>Step 3. Write custom instructions</h3><br />
+                        <h3>Step 3. Write custom instructions &amp; assignment summary</h3><br />
                         <div class="form-group">
                             <label>Additional criteria for selecting primary media object</label>
                             <p>Add brief, targeted instructions to provide guidance on how to choose a primary video or audio. (140 character limit)</p>
@@ -153,7 +153,7 @@
                                 <img src="{{STATIC_URL}}img/screenshot-custom1.jpg" style="width:300px; border: 1px solid #ccc;" />
                                 </div>
                                 <div class="col-xs-6">
-                                <textarea name="custom_instructions_1" class="form-control mceEditor" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                <textarea name="custom_instructions_1" class="form-control" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -168,10 +168,27 @@
                                 <img src="{{STATIC_URL}}img/screenshot-custom2.jpg" style="width:300px; border: 1px solid #ccc;" />
                                 </div>
                                 <div class="col-xs-6">
-                                <textarea name="custom_instructions_2" class="form-control mceEditor" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                <textarea name="custom_instructions_2" class="form-control" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
                                 </div>
                             </div>
-                            
+                        </div>
+
+                        <p>&nbsp;</p>
+
+                        <div class="form-group">
+                            <label>Submitted assignment summary</label>
+                            <p>
+                                Summarize the assignment's learning goals and expected outcome.
+                                This summary will replace instructions if a
+                                submitted response can be displayed publicly.
+                            </p>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <textarea id="summary" name="summary" class="form-control mceEditor" placeholder="Assignment summary (optional)..." style="height: 100px; margin-top: 20px;">
+                                        {{form.instance.summary}}
+                                    </textarea>
+                                </div>
+                            </div>
                         </div>
                         <nav>
                             <ul class="pager">

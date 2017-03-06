@@ -59,6 +59,7 @@
                     tinymce.settings = this.tinymceSettings;
                     tinymce.execCommand('mceAddEditor', true,
                                         'assignment-instructions');
+                    tinymce.execCommand('mceAddEditor', true, 'summary');
                 }
             } else if (pageContent === 'due-date') {
                 // if there is only one radio button, select it

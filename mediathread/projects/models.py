@@ -290,6 +290,7 @@ class Project(models.Model):
     objects = ProjectManager()  # custom manager
 
     title = models.CharField(max_length=1024)
+    summary = models.TextField(null=True, blank=True)
 
     course = models.ForeignKey(Course, related_name='project_set')
 

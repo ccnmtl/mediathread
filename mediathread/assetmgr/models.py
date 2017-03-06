@@ -10,6 +10,9 @@ from django.db import models
 from tagging.models import Tag
 
 
+METADATA_ORIGINAL_OWNER = 'Original Owner'
+
+
 class AssetManager(models.Manager):
 
     def get_by_args(self, args, **constraints):
@@ -74,8 +77,7 @@ class AssetManager(models.Manager):
         try:
             new_asset = Asset.objects.get(title=asset.title,
                                           course=course,
-                                          author=user,
-                                          metadata_blob=asset.metadata_blob)
+                                          author=user)
             if (new_asset.primary.label != asset.primary.label or
                     new_asset.primary.url != asset.primary.url):
                 new_asset = None
@@ -87,6 +89,11 @@ class AssetManager(models.Manager):
                               course=course,
                               author=user,
                               metadata_blob=asset.metadata_blob)
+
+            original_author = (asset.get_metadata(METADATA_ORIGINAL_OWNER) or
+                               asset.author.get_full_name())
+            new_asset.add_metadata(METADATA_ORIGINAL_OWNER, original_author)
+
             new_asset.save()
 
             for source in asset.source_set.all():
@@ -161,6 +168,18 @@ class Asset(models.Model):
             except:  # presumably json decoding, but let's quiet everything
                 return {}
         return {}
+
+    def get_metadata(self, key):
+        metadata = self.metadata()
+        try:
+            return metadata[METADATA_ORIGINAL_OWNER]
+        except KeyError:
+            return ''
+
+    def add_metadata(self, key, value):
+        metadata = self.metadata()
+        metadata[key] = value
+        self.metadata_blob = json.dumps(metadata)
 
     def get_absolute_url(self):
         return reverse('asset-view', args=(self.pk,))

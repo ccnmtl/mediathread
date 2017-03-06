@@ -9,7 +9,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
     all_items_are_visible, all_selections_are_visible,
-    course_information_title, allow_item_download)
+    course_information_title, allow_item_download, allow_roster_changes)
 from mediathread.projects.models import Project
 
 
@@ -224,6 +224,12 @@ class DashboardSettingsForm(forms.ModelForm):
         required=False,
         help_text='Allow instructors to see a download link on the '
         'Item View page. This option is off by default.')
+    allow_roster_changes = forms.BooleanField(
+        label='Instructors can manage the course roster',
+        initial=True,
+        required=False,
+        help_text='Allow instructors to manage course membership, by adding, '
+        'removing, promoting and demoting students')
     lti_integration = forms.BooleanField(
         label='LTI Integration',
         required=False,
@@ -243,7 +249,8 @@ class DashboardSettingsForm(forms.ModelForm):
             'see_eachothers_items': True,
             'see_eachothers_selections': True,
             'lti_integration': False,
-            'allow_item_download': False
+            'allow_item_download': False,
+            'allow_roster_changes': True
         }
 
     def __init__(self, *args, **kwargs):
@@ -258,6 +265,8 @@ class DashboardSettingsForm(forms.ModelForm):
             all_selections_are_visible(self.instance)
         self.fields['allow_item_download'].initial = \
             allow_item_download(self.instance)
+        self.fields['allow_roster_changes'].initial = \
+            allow_roster_changes(self.instance)
         lti_context = LTICourseContext.objects.filter(
             group=self.instance.group.id,
             faculty_group=self.instance.faculty_group.id).first()
@@ -311,6 +320,10 @@ class DashboardSettingsForm(forms.ModelForm):
         course.add_detail(
             course_details.ALLOW_ITEM_DOWNLOAD_KEY,
             int(cleaned_data.get('allow_item_download')))
+
+        course.add_detail(
+            course_details.ALLOW_ROSTER_CHANGES_KEY,
+            int(cleaned_data.get('allow_roster_changes')))
 
         if not cleaned_data.get('see_eachothers_selections'):
             Project.objects.limit_response_policy(course)

@@ -31,11 +31,15 @@
                 default.
             </span>
         </div>
-        {% if user.is_staff%}
-        <div class="well">
-            <h3>Item Download</h3>
-            {% bootstrap_field form.allow_item_download %}
-        </div>
+        {% if user.is_staff %}
+            <div class="well">
+                <h3>Item Download</h3>
+                {% bootstrap_field form.allow_item_download %}
+            </div>
+            <div class="well">
+                <h3>Allow Roster Management</h3>
+                {% bootstrap_field form.allow_roster_changes %}
+            </div>
         {% endif %}
         <div class="well">
             <h3>LTI</h3>

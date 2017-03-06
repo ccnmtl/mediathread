@@ -83,6 +83,16 @@ ALLOW_ITEM_DOWNLOAD_KEY = "allow_item_download"
 ALLOW_ITEM_DOWNLOAD_DEFAULT = 0
 
 
+def allow_roster_changes(course):
+    value = int(course.get_detail(ALLOW_ROSTER_CHANGES_KEY,
+                                  ALLOW_ROSTER_CHANGES_DEFAULT))
+    return bool(value)
+
+
+ALLOW_ROSTER_CHANGES_KEY = "allow_roster_changes"
+ALLOW_ROSTER_CHANGES_DEFAULT = 1
+
+
 def course_information_title(course):
     return course.get_detail(COURSE_INFORMATION_TITLE_KEY,
                              COURSE_INFORMATION_TITLE_DEFAULT)

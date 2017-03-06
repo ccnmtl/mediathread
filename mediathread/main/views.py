@@ -42,8 +42,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     cached_course_is_faculty, course_information_title,
-    has_student_activity
-)
+    has_student_activity, allow_roster_changes)
 from mediathread.main.forms import (
     ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
@@ -471,6 +470,7 @@ class CourseRosterView(LoggedInFacultyMixin, ListView):
         ctx['invitations'] = CourseInvitation.objects.filter(
             course=self.request.course)
         ctx['blocked'] = settings.BLOCKED_EMAIL_DOMAINS
+        ctx['can_edit'] = allow_roster_changes(self.request.course)
         return ctx
 
 

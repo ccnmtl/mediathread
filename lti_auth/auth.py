@@ -21,24 +21,37 @@ class LTIBackend(object):
         return user
 
     def get_hashed_username(self, lti):
-            # (http://developers.imsglobal.org/userid.html)
+        # (http://developers.imsglobal.org/userid.html)
         # generate a username to avoid overlap with existing system usernames
         # sha1 hash result + trunc to 30 chars should result in a valid
         # username with low-ish-chance of collisions
         uid = lti.consumer_user_id()
         return sha1(uid).hexdigest()[:30]
 
-    def find_or_create_user(self, lti):
-        # find the user via email address
-        user = User.objects.filter(email=lti.user_email()).first()
-        if user is None:
+    def get_username(self, lti):
+        username = lti.user_identifier()
+        if not username:
             username = self.get_hashed_username(lti)
-            try:
-                # find the user via generated lti user id
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                # finally, create a new lti user
-                user = self.create_user(lti, username)
+        return username
+
+    def find_user(self, lti):
+        # find the user via lms identifier first
+        user = User.objects.filter(username=lti.user_identifier()).first()
+        if user is None:
+            # find the user via email address
+            user = User.objects.filter(email=lti.user_email()).first()
+            if user is None:
+                # find the user via hashed username
+                username = self.get_hashed_username(lti)
+                user = User.objects.filter(username=username).first()
+
+        return user
+
+    def find_or_create_user(self, lti):
+        user = self.find_user(lti)
+        if user is None:
+            username = self.get_username(lti)
+            user = self.create_user(lti, username)
 
         return user
 

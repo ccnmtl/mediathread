@@ -16,7 +16,7 @@ from django.views.generic.base import View
 import django_comments
 from django_comments.models import COMMENT_MAX_LENGTH
 from djangohelpers.lib import rendered_with, allow_http
-from threadedcomments import ThreadedComment
+from threadedcomments.models import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
 
 from mediathread.api import UserResource

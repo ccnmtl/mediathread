@@ -4,10 +4,11 @@ import json
 import re
 
 from django.contrib.auth.models import User
-from django_comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
+from django_comments.models import Comment
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
 
@@ -463,14 +464,46 @@ class DiscussionIndex(models.Model):
                 if di.collaboration.permission_to(
                     'read', request.course, request.user)]
 
+    class NoNote:
+        def __init__(self, asset=None):
+            self.asset = asset
+
+    @classmethod
+    def references_in_projects(cls, collaboration):
+        a = []
+        ctype = ContentType.objects.get(model='project')
+        if collaboration.content_type != ctype:
+            return a
+
+        obj = collaboration.content_object
+
+        # selection assignment primary item
+        ai = obj.assignmentitem_set.first()
+        if ai:
+            a.append(cls.NoNote(ai.asset))
+
+        # selection assignment response notes
+        for o in obj.projectnote_set.all():
+            a.append(o.annotation)
+
+        # sequence assignment response primary video
+        psa = obj.projectsequenceasset_set.first()
+        if psa:
+            a.append(psa.sequence_asset.spine)
+            for o in psa.sequence_asset.media_elements.all():
+                a.append(o.media)
+
+        return a
+
     @classmethod
     def update_class_references(cls, sherdsource, participant, comment,
                                 collaboration, author):
+
         sherds = SherdNote.objects.references_in_string(sherdsource, author)
-        if not sherds:
-            class NoNote:
-                asset = None
-            sherds = [NoNote(), ]
+        sherds += cls.references_in_projects(collaboration)
+
+        if len(sherds) < 1:
+            sherds = [cls.NoNote(), ]
 
         for ann in sherds:
             try:

@@ -7,29 +7,31 @@ Supporting discovery of media on a web page is a daunting task.  Reasons for thi
 * The way images and video are embedded into web sites varies greatly
 * Many web sites do not want you to embed their media into other sites.
 
-Despite this, we're committed to expanding support for as many web sites as possible.  If you're interested in including media at a certain site, and it's not working or faulty, please "submit an Issue":https://github.com/ccnmtl/mediathread/issues
+Despite this, we're committed to expanding support for as many web sites as possible.  If you're interested in including media at a certain site, and it's not working or faulty, please `submit an issue <https://github.com/ccnmtl/mediathread/issues>`_.
 
 Video
 -----
 
 Generally, MediaThread performs much better with streaming video, so users can seek deep into the video without loading the entire video.
 
-- "Flowplayer":https://flowplayer.org/ v3.*
+- `Flowplayer <https://flowplayer.org/>`_ v3.*
 
   - Detection Requirements:
 
     - must be an OBJECT tag.  If you embedded it with the flowplayer javascript, then it should be fine
-    - If you have several videos ordered to play, currently the bookmarklet will only discover the first one or try to figure out which one is playing.
+    - If you have several videos ordered to play, currently the extension will only discover the first one or try to figure out which one is playing.
 - YouTube
 
   - Strangely, we support YouTube embeds on other pages slightly better than the YouTube website itself.
-  - The bookmarklet will bring in metadata available through "GDATA":http://code.google.com/apis/youtube/2.0/reference.html#Searching_for_videos including author and description
+  - The extension will bring in metadata such as author and
+    description.
   - Detection Requirements:
-  - - must be an EMBED tag with src="https://www.youtube.com/v/...."
 
-- HTML5 video tag (experimental)
+    - must be an EMBED tag with src="https://www.youtube.com/v/...."
 
-    - We have some experimental support for the video tag.
+- HTML5 video tag
+
+    - We have some experimental for the video tag.
     - The main issue with using the video tag is that no single video format is supported in all browsers.  Therefor, for cross-browser support, make sure to include h.264 and either WebM or ogg/theora.
 
 - Quicktime
@@ -41,28 +43,19 @@ Generally, MediaThread performs much better with streaming video, so users can s
       - must be an OBJECT tag with classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
       - the type must have 'quicktime' in it or the @src must end in ".mov"
 
-- RealPlayer
-
-  - RealPlayer is very slow to buffer video and has a decreasing install base, so like the rest of the web, we discourage use of this format
-  - Detection Requirements:
-
-    - For support on IE and other (better) browsers, you need both an EMBED tag inside a duplicate OBJECT tag
-    - The OBECT tag must have an attribute classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA"
-    - The EMBED tag must have an attribute type="audio/x-pn-realaudio-plugin"
-
 - Vimeo
 
   - Detection Requirements
 
-    - The bookmarklet can pull in any video on vimeo.com or embedded on an external site using the Moogaloop player sytax
-    - The bookmarklet looks for an object with clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 and the fragment "moogaloop" in the object's value.
+    - The extension can pull in any video on vimeo.com or embedded on an external site using the Moogaloop player syntax
+    - The extension looks for an object with clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 and the fragment "moogaloop" in the object's value.
 
 - Kaltura
 
   - Detection Requirements
 
-    - The bookmarklet can pull in any video served in a Kaltura player assuming there is no access control/DRM issues.
-    - The bookmarklet looks for an object with clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 and the fragment "kaltura" in the object's value.
+    - The extension can pull in any video served in a Kaltura player assuming there is no access control/DRM issues.
+    - The extension looks for an object with clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 and the fragment "kaltura" in the object's value.
 
 Images
 ------
@@ -75,7 +68,7 @@ Images
     - smaller images are not included to avoid logos, etc.
     - We also avoid images that have the words "logo" in their SRC or ID attributes and images that are marked as header or footer images.
 
-- Embedded "Zoomify":http://www.zoomify.com/ tiled images
+- Embedded `Zoomify <http://www.zoomify.com/>`_ tiled images
 
 Metadata
 --------
@@ -85,7 +78,7 @@ available on the MediaThread asset page.  The other advantage to these
 standards is that they are more reliable for detecting video urls
 (e.g. even if someone hasn't clicked an image to play the video).
 
-- "unAPI":http://unapi.info/specs/ with format="pbcore":http://pbcore.org/PBCore/PBCoreXMLSchema.html
+- `unAPI <http://unapi.info/specs/>`_ with format="pbcore":http://pbcore.org/PBCore/PBCoreXMLSchema.html
 
   - purely a metadata standard, but that's OK.
   - a good example was our motivated support of "WGBH OpenVault":http://openvault.wgbh.org/
@@ -97,19 +90,19 @@ standards is that they are more reliable for detecting video urls
 
       - title, description, contributor, coverage, rightsSummary, subject, and publisher
 
-- "oEmbed.json":http://www.oembed.com/
+- `oEmbed.json <http://www.oembed.com/>`_
 
   - oEmbed is a great standard but does not quite have what we need for annotating, which requires more information about how to seek in a video and know what part of a video is being played.  We support some extensions to oEmbed.json that we use on our own sites
 
-    - "Tiling URL patterns":http://dev.openlayers.org/docs/files/OpenLayers/Layer/XYZ-js.html#OpenLayers.Layer.OSM with xyztile:{url:XYZ_URL, width:WIDTH, height: HEIGHT}
+    - `Tiling URL patterns <http://dev.openlayers.org/docs/files/OpenLayers/Layer/XYZ-js.html#OpenLayers.Layer.OSM>`_ with xyztile:{url:XYZ_URL, width:WIDTH, height: HEIGHT}
     - metadata:{Label1:[Value1, Value2, Value], Label2:[Value1]}
 
   - Detection Requirements:
 
     - must have a LINK element on the page with type="application/json+oembed"
-    - the oEmbed URL must reside within the same security domain as the current page (if the oEmbed link is on a different server, then the bookmarklet cannot make an AJAX request)
+    - the oEmbed URL must reside within the same security domain as the current page (if the oEmbed link is on a different server, then the extension cannot make an AJAX request)
 
-- "Microdata":http://dev.w3.org/html5/md/
+- `Microdata <http://dev.w3.org/html5/md/>`_
 
   - Limited support uses two html attributes: @itemscope and @itemprop
   - For adding some simple metadata, MediaThread supports limited microdata support on embedded images
@@ -129,9 +122,11 @@ standards is that they are more reliable for detecting video urls
 
   - We've added experimental metadata support for images through a &lt;table> microformat so metadata can be added in contexts where authors do not have control of the underlying HTML (e.g. content management systems where HTML content or markdown is filtered).
   - Requirements:
-  - # The &lt;img> parent must be a  &lt;td> cell element.
-  - # The next table row must include the word "Metadata"
-  - # The subsequent table rows must then include two columns, where the first column's text is the metadata key name, and the second column is the metadata key value.
+
+    - The &lt;img> parent must be a  &lt;td> cell element.
+    - The next table row must include the word "Metadata"
+    - The subsequent table rows must then include two columns, where the first column's text is the metadata key name, and the second column is the metadata key value.
+
   - An example:
 
     ::
@@ -144,30 +139,35 @@ standards is that they are more reliable for detecting video urls
 Specific Websites
 -----------------
 
-- "ArtStor":library.artstor.org
+- `ArtStor <http://library.artstor.org/library/>`_
 
   - ArtStor subscribers, can import ArtStor images into MediaThread.
   - User Instructions:
-  - #You do not need to log in to ARTstor to bring images into Mediathread.
-  - #When you find an image you want to analyze in an ARTstor collection, click on its title (underneath its thumbnail).
-  - #A pop-up window will display the image's metadata. At this point, click on the Analyze w/Mediathread bookmarklet in your main browser window. The image will then load in Mediathread.
 
-- "Blake Archive":blakearchive.org
+    - You do not need to log in to ARTstor to bring images into
+      Mediathread.
+    - When you find an image you want to analyze in an ARTstor
+      collection, click on its title (underneath its thumbnail).
+    - A pop-up window will display the image's metadata. At this
+      point, click on the Analyze w/Mediathread extension in your main
+      browser window. The image will then load in Mediathread.
+
+- `Blake Archive <http://www.blakearchive.org/>`_
 
   - example asset: http://www.blakearchive.org/exist/blake/archive/object.xq?objectid=milton.a.illbk.33
 
-- "ClassPop":classpop.ccnmtl.columbia.edu
+- `ClassPop <https://classpop.ccnmtl.columbia.edu/>`_
 
   - example asset: http://classpop.ccnmtl.columbia.edu/content/perspectives-freedom-speech
 
-- "Flickr":flickr.com
+- `Flickr <https://www.flickr.com/>`_
 
   - MediaThread uses "Flickr's javascript
     API": http://blog.jquery.com/2007/09/10/jquery-1-2-released/#Cross-Domain_getJSON_.28using_JSONP.29
     to get the largest image URL available and the metadata available
     to that image.
 
-- "Moving Image Research Collection":mirc.sc.edu
+- `Moving Image Research Collection <http://mirc.sc.edu/>`_
 
   - example asset: http://mirc.sc.edu/islandora/object/usc%3A1974
 
@@ -178,9 +178,9 @@ Specific Websites
     has a non-standard but consistant URL structure to retrieve image
     tiles for these high-resolution images.
 
-* "Wikipedia":wikipedia.org
+* `Wikipedia <https://www.wikipedia.org/>`_
 
-* "YouTube":www.youtube.com
+* `YouTube <https://www.youtube.com/>`_
 
   - It's not always easy to figure out which video is playing (for
     example on channel pages), but we attempt to learn that and get
@@ -189,4 +189,4 @@ Specific Websites
     the import may still work if you have flash installed, but are in
     youtube's "HTML5 mode"
 
-* "Vimeo":vimeo.com
+* `Vimeo <https://vimeo.com/>`_

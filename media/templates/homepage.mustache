@@ -77,13 +77,10 @@
             </form>
         {{/is_faculty}}
 
-        {{! TODO: remove is_superuser check when feature is ready }}
-        {{#is_superuser}}
         <form action="/project/create/" method="post" class="create-form">
         <input type="hidden" name="project_type" value="sequence"/>
         <input type="submit" value="Create Sequence" />
         </form>
-        {{/is_superuser}}
     </div>
 </div>
 

@@ -2,7 +2,7 @@
 {% load user_projects coursetags %}
 
 {% block title %}
-    {% if project.title %}{{project.title}}{% else %}Sequence{% endif %}
+    {% if project.title %}&mdash; {{project.title}}{% else %}&mdash; Sequence{% endif %}
 {% endblock %}
 
 {% block css %}

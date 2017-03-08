@@ -385,6 +385,10 @@ button.jux-play {
     z-index: 0;
 }
 
+.jux-timeline-ruler.hover {
+    font-weight: bold;
+}
+
 .jux-timeline-hline {
     height: 1px;
     position: relative;

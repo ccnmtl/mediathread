@@ -7,6 +7,10 @@ button.jux-play {
     outline: none;
 }
 
+button.jux-rewind.disabled {
+    color: #888;
+}
+
 .form-group {
     margin-bottom: 15px;
 }

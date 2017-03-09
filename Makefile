@@ -23,3 +23,8 @@ harvest3: $(PY_SENTINAL)
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/quickedit.feature
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/sliding_panels.feature
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/publishtoworld.composition.feature
+
+eslint: $(JS_SENTINAL)
+	$(NODE_MODULES)/.bin/eslint $(JS_FILES)
+
+.PHONY: eslint

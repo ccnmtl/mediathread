@@ -31,7 +31,7 @@ from mediathread.main.views import (
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
-    CourseResendInviteView, set_user_setting)
+    CourseResendInviteView, set_user_setting, LTICourseSelector)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -153,9 +153,12 @@ urlpatterns = [
     url(r'^affil/(?P<pk>\d+)/activate/$',
         AffilActivateView.as_view(),
         name='affil_activate'),
+
     url(r'^course/list/$',
         MethCourseListView.as_view(),
         name='course_list'),
+    url(r'^course/lti/(?P<context>\w[^/]*)/$',
+        LTICourseSelector.as_view(), name='lti-course-select'),
 
     # Bookmarklet
     url(r'^accounts/logged_in.js$', IsLoggedInView.as_view(), {},

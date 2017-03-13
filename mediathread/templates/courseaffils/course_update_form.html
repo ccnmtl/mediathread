@@ -41,17 +41,6 @@
                 {% bootstrap_field form.allow_roster_changes %}
             </div>
         {% endif %}
-        <div class="well">
-            <h3>LTI</h3>
-            {% bootstrap_field form.lti_integration %}
-            {% if lti_context and lti_context.enable %}
-                <h5>Unique Course Identifier</h5>
-                <ol>
-                    <li>custom_course_context={{lti_context.uuid}}</li>
-                    <li><a href="https://github.com/ccnmtl/mediathread/wiki/LTI-Integration">Read full configuration instructions</a></li>
-                </ol>
-            {% endif %}
-        </div>
         <div class="form-group">
             <button class="btn btn-primary" type="submit">Save</button>
             <a href="." class="btn btn-default" role="button">Cancel</a>

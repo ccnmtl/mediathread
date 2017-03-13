@@ -1,0 +1,67 @@
+{% load coursetags %}
+{% load methtags %}
+{% get_courses for user as courses %}
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" />
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container">
+                <div class="well">
+                    <h2>Course Configuration</h2>
+                    {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
+                        {% if courses|length < 1 %}
+                            <p class="lead"><a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course</p>
+                        {% else %}
+                            <p class="lead">
+                            Connect a Mediathread course to your Canvas course.<br />
+                            Don't see your course? <a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course first.</p>
+
+                            <table class="table course-choices tablesorter">
+                                <thead>
+                                    <tr>
+                                        <th>Course Title</th>
+                                        <th>Term</th>
+                                        <th class="nosort">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in courses %}
+                                        {% if course.group.course_group.count < 1 %}
+                                            <tr>
+                                                <td>{{course.title}}</td>
+                                                <td>
+                                                    {% if course.info.termyear %}
+                                                        {{course.info.termyear}}
+                                                    {% elif course.to_dict %}
+                                                        {{course.to_dict.term|int_to_term}} {{course.to_dict.year}}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <form action="{% url 'lti-enable-course' %}" method="post">
+                                                        <input type="hidden" name="group" value="{{course.group.id}}">
+                                                        <input type="hidden" name="faculty_group" value="{{course.faculty_group.id}}">
+                                                        <input type="hidden" name="lms_course" value="{{lms_course}}">
+                                                        <button type="submit">Connect</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                         {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    {% else %}
+                        <p class="lead">
+                            Your {{title}} course has not been configured to use this component.<br />
+                            Contact your instructor for more information.</p>
+                        <p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div> 
+</body>
+</html>

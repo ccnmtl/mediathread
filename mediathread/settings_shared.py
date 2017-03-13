@@ -190,8 +190,10 @@ LTI_TOOL_CONFIGURATION = {
     'launch_url': 'lti/',
     'embed_url': 'asset/embed/',
     'embed_icon_url': 'media/img/icons/icon-16.png',
-    'embed_tool_id': 'mediathread'
+    'embed_tool_id': 'mediathread',
+    'landing_url': '{}://{}/course/lti/{}/'
 }
+
 LTI_EXTRA_PARAMETERS = ['custom_course_context']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')

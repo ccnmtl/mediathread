@@ -1,20 +1,20 @@
 from datetime import datetime
 import json
 import re
-
 from smtplib import SMTPRecipientsRefused, SMTPDataError
+
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
 from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ImproperlyConfigured
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
+from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -747,10 +747,6 @@ class InstructorDashboardSettingsView(
         ctx = super(InstructorDashboardSettingsView, self).get_context_data(
             *args, **kwargs)
         course = ctx.get('object')
-        lti_context = LTICourseContext.objects.filter(
-            group=course.group.id,
-            faculty_group=course.faculty_group.id).first()
-        ctx['lti_context'] = lti_context
         ctx['has_student_activity'] = has_student_activity(course)
         return ctx
 
@@ -1018,6 +1014,18 @@ Faculty: {} <{}>
         messages.success(self.request, 'You\'ve activated your course.')
         self.make_pmt_activation_item(form, self.request.user)
         return super(AffilActivateView, self).form_valid(form)
+
+
+class LTICourseSelector(LoggedInMixin, View):
+
+    def get(self, request, context):
+        try:
+            ctx = LTICourseContext.objects.get(lms_course_context=context)
+            url = '/?set_course={}'.format(ctx.group.name)
+        except LTICourseContext.DoesNotExist:
+            url = '/'
+
+        return HttpResponseRedirect(url)
 
 
 class ClearTestCache(View):

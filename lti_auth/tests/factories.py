@@ -42,7 +42,7 @@ def generate_lti_request(course_context=None, provider=None, use=None):
 
     params = BASE_LTI_PARAMS.copy()
     if course_context:
-        params.update({'custom_course_context': course_context.uuid})
+        params.update({'context_id': course_context.lms_course_context})
     if provider:
         params.update({'tool_consumer_info_product_family_code': provider})
     if use:
@@ -90,3 +90,4 @@ class LTICourseContextFactory(factory.DjangoModelFactory):
 
     group = factory.SubFactory(GroupFactory)
     faculty_group = factory.SubFactory(GroupFactory)
+    lms_course_context = factory.Sequence(lambda n: 'lti%d' % n)

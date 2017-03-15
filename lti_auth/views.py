@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -40,32 +39,32 @@ class LTIAuthMixin(object):
                 'lti_auth/fail_auth.html', {},
                 context_instance=RequestContext(request))
 
+        # login
+        login(request, user)
+
         # check if course is configured
         try:
-            ctx = lti.custom_course_context()
+            ctx = LTICourseContext.objects.get(
+                lms_course_context=lti.course_context())
         except (KeyError, ValueError, LTICourseContext.DoesNotExist):
-            lti.clear_session(request)
             return render_to_response(
-                'lti_auth/fail_course_configuration.html', {},
+                'lti_auth/fail_course_configuration.html',
+                {
+                    'roles': lti.user_roles(),
+                    'user': user,
+                    'lms_course': lti.course_context()
+                },
                 context_instance=RequestContext(request))
 
         # add user to the course
         self.join_groups(lti, ctx, user)
-
-        # login
-        login(request, user)
-
+        self.lti = lti
         return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)
 
 
 class LTIRoutingView(LTIAuthMixin, View):
     request_type = 'initial'
     role_type = 'any'
-
-    def custom_landing_page(self):
-        key = u'tool_consumer_info_product_family_code'
-        provider = self.request.POST.get(key, '').lower()
-        return 'canvas' in provider or 'blackboard' in provider
 
     def add_extra_parameters(self, url):
         if not hasattr(settings, 'LTI_EXTRA_PARAMETERS'):
@@ -88,15 +87,10 @@ class LTIRoutingView(LTIAuthMixin, View):
                 self.request.scheme, domain,
                 settings.LTI_TOOL_CONFIGURATION['embed_url'],
                 request.POST.get('launch_presentation_return_url'))
-        elif self.custom_landing_page():
-            # Canvas does not support launching in a new window/tab
-            # Provide a "launch in new tab" landing page
-            url = reverse('lti-landing-page')
         else:
-            url = '/'
+            url = reverse('lti-landing-page', args=[self.lti.course_context()])
 
         url = self.add_extra_parameters(url)
-
         return HttpResponseRedirect(url)
 
 
@@ -129,10 +123,11 @@ class LTILandingPage(TemplateView):
 
     def get_context_data(self, **kwargs):
         domain = self.request.get_host()
-        landing_url = '%s://%s/' % (self.request.scheme, domain)
+        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
+            self.request.scheme, domain, kwargs.get('context'))
 
         return {
-            'landing_url': landing_url,
+            'landing_url': url,
             'title': settings.LTI_TOOL_CONFIGURATION['title']
         }
 
@@ -146,16 +141,12 @@ class LTICourseEnableView(View):
     def post(self, *args, **kwargs):
         group_id = self.request.POST.get('group')
         faculty_group_id = self.request.POST.get('faculty_group')
+        course_context = self.request.POST.get('lms_course')
 
         (ctx, created) = LTICourseContext.objects.get_or_create(
-                group=get_object_or_404(Group, id=group_id),
-                faculty_group=get_object_or_404(Group, id=faculty_group_id))
+            group=get_object_or_404(Group, id=group_id),
+            faculty_group=get_object_or_404(Group, id=faculty_group_id),
+            lms_course_context=course_context)
 
-        ctx.enable = self.request.POST.get('lti-enable', 0) == '1'
-        ctx.save()
-
-        messages.add_message(self.request, messages.INFO,
-                             'Your changes were saved.', fail_silently=True)
-
-        next_url = self.request.POST.get('next', '/')
-        return HttpResponseRedirect(next_url)
+        url = reverse('lti-landing-page', args=[course_context])
+        return HttpResponseRedirect(url)

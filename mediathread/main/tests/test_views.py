@@ -20,7 +20,6 @@ import factory
 from freezegun import freeze_time
 from threadedcomments.models import ThreadedComment
 
-from lti_auth.models import LTICourseContext
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
@@ -45,6 +44,7 @@ from mediathread.main.views import (
     unis_list,
 )
 from mediathread.projects.models import Project
+from lti_auth.tests.factories import LTICourseContextFactory
 
 
 class SimpleViewTest(TestCase):
@@ -1426,7 +1426,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
-                'lti_integration': True,
                 'allow_item_download': True
             },
             follow=True)
@@ -1442,10 +1441,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
         self.assertEqual(allow_item_download(course), True)
-        lti_ctx = LTICourseContext.objects.get(
-            group=course.group,
-            faculty_group=course.faculty_group)
-        self.assertTrue(lti_ctx.enable)
 
         response = self.client.post(
             reverse('course-settings-general'),
@@ -1455,12 +1450,9 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
-                'lti_integration': False,
                 'allow_item_download': False
             },
             follow=True)
-        lti_ctx.refresh_from_db()
-        self.assertFalse(lti_ctx.enable)
 
     def test_post_duplicate_title(self):
         # Duplicate titles should be allowed, since it may be the same
@@ -1522,7 +1514,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             'publish_to_world': False,
             'see_eachothers_items': True,
             'see_eachothers_selections': False,
-            'lti_integration': True,
             'reset': True,
         }, follow=True)
 
@@ -1540,26 +1531,19 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                          'From Your Instructor')
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
-        lti_ctx = LTICourseContext.objects.get(
-            group=course.group,
-            faculty_group=course.faculty_group)
-        self.assertFalse(lti_ctx.enable)
 
         response = self.client.post(reverse('course-settings-general'), {
             'title': 'New Title 1',
             'homepage_title': 'updated homepage title',
             'publish_to_world': True,
             'see_eachothers_items': True,
-            'see_eachothers_selections': True,
-            'lti_integration': True,
+            'see_eachothers_selections': True
         }, follow=True)
         self.assertEqual(response.status_code, 200)
         course.refresh_from_db()
         self.assertEqual(course.title, 'New Title 1')
         self.assertEqual(course_information_title(course),
                          'updated homepage title')
-        lti_ctx.refresh_from_db()
-        self.assertTrue(lti_ctx.enable)
 
         response = self.client.post(reverse('course-settings-general'), {
             'title': 'New Title',
@@ -1567,7 +1551,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             'publish_to_world': True,
             'see_eachothers_items': True,
             'see_eachothers_selections': True,
-            'lti_integration': True,
             'reset': True,
         }, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -1578,5 +1561,22 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
                          'From Your Instructor')
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
-        lti_ctx.refresh_from_db()
-        self.assertFalse(lti_ctx.enable)
+
+
+class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+    def test_get(self):
+        ctx = LTICourseContextFactory(
+            group=self.sample_course.group,
+            faculty_group=self.sample_course.faculty_group)
+
+        url = reverse('lti-course-select', args=[ctx.lms_course_context])
+
+        self.client.login(
+            username=self.instructor_one.username, password='test')
+        response = self.client.get(url, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['course'], self.sample_course)

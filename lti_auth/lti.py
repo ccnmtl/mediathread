@@ -65,6 +65,10 @@ class LTI(object):
 
         return []
 
+    def course_context(self):
+        if 'context_id' in self.lti_params:
+            return self.lti_params.get('context_id')
+
     def custom_course_context(self):
         """
         Returns the custom LTICourseContext id as provided by LTI

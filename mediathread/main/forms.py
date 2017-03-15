@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
 from registration.forms import RegistrationForm
 
-from lti_auth.models import LTICourseContext
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
@@ -230,11 +229,6 @@ class DashboardSettingsForm(forms.ModelForm):
         required=False,
         help_text='Allow instructors to manage course membership, by adding, '
         'removing, promoting and demoting students')
-    lti_integration = forms.BooleanField(
-        label='LTI Integration',
-        required=False,
-        help_text='Allow external tools to access this course. '
-        'Defaults to off.')
     reset = forms.BooleanField(
         widget=forms.HiddenInput,
         initial=False,
@@ -248,7 +242,6 @@ class DashboardSettingsForm(forms.ModelForm):
             'publish_to_world': False,
             'see_eachothers_items': True,
             'see_eachothers_selections': True,
-            'lti_integration': False,
             'allow_item_download': False,
             'allow_roster_changes': True
         }
@@ -267,26 +260,9 @@ class DashboardSettingsForm(forms.ModelForm):
             allow_item_download(self.instance)
         self.fields['allow_roster_changes'].initial = \
             allow_roster_changes(self.instance)
-        lti_context = LTICourseContext.objects.filter(
-            group=self.instance.group.id,
-            faculty_group=self.instance.faculty_group.id).first()
-        self.fields['lti_integration'].initial = \
-            (lti_context and lti_context.enable)
-
         return r
 
     def reset(self):
-        try:
-            lti_ctx = LTICourseContext.objects.get(
-                group=self.instance.group,
-                faculty_group=self.instance.faculty_group)
-        except LTICourseContext.DoesNotExist:
-            lti_ctx = None
-
-        if lti_ctx:
-            lti_ctx.enable = False
-            lti_ctx.save()
-
         return self.initial_data
 
     def clean(self):
@@ -334,11 +310,5 @@ class DashboardSettingsForm(forms.ModelForm):
 
         if not cleaned_data.get('publish_to_world'):
             Project.objects.reset_publish_to_world(course)
-
-        lti_ctx, created = LTICourseContext.objects.get_or_create(
-            group=self.instance.group,
-            faculty_group=self.instance.faculty_group)
-        lti_ctx.enable = cleaned_data.get('lti_integration')
-        lti_ctx.save()
 
         return course

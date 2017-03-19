@@ -169,6 +169,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 rc.url = obj.mp3;
             } else if (obj.mp4_audio) {
                 rc.url = obj.mp4_audio;
+            } else if (obj.mp4_panopto) {
+                rc.url = obj.mp4_panopto;
             }
             return rc;
         };

@@ -13,7 +13,7 @@ flake8==3.3.0
 lxml==3.7.3
 fuzzywuzzy==0.15.0  # lettuce
 mock==2.0.0  # sure
-sure==1.4.1  # lettuce
+sure==1.4.3  # lettuce
 extras==1.0.0
 linecache2==1.0.0  # traceback2
 traceback2==1.4.0  # testtools

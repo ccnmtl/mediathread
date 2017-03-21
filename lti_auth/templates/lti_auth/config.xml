@@ -20,7 +20,7 @@
       {% if embed_tool_id %}
           <lticm:options name="editor_button">
             <lticm:property name="enabled">true</lticm:property>
-            <lticm:property name="icon_url">{{embed_icon_url}}</lticm:property>
+            <lticm:property name="icon_url">{{STATIC_URL}}{{embed_icon_url}}</lticm:property>
             <lticm:property name="selection_width">500</lticm:property>
             <lticm:property name="selection_height">600</lticm:property>
             <lticm:property name="tool_id">{{embed_tool_id}}</lticm:property>

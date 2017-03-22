@@ -103,16 +103,14 @@ class LTIConfigView(TemplateView):
         launch_url = '%s://%s/%s' % (
             self.request.scheme, domain,
             settings.LTI_TOOL_CONFIGURATION['launch_url'])
-        icon_url = '%s://%s/%s' % (
-            self.request.scheme, domain,
-            settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
 
         ctx = {
             'domain': domain,
             'launch_url': launch_url,
             'title': settings.LTI_TOOL_CONFIGURATION['title'],
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
-            'embed_icon_url': icon_url,
+            'embed_icon_url':
+                settings.LTI_TOOL_CONFIGURATION['embed_icon_url'],
             'embed_tool_id': settings.LTI_TOOL_CONFIGURATION['embed_tool_id'],
         }
         return ctx

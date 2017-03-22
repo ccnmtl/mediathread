@@ -189,7 +189,7 @@ LTI_TOOL_CONFIGURATION = {
     'embed selections in your course material.',
     'launch_url': 'lti/',
     'embed_url': 'asset/embed/',
-    'embed_icon_url': 'media/img/icons/icon-16.png',
+    'embed_icon_url': 'img/icons/icon-16.png',
     'embed_tool_id': 'mediathread',
     'landing_url': '{}://{}/course/lti/{}/'
 }

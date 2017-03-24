@@ -17,7 +17,10 @@
 </head>
 
 <body>
-    <h3>{{title|truncatechars:40}} {{timecode}}</h3>
+    <h3>{{title}}</h3>
+    {% if timecode %}
+        <p>{{timecode}}</p>
+    {% endif %}
     <div id="videoclipbox" class="videoclipbox" style="display: none;">
         <div class="clipplay"></div><br />
         <div class="asset-object" style="border: none; background-color: #ededed;"></div>

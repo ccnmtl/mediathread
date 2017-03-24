@@ -4603,6 +4603,7 @@ ul.section-tabs>li>a.active {
     margin-top: 2px;
 }
 
+.collection-embed,
 #collection-modal .modal-dialog {
     width: 650px !important;
 }
@@ -4619,7 +4620,11 @@ ul.section-tabs>li>a.active {
 #collection-modal .col-md-5,
 #collection-modal .col-md-4,
 #collection-modal .col-md-3,
-#collection-modal .col-md-2 {
+#collection-modal .col-md-2,
+#collection-modal .col-xs-5,
+#collection-modal .col-xs-4,
+#collection-modal .col-xs-3,
+#collection-modal .col-xs-2 {
     padding-right: 5px;
     padding-left: 5px;
 }
@@ -4628,6 +4633,10 @@ ul.section-tabs>li>a.active {
     max-height: 85vh; /* Sets the height to 80/100ths of the viewport. */
     overflow-y: auto;
     margin-bottom: 2px;
+}
+
+.collection-embed .collection-body {
+    padding: 15px;
 }
 
 #collection-modal .materials {
@@ -4647,6 +4656,12 @@ ul.section-tabs>li>a.active {
 #collection-modal .collection-widget .actions {
     margin-top: 0;
 }
+
+#collection-modal .collection-widget .selection-citation {
+    float: left;
+    width: 70%;
+}
+
 
 #collection-modal .record-asset-properties {
     width: 75%;

@@ -8,12 +8,12 @@
     http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
     http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
     <blti:launch_url>{{launch_url}}</blti:launch_url>
-    <blti:title>{{title}}</blti:title>
+    <blti:title>{% if debug %}Dev{% endif %} {{title}}</blti:title>
     <blti:description>{{description}}</blti:description>
     <blti:extensions platform="canvas.instructure.com">
       <lticm:property name="privacy_level">public</lticm:property>
       <lticm:property name="domain">{{domain}}</lticm:property>
-      <lticm:property name="text">{{title}}</lticm:property>
+      <lticm:property name="text">{% if debug %}Dev{% endif %} {{title}}</lticm:property>
       <lticm:options name="course_navigation">
         <lticm:property name="enabled">true</lticm:property>
       </lticm:options>
@@ -21,7 +21,7 @@
           <lticm:options name="editor_button">
             <lticm:property name="enabled">true</lticm:property>
             <lticm:property name="icon_url">{{STATIC_URL}}{{embed_icon_url}}</lticm:property>
-            <lticm:property name="selection_width">500</lticm:property>
+            <lticm:property name="selection_width">665</lticm:property>
             <lticm:property name="selection_height">600</lticm:property>
             <lticm:property name="tool_id">{{embed_tool_id}}</lticm:property>
           </lticm:options>

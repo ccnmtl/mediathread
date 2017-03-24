@@ -1,29 +1,28 @@
-/* global _: true, Backbone: true, CitationView: true, CollectionList: true */
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-
-(function(jQuery) {
-    var global = this;
-
-    global.AssetEmbedView = Backbone.View.extend({
-        events: {
-            'click .btn-embed-item': 'onEmbedItem',
-            'click .btn-show-submit': 'onShowSubmitDialog',
-            'click .toggle-feedback': 'onToggleFeedback',
-            'click .save-feedback': 'onSaveFeedback'
-        },
-        initialize: function(options) {
-            _.bindAll(this, 'render');
-
-            this.collectionList = new CollectionList({
-                '$parent': jQuery(this.el),
-                'template': 'embed',
-                'template_label': 'collection_table',
-                'create_annotation_thumbs': true,
-                'space_owner': options.space_owner,
-                'owners': options.owners,
-                'citable': true,
-                'current_asset': null
-            });
+function initializeAssetEmbed(options) {
+    jQuery(window).one('collection.ready', {'self': this},
+        function(event, params) {
+            jQuery(window).trigger('collection.open', [{
+                'allowAssets': true,
+                'disable': []
+            }]);
         }
+    );
+
+    document.addEventListener('asset.select', function(e) {
+        e.preventDefault();
+        var $form = jQuery('#asset-embed-form');
+        var $elt = jQuery('#selection-to-embed');
+
+        if (e.detail.annotationId) {
+            $elt.attr('name', 'selection-' + e.detail.annotationId);
+            $elt.attr('value', 'Embed Selection');
+        } else {
+            $elt.attr('name', 'item-' + e.detail.assetId);
+            $elt.attr('value', 'Embed Item');
+        }
+
+        $form.submit();
+        return false;
     });
-}(jQuery));
+}
+

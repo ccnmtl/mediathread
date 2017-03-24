@@ -239,7 +239,7 @@ CollectionWidget.prototype.mapEvents = function() {
 
         if (annotationId && editable) {
             self.signalInsert(assetId, annotationId);
-            self.$modal.modal('hide');
+            self.hideCollection();
             return;
         }
 
@@ -255,7 +255,7 @@ CollectionWidget.prototype.mapEvents = function() {
                 },
                 success: function(json, textStatus, xhr) {
                     self.signalInsert(assetId, json.annotation.id);
-                    self.$modal.modal('hide');
+                    self.hideCollection();
                 }
             });
             return;
@@ -273,7 +273,7 @@ CollectionWidget.prototype.mapEvents = function() {
             },
             success: function(json, textStatus, xhr) {
                 self.signalInsert(assetId, json.annotation.id);
-                self.$modal.modal('hide');
+                self.hideCollection();
             }
         });
     });
@@ -299,12 +299,28 @@ CollectionWidget.prototype.open = function(displayMode, params) {
         this.$modal.removeClass('show-assets');
     }
 
-    this.$modal.modal('show');
+    this.showCollection();
+};
+
+CollectionWidget.prototype.showCollection = function() {
+    if (this.$modal.hasClass('modal')) {
+        this.$modal.modal('show');
+    } else {
+        this.$modal.show();
+    }
+};
+
+CollectionWidget.prototype.hideCollection = function() {
+    if (this.$modal.hasClass('modal')) {
+        this.$modal.modal('hide');
+    } else {
+        this.$modal.hide();
+    }
 };
 
 CollectionWidget.prototype.onCancel = function() {
     if (this.displayMode !== 'gallery') {
-        this.$modal.modal('hide');
+        this.hideCollection();
     } else {
         this.$quickEditView.fadeOut();
         this.$el.fadeIn();
@@ -318,7 +334,7 @@ CollectionWidget.prototype.onSave = function(evt, params) {
         this.$quickEditView.fadeOut();
         this.$el.fadeIn();
     } else {
-        this.$modal.modal('hide');
+        this.hideCollection();
 
         var ctx = {'detail': params};
         ctx.detail.caller = this.caller;
@@ -576,7 +592,7 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
     this.updateSwitcher();
 
     var self = this;
-    var $body = this.$modal.find('.modal-body');
+    var $body = this.$modal.find('.collection-body');
 
     $body.scroll(function() {
         if ((jQuery(this).scrollTop() + jQuery(this).outerHeight() >=
@@ -592,6 +608,7 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
 
     jQuery(window).trigger('resize');
     self.setLoading(false);
+    jQuery(window).trigger('collection.ready');
 };
 
 CollectionWidget.prototype.initCitationView = function() {
@@ -621,7 +638,7 @@ CollectionWidget.prototype.quickEdit = function(title, evtType,
     // Setup the edit view
     var self = this;
     window.annotationList.init({
-        'parent': this.$modal.find('.modal-body'),
+        'parent': this.$modal.find('.collection-body'),
         'asset_id': assetId,
         'annotation_id': annotationId,
         'edit_state': evtType,

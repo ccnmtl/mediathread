@@ -1,10 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
     Item Embed View
 {% endblock %}
 
 {% block css %}
+    <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
 
     <!--All the annotation css -->
@@ -12,14 +14,14 @@
 {% endblock %}
 
 {% block uncompressable_css %}
-    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
 {% endblock %}
 
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
+
+    <script src="{{STATIC_URL}}js/app/assetmgr/collectionwidget.js" ></script>
     <script src="{{STATIC_URL}}js/app/assetmgr/assetembed.js" type="text/javascript"></script>
 {% endblock %}
 
@@ -29,7 +31,7 @@
 
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            var view = new AssetEmbedView({
+            initializeAssetEmbed({
                 el: jQuery('.asset-embed-view').first(),
                 space_owner: '{{request.user.username}}',
                 owners: {{owners|safe}}
@@ -38,18 +40,25 @@
     </script>
 {% endblock %}
 
-{% block standardnav %}
+{% block container %}
 {% endblock %}
 
-{% block courseinformation %}
-{% endblock %}
-
-{% block content %}
-    <div class="asset-embed-view">
-        <form action='.' method='post'>
-            <input type="hidden" name="return_url" value="{{return_url}}" />
-            <div id="collection_table" class="collection_table"></div>
-        </form>
+{% block collection-modal %}
+    <form id="asset-embed-form" action="." method="post">
+        <input type="hidden" name="return_url" value="{{return_url}}">
+        <input id="selection-to-embed" type="hidden" name="" value="">
+    </form>
+    <div id="collection-modal" class="show-assets collection-embed" style="width: 650px">
+        <div class="collection-body">
+            <div class="quick-edit" style="display: none"></div>
+            <div class="collection-view"></div>
+        </div>
+        <div class="next-page-loader" style="display: none">
+            <div>
+                <img alt="Loading..." src='{% static "img/ajax-loader-small.gif" %}'>
+                Loading more items
+            </div>
+        </div>
     </div>
 {% endblock %}
 

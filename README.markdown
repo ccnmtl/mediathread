@@ -1,6 +1,4 @@
-===========================================================
-Mediathread
-===========================================================
+# Mediathread
 
 [![Build Status](https://travis-ci.org/ccnmtl/mediathread.svg?branch=master)](https://travis-ci.org/ccnmtl/mediathread)
 [![Documentation Status](https://readthedocs.org/projects/mediathread/badge/?version=latest)](https://mediathread.readthedocs.io/en/latest/?badge=latest)

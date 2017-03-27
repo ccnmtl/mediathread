@@ -59,6 +59,7 @@
     {% course_role for request.user in course as role_in_course %}
     <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
     <div id="dialog-confirm" style="display: none"></div>
+    {% block container %}
     <div id="container">
         {% block masthead %}
             <!-- ###### Site banner ###### -->
@@ -201,7 +202,9 @@
                 <div id="clearfooter"></div>
             </div>
         </div><!-- id="pagebody" -->
+        {% endblock %}
     </div><!-- id="container" -->
+    
 
     {% block footer %}
         <!-- ###### Footer ###### -->
@@ -220,6 +223,7 @@
         </div><!-- id="footer" -->
     {% endblock %}
 
+    {% block collection-modal %}
     <!-- Collection Modal -->
     <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -241,6 +245,7 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    {% endblock %}
 
     <script type="text/javascript">
         var STATIC_URL = '{{STATIC_URL}}';

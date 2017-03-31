@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext
 from django.views.generic.base import View
 import django_comments
@@ -160,8 +160,8 @@ class DiscussionView(LoggedInCourseMixin, View):
 
         if not request.is_ajax():
             data['discussion'] = root_comment
-            return render_to_response('discussions/discussion.html', data,
-                                      context_instance=RequestContext(request))
+            return render(request, 'discussions/discussion.html', data,
+                          context_instance=RequestContext(request))
         else:
             vocabulary = VocabularyResource().render_list(
                 request, Vocabulary.objects.filter(course=request.course))

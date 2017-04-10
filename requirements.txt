@@ -44,7 +44,7 @@ contextlib2==0.5.4
 rcssmin==1.0.6
 rjsmin==1.0.12
 
-djangowind==0.16.1
+djangowind==1.0.0
 django-tagging==0.4.5
 django-reversion==1.9.3
 djangohelpers==0.18.2

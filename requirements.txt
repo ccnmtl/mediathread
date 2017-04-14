@@ -34,7 +34,7 @@ coverage==4.3.4
 logilab-common==1.4.0
 lazy-object-proxy==1.2.2
 wrapt==1.10.10
-astroid==1.4.9  # pylint
+astroid==1.5.1  # pylint
 pylint==1.6.5
 pyasn1==0.2.3
 pyOpenSSL==16.2.0

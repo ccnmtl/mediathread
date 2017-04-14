@@ -35,6 +35,8 @@ logilab-common==1.4.0
 lazy-object-proxy==1.2.2
 wrapt==1.10.10
 
+editdistance==0.3.1
+
 pylint==1.7.0
 
 astroid==1.5.1  # pylint

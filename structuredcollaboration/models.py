@@ -2,7 +2,7 @@ import importlib
 
 from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
 from django.db import models
@@ -66,8 +66,8 @@ class Collaboration(models.Model):
     object_pk = models.CharField(_('object ID'), max_length=255,
                                  null=True, blank=True)
 
-    content_object = generic.GenericForeignKey(ct_field="content_type",
-                                               fk_field="object_pk")
+    content_object = GenericForeignKey(ct_field="content_type",
+                                       fk_field="object_pk")
 
     policy_record = models.ForeignKey(CollaborationPolicyRecord,
                                       null=True, default=None, blank=True)

@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.test import TestCase, RequestFactory
 import reversion
+from reversion.models import Version
 
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
@@ -121,7 +122,8 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 405)
 
     def test_project_save_valid(self):
-        versions = reversion.get_for_object(self.project_private).get_unique()
+        versions = Version.objects.get_for_object(
+            self.project_private).get_unique()
         self.assertEquals(sum(1 for v in versions), 1)
 
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -150,7 +152,8 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertIn(self.student_one, project.participants.all())
         self.assertIn(self.student_two, project.participants.all())
 
-        versions = reversion.get_for_object(self.project_private).get_unique()
+        versions = Version.objects.get_for_object(
+            self.project_private).get_unique()
         self.assertEquals(sum(1 for v in versions), 2)
 
     def test_project_save_swap_authors(self):
@@ -212,12 +215,12 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post('/project/create/', data, follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.redirect_chain[0][0].startswith(
-            'http://testserver/project/view/'))
+            '/project/view/'))
 
         project = Project.objects.get(course=self.sample_course,
                                       title='Untitled')
 
-        versions = reversion.get_for_object(project).get_unique()
+        versions = Version.objects.get_for_object(project).get_unique()
         self.assertEquals(sum(1 for v in versions), 1)
         self.assertIsNone(project.date_submitted)
         self.assertIn(self.student_one, project.participants.all())
@@ -235,7 +238,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(title='Student Essay')
 
-        versions = reversion.get_for_object(project).get_unique()
+        versions = Version.objects.get_for_object(project).get_unique()
         self.assertEquals(sum(1 for v in versions), 2)
         self.assertIsNotNone(project.date_submitted)
 
@@ -395,7 +398,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, data, follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.redirect_chain[0][0].startswith(
-            'http://testserver/project/view/'))
+            '/project/view/'))
 
         assignment_response = Project.objects.get(id=assignment_response.id)
         self.assertFalse(assignment_response.is_submitted())

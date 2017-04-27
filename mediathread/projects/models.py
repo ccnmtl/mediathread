@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 import reversion
+from reversion.models import Version
 from threadedcomments.models import ThreadedComment
 
 from mediathread.assetmgr.models import Asset
@@ -638,14 +639,14 @@ class Project(models.Model):
 
     def latest_version(self):
         try:
-            version = reversion.get_for_object(self).get_unique().next()
+            version = Version.objects.get_for_object(self).get_unique().next()
             return version.revision_id
         except StopIteration:
             return None
 
     def versions(self):
         # all previous versions, latest versions first, duplicates removed
-        return reversion.get_for_object(self).get_unique()
+        return Version.objects.get_for_object(self).get_unique()
 
 
 reversion.register(Project)

@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.db import models
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -244,9 +243,9 @@ def threaded_comment_citations(all_comments, viewer):
     citation references to sherdnotes
     """
     citations = []
-    the_model = models.get_model('djangosherd', 'SherdNote')
+    from mediathread.djangosherd.models import SherdNote
     for obj in all_comments:
-        refs = the_model.objects.references_in_string(obj.comment, viewer)
+        refs = SherdNote.objects.references_in_string(obj.comment, viewer)
         citations.extend(refs)
     return citations
 

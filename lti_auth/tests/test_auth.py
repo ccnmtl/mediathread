@@ -45,7 +45,7 @@ class LTIBackendTest(TestCase):
     def test_find_or_create_user2(self):
         # via lms username
         username = 'uni123'
-        self.lti.lti_params['lis_person_sourcedid'] = username
+        self.lti.lti_params['custom_canvas_user_login_id'] = username
         user = UserFactory(username=username)
         self.assertEquals(self.backend.find_or_create_user(self.lti), user)
 

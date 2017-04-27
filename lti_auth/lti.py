@@ -29,8 +29,8 @@ class LTI(object):
              self.lti_params['user_id'])
 
     def user_identifier(self):
-        if 'lis_person_sourcedid' in self.lti_params:
-            return self.lti_params['lis_person_sourcedid']
+        if 'custom_canvas_user_login_id' in self.lti_params:
+            return self.lti_params['custom_canvas_user_login_id']
 
     def user_email(self):
         """

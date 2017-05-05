@@ -659,7 +659,6 @@ ul#standardnav {
     margin: 1px 10px 0 10px;
     padding: 0;
     border: 0;
-    background: transparent url('../img/logo_ccnmtl.gif') left top no-repeat;
 }
 
 #footer #logo_ccnmtl a
@@ -2802,7 +2801,7 @@ a.hs-control.hs-control-show.plist.float
 }
 
 #course-list {
-    margin-bottom: 10px;
+    margin-bottom: 25px;
 }
 
 .collection_button {
@@ -4485,16 +4484,6 @@ form[name="sequence-assignment-edit"] input[type=radio] {
 
 .roster-messaging .glyphicon-ok {
     color: #3c763d;
-}
-
-.search-box {
-    -webkit-border-radius: 18px;
-    -moz-border-radius: 18px;
-    border-radius: 18px;
-}
-
-.course-search {
-    width: 200px;
 }
 
 .projectlist.pagination {

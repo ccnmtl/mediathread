@@ -65,12 +65,14 @@
     </div>
 
     {% if courses|length > 5 %}
-    <form role="search">
-        <input class="course-search search-box form-control"
-               type="search"
-               data-column="all"
-               autofocus
-               placeholder="Filter">
+    <form class="form-inline" role="search">
+        <div class="form-group">
+            <label for="course-title-filter">Filter: </label>
+            <input id="course-title-filter" class="form-control"
+                   type="search"
+                   data-column="all"
+                   autofocus>
+        </div>
     </form>
     {% endif %}
 

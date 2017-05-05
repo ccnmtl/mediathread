@@ -115,7 +115,9 @@
                                                 {% if is_faculty %}
                                                     <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
                                                         href="{% url 'discussion-delete' disc.id %}">
-                                                    <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  /></a>
+                                                    <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  />
+                                                    <span class="sr-only">Remove this Discussion</span>
+                                                    </a>
                                                 {% endif %}
                                             </div>
                                             <a href="/discussion/{{disc.id}}/">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
@@ -254,7 +256,9 @@
                             {% if collection.thumb_url %}
                                 <div class="source_thumb">
                                     <a href="/explore/redirect/{{collection.id}}/">
-                                        <img src="{{STATIC_URL}}{{collection.thumb_url}}" class="collection-link" />
+                                        <img src="{{STATIC_URL}}{{collection.thumb_url}}" alt="{{collection.title}} icon"
+                                            class="collection-link" />
+                                        <span class="sr-only">{{collection.title}} icon</span>
                                     </a>
                                 </div>
                             {% endif %}

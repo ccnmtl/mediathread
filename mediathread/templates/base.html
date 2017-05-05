@@ -68,6 +68,7 @@
                 <div id="mediathread_logo">
                     <a href="/">
                         <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
+                        <span class="sr-only">Home</span>
                     </a>
                 </div>
                 {% block standardnav %}
@@ -204,47 +205,49 @@
         </div><!-- id="pagebody" -->
         {% endblock %}
     </div><!-- id="container" -->
-    
 
     {% block footer %}
         <!-- ###### Footer ###### -->
         <div id="footer">
 
             <!-- CCNMTL title/logo -->
-            <h4 id="logo_ccnmtl">
-                <a href="http://ccnmtl.columbia.edu" target="_blank" title="Columbia Center for New Media Teaching and Learning"></a>
-            </h4>
+            <a id="logo_ccnmtl" href="http://ctl.columbia.edu" target="_blank" title="Columbia for Teaching and Learning">
+                <img src="{{STATIC_URL}}img/logo_ccnmtl.gif" alt="CCNMTL Logo">
+                <span class="sr-only">Visit ctl.columbia.edu</span>
+            </a>
 
-           <ul id="footernav">
+           <ol id="footernav">
                <li><a href="http://mediathread.info" target="_blank">About</a></li>
                <li><a href="/contact/">Contact Us</a></li>
                <li><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></li>
-            </ul>
+            </ol>
         </div><!-- id="footer" -->
     {% endblock %}
 
     {% block collection-modal %}
-    <!-- Collection Modal -->
-    <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Course Collection</h4>
-                </div>
-                <div class="modal-body collection-body">
-                    <div class="quick-edit" style="display: none"></div>
-                    <div class="collection-view"></div>
-                </div>
-                <div class="next-page-loader" style="display: none">
-                    <div>
-                        <img alt="Loading..." src='{% static "img/ajax-loader-small.gif" %}'>
-                        Loading more items
+        {% if request.user.is_authenticated %}
+        <!-- Collection Modal -->
+        <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Course Collection</h4>
                     </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+                    <div class="modal-body collection-body">
+                        <div class="quick-edit" style="display: none"></div>
+                        <div class="collection-view"></div>
+                    </div>
+                    <div class="next-page-loader" style="display: none">
+                        <div>
+                            <img alt="Loading..." src='{% static "img/ajax-loader-small.gif" %}'>
+                            Loading more items
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        {% endif %}
     {% endblock %}
 
     <script type="text/javascript">

@@ -322,7 +322,7 @@ class SherdNote(Annotation):
     title = models.CharField(blank=True, max_length=1024, null=True)
     asset = models.ForeignKey(Asset, related_name="sherdnote_set")
     author = models.ForeignKey(User, null=True, blank=True)
-    tags = TagField()
+    tags = TagField(max_length=1024)
     body = models.TextField(blank=True, null=True)
     added = models.DateTimeField('date created', editable=False,
                                  auto_now_add=True)

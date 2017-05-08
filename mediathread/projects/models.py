@@ -518,19 +518,21 @@ class Project(models.Model):
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
-        # If this project is an assignment response, verify the parent
-        # assignment's response policy sanctions a read by the viewer
+        # First check: if this is not a composition
         if (not self.is_composition() or
             collaboration.policy_record.policy_name ==
                 PUBLISH_WHOLE_WORLD[0]):
-            return True  # this project is an assignment
+            return True
 
         parent = collaboration.get_parent()
         if parent is None:
             return True  # this project does not have a parent assignment
 
+        # If this project is an assignment response, verify the parent
+        # assignment's response policy sanctions a read by the viewer
+
         # the author & faculty can always view a submitted response
-        if (cached_course_is_faculty(course, viewer) or
+        if ((course and cached_course_is_faculty(course, viewer)) or
                 self.is_participant(viewer)):
             return True
 
@@ -543,7 +545,10 @@ class Project(models.Model):
                 self._response_by_author(parent.get_children_for_object(self),
                                          viewer))
             return viewer_response and viewer_response.is_submitted()
-        else:  # assignment.response_view_policy == 'never':
+        else:
+            # assignment.response_view_policy == 'never'
+            # or a public url is being accessed and the user has changed
+            # security settings
             return False
 
     def can_cite(self, course, viewer):

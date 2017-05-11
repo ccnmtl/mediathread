@@ -44,7 +44,7 @@ astroid==1.5.2  # pylint
 pyasn1==0.2.3
 pyOpenSSL==17.0.0
 ndg-httpsclient==0.4.2
-requests==2.13.0
+requests==2.14.2
 contextlib2==0.5.5
 rcssmin==1.0.6
 rjsmin==1.0.12

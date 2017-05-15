@@ -272,7 +272,7 @@ class DashboardSettingsForm(forms.ModelForm):
 
         cleaned_data = super(DashboardSettingsForm, self).clean()
         title = cleaned_data.get('title')
-        if title.strip() == '':
+        if title is None or title.strip() == '':
             self.add_error('title', 'Title can\'t be blank.')
 
         return cleaned_data

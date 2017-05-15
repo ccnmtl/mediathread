@@ -156,7 +156,7 @@ class AssetCreateView(View):
         returns a dict of sources represented in GET/POST args
         '''
         sources = {}
-        args = request.REQUEST
+        args = request.POST if request.method == 'POST' else request.GET
         for key, val in args.items():
             if cls.good_asset_arg(key) and val != '' and len(val) < 4096:
                 source = Source(label=key, url=val)
@@ -190,9 +190,9 @@ class AssetCreateView(View):
 
     def parse_user(self, request):
         user = request.user
-        if ((user.is_staff or CourseAccess.allowed(request)) and
-                'as' in request.REQUEST):
-            as_user = request.REQUEST['as']
+        args = request.POST if request.method == 'POST' else request.GET
+        if ((user.is_staff or CourseAccess.allowed(request)) and 'as' in args):
+            as_user = args['as']
             user = get_object_or_404(User, username=as_user)
 
         return user

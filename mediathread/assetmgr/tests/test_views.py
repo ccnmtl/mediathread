@@ -245,7 +245,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/asset/most_recent/', {}, follow=True)
         self.assertEquals(response.status_code, 200)
 
-        url = 'http://testserver/asset/%s/' % asset1.id
+        url = '/asset/%s/' % asset1.id
         self.assertEquals(response.redirect_chain, [(url, 302)])
 
     def test_asset_delete(self):
@@ -459,7 +459,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             asset = Asset.objects.get(title="Test Video")
             self.assertRedirects(
                 response,
-                "http://testserver/accounts/login/?next=/asset/%s/" % asset.id,
+                "/accounts/login/?next=/asset/%s/" % asset.id,
                 status_code=302,
                 target_status_code=200)
             self.assertEquals(asset.author.username, self.student_one.username)

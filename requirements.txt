@@ -1,5 +1,5 @@
 --index-url https://pypi.ccnmtl.columbia.edu/
-Django==1.8.18
+Django==1.9.13
 psycopg2==2.7.1
 #for MySQL: MySQL-python==1.2.5
 statsd==3.2.1
@@ -51,7 +51,7 @@ rjsmin==1.0.12
 
 djangowind==1.0.0
 django-tagging==0.4.5
-django-reversion==1.9.3
+django-reversion==2.0.8
 djangohelpers==0.18.2
 django-contrib-comments==1.8.0
 django-threadedcomments==1.1

@@ -10,7 +10,7 @@ urlpatterns = [
         taxonomy_workspace,
         name='taxonomy-workspace'),
 
-    url(r'^/(?P<vocabulary_id>\d+)/$',
+    url(r'^(?P<vocabulary_id>\d+)/$',
         taxonomy_workspace,
         name='taxonomy-workspace-view')
 ]

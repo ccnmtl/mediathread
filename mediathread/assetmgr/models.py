@@ -47,7 +47,7 @@ class AssetManager(models.Manager):
 
     def migrate(self, assets, course, user, faculty, object_map,
                 include_tags, include_notes):
-        note_model = models.get_model('djangosherd', 'sherdnote')
+        from mediathread.djangosherd.models import SherdNote
         for old_asset in assets:
             if old_asset.id not in object_map['assets']:
                 new_asset = Asset.objects.migrate_one(old_asset,
@@ -56,7 +56,7 @@ class AssetManager(models.Manager):
 
                 object_map['assets'][old_asset.id] = new_asset
 
-                notes = note_model.objects.get_related_notes(
+                notes = SherdNote.objects.get_related_notes(
                     [old_asset], None, faculty, True)
 
                 # remove all extraneous global annotations
@@ -64,7 +64,7 @@ class AssetManager(models.Manager):
 
                 for old_note in notes:
                     if (old_note.id not in object_map['notes']):
-                        new_note = note_model.objects.migrate_one(
+                        new_note = SherdNote.objects.migrate_one(
                             old_note, new_asset, user,
                             include_tags, include_notes)
                         object_map['notes'][old_note.id] = new_note
@@ -239,9 +239,9 @@ class Asset(models.Model):
         return tags
 
     def global_annotation(self, user, auto_create=True):
-        note_model = models.get_model('djangosherd', 'sherdnote')
-        return note_model.objects.global_annotation(self, user,
-                                                    auto_create=auto_create)[0]
+        from mediathread.djangosherd.models import SherdNote
+        return SherdNote.objects.global_annotation(self, user,
+                                                   auto_create=auto_create)[0]
 
     def media_type(self):
         label = 'video'
@@ -261,8 +261,8 @@ class Asset(models.Model):
         is tagging the asset .. though it'd be nicer to return
         whether this function actually did anything.
         """
-        note_model = models.get_model('djangosherd', 'sherdnote')
-        bucket, created = note_model.objects.global_annotation(self, user)
+        from mediathread.djangosherd.models import SherdNote
+        bucket, created = SherdNote.objects.global_annotation(self, user)
         bucket.add_tag(tag)
         bucket.save()
         return created

@@ -19,9 +19,6 @@ from selenium.webdriver.support.expected_conditions import (
     visibility_of, presence_of_element_located)
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mediathread.assetmgr.models import Asset
-from mediathread.factories import MediathreadTestMixin
-from mediathread.projects.models import Project
 import selenium.webdriver.support.ui as ui
 
 
@@ -46,6 +43,7 @@ def reset_database(variables):
     world.browser.get(django.django_url("/test/clear/"))
 
     # add the sample course and some user data by default
+    from mediathread.factories import MediathreadTestMixin
     world.mixin = MediathreadTestMixin()
     world.mixin.setup_sample_course()
 
@@ -737,6 +735,7 @@ def i_write_some_text_for_the_panel(step, panel):
 
 @step(u'the composition "([^"]*)" has text')
 def the_composition_title_has_text(step, title):
+    from mediathread.projects.models import Project
     project = Project.objects.get(title=title)
 
     if len(project.body) < 1:
@@ -1076,6 +1075,7 @@ def get_column(title):
 
 @step(u'When I view the "([^"]*)" asset')
 def when_i_view_the_title_asset(step, title):
+    from mediathread.assetmgr.models import Asset
     item = Asset.objects.filter(title=title).first()
     url = reverse('asset-view', kwargs={'asset_id': item.id})
     world.browser.get(django.django_url(url))

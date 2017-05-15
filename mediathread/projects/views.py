@@ -237,7 +237,7 @@ def project_revisions(request, project_id):
     data = {'revisions': []}
     fmt = "%m/%d/%y %I:%M %p"
     for v in project.versions():
-        author = User.objects.get(id=v.field_dict['author'])
+        author = User.objects.get(id=v.field_dict['author_id'])
         data['revisions'].append({
             'version_number': v.revision_id,
             'versioned_id': v.object_id,

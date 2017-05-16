@@ -203,7 +203,7 @@ class ProjectManager(models.Manager):
         visible = []
         hidden = []
         for idx, r in enumerate(responses):
-            assert str(r.id) == collaborations[idx].object_pk
+            assert r.id == collaborations[idx].object_pk
             if r.can_read(course, viewer, collaborations[idx]):
                 visible.append(r)
             else:

@@ -21,7 +21,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
 from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext, loader
+from django.template import loader
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 
@@ -97,9 +97,7 @@ def asset_switch_course(request, asset_id):
         rv['switch_to'] = asset.course
         rv['switch_from'] = request.course
         rv['redirect'] = reverse('asset-view', args=[asset_id])
-        return render(request, 'assetmgr/asset_not_found.html',
-                      rv,
-                      context_instance=RequestContext(request))
+        return render(request, 'assetmgr/asset_not_found.html', rv)
     except Asset.DoesNotExist:
         raise Http404("This item does not exist.")
 
@@ -256,12 +254,12 @@ class AssetCreateView(View):
             asset_url += "?level=item"
 
             template = loader.get_template('assetmgr/analyze.html')
-            context = RequestContext(request, {
+            context = {
                 'request': request,
                 'user': user,
                 'action': request.POST.get('button', None),
                 'asset_url': asset_url
-            })
+            }
             return HttpResponse(template.render(context))
         else:
             # server2server create (wardenclyffe)
@@ -921,15 +919,12 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             except Asset.DoesNotExist:
                 return asset_switch_course(request, asset_id)
             except Source.DoesNotExist:
-                ctx = RequestContext(request)
-                return render(request, '500.html', {}, context_instance=ctx)
+                return render(request, '500.html', {})
 
         ctx = {'asset_id': asset_id, 'annotation_id': annot_id}
 
         if not request.is_ajax():
-            return render(request, 'assetmgr/asset_workspace.html',
-                          ctx,
-                          context_instance=RequestContext(request))
+            return render(request, 'assetmgr/asset_workspace.html', ctx)
 
         qs = Vocabulary.objects.filter(course=request.course)
         vocabulary = VocabularyResource().render_list(request, qs)

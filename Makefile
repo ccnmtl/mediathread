@@ -10,19 +10,10 @@ all: jenkins
 include *.mk
 
 harvest1: $(PY_SENTINAL)
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/main/features
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/assetmgr/features
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/taxonomy/features
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 3 -a mediathread.main,mediathread.assetmgr,mediathread.taxonomy
 
 harvest2: $(PY_SENTINAL)
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/assignment.feature
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/selectionassignment.feature
-
-harvest3: $(PY_SENTINAL)
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/composition.feature
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/quickedit.feature
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/sliding_panels.feature
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 4 $(APP)/projects/features/publishtoworld.composition.feature
+	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 3 -a mediathread.projects
 
 eslint: $(JS_SENTINAL)
 	$(NODE_MODULES)/.bin/eslint $(JS_FILES)

@@ -5,7 +5,6 @@ from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.template.context import RequestContext
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View, TemplateView
 
@@ -35,10 +34,7 @@ class LTIAuthMixin(object):
         user = authenticate(request=request, lti=lti)
         if user is None:
             lti.clear_session(request)
-            return render(
-                request,
-                'lti_auth/fail_auth.html', {},
-                context_instance=RequestContext(request))
+            return render(request, 'lti_auth/fail_auth.html', {})
 
         # login
         login(request, user)
@@ -55,8 +51,7 @@ class LTIAuthMixin(object):
                     'roles': lti.user_roles(),
                     'user': user,
                     'lms_course': lti.course_context()
-                },
-                context_instance=RequestContext(request))
+                })
 
         # add user to the course
         self.join_groups(lti, ctx, user)

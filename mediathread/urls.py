@@ -1,5 +1,6 @@
 import os.path
 
+import courseaffils
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -116,7 +117,7 @@ urlpatterns = [
         {}, 'asset-detail'),
     url(r'^api/asset/$', AssetCollectionView.as_view(), {},
         'assets-by-course'),
-    url(r'^api/user/courses$', 'courseaffils.views.course_list_query',
+    url(r'^api/user/courses$', courseaffils.views.course_list_query,
         name='api-user-courses'),
     url(r'^api/tag/$', TagCollectionView.as_view(), {}, 'tag-collection-view'),
     url(r'^api/project/user/(?P<record_owner_name>\w[^/]*)/$',

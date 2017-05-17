@@ -6,7 +6,6 @@ env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest1
   - TEST_SUITE=harvest2
-  - TEST_SUITE=harvest3
 python:
   - "2.7"
 before_install:

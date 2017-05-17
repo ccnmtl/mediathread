@@ -11,11 +11,11 @@ if (!Sherd.Video) { Sherd.Video = {}; }
 if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
     Sherd.Video.Flowplayer = function () {
         var self = this;
-        
+
         this.state = {ready: false};
-       
+
         Sherd.Video.Base.apply(this, arguments); // inherit -- video.js -- base.js
-        
+
         this.presentations = {
             'small': {
                 width: function () { return 310; },
@@ -79,7 +79,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' +
                       '<span id="currtime' + playerID + '">00:00:00</span>/<span id="totalcliplength' + playerID + '">00:00:00</span></div>' + 
                       '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
-                    '<div class="no-brand sherd-flowplayer no-hover fixed-controls" data-ratio="0.68" ' +
+                    '<div class="fp-full fp-outlined no-brand sherd-flowplayer no-hover fixed-controls" data-aspect-ratio="12:5"' +
                           'poster="' + posterUrl + '"' +
                            'style="display:block; width:' + obj.options.width + 'px;' +
                            'height:' + obj.options.height + 'px;" id="' + playerID + '">' +
@@ -341,8 +341,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             var w = self.components.width;
             return {
                 w: w,
-                trackX: 57,
-                trackWidth: w - 215,
+                trackX: 2,
+                trackWidth: w,
                 visible: true
             };
         };

@@ -2492,12 +2492,11 @@ div.gallery-item h4.asset_title {
    display: inline-block;
 }
 
-/* flowplayer minimalist skin override */
-.flowplayer.fixed-controls .fp-controls {
-    bottom: 0 !important;
-}
-.flowplayer.fixed-controls .fp-time em {
-    bottom: 10px !important;
+/* flowplayer skin override */
+
+.fp-player .fp-share,
+.fp-player .fp-playlist {
+    display: none;
 }
 
 .sherd-flowplayer-wrapper,

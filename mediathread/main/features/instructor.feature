@@ -46,25 +46,7 @@ Feature: Instructor Dashboard
 
         Finished using Selenium
 
-    Scenario: instructor_dashboard.feature 3. Test Create Discussion
-        Using selenium
-        Given there is a sample response
-        Given I am instructor_one in Sample Course
-
-        There is a Create button
-        When I click the Create button
-
-        When I click the Create Discussion button
-        Then I am at the Discussion page
-        When I click the "Sample Course" link
-        Given the home workspace is loaded
-        There is a "Discussion Title" link
-        When I click the "Discussion Title" link
-        Then I am at the Discussion page
-
-        Finished using Selenium
-
-    Scenario: instructor_dashboard.feature 4. Test Create Composition
+    Scenario: instructor_dashboard.feature 3. Test Create Composition
         Using selenium
         Given there is a sample response
         Given I am instructor_one in Sample Course
@@ -88,7 +70,7 @@ Feature: Instructor Dashboard
 
         Finished using Selenium
 
-    Scenario: instructor_dashboard.feature 5. Test Assignment Responses
+    Scenario: instructor_dashboard.feature 4. Test Assignment Responses
         Using selenium
         Given there is a sample response
         Given I am instructor_one in Sample Course
@@ -110,7 +92,7 @@ Feature: Instructor Dashboard
 
         Finished using Selenium
 
-    Scenario: instructor_dashboard.feature 6. Student Contributions
+    Scenario: instructor_dashboard.feature 5. Student Contributions
         Using selenium
         Given there is a sample response
         Given I am instructor_one in Sample Course

@@ -22,9 +22,10 @@ BROWSER = 'Headless'
 LETTUCE_SERVER_PORT = 8002
 
 LETTUCE_APPS = (
+    'mediathread.assetmgr',
+    'mediathread.discussions',
     'mediathread.main',
     'mediathread.projects',
-    'mediathread.assetmgr',
     'mediathread.taxonomy'
 )
 

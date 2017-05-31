@@ -83,7 +83,10 @@ def setup_browser():
 
 @after.all
 def teardown_browser(total):
-    world.browser.quit()
+    try:
+        world.browser.quit()
+    except OSError:
+        pass
 
 
 @step(u'Using selenium')

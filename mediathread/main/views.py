@@ -22,7 +22,6 @@ from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
-from django.template.context import Context
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.views.generic.base import TemplateView, View
@@ -329,7 +328,7 @@ class ContactUsView(FormView):
         subject = "Mediathread Contact Us Request"
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/contact_description.txt')
-        form_data['description'] = unicode(tmpl.render(Context(form_data)))
+        form_data['description'] = unicode(tmpl.render(form_data))
 
         # POST to the task assignment destination
         task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
@@ -693,7 +692,7 @@ class CourseAcceptInvitationView(FormView):
     def get_invite(self, uuid):
         try:
             return CourseInvitation.objects.filter(uuid=uuid).first()
-        except ValueError:
+        except (ValueError, ValidationError):
             return None  # likely a badly formed UUID string
 
     def get(self, request, *args, **kwargs):

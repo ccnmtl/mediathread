@@ -44,6 +44,23 @@
 {% endblock %}
 
 {% block collection-modal %}
+    <div>
+        <div id="header">
+            <div id="standardnav_container">
+                <div id="mediathread_logo">
+                    <a href="https://mediathread.ccnmtl.columbia.edu/" target="_blank">
+                        <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
+                        <span class="sr-only">Home</span>
+                    </a>
+                </div>
+                <ul id="standardnav">
+                    <li>
+                        <a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread" target="_blank">Help</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <form id="asset-embed-form" action="." method="post">
         <input type="hidden" name="return_url" value="{{return_url}}">
         <input id="selection-to-embed" type="hidden" name="" value="">

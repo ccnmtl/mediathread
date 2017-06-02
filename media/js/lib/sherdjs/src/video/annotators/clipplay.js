@@ -50,11 +50,8 @@ if (!Sherd.Video.Annotators.ClipPlay) {
         this.microformat.create = function (obj) {
             return {
                 htmlID: 'play-selection',
-                text: '<button class="btn btn-sm btn-default"' +
-                    'id="play-selection">' +
-                    'Play Selection ' +
-                    '<span class="glyphicon glyphicon-play" ' +
-                    'aria-hidden="true"></span></button>'
+                text: '<span id="play-selection" class="glyphicon glyphicon-play" ' +
+                    'aria-hidden="true"></span>'
             };
         };
 

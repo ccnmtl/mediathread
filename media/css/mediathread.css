@@ -4724,3 +4724,39 @@ ul.section-tabs>li>a.active {
 #sequence.submitted .jux-playhead-line {
     height: 10px;
 }
+
+/* LTI Asset View */
+.lti-asset-view .flowplayer-timedisplay {
+    display: none;
+}
+
+.lti-asset-view .asset-display {
+    text-align: left;
+}
+
+.lti-asset-view .videoclipbox-metadata {
+    background-color: black;
+    color: white;
+    height: 35px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.lti-asset-view .videoclipbox-metadata .title {
+    margin: 0 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+    height: 27px;
+}
+
+.lti-asset-view .clipplay-container {
+    cursor: pointer;
+    padding: 4px 6px;
+    margin: -5px 0 0 5px;
+}
+
+.lti-asset-view .glyphicon-play {
+    margin: -2px 0 0 4px;
+}

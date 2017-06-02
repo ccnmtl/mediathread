@@ -13,6 +13,7 @@ from django.test.client import RequestFactory
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import (
+    EMBED_WIDTH, EMBED_HEIGHT,
     asset_workspace_courselookup,
     RedirectToExternalCollectionView,
     RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
@@ -717,8 +718,8 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 
         view = AssetEmbedListView()
         dims = view.get_dimensions(primary)
-        self.assertEquals(dims['width'], view.EMBED_IMAGE_WIDTH)
-        self.assertEquals(dims['height'], view.EMBED_IMAGE_WIDTH)
+        self.assertEquals(dims['width'], EMBED_WIDTH)
+        self.assertEquals(dims['height'], EMBED_HEIGHT)
 
         # set a width/height
         primary.width = 400
@@ -726,8 +727,8 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
         primary.save()
 
         dims = view.get_dimensions(primary)
-        self.assertEquals(dims['width'], view.EMBED_IMAGE_WIDTH)
-        self.assertEquals(dims['height'], 400)
+        self.assertEquals(dims['width'], EMBED_WIDTH)
+        self.assertEquals(dims['height'], 425)
 
     def test_get_dimensions_video(self):
         asset = AssetFactory.create(
@@ -737,8 +738,8 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 
         view = AssetEmbedListView()
         dims = view.get_dimensions(asset.primary)
-        self.assertEquals(dims['width'], view.EMBED_VIDEO_WIDTH)
-        self.assertEquals(dims['height'], view.EMBED_VIDEO_HEIGHT)
+        self.assertEquals(dims['width'], EMBED_WIDTH)
+        self.assertEquals(dims['height'], EMBED_HEIGHT)
 
     def test_get_secret(self):
         secrets = {'http://testserver/': 'testing'}
@@ -800,7 +801,7 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
             self.assertTrue('item' in ctx)
             self.assertEquals(ctx['item_id'], asset.id)
             self.assertEquals(ctx['selection_id'], note.id)
-            self.assertEquals(ctx['presentation'], 'gallery')
+            self.assertEquals(ctx['presentation'], 'medium')
             self.assertEquals(ctx['title'], 'Selection')
 
 

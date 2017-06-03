@@ -4734,12 +4734,17 @@ ul.section-tabs>li>a.active {
     text-align: left;
 }
 
+.lti-asset-view .videoclipbox {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+}
+
 .lti-asset-view .videoclipbox-metadata {
-    background-color: black;
-    color: white;
-    height: 35px;
+    color: #777; 
+    height: 55px;
     padding: 8px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .lti-asset-view .videoclipbox-metadata .title {
@@ -4748,15 +4753,11 @@ ul.section-tabs>li>a.active {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 300px;
-    height: 27px;
+    height: 37px;
+    font-weight: bold;
 }
 
-.lti-asset-view .clipplay-container {
-    cursor: pointer;
-    padding: 4px 6px;
-    margin: -5px 0 0 5px;
-}
-
-.lti-asset-view .glyphicon-play {
-    margin: -2px 0 0 4px;
+.lti-asset-view .videoclipbox-metadata .timecode {
+    font-weight: normal;
+    margin-top: 8px;
 }

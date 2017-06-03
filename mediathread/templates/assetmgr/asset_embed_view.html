@@ -16,16 +16,24 @@
     {% endcompress %}
 </head>
 
-<body class="lti-asset-view">
+<body class="lti-asset-view" style="width: 480px; height: 425px;">
     <div id="videoclipbox" class="videoclipbox" style="display: none;">
         <div class="videoclipbox-metadata">
-            <img class="pull-left" src='{% static "img/icons/icon-16.png" %}' alt_text="mediathread icon" />
-            <div class="title pull-left">{{title}}</div>
-            {% if timecode %}
-            <div class="clipplay-container pull-right">
-                {{timecode}} <div class="clipplay pull-right"></div>
+            <div>
+                <img class="pull-left" src='{% static "img/icons/icon-16.png" %}' alt_text="mediathread icon" />
+                <div class="title pull-left" title="{{title}}">
+                    {{title}}
+                    {% if timecode %}
+                        <br />
+                        <div class="timecode small">
+                            {{timecode}}
+                        </div>
+                    {% endif %}
+                 </div>
+                {% if timecode %}
+                     <div class="clipplay pull-right"></div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
 
         <div class="asset-object" style="border: none; background-color: #ededed;"></div>

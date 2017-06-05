@@ -16,13 +16,26 @@
     {% endcompress %}
 </head>
 
-<body>
-    <h3>{{title}}</h3>
-    {% if timecode %}
-        <p>{{timecode}}</p>
-    {% endif %}
+<body class="lti-asset-view" style="width: 480px; height: 425px;">
     <div id="videoclipbox" class="videoclipbox" style="display: none;">
-        <div class="clipplay"></div><br />
+        <div class="videoclipbox-metadata">
+            <div>
+                <img class="pull-left" src='{% static "img/icons/icon-16.png" %}' alt_text="mediathread icon" />
+                <div class="title pull-left" title="{{title}}">
+                    {{title}}
+                    {% if timecode %}
+                        <br />
+                        <div class="timecode small">
+                            {{timecode}}
+                        </div>
+                    {% endif %}
+                 </div>
+                {% if timecode %}
+                     <div class="clipplay pull-right"></div>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="asset-object" style="border: none; background-color: #ededed;"></div>
         <div class="asset-display"></div>
         <div class="clipstrip-display"></div>
@@ -52,7 +65,7 @@
                 {% endif %}
                 'autoplay': false,
                 'winHeight': function() {
-                    return 200;
+                    return {{defaultHeight}} - 50
                 }
             });
 

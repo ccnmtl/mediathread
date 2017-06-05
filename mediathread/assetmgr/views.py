@@ -765,13 +765,14 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
+EMBED_WIDTH = 480
+EMBED_HEIGHT = 425
+
+
 class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          TemplateView):
 
     template_name = 'assetmgr/asset_embed_list.html'
-    EMBED_IMAGE_WIDTH = 200
-    EMBED_VIDEO_WIDTH = 350
-    EMBED_VIDEO_HEIGHT = 305
 
     def get(self, request):
         user_resource = UserResource()
@@ -799,17 +800,7 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return None
 
     def get_dimensions(self, source):
-        if source.is_image():
-            width = self.EMBED_IMAGE_WIDTH
-            if source.height > 0:
-                height = width * source.height / source.width + 100
-            else:
-                height = self.EMBED_IMAGE_WIDTH
-        else:
-            width = self.EMBED_VIDEO_WIDTH
-            height = self.EMBED_VIDEO_HEIGHT
-
-        return {'width': width, 'height': height}
+        return {'width': EMBED_WIDTH, 'height': EMBED_HEIGHT}
 
     def get_secret(self, return_url):
         return_domain = _parse_domain(return_url)
@@ -850,9 +841,10 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         dims = self.get_dimensions(selection.asset.primary)
 
-        url = ('%s?return_type=iframe&title=%s&url=%s&width=%s&height=%s'
-               '&') % (return_url, selection.display_title(), iframe_url,
-                       dims['width'], dims['height'])
+        url = '{}?return_type=iframe&width={}&height={}&url={}'.format(
+            return_url, dims['width'], dims['height'], iframe_url)
+
+        print url
 
         return HttpResponseRedirect(url)
 
@@ -888,19 +880,15 @@ class AssetEmbedView(TemplateView):
         ctx = AssetResource().render_one_context(
             self.request, selection.asset, [selection])
 
-        if selection.asset.primary.is_image():
-            presentation = 'gallery'
-        else:
-            presentation = 'small'
-
         media_type = selection.asset.media_type()
 
         ctx = {'item': json.dumps(ctx),
                'item_id': selection.asset.id,
                'selection_id': selection.id,
-               'presentation': presentation,
+               'presentation': 'medium',
                'media_type': media_type,
-               'title': selection.display_title()}
+               'title': selection.display_title(),
+               'defaultHeight': EMBED_HEIGHT}
 
         if media_type == 'video':
             ctx['timecode'] = selection.range_as_timecode()

@@ -43,7 +43,9 @@ if (!Sherd.Video.Annotators.ClipPlay) {
         this.initialize = function (create_obj) {
             self.events.connect(self.components.clipPlay, 'click', function (evt) {
                 var obj = self.getState();
-                self.events.signal(self.targetview, 'playclip', { start: obj.starttime, end: obj.endtime });
+                self.events.signal(
+                    self.targetview, 'playclip',
+                    {start: obj.starttime, end: obj.endtime, autoplay: true});
             });
         };
 

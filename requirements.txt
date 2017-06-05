@@ -1,5 +1,5 @@
 --index-url https://pypi.ccnmtl.columbia.edu/
-Django==1.11.1
+Django==1.11.2
 psycopg2==2.7.1
 #for MySQL: MySQL-python==1.2.5
 statsd==3.2.1

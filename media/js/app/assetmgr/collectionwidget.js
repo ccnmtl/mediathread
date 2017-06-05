@@ -726,9 +726,6 @@ CollectionWidget.prototype.filteredUrl = function() {
     }
 
     var excludeTypes = ['image_fpxid'];
-    if (!MediaThread.flags.enableVimeo) {
-        excludeTypes.push('vimeo');
-    }
     var filters = jQuery.param({
         primary_type: excludeTypes
     });

@@ -30,6 +30,7 @@ $(WHEELHOUSE)/requirements.txt: $(REQUIREMENTS)
 	cp $(REQUIREMENTS) $@
 	touch $@
 
+# Run this target to rebuild the django image
 build: $(WHEELHOUSE)/requirements.txt
 	docker build -t $(IMAGE) .
 

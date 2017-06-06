@@ -1,6 +1,8 @@
-# VERSION=1.1.0
+# VERSION=1.4.0
 
 # CHANGES:
+# 1.4.0 - 2017-06-06 - backout the switch to eslint. that's not really ready yet.
+# 1.3.0 - 2017-06-05 - pypi location is not needed anymore
 # 1.2.0 - 2016-12-15 - bump wheel version to 0.29
 # 1.1.0 - 2016-11-08 - run flake8 tests before unit tests
 # 1.0.1 - 2016-05-02 - Remove deprecated syncdb command from make install
@@ -12,7 +14,6 @@ REQUIREMENTS ?= requirements.txt
 SYS_PYTHON ?= python
 PIP ?= $(VE)/bin/pip
 PY_SENTINAL ?= $(VE)/sentinal
-PYPI_URL ?= https://pypi.ccnmtl.columbia.edu/
 WHEEL_VERSION ?= 0.29.0
 VIRTUALENV ?= virtualenv.py
 SUPPORT_DIR ?= requirements/virtualenv_support/
@@ -26,8 +27,8 @@ jenkins: check flake8 test jshint jscs
 $(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
 	rm -rf $(VE)
 	$(SYS_PYTHON) $(VIRTUALENV) --extra-search-dir=$(SUPPORT_DIR) --never-download $(VE)
-	$(PIP) install --index-url=$(PYPI_URL) wheel==$(WHEEL_VERSION)
-	$(PIP) install --use-wheel --no-deps --index-url=$(PYPI_URL) --requirement $(REQUIREMENTS)
+	$(PIP) install wheel==$(WHEEL_VERSION)
+	$(PIP) install --use-wheel --no-deps --requirement $(REQUIREMENTS)
 	$(SYS_PYTHON) $(VIRTUALENV) --relocatable $(VE)
 	touch $@
 

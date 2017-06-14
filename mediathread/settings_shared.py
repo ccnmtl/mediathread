@@ -160,6 +160,7 @@ def no_reject(request, reason):
     request.csrf_processing_done = True
     return None
 
+
 CSRF_FAILURE_VIEW = no_reject
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
@@ -173,6 +174,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 def default_url_processor(url, label=None, request=None):
     return url
+
 
 ASSET_URL_PROCESSOR = default_url_processor
 

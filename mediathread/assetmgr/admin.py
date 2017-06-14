@@ -42,4 +42,5 @@ class ExternalCollectionAdmin(admin.ModelAdmin):
     search_fields = ("title", "course__title")
     list_display = ("title", "course", "uploader")
 
+
 admin.site.register(SuggestedExternalCollection)

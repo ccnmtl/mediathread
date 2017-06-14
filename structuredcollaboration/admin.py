@@ -18,4 +18,5 @@ class CollaborationAdmin(admin.ModelAdmin):
             request, queryset, search_term)
         return queryset.distinct(), True
 
+
 admin.site.register(Collaboration, CollaborationAdmin)

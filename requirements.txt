@@ -93,7 +93,7 @@ ptyprocess==0.5.1
 pickleshare==0.7.4
 simplegeneric==0.8.1
 scandir==1.5
-pathlib2==2.2.1
+pathlib2==2.3.0
 wcwidth==0.1.7
 prompt_toolkit==1.0.14
 pygments==2.2.0

@@ -49,6 +49,7 @@ def allow_public_compositions(course):
                                   ALLOW_PUBLIC_COMPOSITIONS_DEFAULT))
     return bool(value)
 
+
 SELECTION_VISIBILITY_KEY = "selection_visibility"
 SELECTION_VISIBILITY_DEFAULT = 1
 

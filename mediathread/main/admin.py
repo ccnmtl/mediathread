@@ -24,6 +24,7 @@ class UserProfileInline(admin.StackedInline):
 class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline, ]
 
+
 admin.site.register(User, UserProfileAdmin)
 
 
@@ -34,5 +35,6 @@ class CourseInvitationAdmin(admin.ModelAdmin):
     list_display = ('email', 'course', 'invited_by',
                     'invited_at', 'accepted_at')
     search_fields = ('email',)
+
 
 admin.site.register(CourseInvitation, CourseInvitationAdmin)

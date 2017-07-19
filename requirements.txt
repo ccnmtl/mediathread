@@ -10,7 +10,7 @@ enum34==1.1.6
 configparser==3.5.0
 flake8==3.3.0
 lxml==3.8.0
-fuzzywuzzy==0.15.0  # lettuce
+fuzzywuzzy==0.15.1  # lettuce
 mock==2.0.0  # sure
 sure==1.4.6  # lettuce
 extras==1.0.0

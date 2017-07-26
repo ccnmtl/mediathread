@@ -638,10 +638,11 @@ def project_export_msword(request, project_id):
                                                       request.get_host())
     body = body.replace("padding-left", "margin-left")
 
-    context = RequestContext(request, {
+    context = {
+        'request': request,
         'space_owner': request.user.username,
         'project': project,
-        'body': body})
+        'body': body}
 
     response = HttpResponse(template.render(context),
                             content_type='application/vnd.ms-word')

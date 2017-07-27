@@ -1028,12 +1028,12 @@ def contextual_help_is_visible_for_the_area(step, area):
 def i_close_the_area_s_contextual_help(step, area):
     eid = None
     if area == 'asset':
-        eid = 'asset-view-help'
+        eid = 'dismiss-asset-workspace-help'
     elif area == 'collection':
-        eid = 'collection-help'
+        eid = 'dismiss-gallery-help'
 
-    elt = world.browser.find_element_by_id(eid)
-    btn = elt.find_element_by_css_selector("input[type='button']")
+    wait = ui.WebDriverWait(world.browser, 5)
+    btn = wait.until(visibility_of_element_located((By.ID, eid)))
     btn.click()
 
 

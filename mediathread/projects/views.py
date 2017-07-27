@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext, loader
+from django.template import loader
 from django.template.defaultfilters import slugify
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
@@ -617,10 +617,12 @@ def project_export_html(request, project_id):
 
     template = loader.get_template("projects/export.html")
 
-    context = RequestContext(request, {
+    context = {
+        'request': request,
+        'user': request.user,
         'space_owner': request.user.username,
         'project': project,
-        'body': project.body})
+        'body': project.body}
 
     return HttpResponse(template.render(context))
 
@@ -638,10 +640,11 @@ def project_export_msword(request, project_id):
                                                       request.get_host())
     body = body.replace("padding-left", "margin-left")
 
-    context = RequestContext(request, {
+    context = {
+        'request': request,
         'space_owner': request.user.username,
         'project': project,
-        'body': body})
+        'body': body}
 
     response = HttpResponse(template.render(context),
                             content_type='application/vnd.ms-word')

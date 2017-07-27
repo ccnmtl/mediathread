@@ -47,7 +47,7 @@ ndg-httpsclient==0.4.2
 chardet==3.0.4
 idna==2.5
 urllib3==1.22
-certifi==2017.4.17
+certifi==2017.7.27
 
 requests==2.18.2
 contextlib2==0.5.5

@@ -371,7 +371,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
                 version = get_object_or_404(Version,
                                             object_id=str(project.id),
                                             revision_id=version_number)
-                project = version.object_version.object
+                project = version._object_version.object
 
             panels = []
 

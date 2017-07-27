@@ -477,8 +477,13 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         # ajax
         response = self.client.get(url, {},
-                                   HTTP_X_REQUESTED_WITH='XmlHttpRequest')
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
+
+        the_json = json.loads(response.content)
+        self.assertTrue('panels' in the_json)
+        self.assertEquals(the_json['panels'][0]['panel_state_label'],
+                          'Version View')
 
     def test_project_public_view(self):
         url = self.project_private.get_collaboration().get_absolute_url()

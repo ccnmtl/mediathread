@@ -74,15 +74,13 @@ class AssetManager(models.Manager):
     def migrate_one(self, asset, course, user):
         # Check to see if an asset exists with this mo already
         new_asset = None
-        try:
-            new_asset = Asset.objects.get(title=asset.title,
-                                          course=course,
-                                          author=user)
-            if (new_asset.primary.label != asset.primary.label or
-                    new_asset.primary.url != asset.primary.url):
-                new_asset = None
-        except Asset.DoesNotExist:
-            pass
+
+        for o in Asset.objects.filter(title=asset.title, course=course,
+                                      author=user):
+            if (o.primary.label == asset.primary.label and
+                    o.primary.url == asset.primary.url):
+                new_asset = o
+                break
 
         if not new_asset:
             new_asset = Asset(title=asset.title,

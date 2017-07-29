@@ -7,9 +7,9 @@ Mediathread is a Django site for multimedia annotations facilitating
 collaboration on video and image analysis. Developed at the Columbia
 Center for New Media Teaching and Learning (CCNMTL)
 
-CODE: http://github.com/ccnmtl/mediathread
-INFO: http://mediathread.info
-FORUM: http://groups.google.com/group/mediathread  
+CODE: http://github.com/ccnmtl/mediathread  
+INFO: http://mediathread.info  
+FORUM: http://groups.google.com/group/mediathread   
 
 REQUIREMENTS
 ------------

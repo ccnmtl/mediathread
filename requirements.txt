@@ -45,7 +45,7 @@ pyOpenSSL==17.2.0
 ndg-httpsclient==0.4.2
 
 chardet==3.0.4
-idna==2.5
+idna==2.6
 urllib3==1.22
 certifi==2017.7.27.1
 

@@ -126,7 +126,7 @@ class ProjectResource(ModelResource):
         asset_resource = AssetResource()
         sherd_resource = SherdNoteResource()
 
-        rand = ''.join([choice(letters) for i in range(5)])
+        rand = ''.join([choice(letters) for i in range(5)])  # nosec
 
         assets = {}
         notes = []

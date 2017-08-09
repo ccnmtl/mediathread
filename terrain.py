@@ -23,10 +23,10 @@ import selenium.webdriver.support.ui as ui
 
 
 try:
-    from lxml import html
+    from lxml import html  # nosec
     from selenium import webdriver
     from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-except:
+except:  # nosec
     pass
 
 
@@ -320,7 +320,7 @@ def i_click_the_link(step, text):
             assert link.is_displayed()
             link.click()
         except NoSuchElementException:
-            world.browser.get_screenshot_as_file("/tmp/selenium.png")
+            world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
             assert False, text
 
 
@@ -332,7 +332,7 @@ def i_scroll_to_the_link(step, text):
         world.browser.execute_script(script, link)
         assert link.is_displayed()
     except NoSuchElementException:
-        world.browser.get_screenshot_as_file("/tmp/selenium.png")
+        world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
         assert False, link.location
 
 
@@ -387,7 +387,7 @@ def i_cancel_the_action(step):
             time.sleep(2)
             return
 
-    world.browser.get_screenshot_as_file("/tmp/selenium.png")
+    world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
     assert False, "Unable to locate the dialog's Cancel button"
 
 
@@ -790,7 +790,7 @@ def get_title_and_assignment(e):
                 "a.asset_title.type-assignment")
             assignment = True
         except NoSuchElementException:
-            world.browser.get_screenshot_as_file("/tmp/selenium.png")
+            world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
             assert False, "Cannot find the title %s css selector"
 
     return title_elt, assignment
@@ -847,7 +847,7 @@ def there_is_a_status_title_project_by_author(step, status, title, author):
 
 @step(u'I take a picture')
 def i_take_a_picture(step):
-    world.browser.get_screenshot_as_file("/tmp/selenium.png")
+    world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
 
 
 @step(u'The ([^"]*) title is "([^"]*)"')

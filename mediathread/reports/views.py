@@ -16,7 +16,7 @@ from djangohelpers.lib import allow_http, rendered_with
 from registration.models import RegistrationProfile
 from tagging.models import Tag
 
-from mediathread.assetmgr.models import Asset
+from mediathread.assetmgr.models import Asset, Source
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
@@ -89,7 +89,7 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
             try:
                 domain = re.search('://([^/]+)/',
                                    ann_asset.primary.url).groups()[0]
-            except:
+            except Source.DoesNotExist:
                 continue
 
             self.nodes.append({

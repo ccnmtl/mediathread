@@ -270,7 +270,7 @@ class ProjectManager(models.Manager):
                 if col.policy_record.policy_name == 'PublicEditorsAreOwners':
                     col.set_policy('CourseProtected')
                     col.save()
-            except:
+            except Collaboration.DoesNotExist:
                 pass
 
     def limit_response_policy(self, course):

@@ -1,6 +1,8 @@
-# VERSION=1.4.0
+# VERSION=1.6.0
 
 # CHANGES:
+# 1.6.0 - 2017-09-05 - add bandit secure analysis configuration
+# 1.5.0 - 2017-08-24 - remove jshint/jscs in favor of eslint
 # 1.4.0 - 2017-06-06 - backout the switch to eslint. that's not really ready yet.
 # 1.3.0 - 2017-06-05 - pypi location is not needed anymore
 # 1.2.0 - 2016-12-15 - bump wheel version to 0.29
@@ -10,6 +12,7 @@
 VE ?= ./ve
 MANAGE ?= ./manage.py
 FLAKE8 ?= $(VE)/bin/flake8
+BANDIT ?= $(VE)/bin/bandit
 REQUIREMENTS ?= requirements.txt
 SYS_PYTHON ?= python
 PIP ?= $(VE)/bin/pip
@@ -22,7 +25,7 @@ INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
 
-jenkins: check flake8 test eslint
+jenkins: check flake8 test eslint bandit
 
 $(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
 	rm -rf $(VE)
@@ -37,6 +40,9 @@ test: $(PY_SENTINAL)
 
 parallel-tests: $(PY_SENTINAL)
 	$(MANAGE) test --parallel
+
+bandit: $(PY_SENTINAL)
+	$(BANDIT) --ini ./.bandit -r $(PY_DIRS)
 
 flake8: $(PY_SENTINAL)
 	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY)

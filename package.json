@@ -24,7 +24,6 @@
   "devDependencies": {
     "eslint": "~3.17.1",
     "jshint": "~2.9.1",
-    "jscs": "~3.0.7",
     "eslint-config-scanjs": "^1.0.0-beta4",
     "eslint-plugin-no-unsafe-innerhtml": "^1.0.16",
     "eslint-plugin-security": "^1.4.0"

@@ -9,6 +9,7 @@
  * Signals:
  * Nothing
  */
+/* exported MediathreadAnalytics */
 
 var MediathreadAnalytics = function(tracker) {
     var self = this;

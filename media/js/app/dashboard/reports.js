@@ -30,7 +30,6 @@ var SherdReport = function() {
     this.init = function(json) {
         var w = jQuery('#reports-graph-link').width();
         var h = Math.max(500, jQuery(window).height() - 300);
-        var colors = pv.Colors.category10();
         var domainColors = pv.Colors.category20();
 
         var vis = new pv.Panel({canvas: 'reports-graph-visualization'})
@@ -62,18 +61,17 @@ var SherdReport = function() {
             return 3 + (d.linkDegree + 4) * Math.pow(this.scale, -1.5);
         })
         .fillStyle(function(d) {
-            var color;
             switch (d.group) {
-                case 1:
-                    return new pv.Color.Rgb(256, 256, 0, 1); //tag
-                case 2:
-                    return domainColors(d.domain); //asset
-                case 3:
-                    return new pv.Color.Rgb(0, 100, 256, 1); //project
-                case 4:
-                    return new pv.Color.Rgb(0, 100, 0, 1); //comment
-                default:
-                    return new pv.Color.Rgb(0, 0, 0, 1);
+            case 1:
+                return new pv.Color.Rgb(256, 256, 0, 1); //tag
+            case 2:
+                return domainColors(d.domain); //asset
+            case 3:
+                return new pv.Color.Rgb(0, 100, 256, 1); //project
+            case 4:
+                return new pv.Color.Rgb(0, 100, 0, 1); //comment
+            default:
+                return new pv.Color.Rgb(0, 0, 0, 1);
             }
         })
         .strokeStyle(function(d) {
@@ -83,13 +81,13 @@ var SherdReport = function() {
         .lineWidth(self.nodeDefaultLineWidth)
         .shape(function(d) {
             switch (d.group) {
-                case 1:
-                case 2:
-                    return 'circle'; //asset
-                case 3:
-                    return 'square'; //project
-                case 4:
-                    return 'diamond'; //comment
+            case 1:
+            case 2:
+                return 'circle'; //asset
+            case 3:
+                return 'square'; //project
+            case 4:
+                return 'diamond'; //comment
             }
         })
         .title(function(d) { return d.nodeName; })

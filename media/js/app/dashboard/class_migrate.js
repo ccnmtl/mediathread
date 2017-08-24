@@ -247,7 +247,7 @@
                         msg += json.project_count + ' projects imported';
                     }
                     if (json.error) {
-                        msg = msg;
+                        msg = json.error;
                     }
                     showMessage(msg, function() {
                         jQuery('#selected-for-import').fadeOut();
@@ -273,40 +273,40 @@
         importAll: function(evt) {
             var self = this;
             jQuery('#import-all-dialog').dialog({
-                    buttons: [
-                        {
-                            text: 'Cancel',
-                            click: function() {
-                                jQuery(this).dialog('close');
-                            }
-                        },
-                        {
-                            text: 'Select',
-                            click: function() {
-                                jQuery(this).dialog('close');
-
-                                self.model.get('projects')
-                                    .forEach(function(project) {
-                                        if (!self.selectedProjects
-                                            .get(project.id)) {
-                                            self.selectedProjects.add(project);
-                                        }
-                                    });
-                                self.model.get('assets')
-                                    .forEach(function(asset) {
-                                        if (!self.selectedAssets
-                                                 .get(asset.id)) {
-                                            self.selectedAssets.add(asset);
-                                        }
-                                    });
-                            }
+                buttons: [
+                    {
+                        text: 'Cancel',
+                        click: function() {
+                            jQuery(this).dialog('close');
                         }
-                    ],
-                    draggable: true,
-                    resizable: false,
-                    modal: true,
-                    width: 425
-                });
+                    },
+                    {
+                        text: 'Select',
+                        click: function() {
+                            jQuery(this).dialog('close');
+
+                            self.model.get('projects')
+                                .forEach(function(project) {
+                                    if (!self.selectedProjects
+                                        .get(project.id)) {
+                                        self.selectedProjects.add(project);
+                                    }
+                                });
+                            self.model.get('assets')
+                                .forEach(function(asset) {
+                                    if (!self.selectedAssets
+                                             .get(asset.id)) {
+                                        self.selectedAssets.add(asset);
+                                    }
+                                });
+                        }
+                    }
+                ],
+                draggable: true,
+                resizable: false,
+                modal: true,
+                width: 425
+            });
 
             return false;
         },

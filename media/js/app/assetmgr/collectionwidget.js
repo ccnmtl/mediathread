@@ -43,6 +43,7 @@ var CollectionWidget = function() {
         self.vocabulary = vocabularyReq[0].objects;
         self.postInitialize();
     }).fail(function() {
+        // eslint-disable-next-line no-console
         console.error('Loading error in CollectionWidget constructor');
     });
 };
@@ -420,12 +421,12 @@ CollectionWidget.prototype.createThumbs = function(assets) {
 
                 var view;
                 switch (asset.type) {
-                    case 'image':
-                        view = new Sherd.Image.OpenLayers();
-                        break;
-                    case 'fsiviewer':
-                        view = new Sherd.Image.FSIViewer();
-                        break;
+                case 'image':
+                    view = new Sherd.Image.OpenLayers();
+                    break;
+                case 'fsiviewer':
+                    view = new Sherd.Image.FSIViewer();
+                    break;
                 }
                 djangosherd.thumbs.push(view);
                 var objDiv = document.createElement('div');
@@ -435,6 +436,7 @@ CollectionWidget.prototype.createThumbs = function(assets) {
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
+                    // eslint-disable-next-line no-console
                     console.error('CollectionWidget error!');
                 }
 

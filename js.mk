@@ -21,9 +21,6 @@ $(JS_SENTINAL): package.json
 jshint: $(JS_SENTINAL)
 	$(JSHINT) $(JS_FILES)
 
-jscs: $(JS_SENTINAL)
-	$(JSCS) $(JS_FILES)
-
 eslint: $(JS_SENTINAL)
 	$(ESLINT) $(JS_FILES)
 

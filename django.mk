@@ -22,7 +22,7 @@ INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
 
-jenkins: check flake8 test jshint jscs
+jenkins: check flake8 test jshint eslint
 
 $(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
 	rm -rf $(VE)

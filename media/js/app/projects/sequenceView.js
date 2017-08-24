@@ -1,6 +1,5 @@
-/* global _: true, AssignmentView: true, updateUserSetting: true */
-/* global MediaThread: true, tinymceSettings:true, tinymce: true */
-/* global showMessage: true, confirmAction: true */
+/* global _: true, AssignmentView: true */
+/* global tinymceSettings:true, tinymce: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -134,9 +133,6 @@
                 .text('Saving...')
                 .addClass('saving');
 
-            var data = this.serializeData();
-
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.projectId + '/',

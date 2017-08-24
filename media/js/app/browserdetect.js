@@ -1,4 +1,5 @@
 //This script is taken from here: http://www.quirksmode.org/js/detect.html
+/* exported addLoadEvent */
 
 function addLoadEvent(func) {
     var oldonload = window.onload;
@@ -136,7 +137,7 @@ var BrowserDetect = {
             subString: 'Linux',
             identity: 'Linux'
         }
-     ]
+    ]
 };
 
 BrowserDetect.init();

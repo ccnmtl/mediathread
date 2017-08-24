@@ -388,7 +388,6 @@ DiscussionPanelHandler.prototype._bind = function($parent, elementSelector,
 
 DiscussionPanelHandler.prototype.cancel = function(evt) {
     var self = evt.data.self;
-    var elt = evt.srcElement || evt.target || evt.originalTarget;
 
     self.set_comment_content();// empty it
     self.hide_comment_form(true);
@@ -419,12 +418,12 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
 
     info.mode = ((info['edit-id'] === '') ? 'post' : 'update');
     switch (info.mode) {
-        case 'update':
-            info.url = MediaThread.urls['comment-edit'](info['edit-id']);
-            break;
-        case 'post':
-            info.url = MediaThread.urls['comment-create']();
-            break;
+    case 'update':
+        info.url = MediaThread.urls['comment-edit'](info['edit-id']);
+        break;
+    case 'post':
+        info.url = MediaThread.urls['comment-create']();
+        break;
     }
     jQuery.ajax({
         type: 'POST',
@@ -462,32 +461,33 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             };
 
             switch (this.info.mode) {
-                case 'post':
-                    var parentHtml = jQuery(
-                        '#comment-' + form_vals.parent).get(0);
-                    if (!parentHtml) {
-                        parentHtml = self.$el.find(
-                            'div.threadedcomments-container')[0];
-                    }
-                    var ul = this.info.target = document.createElement('ul');
-                    ul.setAttribute('class', 'comment-thread');
-                    parentHtml.appendChild(ul);
-                    ul.innerHTML = self.create(newObj).text;
-                    // decorate respond listener
-                    jQuery('.respond_prompt', ul).click(function(evt) {
-                        self.open_respond(evt);
-                    });
-                    jQuery('.edit_prompt', ul).click(function(evt) {
-                        self.open_edit(evt);
-                    });
-                    break;
-                case 'update':
-                    var comment_html = jQuery(
-                        '#comment-' + form_vals['edit-id']).get(0);
-                    var comp = self.components(comment_html);
-                    self.update(newObj, comment_html);
-                    this.info.target = comp.comment;
-                    break;
+            case 'post':
+                var parentHtml = jQuery(
+                    '#comment-' + form_vals.parent).get(0);
+                if (!parentHtml) {
+                    parentHtml = self.$el.find(
+                        'div.threadedcomments-container')[0];
+                }
+                var ul = this.info.target = document.createElement('ul');
+                ul.setAttribute('class', 'comment-thread');
+                parentHtml.appendChild(ul);
+                // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
+                ul.innerHTML = self.create(newObj).text;
+                // decorate respond listener
+                jQuery('.respond_prompt', ul).click(function(evt) {
+                    self.open_respond(evt);
+                });
+                jQuery('.edit_prompt', ul).click(function(evt) {
+                    self.open_edit(evt);
+                });
+                break;
+            case 'update':
+                var comment_html = jQuery(
+                    '#comment-' + form_vals['edit-id']).get(0);
+                var comp = self.components(comment_html);
+                self.update(newObj, comment_html);
+                this.info.target = comp.comment;
+                break;
             }
             // 2. decorate citations
             self.citationView.decorateElementLinks(this.info.target);
@@ -506,6 +506,7 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             jQuery('div.threaded_comment_text').show();
             jQuery('div.respond_to_comment_form_div').show();
 
+            // eslint-disable-next-line scanjs-rules/assign_to_location
             document.location = '#comment-' + res.comment_id;
         }
     } else {

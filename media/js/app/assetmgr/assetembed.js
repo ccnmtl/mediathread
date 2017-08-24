@@ -1,3 +1,5 @@
+/* exported initializeAssetEmbed */
+
 function initializeAssetEmbed(options) {
     jQuery(window).one('collection.ready', {'self': this},
         function(event, params) {
@@ -8,6 +10,7 @@ function initializeAssetEmbed(options) {
         }
     );
 
+    // eslint-disable-next-line scanjs-rules/call_addEventListener
     document.addEventListener('asset.select', function(e) {
         e.preventDefault();
         var $form = jQuery('#asset-embed-form');

@@ -1,4 +1,5 @@
-/* global tinymce: true, STATIC_URL: true */
+/* global STATIC_URL: true */
+/* exported tinymceSettings */
 
 var tinymceSettings = {
     'browser_spellcheck': true,

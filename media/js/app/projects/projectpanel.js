@@ -1,6 +1,6 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
-/* global SelectFilter: true, showMessage: true, STATIC_URL: true */
+/* global showMessage: true */
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -111,6 +111,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         self.setDirty(true);
     });
 
+    // eslint-disable-next-line  scanjs-rules/call_addEventListener
     document.addEventListener('asset.select', function(event) {
         self.insertCitation(event.detail);
     });
@@ -304,6 +305,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     var q = 'td.panel-container.composition';
     if (self.$parentContainer.find(q).length > 0) {
         context.callback = function(json) {
+            // eslint-disable-next-line scanjs-rules/assign_to_location
             window.location = json.context.project.url;
         };
     }
@@ -371,8 +373,10 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
-                    window.open(val, 'mediathread_project' +
-                                     self.panel.context.project.id);
+                    var params = 'mediathread_project' +
+                        self.panel.context.project.id;
+                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    window.open(val, params);
                 }
             }
             return true;
@@ -425,6 +429,7 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -482,6 +487,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -506,6 +512,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
 // A single response
 ProjectPanelHandler.prototype.showMyResponse = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    // eslint-disable-next-line scanjs-rules/assign_to_location
     window.location = jQuery(srcElement).data('url');
 };
 
@@ -653,7 +660,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         }
     });
 
-    var dlg = jQuery(elt).modal('show');
+    jQuery(elt).modal('show');
 };
 
 ProjectPanelHandler.prototype.serializeData = function() {
@@ -781,6 +788,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         // If the timer is already active, don't set another one
         // Clear the timer variable at the end
         if (self.dirtyTimer === undefined) {
+            // eslint-disable-next-line scanjs-rules/call_setTimeout
             self.dirtyTimer = window.setTimeout(function() {
                 self.saveProject();
                 self.dirtyTimer = undefined;

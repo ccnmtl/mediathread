@@ -294,9 +294,7 @@ CollectionList.prototype.deleteAsset = function(asset_id) {
         'href': url,
         'item': true,
         'success': function() {
-            try {
-                jQuery(window).trigger('asset.on_delete', [asset_id]);
-            } catch (e) {}
+            jQuery(window).trigger('asset.on_delete', [asset_id]);
         }
     });
 };
@@ -366,7 +364,6 @@ CollectionList.prototype.filterByVocabulary = function(srcElement) {
 CollectionList.prototype.filter = function() {
     var self = this;
     self.setLoading(true);
-    var filters = {};
 
     self.$el.find('select.course-tags, select.vocabulary')
         .select2('enable', false);
@@ -435,12 +432,12 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
         } else {
             var view;
             switch (asset.type) {
-                case 'image':
-                    view = new Sherd.Image.OpenLayers();
-                    break;
-                case 'fsiviewer':
-                    view = new Sherd.Image.FSIViewer();
-                    break;
+            case 'image':
+                view = new Sherd.Image.OpenLayers();
+                break;
+            case 'fsiviewer':
+                view = new Sherd.Image.FSIViewer();
+                break;
             }
             djangosherd.thumbs.push(view);
 
@@ -459,11 +456,13 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
             asset.y = 0;
             asset.zoom = 1;
 
+            /* eslint-disable no-empty */
             try {
                 view.html.push(objDiv, {asset: asset});
                 view.setState(asset);
             } catch (e) {
             }
+            /* eslint-enable no-empty */
         }
     }
 };
@@ -480,12 +479,12 @@ CollectionList.prototype.createThumbs = function(assets) {
 
                 var view;
                 switch (asset.type) {
-                    case 'image':
-                        view = new Sherd.Image.OpenLayers();
-                        break;
-                    case 'fsiviewer':
-                        view = new Sherd.Image.FSIViewer();
-                        break;
+                case 'image':
+                    view = new Sherd.Image.OpenLayers();
+                    break;
+                case 'fsiviewer':
+                    view = new Sherd.Image.FSIViewer();
+                    break;
                 }
                 djangosherd.thumbs.push(view);
                 var objDiv = document.createElement('div');
@@ -495,6 +494,7 @@ CollectionList.prototype.createThumbs = function(assets) {
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
+                    // eslint-disable-next-line no-console
                     console.error('CollectionList error!');
                 }
 

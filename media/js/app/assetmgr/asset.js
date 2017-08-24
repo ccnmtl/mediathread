@@ -64,8 +64,6 @@
                 });
 
                 jQuery(window).on('hashchange', function() {
-                    var asset_id = null;
-                    var annotation_id = null;
                     var xywh = null;
 
                     // parse out parameters on the command line
@@ -73,10 +71,8 @@
                     for (var i = 0; i < params.length; i++) {
                         var prev = i - 1;
                         if (prev > -1) {
-                            if (params[prev] === 'asset') {
-                                asset_id = params[i];
-                            } else if (params[prev] === 'annotations') {
-                                annotation_id = params[i];
+                            if (params[prev] === 'annotations' && params[i]) {
+                                config.annotation_id = Number(params[i]);
                             }
                         }
                     }
@@ -298,25 +294,25 @@
             this.resetHighlightLayer();
 
             switch (grouping) {
-                case 'tag':
-                    this.layers[grouping].color_by = function(ann) {
-                        if (ann.metadata.tags.length) {
-                            var tags = [];
-                            for (var k = 0; k < ann.metadata.tags.length; k++) {
-                                tags.push(ann.metadata.tags[k].name);
-                            }
-                            return tags;
-                        } else {
-                            //127 ensures that None is last
-                            return [String.fromCharCode(127) + 'No Tags'];
+            case 'tag':
+                this.layers[grouping].color_by = function(ann) {
+                    if (ann.metadata.tags.length) {
+                        var tags = [];
+                        for (var k = 0; k < ann.metadata.tags.length; k++) {
+                            tags.push(ann.metadata.tags[k].name);
                         }
-                    };
-                    break;
-                case 'author':
-                    this.layers[grouping].color_by = function(ann) {
-                        return [ann.author.public_name];
-                    };
-                    break;
+                        return tags;
+                    } else {
+                        //127 ensures that None is last
+                        return [String.fromCharCode(127) + 'No Tags'];
+                    }
+                };
+                break;
+            case 'author':
+                this.layers[grouping].color_by = function(ann) {
+                    return [ann.author.public_name];
+                };
+                break;
             }
 
             self.updateAnnotationList();
@@ -488,7 +484,6 @@
         };
 
         this.showExportDialog = function(anchor, asset_id) {
-            var self = this;
             var element = jQuery('.export-finalcutpro')[0];
             var list  = jQuery(element).find('ul.selections')[0];
             jQuery(list).find('li').remove();
@@ -612,14 +607,14 @@
             if ('asset-title' in frm.elements) {
                 newTitle = frm.elements['asset-title'].value;
                 if (newTitle.length < 1) {
-                    showMessage('Please specify an item title',
-                                undefined,
-                                'Error',
-                                {
-                                    my: 'center',
-                                    at: 'center',
-                                    of: jQuery('div.asset-view-tabs')
-                                });
+                    showMessage(
+                        'Please specify an item title', undefined,
+                        'Error',
+                        {
+                            my: 'center',
+                            at: 'center',
+                            of: jQuery('div.asset-view-tabs')
+                        });
                     return false;
                 }
             }
@@ -735,11 +730,12 @@
                 jQuery(group).siblings().find('.accordion')
                     .accordion('option', 'active', false);
 
+                // eslint-disable-next-line scanjs-rules/call_setTimeout
                 setTimeout(function() {
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(jQuery(list)
                         .scrollTop() + jQuery(ui.newHeader)
-                            .position().top - 10);
+                        .position().top - 10);
                 }, 200);
             }
         };
@@ -769,20 +765,20 @@
                 self.active_annotation.id : null;
             self.$parent.find('#asset-details-annotations-current').fadeOut(
                 function() {
-                self._update({
-                    'annotation_id': annotation_id,
-                    'editing': false
-                }, 'asset-annotation-current', false);
+                    self._update({
+                        'annotation_id': annotation_id,
+                        'editing': false
+                    }, 'asset-annotation-current', false);
 
-                if (self.active_annotation) {
-                    var active = self.$parent.find('#accordion-' +
-                                     self.active_annotation.id)[0];
-                    var parent = jQuery(active).parents('.accordion');
-                    var idx = jQuery(parent).find('h3').index(active);
-                    jQuery(parent).accordion('option', 'active', idx);
-                }
-                self.getAnnotationDisplayElements().fadeIn();
-            });
+                    if (self.active_annotation) {
+                        var active = self.$parent.find('#accordion-' +
+                                         self.active_annotation.id)[0];
+                        var parent = jQuery(active).parents('.accordion');
+                        var idx = jQuery(parent).find('h3').index(active);
+                        jQuery(parent).accordion('option', 'active', idx);
+                    }
+                    self.getAnnotationDisplayElements().fadeIn();
+                });
             return false;
         };
 
@@ -945,17 +941,17 @@
 
             if (msg) {
                 showMessage(msg,
-                        function() {
-                            jQuery(saveButton).removeAttr('disabled');
-                            jQuery(saveButton).removeClass('saving');
-                            jQuery(saveButton).attr('value', 'Save Selection');
-                        },
-                        'Error',
-                        {
-                            my: 'center',
-                            at: 'center',
-                            of: jQuery('div.asset-view-tabs')
-                        });
+                    function() {
+                        jQuery(saveButton).removeAttr('disabled');
+                        jQuery(saveButton).removeClass('saving');
+                        jQuery(saveButton).attr('value', 'Save Selection');
+                    },
+                    'Error',
+                    {
+                        my: 'center',
+                        at: 'center',
+                        of: jQuery('div.asset-view-tabs')
+                    });
                 return;
             }
 
@@ -1192,6 +1188,7 @@
             } else if (template_label === 'asset-annotation-current') {
                 self.$parent.find('#annotation-current').html(rendered);
             } else {
+                // eslint-disable-next-line no-console
                 console.error('Didn\'t attach template for:', template_label);
             }
 
@@ -1236,17 +1233,16 @@
                 self.$parent.find('#clipform').show();
 
                 if (self.active_annotation) {
-                    djangosherd.assetview.clipform
-                        .setState(
-                            self.active_annotation.annotation,
-                            {
-                                'mode': context.annotation.editing ?
-                                    'edit' : 'browse',
-                                'tool_play': jQuery(
-                                    '#annotation-body-' +
-                                        self.active_annotation.id +
-                                        ' input.videoplay')[0]
-                            });
+                    djangosherd.assetview.clipform.setState(
+                        self.active_annotation.annotation,
+                        {
+                            'mode': context.annotation.editing ?
+                                'edit' : 'browse',
+                            'tool_play': jQuery(
+                                '#annotation-body-' +
+                                    self.active_annotation.id +
+                                    ' input.videoplay')[0]
+                        });
                 } else if (self.xywh) {
                     if (djangosherd.assetview.clipform) {
                         djangosherd.assetview.clipform.setState(
@@ -1254,14 +1250,13 @@
                     }
                 } else {
                     // #default initialization. no annotation defined.
-                    djangosherd.assetview.clipform
-                        .setState(
-                            {'start': 0, 'end': 0},
-                            {
-                                'mode': context.annotation &&
-                                    context.annotation.editing ?
-                                    'create' : 'browse'
-                            });
+                    djangosherd.assetview.clipform.setState(
+                        {'start': 0, 'end': 0},
+                        {
+                            'mode': context.annotation &&
+                                context.annotation.editing ?
+                                'create' : 'browse'
+                        });
                 }
             });
         };

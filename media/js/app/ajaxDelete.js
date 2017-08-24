@@ -1,5 +1,6 @@
 /* global showMessage */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+/* exported ajaxDelete */
 
 function ajaxDelete(link, containerId, opts) {
     var postUrl = null;

@@ -1,5 +1,4 @@
 /* global _: true, Backbone: true, CitationView: true */
-/* global showMessage: true, tinymce: true, tinymceSettings: true */
 /* global AssignmentEditView: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

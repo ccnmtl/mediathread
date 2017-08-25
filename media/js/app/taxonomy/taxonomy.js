@@ -314,7 +314,6 @@
             return false;
         },
         keypressTermName: function(evt) {
-            var self = this;
             if (evt.which === 13) {
                 evt.preventDefault();
                 var opts = '.edit-term-submit,.create-term-submit';
@@ -612,6 +611,7 @@
                                 '\/02\/skos\/core#broader';
                             parent_uri = data[skos_uri][re].value.trim();
                         } catch (e) {
+                            parent_uri = '';
                         }
 
                         var temp = {
@@ -621,8 +621,9 @@
                             'onomy_url': 'child',
                             'skos_uri': parent_uri
                         };
-                        temp.term_set.push({'display_name': display,
-                                            'skos_uri': skos_uri});
+                        temp.term_set.push({
+                            'display_name': display,
+                            'skos_uri': skos_uri});
                         parentsArray[temp.display_name] = temp;
                     } else {
                         //add the term to the Vocabulary in parentsArray

@@ -1,5 +1,4 @@
-/* global _: true, Backbone: true, MediaThread: true, showMessage: true */
-/* global tinymce: true */
+/* global _: true, Backbone: true, showMessage: true, tinymce: true */
 
 /**
  * Listens For:

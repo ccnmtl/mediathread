@@ -177,9 +177,6 @@
                 .text('Saving...')
                 .addClass('saving');
 
-            var data = this.serializeData();
-
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.responseId + '/',
@@ -212,7 +209,6 @@
                 this.onUnsubmitResponse, 'Unsubmit Response');
         },
         onUnsubmitResponse: function(evt) {
-            var self = this;
             var frm = jQuery(this.el).find('.unsubmit-response-form')[0];
             jQuery(frm.submit());
         },
@@ -229,7 +225,6 @@
                     '#submit-project input[name="publish"]').val()
             });
 
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.responseId + '/',
@@ -237,6 +232,7 @@
                 dataType: 'json',
                 success: function(json) {
                     jQuery(window).unbind('beforeunload');
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = json.context.project.url;
                 },
                 error: function() {

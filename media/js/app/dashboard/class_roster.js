@@ -14,7 +14,6 @@
             _.bindAll(this, 'onPromote', 'onDemote', 'onRemove',
                       'onAddUNIUser', 'onInviteEmailUser',
                       'onActionConfirmed');
-            var self = this;
 
             jQuery(this.el).find('.tablesorter').tablesorter({
                 sortList: [[0,0]],

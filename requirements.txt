@@ -120,4 +120,4 @@ requests-toolbelt==0.8.0
 pytz==2017.2
 isodate==0.5.4
 cached-property==1.3.0
-zeep==2.3.0
+zeep==2.4.0

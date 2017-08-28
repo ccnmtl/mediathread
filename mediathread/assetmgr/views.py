@@ -853,17 +853,23 @@ class AssetEmbedView(TemplateView):
     template_name = 'assetmgr/asset_embed_view.html'
 
     def check_signature(self, course_id, selection_id):
-        # get the domain from the referer
-        referer = _parse_domain(self.request.META['HTTP_REFERER'])
         special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+
+        try:
+            # get the domain from the referer
+            referer = _parse_domain(self.request.META['HTTP_REFERER'])
+        except KeyError:
+            referer = settings.DEFAULT_LTI_CONSUMER
+
         if referer not in special.keys():
             return False
+        secret = special[referer]
 
         nonce = self.request.GET.get('nonce')
         digest = self.request.GET.get('hmac')
 
         new_digest = hmac.new(
-            special[referer],
+            secret,
             '%s:%s:%s' % (course_id, selection_id, nonce),
             hashlib.sha1).hexdigest()
 

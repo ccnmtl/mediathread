@@ -20,6 +20,8 @@ import factory
 from freezegun import freeze_time
 from threadedcomments.models import ThreadedComment
 
+from lti_auth.models import LTICourseContext
+from lti_auth.tests.factories import LTICourseContextFactory
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
@@ -44,7 +46,6 @@ from mediathread.main.views import (
     unis_list,
 )
 from mediathread.projects.models import Project
-from lti_auth.tests.factories import LTICourseContextFactory
 
 
 class SimpleViewTest(TestCase):
@@ -1580,3 +1581,27 @@ class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
         response = self.client.get(url, follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['course'], self.sample_course)
+
+
+class LTICourseCreateTest(TestCase):
+
+    def test_post(self):
+        user = UserFactory()
+        self.client.login(username=user.username, password='test')
+
+        data = {
+            'lms_course': '1234',
+            'lms_course_title': 'LTI Course'
+        }
+        response = self.client.post(reverse('lti-course-create'), data)
+        self.assertEqual(response.status_code, 302)
+
+        c = Course.objects.get(title='LTI Course')
+        self.assertEquals(c.group.name, '1234')
+        self.assertEquals(c.faculty_group.name, '1234_faculty')
+
+        self.assertTrue(c.is_faculty(user))
+
+        LTICourseContext.objects.get(
+            lms_course_context='1234',
+            group=c.group, faculty_group=c.faculty_group)

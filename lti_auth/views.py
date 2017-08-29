@@ -44,13 +44,19 @@ class LTIAuthMixin(object):
             ctx = LTICourseContext.objects.get(
                 lms_course_context=lti.course_context())
         except (KeyError, ValueError, LTICourseContext.DoesNotExist):
+            autocreate_course = (
+                lti.canvas_domain() in
+                settings.LTI_TOOL_CONFIGURATION['autocreate_course'])
+
             return render(
                 request,
                 'lti_auth/fail_course_configuration.html',
                 {
                     'roles': lti.user_roles(),
                     'user': user,
-                    'lms_course': lti.course_context()
+                    'lms_course': lti.course_context(),
+                    'lms_course_title': lti.course_title(),
+                    'autocreate_course': autocreate_course
                 })
 
         # add user to the course

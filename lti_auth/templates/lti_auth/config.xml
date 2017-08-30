@@ -15,11 +15,11 @@
       <lticm:property name="domain">{{domain}}</lticm:property>
       <lticm:property name="text">{% if debug %}Dev{% endif %} {{title}}</lticm:property>
       <lticm:options name="course_navigation">
-        <lticm:property name="enabled">true</lticm:property>
+        <lticm:property name="enabled">false</lticm:property>
       </lticm:options>
       {% if embed_tool_id %}
           <lticm:options name="editor_button">
-            <lticm:property name="enabled">true</lticm:property>
+            <lticm:property name="enabled">false</lticm:property>
             <lticm:property name="icon_url">{{STATIC_URL}}{{embed_icon_url}}</lticm:property>
             <lticm:property name="selection_width">665</lticm:property>
             <lticm:property name="selection_height">600</lticm:property>

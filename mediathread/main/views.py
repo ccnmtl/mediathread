@@ -1027,6 +1027,31 @@ class LTICourseSelector(LoggedInMixin, View):
         return HttpResponseRedirect(url)
 
 
+class LTICourseCreate(LoggedInMixin, View):
+
+    def post(self, *args, **kwargs):
+        course_context = self.request.POST.get('lms_course')
+        title = self.request.POST.get('lms_course_title')
+        group = Group.objects.create(name=course_context)
+        faculty_group = Group.objects.create(
+            name='{}_faculty'.format(course_context))
+
+        self.request.user.groups.add(group)
+        self.request.user.groups.add(faculty_group)
+
+        # create the course
+        Course.objects.create(
+            title=title, group=group, faculty_group=faculty_group)
+
+        # hook up the context
+        (ctx, created) = LTICourseContext.objects.get_or_create(
+            group=group, faculty_group=faculty_group,
+            lms_course_context=course_context)
+
+        url = reverse('lti-landing-page', args=[course_context])
+        return HttpResponseRedirect(url)
+
+
 class ClearTestCache(View):
     def get(self, request, *args, **kwargs):
         # for selenium test use only

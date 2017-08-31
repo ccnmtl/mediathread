@@ -69,6 +69,14 @@ class LTI(object):
         if 'context_id' in self.lti_params:
             return self.lti_params.get('context_id')
 
+    def course_title(self):
+        if 'context_title' in self.lti_params:
+            return self.lti_params.get('context_title')
+
+    def canvas_domain(self):
+        if 'custom_canvas_api_domain' in self.lti_params:
+            return self.lti_params.get('custom_canvas_api_domain')
+
     def custom_course_context(self):
         """
         Returns the custom LTICourseContext id as provided by LTI

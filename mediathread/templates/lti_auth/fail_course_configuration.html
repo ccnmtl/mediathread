@@ -11,19 +11,35 @@
             <div class="container">
                 <div class="well">
                     <h2>Course Configuration</h2>
-                    {% if courses|length < 1 %}
-                        {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
-                            <p class="lead"><a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course</p>
-                        {% else %}
-                            <p class="lead">
-                                Your {{title}} course has not been configured to use this component.<br />
-                                Contact your instructor for more information.</p>
-                            <p>
-                        {% endif %}
+
+                    {% if autocreate_course %}
+                         {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
+                            <form action="{% url 'lti-course-create' %}" method='POST'>
+                                <input type="hidden" name="lms_course" value="{{lms_course}}">
+                                <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
+                                <button type="submit" class="btn btn-primary">Connect New Course</button>
+                            </form>
+                         {% endif %}
                     {% else %}
+                        {% if courses|length < 1 %}
+                            {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
+                                <p class="lead"><a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course</p>
+                            {% else %}
+                                <p class="lead">
+                                    Your {{title}} course has not been configured to use this component.<br />
+                                    Contact your instructor for more information.</p>
+                                <p>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if courses|length > 0 %} 
                         <p class="lead">
-                        Connect a Mediathread course to your Canvas course.<br />
-                        Don't see your course? <a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course first.</p>
+                        Connect an existing Mediathread course to your Canvas course.<br />
+
+                        {% if not autocreate_course %}
+                            Don't see your course? <a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course first.</p>
+                        {% endif %}
 
                         <table class="table course-choices tablesorter">
                             <thead>

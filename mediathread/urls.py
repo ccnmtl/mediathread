@@ -32,7 +32,8 @@ from mediathread.main.views import (
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
-    CourseResendInviteView, set_user_setting, LTICourseSelector)
+    CourseResendInviteView, set_user_setting,
+    LTICourseSelector, LTICourseCreate)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -158,6 +159,8 @@ urlpatterns = [
     url(r'^course/list/$',
         MethCourseListView.as_view(),
         name='course_list'),
+    url(r'^course/lti/create/$',
+        LTICourseCreate.as_view(), name='lti-course-create'),
     url(r'^course/lti/(?P<context>\w[^/]*)/$',
         LTICourseSelector.as_view(), name='lti-course-select'),
 

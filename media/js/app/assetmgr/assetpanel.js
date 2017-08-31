@@ -256,7 +256,7 @@ AssetPanelHandler.prototype.resize = function() {
     if (self.$el.find('td.panel-container.collection')
         .hasClass('minimized') ||
             self.$el.find('td.panel-container.collection')
-            .hasClass('maximized')) {
+                .hasClass('maximized')) {
 
         var visible = getVisibleContentHeight();
         visible -= jQuery('tr.asset-workspace-title-row').outerHeight();

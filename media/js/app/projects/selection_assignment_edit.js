@@ -17,8 +17,8 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'onFormKeyPress',
-                      'onGalleryItemMouseOver', 'onGalleryMouseOut',
-                      'onGalleryItemSelect', 'beforeUnload');
+                'onGalleryItemMouseOver', 'onGalleryMouseOut',
+                'onGalleryItemSelect', 'beforeUnload');
 
             AssignmentEditView.prototype.initialize.apply(this, arguments);
 

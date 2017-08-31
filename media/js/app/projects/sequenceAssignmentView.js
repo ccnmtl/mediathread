@@ -28,12 +28,12 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onShowSubmitDialog', 'onSubmitResponse',
-                      'onSaveFeedback', 'onSaveFeedbackSuccess',
-                      'onChange', 'onSaveProject', 'serializeData',
-                      'isDirty', 'setDirty', 'beforeUnload',
-                      'validTitle',
-                      'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
+                'onShowSubmitDialog', 'onSubmitResponse',
+                'onSaveFeedback', 'onSaveFeedbackSuccess',
+                'onChange', 'onSaveProject', 'serializeData',
+                'isDirty', 'setDirty', 'beforeUnload',
+                'validTitle',
+                'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -102,7 +102,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 });
         },
         beforeUnload: function() {
@@ -186,7 +186,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 },
                 success: function(json, textStatus, xhr) {
                     if (json.status === 'error') {

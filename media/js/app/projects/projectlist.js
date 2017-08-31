@@ -134,7 +134,7 @@ ProjectList.prototype.selectOwner = function(username) {
         dataType: 'json',
         error: function() {
             showMessage('There was an error retrieving the project list.',
-                        null, 'Error');
+                null, 'Error');
         },
         success: function(the_records) {
             self.update(the_records);
@@ -160,7 +160,7 @@ ProjectList.prototype.updateSwitcher = function() {
             }
             return self.selectOwner(username);
         }
-    );
+        );
 };
 
 ProjectList.prototype.update = function(the_records) {
@@ -199,7 +199,7 @@ ProjectList.prototype.update = function(the_records) {
     the_records.switcher_collection_chooser = self.switcher_context;
     the_records = jQuery.extend({}, the_records, MediaThread.mustacheHelpers);
     var rendered = Mustache.render(MediaThread.templates.homepage,
-                                   the_records);
+        the_records);
 
     var $el = jQuery('#classwork_table');
     $el.html(rendered).hide().fadeIn('slow');

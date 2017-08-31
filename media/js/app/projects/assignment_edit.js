@@ -57,7 +57,7 @@
                 if (!this.tinymce) {
                     tinymce.settings = this.tinymceSettings;
                     tinymce.execCommand('mceAddEditor', true,
-                                        'assignment-instructions');
+                        'assignment-instructions');
                     tinymce.execCommand('mceAddEditor', true, 'summary');
                 }
             } else if (pageContent === 'due-date') {

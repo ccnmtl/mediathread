@@ -26,7 +26,7 @@
             // bind beforeunload so user won't forget to submit response
             if (options.responseId && options.responseId.length > 0 &&
                 !options.submitted
-               ) {
+            ) {
                 jQuery(window).bind('beforeunload', this.beforeUnload);
             }
 

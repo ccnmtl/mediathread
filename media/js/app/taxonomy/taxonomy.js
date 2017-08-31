@@ -129,12 +129,12 @@
         },
         initialize: function(options) {
             _.bindAll(this,
-                      'render', 'createVocabulary', 'updateVocabulary',
-                      'deleteVocabulary', 'createTerm', 'keypressTermName',
-                      'updateTerm', 'deleteTerm',
-                      'createOnomyVocabulary', 'refreshOnomy',
-                      'getTheOnomy', 'activateTab',
-                      'toggleCreateVocabulary', 'toggleImportVocabulary');
+                'render', 'createVocabulary', 'updateVocabulary',
+                'deleteVocabulary', 'createTerm', 'keypressTermName',
+                'updateTerm', 'deleteTerm',
+                'createOnomyVocabulary', 'refreshOnomy',
+                'getTheOnomy', 'activateTab',
+                'toggleCreateVocabulary', 'toggleImportVocabulary');
 
             this.context = options;
             this.vocabularyTemplate =
@@ -343,7 +343,7 @@
             if (self.selected.hasTerm(display_name)) {
                 showMessage(display_name +
                         ' term already exists. Please choose a new name.',
-                        undefined, 'Error');
+                undefined, 'Error');
                 return;
             }
 
@@ -381,7 +381,7 @@
             if (self.selected.hasTerm(display_name)) {
                 showMessage(display_name +
                             ' term already exists. Please choose a new name.',
-                            undefined, 'Error');
+                undefined, 'Error');
                 return;
             }
 
@@ -471,7 +471,7 @@
             for (var i = 0; i < urls.length; i++) {
                 if (urls[i].length < 1) {
                     showMessage('Please enter a valid Onomy JSON url.',
-                            undefined, 'Error');
+                        undefined, 'Error');
                     return;
                 }
                 if (!urls[i].contains('test.json')) { // testing
@@ -517,7 +517,7 @@
                     arrayMax = data.terms.length;
                 } else {
                     skosData = _.filter(Object.keys(data), function(test) {
-                        return test.indexOf('\/term\/') > -1;
+                        return test.indexOf('term') > -1;
                     });
                     arrayMax = skosData.length;
                 }
@@ -550,7 +550,7 @@
                     });
 
                     for (var z = 0;
-                         z < parentsArray[key].term_set.length; z++) {
+                        z < parentsArray[key].term_set.length; z++) {
                         var term = parentsArray[key].term_set[z];
                         vocab.addTerm(term.display_name, term.skos_uri);
                     }
@@ -559,7 +559,7 @@
                 } else if (_.size(parentsArray) > 0) {
                     // if the vocab is in the collection, just add the term
                     for (var q = 0;
-                         q < parentsArray[key].term_set.length; q++) {
+                        q < parentsArray[key].term_set.length; q++) {
                         var set = parentsArray[key].term_set[q];
                         existingVocab.addTerm(
                             set.display_name, set.skos_uri);
@@ -568,7 +568,8 @@
             }
         },
         createParents: function(data, selectedVocabulary, onomyURL,
-                                skosData, loopMax) {
+            skosData, loopMax) {
+            /* eslint-disable no-useless-escape */
             var self = this;
             var parentsArray = {};
 
@@ -642,7 +643,7 @@
                     selectedVocabulary.addTerm(display, skos_uri);
                 }
             }
-
+            /* eslint-enable no-useless-escape */
             return parentsArray;
         }
     });

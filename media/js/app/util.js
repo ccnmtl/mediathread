@@ -90,7 +90,7 @@ function toggleHelpOverlay(btn, user, helpContentId) {
     if (elts.length) {
         var checked = jQuery(elts[0]).is(':checked');
         updateUserSetting(MediaThread.current_username,
-                          helpContentId, !checked);
+            helpContentId, !checked);
     }
     return false;
 }

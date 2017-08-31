@@ -23,9 +23,9 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render',
-                      'onChange', 'showSaveOptions', 'saveProject',
-                      'serializeData', 'isDirty', 'setDirty',
-                      'beforeUnload', 'validTitle');
+                'onChange', 'showSaveOptions', 'saveProject',
+                'serializeData', 'isDirty', 'setDirty',
+                'beforeUnload', 'validTitle');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -71,7 +71,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 });
         },
         beforeUnload: function() {
@@ -142,7 +142,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 },
                 success: function(json, textStatus, xhr) {
                     jQuery('.sequence-proj-status').text(

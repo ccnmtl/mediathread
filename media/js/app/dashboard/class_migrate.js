@@ -72,19 +72,19 @@
         initialize: function(options) {
             _.bindAll(this, 'setCourse', 'render',
                 'clickViewMaterials', 'importAll', 'importProjects',
-                      'importItems', 'selectAllItems', 'clearAllItems',
-                      'selectAllProjects', 'clearAllProjects',
-                      'renderSelectedList', 'switchCourse', 'setCourse',
-                      'deselectProject', 'deselectAsset',
-                      'clearSelectedMaterials');
+                'importItems', 'selectAllItems', 'clearAllItems',
+                'selectAllProjects', 'clearAllProjects',
+                'renderSelectedList', 'switchCourse', 'setCourse',
+                'deselectProject', 'deselectAsset',
+                'clearSelectedMaterials');
 
             this.selectedCourse = undefined;
             this.availableCourses = options.availableCourses;
 
             this.courseTemplate = _.template(jQuery('#course-template')
-                                             .html());
+                .html());
             this.selectedTemplate = _.template(jQuery('#selected-template')
-                                               .html());
+                .html());
 
             this.selectedProjects = new ProjectList();
             this.selectedAssets = new AssetList();
@@ -295,7 +295,7 @@
                             self.model.get('assets')
                                 .forEach(function(asset) {
                                     if (!self.selectedAssets
-                                             .get(asset.id)) {
+                                        .get(asset.id)) {
                                         self.selectedAssets.add(asset);
                                     }
                                 });
@@ -339,14 +339,14 @@
                                                     .get(project)) {
                                                     self.selectedProjects
                                                         .add(project,
-                                                             {silent: true});
+                                                            {silent: true});
                                                 }
                                                 jQuery(elt)
                                                     .removeAttr('checked');
                                             } else {
                                                 self.selectedProjects
                                                     .remove(project,
-                                                            {silent: true});
+                                                        {silent: true});
                                             }
                                         }
                                     );
@@ -393,7 +393,7 @@
                                                 .get('assets').get(id);
                                             if (jQuery(elt).is(':checked')) {
                                                 if (!self.selectedAssets
-                                                         .get(asset)) {
+                                                    .get(asset)) {
                                                     self.selectedAssets
                                                         .add(asset);
                                                 }
@@ -449,7 +449,7 @@
                 evt.originalTarget;
 
             var project = this.selectedProjects
-                              .get(jQuery(srcElement).attr('name'));
+                .get(jQuery(srcElement).attr('name'));
             this.selectedProjects.remove(project.id);
         },
 

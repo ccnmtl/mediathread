@@ -300,7 +300,7 @@ DiscussionPanelHandler.prototype.open_edit = function(evt, focus) {
 };
 
 DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
-                                                              scroll) {
+    scroll) {
     var self = this;
 
     self.$el.find('div.threaded_comment_header')
@@ -368,7 +368,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
         self.$el.find('div.collection-materials').hide();
 
         self.$el.find('td.panhandle-stripe div.label')
-                .html('View Inserted Selections');
+            .html('View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
 
         self.render();
@@ -376,7 +376,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
 };
 
 DiscussionPanelHandler.prototype._bind = function($parent, elementSelector,
-        event, handler) {
+    event, handler) {
     var elements = $parent.find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).bind(event, handler);
@@ -441,8 +441,8 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
 };
 
 DiscussionPanelHandler.prototype.oncomplete = function(responseText,
-                                                       textStatus,
-                                                       xhr) {
+    textStatus,
+    xhr) {
     var self = this.self;
     var form_vals = {};
     for (var i = 0; i < this.form_val_array.length; i++) {
@@ -535,17 +535,17 @@ DiscussionPanelHandler.prototype.parseResponse = function(xhr) {
         rv.comment_id = new_comment[1];
     }
     var timestamp = String(xhr.responseText).match(
-            /name="timestamp"\s+value="(\d+)"/);
+        /name="timestamp"\s+value="(\d+)"/);
     if (timestamp !== null) {
         rv.timestamp = timestamp[1];
     }
     var security = String(xhr.responseText).match(
-            /name="security_hash"\s+value="(\w+)"/);
+        /name="security_hash"\s+value="(\w+)"/);
     if (security !== null) {
         rv.security_hash = security[1];
     }
     var comment_text = String(xhr.responseText).match(
-            /id="commentposted">((.|\n)*)<!--endposted/);
+        /id="commentposted">((.|\n)*)<!--endposted/);
     if (comment_text !== null) {
         rv.comment = comment_text[1];
     }
@@ -597,10 +597,10 @@ DiscussionPanelHandler.prototype.components = function(html_dom, create_obj) {
         'comment': jQuery('div.threaded_comment_text:first', html_dom).get(0),
         'title': jQuery('div.threaded_comment_title', html_dom).get(0),
         'author': jQuery('span.threaded_comment_author:first', html_dom)
-                .get(0),
+            .get(0),
         'edit_button': jQuery(
-                'div.respond_to_comment_form_div:first .edit_prompt',
-                html_dom).get(0),
+            'div.respond_to_comment_form_div:first .edit_prompt',
+            html_dom).get(0),
         'parent': jQuery(html_dom).parents('li.comment-thread').get(0)
     };
 };
@@ -640,9 +640,9 @@ DiscussionPanelHandler.prototype.create = function(obj, doc) {
     //'</ul>';
 
     var text = html.replace(/\{\{current_comment\.id\}\}/g, obj.id).replace(
-            /\{\{current_comment.name\}\}/g, obj.name).replace(
-            /\{\{current_comment.title\}\}/g, obj.title || '').replace(
-            /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);
+        /\{\{current_comment.name\}\}/g, obj.name).replace(
+        /\{\{current_comment.title\}\}/g, obj.title || '').replace(
+        /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);
     return {
         htmlID: 'comment-' + obj.id,
         object: obj,
@@ -664,7 +664,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
     if (!jQuery(self.form).is(':visible')) {
         // Switch to Edit View
         self.$el.find('td.panhandle-stripe div.label').html(
-                'Insert Selections');
+            'Insert Selections');
         self.$el.find('div.asset-view-published').hide();
 
         // Kill the asset view
@@ -680,7 +680,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
         self.$el.find('div.collection-materials').hide();
 
         self.$el.find('td.panhandle-stripe div.label').html(
-                'View Inserted Selections');
+            'View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
     }
 

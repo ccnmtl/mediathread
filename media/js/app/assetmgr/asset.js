@@ -82,13 +82,13 @@
                     var config = {};
                     if (window.location.hash) {
                         var annotation_query = djangosherd.assetview
-                                                  .queryformat.find(
-                                                      document.location.hash);
+                            .queryformat.find(
+                                document.location.hash);
                         if (annotation_query.length) {
                             config.xywh = annotation_query[0];
                         } else {
                             var annid = String(window.location.hash)
-                                            .match(/annotation_id=([.\d]+)/);
+                                .match(/annotation_id=([.\d]+)/);
                             if (annid !== null) {
                                 config.annotation_id = Number(annid[1]);
                             }
@@ -185,7 +185,7 @@
                             } else {
                                 var annid =
                                     String(window.location.hash)
-                                    .match(/annotation_id=([.\d]+)/);
+                                        .match(/annotation_id=([.\d]+)/);
                                 if (annid !== null) {
                                     opts.annotation_id = Number(annid[1]);
                                 }
@@ -223,7 +223,7 @@
                             jQuery(frm.elements.groupby).change(function() {
                                 var val = jQuery(this).val();
                                 storeData('annotation-list-filter__group',
-                                          val);
+                                    val);
                                 self.groupBy(val);
                             });
                             self.groupBy(value);
@@ -474,12 +474,12 @@
         this.decorateLink = function(li) {
             if (self.highlight_layer) {
                 jQuery(this)
-                .mouseenter(function(evt) {
-                    self.highlight(jQuery(this).attr('data-id'));
-                })
-                .mouseleave(function(evt) {
-                    self.unhighlight();
-                });
+                    .mouseenter(function(evt) {
+                        self.highlight(jQuery(this).attr('data-id'));
+                    })
+                    .mouseleave(function(evt) {
+                        self.unhighlight();
+                    });
             }
         };
 
@@ -547,7 +547,7 @@
             var checked = self.$parent.find(
                 '#asset-view-show-help').is(':checked');
             updateUserSetting(MediaThread.current_username,
-                              'help_item_detail_view', !checked);
+                'help_item_detail_view', !checked);
             return false;
         };
 
@@ -637,7 +637,7 @@
             }
 
             jQuery(saveButton).attr('disabled', 'disabled')
-               .attr('value', 'Saving...').addClass('saving');
+                .attr('value', 'Saving...').addClass('saving');
 
             jQuery.ajax({
                 type: 'POST',
@@ -722,7 +722,7 @@
 
                 var new_annotation_id = jQuery(ui.newHeader).data('id');
                 self._update({'annotation_id': new_annotation_id},
-                             'asset-annotation-current', false);
+                    'asset-annotation-current', false);
                 self._addHistory(/*replace=*/false);
 
                 var group = jQuery(ui.newHeader)
@@ -735,7 +735,7 @@
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(jQuery(list)
                         .scrollTop() + jQuery(ui.newHeader)
-                        .position().top - 10);
+                            .position().top - 10);
                 }, 200);
             }
         };
@@ -746,7 +746,7 @@
             var self = this;
             if (annotation_id === self.active_annotation.id) {
                 var url = MediaThread.urls['annotation-delete'](
-                              self.active_asset.id, annotation_id);
+                    self.active_asset.id, annotation_id);
                 ajaxDelete(null, 'accordion-' + annotation_id,
                     {'href': url, 'success': this.deleteAnnotationComplete});
             }
@@ -809,7 +809,7 @@
                     self.$parent.find('#annotation-current').html(rendered);
                     djangosherd.assetview.clipform
                         .setState({'start': 0, 'end': 0},
-                                  {'mode': 'create'});
+                            {'mode': 'create'});
                     self._initTags();
                     self._initReferences();
                     self._initConcepts();
@@ -881,7 +881,7 @@
                             .setState(self.active_annotation.annotation);
                         djangosherd.assetview.clipform
                             .setState(self.active_annotation.annotation,
-                                      {'mode': 'copy'});
+                                {'mode': 'copy'});
 
                         self._initTags();
                         self._initConcepts();
@@ -986,8 +986,8 @@
                         id: json.asset.id,
                         type: 'asset',
                         url: MediaThread.urls['asset-json'](
-                                json.asset.id, /*annotations=*/true,
-                                self.config.parentId)
+                            json.asset.id, /*annotations=*/true,
+                            self.config.parentId)
                     },
                     false,
                     function(asset_full) {
@@ -1193,7 +1193,7 @@
             }
 
             rendered = Mustache.render(MediaThread.templates.asset_view_help,
-                                       context);
+                context);
             self.$parent.find('#asset-view-help').html(rendered);
             self.$parent.find('.asset-view-title').text(
                 context['asset-current'].title);

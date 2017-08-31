@@ -50,11 +50,11 @@ var CollectionWidget = function() {
 
 CollectionWidget.prototype.postInitialize = function() {
     var html = Mustache.render(MediaThread.templates[this.template],
-                               MediaThread.mustacheHelpers);
+        MediaThread.mustacheHelpers);
     this.$el.html(html);
 
     html = Mustache.render(MediaThread.templates[this.template + '_quickedit'],
-                           MediaThread.mustacheHelpers);
+        MediaThread.mustacheHelpers);
 
     this.$quickEditView.html(html);
 
@@ -101,13 +101,13 @@ CollectionWidget.prototype.mapSignals = function() {
         }
     );
     jQuery(window).on('collection.annotation.create', {'self': this},
-            function(event, params) {
-                self.open('create', params);
-                self.quickEdit(
-                    'Create Selection', 'annotation.create',
-                    params.assetId);
-            }
-        );
+        function(event, params) {
+            self.open('create', params);
+            self.quickEdit(
+                'Create Selection', 'annotation.create',
+                params.assetId);
+        }
+    );
 };
 
 CollectionWidget.prototype.mapEvents = function() {
@@ -152,18 +152,18 @@ CollectionWidget.prototype.mapEvents = function() {
         });
 
     self.$el.on(
-            'click', 'a.switcher-choice.filterbymedia', function(evt) {
-                var src = evt.srcElement || evt.target || evt.originalTarget;
-                var bits = src.href.split('/');
-                var filterName = bits[bits.length - 1];
+        'click', 'a.switcher-choice.filterbymedia', function(evt) {
+            var src = evt.srcElement || evt.target || evt.originalTarget;
+            var bits = src.href.split('/');
+            var filterName = bits[bits.length - 1];
 
-                if (filterName === 'all') {
-                    self.currentRecords.active_filters.media_type = '';
-                } else {
-                    self.currentRecords.active_filters.media_type = filterName;
-                }
-                return self.filter();
-            });
+            if (filterName === 'all') {
+                self.currentRecords.active_filters.media_type = '';
+            } else {
+                self.currentRecords.active_filters.media_type = filterName;
+            }
+            return self.filter();
+        });
 
     self.$el.on(
         'change', '.switcher-tool select.vocabulary', function(evt) {
@@ -177,7 +177,7 @@ CollectionWidget.prototype.mapEvents = function() {
                 self.currentRecords.active_filters[vocab].push(option.id);
             } else if (evt.removed) {
                 var index = self.currentRecords.active_filters[vocab]
-                            .indexOf(option.id);
+                    .indexOf(option.id);
                 self.currentRecords.active_filters[vocab].splice(index, 1);
             }
             return self.filter();
@@ -224,8 +224,8 @@ CollectionWidget.prototype.mapEvents = function() {
         var bits = evt.currentTarget.href.split('/');
         var annotationId = bits[bits.length - 1];
         var assetId = jQuery('#annotation-' + annotationId)
-                           .parents('div.record')
-                           .children('input.record').attr('value');
+            .parents('div.record')
+            .children('input.record').attr('value');
         self.quickEdit(
             'Edit Selection', 'annotation.edit', assetId, annotationId);
         return false;
@@ -630,7 +630,7 @@ CollectionWidget.prototype.initCitationView = function() {
 };
 
 CollectionWidget.prototype.quickEdit = function(title, evtType,
-                                                assetId, annotationId) {
+    assetId, annotationId) {
     this.initCitationView();
 
     this.$quickEditView.find('.asset-view-title').html(title);
@@ -665,8 +665,8 @@ CollectionWidget.prototype.deleteAsset = function(assetId) {
 
 CollectionWidget.prototype.deleteAnnotation = function(annotationId) {
     var assetId = jQuery('#annotation-' + annotationId)
-                         .parents('div.record').children('input.record')
-                         .attr('value');
+        .parents('div.record').children('input.record')
+        .attr('value');
     var url = MediaThread.urls['annotation-delete'](assetId, annotationId);
     return ajaxDelete(null, 'annotation-' + annotationId, {
         'href': url,
@@ -741,7 +741,7 @@ CollectionWidget.prototype.selectedOwner = function() {
 
 CollectionWidget.prototype.activeTags = function() {
     return ('tag' in this.currentRecords.active_filters) ?
-            this.currentRecords.active_filters.tag : null;
+        this.currentRecords.active_filters.tag : null;
 };
 
 CollectionWidget.prototype.activeModified = function() {

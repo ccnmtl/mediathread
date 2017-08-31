@@ -10,13 +10,13 @@
             var handler = null;
             if (type === 'project') {
                 handler = new ProjectPanelHandler(el, $parent, panel,
-                                                  space_owner);
+                    space_owner);
             } else if (type === 'discussion') {
                 handler = new DiscussionPanelHandler(el, $parent, panel,
-                                                     space_owner);
+                    space_owner);
             } else if (type === 'asset') {
                 handler = new AssetPanelHandler(el, $parent, panel,
-                                                space_owner);
+                    space_owner);
             }
 
             return handler;
@@ -100,10 +100,10 @@
                     var $lastCell = jQuery('#' + self.options.container +
                                           ' tr:first td:last');
                     panel = jQuery.extend({}, panel,
-                                          MediaThread.mustacheHelpers);
+                        MediaThread.mustacheHelpers);
                     $lastCell.before(
                         Mustache.render(MediaThread.templates[panel.template],
-                                        panel));
+                            panel));
 
                     var newCell = $lastCell.prev().prev()[0];
                     var $newCell = jQuery(newCell);
@@ -259,7 +259,7 @@
                         var parentPanelTab =
                             jQuery(parentContainer).children('div.pantab')[0];
                         jQuery(parentPanelTab).removeClass('open')
-                                              .addClass('closed');
+                            .addClass('closed');
 
                         tableWidth = self.$el.width();
                     }
@@ -305,10 +305,10 @@
 
                 var panelTab = $panel.next().children('div.pantab')[0];
                 jQuery(panelTab).parent()
-                                .removeClass('minimized')
-                                .addClass('maximized');
+                    .removeClass('minimized')
+                    .addClass('maximized');
                 jQuery(panelTab).removeClass('minimized')
-                                .addClass('maximized');
+                    .addClass('maximized');
 
                 self.verifyLayout($panel);
                 jQuery(window).trigger('resize');

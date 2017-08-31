@@ -1,4 +1,7 @@
 /* global escape: true, MediaThread: true, unescape: true */
+/* exported _propertyCount, getVisibleContentHeight */
+/* exported switcher, toggleHelp, toggleHelpOverlay, storeData */
+/* exported retrieveData, showMessage, confirmAction */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 function _propertyCount(obj) {
@@ -12,29 +15,25 @@ function _propertyCount(obj) {
 }
 
 function getVisibleContentHeight() {
-    var viewportwidth;
     var viewportheight;
 
     // the more standards compliant browsers (mozilla/netscape/opera/IE7
     // use window.innerWidth and window.innerHeight
     if (typeof window.innerWidth !== 'undefined') {
-        viewportwidth = window.innerWidth;
         viewportheight = window.innerHeight;
     } else if (typeof document.documentElement !== 'undefined' &&
         typeof document.documentElement.clientWidth !== 'undefined' &&
             document.documentElement.clientWidth !== 0) {
         // IE6 in standards compliant mode (i.e. with a valid doctype
         // as the first line in the document)
-        viewportwidth = document.documentElement.clientWidth;
         viewportheight = document.documentElement.clientHeight;
     } else {
         // older versions of IE
-        viewportwidth = document.getElementsByTagName('body')[0].clientWidth;
         viewportheight = document.getElementsByTagName('body')[0].clientHeight;
     }
 
-    return viewportheight - (20 +
-                             document.getElementById('header').clientHeight);
+    return viewportheight -
+        (20 + document.getElementById('header').clientHeight);
 }
 
 function switcher(event, a) {
@@ -66,8 +65,7 @@ function toggleHelp(a, user, parent, helpContentId, callback) {
     var userSetting = jQuery(parent).hasClass('on') ? 'True' : 'False';
 
     jQuery.post('/setting/' + user + '/',
-                {name: helpContentId,
-                value: userSetting});
+        {name: helpContentId, value: userSetting});
 
     if (callback) {
         callback();
@@ -92,7 +90,7 @@ function toggleHelpOverlay(btn, user, helpContentId) {
     if (elts.length) {
         var checked = jQuery(elts[0]).is(':checked');
         updateUserSetting(MediaThread.current_username,
-                          helpContentId, !checked);
+            helpContentId, !checked);
     }
     return false;
 }
@@ -124,6 +122,9 @@ function setCookie(name, value, expires, path, domain, secure) {
         ((secure) ? '; secure' : '');
 }
 
+/* eslint-disable  scanjs-rules/property_localStorage */
+/* eslint-disable scanjs-rules/identifier_localStorage */
+
 function storeData(name, value, expires, path, domain, secure) {
     if (window.localStorage) {
         localStorage[name] = value;
@@ -139,6 +140,9 @@ function retrieveData(name) {
         return getCookie(name);
     }
 }
+
+/* eslint-enable scanjs-rules/property_localStorage */
+/* eslint-enable scanjs-rules/identifier_localStorage */
 
 function showMessage(msg, onclose, customTitle, position) {
     var title = customTitle ? customTitle : 'Success';

@@ -7,15 +7,15 @@ var SherdReport = function() {
 
     this.nodeMouseDown = function(node) {
         jQuery('#reports-graph-chosenlink')
-        .html(node.nodeName)
-        .attr('href', node.href);
+            .html(node.nodeName)
+            .attr('href', node.href);
 
         if (node.users) {
             jQuery('#reports-student-tbody tr').removeClass('highlight');
             for (var author in node.users) {
                 if (node.users.hasOwnProperty(author)) {
                     jQuery('#reports-student-tbody tr.user-' + author)
-                                                .addClass('highlight');
+                        .addClass('highlight');
                 }
             }
         }
@@ -30,40 +30,38 @@ var SherdReport = function() {
     this.init = function(json) {
         var w = jQuery('#reports-graph-link').width();
         var h = Math.max(500, jQuery(window).height() - 300);
-        var colors = pv.Colors.category10();
         var domainColors = pv.Colors.category20();
 
         var vis = new pv.Panel({canvas: 'reports-graph-visualization'})
-        .canvas('reports-graph-visualization')
-        .width(w)
-        .height(h)
-        .fillStyle('white')
-        .event('mousedown', pv.Behavior.pan())
-        .event('mousewheel', pv.Behavior.zoom(
+            .canvas('reports-graph-visualization')
+            .width(w)
+            .height(h)
+            .fillStyle('white')
+            .event('mousedown', pv.Behavior.pan())
+            .event('mousewheel', pv.Behavior.zoom(
                 //clearly protovis default is calibrated for firefox
                 //or a Mac with those stupid little dots for scroll-wheels
                 (/(Firefox|Mac OS X)/.test(navigator.userAgent) ? 1 : 3)
-        ));
+            ));
 
         var force = vis.add(pv.Layout.Force)
-        .nodes(json.nodes)
-        .links(json.links);
+            .nodes(json.nodes)
+            .links(json.links);
 
         self.links = force.link.add(pv.Line)
-        .strokeStyle(function(n, lnk) {
-            var g = (lnk.bare ? 0.2 : 0.5);
-            return 'rgba(0,0,0,' + g + ')';
-        });
+            .strokeStyle(function(n, lnk) {
+                var g = (lnk.bare ? 0.2 : 0.5);
+                return 'rgba(0,0,0,' + g + ')';
+            });
 
         self.innerMouseDown = pv.Behavior.drag();
 
         self.nodes = force.node.add(pv.Dot)
-        .size(function(d) {
-            return 3 + (d.linkDegree + 4) * Math.pow(this.scale, -1.5);
-        })
-        .fillStyle(function(d) {
-            var color;
-            switch (d.group) {
+            .size(function(d) {
+                return 3 + (d.linkDegree + 4) * Math.pow(this.scale, -1.5);
+            })
+            .fillStyle(function(d) {
+                switch (d.group) {
                 case 1:
                     return new pv.Color.Rgb(256, 256, 0, 1); //tag
                 case 2:
@@ -74,15 +72,15 @@ var SherdReport = function() {
                     return new pv.Color.Rgb(0, 100, 0, 1); //comment
                 default:
                     return new pv.Color.Rgb(0, 0, 0, 1);
-            }
-        })
-        .strokeStyle(function(d) {
-            return (d.faculty ? new pv.Color.Rgb(200, 0, 0, 1) :
-                                        this.fillStyle().darker());
-        })
-        .lineWidth(self.nodeDefaultLineWidth)
-        .shape(function(d) {
-            switch (d.group) {
+                }
+            })
+            .strokeStyle(function(d) {
+                return (d.faculty ? new pv.Color.Rgb(200, 0, 0, 1) :
+                    this.fillStyle().darker());
+            })
+            .lineWidth(self.nodeDefaultLineWidth)
+            .shape(function(d) {
+                switch (d.group) {
                 case 1:
                 case 2:
                     return 'circle'; //asset
@@ -90,11 +88,11 @@ var SherdReport = function() {
                     return 'square'; //project
                 case 4:
                     return 'diamond'; //comment
-            }
-        })
-        .title(function(d) { return d.nodeName; })
-        .event('mousedown', self.nodeMouseDown)
-        .event('drag', force);
+                }
+            })
+            .title(function(d) { return d.nodeName; })
+            .event('mousedown', self.nodeMouseDown)
+            .event('drag', force);
 
         vis.render();
 
@@ -109,7 +107,7 @@ var SherdReport = function() {
                 self.nodes.lineWidth(self.nodeDefaultLineWidth);
             } else {
                 var user = jQuery(this)
-                           .addClass('highlight').attr('data-username');
+                    .addClass('highlight').attr('data-username');
 
                 self.nodes.lineWidth(function(d) {
                     return (d.users &&

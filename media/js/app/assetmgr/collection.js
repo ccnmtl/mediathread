@@ -127,7 +127,7 @@ var CollectionList = function(config) {
                 self.current_records.active_filters[vocab].push(option.id);
             } else if (evt.removed) {
                 var index = self.current_records.active_filters[vocab]
-                            .indexOf(option.id);
+                    .indexOf(option.id);
                 self.current_records.active_filters[vocab].splice(index, 1);
             }
             return self.filter();
@@ -187,10 +187,10 @@ var CollectionList = function(config) {
             var bits = src.parentNode.href.split('/');
             var annotation_id = bits[bits.length - 1];
             var asset_id = jQuery('#annotation-' + annotation_id)
-                               .parents('div.record')
-                               .children('input.record').attr('value');
+                .parents('div.record')
+                .children('input.record').attr('value');
             jQuery(window).trigger('annotation.edit',
-                                   [asset_id, annotation_id]);
+                [asset_id, annotation_id]);
             return false;
         });
 
@@ -294,17 +294,15 @@ CollectionList.prototype.deleteAsset = function(asset_id) {
         'href': url,
         'item': true,
         'success': function() {
-            try {
-                jQuery(window).trigger('asset.on_delete', [asset_id]);
-            } catch (e) {}
+            jQuery(window).trigger('asset.on_delete', [asset_id]);
         }
     });
 };
 
 CollectionList.prototype.deleteAnnotation = function(annotation_id) {
     var asset_id = jQuery('#annotation-' + annotation_id)
-                       .parents('div.record').children('input.record')
-                       .attr('value');
+        .parents('div.record').children('input.record')
+        .attr('value');
     var url = MediaThread.urls['annotation-delete'](asset_id, annotation_id);
     return ajaxDelete(null, 'annotation-' + annotation_id, {'href': url});
 };
@@ -314,7 +312,7 @@ CollectionList.prototype.filterByTag = function(tag) {
     var self = this;
     self.setLoading(true);
     var active_modified = ('modified' in self.current_records.active_filters) ?
-            self.current_records.active_filters.modified : null;
+        self.current_records.active_filters.modified : null;
     djangosherd.storage.get({
         type: 'asset',
         url: self.getSpaceUrl(tag, active_modified, self.citable)
@@ -366,7 +364,6 @@ CollectionList.prototype.filterByVocabulary = function(srcElement) {
 CollectionList.prototype.filter = function() {
     var self = this;
     self.setLoading(true);
-    var filters = {};
 
     self.$el.find('select.course-tags, select.vocabulary')
         .select2('enable', false);
@@ -401,7 +398,7 @@ CollectionList.prototype.getSpaceUrl = function(active_tag, active_modified) {
     var self = this;
     if (self.getShowingAllItems(self.current_records)) {
         return MediaThread.urls['all-space'](
-           active_tag, active_modified, self.citable);
+            active_tag, active_modified, self.citable);
     } else {
         return MediaThread.urls['your-space'](
             self.current_records.space_owner.username,
@@ -435,12 +432,12 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
         } else {
             var view;
             switch (asset.type) {
-                case 'image':
-                    view = new Sherd.Image.OpenLayers();
-                    break;
-                case 'fsiviewer':
-                    view = new Sherd.Image.FSIViewer();
-                    break;
+            case 'image':
+                view = new Sherd.Image.OpenLayers();
+                break;
+            case 'fsiviewer':
+                view = new Sherd.Image.FSIViewer();
+                break;
             }
             djangosherd.thumbs.push(view);
 
@@ -459,11 +456,13 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
             asset.y = 0;
             asset.zoom = 1;
 
+            /* eslint-disable no-empty */
             try {
                 view.html.push(objDiv, {asset: asset});
                 view.setState(asset);
             } catch (e) {
             }
+            /* eslint-enable no-empty */
         }
     }
 };
@@ -480,12 +479,12 @@ CollectionList.prototype.createThumbs = function(assets) {
 
                 var view;
                 switch (asset.type) {
-                    case 'image':
-                        view = new Sherd.Image.OpenLayers();
-                        break;
-                    case 'fsiviewer':
-                        view = new Sherd.Image.FSIViewer();
-                        break;
+                case 'image':
+                    view = new Sherd.Image.OpenLayers();
+                    break;
+                case 'fsiviewer':
+                    view = new Sherd.Image.FSIViewer();
+                    break;
                 }
                 djangosherd.thumbs.push(view);
                 var objDiv = document.createElement('div');
@@ -495,6 +494,7 @@ CollectionList.prototype.createThumbs = function(assets) {
                 if (t.length > 0) {
                     t[0].appendChild(objDiv);
                 } else {
+                    // eslint-disable-next-line no-console
                     console.error('CollectionList error!');
                 }
 

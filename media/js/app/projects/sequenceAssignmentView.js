@@ -28,12 +28,12 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onShowSubmitDialog', 'onSubmitResponse',
-                      'onSaveFeedback', 'onSaveFeedbackSuccess',
-                      'onChange', 'onSaveProject', 'serializeData',
-                      'isDirty', 'setDirty', 'beforeUnload',
-                      'validTitle',
-                      'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
+                'onShowSubmitDialog', 'onSubmitResponse',
+                'onSaveFeedback', 'onSaveFeedbackSuccess',
+                'onChange', 'onSaveProject', 'serializeData',
+                'isDirty', 'setDirty', 'beforeUnload',
+                'validTitle',
+                'onConfirmUnsubmitResponse', 'onUnsubmitResponse');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -102,7 +102,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 });
         },
         beforeUnload: function() {
@@ -177,9 +177,6 @@
                 .text('Saving...')
                 .addClass('saving');
 
-            var data = this.serializeData();
-
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.responseId + '/',
@@ -189,7 +186,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 },
                 success: function(json, textStatus, xhr) {
                     if (json.status === 'error') {
@@ -212,7 +209,6 @@
                 this.onUnsubmitResponse, 'Unsubmit Response');
         },
         onUnsubmitResponse: function(evt) {
-            var self = this;
             var frm = jQuery(this.el).find('.unsubmit-response-form')[0];
             jQuery(frm.submit());
         },
@@ -229,7 +225,6 @@
                     '#submit-project input[name="publish"]').val()
             });
 
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.responseId + '/',
@@ -237,6 +232,7 @@
                 dataType: 'json',
                 success: function(json) {
                     jQuery(window).unbind('beforeunload');
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = json.context.project.url;
                 },
                 error: function() {

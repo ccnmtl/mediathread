@@ -1,4 +1,5 @@
 /* global BrowserDetect: true, addLoadEvent: true */
+/* exported shieldbrowser */
 
 var browserblock = '<div class="nosupport_close"><a href="#" ' +
     'onclick="javascript:this.parentNode.parentNode.style.display=\'none\';' +
@@ -42,11 +43,18 @@ function buildshieldbox() {
     }
     var shieldwarningbox = document.getElementById('shieldbox');
     shieldwarningbox.className = 'warningmessage';
+
+    // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
     shieldwarningbox.innerHTML = browserblock;
+
     var nobrowserwarningdiv = document.getElementById('nobrowserwarning');
     var nobrowsercommentdiv = document.getElementById('nobrowsercomment');
+
+    // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
     nobrowserwarningdiv.innerHTML = 'You are using ' + BrowserDetect.browser +
         ' v.' + BrowserDetect.version + ', an unsupported browser.';
+
+    // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
     nobrowsercommentdiv.innerHTML = '<br /><br />For a better experience ' +
         'using this site, please upgrade to a recommended recent web browser.';
 
@@ -59,6 +67,7 @@ function buildshieldbox() {
             if (BrowserDetect.browser.toLowerCase() === key.toLowerCase() ||
                 (thisbrowsername && thisbrowsername.toLowerCase() ===
                     key.toLowerCase())) {
+                // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
                 document.getElementById('minreqversion').innerHTML =
                     'The minimum required version for this browser is ' +
                     browserlist[key] + '.';

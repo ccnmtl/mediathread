@@ -12,9 +12,8 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'onPromote', 'onDemote', 'onRemove',
-                      'onAddUNIUser', 'onInviteEmailUser',
-                      'onActionConfirmed');
-            var self = this;
+                'onAddUNIUser', 'onInviteEmailUser',
+                'onActionConfirmed');
 
             jQuery(this.el).find('.tablesorter').tablesorter({
                 sortList: [[0,0]],
@@ -33,7 +32,7 @@
             var name = $elt.data('user-fullname');
             confirmAction(
                 'Are you sure you want to promote ' + name + ' to instructor?',
-                 this.onActionConfirmed, 'Confirm');
+                this.onActionConfirmed, 'Confirm');
         },
         onDemote: function(evt) {
             evt.preventDefault();
@@ -42,7 +41,7 @@
             var name = $elt.data('user-fullname');
             confirmAction(
                 'Are you sure you want to demote ' + name + ' to student?',
-                 this.onActionConfirmed, 'Confirm');
+                this.onActionConfirmed, 'Confirm');
         },
         onRemove: function(evt) {
             evt.preventDefault();
@@ -51,7 +50,7 @@
             var name = $elt.data('user-fullname');
             confirmAction(
                 'Are you sure you want to remove ' + name + ' from the course?',
-                 this.onActionConfirmed, 'Confirm');
+                this.onActionConfirmed, 'Confirm');
         },
         onActionConfirmed: function(evt) {
             this.form.submit();  // redirects

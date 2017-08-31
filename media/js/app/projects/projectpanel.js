@@ -1,6 +1,6 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global getVisibleContentHeight: true, MediaThread: true, Mustache: true */
-/* global SelectFilter: true, showMessage: true, STATIC_URL: true */
+/* global showMessage: true */
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -47,7 +47,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
 
         // HACK: move the save options around due to django form constraints
         var assignment_elt = self.$el.find('label[for="id_publish_2"]')
-                                            .parent();
+            .parent();
         if (assignment_elt.length > 0) {
             self.$el.find('div.due-date').appendTo(assignment_elt);
         }
@@ -111,6 +111,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         self.setDirty(true);
     });
 
+    // eslint-disable-next-line  scanjs-rules/call_addEventListener
     document.addEventListener('asset.select', function(event) {
         self.insertCitation(event.detail);
     });
@@ -156,7 +157,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     if (instance &&
         instance.id === self.panel.context.project.id + '-project-content' &&
         !self.tinymce
-       ) {
+    ) {
         self.tinymce = instance;
 
         // Reset width to 100% via javascript. TinyMCE doesn't resize properly
@@ -251,18 +252,18 @@ ProjectPanelHandler.prototype.render = function() {
     var open = self.isSubpanelOpen();
     if (preview && open) {
         self.$el.find('.panel-content')
-                       .removeClass('fluid')
-                       .addClass('fixed');
+            .removeClass('fluid')
+            .addClass('fixed');
         self.$el.find('td.panel-container.collection')
-                       .removeClass('fixed')
-                       .addClass('fluid');
+            .removeClass('fixed')
+            .addClass('fluid');
     } else {
         self.$el.find('.panel-content')
-                       .removeClass('fixed')
-                       .addClass('fluid');
+            .removeClass('fixed')
+            .addClass('fluid');
         self.$el.find('td.panel-container.collection')
-                       .removeClass('fluid')
-                       .addClass('fixed');
+            .removeClass('fluid')
+            .addClass('fixed');
     }
 
     jQuery(window).trigger('resize');
@@ -304,6 +305,7 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     var q = 'td.panel-container.composition';
     if (self.$parentContainer.find(q).length > 0) {
         context.callback = function(json) {
+            // eslint-disable-next-line scanjs-rules/assign_to_location
             window.location = json.context.project.url;
         };
     }
@@ -328,8 +330,8 @@ ProjectPanelHandler.prototype.createInstructorFeedback = function(evt) {
             'model': 'project',
             'obj_pk': self.panel.context.project.id,
             'comment_html': self.$el.find('h1.project-title')
-                                           .html()
-                                           .trim() + ': Instructor Feedback'
+                .html()
+                .trim() + ': Instructor Feedback'
         }
     });
 
@@ -371,8 +373,10 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
-                    window.open(val, 'mediathread_project' +
-                                     self.panel.context.project.id);
+                    var params = 'mediathread_project' +
+                        self.panel.context.project.id;
+                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    window.open(val, params);
                 }
             }
             return true;
@@ -425,6 +429,7 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -482,6 +487,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -506,6 +512,7 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
 // A single response
 ProjectPanelHandler.prototype.showMyResponse = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
+    // eslint-disable-next-line scanjs-rules/assign_to_location
     window.location = jQuery(srcElement).data('url');
 };
 
@@ -608,7 +615,7 @@ ProjectPanelHandler.prototype.preview = function(evt) {
 
         // Give precedence to media view IF the subpanel is open
         if (self.$el.find('td.panel-container.collection')
-                .hasClass('open')) {
+            .hasClass('open')) {
             self.$el.find('.panel-content')
                 .removeClass('fluid').addClass('fixed');
             self.$el.find('td.panel-container.collection')
@@ -653,7 +660,7 @@ ProjectPanelHandler.prototype.showSaveOptions = function(evt) {
         }
     });
 
-    var dlg = jQuery(elt).modal('show');
+    jQuery(elt).modal('show');
 };
 
 ProjectPanelHandler.prototype.serializeData = function() {
@@ -688,7 +695,7 @@ ProjectPanelHandler.prototype.saveProject = function() {
             jQuery(saveButton).removeAttr('disabled')
                 .text('Save').removeClass('saving');
             showMessage('There was an error saving your project.',
-                        null, 'Error');
+                null, 'Error');
         },
         success: function(json, textStatus, xhr) {
             if (json.status === 'error') {
@@ -698,7 +705,7 @@ ProjectPanelHandler.prototype.saveProject = function() {
                     '.last-version-public').get(0);
                 if (json.revision.public_url) {
                     jQuery(lastVersionPublic).attr('href',
-                                                   json.revision.public_url);
+                        json.revision.public_url);
                     jQuery(lastVersionPublic).show();
                 } else {
                     jQuery(lastVersionPublic).attr('href', '');
@@ -716,7 +723,7 @@ ProjectPanelHandler.prototype.saveProject = function() {
                     self.$el.prev().removeClass('composition')
                         .addClass('assignment');
                     self.$el.prev().find('div.label')
-                         .html('assignment');
+                        .html('assignment');
                     self.$el.prev().prev().find('.composition')
                         .removeClass('composition').addClass('assignment');
 
@@ -742,11 +749,11 @@ ProjectPanelHandler.prototype.saveProject = function() {
                 }
 
                 self.$el.find('.project-visibility-description')
-                               .html(json.revision.visibility);
+                    .html(json.revision.visibility);
 
                 if (json.revision.due_date) {
                     self.$el.find('.project-due-date')
-                                   .html('Due ' + json.revision.due_date);
+                        .html('Due ' + json.revision.due_date);
                 } else {
                     self.$el.find('.project-due-date').html('');
                 }
@@ -781,6 +788,7 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         // If the timer is already active, don't set another one
         // Clear the timer variable at the end
         if (self.dirtyTimer === undefined) {
+            // eslint-disable-next-line scanjs-rules/call_setTimeout
             self.dirtyTimer = window.setTimeout(function() {
                 self.saveProject();
                 self.dirtyTimer = undefined;
@@ -807,7 +815,7 @@ ProjectPanelHandler.prototype.updateRevisions = function() {
         jQuery.ajax({
             type: 'GET',
             url: MediaThread.urls['project-revisions'](
-                    self.panel.context.project.id),
+                self.panel.context.project.id),
             dataType: 'json',
             error: function() {},
             success: function(json, textStatus, xhr) {
@@ -846,7 +854,7 @@ ProjectPanelHandler.prototype.beforeUnload = function() {
 };
 
 ProjectPanelHandler.prototype._bind = function($parent, elementSelector,
-                                               event, handler) {
+    event, handler) {
     var elements = $parent.find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).on(event, handler);
@@ -888,7 +896,7 @@ ProjectPanelHandler.prototype._validTitle = function(interactive) {
     } else if (value === 'Untitled') {
         if (interactive) {
             showMessage('Please update your "Untitled" project title.',
-                        null, 'Error');
+                null, 'Error');
         }
         $title.focus();
         return false;

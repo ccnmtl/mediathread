@@ -40,7 +40,6 @@ var ProjectList = function(config) {
 };
 
 ProjectList.prototype.createAssignmentResponse = function(evt) {
-    var self = this;
     var $elt = jQuery(evt.currentTarget);
 
     if (!$elt.is('a')) {
@@ -53,6 +52,7 @@ ProjectList.prototype.createAssignmentResponse = function(evt) {
         dataType: 'json',
         data: {'parent': $elt.data('id')},
         success: function(json) {
+            // eslint-disable-next-line  scanjs-rules/assign_to_location
             window.location = json.context.project.url;
         }
     });
@@ -134,7 +134,7 @@ ProjectList.prototype.selectOwner = function(username) {
         dataType: 'json',
         error: function() {
             showMessage('There was an error retrieving the project list.',
-                        null, 'Error');
+                null, 'Error');
         },
         success: function(the_records) {
             self.update(the_records);
@@ -150,16 +150,17 @@ ProjectList.prototype.updateSwitcher = function() {
     var self = this;
     jQuery(self.parent).find('a.switcher-choice.owner')
         .off('click').on('click', function(evt) {
-        var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-        var bits = srcElement.href.split('/');
-        var username = bits[bits.length - 1];
+            var srcElement =
+                evt.srcElement || evt.target || evt.originalTarget;
+            var bits = srcElement.href.split('/');
+            var username = bits[bits.length - 1];
 
-        if (username === 'all-class-members') {
-            username = null;
+            if (username === 'all-class-members') {
+                username = null;
+            }
+            return self.selectOwner(username);
         }
-        return self.selectOwner(username);
-    });
-
+        );
 };
 
 ProjectList.prototype.update = function(the_records) {
@@ -198,7 +199,7 @@ ProjectList.prototype.update = function(the_records) {
     the_records.switcher_collection_chooser = self.switcher_context;
     the_records = jQuery.extend({}, the_records, MediaThread.mustacheHelpers);
     var rendered = Mustache.render(MediaThread.templates.homepage,
-                                   the_records);
+        the_records);
 
     var $el = jQuery('#classwork_table');
     $el.html(rendered).hide().fadeIn('slow');

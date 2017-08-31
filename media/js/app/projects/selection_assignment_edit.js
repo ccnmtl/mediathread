@@ -1,5 +1,4 @@
 /* global _: true, Backbone: true, CitationView: true */
-/* global showMessage: true, tinymce: true, tinymceSettings: true */
 /* global AssignmentEditView: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -18,8 +17,8 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'onNext', 'onPrev', 'onSave', 'onFormKeyPress',
-                      'onGalleryItemMouseOver', 'onGalleryMouseOut',
-                      'onGalleryItemSelect', 'beforeUnload');
+                'onGalleryItemMouseOver', 'onGalleryMouseOut',
+                'onGalleryItemSelect', 'beforeUnload');
 
             AssignmentEditView.prototype.initialize.apply(this, arguments);
 

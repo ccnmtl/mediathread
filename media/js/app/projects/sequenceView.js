@@ -1,6 +1,5 @@
-/* global _: true, AssignmentView: true, updateUserSetting: true */
-/* global MediaThread: true, tinymceSettings:true, tinymce: true */
-/* global showMessage: true, confirmAction: true */
+/* global _: true, AssignmentView: true */
+/* global tinymceSettings:true, tinymce: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -24,9 +23,9 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render',
-                      'onChange', 'showSaveOptions', 'saveProject',
-                      'serializeData', 'isDirty', 'setDirty',
-                      'beforeUnload', 'validTitle');
+                'onChange', 'showSaveOptions', 'saveProject',
+                'serializeData', 'isDirty', 'setDirty',
+                'beforeUnload', 'validTitle');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -72,7 +71,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 });
         },
         beforeUnload: function() {
@@ -134,9 +133,6 @@
                 .text('Saving...')
                 .addClass('saving');
 
-            var data = this.serializeData();
-
-            var self = this;
             jQuery.ajax({
                 type: 'POST',
                 url: '/project/save/' + this.projectId + '/',
@@ -146,7 +142,7 @@
                     $saveButton.removeAttr('disabled')
                         .text('Save').removeClass('saving');
                     showMessage('There was an error saving your project.',
-                                null, 'Error');
+                        null, 'Error');
                 },
                 success: function(json, textStatus, xhr) {
                     jQuery('.sequence-proj-status').text(

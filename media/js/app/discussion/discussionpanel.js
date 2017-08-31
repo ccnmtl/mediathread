@@ -300,7 +300,7 @@ DiscussionPanelHandler.prototype.open_edit = function(evt, focus) {
 };
 
 DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
-                                                              scroll) {
+    scroll) {
     var self = this;
 
     self.$el.find('div.threaded_comment_header')
@@ -368,7 +368,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
         self.$el.find('div.collection-materials').hide();
 
         self.$el.find('td.panhandle-stripe div.label')
-                .html('View Inserted Selections');
+            .html('View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
 
         self.render();
@@ -376,7 +376,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
 };
 
 DiscussionPanelHandler.prototype._bind = function($parent, elementSelector,
-        event, handler) {
+    event, handler) {
     var elements = $parent.find(elementSelector);
     if (elements.length) {
         jQuery(elements[0]).bind(event, handler);
@@ -388,7 +388,6 @@ DiscussionPanelHandler.prototype._bind = function($parent, elementSelector,
 
 DiscussionPanelHandler.prototype.cancel = function(evt) {
     var self = evt.data.self;
-    var elt = evt.srcElement || evt.target || evt.originalTarget;
 
     self.set_comment_content();// empty it
     self.hide_comment_form(true);
@@ -419,12 +418,12 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
 
     info.mode = ((info['edit-id'] === '') ? 'post' : 'update');
     switch (info.mode) {
-        case 'update':
-            info.url = MediaThread.urls['comment-edit'](info['edit-id']);
-            break;
-        case 'post':
-            info.url = MediaThread.urls['comment-create']();
-            break;
+    case 'update':
+        info.url = MediaThread.urls['comment-edit'](info['edit-id']);
+        break;
+    case 'post':
+        info.url = MediaThread.urls['comment-create']();
+        break;
     }
     jQuery.ajax({
         type: 'POST',
@@ -442,8 +441,8 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
 };
 
 DiscussionPanelHandler.prototype.oncomplete = function(responseText,
-                                                       textStatus,
-                                                       xhr) {
+    textStatus,
+    xhr) {
     var self = this.self;
     var form_vals = {};
     for (var i = 0; i < this.form_val_array.length; i++) {
@@ -462,32 +461,33 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             };
 
             switch (this.info.mode) {
-                case 'post':
-                    var parentHtml = jQuery(
-                        '#comment-' + form_vals.parent).get(0);
-                    if (!parentHtml) {
-                        parentHtml = self.$el.find(
-                            'div.threadedcomments-container')[0];
-                    }
-                    var ul = this.info.target = document.createElement('ul');
-                    ul.setAttribute('class', 'comment-thread');
-                    parentHtml.appendChild(ul);
-                    ul.innerHTML = self.create(newObj).text;
-                    // decorate respond listener
-                    jQuery('.respond_prompt', ul).click(function(evt) {
-                        self.open_respond(evt);
-                    });
-                    jQuery('.edit_prompt', ul).click(function(evt) {
-                        self.open_edit(evt);
-                    });
-                    break;
-                case 'update':
-                    var comment_html = jQuery(
-                        '#comment-' + form_vals['edit-id']).get(0);
-                    var comp = self.components(comment_html);
-                    self.update(newObj, comment_html);
-                    this.info.target = comp.comment;
-                    break;
+            case 'post':
+                var parentHtml = jQuery(
+                    '#comment-' + form_vals.parent).get(0);
+                if (!parentHtml) {
+                    parentHtml = self.$el.find(
+                        'div.threadedcomments-container')[0];
+                }
+                var ul = this.info.target = document.createElement('ul');
+                ul.setAttribute('class', 'comment-thread');
+                parentHtml.appendChild(ul);
+                // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
+                ul.innerHTML = self.create(newObj).text;
+                // decorate respond listener
+                jQuery('.respond_prompt', ul).click(function(evt) {
+                    self.open_respond(evt);
+                });
+                jQuery('.edit_prompt', ul).click(function(evt) {
+                    self.open_edit(evt);
+                });
+                break;
+            case 'update':
+                var comment_html = jQuery(
+                    '#comment-' + form_vals['edit-id']).get(0);
+                var comp = self.components(comment_html);
+                self.update(newObj, comment_html);
+                this.info.target = comp.comment;
+                break;
             }
             // 2. decorate citations
             self.citationView.decorateElementLinks(this.info.target);
@@ -506,6 +506,7 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             jQuery('div.threaded_comment_text').show();
             jQuery('div.respond_to_comment_form_div').show();
 
+            // eslint-disable-next-line scanjs-rules/assign_to_location
             document.location = '#comment-' + res.comment_id;
         }
     } else {
@@ -534,17 +535,17 @@ DiscussionPanelHandler.prototype.parseResponse = function(xhr) {
         rv.comment_id = new_comment[1];
     }
     var timestamp = String(xhr.responseText).match(
-            /name="timestamp"\s+value="(\d+)"/);
+        /name="timestamp"\s+value="(\d+)"/);
     if (timestamp !== null) {
         rv.timestamp = timestamp[1];
     }
     var security = String(xhr.responseText).match(
-            /name="security_hash"\s+value="(\w+)"/);
+        /name="security_hash"\s+value="(\w+)"/);
     if (security !== null) {
         rv.security_hash = security[1];
     }
     var comment_text = String(xhr.responseText).match(
-            /id="commentposted">((.|\n)*)<!--endposted/);
+        /id="commentposted">((.|\n)*)<!--endposted/);
     if (comment_text !== null) {
         rv.comment = comment_text[1];
     }
@@ -596,10 +597,10 @@ DiscussionPanelHandler.prototype.components = function(html_dom, create_obj) {
         'comment': jQuery('div.threaded_comment_text:first', html_dom).get(0),
         'title': jQuery('div.threaded_comment_title', html_dom).get(0),
         'author': jQuery('span.threaded_comment_author:first', html_dom)
-                .get(0),
+            .get(0),
         'edit_button': jQuery(
-                'div.respond_to_comment_form_div:first .edit_prompt',
-                html_dom).get(0),
+            'div.respond_to_comment_form_div:first .edit_prompt',
+            html_dom).get(0),
         'parent': jQuery(html_dom).parents('li.comment-thread').get(0)
     };
 };
@@ -639,9 +640,9 @@ DiscussionPanelHandler.prototype.create = function(obj, doc) {
     //'</ul>';
 
     var text = html.replace(/\{\{current_comment\.id\}\}/g, obj.id).replace(
-            /\{\{current_comment.name\}\}/g, obj.name).replace(
-            /\{\{current_comment.title\}\}/g, obj.title || '').replace(
-            /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);
+        /\{\{current_comment.name\}\}/g, obj.name).replace(
+        /\{\{current_comment.title\}\}/g, obj.title || '').replace(
+        /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);
     return {
         htmlID: 'comment-' + obj.id,
         object: obj,
@@ -663,7 +664,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
     if (!jQuery(self.form).is(':visible')) {
         // Switch to Edit View
         self.$el.find('td.panhandle-stripe div.label').html(
-                'Insert Selections');
+            'Insert Selections');
         self.$el.find('div.asset-view-published').hide();
 
         // Kill the asset view
@@ -679,7 +680,7 @@ DiscussionPanelHandler.prototype.readonly = function() {
         self.$el.find('div.collection-materials').hide();
 
         self.$el.find('td.panhandle-stripe div.label').html(
-                'View Inserted Selections');
+            'View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
     }
 

@@ -23,9 +23,9 @@
         },
         initialize: function(options) {
             _.bindAll(this, 'render', 'onToggleFeedback',
-                      'onShowSubmitDialog', 'onSubmitResponse',
-                      'decrementSelectionCount', 'incrementSelectionCount',
-                      'onSaveFeedbackSuccess');
+                'onShowSubmitDialog', 'onSubmitResponse',
+                'decrementSelectionCount', 'incrementSelectionCount',
+                'onSaveFeedbackSuccess');
 
             AssignmentView.prototype.initialize.apply(this, arguments);
 
@@ -74,11 +74,11 @@
             var self = this;
 
             jQuery(window).on('annotation.on_delete', {'self': self},
-                              self.decrementSelectionCount);
+                self.decrementSelectionCount);
             jQuery(window).on('annotation.on_create', {'self': self},
-                              self.incrementSelectionCount);
+                self.incrementSelectionCount);
             jQuery(window).one('annotation-list.init', {'self': self},
-                               self.render);
+                self.render);
         },
         render: function() {
             var self = this;
@@ -88,12 +88,12 @@
                 var ctx = {
                     'isFaculty': self.isFaculty,
                     'color': jQuery(this).find('.color-box')
-                                         .css('background-color'),
+                        .css('background-color'),
                     'title': jQuery(this).find('.group-title').html()
                 };
                 var elt = jQuery(this).parent()
-                                      .find('.annotation-header')
-                                      .first();
+                    .find('.annotation-header')
+                    .first();
                 if (elt.length) {
                     var username = jQuery(elt).data('username');
                     ctx.username = username;
@@ -157,6 +157,7 @@
                 data: jQuery(frm).serializeArray(),
                 success: function(json) {
                     jQuery(window).unbind('beforeunload');
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = json.context.project.url;
                 },
                 error: function() {

@@ -1,5 +1,4 @@
-/* global _: true, Backbone: true, CitationView: true */
-/* global showMessage: true, tinymce: true, tinymceSettings: true */
+/* global _: true, Backbone: true, tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
@@ -58,7 +57,7 @@
                 if (!this.tinymce) {
                     tinymce.settings = this.tinymceSettings;
                     tinymce.execCommand('mceAddEditor', true,
-                                        'assignment-instructions');
+                        'assignment-instructions');
                     tinymce.execCommand('mceAddEditor', true, 'summary');
                 }
             } else if (pageContent === 'due-date') {
@@ -109,6 +108,7 @@
                 dataType: 'json',
                 data: jQuery(frm).serializeArray(),
                 success: function(json) {
+                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = json.context.project.url;
                 },
                 error: function() {

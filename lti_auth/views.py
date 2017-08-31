@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
@@ -143,11 +144,16 @@ class LTICourseEnableView(View):
         group_id = self.request.POST.get('group')
         faculty_group_id = self.request.POST.get('faculty_group')
         course_context = self.request.POST.get('lms_course')
+        title = self.request.POST.get('lms_course_title')
 
         (ctx, created) = LTICourseContext.objects.get_or_create(
             group=get_object_or_404(Group, id=group_id),
             faculty_group=get_object_or_404(Group, id=faculty_group_id),
             lms_course_context=course_context)
+
+        messages.add_message(
+            self.request, messages.INFO,
+            '<b>Success!</b> {} is connected to Mediathread.'.format(title))
 
         url = reverse('lti-landing-page', args=[course_context])
         return HttpResponseRedirect(url)

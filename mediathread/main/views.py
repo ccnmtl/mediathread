@@ -1032,21 +1032,25 @@ class LTICourseCreate(LoggedInMixin, View):
     def post(self, *args, **kwargs):
         course_context = self.request.POST.get('lms_course')
         title = self.request.POST.get('lms_course_title')
-        group = Group.objects.create(name=course_context)
-        faculty_group = Group.objects.create(
+        group, created = Group.objects.get_or_create(name=course_context)
+        faculty_group, created = Group.objects.get_or_create(
             name='{}_faculty'.format(course_context))
 
         self.request.user.groups.add(group)
         self.request.user.groups.add(faculty_group)
 
         # create the course
-        Course.objects.create(
+        Course.objects.get_or_create(
             title=title, group=group, faculty_group=faculty_group)
 
         # hook up the context
         (ctx, created) = LTICourseContext.objects.get_or_create(
             group=group, faculty_group=faculty_group,
             lms_course_context=course_context)
+
+        messages.add_message(
+            self.request, messages.INFO,
+            '<b>Success!</b> {} is connected to Mediathread.'.format(title))
 
         url = reverse('lti-landing-page', args=[course_context])
         return HttpResponseRedirect(url)

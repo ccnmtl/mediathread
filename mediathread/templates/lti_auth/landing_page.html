@@ -1,22 +1,50 @@
+{% load static bootstrap3 %}
 <html>
-    <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" />
-    </head>
-    <body>
-        <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="container">
-                    <div class="jumbotron">
-                        <h2>Mediathread</h2>
-                        <p>Mediathread is an open-source platform for exploration, analysis, and
-                        organization of web-based multimedia content. Mediathread connects to a variety of image and video collections (such as YouTube, Flickr, library databases, and course libraries), enabling users to lift items out of these collections and into an analysis environment. In Mediathread, items can then be clipped, annotated, organized, and embedded into essays and other written analysis.
-                        </p>
-                        <p><a class="btn btn-default" href="{{landing_url}}" target="_blank">Launch Mediathread Now</a></p>
-                    </div>
-                </div>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" />
+    <style>
+        #standardnav_container {
+            display: block;
+            float: left;
+            margin: 0;
+            width: 100%;
+            padding: 0;
+            background-color: #383838;
+            margin-bottom: 10px;
+        }
+        .mediathread-background-logo {
+            background: url(https://ccnmtl-mediathread-static-prod.s3.amazonaws.com/media/img/login_bg.jpg) -250px 35px no-repeat;
+            min-height: 700px;
+        }
+        p {
+            margin-top: 20px;
+            font-size: medium;
+        }
+    </style>
+</head>
+<body class="mediathread-background-logo">
+    <div id="header">
+        <div id="standardnav_container">
+            <div id="mediathread_logo">
+                <a href="/">
+                    <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
+                    <span class="sr-only">Home</span>
+                </a>
             </div>
         </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <p>{% bootstrap_messages %}</p>
+                <p class="lead">Mediathread is an open-source platform for exploration, analysis, and
+                organization of web-based multimedia content.</p>
+                <p>
+                Mediathread connects to a variety of image and video collections (such as YouTube, Flickr, library databases, and course libraries), enabling users to lift items out of these collections and into an analysis environment. In Mediathread, items can then be clipped, annotated, organized, and embedded into essays and other written analysis.
+                </p>
+                <p><a class="btn btn-primary" href="{{landing_url}}" target="_blank">Launch Mediathread</a></p>
+            </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

@@ -42,7 +42,7 @@ astroid==1.5.3  # pylint
 
 pyasn1==0.3.3
 pyOpenSSL==17.2.0
-ndg-httpsclient==0.4.2
+ndg-httpsclient==0.4.3
 
 chardet==3.0.4
 idna==2.6

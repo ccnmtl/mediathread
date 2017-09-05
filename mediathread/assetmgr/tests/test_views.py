@@ -728,7 +728,7 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 
         dims = view.get_dimensions(primary)
         self.assertEquals(dims['width'], EMBED_WIDTH)
-        self.assertEquals(dims['height'], 425)
+        self.assertEquals(dims['height'], EMBED_HEIGHT)
 
     def test_get_dimensions_video(self):
         asset = AssetFactory.create(

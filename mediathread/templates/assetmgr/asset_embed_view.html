@@ -16,7 +16,7 @@
     {% endcompress %}
 </head>
 
-<body class="lti-asset-view" style="width: 480px; height: 425px;">
+<body class="lti-asset-view" style="height: 100%; width: 100%;">
     <div id="videoclipbox" class="videoclipbox" style="display: none;">
         <div class="videoclipbox-metadata">
             <div>
@@ -35,9 +35,11 @@
                 {% endif %}
             </div>
         </div>
-
-        <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-        <div class="asset-display"></div>
+        <div class="asset-object" style="border: none; background-color: #ededed;">
+        </div>
+        <div class="asset-display">
+            <img class="item-poster" src="{{thumb_url}}" alt_text="Item poster" />
+        </div>
         <div class="clipstrip-display"></div>
     </div>
 
@@ -55,22 +57,31 @@
         jQuery(document).ready(function () {
             djangosherd.storage.json_update({{item|safe}});
 
-            self.citationView = new CitationView();
-            self.citationView.init({
-                'default_target': 'videoclipbox',
-                'presentation': '{{presentation}}',
-                'clipform': false,
-                {% if media_type == 'video' %}
-                    'clipplay': true,
-                {% endif %}
-                'autoplay': false,
-                'winHeight': function() {
-                    return {{defaultHeight}} - 50
-                }
-            });
+            var w = Math.max(document.documentElement.clientWidth,
+                window.innerWidth || 0);
+            var h = Math.max(document.documentElement.clientHeight,
+                window.innerHeight || 0);
 
-            self.citationView.openCitationById(
-                null, '{{item_id}}', '{{selection_id}}');
+            if (w <= 300) {
+                jQuery('.videoclipbox').css({'width': w, 'height': h}).show();
+            } else {
+                self.citationView = new CitationView();
+                self.citationView.init({
+                    'default_target': 'videoclipbox',
+                    'presentation': '{{presentation}}',
+                    'clipform': false,
+                    {% if media_type == 'video' %}
+                        'clipplay': true,
+                    {% endif %}
+                    'autoplay': false,
+                    'winHeight': function() {
+                        return {{defaultHeight}} - 50
+                    }
+                });
+
+                self.citationView.openCitationById(
+                    null, '{{item_id}}', '{{selection_id}}');
+            }
         });
     </script>
 </body>

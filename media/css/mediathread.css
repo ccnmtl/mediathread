@@ -4725,13 +4725,14 @@ ul.section-tabs>li>a.active {
     height: 10px;
 }
 
+/* LTI Landing Page */
+.lti-landing-page .mediathread-background-logo {
+    height: 450px;
+}
+
 /* LTI Asset View */
 .lti-asset-view .flowplayer-timedisplay {
     display: none;
-}
-
-.lti-asset-view .asset-display {
-    text-align: left;
 }
 
 .lti-asset-view .videoclipbox {

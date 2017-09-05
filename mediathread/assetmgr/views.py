@@ -765,8 +765,8 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
-EMBED_WIDTH = 480
-EMBED_HEIGHT = 425
+EMBED_WIDTH = 635
+EMBED_HEIGHT = 450
 
 
 class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
@@ -780,7 +780,9 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         data = {
             'owners': json.dumps(owners),
-            'return_url': request.GET.get('return_url', '')
+            'return_url': request.GET.get('return_url', ''),
+            'width': EMBED_WIDTH,
+            'height': EMBED_HEIGHT
         }
 
         return self.render_to_response(data)
@@ -844,8 +846,6 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         url = '{}?return_type=iframe&width={}&height={}&url={}'.format(
             return_url, dims['width'], dims['height'], iframe_url)
 
-        print url
-
         return HttpResponseRedirect(url)
 
 
@@ -894,6 +894,7 @@ class AssetEmbedView(TemplateView):
                'presentation': 'medium',
                'media_type': media_type,
                'title': selection.display_title(),
+               'thumb_url': selection.asset.thumb_url,
                'defaultHeight': EMBED_HEIGHT}
 
         if media_type == 'video':

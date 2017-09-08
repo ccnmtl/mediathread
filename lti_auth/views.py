@@ -53,7 +53,8 @@ class LTIAuthMixin(object):
                 request,
                 'lti_auth/fail_course_configuration.html',
                 {
-                    'roles': lti.user_roles(),
+                    'is_instructor': lti.is_instructor(),
+                    'is_administrator': lti.is_administrator(),
                     'user': user,
                     'lms_course': lti.course_context(),
                     'lms_course_title': lti.course_title(),

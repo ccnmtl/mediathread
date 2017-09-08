@@ -14,7 +14,7 @@
                     <small>
                         Please contact your help desk to enable the component.<br />
 
-                        {% if 'administrator' in roles or 'instructor' in roles %}
+                        {% if is_instructor or is_administrator %}
                             <h3>Administrators & Instructors</h3>
                             <p>@todo - tell them how to enable</p>
                         {% endif %}

@@ -43,7 +43,12 @@ class LTITest(TestCase):
         self.assertEquals(lti.user_roles(), [])
 
         lti.lti_params = BASE_LTI_PARAMS
-        self.assertEquals(lti.user_roles(), ['Instructor', 'Staff'])
+        self.assertEquals(lti.user_roles(), [
+            u'urn:lti:instrole:ims/lis/instructor',
+            u'urn:lti:instrole:ims/lis/staff'])
+
+        self.assertTrue(lti.is_instructor())
+        self.assertFalse(lti.is_administrator())
 
     def test_consumers(self):
         lti = LTI('any', 'any')

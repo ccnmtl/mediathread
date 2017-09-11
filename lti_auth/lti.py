@@ -61,9 +61,16 @@ class LTI(object):
         :return: roles
         """
         if 'roles' in self.lti_params:
-            return self.lti_params.get('roles', None).split(',')
+            return self.lti_params.get('roles', None).lower().split(',')
 
         return []
+
+    def is_administrator(self):
+        return 'administrator' in self.lti_params.get('roles', '').lower()
+
+    def is_instructor(self):
+        roles = self.lti_params.get('roles', '').lower()
+        return 'instructor' in roles or 'staff' in roles
 
     def course_context(self):
         if 'context_id' in self.lti_params:

@@ -34,7 +34,7 @@
             <h2>Course Configuration</h2>
 
             {% if autocreate_course %}
-                 {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
+                 {% if is_instructor or is_administrator %}
                     <p class="lead">
                         Create a Mediathread course for this Canvas course.<br />
                     </p>
@@ -47,7 +47,7 @@
                  <br />
             {% else %}
                 {% if courses|length < 1 %}
-                    {% if 'Administrator' in roles or 'Instructor' in roles or 'Staff' in roles %}
+                    {% if is_instructor or is_administrator %}
                         <p class="lead"><a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course</p>
                     {% else %}
                         <p class="lead">
@@ -104,6 +104,7 @@
                 </table>
                 </div></div>
             {% endif %}
+
         </div>
     </div>
     </div>

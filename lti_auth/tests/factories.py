@@ -19,7 +19,8 @@ BASE_LTI_PARAMS = {
                              u':-724d6c2b5fcc4a17a26b9120a1d463aa:student',
     u'lti_message_type': u'basic-lti-launch-request',
     u'lti_version': u'LTI-1p0',
-    u'roles': u'Instructor,Staff',
+    u'roles':
+        u'urn:lti:instrole:ims/lis/Instructor,urn:lti:instrole:ims/lis/Staff',
     u'resource_link_id': u'-724d6c2b5fcc4a17a26b9120a1d463aa',
     u'user_id': u'student',
 }

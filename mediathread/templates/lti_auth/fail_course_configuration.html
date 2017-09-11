@@ -2,6 +2,7 @@
 {% get_instructor_courses user as courses %}
 <html>
 <head>
+    <title>Course Configuration</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" media="screen" />
 
     <style>
@@ -13,10 +14,17 @@
             padding: 0;
             background-color: #383838;
         }
+        .mediathread-background-logo {
+            background: url(https://ccnmtl-mediathread-static-prod.s3.amazonaws.com/media/img/login_bg.jpg) -250px 35px no-repeat;
+        }
+        p {
+            margin-top: 20px;
+            font-size: medium;
+        }
     </style>
 
 </head>
-<body>
+<body class="mediathread-background-logo">
     <div id="header">
         <div id="standardnav_container">
             <div id="mediathread_logo">
@@ -30,41 +38,37 @@
 
     <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <h2>Course Configuration</h2>
+         {% if not is_instructor and not is_administrator %}
+            <div class="col-md-12" style="margin-top: 20px">
+                <p class="lead text-center">
+                    Your {{title}} course has not been configured to use this component.<br />
+                    Contact your instructor for more information.
+                </p>
+            </div>
+         {% else %}
+            <div class="col-sm-6 col-sm-offset-3" style="margin-top: 20px">
+                <p class="lead text-center">
+                    Mediathread is an open-source platform for exploration, analysis, and organization of web-based multimedia content.
+                </p>
+                <p class="lead text-center">
+                    Connect your Canvas course to Mediathread.
+                </p>
 
-            {% if autocreate_course %}
-                 {% if is_instructor or is_administrator %}
-                    <p class="lead">
-                        Create a Mediathread course for this Canvas course.<br />
+                <form class="text-center" action="{% url 'lti-course-create' %}" method='POST'>
+                    <input type="hidden" name="lms_course" value="{{lms_course}}">
+                    <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
+                    <input type="hidden" name="sis_course_id" value="{{sis_course_id}}">
+                    <p>
+                        <a href="http://mediathread.info" target="about:blank" class="btn btn-default btn-lg" style="margin-right: 5px;">Learn More</a>
+                        <button type="submit" class="btn btn-primary btn-lg">Connect Now</button>
                     </p>
-                    <form action="{% url 'lti-course-create' %}" method='POST'>
-                        <input type="hidden" name="lms_course" value="{{lms_course}}">
-                        <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
-                        <button type="submit" class="btn btn-primary">Create {{lms_course_title}}</button>
-                    </form>
-                 {% endif %}
-                 <br />
-            {% else %}
-                {% if courses|length < 1 %}
-                    {% if is_instructor or is_administrator %}
-                        <p class="lead"><a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course</p>
-                    {% else %}
-                        <p class="lead">
-                            Your {{title}} course has not been configured to use this component.<br />
-                            Contact your instructor for more information.</p>
-                        <p>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
+                </form>
+            </p>
 
-            {% if courses|length > 0 %} 
-                <p class="lead">
-                Connect a Mediathread course to this Canvas course.<br />
-
-                {% if not autocreate_course %}
-                    Don't see your course? <a href='/' target="about:blank">Navigate to Mediathread</a> to activate or create the course first.</p>
-                {% endif %}
+            {% if courses|length > 0 and is_administrator %} 
+                <p class="lead" style="margin-top: 50px">
+                <b>Administrators Only</b><br />
+                Connect a different Mediathread course to this Canvas course.<br />
 
                 <div class="row">
                 <div class="col-md-12">
@@ -105,6 +109,7 @@
                 </div></div>
             {% endif %}
 
+        {% endif %}
         </div>
     </div>
     </div>

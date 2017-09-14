@@ -1586,43 +1586,47 @@ class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
 class LTICourseCreateTest(TestCase):
 
     def test_post_sis_course_id(self):
-        user = UserFactory()
-        self.client.login(username=user.username, password='test')
+        with self.settings(
+                COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper):
+            user = UserFactory()
+            self.client.login(username=user.username, password='test')
 
-        data = {
-            'lms_course': '1234',
-            'lms_course_title': 'LTI Course',
-            'sis_course_id': 'SOCWT7113_010_2017_3'
-        }
-        response = self.client.post(reverse('lti-course-create'), data)
-        self.assertEqual(response.status_code, 302)
+            data = {
+                'lms_course': '1234',
+                'lms_course_title': 'LTI Course',
+                'sis_course_id': 'SOCWT7113_010_2017_3'
+            }
+            response = self.client.post(reverse('lti-course-create'), data)
+            self.assertEqual(response.status_code, 302)
 
-        c = Course.objects.get(title='LTI Course')
-        self.assertEquals(c.group.name,
-                          't3.y2017.s010.ct7113.socw.st.course:columbia.edu')
-        self.assertEquals(c.faculty_group.name,
-                          't3.y2017.s010.ct7113.socw.fc.course:columbia.edu')
+            c = Course.objects.get(title='LTI Course')
+            self.assertEquals(
+                c.group.name,
+                't3.y2017.s010.ct7113.socw.st.course:columbia.edu')
+            self.assertEquals(
+                c.faculty_group.name,
+                't3.y2017.s010.ct7113.socw.fc.course:columbia.edu')
 
-        self.assertEquals(c.info.term, 3)
-        self.assertEquals(c.info.year, 2017)
+            self.assertEquals(c.info.term, 3)
+            self.assertEquals(c.info.year, 2017)
 
-        self.assertTrue(user in c.group.user_set.all())
-        self.assertTrue(user in c.faculty_group.user_set.all())
+            self.assertTrue(user in c.group.user_set.all())
+            self.assertTrue(user in c.faculty_group.user_set.all())
 
-        LTICourseContext.objects.get(
-            lms_course_context='1234',
-            group=c.group, faculty_group=c.faculty_group)
+            LTICourseContext.objects.get(
+                lms_course_context='1234',
+                group=c.group, faculty_group=c.faculty_group)
 
-        # try this again and make sure there is no duplication
-        data['lms_course_title'] = 'LTI Course With More Detail'
-        response = self.client.post(reverse('lti-course-create'), data)
-        self.assertEqual(response.status_code, 302)
-        Course.objects.get(title='LTI Course')
-        Group.objects.get(name=c.group.name)
-        Group.objects.get(name=c.faculty_group.name)
-        LTICourseContext.objects.get(
-            lms_course_context='1234',
-            group=c.group, faculty_group=c.faculty_group)
+            # try this again and make sure there is no duplication
+            data['lms_course_title'] = 'LTI Course With More Detail'
+            response = self.client.post(reverse('lti-course-create'), data)
+            self.assertEqual(response.status_code, 302)
+            Course.objects.get(title='LTI Course')
+            Group.objects.get(name=c.group.name)
+            Group.objects.get(name=c.faculty_group.name)
+            LTICourseContext.objects.get(
+                lms_course_context='1234',
+                group=c.group, faculty_group=c.faculty_group)
 
     def test_post_course_context(self):
         user = UserFactory()

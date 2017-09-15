@@ -55,6 +55,7 @@ class LTIAuthMixin(object):
                     'lms_course': lti.course_context(),
                     'lms_course_title': lti.course_title(),
                     'sis_course_id': lti.sis_course_id(),
+                    'domain': lti.canvas_domain()
                 })
 
         # add user to the course

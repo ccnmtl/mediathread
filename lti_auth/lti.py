@@ -80,6 +80,10 @@ class LTI(object):
         if 'context_title' in self.lti_params:
             return self.lti_params.get('context_title')
 
+    def sis_course_id(self):
+        if 'lis_course_offering_sourcedid' in self.lti_params:
+            return self.lti_params.get('lis_course_offering_sourcedid')
+
     def canvas_domain(self):
         if 'custom_canvas_api_domain' in self.lti_params:
             return self.lti_params.get('custom_canvas_api_domain')

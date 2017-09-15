@@ -3,6 +3,7 @@ import json
 import re
 from smtplib import SMTPRecipientsRefused, SMTPDataError
 
+from courseaffils.columbia import CanvasTemplate, WindTemplate
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
@@ -1029,19 +1030,51 @@ class LTICourseSelector(LoggedInMixin, View):
 
 class LTICourseCreate(LoggedInMixin, View):
 
-    def post(self, *args, **kwargs):
-        course_context = self.request.POST.get('lms_course')
-        title = self.request.POST.get('lms_course_title')
+    def groups_from_context(self, course_context):
         group, created = Group.objects.get_or_create(name=course_context)
         faculty_group, created = Group.objects.get_or_create(
             name='{}_faculty'.format(course_context))
+        return (group, faculty_group)
+
+    def groups_from_sis_course_id(self, attrs):
+        st_affil = WindTemplate.to_string(attrs)
+        group, created = Group.objects.get_or_create(name=st_affil)
+        self.request.user.groups.add(group)
+
+        attrs['member'] = 'fc'
+        fc_affil = WindTemplate.to_string(attrs)
+        faculty_group, created = Group.objects.get_or_create(name=fc_affil)
+        self.request.user.groups.add(faculty_group)
+        return (group, faculty_group)
+
+    def post(self, *args, **kwargs):
+        course_context = self.request.POST.get('lms_course')
+        title = self.request.POST.get('lms_course_title')
+
+        sis_course_id = self.request.POST.get('sis_course_id', '')
+        d = CanvasTemplate.to_dict(sis_course_id)
+
+        if d:
+            (group, faculty_group) = self.groups_from_sis_course_id(d)
+        else:
+            (group, faculty_group) = self.groups_from_context(course_context)
 
         self.request.user.groups.add(group)
         self.request.user.groups.add(faculty_group)
 
-        # create the course
-        Course.objects.get_or_create(
-            title=title, group=group, faculty_group=faculty_group)
+        # got or create the course
+        try:
+            course = \
+                Course.objects.get(group=group, faculty_group=faculty_group)
+        except Course.DoesNotExist:
+            course = Course.objects.create(
+                title=title, group=group, faculty_group=faculty_group)
+
+        if d:
+            # Add CourseInfo from the fields
+            course.info.term = d['term']
+            course.info.year = d['year']
+            course.info.save()
 
         # hook up the context
         (ctx, created) = LTICourseContext.objects.get_or_create(

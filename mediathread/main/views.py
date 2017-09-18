@@ -1030,6 +1030,23 @@ class LTICourseSelector(LoggedInMixin, View):
 
 class LTICourseCreate(LoggedInMixin, View):
 
+    def notify_staff(self, course):
+        data = {
+            'course': course,
+            'domain': self.request.POST.get('domain'),
+            'user': self.request.user
+        }
+        send_template_email(
+            'Mediathread Course Connected',
+            'main/notify_lti_course_connect.txt',
+            data, settings.SERVER_EMAIL)
+
+    def thank_faculty(self, course):
+        send_template_email(
+            'Mediathread Course Connected',
+            'main/lti_course_connect.txt',
+            {'course': course}, self.request.user.email)
+
     def groups_from_context(self, course_context):
         group, created = Group.objects.get_or_create(name=course_context)
         faculty_group, created = Group.objects.get_or_create(
@@ -1084,6 +1101,9 @@ class LTICourseCreate(LoggedInMixin, View):
         messages.add_message(
             self.request, messages.INFO,
             '<b>Success!</b> {} is connected to Mediathread.'.format(title))
+
+        self.notify_staff(course)
+        self.thank_faculty(course)
 
         url = reverse('lti-landing-page', args=[course_context])
         return HttpResponseRedirect(url)

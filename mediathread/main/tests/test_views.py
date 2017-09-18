@@ -1613,6 +1613,22 @@ class LTICourseCreateTest(TestCase):
             self.assertTrue(user in c.group.user_set.all())
             self.assertTrue(user in c.faculty_group.user_set.all())
 
+            self.assertEqual(len(mail.outbox), 2)
+
+            self.assertEqual(mail.outbox[0].subject,
+                             'Mediathread Course Connected')
+            self.assertEquals(mail.outbox[0].from_email,
+                              settings.SERVER_EMAIL)
+            self.assertEquals(mail.outbox[0].to,
+                              [settings.SERVER_EMAIL])
+
+            self.assertEqual(mail.outbox[1].subject,
+                             'Mediathread Course Connected')
+            self.assertEquals(mail.outbox[1].from_email,
+                              settings.SERVER_EMAIL)
+            self.assertEquals(mail.outbox[1].to,
+                              [user.email])
+
             LTICourseContext.objects.get(
                 lms_course_context='1234',
                 group=c.group, faculty_group=c.faculty_group)

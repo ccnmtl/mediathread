@@ -1,0 +1,9 @@
+{{user.get_full_name}} has connected their Canvas course to Mediathread.
+
+Username: {{user.username}}
+
+Email: {{user.email}}
+
+Course Title: {{course.title}} {{course.info.term}} {{course.info.year}}
+
+Canvas Domain: {{domain}}

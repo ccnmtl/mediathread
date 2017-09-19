@@ -23,11 +23,13 @@
         {% endif %}
     </td>
     <td>
-        {% if course.details.instructor %}
-            {{course.details.instructor.value}}
-        {% elif course.to_dict %}
-            {% firstof request.user.get_full_name request.user.username %}
-        {% endif %}
+        {% for user in course.faculty_group.user_set.all %}
+            {% with exceptions='swav,swinstructor' %}
+                {% if not user.is_staff and not user.username in exceptions %}
+                    {% firstof user.get_full_name user.username %},
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
     </td>
     <td>
         {% if course in as_instructor %}

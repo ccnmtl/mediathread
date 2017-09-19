@@ -37,13 +37,15 @@ class LTIBackend(object):
     def find_user(self, lti):
         # find the user via lms identifier first
         user = User.objects.filter(username=lti.user_identifier()).first()
-        if user is None:
-            # find the user via email address
+
+        # find the user via email address, if it exists
+        if user is None and lti.user_email():
             user = User.objects.filter(email=lti.user_email()).first()
-            if user is None:
-                # find the user via hashed username
-                username = self.get_hashed_username(lti)
-                user = User.objects.filter(username=username).first()
+
+        if user is None:
+            # find the user via hashed username
+            username = self.get_hashed_username(lti)
+            user = User.objects.filter(username=username).first()
 
         return user
 

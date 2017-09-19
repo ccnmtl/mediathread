@@ -1651,7 +1651,7 @@ class LTICourseCreateTest(TestCase):
         data = {
             'lms_course': '1234',
             'lms_course_title': 'LTI Course',
-            'sis_course_id': 'mediathread'
+            'sis_course_id': '20170152049'
         }
         response = self.client.post(reverse('lti-course-create'), data)
         self.assertEqual(response.status_code, 302)
@@ -1659,6 +1659,8 @@ class LTICourseCreateTest(TestCase):
         c = Course.objects.get(title='LTI Course')
         self.assertEquals(c.group.name, '1234')
         self.assertEquals(c.faculty_group.name, '1234_faculty')
+        self.assertEquals(c.info.term, 1)
+        self.assertEquals(c.info.year, 2017)
 
         self.assertTrue(user in c.group.user_set.all())
         self.assertTrue(user in c.faculty_group.user_set.all())

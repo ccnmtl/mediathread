@@ -1064,6 +1064,12 @@ class LTICourseCreate(LoggedInMixin, View):
         self.request.user.groups.add(faculty_group)
         return (group, faculty_group)
 
+    def get_year_and_term_from_sis_course_id(self, sis_course_id):
+        m = re.match(
+            ('(?P<year>\d{4})(?P<term>\d{2})'), sis_course_id)
+        if m:
+            return m.groupdict()
+
     def post(self, *args, **kwargs):
         course_context = self.request.POST.get('lms_course')
         title = self.request.POST.get('lms_course_title')
@@ -1075,6 +1081,7 @@ class LTICourseCreate(LoggedInMixin, View):
             (group, faculty_group) = self.groups_from_sis_course_id(d)
         else:
             (group, faculty_group) = self.groups_from_context(course_context)
+            yt = self.get_year_and_term_from_sis_course_id(sis_course_id)
 
         self.request.user.groups.add(group)
         self.request.user.groups.add(faculty_group)
@@ -1091,6 +1098,10 @@ class LTICourseCreate(LoggedInMixin, View):
             # Add CourseInfo from the fields
             course.info.term = d['term']
             course.info.year = d['year']
+            course.info.save()
+        elif yt:
+            course.info.term = yt['term']
+            course.info.year = yt['year']
             course.info.save()
 
         # hook up the context

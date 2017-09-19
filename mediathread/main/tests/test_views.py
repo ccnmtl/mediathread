@@ -1645,35 +1645,40 @@ class LTICourseCreateTest(TestCase):
                 group=c.group, faculty_group=c.faculty_group)
 
     def test_post_course_context(self):
-        user = UserFactory()
-        self.client.login(username=user.username, password='test')
+        with self.settings(
+                COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper):
 
-        data = {
-            'lms_course': '1234',
-            'lms_course_title': 'LTI Course',
-            'sis_course_id': 'mediathread'
-        }
-        response = self.client.post(reverse('lti-course-create'), data)
-        self.assertEqual(response.status_code, 302)
+            user = UserFactory()
+            self.client.login(username=user.username, password='test')
 
-        c = Course.objects.get(title='LTI Course')
-        self.assertEquals(c.group.name, '1234')
-        self.assertEquals(c.faculty_group.name, '1234_faculty')
+            data = {
+                'lms_course': '1234',
+                'lms_course_title': 'LTI Course',
+                'sis_course_id': '20170152049'
+            }
+            response = self.client.post(reverse('lti-course-create'), data)
+            self.assertEqual(response.status_code, 302)
 
-        self.assertTrue(user in c.group.user_set.all())
-        self.assertTrue(user in c.faculty_group.user_set.all())
+            c = Course.objects.get(title='LTI Course')
+            self.assertEquals(c.group.name, '1234')
+            self.assertEquals(c.faculty_group.name, '1234_faculty')
+            self.assertEquals(c.info.term, 1)
+            self.assertEquals(c.info.year, 2017)
 
-        LTICourseContext.objects.get(
-            lms_course_context='1234',
-            group=c.group, faculty_group=c.faculty_group)
+            self.assertTrue(user in c.group.user_set.all())
+            self.assertTrue(user in c.faculty_group.user_set.all())
 
-        # try this again and make sure there is no duplication
-        data['lms_course_title'] = 'LTI Course With More Detail'
-        response = self.client.post(reverse('lti-course-create'), data)
-        self.assertEqual(response.status_code, 302)
-        Course.objects.get(title='LTI Course')
-        Group.objects.get(name=c.group.name)
-        Group.objects.get(name=c.faculty_group.name)
-        LTICourseContext.objects.get(
-            lms_course_context='1234',
-            group=c.group, faculty_group=c.faculty_group)
+            LTICourseContext.objects.get(
+                lms_course_context='1234',
+                group=c.group, faculty_group=c.faculty_group)
+
+            # try this again and make sure there is no duplication
+            data['lms_course_title'] = 'LTI Course With More Detail'
+            response = self.client.post(reverse('lti-course-create'), data)
+            self.assertEqual(response.status_code, 302)
+            Course.objects.get(title='LTI Course')
+            Group.objects.get(name=c.group.name)
+            Group.objects.get(name=c.faculty_group.name)
+            LTICourseContext.objects.get(
+                lms_course_context='1234',
+                group=c.group, faculty_group=c.faculty_group)

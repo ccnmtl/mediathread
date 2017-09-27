@@ -257,7 +257,7 @@ def threaded_comment_json(request, comment):
     all_comments = fill_tree(all_comments)
     all_comments = list(annotate_tree_properties(all_comments))
 
-    rand = ''.join([choice(letters) for i in range(5)])
+    rand = ''.join([choice(letters) for i in range(5)])  # nosec
     citations = threaded_comment_citations(all_comments, viewer)
 
     asset_resource = AssetResource()

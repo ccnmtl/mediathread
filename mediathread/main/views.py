@@ -924,7 +924,7 @@ Faculty: {} <{}>
                        self.affil,
                        c.group.name,
                        c))
-            messages.error(self.request, mark_safe(msg))
+            messages.error(self.request, mark_safe(msg))  # nosec
         context.update({
             'affil': self.affil,
             'term': affil_dict['term'],

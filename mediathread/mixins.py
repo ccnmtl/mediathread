@@ -163,7 +163,7 @@ class CSVResponseMixin():
         for row in rows:
             try:
                 writer.writerow(row)
-            except:
+            except csv.Error:
                 pass
 
         return response

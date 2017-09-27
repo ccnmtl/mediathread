@@ -494,7 +494,7 @@ def final_cut_pro_xml(request, asset_id):
             return HttpResponse("Not Found: This annotation's asset does not \
             have a Final Cut Pro source XML associated with it", status=404)
 
-        the_file = urllib2.urlopen(xmeml.url)
+        the_file = urllib2.urlopen(xmeml.url)  # nosec
         assert the_file.code == 200
         the_video = VideoSequence(xml_string=the_file.read())
 

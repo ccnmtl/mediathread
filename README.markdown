@@ -52,11 +52,11 @@ INSTALLATION
     This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution.
 
 4. Build the virtual environment
-   Bootstrap uses virtualenv to build a contained library in `ve/`
+   Bootstrap uses virtualenv to build a contained library in `ve/`. `django.mk` specifies the build target for creating the virtualenv, and running any of the targets specified in that file will automatically set this up.
 
-    ./bootstrap.py
+    make check
 
-The rest of the instructions work like standard Django.  See: http://docs.djangoproject.com/ for more details.
+The rest of the instructions work like standard Django.  See: https://docs.djangoproject.com/ for more details.
 
 5. Sync the database
 

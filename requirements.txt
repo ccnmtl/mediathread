@@ -98,7 +98,7 @@ pexpect==4.2.1
 ptyprocess==0.5.2
 pickleshare==0.7.4
 simplegeneric==0.8.1
-scandir==1.5
+scandir==1.6
 pathlib2==2.3.0
 wcwidth==0.1.7
 prompt_toolkit==1.0.15

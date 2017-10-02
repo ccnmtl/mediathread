@@ -19,7 +19,7 @@
     "url": "https://github.com/ccnmtl/mediathread/issues"
   },
   "devDependencies": {
-    "eslint": "~4.7.0",
+    "eslint": "~4.8.0",
     "jshint": "~2.9.1",
     "eslint-config-scanjs": "^1.0.0-beta4",
     "eslint-plugin-no-unsafe-innerhtml": "^1.0.16",

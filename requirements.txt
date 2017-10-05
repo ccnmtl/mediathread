@@ -75,7 +75,7 @@ ipaddress==1.0.18
 Faker==0.8.4
 factory_boy==2.9.2
 django-impersonate==1.1
-django-registration-redux==1.7
+django-registration-redux==1.8
 django-waffle==0.12.0
 django-cors-headers==2.1.0
 httplib2==0.10.3

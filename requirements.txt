@@ -1,4 +1,4 @@
-Django==1.11.5
+Django==1.11.6
 psycopg2==2.7.3.1
 #for MySQL: MySQL-python==1.2.5
 statsd==3.2.1

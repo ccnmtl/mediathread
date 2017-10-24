@@ -11,8 +11,8 @@ def metadata(archive):
     if archive.metadata_blob:
         try:
             return json.loads(str(archive.metadata_blob))
-        except:  # presumably json decoding, but let's quiet everything
-            return {}
+        except ValueError:
+            pass
     return {}
 
 

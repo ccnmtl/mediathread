@@ -147,7 +147,7 @@ class DiscussionView(LoggedInCourseMixin, View):
 
         try:
             my_course = root_comment.content_object.context.content_object
-        except:
+        except AttributeError:
             # legacy: for when contexts weren't being set in new()
             my_course = request.course
             root_comment.content_object.context = \

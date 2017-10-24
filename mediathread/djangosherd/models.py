@@ -212,7 +212,7 @@ class SherdNoteManager(models.Manager):
         else:
             try:
                 gannotation = self.get(**args)
-            except:
+            except SherdNote.DoesNotExist:
                 gannotation = None
             return gannotation, False
 
@@ -360,7 +360,7 @@ class SherdNote(Annotation):
                 return self.asset.get_absolute_url()
             return reverse('annotation-view', None,
                            (self.asset.pk, self.pk))
-        except:
+        except Asset.DoesNotExist:
             return ''
 
     @classmethod

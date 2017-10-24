@@ -1,0 +1,375 @@
+{% comment %}
+A new base.html without the course context overwritten in the template.
+{% endcomment %}
+
+{% load user_projects coursetags compress static bootstrap3 %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head><!-- {{controller_name}} :: {{template_name}} -->
+        <meta charset="utf-8">
+        <title>Mediathread {% block title %}{% endblock %}</title>
+
+        <script src='{% static "jquery/js/jquery-2.2.4.min.js" %}'></script>
+        {% bootstrap_javascript %}
+        <script src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
+        <script src='{% static "jquery/js/jquery.mousewheel.min.js" %}'></script>
+        <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
+        <script src="{{STATIC_URL}}js/flowplayer/flowplayer.min.js"></script>
+
+        <script src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
+        <script src="/jsi18n"></script>
+
+        {% if not debug %}
+            <script src="https://cdn.ravenjs.com/3.10.0/raven.min.js" crossorigin="anonymous"></script>
+            <script>
+            Raven.config('https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468', {
+                whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
+            }).install();
+            {% if user.is_anonymous %}
+            Raven.setUserContext({
+                email: 'none',
+                id: 'anonymous'
+            });
+            {% else %}
+            Raven.setUserContext({
+                email: '{{user.email}}',
+                id: '{{user.username}}'
+            });
+            {% endif %}
+            </script>
+        {% endif %}
+
+        <script src='{% static 'js/app/extension_updater.js' %}'></script>
+
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.css' %}" media="screen" />
+        <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
+
+        {% compress css %}
+        <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
+        <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
+        {% block css %}{% endblock %}
+        {% endcompress %}
+
+        {% block uncompressable_css %}
+        {% endblock %}
+
+        <link rel="chrome-webstore-item"
+              href="https://chrome.google.com/webstore/detail/gambcgmmppeklfmbahomokogelnaffbi">
+    </head>
+
+    {% course_role for request.user in course as role_in_course %}
+    <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
+        <div id="dialog-confirm" style="display: none"></div>
+        {% block container %}
+            <div id="container">
+                {% block masthead %}
+                    <!-- ###### Site banner ###### -->
+                    <div id="header">
+                        <div id="standardnav_container">
+                            <div id="mediathread_logo">
+                                <a href="/">
+                                    <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
+                                    <span class="sr-only">Home</span>
+                                </a>
+                            </div>
+                            {% block standardnav %}
+                                <ul id="standardnav">
+                                    {% if course %}
+                                        {% if role_in_course == "non-member" %}
+                                            <li>
+                                                <div class="nonmember">You are not a class member!</div>
+                                            </li>
+                                        {% endif %}
+                                        {% if user.is_impersonate %}
+                                            <li>
+                                                <a class="warning" href="/impersonate/stop/">Impersonate Stop</a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if role_in_course == 'instructor' %}
+                                            <li>
+                                                <a href="{% url 'course-settings-general' %}">
+                                                    Course Settings
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <div class="settings_menu reports closed">
+                                                    <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                                    <div class="left settings_menu_title">Reports</div>
+                                                </div>
+                                                <div class="visualclear"></div>
+                                                <!-- Settings Menu -->
+                                                <div class="settings_submenu" style="display: none">
+                                                    <a href="/reports/class_assignments/">Assignment Responses</a>
+                                                    <a href="/reports/class_activity/">Class Activity</a>
+                                                    <a href="/reports/class_summary/">Class Member Contributions</a>
+                                                    {% if user.is_staff %}
+                                                        <hr />
+                                                        <a href="/reports/activity/course/">Activity by Course</a>
+                                                        <a href="/reports/self-registration/">Self-Registration Report</a>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                        {% endif %}
+                                        <li>
+                                            {% block standardnav_help %}
+                                                <div class="settings_menu help closed">
+                                                    <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                                    <div class="left settings_menu_title">Help</div>
+                                                </div>
+                                                <div class="visualclear"></div>
+                                                <!-- Settings Menu -->
+                                                <div class="settings_submenu" style="display: none">
+                                                    <a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Knowledge Base</a>
+                                                    <a href="/contact/">Contact Us</a>
+                                                </div>
+                                            {% endblock %}
+                                        </li>
+                                        <li class="divider-vertical"></li>
+                                        <li>
+                                            <div class="settings_menu user closed">
+                                                <div class="right ui-icon-reverse ui-icon-triangle-1-s"></div>
+                                                <div class="left settings_menu_title">{% public_name for user %}</div>
+                                            </div>
+                                            <div class="visualclear"></div>
+                                            <!-- Settings Menu -->
+                                            <div class="settings_submenu" style="display: none">
+                                                {% if user.is_staff %}
+                                                    <a href="/admin/">Admin</a>
+                                                {% endif %}
+                                                {% if user.is_superuser %}
+                                                    <a href="/impersonate/search/">Impersonate</a>
+                                                {% endif %}
+
+                                                {% num_courses for user as user_courses %}
+                                                {% if role_in_course == 'instructor' or user_courses > 1 or user.is_staff %}
+                                                    <a href="/?unset_course">My Courses</a>
+                                                {% endif %}
+
+                                                {% if user.has_usable_password %}
+                                                    <a href="/accounts/password_change/">Change Password</a>
+                                                {% endif %}
+
+                                                <a href="/accounts/logout/?next=/">Log Out</a>
+                                            </div>
+                                        </li>
+                                    {% else %}
+                                        <li><div unselectable="on"><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></div></li>
+                                        {% if request.user.is_authenticated %}
+                                            <li><a href="/accounts/logout/?next=/">Log Out</a></li>
+                                        {% else %}
+                                            <li><a href="/accounts/login/">Log In</a></li>
+                                        {% endif %}
+                                    {% endif %}
+                                </ul>
+                            {% endblock %}
+                        </div>
+                        {% block courseinformation %}
+                            {% if not read_only_view %}
+                                <div id="course_information">
+                                    <h1 id="course_title">
+                                        {% block coursetitle %}
+                                            <a href="/" id="course_title_link">{{course.title}}</a>
+                                        {% endblock %}
+                                    </h1>
+                                    <div class="clear: right;"></div>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+
+                    </div><!-- id="header" -->
+
+                {% endblock %}
+
+                <!-- ###### Don't touch this ###### -->
+                <div class="visualclear"></div>
+
+                <!-- ###### Page: Sidebars and Content ###### -->
+                <div id="pagebody">
+                    <div id="shieldbox"></div>
+
+
+                    <!-- ###### Page Content ###### -->
+                    <div>
+                        {% block pagetitle %}{% endblock %}
+
+                        {% block messages %}
+                            {% bootstrap_messages %}
+                        {% endblock %}
+
+                        {% block content %}{% endblock %}
+
+                        <!-- ###### Don't touch this ###### -->
+                        <div class="visualclear"></div><!-- id="visualclear" -->
+                        <div id="clearfooter"></div>
+                    </div>
+                </div><!-- id="pagebody" -->
+        {% endblock %}
+            </div><!-- id="container" -->
+
+            {% block footer %}
+                <!-- ###### Footer ###### -->
+                <div id="footer">
+
+                    <!-- CCNMTL title/logo -->
+                    <a id="logo_ccnmtl" href="http://ctl.columbia.edu" target="_blank" title="Columbia for Teaching and Learning">
+                        <img src="{{STATIC_URL}}img/logo_ccnmtl.gif" alt="CCNMTL Logo">
+                        <span class="sr-only">Visit ctl.columbia.edu</span>
+                    </a>
+
+                    <ol id="footernav">
+                        <li><a href="http://mediathread.info" target="_blank">About</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                        <li><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></li>
+                    </ol>
+                </div><!-- id="footer" -->
+            {% endblock %}
+
+            {% block collection-modal %}
+                {% if request.user.is_authenticated %}
+                    <!-- Collection Modal -->
+                    <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Course Collection</h4>
+                                </div>
+                                <div class="modal-body collection-body">
+                                    <div class="quick-edit" style="display: none"></div>
+                                    <div class="collection-view"></div>
+                                </div>
+                                <div class="next-page-loader" style="display: none">
+                                    <div>
+                                        <img alt="Loading..." src='{% static "img/ajax-loader-small.gif" %}'>
+                                        Loading more items
+                                    </div>
+                                </div>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+                {% endif %}
+            {% endblock %}
+
+            <script>
+            var STATIC_URL = '{{STATIC_URL}}';
+
+            var lt = String.fromCharCode(60);
+            if (window.jQuery) {
+                jQuery.noConflict();
+            }
+
+            var MediaThread = new (function() {
+                this.templates = {};
+                {% if request.user.is_authenticated %}
+                this.current_user = {{request.user.id}};
+                this.current_username = "{{request.user.username}}";
+                this.user_full_name = "{% public_name for request.user %}";
+                {% if course %}
+                this.current_course = {{ course.pk }};
+                {% endif %}
+                {% endif %}
+
+                {% if the_response %}
+                this.current_project = {{ the_response.pk }};
+                {% elif project %}
+                this.current_project = {{ project.pk }};
+                {% endif %}
+            })();
+            </script>
+
+            {% compress js %}
+            <script src='{% static "js/lib/json2.js" %}'></script>
+            <script src='{% static "js/app/util.js" %}'></script>
+            <script src='{% static "js/app/ajaxDelete.js" %}'></script>
+            <script src='{% static "js/app/analytics.js" %}'></script>
+            <script src='{% static "js/app/browserdetect.js" %}'></script>
+            <script src='{% static "js/app/mediathread_setup.js" %}'></script>
+            <script src='{% static "js/app/panel.js" %}'></script>
+            <script src='{% static "js/app/shield.js" %}'></script>
+
+            <!--  Asset related -->
+            <script src='{% static "js/app/assetmgr/asset.js" %}'></script>
+            <script src='{% static "js/app/assetmgr/assetpanel.js" %}'></script>
+            <script src='{% static "js/app/assetmgr/collection.js" %}'></script>
+
+            <!--  Discussion related -->
+            <script src='{% static "js/app/discussion/discussionpanel.js" %}'></script>
+
+            <!--  Project related -->
+            <script src='{% static "js/app/projects/projectpanel.js" %}'></script>
+            <script src='{% static "js/app/projects/projectlist.js" %}'></script>
+
+            <script>
+            jQuery(document).ready(function() {
+
+                // setup some ajax progress indicator
+                jQuery("html").ajaxStart(function() {
+                    jQuery(this).addClass("busy");
+                })
+                jQuery("html").ajaxStop(function() {
+                    jQuery(this).removeClass("busy");
+                });
+
+                /* Select from list: Chrome, Firefox, Safari, MSIE */
+                shieldbrowser({"Chrome": 1, "Firefox": 3.6, "Safari": 4, "MSIE": 10 });
+
+                jQuery("div.settings_menu").click(function(evt) {
+                    evt.stopPropagation();
+
+                    // close all other menus
+                    var opening = jQuery(this).hasClass("closed");
+                    jQuery("div.settings_submenu").hide();
+                    jQuery("div.settings_menu").removeClass("open").addClass("closed");
+
+                    // open this one if needed
+                    if (opening) {
+                        jQuery(this).removeClass("closed").addClass("open");
+                        jQuery(this).nextAll("div.settings_submenu").toggle();
+                    }
+                });
+
+                jQuery("body").click(function() {
+                    jQuery("div.settings_submenu").hide();
+                    jQuery("div.settings_menu").removeClass("open").addClass("closed");
+                    jQuery("a.switcher-top.menuopen").click();
+                });
+            });
+            </script>
+
+            {% block js %}{% endblock %}
+    {% endcompress %}
+
+    {% if not debug %}
+        <script>
+        {% if settings.GOOGLE_ANALYTICS_ID %}
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+
+        var analytics = new MediathreadAnalytics(_gaq);
+        {% endif %}
+        </script>
+    {% endif %}
+
+    {% block uncompressable_js %}{% endblock %}
+
+    {% if STAGING_ENV %}
+        <div class="alert alert-error" style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px; width: 100%;">
+            <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <b>{{STAGING_DEPLOY_TIME}}</b></h4>
+        </div>
+    {% endif %}
+
+    </body>
+</html>

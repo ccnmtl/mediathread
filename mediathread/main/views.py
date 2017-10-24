@@ -25,6 +25,7 @@ from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
+from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
@@ -107,7 +108,7 @@ def course_detail_view(request):
 
     context = {
         'classwork_owner': classwork_owner,
-        "information_title": course_information_title(course),
+        'information_title': course_information_title(course),
         'faculty_feed': Project.objects.faculty_compositions(course,
                                                              logged_in_user),
         'is_faculty': cached_course_is_faculty(course, logged_in_user),
@@ -121,6 +122,39 @@ def course_detail_view(request):
     }
 
     return context
+
+
+class CourseDetailView(LoggedInSuperuserMixin, DetailView):
+    model = Course
+
+    def get_context_data(self, **kwargs):
+        context = super(CourseDetailView, self).get_context_data(**kwargs)
+        course = context.get('object')
+
+        qs = ExternalCollection.objects.filter(course=course)
+        collections = qs.filter(uploader=False).order_by('title')
+        uploader = qs.filter(uploader=True).first()
+
+        owners = []
+        if (course.is_member(self.request.user) and
+            (self.request.user.is_staff or
+             self.request.user.has_perm('assetmgr.can_upload_for'))):
+            owners = UserResource().render_list(self.request, course.members)
+
+        context.update({
+            'course': course,
+            'classwork_owner': self.request.user,
+            'information_title': course_information_title(course),
+            'faculty_feed': Project.objects.faculty_compositions(
+                course, self.request.user),
+            'is_faculty': cached_course_is_faculty(course, self.request.user),
+            'discussions': get_course_discussions(course),
+            'collections': collections,
+            'uploader': uploader,
+            'can_upload': False,
+            'owners': owners,
+        })
+        return context
 
 
 class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):

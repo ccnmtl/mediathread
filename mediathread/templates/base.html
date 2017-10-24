@@ -74,11 +74,11 @@
                 {% block standardnav %}
                    <ul id="standardnav">
                         {% if course %}
-                            {% ifequal role_in_course "non-member" %}
+                            {% if role_in_course == "non-member" %}
                                 <li>
                                     <div class="nonmember">You are not a class member!</div>
                                 </li>
-                            {% endifequal %}
+                            {% endif %}
                             {% if user.is_impersonate %}
                                 <li>
                                     <a class="warning" href="/impersonate/stop/">Impersonate Stop</a>

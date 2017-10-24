@@ -1,0 +1,286 @@
+{% extends "base_new.html" %}
+{% load tagging_tags user_projects helpful_tags coursetags comments %}
+{% load static %}
+{% load waffle_tags %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block uncompressable_js %}
+    <script>
+    jQuery(document).ready(function() {
+        var projectList = new ProjectList({
+            'parent': jQuery("div#classwork_table")[0],
+            'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
+            'template': 'homepage',
+            'template_label': 'classwork_table',
+            'view': "{{request.GET.view}}"
+        });
+
+        {% if msg == "upload" %}
+        var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+        showMessage(msg);
+        {% endif %}
+
+        jQuery("a.arrow").click(function(evt) {
+            jQuery(this).next("div.arrowContent").toggle();
+        });
+
+        jQuery("a.upload_button").click(function(evt) {
+            jQuery(this).parent().submit();
+        });
+
+        {% if is_faculty %}
+        jQuery("ul#instructor-information").sortable({
+            axis: "y",
+            cursor: "move",
+            start: function (event, ui) {
+                jQuery(ui.item).addClass('dragging');
+            },
+            update: function (event, ui) {
+                jQuery(ui.item).removeClass("dragging");
+                data = jQuery("ul#instructor-information").sortable("serialize", { key: "project" })
+                jQuery.ajax({
+                    type: 'POST',
+                    data: data,
+                    url: MediaThread.urls['sort-projects'](),
+                    success: function (responseText, textStatus, xhr) {
+                    },
+                    error: function (xhr) {
+                        window.sky = xhr;
+                        showMessage("An error occurred while reordering your projects. Please check your network connection and try again.",
+                                    undefined, "Error");
+                    }
+                });
+            }
+        });
+        {% endif %}
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    {% if object and object.title == "Mediathread Guest Sandbox" %}
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Welcome to Mediathread!</strong> The Guest Sandbox is a place to experiment with all the application features.
+            <p>Be aware that work here is temporary. All user-created compositions and selections are removed every Monday morning.</p>
+            <p>To learn more about Mediathread and how to install an instance at your institution, visit <a href="//mediathread.info">http://mediathread.info</a></p>
+        </div>
+    {% endif %}
+
+    <table id="home-columns">
+        <tbody>
+            <tr>
+                {% if faculty_feed|length > 0 or is_faculty or discussions %}
+                    <td id="instructor">
+                        {% with "help_homepage_instructor_column" as help_id %}
+                            {% include "help/help_contentarea.html" %}
+                            <div class="column-container">
+                                <h2>
+                                    {{information_title}}
+                                    <div class="actions">{% include "help/help_button.html" %}</div>
+                                </h2>
+                                <div class="column-contents">
+                                    <div id="instructor-column">
+
+                                        {% if faculty_feed|length %}
+                                            <h4 class="inst-header information">
+                                                {{information_title}}
+                                            </h4>
+                                            <ul id="instructor-information" class="instructor-list">
+                                                {% for project in faculty_feed %}
+                                                    <li id="project_{{project.id}}">
+                                                        {% if is_faculty %}
+                                                            <span title="drag to reorder information"
+                                                                  class="left draghandle ui-icon ui-icon-arrowthick-2-n-s"></span>
+                                                        {% endif %}
+                                                        <a href="{{project.get_absolute_url}}">
+                                                            {{project.title}}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+
+
+                                        {% if discussions %}
+                                            <h4 class="inst-header discussion">Discussions</h4>
+                                            <ul class="instructor-list">
+                                                {%for disc in discussions%}
+                                                    <li id="discussion-{{disc.id}}">
+                                                        <div class="actions">
+                                                            {% if is_faculty %}
+                                                                <a onclick="return ajaxDelete(this, 'discussion-{{disc.id}}')"
+                                                                   href="{% url 'discussion-delete' disc.id %}">
+                                                                    <img src="{{STATIC_URL}}img/icons/meth_delete.png" width="25" height="25" class="delete_icon" alt="Remove this Discussion"  />
+                                                                    <span class="sr-only">Remove this Discussion</span>
+                                                                </a>
+                                                            {% endif %}
+                                                        </div>
+                                                        <a href="/discussion/{{disc.id}}/">{%firstof disc.title disc.content_object.title "Untitled" %}</a>
+                                                        {% get_comment_count for disc.content_object as comment_count%}
+                                                        ({{comment_count}})
+                                                    </li>
+                                                {%endfor%}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endwith %}
+                    </td>
+                {% endif %}
+
+
+                <td id="classwork">
+                    {% with "help_homepage_classwork_column" as help_id %}
+                        {% include "help/help_contentarea.html" %}
+
+                        <div class="column-container parent-column-container">
+                            <h2>
+                                Compositions &amp; Assignments
+                                <div class="actions">{% include "help/help_button.html" %}</div>
+                            </h2>
+                            <div class="ajaxloader">
+                                <div class="message">
+                                    <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
+                                    <br /><br />
+                                    <div>Fetching compositions &amp; assignments</div>
+                                </div>
+                            </div>
+                            <div id="classwork_table"></div>
+                        </div>
+                    {% endwith %}
+                </td>
+
+
+                <td id="explore">
+                    {% with "help_homepage_explore_column" as help_id %}
+                        {% include "help/help_contentarea.html" %}
+
+                        <div class="column-container">
+                            <h2>Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
+                            <a class="btn btn-default collection right" href="/asset/">
+                                <img src="{{STATIC_URL}}img/viewfullcollection.png"
+                                     alt="view full collection icon" />
+                                View Full Collection
+                            </a>
+
+                            <div class="visualclear"></div>
+                            <br />
+                            <div class="collection_content">
+                                <a href="#"
+                                   class ="arrow arrowClosed">
+
+                                    <h3 class="left">Import into Collection</h3>
+                                    <div class="arrowIcon left"></div>
+                                </a>
+                                <div class="arrowContent" id="import_collection" style="display: none">
+                                    {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
+                                        {% include "assetmgr/install_chrome_extension.html" %}
+                                    {% elif request.user_agent.browser.family == 'Safari' %}
+                                        {% include "assetmgr/install_safari_extension.html" %}
+                                    {% elif request.user_agent.browser.family == 'Firefox' %}
+                                        {% include "assetmgr/install_firefox_extension.html" %}
+                                    {% endif %}
+                                </div> <!-- end import into collection box -->
+
+                            </div><!-- end collection content box -->
+                            {% if can_upload and uploader %}
+                                <div class="collection_content">
+                                    <a href="#" id="upload-from-computer" class ="arrow arrowClosed">
+                                        <h3 class="left">Upload from Computer</h3>
+                                        <div class="arrowIcon left"></div>
+                                    </a>
+                                    <div class="arrowContent" id="upload_desktop" style="display: none">
+                                        {% flag "uploads_offline" %}
+                                        <div class="instructions">
+                                            <p>The upload feature is currently down for maintenance. We will return shortly.</p>
+                                        </div>
+                            {% else %}
+                                        {% if role_in_course == "non-member" %}
+                                            <div class="instructions">
+                                                <p>You must be a course member to upload media files.</p>
+                                            </div>
+                                        {% else %}
+                                            <p>
+                                                This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
+                                            </p>
+                                            <div>
+                                                <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                                    {% if owners %}
+                                                        <div class="upload_for">
+                                                            <label for="video_owners">For:</label>
+                                                            <select id="video_owners" name="as">
+                                                                {% for owner in owners %}
+                                                                    <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    {% endif %}
+                                                    <a class="btn btn-primary upload_button video">
+                                                        <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>&nbsp;&nbsp;Upload video</a>
+                                                </form>
+                                                <hr class="divideLinks" />
+                                                <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                                    {% if owners %}
+                                                        <div class="upload_for">
+                                                            <label for="audio_owners">For:</label>
+                                                            <select id="audio_owners" name="as">
+                                                                {% for owner in owners %}
+                                                                    <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    {% endif %}
+                                                    <input type="hidden" name="audio" value="mp4"></input>
+                                                    <a class="btn btn-primary upload_button video">
+                                                        <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>
+                                                </form>
+                                        {% endif %}
+                       {% endflag %}
+                                            </div><!-- end upload from desktop -->
+                                    </div><!-- end collection content box -->
+                            {% endif %}
+
+                            {% if collections.count %}
+                                <div id="recommend">
+                                    <h3>Recommended Sources</h3>
+                                    Your instructor suggests that you import items from these sites.
+
+                                    {% for collection in collections %}
+                                        <div class="recommend_source">
+                                            {% if collection.thumb_url %}
+                                                <div class="source_thumb">
+                                                    <a href="/explore/redirect/{{collection.id}}/">
+                                                        <img
+                                                            {% if 'http://' in collection.thumb_url or 'https://' in collection.thumb_url %}
+                                                            src="{{ collection.thumb_url }}"
+                                                            {% else %}
+                                                            src="{% static collection.thumb_url %}"
+                                                            {% endif %}
+                                                            alt="{{collection.title}} icon" class="collection-link" />
+                                                        <span class="sr-only">{{collection.title}} icon</span>
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                            <div class="source_title">
+                                                <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                                </div>
+                    {% endwith %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

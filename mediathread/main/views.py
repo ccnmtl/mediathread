@@ -120,13 +120,6 @@ def course_detail_view(request):
         'owners': owners
     }
 
-    if getattr(settings, 'DJANGOSHERD_FLICKR_APIKEY', None):
-        # MUST only contain string values for now!!
-        # (see templates/assetmgr/bookmarklet.js to see why or fix)
-        context['bookmarklet_vars'] = {
-            'flickr_apikey': settings.DJANGOSHERD_FLICKR_APIKEY
-        }
-
     return context
 
 

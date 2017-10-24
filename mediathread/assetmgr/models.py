@@ -164,8 +164,9 @@ class Asset(models.Model):
         if self.metadata_blob:
             try:
                 return json.loads(str(self.metadata_blob))
-            except:  # presumably json decoding, but let's quiet everything
-                return {}
+            except ValueError:
+                pass
+
         return {}
 
     def get_metadata(self, key):

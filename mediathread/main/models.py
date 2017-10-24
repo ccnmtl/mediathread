@@ -27,7 +27,7 @@ class UserSetting(models.Model):
                 return False
             else:
                 return user_setting.value
-        except:
+        except UserSetting.DoesNotExist:
             return default_value
 
     @classmethod
@@ -36,7 +36,7 @@ class UserSetting(models.Model):
             user_setting = UserSetting.objects.get(user=user, name=setting_id)
             user_setting.value = str(value)
             user_setting.save()
-        except:
+        except UserSetting.DoesNotExist:
             UserSetting.objects.create(user=user, name=setting_id, value=value)
 
 

@@ -26,7 +26,7 @@ try:
     from lxml import html  # nosec
     from selenium import webdriver
     from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-except:  # nosec
+except:  # nosec # noqa: E722
     pass
 
 

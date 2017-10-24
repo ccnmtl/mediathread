@@ -55,27 +55,6 @@ function djangosherd_adaptAsset(asset) {
         asset.type = 'youtube';
     } else if (asset.vimeo) {
         asset.type = 'vimeo';
-    } else if (asset.kaltura) {
-        asset.type = 'kaltura';
-    } else if (asset.quicktime) {
-        asset.type = 'quicktime';
-        ///Quicktime really needs a poster or loadingposter, or things fail
-        if (asset.poster) {
-            // test on poster.width is to make sure it is loaded/loadable
-            // / e.g. if poster.src gives a 500 error, then Quicktime will
-            // / and the video becomes comletely inaccessible
-            var poster = document.createElement('img');
-            poster.src = asset.poster;
-            if (!poster.width) {
-                asset.poster = STATIC_URL + 'js/lib/sherdjs/media/images/click_to_play.jpg';
-            }
-        } else {
-            asset.poster = STATIC_URL + 'js/lib/sherdjs/media/images/click_to_play.jpg';
-        }
-        asset.url = asset.quicktime;  //TODO remove this and make sure quicktime.js uses .quicktime
-        asset.loadingposter = STATIC_URL + 'js/lib/sherdjs/media/images/poster.gif';
-    } else if (asset.realplayer) {
-        asset.type = 'realplayer';
     } else if (asset.ogg) {
         asset.type = 'videotag';
     } else if (asset.image) {

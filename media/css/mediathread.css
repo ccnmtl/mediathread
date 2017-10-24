@@ -2371,14 +2371,11 @@ div.gallery-item h4.asset_title {
 .asset_title.asset-mp4_pseudo,
 .asset_title.asset-mp4_rtmp,
 .asset_title.asset-youtube,
-.asset_title.asset-quicktime,
-.asset_title.asset-realplayer,
 .asset_title.asset-ogg,
 .asset_title.asset-video_pseudo,
 .asset_title.asset-video_rtmp,
 .asset_title.asset-video,
 .asset_title.asset-vimeo,
-.asset_title.asset-kaltura        
 {
     background-image: url(../img/icons/meth_video.png);
 }

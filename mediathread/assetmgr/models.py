@@ -143,8 +143,7 @@ class Asset(models.Model):
     primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
                       'mp4', 'mp4_pseudo', 'mp4_rtmp',
                       'mp4_pseudo_panopto',
-                      'youtube', 'quicktime', 'realplayer',
-                      'ogg', 'vimeo', 'kaltura',
+                      'youtube', 'ogg', 'vimeo',
                       'video_pseudo', 'video_rtmp', 'video',
                       'mp3', 'mp4_audio',
                       'image_fpx', 'image_fpxid',  # artstor.org

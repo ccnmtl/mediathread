@@ -375,8 +375,9 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
                     var val = jQuery(opts[0]).val();
                     var params = 'mediathread_project' +
                         self.panel.context.project.id;
-                    // eslint-disable-next-line security/detect-non-literal-fs-filename
+                    /*eslint-disable security/detect-non-literal-fs-filename*/
                     window.open(val, params);
+                    /*eslint-enable security/detect-non-literal-fs-filename*/
                 }
             }
             return true;

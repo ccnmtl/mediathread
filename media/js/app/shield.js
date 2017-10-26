@@ -67,10 +67,11 @@ function buildshieldbox() {
             if (BrowserDetect.browser.toLowerCase() === key.toLowerCase() ||
                 (thisbrowsername && thisbrowsername.toLowerCase() ===
                     key.toLowerCase())) {
-                // eslint-disable-next-line no-unsafe-innerhtml/no-unsafe-innerhtml
+                /* eslint-disable no-unsafe-innerhtml/no-unsafe-innerhtml */
                 document.getElementById('minreqversion').innerHTML =
                     'The minimum required version for this browser is ' +
                     browserlist[key] + '.';
+                /* eslint-enable no-unsafe-innerhtml/no-unsafe-innerhtml */
             }
             var currentclass =
                 document.getElementById(key.toLowerCase()).className;

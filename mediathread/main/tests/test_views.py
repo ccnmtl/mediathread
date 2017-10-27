@@ -10,12 +10,14 @@ from courseaffils.models import Affil, Course
 from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser, Group
+from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
-from django.test.client import Client, RequestFactory
+from django.test.client import RequestFactory
 from django.utils.html import escape
+from django.utils.text import slugify
 import factory
 from freezegun import freeze_time
 from threadedcomments.models import ThreadedComment
@@ -38,7 +40,9 @@ from mediathread.main.course_details import (
 from mediathread.main.forms import (
     ContactUsForm, CourseActivateForm, AcceptInvitationForm)
 from mediathread.main.models import CourseInvitation
-from mediathread.main.tests.mixins import LoggedInUserTestMixin
+from mediathread.main.tests.mixins import (
+    LoggedInUserTestMixin, LoggedInSuperuserTestMixin
+)
 from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView, CourseManageSourcesView,
@@ -46,12 +50,10 @@ from mediathread.main.views import (
     unis_list,
 )
 from mediathread.projects.models import Project
+from structuredcollaboration.models import Collaboration
 
 
 class SimpleViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-
     def test_index(self):
         # it should redirect us somewhere.
         response = self.client.get("/")
@@ -1682,3 +1684,25 @@ class LTICourseCreateTest(TestCase):
             LTICourseContext.objects.get(
                 lms_course_context='1234',
                 group=c.group, faculty_group=c.faculty_group)
+
+
+class CourseDetailViewAnonTest(TestCase):
+    def setUp(self):
+        self.course = CourseFactory()
+
+    def test_get(self):
+        r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
+        self.assertEqual(r.status_code, 302)
+
+
+class CourseDetailViewTest(LoggedInSuperuserTestMixin, TestCase):
+    def setUp(self):
+        super(CourseDetailViewTest, self).setUp()
+        self.course = CourseFactory()
+        Collaboration.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Course),
+            object_pk=str(self.course.pk), slug=slugify(self.course.title))
+
+    def test_get(self):
+        r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
+        self.assertEqual(r.status_code, 200)

@@ -28,12 +28,13 @@ from mediathread.main.views import (
     InstructorDashboardSettingsView,
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseDeleteMaterialsView, course_detail_view,
+    CourseDeleteMaterialsView, CourseDetailView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
     CourseResendInviteView, set_user_setting,
-    LTICourseSelector, LTICourseCreate)
+    LTICourseSelector, LTICourseCreate
+)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -155,6 +156,9 @@ urlpatterns = [
     url(r'^affil/(?P<pk>\d+)/activate/$',
         AffilActivateView.as_view(),
         name='affil_activate'),
+
+    url(r'^course/(?P<pk>\d+)/$', CourseDetailView.as_view(),
+        name='course_detail'),
 
     url(r'^course/list/$',
         MethCourseListView.as_view(),

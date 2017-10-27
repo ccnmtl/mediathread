@@ -5,9 +5,9 @@
     {% endif %}>
     <td class="course-choice">
         {% if course.is_course %}
-        <a class="choose-course"
-           href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
-        >{{course.title}}</a>
+            <a class="choose-course"
+               href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
+            >{{course.title}}</a>
         {% else %}
         {{course.coursedirectory_name}}
         <a href="{% url 'affil_activate' course.pk %}"

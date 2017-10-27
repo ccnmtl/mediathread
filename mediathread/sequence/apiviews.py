@@ -7,9 +7,20 @@ from mediathread.sequence.serializers import (
     SequenceAssetSerializer, SequenceMediaElementSerializer,
     SequenceTextElementSerializer,
 )
+from rest_framework.authentication import (
+    SessionAuthentication, BasicAuthentication
+)
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    # https://stackoverflow.com/a/30875830/173630
+    def enforce_csrf(self, request):
+        return
 
 
 class SequenceAssetViewSet(viewsets.ModelViewSet):
+    authentication_classes = (
+        CsrfExemptSessionAuthentication, BasicAuthentication)
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, SingleAuthor,)
     queryset = SequenceAsset.objects.all()
     serializer_class = SequenceAssetSerializer

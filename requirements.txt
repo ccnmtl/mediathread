@@ -73,7 +73,7 @@ django-debug-toolbar==1.9
 django-markwhat==1.5.1
 ipaddress==1.0.18
 text-unidecode==1.1  # for faker
-Faker==0.8.6
+Faker==0.8.7
 factory_boy==2.9.2
 django-impersonate==1.2.1
 django-registration-redux==1.8

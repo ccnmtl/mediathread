@@ -69,7 +69,7 @@ django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.0
-django-debug-toolbar==1.9
+django-debug-toolbar==1.9.1
 django-markwhat==1.5.1
 ipaddress==1.0.18
 text-unidecode==1.1  # for faker

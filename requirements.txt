@@ -40,7 +40,7 @@ pylint==1.7.4
 
 astroid==1.5.3  # pylint
 
-pyasn1==0.3.7
+pyasn1==0.4.1
 pyOpenSSL==17.4.0
 ndg-httpsclient==0.4.3
 

@@ -56,7 +56,7 @@ rjsmin==1.0.12
 
 djangowind==1.0.1
 django-tagging==0.4.6
-django-reversion==2.0.10
+django-reversion==2.0.11
 djangohelpers==0.19
 django-contrib-comments==1.8.0
 django-threadedcomments==1.1

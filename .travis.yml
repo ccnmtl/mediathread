@@ -1,7 +1,7 @@
 language: python
 sudo: false
 addons:
-  firefox: "52.2.1esr"
+  firefox: "52.5.0esr"
 env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest1

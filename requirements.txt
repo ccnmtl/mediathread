@@ -95,7 +95,7 @@ ipython_genutils==0.2.0
 path.py==10.5
 backports.shutil_get_terminal_size==1.0.0
 decorator==4.1.2
-pexpect==4.3.0
+pexpect==4.3.1
 ptyprocess==0.5.2
 pickleshare==0.7.4
 simplegeneric==0.8.1

@@ -1,7 +1,7 @@
 Django==1.11.8 # pyup: <2.0
 psycopg2==2.7.3.2
 #for MySQL: MySQL-python==1.2.5
-statsd==3.2.1
+statsd==3.2.2
 pep8==1.7.1
 pyflakes==1.6.0
 mccabe==0.6.1

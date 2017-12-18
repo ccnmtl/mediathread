@@ -182,8 +182,7 @@ Feature: Sources
         And I see 1 source
 
         # Verify YouTube navigation works
-        When I click the "YouTube" link
-        Then I am at the YouTube page
+        There is a "YouTube" link
 
         Finished using Selenium
 

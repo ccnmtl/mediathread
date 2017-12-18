@@ -246,7 +246,7 @@ def i_log_out(step):
 @step(u'I am at the ([^"]*) page')
 def i_am_at_the_name_page(step, name):
     if world.using_selenium:
-        wait = ui.WebDriverWait(world.browser, 5)
+        wait = ui.WebDriverWait(world.browser, 10)
         wait.until(lambda driver: world.browser.title.find(name) > -1)
 
 

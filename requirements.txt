@@ -38,7 +38,7 @@ editdistance==0.4
 
 pylint==1.8.1
 
-astroid==1.6.0  # pylint
+astroid==1.6.1  # pylint
 
 pyasn1==0.4.2
 pyOpenSSL==17.5.0

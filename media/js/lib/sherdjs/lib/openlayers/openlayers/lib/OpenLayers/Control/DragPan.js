@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
@@ -32,11 +32,12 @@ OpenLayers.Control.DragPan = OpenLayers.Class(OpenLayers.Control, {
     /**
      * Property: interval
      * {Integer} The number of milliseconds that should ellapse before
-     *     panning the map again. Defaults to 1 millisecond. In most cases
-     *     you won't want to change this value. For slow machines/devices
-     *     larger values can be tried out.
+     *     panning the map again. Defaults to 0 milliseconds, which means that
+     *     no separate cycle is used for panning. In most cases you won't want
+     *     to change this value. For slow machines/devices larger values can be
+     *     tried out.
      */
-    interval: 1,
+    interval: 0,
     
     /**
      * APIProperty: documentDrag
@@ -47,7 +48,7 @@ OpenLayers.Control.DragPan = OpenLayers.Class(OpenLayers.Control, {
 
     /**
      * Property: kinetic
-     * {OpenLayers.Kinetic} The OpenLayers.Kinetic object.
+     * {<OpenLayers.Kinetic>} The OpenLayers.Kinetic object.
      */
     kinetic: null,
 
@@ -56,9 +57,11 @@ OpenLayers.Control.DragPan = OpenLayers.Class(OpenLayers.Control, {
      * {Boolean} Set this option to enable "kinetic dragging". Can be
      *     set to true or to an object. If set to an object this
      *     object will be passed to the {<OpenLayers.Kinetic>}
-     *     constructor. Defaults to false.
+     *     constructor. Defaults to true.
+     *     To get kinetic dragging, ensure that OpenLayers/Kinetic.js is
+     *     included in your build config.
      */
-    enableKinetic: false,
+    enableKinetic: true,
 
     /**
      * APIProperty: kineticInterval
@@ -75,7 +78,7 @@ OpenLayers.Control.DragPan = OpenLayers.Class(OpenLayers.Control, {
      * <panMapDone> as callbacks.
      */    
     draw: function() {
-        if(this.enableKinetic) {
+        if (this.enableKinetic && OpenLayers.Kinetic) {
             var config = {interval: this.kineticInterval};
             if(typeof this.enableKinetic === "object") {
                 config = OpenLayers.Util.extend(config, this.enableKinetic);

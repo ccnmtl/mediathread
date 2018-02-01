@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
@@ -214,7 +214,6 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
                 break;
             case "OpenLayers.Geometry.Polygon":
             case "OpenLayers.Geometry.Curve":
-            case "OpenLayers.Geometry.Surface":
                 nodeType = "path";
                 break;
             default:
@@ -240,6 +239,22 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
     setStyle: function(node, style, options) {
         style = style  || node._style;
         options = options || node._options;
+
+        var title = style.title || style.graphicTitle;
+        if (title) {
+            node.setAttributeNS(null, "title", title);
+            //Standards-conformant SVG
+            // Prevent duplicate nodes. See issue https://github.com/openlayers/openlayers/issues/92 
+            var titleNode = node.getElementsByTagName("title");
+            if (titleNode.length > 0) {
+                titleNode[0].firstChild.textContent = title;
+            } else {
+                var label = this.nodeFactory(null, "title");
+                label.textContent = title;
+                node.appendChild(label);
+            }
+        }
+
         var r = parseFloat(node.getAttributeNS(null, "r"));
         var widthFactor = 1;
         var pos;
@@ -249,14 +264,6 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
                 node.style.visibility = "hidden";
             } else if (style.externalGraphic) {
                 pos = this.getPosition(node);
-                
-                if (style.graphicTitle) {
-                    node.setAttributeNS(null, "title", style.graphicTitle);
-                    //Standards-conformant SVG
-                    var label = this.nodeFactory(null, "title");
-                    label.textContent = style.graphicTitle;
-                    node.appendChild(label);
-                }
                 if (style.graphicWidth && style.graphicHeight) {
                   node.setAttributeNS(null, "preserveAspectRatio", "none");
                 }
@@ -275,9 +282,9 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
                 node.setAttributeNS(null, "y", (pos.y + yOffset).toFixed());
                 node.setAttributeNS(null, "width", width);
                 node.setAttributeNS(null, "height", height);
-                node.setAttributeNS(this.xlinkns, "href", style.externalGraphic);
+                node.setAttributeNS(this.xlinkns, "xlink:href", style.externalGraphic);
                 node.setAttributeNS(null, "style", "opacity: "+opacity);
-                node.onclick = OpenLayers.Renderer.SVG.preventDefault;
+                node.onclick = OpenLayers.Event.preventDefault;
             } else if (this.isComplexSymbol(style.graphicName)) {
                 // the symbol viewBox is three times as large as the symbol
                 var offset = style.pointRadius * 3;
@@ -441,13 +448,15 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
      * {DOMElement} The specific render engine's root element
      */
     createRenderRoot: function() {
-        return this.nodeFactory(this.container.id + "_svgRoot", "svg");
+        var svg = this.nodeFactory(this.container.id + "_svgRoot", "svg");
+        svg.style.display = "block";
+        return svg;
     },
 
     /**
      * Method: createRoot
      * 
-     * Parameter:
+     * Parameters:
      * suffix - {String} suffix to append to the id
      * 
      * Returns:
@@ -629,46 +638,6 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
     },
     
     /**
-     * Method: drawSurface
-     * This method is only called by the renderer itself.
-     * 
-     * Parameters: 
-     * node - {DOMElement}
-     * geometry - {<OpenLayers.Geometry>}
-     * 
-     * Returns:
-     * {DOMElement} or false if the renderer could not draw the surface
-     */ 
-    drawSurface: function(node, geometry) {
-
-        // create the svg path string representation
-        var d = null;
-        var draw = true;
-        for (var i=0, len=geometry.components.length; i<len; i++) {
-            if ((i%3) == 0 && (i/3) == 0) {
-                var component = this.getShortString(geometry.components[i]);
-                if (!component) { draw = false; }
-                d = "M " + component;
-            } else if ((i%3) == 1) {
-                var component = this.getShortString(geometry.components[i]);
-                if (!component) { draw = false; }
-                d += " C " + component;
-            } else {
-                var component = this.getShortString(geometry.components[i]);
-                if (!component) { draw = false; }
-                d += " " + component;
-            }
-        }
-        d += " Z";
-        if (draw) {
-            node.setAttributeNS(null, "d", d);
-            return node;
-        } else {
-            return false;
-        }    
-    },
-    
-    /**
      * Method: drawText
      * This method is only called by the renderer itself.
      *
@@ -678,18 +647,40 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
      * location - {<OpenLayers.Geometry.Point>}
      */
     drawText: function(featureId, style, location) {
+        var drawOutline = (!!style.labelOutlineWidth);
+        // First draw text in halo color and size and overlay the
+        // normal text afterwards
+        if (drawOutline) {
+            var outlineStyle = OpenLayers.Util.extend({}, style);
+            outlineStyle.fontColor = outlineStyle.labelOutlineColor;
+            outlineStyle.fontStrokeColor = outlineStyle.labelOutlineColor;
+            outlineStyle.fontStrokeWidth = style.labelOutlineWidth;
+            if (style.labelOutlineOpacity) {
+                outlineStyle.fontOpacity = style.labelOutlineOpacity;
+            }
+            delete outlineStyle.labelOutlineWidth;
+            this.drawText(featureId, outlineStyle, location);
+        }
+
         var resolution = this.getResolution();
 
         var x = ((location.x - this.featureDx) / resolution + this.left);
         var y = (location.y / resolution - this.top);
 
-        var label = this.nodeFactory(featureId + this.LABEL_ID_SUFFIX, "text");
+        var suffix = (drawOutline)?this.LABEL_OUTLINE_SUFFIX:this.LABEL_ID_SUFFIX;
+        var label = this.nodeFactory(featureId + suffix, "text");
 
         label.setAttributeNS(null, "x", x);
         label.setAttributeNS(null, "y", -y);
 
         if (style.fontColor) {
             label.setAttributeNS(null, "fill", style.fontColor);
+        }
+        if (style.fontStrokeColor) {
+            label.setAttributeNS(null, "stroke", style.fontStrokeColor);
+        }
+        if (style.fontStrokeWidth) {
+            label.setAttributeNS(null, "stroke-width", style.fontStrokeWidth);
         }
         if (style.fontOpacity) {
             label.setAttributeNS(null, "opacity", style.fontOpacity);
@@ -712,7 +703,7 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
         } else {
             label.setAttributeNS(null, "pointer-events", "none");
         }
-        var align = style.labelAlign || "cm";
+        var align = style.labelAlign || OpenLayers.Renderer.defaultSymbolizer.labelAlign;
         label.setAttributeNS(null, "text-anchor",
             OpenLayers.Renderer.SVG.LABEL_ALIGN[align[0]] || "middle");
 
@@ -727,7 +718,7 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
             label.removeChild(label.lastChild);
         }
         for (var i = 0; i < numRows; i++) {
-            var tspan = this.nodeFactory(featureId + this.LABEL_ID_SUFFIX + "_tspan_" + i, "tspan");
+            var tspan = this.nodeFactory(featureId + suffix + "_tspan_" + i, "tspan");
             if (style.labelSelect === true) {
                 tspan._featureId = featureId;
                 tspan._geometry = location;
@@ -961,15 +952,14 @@ OpenLayers.Renderer.SVG = OpenLayers.Class(OpenLayers.Renderer.Elements, {
      * evt - {Object} An <OpenLayers.Event> object
      *
      * Returns:
-     * {<OpenLayers.Geometry>} A geometry from an event that 
-     *     happened on a layer.
+     * {String} A feature id or undefined.
      */
     getFeatureIdFromEvent: function(evt) {
         var featureId = OpenLayers.Renderer.Elements.prototype.getFeatureIdFromEvent.apply(this, arguments);
         if(!featureId) {
             var target = evt.target;
-            featureId = target.parentNode && target != this.rendererRoot &&
-                target.parentNode._featureId;
+            featureId = target.parentNode && target != this.rendererRoot ?
+                target.parentNode._featureId : undefined;
         }
         return featureId;
     },
@@ -1013,9 +1003,10 @@ OpenLayers.Renderer.SVG.LABEL_VFACTOR = {
 
 /**
  * Function: OpenLayers.Renderer.SVG.preventDefault
+ * *Deprecated*.  Use <OpenLayers.Event.preventDefault> method instead.
  * Used to prevent default events (especially opening images in a new tab on
  * ctrl-click) from being executed for externalGraphic symbols
  */
 OpenLayers.Renderer.SVG.preventDefault = function(e) {
-    e.preventDefault && e.preventDefault();
+    OpenLayers.Event.preventDefault(e);
 };

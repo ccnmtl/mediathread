@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 
@@ -46,12 +46,6 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
      * {DOMElement}
      */
     zoombarDiv: null,
-
-    /** 
-     * Property: divEvents
-     * {<OpenLayers.Events>}
-     */
-    divEvents: null,
 
     /** 
      * APIProperty: zoomWorldIcon
@@ -105,6 +99,7 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
 
         this.map.events.un({
             "changebaselayer": this.redraw,
+            "updatesize": this.redraw,
             scope: this
         });
 
@@ -122,7 +117,11 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
      */
     setMap: function(map) {
         OpenLayers.Control.PanZoom.prototype.setMap.apply(this, arguments);
-        this.map.events.register("changebaselayer", this, this.redraw);
+        this.map.events.on({
+            "changebaselayer": this.redraw,
+            "updatesize": this.redraw,
+            scope: this
+        });
     },
 
     /** 
@@ -151,7 +150,7 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
         // place the controls
         this.buttons = [];
 
-        var sz = new OpenLayers.Size(18,18);
+        var sz = {w: 18, h: 18};
         if (this.panIcons) {
             var centered = new OpenLayers.Pixel(px.x+sz.w/2, px.y);
             var wposition = sz.w;
@@ -190,17 +189,17 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
     * Method: _addZoomBar
     * 
     * Parameters:
-    * location - {<OpenLayers.Pixel>} where zoombar drawing is to start.
+    * centered - {<OpenLayers.Pixel>} where zoombar drawing is to start.
     */
     _addZoomBar:function(centered) {
-        var imgLocation = OpenLayers.Util.getImagesLocation();
-        
+        var imgLocation = OpenLayers.Util.getImageLocation("slider.png");
         var id = this.id + "_" + this.map.id;
+        var minZoom = this.map.getMinZoom();
         var zoomsToEnd = this.map.getNumZoomLevels() - 1 - this.map.getZoom();
         var slider = OpenLayers.Util.createAlphaImageDiv(id,
                        centered.add(-1, zoomsToEnd * this.zoomStopHeight), 
-                       new OpenLayers.Size(20,9), 
-                       imgLocation+"slider.png",
+                       {w: 20, h: 9},
+                       imgLocation,
                        "absolute");
         slider.style.cursor = "move";
         this.slider = slider;
@@ -213,22 +212,21 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
             "touchend": this.zoomBarUp,
             "mousedown": this.zoomBarDown,
             "mousemove": this.zoomBarDrag,
-            "mouseup": this.zoomBarUp,
-            "dblclick": this.doubleClick,
-            "click": this.doubleClick
+            "mouseup": this.zoomBarUp
         });
         
-        var sz = new OpenLayers.Size();
-        sz.h = this.zoomStopHeight * this.map.getNumZoomLevels();
-        sz.w = this.zoomStopWidth;
+        var sz = {
+            w: this.zoomStopWidth,
+            h: this.zoomStopHeight * (this.map.getNumZoomLevels() - minZoom)
+        };
+        var imgLocation = OpenLayers.Util.getImageLocation("zoombar.png");
         var div = null;
         
         if (OpenLayers.Util.alphaHack()) {
             var id = this.id + "_" + this.map.id;
             div = OpenLayers.Util.createAlphaImageDiv(id, centered,
-                                      new OpenLayers.Size(sz.w, 
-                                              this.zoomStopHeight),
-                                      imgLocation + "zoombar.png", 
+                                      {w: sz.w, h: this.zoomStopHeight},
+                                      imgLocation,
                                       "absolute", null, "crop");
             div.style.height = sz.h + "px";
         } else {
@@ -236,20 +234,11 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
                         'OpenLayers_Control_PanZoomBar_Zoombar' + this.map.id,
                         centered,
                         sz,
-                        imgLocation+"zoombar.png");
+                        imgLocation);
         }
         div.style.cursor = "pointer";
+        div.className = "olButton";
         this.zoombarDiv = div;
-        
-        this.divEvents = new OpenLayers.Events(this, div, null, true, 
-                                                {includeXY: true});
-        this.divEvents.on({
-            "touchmove": this.passEventToSlider,
-            "mousedown": this.divClick,
-            "mousemove": this.passEventToSlider,
-            "dblclick": this.doubleClick,
-            "click": this.doubleClick
-        });
         
         this.div.appendChild(div);
 
@@ -259,7 +248,7 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
         this.map.events.register("zoomend", this, this.moveZoomBar);
 
         centered = centered.add(0, 
-            this.zoomStopHeight * this.map.getNumZoomLevels());
+            this.zoomStopHeight * (this.map.getNumZoomLevels() - minZoom));
         return centered; 
     },
     
@@ -268,23 +257,14 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
      */
     _removeZoomBar: function() {
         this.sliderEvents.un({
+            "touchstart": this.zoomBarDown,
             "touchmove": this.zoomBarDrag,
+            "touchend": this.zoomBarUp,
             "mousedown": this.zoomBarDown,
             "mousemove": this.zoomBarDrag,
-            "mouseup": this.zoomBarUp,
-            "dblclick": this.doubleClick,
-            "click": this.doubleClick
+            "mouseup": this.zoomBarUp
         });
         this.sliderEvents.destroy();
-
-        this.divEvents.un({
-            "touchmove": this.passEventToSlider,
-            "mousedown": this.divClick,
-            "mousemove": this.passEventToSlider,
-            "dblclick": this.doubleClick,
-            "click": this.doubleClick
-        });
-        this.divEvents.destroy();
         
         this.div.removeChild(this.zoombarDiv);
         this.zoombarDiv = null;
@@ -292,6 +272,25 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
         this.slider = null;
         
         this.map.events.unregister("zoomend", this, this.moveZoomBar);
+    },
+    
+    /**
+     * Method: onButtonClick
+     *
+     * Parameters:
+     * evt - {Event}
+     */
+    onButtonClick: function(evt) {
+        OpenLayers.Control.PanZoom.prototype.onButtonClick.apply(this, arguments);
+        if (evt.buttonElement === this.zoombarDiv) {
+            var levels = evt.buttonXY.y / this.zoomStopHeight;
+            if(this.forceFixedZoomLevel || !this.map.fractionalZoom) {
+                levels = Math.floor(levels);
+            }    
+            var zoom = (this.map.getNumZoomLevels() - 1) - levels; 
+            zoom = Math.min(Math.max(zoom, 0), this.map.getNumZoomLevels() - 1);
+            this.map.zoomTo(zoom);
+        }
     },
     
     /**
@@ -304,25 +303,6 @@ OpenLayers.Control.PanZoomBar = OpenLayers.Class(OpenLayers.Control.PanZoom, {
      */
     passEventToSlider:function(evt) {
         this.sliderEvents.handleBrowserEvent(evt);
-    },
-    
-    /**
-     * Method: divClick
-     * Picks up on clicks directly on the zoombar div
-     *           and sets the zoom level appropriately.
-     */
-    divClick: function (evt) {
-        if (!OpenLayers.Event.isLeftClick(evt)) {
-            return;
-        }
-        var levels = evt.xy.y / this.zoomStopHeight;
-        if(this.forceFixedZoomLevel || !this.map.fractionalZoom) {
-            levels = Math.floor(levels);
-        }    
-        var zoom = (this.map.getNumZoomLevels() - 1) - levels; 
-        zoom = Math.min(Math.max(zoom, 0), this.map.getNumZoomLevels() - 1);
-        this.map.zoomTo(zoom);
-        OpenLayers.Event.stop(evt);
     },
     
     /*

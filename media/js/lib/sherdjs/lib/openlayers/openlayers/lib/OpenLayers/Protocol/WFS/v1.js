@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
@@ -46,6 +46,11 @@ OpenLayers.Protocol.WFS.v1 = OpenLayers.Class(OpenLayers.Protocol, {
      *     "the_geom" for WFS <version> 1.0, and null for higher versions.
      */
     geometryName: "the_geom",
+
+    /**
+     * Property: maxFeatures
+     * {Integer} Optional maximum number of features to retrieve.
+     */
     
     /**
      * Property: schema
@@ -384,7 +389,7 @@ OpenLayers.Protocol.WFS.v1 = OpenLayers.Class(OpenLayers.Protocol, {
      * Send a request that deletes all features by their filter.
      * 
      * Parameters:
-     * filter - {OpenLayers.Filter} filter
+     * filter - {<OpenLayers.Filter>} filter
      */
     filterDelete: function(filter, options) {
         options = OpenLayers.Util.extend({}, options);

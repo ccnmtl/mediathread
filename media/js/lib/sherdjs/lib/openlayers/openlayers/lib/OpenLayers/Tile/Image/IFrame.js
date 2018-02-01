@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 
@@ -24,6 +24,14 @@ OpenLayers.Tile.Image.IFrame = {
      * responses, false if we are using an img element to render GET responses.
      */ 
     useIFrame: null,
+
+    /**
+     * Property: blankImageUrl
+     * {String} Using a data scheme url is not supported by all browsers, but
+     * we don't care because we either set it as css backgroundImage, or the
+     * image's display style is set to "none" when we use it.
+     */
+    blankImageUrl: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAQAIBRAA7",
 
     /**
      * Method: draw
@@ -55,7 +63,7 @@ OpenLayers.Tile.Image.IFrame = {
 
                 // We remove the imgDiv (really either an image or an iframe)
                 // from the frame and set it to null to make sure initImage
-                // will call createImage.
+                // will call getImage.
 
                 if(this.imgDiv && this.imgDiv.parentNode === this.frame) {
                     this.frame.removeChild(this.imgDiv);
@@ -73,10 +81,10 @@ OpenLayers.Tile.Image.IFrame = {
     },
 
     /**
-     * Method: createImage
+     * Method: getImage
      * Creates the content for the frame on the tile.
      */
-    createImage: function() {
+    getImage: function() {
         if (this.useIFrame === true) {
             if (!this.frame.childNodes.length) {
                 var eventPane = document.createElement("div"),
@@ -130,10 +138,10 @@ OpenLayers.Tile.Image.IFrame = {
             this.imgDiv = iframe;
             return iframe;
         } else {
-            return OpenLayers.Tile.Image.prototype.createImage.apply(this, arguments);
+            return OpenLayers.Tile.Image.prototype.getImage.apply(this, arguments);
         }
     },
-
+    
     /**
      * Method: createRequestForm
      * Create the html <form> element with width, height, bbox and all 
@@ -180,7 +188,6 @@ OpenLayers.Tile.Image.IFrame = {
         if (this.useIFrame === true) {
             if (url) {
                 var form = this.createRequestForm();
-                this.frame.appendChild(this.imgDiv);
                 this.frame.appendChild(form);
                 form.submit();
                 this.frame.removeChild(form);
@@ -191,6 +198,19 @@ OpenLayers.Tile.Image.IFrame = {
             }
         } else {
             OpenLayers.Tile.Image.prototype.setImgSrc.apply(this, arguments);
+        }
+    },
+    
+    /**
+     * Method: onImageLoad
+     * Handler for the image onload event
+     */
+    onImageLoad: function() {
+        //TODO de-uglify opacity handling
+        OpenLayers.Tile.Image.prototype.onImageLoad.apply(this, arguments);
+        if (this.useIFrame === true) {
+            this.imgDiv.style.opacity = 1;
+            this.frame.style.opacity = this.layer.opacity;
         }
     },
 
@@ -205,7 +225,7 @@ OpenLayers.Tile.Image.IFrame = {
      */
     createBackBuffer: function() {
         var backBuffer;
-        if(!this.useIFrame) {
+        if(this.useIFrame === false) {
             backBuffer = OpenLayers.Tile.Image.prototype.createBackBuffer.call(this);
         }
         return backBuffer;

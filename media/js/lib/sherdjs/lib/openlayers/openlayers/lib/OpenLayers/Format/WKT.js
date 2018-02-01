@@ -1,11 +1,17 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
  * @requires OpenLayers/Format.js
  * @requires OpenLayers/Feature/Vector.js
+ * @requires OpenLayers/Geometry/Point.js
+ * @requires OpenLayers/Geometry/MultiPoint.js
+ * @requires OpenLayers/Geometry/LineString.js
+ * @requires OpenLayers/Geometry/MultiLineString.js
+ * @requires OpenLayers/Geometry/Polygon.js
+ * @requires OpenLayers/Geometry/MultiPolygon.js
  */
 
 /**
@@ -41,7 +47,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
     },
 
     /**
-     * Method: read
+     * APIMethod: read
      * Deserialize a WKT string and return a vector feature or an
      * array of vector features.  Supports WKT for POINT, MULTIPOINT,
      * LINESTRING, MULTILINESTRING, POLYGON, MULTIPOLYGON, and
@@ -84,7 +90,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
     },
 
     /**
-     * Method: write
+     * APIMethod: write
      * Serialize a feature or array of features into a WKT string.
      *
      * Parameters:
@@ -95,7 +101,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
      * {String} The WKT string representation of the input geometries
      */
     write: function(features) {
-        var collection, geometry, type, data, isCollection;
+        var collection, geometry, isCollection;
         if (features.constructor == Array) {
             collection = features;
             isCollection = true;
@@ -151,7 +157,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
     extract: {
         /**
          * Return a space delimited string of point coordinates.
-         * @param {<OpenLayers.Geometry.Point>} point
+         * @param {OpenLayers.Geometry.Point} point
          * @returns {String} A string of coordinates representing the point
          */
         'point': function(point) {
@@ -160,7 +166,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return a comma delimited string of point coordinates from a multipoint.
-         * @param {<OpenLayers.Geometry.MultiPoint>} multipoint
+         * @param {OpenLayers.Geometry.MultiPoint} multipoint
          * @returns {String} A string of point coordinate strings representing
          *                  the multipoint
          */
@@ -176,7 +182,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         
         /**
          * Return a comma delimited string of point coordinates from a line.
-         * @param {<OpenLayers.Geometry.LineString>} linestring
+         * @param {OpenLayers.Geometry.LineString} linestring
          * @returns {String} A string of point coordinate strings representing
          *                  the linestring
          */
@@ -190,7 +196,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return a comma delimited string of linestring strings from a multilinestring.
-         * @param {<OpenLayers.Geometry.MultiLineString>} multilinestring
+         * @param {OpenLayers.Geometry.MultiLineString} multilinestring
          * @returns {String} A string of of linestring strings representing
          *                  the multilinestring
          */
@@ -206,7 +212,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         
         /**
          * Return a comma delimited string of linear ring arrays from a polygon.
-         * @param {<OpenLayers.Geometry.Polygon>} polygon
+         * @param {OpenLayers.Geometry.Polygon} polygon
          * @returns {String} An array of linear ring arrays representing the polygon
          */
         'polygon': function(polygon) {
@@ -221,7 +227,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return an array of polygon arrays from a multipolygon.
-         * @param {<OpenLayers.Geometry.MultiPolygon>} multipolygon
+         * @param {OpenLayers.Geometry.MultiPolygon} multipolygon
          * @returns {String} An array of polygon arrays representing
          *                  the multipolygon
          */
@@ -237,7 +243,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return the WKT portion between 'GEOMETRYCOLLECTION(' and ')' for an <OpenLayers.Geometry.Collection>
-         * @param {<OpenLayers.Geometry.Collection>} collection
+         * @param {OpenLayers.Geometry.Collection} collection
          * @returns {String} internal WKT representation of the collection
          */
         'collection': function(collection) {
@@ -258,7 +264,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         /**
          * Return point feature given a point WKT fragment.
          * @param {String} str A WKT fragment representing the point
-         * @returns {<OpenLayers.Feature.Vector>} A point feature
+         * @returns {OpenLayers.Feature.Vector} A point feature
          * @private
          */
         'point': function(str) {
@@ -270,8 +276,8 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return a multipoint feature given a multipoint WKT fragment.
-         * @param {String} A WKT fragment representing the multipoint
-         * @returns {<OpenLayers.Feature.Vector>} A multipoint feature
+         * @param {String} str A WKT fragment representing the multipoint
+         * @returns {OpenLayers.Feature.Vector} A multipoint feature
          * @private
          */
         'multipoint': function(str) {
@@ -289,8 +295,8 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         
         /**
          * Return a linestring feature given a linestring WKT fragment.
-         * @param {String} A WKT fragment representing the linestring
-         * @returns {<OpenLayers.Feature.Vector>} A linestring feature
+         * @param {String} str A WKT fragment representing the linestring
+         * @returns {OpenLayers.Feature.Vector} A linestring feature
          * @private
          */
         'linestring': function(str) {
@@ -306,8 +312,8 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return a multilinestring feature given a multilinestring WKT fragment.
-         * @param {String} A WKT fragment representing the multilinestring
-         * @returns {<OpenLayers.Feature.Vector>} A multilinestring feature
+         * @param {String} str A WKT fragment representing the multilinestring
+         * @returns {OpenLayers.Feature.Vector} A multilinestring feature
          * @private
          */
         'multilinestring': function(str) {
@@ -325,8 +331,8 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
         
         /**
          * Return a polygon feature given a polygon WKT fragment.
-         * @param {String} A WKT fragment representing the polygon
-         * @returns {<OpenLayers.Feature.Vector>} A polygon feature
+         * @param {String} str A WKT fragment representing the polygon
+         * @returns {OpenLayers.Feature.Vector} A polygon feature
          * @private
          */
         'polygon': function(str) {
@@ -346,8 +352,8 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return a multipolygon feature given a multipolygon WKT fragment.
-         * @param {String} A WKT fragment representing the multipolygon
-         * @returns {<OpenLayers.Feature.Vector>} A multipolygon feature
+         * @param {String} str A WKT fragment representing the multipolygon
+         * @returns {OpenLayers.Feature.Vector} A multipolygon feature
          * @private
          */
         'multipolygon': function(str) {
@@ -365,7 +371,7 @@ OpenLayers.Format.WKT = OpenLayers.Class(OpenLayers.Format, {
 
         /**
          * Return an array of features given a geometrycollection WKT fragment.
-         * @param {String} A WKT fragment representing the geometrycollection
+         * @param {String} str A WKT fragment representing the geometrycollection
          * @returns {Array} An array of OpenLayers.Feature.Vector
          * @private
          */

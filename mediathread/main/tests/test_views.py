@@ -1217,7 +1217,7 @@ class MethCourseListViewTest(LoggedInUserTestMixin, TestCase):
 @freeze_time('2015-10-11')
 @override_settings(COURSEAFFILS_COURSESTRING_MAPPER=CourseStringMapper)
 @override_settings(
-    TASK_ASSIGNMENT_DESTINATION='https://pmt.ccnmtl.columbia.edu/drf/'
+    TASK_ASSIGNMENT_DESTINATION='https://pmt.ctl.columbia.edu/drf/'
     'external_add_item/')
 @override_settings(MEDIATHREAD_PMT_MILESTONE_ID=12)
 @override_settings(MEDIATHREAD_PMT_OWNER_USERNAME='pmt_user')

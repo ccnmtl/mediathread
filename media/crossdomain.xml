@@ -5,12 +5,14 @@
     <allow-access-from domain="localhost" secure="false" />
     <allow-access-from domain="127.0.0.1" secure="false" />
     <allow-access-from domain="*.ccnmtl.columbia.edu" secure="false" />
+    <allow-access-from domain="*.ctl.columbia.edu" secure="false" />
     <allow-access-from domain="*.youtube.com" secure="false" />
     <allow-access-from domain="*.vimeo.com" secure="false" />
 
     <allow-http-request-headers-from domain="127.0.0.1" headers="*"/>
     <allow-http-request-headers-from domain="localhost" headers="*"/>
     <allow-http-request-headers-from domain="*.ccnmtl.columbia.edu" headers="*"/>
+    <allow-http-request-headers-from domain="*.ctl.columbia.edu" headers="*"/>
     <allow-http-request-headers-from domain="*.youtube.com" headers="*"/>
     <allow-http-request-headers-from domain="*.vimeo.com" headers="*"/>
 </cross-domain-policy>

@@ -77,7 +77,7 @@ django-smoketest==1.1.0
 django-debug-toolbar==1.9.1
 django-markwhat==1.6.0
 ipaddress==1.0.19
-text-unidecode==1.1  # for faker
+text-unidecode==1.2  # for faker
 Faker==0.8.11
 factory_boy==2.10.0
 django-impersonate==1.3

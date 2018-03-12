@@ -22,7 +22,7 @@ pbr>=0.11
 testscenarios==0.5.0  # python-subunit
 python-subunit==1.2.0  # lettuce
 requirements/src/lettuce-0.2.25.ccnmtl-py2.py3-none-any.whl
-selenium==3.10.0
+selenium==3.11.0
 six==1.11.0
 sqlparse==0.2.4  # django-debug-toolbar
 python-mimeparse==1.6.0  # tastypie

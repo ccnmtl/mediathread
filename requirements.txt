@@ -36,7 +36,7 @@ wrapt==1.10.11
 
 editdistance==0.4
 
-pylint==1.8.2
+pylint==1.8.3
 
 astroid==1.6.2  # pylint
 

@@ -64,7 +64,7 @@ django-tagging==0.4.6
 django-reversion==2.0.13
 djangohelpers==0.19
 django-contrib-comments==1.8.0
-django-threadedcomments==1.1
+django-threadedcomments==1.2
 django-courseaffils==2.1.15
 django-statsd-mozilla==0.4.0
 raven==6.6.0

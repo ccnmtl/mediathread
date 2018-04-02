@@ -1,4 +1,6 @@
 from datetime import datetime
+import hashlib
+import hmac
 import json
 import re
 from smtplib import SMTPRecipientsRefused, SMTPDataError
@@ -449,6 +451,35 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
     def get_success_url(self):
         return reverse('course-delete-materials')
 
+    def get_context_data(self, **kwargs):
+        ctx = FormView.get_context_data(self, **kwargs)
+        ctx['assets'] = Asset.objects.filter(course=self.request.course)
+        return ctx
+
+    def get_delete_endpoint(self):
+        url = getattr(settings, 'ASSET_DELETE_API', {})
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if url and url in special.keys():
+            return (url, special[url])
+
+        return (None, None)
+
+    def delete_uploaded_media(self, url, secret, asset):
+        redirect_to = asset.get_metadata('wardenclyffe-id')[0]
+        nonce = '%smthc' % datetime.now().isoformat()
+        digest = hmac.new(
+            secret,
+            '%s:%s:%s' % (self.request.user.username, redirect_to, nonce),
+            hashlib.sha1).hexdigest()
+
+        response = requests.post(url, {
+            'as': self.request.user.username,
+            'redirect_url': redirect_to,
+            'nonce': nonce,
+            'hmac': digest
+        })
+        return response.status_code == 200
+
     def form_valid(self, form):
         # delete the requested materials
         notes = SherdNote.objects.filter(asset__course=self.request.course)
@@ -461,6 +492,13 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
             assets = assets.exclude(author__in=faculty)
             projects = projects.exclude(author__in=faculty)
             notes = notes.exclude(author__in=faculty)
+
+        # delete all the media on CUNIX first
+        (url, secret) = self.get_delete_endpoint()
+        if url:
+            for a in assets:
+                if a.upload_references() == 1:
+                    self.delete_uploaded_media(url, secret, a)
 
         notes.delete()
         assets.delete()

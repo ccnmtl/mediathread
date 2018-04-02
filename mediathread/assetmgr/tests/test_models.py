@@ -105,6 +105,24 @@ class AssetTest(MediathreadTestMixin, TestCase):
             title="Item Title")
         self.assertEquals(asset3.metadata(), {})
 
+    def test_upload_references(self):
+        asset1 = AssetFactory.create(
+            course=self.sample_course,
+            metadata_blob='{"wardenclyffe-id": ["29956"], "license": [""]}')
+        AssetFactory.create(
+            course=self.sample_course,
+            metadata_blob='{"wardenclyffe-id": ["29956"], "license": [""]}')
+        asset3 = AssetFactory.create(
+            course=self.sample_course,
+            metadata_blob='{"wardenclyffe-id": ["29957"], "license": [""]}')
+        asset4 = AssetFactory.create(
+            course=self.sample_course,
+            metadata_blob='{}')
+
+        self.assertEquals(asset1.upload_references(), 2)
+        self.assertEquals(asset3.upload_references(), 1)
+        self.assertEquals(asset4.upload_references(), 0)
+
     def test_video(self):
         asset = AssetFactory.create(
             course=self.sample_course, primary_source='youtube')

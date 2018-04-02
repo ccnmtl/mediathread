@@ -171,7 +171,7 @@ class Asset(models.Model):
     def get_metadata(self, key):
         metadata = self.metadata()
         try:
-            return metadata[METADATA_ORIGINAL_OWNER]
+            return metadata[key]
         except KeyError:
             return ''
 
@@ -179,6 +179,14 @@ class Asset(models.Model):
         metadata = self.metadata()
         metadata[key] = value
         self.metadata_blob = json.dumps(metadata)
+
+    def upload_references(self):
+        try:
+            value = self.get_metadata('wardenclyffe-id')
+            q = '"wardenclyffe-id": ["{}"]'.format(value[0])
+            return Asset.objects.filter(metadata_blob__contains=q).count()
+        except IndexError:
+            return 0
 
     def get_absolute_url(self):
         return reverse('asset-view', args=(self.pk,))

@@ -1,5 +1,4 @@
 {% extends 'dashboard/base_course_dashboard.html' %}
-
 {% load assetlinks %}
 {% block title %}Delete Course Materials{% endblock %}
 
@@ -50,6 +49,20 @@
                 <strong>This action cannot be undone.</strong>
             </p>
         </div>
+        <br />
+
+        <p>The following media also will be deleted from CUNIX permanently:</p>
+        <ul class="list-group">
+            {% for asset in assets %}
+                {% if asset.upload_references == 1 %}
+                <li class="list-group-item">
+                    <a target="about:blank" href="{% url 'asset-view' asset.id %}">{{asset.title}}</a><br />
+                    {{asset.primary.url}} {{references}}
+                </li>
+                {% endif %}
+            {% endfor %} 
+        </ul>
+
             <br />
             <label>Your username</label> <i>(so we know who to blame)</i>
             <input type="text" name="username" style="width: 25%;"

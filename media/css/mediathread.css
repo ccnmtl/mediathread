@@ -2553,7 +2553,9 @@ div.gallery-item h4.asset_title {
 }
 
 .dashboard-module-body {
-    min-width: 900px;
+    min-width: 800px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .dashboard-module-body p {

@@ -38,7 +38,7 @@ editdistance==0.4
 
 pylint==1.8.3
 
-astroid==1.6.2  # pylint
+astroid==1.6.3  # pylint
 
 pyasn1==0.4.2
 ndg-httpsclient==0.4.4

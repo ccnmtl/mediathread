@@ -256,6 +256,19 @@
             </form>
         </li>
         <li class="suggested-collection">
+            <h3>Panopto</h3>
+            <form action="{% url 'asset-save' %}" method="POST">
+            {% include "assetmgr/pretender_select.html" %}
+            View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
+            <br/>
+            Video URL: <input type="text" name="mp4_panopto" value="" /> (the actual video URL)
+            <br/>
+            Title: <input type="text" name="title" value="" />
+            <br/>
+            <input type="submit" />
+            </form>
+        </li>
+        <li class="suggested-collection">
             <h3>RTMP (.mp4)</h3>
             <form action="{% url 'asset-save' %}" method="POST">
             {% include "assetmgr/pretender_select.html" %}

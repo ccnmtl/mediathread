@@ -14,7 +14,7 @@
                         <div class="arrow"></div>
                         <div class="vocabulary-display">
                             <a class="display-name" href="#vocabulary-<%=vocabularies[i].id%>">
-                                <% if (vocabularies[i].onomy_url.length > 0) { %>
+                                <% if (vocabularies[i].onomy_url && vocabularies[i].onomy_url.length > 0) { %>
                                     <img align="middle" src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;
                                 <% } %>
 
@@ -72,11 +72,11 @@
                 <div class="vocabulary-container" id="vocabulary-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
                     <h2>
                         <%=vocabularies[i].display_name%> Concept
-                        <% if (vocabularies[i].onomy_url.length < 1) { %>
+                        <% if (!vocabularies[i].onomy_url || vocabularies[i].onomy_url.length < 1) { %>
                             <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Import</span>
                             </a>
-                        <% } else if (vocabularies[i].onomy_url.length > 0 && vocabularies[i].onomy_url !== 'child') { %>
+                        <% } else if (vocabularies[i].onomy_url && vocabularies[i].onomy_url.length > 0 && vocabularies[i].onomy_url !== 'child') { %>
                             <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Edit</span>
                             </a>

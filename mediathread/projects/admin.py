@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from mediathread.projects.models import Project
+
+from mediathread.projects.models import Project, ProjectNote
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -29,3 +30,15 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Project, ProjectAdmin)
+
+
+class ProjectNoteAdmin(admin.ModelAdmin):
+    search_fields = ("annotation__author__username", "annotation__title")
+
+    def author_name(self, obj):
+        return obj.annotation.author.username
+
+    list_display = ("project", "annotation", "author_name")
+
+
+admin.site.register(ProjectNote, ProjectNoteAdmin)

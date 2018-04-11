@@ -145,7 +145,7 @@ class Asset(models.Model):
                       'mp4_pseudo_panopto',
                       'youtube', 'ogg', 'vimeo',
                       'video_pseudo', 'video_rtmp', 'video',
-                      'mp3', 'mp4_audio',
+                      'mp3', 'mp4_audio', 'mp4_panopto',
                       'image_fpx', 'image_fpxid',  # artstor.org
                       'image')
 

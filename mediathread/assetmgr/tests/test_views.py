@@ -495,17 +495,18 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.url, 'http://ccnmtl.columbia.edu')
 
     def test_redirect_uploader_get_folder(self):
-        self.sample_course.add_detail(UPLOAD_FOLDER_STUDENT_KEY, 'z')
-
         request = RequestFactory().post('/upload/redirect')
         request.user = self.student_one
         request.course = self.sample_course
 
         view = RedirectToUploaderView()
         view.request = request
-        self.assertIsNone(view.get_upload_folder(self.student_one))
+        self.assertEquals(view.get_upload_folder(self.student_one), '')
 
         with override_flag('panopto_upload', active=True):
+            self.assertEquals(view.get_upload_folder(self.student_one), '')
+
+            self.sample_course.add_detail(UPLOAD_FOLDER_STUDENT_KEY, 'z')
             self.assertEquals(view.get_upload_folder(self.student_one), 'z')
 
     def test_redirect_uploader(self):

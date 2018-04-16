@@ -3,47 +3,8 @@
 {% block title %}{{block.super}}&mdash; Manage Sources{% endblock %}
 
 {% block dashboard_content %}
-    <div class="well">
-    <h3>Mediathread Video Uploader</h3>
-    <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
-    You may enable it for just yourself, or enable it for all members of your class.</p>
-
-    {% if uploader %}
-        <form name="form-upload-permission" action="{% url 'class-manage-sources' %}" method="POST">
-            <div class="form-group">
-            <label>Set Upload Permission Settings</label>: &nbsp;
-            <select name="upload_permission" class="form-control">
-                {% for level in permission_levels %}
-                    <option value="{{level.0}}" {% ifequal upload_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
-                {% endfor %}
-            </select>
-            <br />
-            <input class="btn btn-default right" type="submit" value="Save"></input>
-            </div>
-        </form>
-        <div class="clearfix"></div>
-        <form action="{% url 'collection-add-or-remove' %}" method="POST">
-            <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
-            <input type="hidden" name="collection_id" value="{{uploader.id}}" />
-            <input class="btn btn-default left" name="remove" type="submit" value="Disable Video Upload" />
-         </form>
-         <div class="visualclear"></div>
-    {% else %}
-        <form action="{% url 'collection-add-or-remove' %}" method="POST">
-            <input class="add btn btn-default" type="submit" value="Enable Video Upload" id="mediathread-video-upload">
-            <input type="hidden" name="title" value="Mediathread Video Upload">
-            <input type="hidden" name="description" value="Upload your own source material.">
-            <input type="hidden" name="uploader" value="1">
-            <input type="hidden" name="url" value="https://wardenclyffe.ccnmtl.columbia.edu/mediathread/">
-            <input type="hidden" name="thumb" value="https://wardenclyffe.ccnmtl.columbia.edu/media/img/bg_header.jpg">
-            <input type="hidden" name="redirect-url" value="{% url 'class-manage-sources' %}">
-         </form>
-         <div class="visualclear"></div>
-     {% endif %}
-    </div>
-
 <div class="well">
-    <h3>Add<!--/Remove--> Supported Sources</h3>
+    <h3>Add Supported Sources</h3>
 
     <p>Mediathread allows users to import videos and images from a variety of supported websites via the Mediathread bookmarklet.
     To select a source for your class, click the "Add to Class" button.

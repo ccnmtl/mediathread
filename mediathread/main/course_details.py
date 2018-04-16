@@ -40,6 +40,22 @@ def is_upload_enabled(course):
     return get_uploader(course) is not None
 
 
+UPLOAD_FOLDER_INSTRUCTOR_KEY = "upload_folder_instructor"
+UPLOAD_FOLDER_STUDENT_KEY = "upload_folder_student"
+
+
+def get_upload_folder(course, user):
+    if cached_course_is_faculty(course, user):
+        return course.get_detail(UPLOAD_FOLDER_INSTRUCTOR_KEY, '')
+    else:
+        return course.get_detail(UPLOAD_FOLDER_STUDENT_KEY, '')
+
+
+def get_upload_folder_student(course):
+    value = int(course.get_detail(UPLOAD_FOLDER_STUDENT_KEY, None))
+    return bool(value)
+
+
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
 

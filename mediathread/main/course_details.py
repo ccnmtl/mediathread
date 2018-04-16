@@ -51,11 +51,6 @@ def get_upload_folder(course, user):
         return course.get_detail(UPLOAD_FOLDER_STUDENT_KEY, '')
 
 
-def get_upload_folder_student(course):
-    value = int(course.get_detail(UPLOAD_FOLDER_STUDENT_KEY, None))
-    return bool(value)
-
-
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
 

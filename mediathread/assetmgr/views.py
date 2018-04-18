@@ -24,6 +24,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
+import waffle
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -33,7 +34,8 @@ from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation
-from mediathread.main.course_details import allow_item_download
+from mediathread.main.course_details import (
+    allow_item_download, get_upload_folder)
 from mediathread.main.models import UserSetting
 from mediathread.main.util import log_sentry_error
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
@@ -443,6 +445,12 @@ class RedirectToExternalCollectionView(LoggedInCourseMixin, View):
 
 class RedirectToUploaderView(LoggedInCourseMixin, View):
 
+    def get_upload_folder(self, user):
+        if not waffle.flag_is_active(self.request, 'panopto_upload'):
+            return ''
+
+        return get_upload_folder(self.request.course, user)
+
     def post(self, request, *args, **kwargs):
         collection_id = kwargs['collection_id']
         exc = get_object_or_404(ExternalCollection, id=collection_id)
@@ -457,6 +465,10 @@ class RedirectToUploaderView(LoggedInCourseMixin, View):
             (request.user.is_staff or
              request.user.has_perm('assetmgr.can_upload_for'))):
             username = as_user
+            the_user = User.objects.get(username=username)
+            folder = self.get_upload_folder(the_user)
+        else:
+            folder = self.get_upload_folder(request.user)
 
         redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
 
@@ -467,13 +479,10 @@ class RedirectToUploaderView(LoggedInCourseMixin, View):
                           hashlib.sha1).hexdigest()
 
         url = ("%s?set_course=%s&as=%s&redirect_url=%s"
-               "&nonce=%s&hmac=%s&audio=%s") % (exc.url,
-                                                request.course.group.name,
-                                                username,
-                                                urllib.quote(redirect_back),
-                                                nonce,
-                                                digest,
-                                                request.POST.get('audio', ''))
+               "&nonce=%s&hmac=%s&audio=%s&folder=%s") % (
+            exc.url, request.course.group.name, username,
+            urllib.quote(redirect_back), nonce, digest,
+            request.POST.get('audio', ''), folder)
 
         return HttpResponseRedirect(url)
 

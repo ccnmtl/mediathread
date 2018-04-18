@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404, HttpResponseRedirect
 from django.test import TestCase
 from django.test.client import RequestFactory
+from waffle.testutils import override_flag
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import (
@@ -23,6 +24,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
     SuggestedExternalCollectionFactory, SourceFactory
+from mediathread.main.course_details import UPLOAD_FOLDER_STUDENT_KEY
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -491,6 +493,21 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = view.get(request, exc.id)
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response.url, 'http://ccnmtl.columbia.edu')
+
+    def test_redirect_uploader_get_folder(self):
+        request = RequestFactory().post('/upload/redirect')
+        request.user = self.student_one
+        request.course = self.sample_course
+
+        view = RedirectToUploaderView()
+        view.request = request
+        self.assertEquals(view.get_upload_folder(self.student_one), '')
+
+        with override_flag('panopto_upload', active=True):
+            self.assertEquals(view.get_upload_folder(self.student_one), '')
+
+            self.sample_course.add_detail(UPLOAD_FOLDER_STUDENT_KEY, 'z')
+            self.assertEquals(view.get_upload_folder(self.student_one), 'z')
 
     def test_redirect_uploader(self):
         # no collection id

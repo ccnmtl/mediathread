@@ -1,5 +1,8 @@
 from courseaffils.models import Course
+from django.conf import settings
 from django.core.cache import cache
+from panopto.session import PanoptoSessionManager
+import waffle
 
 from mediathread.assetmgr.models import ExternalCollection
 from structuredcollaboration.models import Collaboration
@@ -40,15 +43,11 @@ def is_upload_enabled(course):
     return get_uploader(course) is not None
 
 
-UPLOAD_FOLDER_INSTRUCTOR_KEY = "upload_folder_instructor"
-UPLOAD_FOLDER_STUDENT_KEY = "upload_folder_student"
+UPLOAD_FOLDER_KEY = "upload_folder"
 
 
-def get_upload_folder(course, user):
-    if cached_course_is_faculty(course, user):
-        return course.get_detail(UPLOAD_FOLDER_INSTRUCTOR_KEY, '')
-    else:
-        return course.get_detail(UPLOAD_FOLDER_STUDENT_KEY, '')
+def get_upload_folder(course):
+    return course.get_detail(UPLOAD_FOLDER_KEY, '')
 
 
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
@@ -145,3 +144,21 @@ def has_student_activity(course):
     """Returns True if the course has any student activity."""
     # TODO
     return True
+
+
+def add_upload_folder(request):
+    if not waffle.flag_is_active(request, 'panopto_upload'):
+        return
+    if get_upload_folder(request.course):
+        return
+
+    session_mgr = PanoptoSessionManager(
+        settings.PANOPTO_SERVER, settings.PANOPTO_API_USER,
+        instance_name=settings.PANOPTO_INSTANCE_NAME,
+        password=settings.PANOPTO_API_PASSWORD)
+
+    course_folder = session_mgr.add_folder(
+        request.course.title, settings.PANOPTO_PARENT_FOLDER)
+
+    if len(course_folder) > 0:
+        request.course.add_detail(UPLOAD_FOLDER_KEY, course_folder)

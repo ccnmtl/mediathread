@@ -31,7 +31,6 @@ class SourceAdmin(admin.ModelAdmin):
     search_fields = ("label", "asset__title", "url", "asset__course__title")
     list_display = ("label", "asset", "course_title", "primary")
     raw_id_fields = ("asset",)
-    readonly_fields = ("asset",)
 
 
 @admin.register(ExternalCollection)

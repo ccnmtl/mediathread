@@ -24,7 +24,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
     SuggestedExternalCollectionFactory, SourceFactory
-from mediathread.main.course_details import UPLOAD_FOLDER_STUDENT_KEY
+from mediathread.main.course_details import UPLOAD_FOLDER_KEY
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -501,13 +501,13 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         view = RedirectToUploaderView()
         view.request = request
-        self.assertEquals(view.get_upload_folder(self.student_one), '')
+        self.assertEquals(view.get_upload_folder(), '')
 
         with override_flag('panopto_upload', active=True):
-            self.assertEquals(view.get_upload_folder(self.student_one), '')
+            self.assertEquals(view.get_upload_folder(), '')
 
-            self.sample_course.add_detail(UPLOAD_FOLDER_STUDENT_KEY, 'z')
-            self.assertEquals(view.get_upload_folder(self.student_one), 'z')
+            self.sample_course.add_detail(UPLOAD_FOLDER_KEY, 'z')
+            self.assertEquals(view.get_upload_folder(), 'z')
 
     def test_redirect_uploader(self):
         # no collection id

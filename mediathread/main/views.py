@@ -182,8 +182,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
         }
 
     def post(self, request):
-        perm = request.POST.get(
-            course_details.UPLOAD_PERMISSION_KEY)
+        perm = request.POST.get(course_details.UPLOAD_PERMISSION_KEY)
         request.course.add_detail(course_details.UPLOAD_PERMISSION_KEY, perm)
 
         messages.add_message(request, messages.INFO,

@@ -24,7 +24,6 @@ from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
-import waffle
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -449,9 +448,6 @@ class RedirectToExternalCollectionView(LoggedInCourseMixin, View):
 class RedirectToUploaderView(LoggedInCourseMixin, View):
 
     def get_upload_folder(self):
-        if not waffle.flag_is_active(self.request, 'panopto_upload'):
-            return ''
-
         return course_details.get_upload_folder(self.request.course)
 
     def post(self, request, *args, **kwargs):

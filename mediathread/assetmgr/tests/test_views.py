@@ -10,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404, HttpResponseRedirect
 from django.test import TestCase
 from django.test.client import RequestFactory
-from waffle.testutils import override_flag
 
 from mediathread.assetmgr.models import Asset, ExternalCollection
 from mediathread.assetmgr.views import (
@@ -503,11 +502,8 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         view.request = request
         self.assertEquals(view.get_upload_folder(), '')
 
-        with override_flag('panopto_upload', active=True):
-            self.assertEquals(view.get_upload_folder(), '')
-
-            self.sample_course.add_detail(UPLOAD_FOLDER_KEY, 'z')
-            self.assertEquals(view.get_upload_folder(), 'z')
+        self.sample_course.add_detail(UPLOAD_FOLDER_KEY, 'z')
+        self.assertEquals(view.get_upload_folder(), 'z')
 
     def test_redirect_uploader(self):
         # no collection id

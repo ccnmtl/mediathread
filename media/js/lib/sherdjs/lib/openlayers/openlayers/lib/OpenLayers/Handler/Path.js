@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 
@@ -30,8 +30,7 @@ OpenLayers.Handler.Path = OpenLayers.Class(OpenLayers.Handler.Point, {
      * APIProperty: maxVertices
      * {Number} The maximum number of vertices which can be drawn by this
      * handler. When the number of vertices reaches maxVertices, the
-     * geometry is automatically finalized. This property doesn't
-     * apply if freehand is set. Default is null.
+     * geometry is automatically finalized. Default is null.
      */
     maxVertices: null,
 
@@ -272,6 +271,16 @@ OpenLayers.Handler.Path = OpenLayers.Class(OpenLayers.Handler.Point, {
         var target = components[index];
         var undone = geometry.removeComponent(target);
         if (undone) {
+            // On touch devices, set the current ("mouse location") point to
+            // match the last digitized point.
+            if (this.touch && index > 0) {
+                components = geometry.components; // safety
+                var lastpt = components[index - 1];
+                var curptidx = this.getCurrentPointIndex();
+                var curpt = components[curptidx];
+                curpt.x = lastpt.x;
+                curpt.y = lastpt.y;
+            }
             if (!this.redoStack) {
                 this.redoStack = [];
             }
@@ -446,7 +455,13 @@ OpenLayers.Handler.Path = OpenLayers.Class(OpenLayers.Handler.Point, {
             if(this.persist) {
                 this.destroyPersistedFeature();
             }
-            this.addPoint(evt.xy);
+            if(this.maxVertices && this.line &&
+                    this.line.geometry.components.length === this.maxVertices) {
+                this.removePoint();
+                this.finalize();
+            } else {
+                this.addPoint(evt.xy);
+            }
             return false;
         }
         if (!this.touch && (!this.mouseDown || this.stoppedDown)) {

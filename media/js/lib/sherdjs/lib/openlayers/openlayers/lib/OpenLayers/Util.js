@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
@@ -10,7 +10,6 @@
  * @requires OpenLayers/BaseTypes/LonLat.js
  * @requires OpenLayers/BaseTypes/Pixel.js
  * @requires OpenLayers/BaseTypes/Size.js
- * @requires OpenLayers/Console.js
  * @requires OpenLayers/Lang.js
  */
 
@@ -25,8 +24,9 @@ OpenLayers.Util = OpenLayers.Util || {};
  *
  * Parameters:
  * e - {String or DOMElement or Window}
- * Return:
- * {Array(DOMElement)}
+ *
+ * Returns:
+ * {Array(DOMElement) or DOMElement}
  */
 OpenLayers.Util.getElement = function() {
     var elements = [];
@@ -67,19 +67,12 @@ OpenLayers.Util.isElement = function(o) {
  * Parameters:
  * a - {Object} the object test.
  * 
- * Returns
+ * Returns:
  * {Boolean} true if the object is an array.
  */
 OpenLayers.Util.isArray = function(a) {
-	return (Object.prototype.toString.call(a) === '[object Array]');
+    return (Object.prototype.toString.call(a) === '[object Array]');
 };
-
-/** 
- * Maintain existing definition of $.
- */
-if(typeof window.$  === "undefined") {
-    window.$ = OpenLayers.Util.getElement;
-}
 
 /** 
  * Function: removeItem
@@ -90,7 +83,7 @@ if(typeof window.$  === "undefined") {
  * array - {Array}
  * item - {Object}
  * 
- * Return
+ * Returns:
  * {Array} A reference to the array
  */
 OpenLayers.Util.removeItem = function(array, item) {
@@ -103,23 +96,6 @@ OpenLayers.Util.removeItem = function(array, item) {
     return array;
 };
 
-/**
- * Function: clearArray
- * *Deprecated*. This function will disappear in 3.0.
- * Please use "array.length = 0" instead.
- * 
- * Parameters:
- * array - {Array}
- */
-OpenLayers.Util.clearArray = function(array) {
-    OpenLayers.Console.warn(
-        OpenLayers.i18n(
-            "methodDeprecated", {'newMethod': 'array = []'}
-        )
-    );
-    array.length = 0;
-};
-
 /** 
  * Function: indexOf
  * Seems to exist already in FF, but not in MOZ.
@@ -129,7 +105,7 @@ OpenLayers.Util.clearArray = function(array) {
  * obj - {*}
  * 
  * Returns:
- * {Integer} The index at, which the first object was found in the array.
+ * {Integer} The index at which the first object was found in the array.
  *           If not found, returns -1.
  */
 OpenLayers.Util.indexOf = function(array, obj) {
@@ -147,6 +123,17 @@ OpenLayers.Util.indexOf = function(array, obj) {
 };
 
 
+/**
+ * Property: dotless
+ * {RegExp}
+ * Compiled regular expression to match dots (".").  This is used for replacing
+ *     dots in identifiers.  Because object identifiers are frequently used for
+ *     DOM element identifiers by the library, we avoid using dots to make for
+ *     more sensible CSS selectors.
+ *
+ * TODO: Use a module pattern to avoid bloating the API with stuff like this.
+ */
+OpenLayers.Util.dotless = /\./g;
 
 /**
  * Function: modifyDOMElement
@@ -156,9 +143,14 @@ OpenLayers.Util.indexOf = function(array, obj) {
  *
  * Parameters:
  * element - {DOMElement} DOM element to modify.
- * id - {String} The element id attribute to set.
- * px - {<OpenLayers.Pixel>} The left and top style position.
- * sz - {<OpenLayers.Size>}  The width and height style attributes.
+ * id - {String} The element id attribute to set.  Note that dots (".") will be
+ *     replaced with underscore ("_") in setting the element id.
+ * px - {<OpenLayers.Pixel>|Object} The element left and top position,
+ *                                  OpenLayers.Pixel or an object with
+ *                                  a 'x' and 'y' properties.
+ * sz - {<OpenLayers.Size>|Object} The element width and height,
+ *                                 OpenLayers.Size or an object with a
+ *                                 'w' and 'h' properties.
  * position - {String}       The position attribute.  eg: absolute, 
  *                           relative, etc.
  * border - {String}         The style.border attribute.  eg:
@@ -170,7 +162,7 @@ OpenLayers.Util.modifyDOMElement = function(element, id, px, sz, position,
                                             border, overflow, opacity) {
 
     if (id) {
-        element.id = id;
+        element.id = id.replace(OpenLayers.Util.dotless, "_");
     }
     if (px) {
         element.style.left = px.x + "px";
@@ -208,9 +200,14 @@ OpenLayers.Util.modifyDOMElement = function(element, id, px, sz, position,
  * Parameters:
  * id - {String} An identifier for this element.  If no id is
  *               passed an identifier will be created 
- *               automatically.
- * px - {<OpenLayers.Pixel>} The element left and top position. 
- * sz - {<OpenLayers.Size>} The element width and height.
+ *               automatically.  Note that dots (".") will be replaced with
+ *               underscore ("_") when generating ids.
+ * px - {<OpenLayers.Pixel>|Object} The element left and top position,
+ *                                  OpenLayers.Pixel or an object with
+ *                                  a 'x' and 'y' properties.
+ * sz - {<OpenLayers.Size>|Object} The element width and height,
+ *                                 OpenLayers.Size or an object with a
+ *                                 'w' and 'h' properties.
  * imgURL - {String} A url pointing to an image to use as a 
  *                   background image.
  * position - {String} The style.position value. eg: absolute,
@@ -252,8 +249,12 @@ OpenLayers.Util.createDiv = function(id, px, sz, imgURL, position,
  * Parameters:
  * id - {String} The id field for the img.  If none assigned one will be
  *               automatically generated.
- * px - {<OpenLayers.Pixel>} The left and top positions.
- * sz - {<OpenLayers.Size>} The style.width and style.height values.
+ * px - {<OpenLayers.Pixel>|Object} The element left and top position,
+ *                                  OpenLayers.Pixel or an object with
+ *                                  a 'x' and 'y' properties.
+ * sz - {<OpenLayers.Size>|Object} The element width and height,
+ *                                 OpenLayers.Size or an object with a
+ *                                 'w' and 'h' properties.
  * imgURL - {String} The url to use as the image source.
  * position - {String} The style.position value.
  * border - {String} The border to place around the image.
@@ -297,27 +298,6 @@ OpenLayers.Util.createImage = function(id, px, sz, imgURL, position, border,
     }
         
     return image;
-};
-
-/**
- * Function: setOpacity
- * *Deprecated*.  This function has been deprecated. Instead, please use 
- *     <OpenLayers.Util.modifyDOMElement> 
- *     or 
- *     <OpenLayers.Util.modifyAlphaImageDiv>
- * 
- * Set the opacity of a DOM Element
- *     Note that for this function to work in IE, elements must "have layout"
- *     according to:
- *     http://msdn.microsoft.com/workshop/author/dhtml/reference/properties/haslayout.asp
- *
- * Parameters:
- * element - {DOMElement} Set the opacity on this DOM element
- * opacity - {Float} Opacity value (0.0 - 1.0)
- */
-OpenLayers.Util.setOpacity = function(element, opacity) {
-    OpenLayers.Util.modifyDOMElement(element, null, null, null,
-                                     null, null, null, opacity);
 };
 
 /**
@@ -369,8 +349,10 @@ OpenLayers.Util.alphaHack = function() {
  * Parameters:
  * div - {DOMElement} Div containing Alpha-adjusted Image
  * id - {String}
- * px - {<OpenLayers.Pixel>}
- * sz - {<OpenLayers.Size>}
+ * px - {<OpenLayers.Pixel>|Object} OpenLayers.Pixel or an object with
+ *                                  a 'x' and 'y' properties.
+ * sz - {<OpenLayers.Size>|Object} OpenLayers.Size or an object with
+ *                                 a 'w' and 'h' properties.
  * imgURL - {String}
  * position - {String}
  * border - {String}
@@ -417,8 +399,10 @@ OpenLayers.Util.modifyAlphaImageDiv = function(div, id, px, sz, imgURL,
  * 
  * Parameters:
  * id - {String}
- * px - {<OpenLayers.Pixel>}
- * sz - {<OpenLayers.Size>}
+ * px - {<OpenLayers.Pixel>|Object} OpenLayers.Pixel or an object with
+ *                                  a 'x' and 'y' properties.
+ * sz - {<OpenLayers.Size>|Object} OpenLayers.Size or an object with
+ *                                 a 'w' and 'h' properties.
  * imgURL - {String}
  * position - {String}
  * border - {String}
@@ -438,6 +422,7 @@ OpenLayers.Util.createAlphaImageDiv = function(id, px, sz, imgURL,
     var div = OpenLayers.Util.createDiv();
     var img = OpenLayers.Util.createImage(null, null, null, null, null, null, 
                                           null, delayDisplay);
+    img.className = "olAlphaImg";
     div.appendChild(img);
 
     OpenLayers.Util.modifyAlphaImageDiv(div, id, px, sz, imgURL, position, 
@@ -580,12 +565,6 @@ OpenLayers.Util.urlAppend = function(url, paramStr) {
     return newUrl;
 };
 
-/**
- * Property: ImgPath
- * {String} Default is ''.
- */
-OpenLayers.ImgPath = '';
-
 /** 
  * Function: getImagesLocation
  * 
@@ -594,6 +573,16 @@ OpenLayers.ImgPath = '';
  */
 OpenLayers.Util.getImagesLocation = function() {
     return OpenLayers.ImgPath || (OpenLayers._getScriptLocation() + "img/");
+};
+
+/** 
+ * Function: getImageLocation
+ * 
+ * Returns:
+ * {String} The fully formatted location string for a specified image
+ */
+OpenLayers.Util.getImageLocation = function(image) {
+    return OpenLayers.Util.getImagesLocation() + image;
 };
 
 
@@ -877,11 +866,17 @@ OpenLayers.Util.destinationVincenty = function(lonlat, brng, dist) {
  * url - {String} Optional url used to extract the query string.
  *                If url is null or is not supplied, query string is taken 
  *                from the page location.
+ * options - {Object} Additional options. Optional.
+ *
+ * Valid options:
+ *   splitArgs - {Boolean} Split comma delimited params into arrays? Default is
+ *       true.
  * 
  * Returns:
  * {Object} An object of key/value pairs from the query string.
  */
-OpenLayers.Util.getParameters = function(url) {
+OpenLayers.Util.getParameters = function(url, options) {
+    options = options || {};
     // if no url specified, take it from the location bar
     url = (url === null || url === undefined) ? window.location.href : url;
 
@@ -917,7 +912,9 @@ OpenLayers.Util.getParameters = function(url) {
             }
             
             // follow OGC convention of comma delimited values
-            value = value.split(",");
+            if (options.splitArgs !== false) {
+                value = value.split(",");
+            }
 
             //if there's only one value, do not return as array                    
             if (value.length == 1) {
@@ -928,27 +925,6 @@ OpenLayers.Util.getParameters = function(url) {
          }
      }
     return parameters;
-};
-
-/**
- * Function: getArgs
- * *Deprecated*.  Will be removed in 3.0.  Please use instead
- *     <OpenLayers.Util.getParameters>
- * 
- * Parameters:
- * url - {String} Optional url used to extract the query string.
- *                If null, query string is taken from page location.
- * 
- * Returns:
- * {Object} An object of key/value pairs from the query string.
- */
-OpenLayers.Util.getArgs = function(url) {
-    OpenLayers.Console.warn(
-        OpenLayers.i18n(
-            "methodDeprecated", {'newMethod': 'OpenLayers.Util.getParameters'}
-        )
-    );
-    return OpenLayers.Util.getParameters(url);
 };
 
 /**
@@ -965,7 +941,8 @@ OpenLayers.Util.lastSeqID = 0;
  *     prefix (defaults to "id_") appended with the counter value.
  * 
  * Parameters:
- * prefix {String} Optionsal string to prefix unique id. Default is "id_".
+ * prefix - {String} Optional string to prefix unique id. Default is "id_".
+ *     Note that dots (".") in the prefix will be replaced with underscore ("_").
  * 
  * Returns:
  * {String} A unique id string, built on the passed in prefix.
@@ -973,6 +950,8 @@ OpenLayers.Util.lastSeqID = 0;
 OpenLayers.Util.createUniqueID = function(prefix) {
     if (prefix == null) {
         prefix = "id_";
+    } else {
+        prefix = prefix.replace(OpenLayers.Util.dotless, "_");
     }
     OpenLayers.Util.lastSeqID += 1; 
     return prefix + OpenLayers.Util.lastSeqID;        
@@ -991,8 +970,8 @@ OpenLayers.INCHES_PER_UNIT = {
     'inches': 1.0,
     'ft': 12.0,
     'mi': 63360.0,
-    'm': 39.3701,
-    'km': 39370.1,
+    'm': 39.37,
+    'km': 39370,
     'dd': 4374754,
     'yd': 36
 };
@@ -1073,8 +1052,8 @@ OpenLayers.Util.extend(OpenLayers.INCHES_PER_UNIT, {
     "ch": OpenLayers.INCHES_PER_UNIT["IntnlChain"],  //International Chain
     "link": OpenLayers.INCHES_PER_UNIT["IntnlLink"], //International Link
     "us-in": OpenLayers.INCHES_PER_UNIT["inches"], //U.S. Surveyor's Inch
-    "us-ft": OpenLayers.INCHES_PER_UNIT["Foot"],	//U.S. Surveyor's Foot
-    "us-yd": OpenLayers.INCHES_PER_UNIT["Yard"],	//U.S. Surveyor's Yard
+    "us-ft": OpenLayers.INCHES_PER_UNIT["Foot"], //U.S. Surveyor's Foot
+    "us-yd": OpenLayers.INCHES_PER_UNIT["Yard"], //U.S. Surveyor's Yard
     "us-ch": OpenLayers.INCHES_PER_UNIT["GunterChain"], //U.S. Surveyor's Chain
     "us-mi": OpenLayers.INCHES_PER_UNIT["Mile"],   //U.S. Surveyor's Statute Mile
     "ind-yd": OpenLayers.INCHES_PER_UNIT["IndianYd37"],  //Indian Yard
@@ -1156,22 +1135,6 @@ OpenLayers.Util.getScaleFromResolution = function (resolution, units) {
 };
 
 /**
- * Function: safeStopPropagation
- * *Deprecated*. This function has been deprecated. Please use directly 
- *     <OpenLayers.Event.stop> passing 'true' as the 2nd 
- *     argument (preventDefault)
- * 
- * Safely stop the propagation of an event *without* preventing
- *   the default browser action from occurring.
- * 
- * Parameter:
- * evt - {Event}
- */
-OpenLayers.Util.safeStopPropagation = function(evt) {
-    OpenLayers.Event.stop(evt, true);
-};
-
-/**
  * Function: pagePosition
  * Calculates the position of an element on the page (see
  * http://code.google.com/p/doctype/wiki/ArticlePageOffset)
@@ -1240,9 +1203,9 @@ OpenLayers.Util.pagePosition =  function(forElement) {
 
     if (forElement.getBoundingClientRect) { // IE
         box = forElement.getBoundingClientRect();
-        var scrollTop = viewportElement.scrollTop;
-        var scrollLeft = viewportElement.scrollLeft;
-
+        var scrollTop = window.pageYOffset || viewportElement.scrollTop;
+        var scrollLeft = window.pageXOffset || viewportElement.scrollLeft;
+        
         pos[0] = box.left + scrollLeft;
         pos[1] = box.top + scrollTop;
 
@@ -1298,6 +1261,9 @@ OpenLayers.Util.pagePosition =  function(forElement) {
  * document.body or document.documentElement, depending on the document's
  * compatibility mode (see
  * http://code.google.com/p/doctype/wiki/ArticleClientViewportElement)
+ *
+ * Returns:
+ * {DOMElement}
  */
 OpenLayers.Util.getViewportElement = function() {
     var viewportElement = arguments.callee.viewportElement;
@@ -1341,7 +1307,8 @@ OpenLayers.Util.isEquivalentUrl = function(url1, url2, options) {
     OpenLayers.Util.applyDefaults(options, {
         ignoreCase: true,
         ignorePort80: true,
-        ignoreHash: true
+        ignoreHash: true,
+        splitArgs: false
     });
 
     var urlObj1 = OpenLayers.Util.createUrlObject(url1, options);
@@ -1376,10 +1343,14 @@ OpenLayers.Util.isEquivalentUrl = function(url1, url2, options) {
  * 
  * Parameters:
  * url - {String}
- * options - {Object} A hash of options.  Can be one of:
- *            ignoreCase: lowercase url,
- *            ignorePort80: don't include explicit port if port is 80,
- *            ignoreHash: Don't include part of url after the hash (#).
+ * options - {Object} A hash of options.
+ *
+ * Valid options:
+ *   ignoreCase - {Boolean} lowercase url,
+ *   ignorePort80 - {Boolean} don't include explicit port if port is 80,
+ *   ignoreHash - {Boolean} Don't include part of url after the hash (#).
+ *   splitArgs - {Boolean} Split comma delimited params into arrays? Default is
+ *       true.
  * 
  * Returns:
  * {Object} An object with separate url, a, port, host, and args parsed out 
@@ -1435,7 +1406,8 @@ OpenLayers.Util.createUrlObject = function(url, options) {
         var qMark = url.indexOf("?");
         queryString = (qMark != -1) ? url.substr(qMark) : "";
     }
-    urlObject.args = OpenLayers.Util.getParameters(queryString);
+    urlObject.args = OpenLayers.Util.getParameters(queryString,
+            {splitArgs: options.splitArgs});
 
     // pathname
     //
@@ -1479,6 +1451,15 @@ OpenLayers.Util.removeTail = function(url) {
 OpenLayers.IS_GECKO = (function() {
     var ua = navigator.userAgent.toLowerCase();
     return ua.indexOf("webkit") == -1 && ua.indexOf("gecko") != -1;
+})();
+
+/**
+ * Constant: CANVAS_SUPPORTED
+ * {Boolean} True if canvas 2d is supported.
+ */
+OpenLayers.CANVAS_SUPPORTED = (function() {
+    var elem = document.createElement('canvas');
+    return !!(elem.getContext && elem.getContext('2d'));
 })();
 
 /**
@@ -1554,7 +1535,7 @@ OpenLayers.Util.getBrowserName = function() {
  *         this node instead of the body root when calculating dimensions. 
  * 
  * Returns:
- * {OpenLayers.Size}
+ * {<OpenLayers.Size>}
  */
 OpenLayers.Util.getRenderedDimensions = function(contentHTML, size, options) {
     
@@ -1565,7 +1546,34 @@ OpenLayers.Util.getRenderedDimensions = function(contentHTML, size, options) {
     container.style.visibility = "hidden";
         
     var containerElement = (options && options.containerElement) 
-    	? options.containerElement : document.body;
+        ? options.containerElement : document.body;
+    
+    // Opera and IE7 can't handle a node with position:aboslute if it inherits
+    // position:absolute from a parent.
+    var parentHasPositionAbsolute = false;
+    var superContainer = null;
+    var parent = containerElement;
+    while (parent && parent.tagName.toLowerCase()!="body") {
+        var parentPosition = OpenLayers.Element.getStyle(parent, "position");
+        if(parentPosition == "absolute") {
+            parentHasPositionAbsolute = true;
+            break;
+        } else if (parentPosition && parentPosition != "static") {
+            break;
+        }
+        parent = parent.parentNode;
+    }
+    if(parentHasPositionAbsolute && (containerElement.clientHeight === 0 || 
+                                     containerElement.clientWidth === 0) ){
+        superContainer = document.createElement("div");
+        superContainer.style.visibility = "hidden";
+        superContainer.style.position = "absolute";
+        superContainer.style.overflow = "visible";
+        superContainer.style.width = document.body.clientWidth + "px";
+        superContainer.style.height = document.body.clientHeight + "px";
+        superContainer.appendChild(container);
+    }
+    container.style.position = "absolute";
 
     //fix a dimension, if specified.
     if (size) {
@@ -1600,25 +1608,10 @@ OpenLayers.Util.getRenderedDimensions = function(contentHTML, size, options) {
     container.appendChild(content);
     
     // append container to body for rendering
-    containerElement.appendChild(container);
-    
-    // Opera and IE7 can't handle a node with position:aboslute if it inherits
-    // position:absolute from a parent.
-    var parentHasPositionAbsolute = false;
-    var parent = container.parentNode;
-    while (parent && parent.tagName.toLowerCase()!="body") {
-        var parentPosition = OpenLayers.Element.getStyle(parent, "position");
-        if(parentPosition == "absolute") {
-            parentHasPositionAbsolute = true;
-            break;
-        } else if (parentPosition && parentPosition != "static") {
-            break;
-        }
-        parent = parent.parentNode;
-    }
-
-    if(!parentHasPositionAbsolute) {
-        container.style.position = "absolute";
+    if (superContainer) {
+        containerElement.appendChild(superContainer);
+    } else {
+        containerElement.appendChild(container);
     }
     
     // calculate scroll width of content and add corners and shadow width
@@ -1635,7 +1628,12 @@ OpenLayers.Util.getRenderedDimensions = function(contentHTML, size, options) {
 
     // remove elements
     container.removeChild(content);
-    containerElement.removeChild(container);
+    if (superContainer) {
+        superContainer.removeChild(container);
+        containerElement.removeChild(superContainer);
+    } else {
+        containerElement.removeChild(container);
+    }
     
     return new OpenLayers.Size(w, h);
 };
@@ -1724,9 +1722,9 @@ OpenLayers.Util.getFormattedLonLat = function(coordinate, axis, dmsOption) {
     if (!dmsOption) {
         dmsOption = 'dms';    //default to show degree, minutes, seconds
     }
-	
-	coordinate = (coordinate+540)%360 - 180; // normalize for sphere being round
-	
+
+    coordinate = (coordinate+540)%360 - 180; // normalize for sphere being round
+
     var abscoordinate = Math.abs(coordinate);
     var coordinatedegrees = Math.floor(abscoordinate);
 

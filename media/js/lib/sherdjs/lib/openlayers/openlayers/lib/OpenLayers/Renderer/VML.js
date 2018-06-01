@@ -1,6 +1,6 @@
-/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
- * full list of contributors). Published under the Clear BSD license.  
- * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
+/* Copyright (c) 2006-2013 by OpenLayers Contributors (see authors.txt for
+ * full list of contributors). Published under the 2-clause BSD license.
+ * See license.txt in the OpenLayers distribution or repository for the
  * full text of the license. */
 
 /**
@@ -182,7 +182,6 @@ OpenLayers.Renderer.VML = OpenLayers.Class(OpenLayers.Renderer.Elements, {
             case "OpenLayers.Geometry.LinearRing":
             case "OpenLayers.Geometry.Polygon":
             case "OpenLayers.Geometry.Curve":
-            case "OpenLayers.Geometry.Surface":
                 nodeType = "olv:shape";
                 break;
             default:
@@ -208,12 +207,14 @@ OpenLayers.Renderer.VML = OpenLayers.Class(OpenLayers.Renderer.Elements, {
         options = options || node._options;
         var fillColor = style.fillColor;
 
+        var title = style.title || style.graphicTitle;
+        if (title) {
+            node.title = title;
+        } 
+
         if (node._geometryClass === "OpenLayers.Geometry.Point") {
             if (style.externalGraphic) {
                 options.isFilled = true;
-                if (style.graphicTitle) {
-                    node.title=style.graphicTitle;
-                } 
                 var width = style.graphicWidth || style.graphicHeight;
                 var height = style.graphicHeight || style.graphicWidth;
                 width = width ? width : style.pointRadius*2;
@@ -877,41 +878,6 @@ OpenLayers.Renderer.VML = OpenLayers.Class(OpenLayers.Renderer.Elements, {
         label.style.left = parseInt(label.style.left)-xshift-1+"px";
         label.style.top = parseInt(label.style.top)+yshift+"px";
         
-    },
-
-    /**
-     * Method: drawSurface
-     * 
-     * Parameters:
-     * node - {DOMElement}
-     * geometry - {<OpenLayers.Geometry>}
-     * 
-     * Returns:
-     * {DOMElement}
-     */
-    drawSurface: function(node, geometry) {
-
-        this.setNodeDimension(node, geometry);
-
-        var resolution = this.getResolution();
-    
-        var path = [];
-        var comp, x, y;
-        for (var i=0, len=geometry.components.length; i<len; i++) {
-            comp = geometry.components[i];
-            x = ((comp.x - this.featureDx) / resolution - this.offset.x) | 0;
-            y = (comp.y / resolution - this.offset.y) | 0;
-            if ((i%3)==0 && (i/3)==0) {
-                path.push("m");
-            } else if ((i%3)==1) {
-                path.push(" c");
-            }
-            path.push(" " + x + "," + y);
-        }
-        path.push(" x e");
-
-        node.path = path.join("");
-        return node;
     },
     
     /**

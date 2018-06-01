@@ -474,7 +474,7 @@
                         undefined, 'Error');
                     return;
                 }
-                if (!urls[i].contains('test.json')) { // testing
+                if (urls[i].indexOf('test.json') < -1) { // testing
                     if (this.isJSON(urls[i]) === false &&
                             this.isSKOS(urls[i]) === false) {
                         // display error message

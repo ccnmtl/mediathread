@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "media/js/select2/package.json",
+        "package.json"
+      ]
+    }
+  }
+}

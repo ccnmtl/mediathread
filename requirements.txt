@@ -107,7 +107,7 @@ simplegeneric==0.8.1
 scandir==1.7
 pathlib2==2.3.2
 wcwidth==0.1.7
-prompt_toolkit==2.0.2
+prompt_toolkit==2.0.3
 pygments==2.2.0
 ipython==5.7.0 # pyup: <6.0.0
 ipdb==0.11

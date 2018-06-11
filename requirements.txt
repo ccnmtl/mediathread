@@ -46,7 +46,7 @@ ndg-httpsclient==0.5.0
 chardet==3.0.4
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
-idna==2.6
+idna==2.7
 urllib3==1.22
 certifi==2018.4.16
 cryptography==2.2.2

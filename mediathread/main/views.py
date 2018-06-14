@@ -448,7 +448,7 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
     form_class = CourseDeleteMaterialsForm
 
     def get_success_url(self):
-        return reverse('course-delete-materials')
+        return self.success_url
 
     def get_context_data(self, **kwargs):
         ctx = FormView.get_context_data(self, **kwargs)
@@ -511,8 +511,17 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
 
         # @todo - kill all unreferenced tags
 
-        messages.add_message(self.request, messages.INFO,
-                             'All requested materials were deleted')
+        if 'delete-course' in form.data:
+            messages.add_message(
+                self.request, messages.INFO,
+                '{} and requested materials were deleted'.format(
+                    self.request.course.title))
+            self.request.course.delete()
+            self.success_url = '/?unset_course'
+        else:
+            self.success_url = reverse('course-delete-materials')
+            messages.add_message(self.request, messages.INFO,
+                                 'All requested materials were deleted')
 
         return super(CourseDeleteMaterialsView, self).form_valid(form)
 

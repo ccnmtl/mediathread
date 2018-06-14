@@ -809,6 +809,9 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
 
         self.verify_alt_course_materials()
 
+        self.assertTrue(
+            Course.objects.filter(title='Sample Course').exists())
+
     def test_clear_student_only(self):
         url = reverse('course-delete-materials')
         data = {'clear_all': False, 'username': self.superuser.username}
@@ -840,6 +843,40 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(comments.count(), 0)
 
         self.verify_alt_course_materials()
+
+        self.assertTrue(
+            Course.objects.filter(title='Sample Course').exists())
+
+    def test_clear_and_delete_course(self):
+        url = reverse('course-delete-materials')
+        data = {
+            'clear_all': True,
+            'username': self.superuser.username,
+            'delete-course': 'Permanently Delete Course'}
+
+        self.client.login(username=self.superuser.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue('Sample Course and requested materials were deleted'
+                        in response.cookies['messages'].value)
+
+        assets = Asset.objects.filter(course=self.sample_course)
+        self.assertEquals(assets.count(), 0)
+        notes = SherdNote.objects.filter(asset__course=self.sample_course)
+        self.assertEquals(notes.count(), 0)
+        projects = Project.objects.filter(course=self.sample_course)
+        self.assertEquals(projects.count(), 0)
+
+        self.assertEquals(get_course_discussions(self.sample_course),
+                          [self.discussion])
+        comments = ThreadedComment.objects.filter(parent=self.discussion)
+        self.assertEquals(comments.count(), 0)
+
+        self.verify_alt_course_materials()
+        self.assertFalse(
+            Course.objects.filter(title='Sample Course').exists())
 
 
 class CourseRosterViewsTest(MediathreadTestMixin, TestCase):

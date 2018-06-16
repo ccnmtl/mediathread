@@ -127,7 +127,7 @@ requests-toolbelt==0.8.0
 pytz==2018.4
 isodate==0.6.0
 cached-property==1.4.3
-zeep==2.5.0
+zeep==3.0.0
 
 stevedore==1.28.0
 PyYAML==3.12

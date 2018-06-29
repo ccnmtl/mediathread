@@ -124,7 +124,7 @@ django-storages==1.6.6
 django-cacheds3storage==0.1.2
 
 requests-toolbelt==0.8.0
-pytz==2018.4
+pytz==2018.5
 isodate==0.6.0
 cached-property==1.4.3
 zeep==2.5.0

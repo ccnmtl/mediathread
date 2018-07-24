@@ -129,7 +129,7 @@ isodate==0.6.0
 cached-property==1.4.3
 zeep==2.5.0 # pyup: <3.0.0
 
-stevedore==1.28.0
+stevedore==1.29.0
 PyYAML==3.13
 bandit==1.4.0
 funcsigs==1.0.2 

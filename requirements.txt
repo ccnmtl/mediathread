@@ -88,7 +88,7 @@ httplib2==0.11.3
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==2.1.0
-pylti==0.6.0
+pylti==0.7.0
 nameparser==0.5.7
 django-bootstrap3==10.0.1
 ua_parser==0.8.0

@@ -514,7 +514,7 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
         if 'delete-course' in form.data:
             messages.add_message(
                 self.request, messages.INFO,
-                '{} and requested materials were deleted'.format(
+                u'{} and requested materials were deleted'.format(
                     self.request.course.title))
             self.request.course.delete()
             self.success_url = '/?unset_course'
@@ -554,7 +554,7 @@ class CoursePromoteUserView(LoggedInFacultyMixin, View):
         student = get_object_or_404(User, id=student_id)
         request.course.faculty_group.user_set.add(student)
 
-        msg = '{} is now faculty'.format(user_display_name(student))
+        msg = u'{} is now faculty'.format(user_display_name(student))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -567,7 +567,7 @@ class CourseDemoteUserView(LoggedInFacultyMixin, View):
         faculty = get_object_or_404(User, id=faculty_id)
         request.course.faculty_group.user_set.remove(faculty)
 
-        msg = '{} is now a student'.format(user_display_name(faculty))
+        msg = u'{} is now a student'.format(user_display_name(faculty))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -585,7 +585,8 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
         request.course.group.user_set.remove(user)
         request.course.faculty_group.user_set.remove(user)
 
-        msg = '{} is no longer a course member'.format(user_display_name(user))
+        msg = u'{} is no longer a course member'.format(
+            user_display_name(user))
         messages.add_message(request, messages.INFO, msg)
 
         return HttpResponseRedirect(reverse('course-roster'))
@@ -624,7 +625,7 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
             messages.add_message(request, messages.ERROR, msg)
             return HttpResponseRedirect(url)
 
-        subj = "Mediathread: {}".format(self.request.course.title)
+        subj = u"Mediathread: {}".format(self.request.course.title)
         ctx = {
             'course': self.request.course,
             'domain': get_current_site(self.request).domain
@@ -633,9 +634,9 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
         for uni in unis_list(unis):
             uni = uni.lower().strip()
             if not self.validate_uni(uni):
-                msg = ('{} is not a valid UNI. To add a student without '
-                       'a UNI, click the "Invite Non-Columbia Affiliate" '
-                       'button below')
+                msg = (u'{} is not a valid UNI. To add a student without '
+                       u'a UNI, click the "Invite Non-Columbia Affiliate" '
+                       u'button below')
                 msg = msg.format(uni)
                 messages.add_message(request, messages.ERROR, msg)
                 continue
@@ -643,16 +644,16 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
             user = self.get_or_create_user(uni)
             display_name = user_display_name(user)
             if self.request.course.is_true_member(user):
-                msg = '{} ({}) is already a course member'.format(
+                msg = u'{} ({}) is already a course member'.format(
                     display_name, uni)
                 messages.add_message(request, messages.WARNING, msg)
             else:
-                email = '{}@columbia.edu'.format(uni)
+                email = u'{}@columbia.edu'.format(uni)
                 self.request.course.group.user_set.add(user)
                 send_template_email(subj, self.email_template, ctx, email)
                 msg = (
-                    '{} is now a course member. An email was sent to '
-                    '{} notifying the user.').format(display_name, email)
+                    u'{} is now a course member. An email was sent to '
+                    u'{} notifying the user.').format(display_name, email)
 
                 messages.add_message(request, messages.INFO, msg)
 
@@ -665,14 +666,14 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         add_template = 'dashboard/email_add_user.txt'
         display_name = user_display_name(user)
         if self.request.course.is_true_member(user):
-            msg = '{} ({}) is already a course member'.format(
+            msg = u'{} ({}) is already a course member'.format(
                 display_name, user.email)
             messages.add_message(self.request, messages.INFO, msg)
             return
 
         # add existing user to course and notify them via email
         self.request.course.group.user_set.add(user)
-        subject = "Mediathread: {}".format(self.request.course.title)
+        subject = u"Mediathread: {}".format(self.request.course.title)
         ctx = {
             'course': self.request.course,
             'domain': get_current_site(self.request).domain,
@@ -680,8 +681,8 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         }
         send_template_email(subject, add_template, ctx, user.email)
 
-        msg = ('{} is now a course member. An email was sent to {} '
-               'notifying the user.').format(display_name, user.email)
+        msg = (u'{} is now a course member. An email was sent to {} '
+               u'notifying the user.').format(display_name, user.email)
         messages.add_message(self.request, messages.INFO, msg)
 
     def get_or_create_invite(self, email):
@@ -699,7 +700,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         invite = self.get_or_create_invite(email)
         send_course_invitation_email(self.request, invite)
 
-        msg = 'An email was sent to {} inviting this user to join the course.'
+        msg = u'An email was sent to {} inviting this user to join the course.'
         msg = msg.format(email)
         messages.add_message(self.request, messages.INFO, msg)
 
@@ -707,14 +708,14 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
         try:
             validate_email(email)
         except ValidationError:
-            msg = "{} is not a valid email address.".format(email)
+            msg = u"{} is not a valid email address.".format(email)
             raise ValidationError(msg, code='invalid')
 
         for suffix in settings.BLOCKED_EMAIL_DOMAINS:
             if email.endswith(suffix):
-                msg = ('{} is a Columbia University email address. To invite'
-                       ' a student or instructor with a UNI, click the '
-                       '"Add Columbia Affiliate" button below')
+                msg = (u'{} is a Columbia University email address. To invite'
+                       u' a student or instructor with a UNI, click the '
+                       u'"Add Columbia Affiliate" button below')
 
                 msg = msg.format(email)
                 raise ValidationError(msg, code='blocked')
@@ -753,7 +754,7 @@ class CourseResendInviteView(LoggedInFacultyMixin, View):
         invite = get_object_or_404(CourseInvitation, pk=pk)
 
         send_course_invitation_email(request, invite)
-        msg = "A course invitation was resent to {}.".format(invite.email)
+        msg = u"A course invitation was resent to {}.".format(invite.email)
         messages.add_message(self.request, messages.INFO, msg)
 
         return HttpResponseRedirect(url)
@@ -879,15 +880,15 @@ class AffilActivateView(LoggedInMixin, FormView):
 
         new_course = self.course.pk
 
-        return '/?semester_view={}&new_course={}'.format(
+        return u'/?semester_view={}&new_course={}'.format(
             semester_view, new_course)
 
     @staticmethod
     def send_faculty_email(form, faculty_user):
         data = form.cleaned_data
-        subject = 'Your Mediathread Course Activation: {}'.format(
+        subject = u'Your Mediathread Course Activation: {}'.format(
             data.get('course_name'))
-        body = """
+        body = u"""
 Dear {},
 
 Thank you for creating your Mediathread course: {}. You can always access this
@@ -915,9 +916,9 @@ The Mediathread Team
     @staticmethod
     def send_staff_email(form, faculty_user):
         data = form.cleaned_data
-        subject = 'Mediathread Course Activated: {}'.format(
+        subject = u'Mediathread Course Activated: {}'.format(
             data.get('course_name'))
-        body = """
+        body = u"""
 Course Title: {}
 
 Date Range: {} - {}
@@ -992,8 +993,9 @@ Faculty: {} <{}>
         c = self.affil.get_course()
         if c:
             # If a Course already exists for this affil, show an error.
-            msg = ('The {} affil is already connected to the course:'
-                   ' <strong><a href="/?set_course={}">{}</a></strong>'.format(
+            msg = (u'The {} affil is already connected to the course:'
+                   u' <strong><a href="/?set_course={}">{}</a>'
+                   u'</strong>'.format(
                        self.affil,
                        c.group.name,
                        c))
@@ -1022,9 +1024,9 @@ Faculty: {} <{}>
 
             description = ''
             for k in data:
-                description += '{}: {}\n'.format(k, data[k])
+                description += u'{}: {}\n'.format(k, data[k])
 
-            description += 'Faculty: {} <{}>\n'.format(
+            description += u'Faculty: {} <{}>\n'.format(
                 user_display_name(faculty_user),
                 faculty_user.email)
 
@@ -1059,15 +1061,15 @@ Faculty: {} <{}>
             self.init_created_course(self.course, self.affil)
         else:
             log_sentry_error(
-                'Attempted to create duplicate course for affil: ' +
-                '{} - {}  Course: {}'.format(
+                u'Attempted to create duplicate course for affil: ' +
+                u'{} - {}  Course: {}'.format(
                     self.affil.pk, self.affil.name,
                     self.course.title))
             messages.error(
                 self.request,
-                'There was an error activating your course. The ' +
-                '<strong><a href="?{}">{}</a></strong> ' +
-                'course already exists.'.format(
+                u'There was an error activating your course. The ' +
+                u'<strong><a href="?{}">{}</a></strong> ' +
+                u'course already exists.'.format(
                     urlencode({'set_course': self.course.group.name}),
                     self.course.title))
             return super(AffilActivateView, self).form_valid(form)
@@ -1094,7 +1096,7 @@ class LTICourseSelector(LoggedInMixin, View):
     def get(self, request, context):
         try:
             ctx = LTICourseContext.objects.get(lms_course_context=context)
-            url = '/?set_course={}'.format(ctx.group.name)
+            url = u'/?set_course={}'.format(ctx.group.name)
         except LTICourseContext.DoesNotExist:
             url = '/'
 
@@ -1184,7 +1186,8 @@ class LTICourseCreate(LoggedInMixin, View):
 
         messages.add_message(
             self.request, messages.INFO,
-            '<b>Success!</b> {} is connected to Mediathread.'.format(title))
+            u'<strong>Success!</strong> {} is connected ' +
+            u'to Mediathread.'.format(title))
 
         self.notify_staff(course)
         self.thank_faculty(course)

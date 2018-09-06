@@ -1095,6 +1095,11 @@ class LTICourseSelector(LoggedInMixin, View):
 
     def get(self, request, context):
         try:
+            messages.add_message(
+                request, messages.INFO,
+                'Reminder: please log out of Mediathread '
+                'after you log out of Courseworks.')
+
             ctx = LTICourseContext.objects.get(lms_course_context=context)
             url = u'/?set_course={}'.format(ctx.group.name)
         except LTICourseContext.DoesNotExist:

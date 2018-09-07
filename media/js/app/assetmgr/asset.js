@@ -428,7 +428,7 @@
 
         this.resetHighlightLayer = function() {
             if (this.highlight_layer) {
-                this.highlight_layer.destroy();
+                this.highlight_layer.remove();
             }
             this.highlight_layer = djangosherd.assetview.layer();
             if (this.highlight_layer) {

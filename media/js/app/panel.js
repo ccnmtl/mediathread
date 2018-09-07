@@ -131,7 +131,7 @@
 
                     // @todo -- update history to reflect this new view
 
-                    panel.loaded = true;
+                    self.panels[i].loaded = true;
 
                     self.verifyLayout($newCell);
                 }

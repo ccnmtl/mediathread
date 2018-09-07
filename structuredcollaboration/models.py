@@ -56,7 +56,8 @@ class Collaboration(models.Model):
     group = models.ForeignKey(Group, null=True, blank=True)
 
     title = models.CharField(max_length=1024, null=True, default=None)
-    slug = models.SlugField(max_length=50, null=True, default=None, blank=True)
+    slug = models.SlugField(
+        max_length=1024, null=True, default=None, blank=True)
 
     # Content-object field
     content_type = models.ForeignKey(

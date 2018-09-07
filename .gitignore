@@ -25,3 +25,4 @@ the_report
 wheelhouse
 mediathread/templates/debug.html
 docs/_build/
+geckodriver.log

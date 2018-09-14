@@ -195,7 +195,7 @@ class ProjectManager(models.Manager):
         collaborations = collaborations.order_by('object_pk')
 
         # get all the content objects at once
-        ids = [int(c.object_pk) for c in collaborations]
+        ids = [int(c.object_pk) for c in collaborations if c.object_pk]
         responses = Project.objects.filter(id__in=ids)
         responses = list(responses.select_related('author'))
         responses.sort(reverse=False, key=lambda p: str(p.id))

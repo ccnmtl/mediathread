@@ -75,7 +75,7 @@ django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.0
 django-debug-toolbar==1.10.1
-django-markwhat==1.6.0
+django-markwhat==1.6.1
 ipaddress==1.0.21
 text-unidecode==1.2  # for faker
 Faker==0.9.1

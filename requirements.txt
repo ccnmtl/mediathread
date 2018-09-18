@@ -34,7 +34,7 @@ logilab-common==1.4.2
 lazy-object-proxy==1.3.1
 wrapt==1.10.11
 
-editdistance==0.5
+editdistance==0.5.2
 
 pylint==1.9.3 # pyup: <2.0.0
 

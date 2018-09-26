@@ -102,7 +102,7 @@ backports.shutil_get_terminal_size==1.0.0
 decorator==4.2.1
 pexpect==4.6.0
 ptyprocess==0.6.0
-pickleshare==0.7.4
+pickleshare==0.7.5
 simplegeneric==0.8.1
 scandir==1.9.0
 pathlib2==2.3.2

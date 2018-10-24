@@ -8,7 +8,7 @@ mccabe==0.6.1
 pycodestyle==2.3.1 # pyup: <2.4.0
 enum34==1.1.6
 configparser==3.5.0
-flake8==3.5.0
+flake8==3.6.0
 lxml==4.2.5
 fuzzywuzzy==0.17.0  # lettuce
 mock==2.0.0  # sure

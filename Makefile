@@ -4,6 +4,7 @@ APP=mediathread
 JS_FILES=media/js/app
 MAX_COMPLEXITY=7
 PY_DIRS=$(APP) lti_auth structuredcollaboration terrain.py
+FLAKE8_IGNORE=W605
 
 all: jenkins
 

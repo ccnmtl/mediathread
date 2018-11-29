@@ -16,7 +16,13 @@ METADATA_ORIGINAL_OWNER = 'Original Owner'
 class AssetManager(models.Manager):
 
     def get_by_args(self, args, **constraints):
-        "args typically is request.GET"
+        """Given some parameters, get an Asset.
+
+        args is typically request.GET.
+
+        Returns the tuple: (success, asset), where success is a
+        boolean.
+        """
         criteria = Asset.good_args(args)
         if not criteria:
             return (False, None)
@@ -138,8 +144,7 @@ class Asset(models.Model):
 
     # labels which determine the saving of an asset
     # in order of priority for which label is marked primary
-    # an asset must have at least one source label from this list
-    # 'url' should probably stay at the end
+    # an asset must have at least one source label from this list.
     primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
                       'mp4', 'mp4_pseudo', 'mp4_rtmp',
                       'youtube', 'ogg', 'vimeo',
@@ -153,6 +158,11 @@ class Asset(models.Model):
 
     @classmethod
     def good_args(cls, args):
+        """Do these args have anything in common with primary_labels?
+
+        Returns whether args has any arguments that can be used for a
+        Mediathread Asset.
+        """
         return set(cls.primary_labels) & set(args.keys())
 
     def __unicode__(self):

@@ -44,7 +44,7 @@ def there_is_not_a_label_type_field(step, label, type):
 def the_item_has_the_tag_group1(step, group1):
     sel = '#asset-header .meta.global-annotation-tags'
     elt = world.browser.find_element_by_css_selector(sel)
-    print elt.text
+    print(elt.text)
     assert group1 in elt.text, '{} tag not found'.format(group1)
 
 

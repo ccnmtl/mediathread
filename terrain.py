@@ -357,7 +357,7 @@ def there_is_not_a_value_button(step, value):
     assert elt is None, "Found button named %s" % value
 
 
-@step(u'I wait (\d+) seconds?')
+@step(r'I wait (\d+) seconds?')
 def i_wait_count_seconds(step, count):
     n = int(count)
     time.sleep(n)

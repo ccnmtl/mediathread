@@ -2,10 +2,12 @@ from courseaffils.models import Course
 from django import forms
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils.encoding import python_2_unicode_compatible
 
 from mediathread.djangosherd.models import SherdNote
 
 
+@python_2_unicode_compatible
 class Vocabulary(models.Model):
     name = models.SlugField(max_length=100)
     display_name = models.CharField(max_length=100)
@@ -22,7 +24,7 @@ class Vocabulary(models.Model):
         self.name = slugify(self.display_name)
         super(Vocabulary, self).save(force_insert, force_update)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.display_name
 
 
@@ -32,6 +34,7 @@ class VocabularyForm(forms.ModelForm):
         exclude = []
 
 
+@python_2_unicode_compatible
 class Term(models.Model):
     name = models.SlugField(max_length=100)
     vocabulary = models.ForeignKey(Vocabulary)
@@ -44,7 +47,7 @@ class Term(models.Model):
         unique_together = ('name', 'vocabulary')
         ordering = ['display_name', 'id']
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s, %s" % (self.vocabulary, self.display_name)
 
     def save(self, force_insert=False, force_update=False):

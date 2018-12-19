@@ -1,4 +1,6 @@
 # pylint: disable-msg=E1101
+from __future__ import unicode_literals
+
 from datetime import datetime, timedelta
 import json
 import re
@@ -8,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.query_utils import Q
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django_comments.models import Comment
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
@@ -316,6 +319,7 @@ class SherdNoteManager(models.Manager):
         return new_note
 
 
+@python_2_unicode_compatible
 class SherdNote(Annotation):
     objects = SherdNoteManager()
 
@@ -329,7 +333,7 @@ class SherdNote(Annotation):
     modified = models.DateTimeField('date modified', editable=False,
                                     auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         username = self.author.username if self.author else ''
         return "[%s] %s for (%s) in (%s)" % (username,
                                              self.title,
@@ -400,6 +404,7 @@ class SherdNote(Annotation):
             return self.title
 
 
+@python_2_unicode_compatible
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:
@@ -417,13 +422,13 @@ class DiscussionIndex(models.Model):
     comment = models.ForeignKey(Comment, null=True)
     modified = models.DateTimeField(auto_now=True)  # update on save
 
-    def __unicode__(self):
-        return unicode(self.body)
+    def __str__(self):
+        return smart_text(self.body)
 
     @property
     def body(self):
         if self.comment:
-            parts = re.split('\<\/?[a-zA-Z]+[^>]*>', self.comment.comment)
+            parts = re.split(r'\<\/?[a-zA-Z]+[^>]*>', self.comment.comment)
             return ''.join(parts)
         else:
             return ''

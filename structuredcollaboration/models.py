@@ -7,12 +7,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 
 
+@python_2_unicode_compatible
 class CollaborationPolicyRecord(models.Model):
     policy_name = models.CharField(max_length=512)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.policy_name
 
     def __eq__(self, other):
@@ -50,6 +52,7 @@ class CollaborationManager(models.Manager):
             content_type=ctype, object_pk=str(obj.pk))
 
 
+@python_2_unicode_compatible
 class Collaboration(models.Model):
     objects = CollaborationManager()
     user = models.ForeignKey(User, null=True, blank=True)
@@ -81,8 +84,8 @@ class Collaboration(models.Model):
 
     def get_or_create_group(self):
         if not self.group:
-            name = unicode('Collaboration %s: %s' %
-                           (self.pk, self.title))[0:80]
+            name = smart_text('Collaboration %s: %s' %
+                              (self.pk, self.title))[0:80]
             self.group = Group.objects.create(name=name)
             self.save()
         return self.group
@@ -152,6 +155,6 @@ class Collaboration(models.Model):
                 CollaborationPolicyRecord.objects.get_or_create(
                     policy_name=policy_name)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)

@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import View
+from django.utils.encoding import smart_text
 import django_comments
 from django_comments.models import COMMENT_MAX_LENGTH
 from djangohelpers.lib import rendered_with, allow_http
@@ -265,8 +266,7 @@ def threaded_comment_json(request, comment):
 
     return {
         'type': 'discussion',
-        'form': django_comments.get_form()(
-            comment.content_object).__unicode__(),
+        'form': smart_text(django_comments.get_form()(comment.content_object)),
         'editing': True,
         'can_edit': True,
         'discussion': {

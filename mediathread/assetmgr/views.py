@@ -143,7 +143,7 @@ class AssetCreateView(View):
         if src_metadata:
             # w{width}h{height};{mimetype}
             # (with mimetype and w+h optional)
-            the_match = re.match('(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
+            the_match = re.match(r'(w(\d+)h(\d+))?(;(\w+/[\w+]+))?',
                                  src_metadata).groups()
             if the_match[1]:
                 source.width = int(the_match[1])

@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
+from django.utils.encoding import python_2_unicode_compatible
 import reversion
 from reversion.models import Version
 from threadedcomments.models import ThreadedComment
@@ -279,6 +280,7 @@ class ProjectManager(models.Manager):
         projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
 
 
+@python_2_unicode_compatible
 class Project(models.Model):
     """The Project model handles assignments and responses.
 
@@ -502,7 +504,7 @@ class Project(models.Model):
         participants = self.attribution_list()
         return ', '.join([user_display_name(p) for p in participants])
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())
 
     def can_edit(self, course, user):

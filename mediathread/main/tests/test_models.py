@@ -1,5 +1,8 @@
+from __future__ import unicode_literals
+
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
+from django.utils.encoding import smart_text
 
 from mediathread.factories import (
     MediathreadTestMixin, UserFactory, UserProfileFactory, CourseFactory,
@@ -40,7 +43,7 @@ class UserProfileTest(TestCase):
     def test_unicode(self):
         user = UserFactory(username='johndoe')
         profile = UserProfileFactory(user=user)
-        self.assertEquals(profile.__unicode__(), 'johndoe')
+        self.assertEquals(smart_text(profile), 'johndoe')
 
 
 class UserRegistrationTest(TestCase):

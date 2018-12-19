@@ -1,6 +1,8 @@
 # coding: utf-8
 # pylint: disable-msg=R0904
 # pylint: disable-msg=E1103
+from __future__ import unicode_literals
+
 from datetime import datetime
 import json
 import re
@@ -19,6 +21,7 @@ from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 from django.utils.html import escape
 from django.utils.text import slugify
+from django.utils.encoding import smart_text
 import factory
 from freezegun import freeze_time
 from threadedcomments.models import ThreadedComment
@@ -1329,7 +1332,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         course = Course.objects.last()
         self.assertEqual(course.title, 'English for Cats')
         self.assertEqual(
-            unicode(course.info),
+            smart_text(course.info),
             'English for Cats (Spring 2016) None None-None')
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)

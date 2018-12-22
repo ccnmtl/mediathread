@@ -64,9 +64,13 @@
                         <button type="submit" class="btn btn-primary btn-lg">Connect Now</button>
                     </p>
                 </form>
-            </p>
 
-            {% if courses|length > 0 and is_administrator %} 
+                <div class="text-center">
+                <p class="lead text-left" style="margin-top: 75px; margin-bottom: 5px">Working with Mediathread Assignments</p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/XYBUQ6cIAcI?showinfo=0&rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                {% if courses|length > 0 and is_administrator %} 
                 <p class="lead" style="margin-top: 50px">
                 <b>Administrators Only</b><br />
                 Connect a different Mediathread course to this Canvas course.<br />
@@ -107,11 +111,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                </div></div>
+                </div>
+                </div>
             {% endif %}
-
+            </div>
         {% endif %}
-        </div>
     </div>
     </div>
 </body>

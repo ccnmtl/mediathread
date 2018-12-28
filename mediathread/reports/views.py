@@ -220,6 +220,8 @@ def class_activity(request):
 
 class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
 
+    date_fmt = "%m/%d/%y %I:%M %p"
+
     def all_students(self, the_course):
         students = the_course.group.user_set.all()
         if the_course.faculty_group:
@@ -235,12 +237,6 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
         else:
             return 0
 
-    def include_course(self, the_course):
-        return (the_course.faculty_group is not None and
-                (the_course.faculty_group.name.startswith('t1') or
-                 the_course.faculty_group.name.startswith('t2') or
-                 the_course.faculty_group.name.startswith('t3')))
-
     def discussion_count(self, the_course):
         try:
             discussions = get_course_discussions(the_course)
@@ -252,22 +248,25 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
     def project_count(self, the_course):
         compositions = 0
         assignments = 0
+        responses = 0
 
         projects = Project.objects.filter(course=the_course)
         for project in projects:
-            if project.visibility_short() == 'Assignment':
+            if project.is_assignment_type():
                 assignments += 1
+            elif project.assignment() is not None:
+                responses += 1
             else:
                 compositions += 1
 
-        return compositions, assignments
+        return compositions, assignments, responses
 
     def get(self, request, *args, **kwargs):
-        headers = ['Id', 'Title', 'Instructor', 'Course String',
+        headers = ['Id', 'Created', 'Title', 'Instructor', 'Course String',
                    'Term', 'Year', 'Section', 'Course Number', 'School',
                    'Students', '% Active Students',
-                   'Items', 'Selections',
-                   'Compositions', 'Assignments', 'Discussions',
+                   'Total Items', 'Student Items', 'Student Selections',
+                   'Compositions', 'Assignments', 'Responses', 'Discussions',
                    'Public To World Compositions', 'All Selections Visible',
                    '# of Active Tags', '% Using Tags',
                    '% Items Tagged', '% Selections Tagged',
@@ -275,12 +274,12 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
                    '% Items Classified', '% Selections Classified']
 
         rows = []
-        for the_course in Course.objects.all().order_by('-id'):
-            if not self.include_course(the_course):
-                continue
-
+        # Hard-coding date until we have time to code a proper ui
+        qs = Course.objects.filter(created_at__year__gte='2018')
+        for the_course in qs.order_by('-id'):
             row = []
             row.append(the_course.id)
+            row.append(the_course.created_at.strftime(self.date_fmt))
             row.append(the_course.title)
 
             if 'instructor' in the_course.details():
@@ -292,11 +291,18 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
             row.append(course_string)
 
             bits = the_course.faculty_group.name.split('.')
-            row.append(bits[0])  # term
-            row.append(bits[1][1:])  # year
-            row.append(bits[2])  # section
-            row.append(bits[3])  # courseNo
-            row.append(bits[4])  # school
+            if len(bits) >= 5:
+                row.append(bits[0])  # term
+                row.append(bits[1][1:])  # year
+                row.append(bits[2])  # section
+                row.append(bits[3])  # courseNo
+                row.append(bits[4])  # school
+            else:
+                row.append('')
+                row.append('')
+                row.append('')
+                row.append('')
+                row.append('')
 
             students = self.all_students(the_course)
             row.append(len(students))
@@ -305,12 +311,21 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
             items = Asset.objects.filter(course=the_course)
             row.append(len(items))
 
-            selections = SherdNote.objects.filter(asset__course=the_course)
+            # student work only
+            student_ids = students.values('id')
+            items = Asset.objects.filter(
+                course=the_course, author__id__in=student_ids)
+            row.append(len(items))
+
+            selections = SherdNote.objects.filter(
+                asset__course=the_course, author__id__in=student_ids)
             row.append(len(selections))
 
-            compositions, assignments = self.project_count(the_course)
+            compositions, assignments, responses = \
+                self.project_count(the_course)
             row.append(compositions)
             row.append(assignments)
+            row.append(responses)
             row.append(self.discussion_count(the_course))
             row.append(course_details.allow_public_compositions(the_course))
             row.append(course_details.all_selections_are_visible(the_course))

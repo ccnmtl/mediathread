@@ -165,6 +165,8 @@ class CSVResponseMixin():
                 writer.writerow(row)
             except csv.Error:
                 pass
+            except UnicodeEncodeError:
+                pass
 
         return response
 

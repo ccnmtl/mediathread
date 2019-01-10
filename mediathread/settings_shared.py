@@ -217,3 +217,4 @@ BLOCKED_EMAIL_DOMAINS = []
 
 # django-tagging
 MAX_TAG_LENGTH = 255
+SURELINK_URL = ''

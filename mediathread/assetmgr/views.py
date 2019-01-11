@@ -79,7 +79,7 @@ class ManageExternalCollectionView(LoggedInCourseMixin, View):
             exc.save()
 
             if exc.uploader:
-                course_details.add_upload_folder(request)
+                course_details.add_upload_folder(request.course)
 
             msg = '%s has been enabled for your class.' % exc.title
 

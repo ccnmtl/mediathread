@@ -134,4 +134,4 @@ PyYAML==3.13
 bandit==1.5.1
 funcsigs==1.0.2 
 mock==2.0.0
-pypanopto==0.0.5
+pypanopto==0.0.6

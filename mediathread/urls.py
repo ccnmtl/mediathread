@@ -33,8 +33,8 @@ from mediathread.main.views import (
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
     CourseResendInviteView, set_user_setting,
-    LTICourseSelector, LTICourseCreate
-)
+    LTICourseSelector, LTICourseCreate,
+    CourseConvertMaterialsView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView)
@@ -204,6 +204,9 @@ urlpatterns = [
         name='class-manage-sources'),
     url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),
+
+    url(r'^dashboard/convert/materials/', CourseConvertMaterialsView.as_view(),
+        name='course-convert-materials'),
 
     # Discussion
     url(r'^discussion/', include('mediathread.discussions.urls')),

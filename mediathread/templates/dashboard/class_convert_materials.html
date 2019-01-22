@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_course_dashboard.html' %}
+{% load assetlinks %}
+{% block title %}Convert Course Materials{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block css %}
+<style>
+    ul.errorlist {
+        list-style: none;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_module_header %}
+    <h2>Convert Course Materials</div></h2>
+{% endblock %}
+
+{% block dashboard_content %}
+    <h3>Convert Materials</h3>
+    {% if not endpoint %}
+        This utility is not configured for your environment.
+    {% else %}
+        <form action="{% url 'course-convert-materials' %}"
+         name="course-clear-form" method="POST"
+         class="{% if form.errors %}has-error{% endif %}">
+            <p>The following media will be converted</p>
+            <ul class="list-group">
+                {% for asset in assets %}
+                    {% if asset.upload_references == 1 and not asset.primary.is_panopto %}
+                    <li class="list-group-item">
+                        <a target="about:blank" href="{% url 'asset-view' asset.id %}">{{asset.title}}</a><br />
+                        {{asset.primary.url}} {{references}}
+                    </li>
+                    {% endif %}
+                {% endfor %} 
+            </ul>
+
+            <br /><br />
+            <input class="btn btn-info" type="submit" name="clear-course"
+                value="Convert Materials"></input>
+            <div class="visualclear"></div>
+        </form>
+    {% endif %}
+
+{% endblock %}

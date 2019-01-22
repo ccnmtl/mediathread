@@ -48,8 +48,7 @@ from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView, CourseManageSourcesView,
     CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView,
-    unis_list,
-)
+    unis_list, CourseConvertMaterialsView)
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
 
@@ -1785,3 +1784,35 @@ class CourseDetailViewTest(LoggedInSuperuserTestMixin, TestCase):
     def test_get(self):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
         self.assertEqual(r.status_code, 200)
+
+
+class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_sample_assets()
+        self.superuser = User.objects.create(username='ccnmtl',
+                                             password='test',
+                                             is_superuser=True,
+                                             is_staff=True)
+
+    def test_get_context_data(self):
+        request = RequestFactory().get('/dashboard/convert/')
+        request.user = self.superuser
+        request.course = self.sample_course
+
+        view = CourseConvertMaterialsView()
+        view.request = request
+
+        ctx = view.get_context_data()
+        self.assertFalse(ctx['endpoint'])
+        self.assertEquals(ctx['assets'].count(), 3)
+
+    def test_get_conversion_endpoint(self):
+        view = CourseConvertMaterialsView()
+        self.assertEquals(view.get_conversion_endpoint(), (None, None))
+
+        rv = ('http://something', 'foo')
+        with self.settings(ASSET_CONVERT_API=rv[0],
+                           SERVER_ADMIN_SECRETKEYS={rv[0]: rv[1]}):
+            self.assertEquals(view.get_conversion_endpoint(), rv)

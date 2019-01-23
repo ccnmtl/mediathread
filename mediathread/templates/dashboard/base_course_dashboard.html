@@ -39,8 +39,12 @@
                     </li>
                     {% if user.is_superuser %}
                         <li>
-                            <a {% if '/materials/' in request.path %}class="active"{% endif %}
-                                href="/dashboard/delete/materials/">Materials</a>
+                            <a {% if '/delete/' in request.path %}class="active"{% endif %}
+                                href="/dashboard/delete/materials/">Delete Materials</a>
+                        </li>
+                        <li>
+                            <a {% if '/convert/' in request.path %}class="active"{% endif %}
+                                href="/dashboard/convert/materials/">Convert Materials</a>
                         </li>
                     {% endif %}
                 </ul>

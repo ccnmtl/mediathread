@@ -3,7 +3,7 @@ psycopg2==2.7.6.1
 #for MySQL: MySQL-python==1.2.5
 statsd==3.3.0
 pep8==1.7.1
-pyflakes==2.0.0
+pyflakes==2.1.0
 mccabe==0.6.1
 pycodestyle==2.4.0
 enum34==1.1.6; python_version < '3.4'

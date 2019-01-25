@@ -7,7 +7,7 @@ pyflakes==2.0.0
 mccabe==0.6.1
 pycodestyle==2.4.0
 enum34==1.1.6; python_version < '3.4'
-configparser==3.5.0
+configparser==3.7.1
 flake8==3.6.0
 lxml==4.3.0
 fuzzywuzzy==0.17.0  # lettuce

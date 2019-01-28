@@ -169,3 +169,5 @@ def add_upload_folder(course):
 
     if len(course_folder) > 0:
         course.add_detail(UPLOAD_FOLDER_KEY, course_folder)
+
+    return course_folder

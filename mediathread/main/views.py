@@ -582,7 +582,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
         folder = course_details.get_upload_folder(self.request.course)
         if not folder:
-            course_details.add_upload_folder(self.request.course)
+            folder = course_details.add_upload_folder(self.request.course)
 
         for a in Asset.objects.filter(course=self.request.course):
             if a.upload_references() == 1 and not a.primary.is_panopto():

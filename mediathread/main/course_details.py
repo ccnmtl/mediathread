@@ -1,4 +1,4 @@
-from courseaffils.models import Course
+from courseaffils.models import Course, CourseInfo
 from django.conf import settings
 from django.core.cache import cache
 from panopto.session import PanoptoSessionManager
@@ -155,14 +155,19 @@ def add_upload_folder(course):
         password=settings.PANOPTO_API_PASSWORD)
 
     parent_folder = settings.PANOPTO_PARENT_FOLDER
-    term_year = course.info.termyear()
-    if term_year:
-        folder_id = session_mgr.get_folder(
-            settings.PANOPTO_PARENT_FOLDER, term_year)
-        if folder_id:
-            parent_folder = folder_id
+    try:
+        term_year = course.info.termyear()
+        if term_year:
+            folder_id = session_mgr.get_folder(
+                settings.PANOPTO_PARENT_FOLDER, term_year)
+            if folder_id:
+                parent_folder = folder_id
+    except CourseInfo.DoesNotExist:
+        pass
 
     course_folder = session_mgr.add_folder(course.title, parent_folder)
 
     if len(course_folder) > 0:
         course.add_detail(UPLOAD_FOLDER_KEY, course_folder)
+
+    return course_folder

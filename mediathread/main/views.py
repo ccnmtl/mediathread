@@ -534,6 +534,65 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
         return kwargs
 
 
+class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
+    template_name = 'dashboard/class_convert_materials.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = TemplateView.get_context_data(self, **kwargs)
+        endpoint = getattr(settings, 'ASSET_CONVERT_API', None)
+        ctx['endpoint'] = endpoint is not None
+        ctx['assets'] = Asset.objects.filter(course=self.request.course)
+        return ctx
+
+    def get_conversion_endpoint(self):
+        url = getattr(settings, 'ASSET_CONVERT_API', None)
+        special = getattr(settings, 'SERVER_ADMIN_SECRETKEYS', {})
+        if url and url in special.keys():
+            return (url, special[url])
+
+        return (None, None)
+
+    def convert_media(self, url, secret, asset, folder):
+        redirect_to = asset.get_metadata('wardenclyffe-id')[0]
+        nonce = '%smthc' % datetime.now().isoformat()
+        digest = hmac.new(
+            secret,
+            '%s:%s:%s' % (self.request.user.username, redirect_to, nonce),
+            hashlib.sha1).hexdigest()
+
+        response = requests.post(url, {
+            'as': self.request.user.username,
+            'redirect_url': redirect_to,
+            'nonce': nonce,
+            'hmac': digest,
+            'folder': folder,
+            'audio': asset.primary.is_audio(),
+            'set_course': self.request.course.group.name
+        })
+        return response.status_code == 200
+
+    def post(self, request, *args, **kwargs):
+        success_url = reverse('course-convert-materials')
+        (url, secret) = self.get_conversion_endpoint()
+        if not url:
+            messages.add_message(
+                self.request, messages.ERROR,
+                u'Conversion endpoint is not configured')
+            return HttpResponseRedirect(success_url)
+
+        folder = course_details.get_upload_folder(self.request.course)
+        if not folder:
+            folder = course_details.add_upload_folder(self.request.course)
+
+        for a in Asset.objects.filter(course=self.request.course):
+            if a.upload_references() == 1 and not a.primary.is_panopto():
+                self.convert_media(url, secret, a, folder)
+
+        messages.add_message(self.request, messages.INFO,
+                             'Materials were queued for conversion')
+        return HttpResponseRedirect(success_url)
+
+
 class CourseRosterView(LoggedInFacultyMixin, ListView):
     model = User
     template_name = 'dashboard/class_roster.html'

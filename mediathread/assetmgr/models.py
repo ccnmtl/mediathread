@@ -354,6 +354,9 @@ class Source(models.Model):
     def is_audio(self):
         return self.label == 'mp3' or self.label == 'mp4_audio'
 
+    def is_panopto(self):
+        return self.label == 'mp4_panopto'
+
     def url_processed(self, request):
         url_processor = getattr(settings, 'ASSET_URL_PROCESSOR')
         return url_processor(self.url, self.label, request)

@@ -590,9 +590,9 @@ def given_publish_to_world_is_value(step, value):
 
         elt = world.browser.find_element_by_id("id_publish_to_world")
         if value == 'enabled' and elt.get_attribute('checked') is None:
-                elt.click()
+            elt.click()
         elif value != 'enabled' and elt.get_attribute('checked') == 'true':
-                elt.click()
+            elt.click()
 
         elt = world.browser.find_element_by_css_selector(
             'button[type="submit"]')
@@ -908,7 +908,7 @@ def given_the_item_visibility_is_value(step, value):
         if value == 'Yes' and elt.get_attribute('checked') is None:
             elt.click()
         elif value != 'Yes' and elt.get_attribute('checked') == 'true':
-                elt.click()
+            elt.click()
 
         elt = world.browser.find_element_by_css_selector(
             'button[type="submit"]')

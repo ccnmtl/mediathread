@@ -11,5 +11,5 @@ def source_url(source, request):
 
 @register.assignment_tag
 def map_course_collection(course, suggested_collection):
-        return ExternalCollection.objects.filter(
-            title=suggested_collection.title, course=course).first()
+    return ExternalCollection.objects.filter(
+        title=suggested_collection.title, course=course).first()

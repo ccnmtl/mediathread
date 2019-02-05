@@ -5,7 +5,7 @@ statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.1.0
 mccabe==0.6.1
-pycodestyle==2.4.0
+pycodestyle==2.5.0
 enum34==1.1.6; python_version < '3.4'
 configparser==3.7.1
 flake8==3.7.5
@@ -33,6 +33,7 @@ coverage==4.5.2
 logilab-common==1.4.2
 lazy-object-proxy==1.3.1
 wrapt==1.11.1
+unicodecsv==0.14.1
 
 editdistance==0.5.2
 
@@ -120,10 +121,13 @@ django-extensions==2.1.5
 typing==3.6.6 # needed for django-extensions
 
 boto==2.49.0
+
+functools32==3.2.3-2
+entrypoints==0.3
 django-storages==1.7.1
 django-cacheds3storage==0.1.2
 
-requests-toolbelt==0.8.0
+requests-toolbelt==0.9.1
 pytz==2018.9
 isodate==0.6.0
 cached-property==1.5.1
@@ -135,3 +139,5 @@ bandit==1.5.1
 funcsigs==1.0.2 
 mock==2.0.0
 pypanopto==0.0.6
+functools32==3.2.3-2
+entrypoints==0.3

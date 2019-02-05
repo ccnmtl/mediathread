@@ -1,4 +1,4 @@
-import csv
+import unicodecsv as csv
 import json
 
 from courseaffils.lib import in_course_or_404

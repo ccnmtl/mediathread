@@ -8,7 +8,7 @@ mccabe==0.6.1
 pycodestyle==2.5.0
 enum34==1.1.6; python_version < '3.4'
 configparser==3.7.1
-flake8==3.7.4
+flake8==3.7.5
 lxml==4.3.0
 fuzzywuzzy==0.17.0  # lettuce
 mock==2.0.0  # sure
@@ -121,6 +121,9 @@ django-extensions==2.1.5
 typing==3.6.6 # needed for django-extensions
 
 boto==2.49.0
+
+functools32==3.2.3-2
+entrypoints==0.3
 django-storages==1.7.1
 django-cacheds3storage==0.1.2
 

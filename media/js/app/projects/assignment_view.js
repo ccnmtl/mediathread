@@ -1,4 +1,4 @@
-/* global _: true, Backbone: true, showMessage: true, tinymce: true */
+/* global Backbone: true, showMessage: true, tinymce: true */
 
 /**
  * Listens For:

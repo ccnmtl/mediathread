@@ -1,4 +1,4 @@
-/* global _: true, Backbone: true, djangosherd: true */
+/* global _: true, djangosherd: true */
 /* global AssignmentView: true, CitationView: true */
 /* global Mustache: true, MediaThread: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers

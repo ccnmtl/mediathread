@@ -1,7 +1,9 @@
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django_comments.models import Comment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.projects.models import Project
+from mediathread.util import cmp
 from structuredcollaboration.models import Collaboration
 
 
@@ -35,6 +37,7 @@ class Clumper(object):
         # will use ClumpItem.__cmp__
         return iter(sorted(self.items.values()))
 
+    @python_2_unicode_compatible
     class ClumpItem(object):
         things = None
         primary_thing = None
@@ -48,8 +51,8 @@ class Clumper(object):
         def __cmp__(self, other):
             return self.order_by(self.things[0], other.things[0])
 
-        def __unicode__(self):
-            return unicode(self.things[0])
+        def __str__(self):
+            return smart_text(self.things[0])
 
         def append(self, obj):
             if len(self.things) < 4:

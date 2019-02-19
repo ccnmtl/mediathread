@@ -27,6 +27,7 @@ from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
+from django.utils.encoding import smart_text
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
@@ -360,7 +361,7 @@ class ContactUsView(FormView):
         subject = "Mediathread Contact Us Request"
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/contact_description.txt')
-        form_data['description'] = unicode(tmpl.render(form_data))
+        form_data['description'] = smart_text(tmpl.render(form_data))
 
         # POST to the task assignment destination
         task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
@@ -802,7 +803,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
                 else:
                     self.invite_new_user(email)
 
-            except ValidationError, e:
+            except ValidationError as e:
                 messages.add_message(request, messages.ERROR, e.message)
 
         return HttpResponseRedirect(url)
@@ -1208,7 +1209,7 @@ class LTICourseCreate(LoggedInMixin, View):
 
     def get_year_and_term_from_sis_course_id(self, sis_course_id):
         m = re.match(
-            ('(?P<year>\d{4})(?P<term>\d{2})'), sis_course_id)
+            (r'(?P<year>\d{4})(?P<term>\d{2})'), sis_course_id)
         if m:
             return m.groupdict()
 

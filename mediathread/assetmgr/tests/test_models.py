@@ -1,6 +1,9 @@
 # pylint: disable-msg=R0904
+from __future__ import unicode_literals
+
 from django.core.cache import cache
 from django.test import TestCase
+from django.utils.encoding import smart_text
 
 from mediathread.assetmgr.models import Asset, Source, METADATA_ORIGINAL_OWNER
 from mediathread.djangosherd.models import SherdNote
@@ -54,8 +57,8 @@ class AssetTest(MediathreadTestMixin, TestCase):
                                      primary_source='image',
                                      author=self.instructor_one,
                                      title="Item Title")
-        self.assertEquals(asset1.__unicode__(),
-                          'Item Title <%s> (Sample Course)' % asset1.id)
+        self.assertEqual(smart_text(asset1),
+                         'Item Title <%s> (Sample Course)' % asset1.id)
 
     def test_get_by_args(self):
         success, asset = Asset.objects.get_by_args(
@@ -82,7 +85,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         success, asset = Asset.objects.get_by_args(
             data, asset__course=self.sample_course)
         self.assertTrue(success)
-        self.assertEquals(asset1, asset)
+        self.assertEqual(asset1, asset)
 
     def test_metadata(self):
         asset1 = AssetFactory.create(
@@ -92,18 +95,18 @@ class AssetTest(MediathreadTestMixin, TestCase):
             title="Item Title")
 
         ctx = asset1.metadata()
-        self.assertEquals(ctx['author'], [u'CCNMTL'])
-        self.assertEquals(ctx['category'], [u'Education'])
+        self.assertEqual(ctx['author'], [u'CCNMTL'])
+        self.assertEqual(ctx['category'], [u'Education'])
 
         asset2 = AssetFactory.create(course=self.sample_course)
-        self.assertEquals(asset2.metadata(), {})
+        self.assertEqual(asset2.metadata(), {})
 
         asset3 = AssetFactory.create(
             course=self.sample_course, primary_source='image',
             author=self.instructor_one,
             metadata_blob='#$%^&*()_',
             title="Item Title")
-        self.assertEquals(asset3.metadata(), {})
+        self.assertEqual(asset3.metadata(), {})
 
     def test_upload_references(self):
         asset1 = AssetFactory.create(
@@ -119,16 +122,16 @@ class AssetTest(MediathreadTestMixin, TestCase):
             course=self.sample_course,
             metadata_blob='{}')
 
-        self.assertEquals(asset1.upload_references(), 2)
-        self.assertEquals(asset3.upload_references(), 1)
-        self.assertEquals(asset4.upload_references(), 0)
+        self.assertEqual(asset1.upload_references(), 2)
+        self.assertEqual(asset3.upload_references(), 1)
+        self.assertEqual(asset4.upload_references(), 0)
 
     def test_video(self):
         asset = AssetFactory.create(
             course=self.sample_course, primary_source='youtube')
 
         # youtube -- asset #1
-        self.assertEquals(asset.media_type(), 'video')
+        self.assertEqual(asset.media_type(), 'video')
         self.assertFalse(asset.primary.is_image())
         self.assertFalse(asset.primary.is_audio())
 
@@ -136,7 +139,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         asset = AssetFactory.create(
             course=self.sample_course, primary_source='image')
 
-        self.assertEquals(asset.media_type(), 'image')
+        self.assertEqual(asset.media_type(), 'image')
         self.assertTrue(asset.primary.is_image())
         self.assertFalse(asset.primary.is_audio())
 
@@ -145,7 +148,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         faculty = [user.id for user in from_course.faculty.all()]
 
         to_course = self.alt_course
-        self.assertEquals(to_course.asset_set.count(), 0)
+        self.assertEqual(to_course.asset_set.count(), 0)
 
         assets = Asset.objects.filter(course=self.sample_course)
 
@@ -154,22 +157,22 @@ class AssetTest(MediathreadTestMixin, TestCase):
             assets, to_course, self.instructor_three, faculty, object_map,
             True, True)
 
-        self.assertEquals(to_course.asset_set.count(), 1)
+        self.assertEqual(to_course.asset_set.count(), 1)
         asset = object_map['assets'][self.asset1.id]
-        self.assertEquals(asset.title, self.asset1.title)
-        self.assertEquals(asset.course, to_course)
-        self.assertEquals(asset.author, self.instructor_three)
-        self.assertEquals(len(asset.sherdnote_set.all()), 2)
+        self.assertEqual(asset.title, self.asset1.title)
+        self.assertEqual(asset.course, to_course)
+        self.assertEqual(asset.author, self.instructor_three)
+        self.assertEqual(len(asset.sherdnote_set.all()), 2)
 
         # instructor note exists with tags
         note = asset.sherdnote_set.get(title=self.instructor_note.title)
-        self.assertEquals(note.tags, ',image, instructor_one_selection,')
-        self.assertEquals(note.body, 'instructor one selection note')
+        self.assertEqual(note.tags, ',image, instructor_one_selection,')
+        self.assertEqual(note.body, 'instructor one selection note')
 
         gann = asset.global_annotation(self.instructor_three, False)
         self.assertTrue(gann is not None)
-        self.assertEquals(gann.tags, ',image, instructor_one_item,')
-        self.assertEquals(gann.body, 'instructor one item note')
+        self.assertEqual(gann.tags, ',image, instructor_one_item,')
+        self.assertEqual(gann.body, 'instructor one item note')
 
     def test_migrate_one(self):
         new_course = self.alt_course
@@ -177,24 +180,24 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         asset = Asset.objects.migrate_one(
             self.asset1, new_course, new_user)
-        self.assertEquals(asset.author, new_user)
-        self.assertEquals(asset.course, new_course)
+        self.assertEqual(asset.author, new_user)
+        self.assertEqual(asset.course, new_course)
 
-        self.assertEquals(asset.sherdnote_set.count(), 1)
+        self.assertEqual(asset.sherdnote_set.count(), 1)
 
         gann = asset.sherdnote_set.all()[0]
         self.assertTrue(gann.is_global_annotation())
-        self.assertEquals(gann.tags, '')
-        self.assertEquals(gann.body, None)
+        self.assertEqual(gann.tags, '')
+        self.assertEqual(gann.body, None)
 
-        self.assertEquals(
+        self.assertEqual(
             asset.metadata()[METADATA_ORIGINAL_OWNER], 'Instructor One')
 
         asset2 = Asset.objects.migrate_one(
             asset, self.sample_course, self.instructor_two)
-        self.assertEquals(asset2.author, self.instructor_two)
-        self.assertEquals(asset2.course, self.sample_course)
-        self.assertEquals(
+        self.assertEqual(asset2.author, self.instructor_two)
+        self.assertEqual(asset2.course, self.sample_course)
+        self.assertEqual(
             asset2.metadata()[METADATA_ORIGINAL_OWNER], 'Instructor One')
 
     def test_migrate_note_global_annotations(self):
@@ -205,16 +208,16 @@ class AssetTest(MediathreadTestMixin, TestCase):
         global_note = SherdNote.objects.migrate_one(
             self.instructor_ga, alt_asset, self.instructor_three, True, True)
         self.assertTrue(global_note.is_global_annotation())
-        self.assertEquals(global_note.author, self.instructor_three)
-        self.assertEquals(global_note.title, None)
-        self.assertEquals(global_note.tags, self.instructor_ga.tags)
-        self.assertEquals(global_note.body, self.instructor_ga.body)
+        self.assertEqual(global_note.author, self.instructor_three)
+        self.assertEqual(global_note.title, None)
+        self.assertEqual(global_note.tags, self.instructor_ga.tags)
+        self.assertEqual(global_note.body, self.instructor_ga.body)
 
         # try to migrate another global annotation as well
         # the global annotation that was already created will come back
         another_note = SherdNote.objects.migrate_one(
             self.student_ga, alt_asset, self.instructor_three, True, True)
-        self.assertEquals(another_note, global_note)
+        self.assertEqual(another_note, global_note)
 
     def test_migrate_note_regular_annotations(self):
         alt_asset = AssetFactory.create(course=self.alt_course,
@@ -224,34 +227,34 @@ class AssetTest(MediathreadTestMixin, TestCase):
         new_note = SherdNote.objects.migrate_one(
             self.instructor_note, alt_asset, self.instructor_three, True, True)
         self.assertFalse(new_note.is_global_annotation())
-        self.assertEquals(new_note.author, self.instructor_three)
-        self.assertEquals(new_note.title, self.instructor_note.title)
-        self.assertEquals(new_note.tags, self.instructor_note.tags)
-        self.assertEquals(new_note.body, self.instructor_note.body)
+        self.assertEqual(new_note.author, self.instructor_three)
+        self.assertEqual(new_note.title, self.instructor_note.title)
+        self.assertEqual(new_note.tags, self.instructor_note.tags)
+        self.assertEqual(new_note.body, self.instructor_note.body)
 
     def test_migrate_one_duplicates(self):
         new_asset = Asset.objects.migrate_one(
             self.asset1, self.alt_course, self.alt_instructor)
-        self.assertEquals(new_asset.author, self.alt_instructor)
-        self.assertEquals(new_asset.course, self.alt_course)
-        self.assertEquals(new_asset.get_metadata(
+        self.assertEqual(new_asset.author, self.alt_instructor)
+        self.assertEqual(new_asset.course, self.alt_course)
+        self.assertEqual(new_asset.get_metadata(
             METADATA_ORIGINAL_OWNER), 'Instructor One')
 
         duplicate_asset = Asset.objects.migrate_one(
             self.asset1, self.alt_course, self.alt_instructor)
-        self.assertEquals(new_asset, duplicate_asset)
-        self.assertEquals(duplicate_asset.get_metadata(
+        self.assertEqual(new_asset, duplicate_asset)
+        self.assertEqual(duplicate_asset.get_metadata(
             METADATA_ORIGINAL_OWNER), 'Instructor One')
 
         new_note = SherdNote.objects.migrate_one(
             self.instructor_note, new_asset, self.alt_instructor, True, True)
         self.assertFalse(new_note.is_global_annotation())
-        self.assertEquals(new_note.author, self.alt_instructor)
-        self.assertEquals(new_note.title, self.instructor_note.title)
+        self.assertEqual(new_note.author, self.alt_instructor)
+        self.assertEqual(new_note.title, self.instructor_note.title)
 
         duplicate_note = SherdNote.objects.migrate_one(
             self.instructor_note, new_asset, self.alt_instructor, True, True)
-        self.assertEquals(new_note, duplicate_note)
+        self.assertEqual(new_note, duplicate_note)
 
     def test_update_reference_in_string(self):
         extra_asset = AssetFactory.create(course=self.sample_course,
@@ -284,16 +287,16 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         citations = SherdNote.objects.references_in_string(new_text,
                                                            new_asset.author)
-        self.assertEquals(len(citations), 3)
-        self.assertEquals(citations[0].id, self.instructor_note.id)
-        self.assertEquals(citations[0].asset.id, self.asset1.id)
+        self.assertEqual(len(citations), 3)
+        self.assertEqual(citations[0].id, self.instructor_note.id)
+        self.assertEqual(citations[0].asset.id, self.asset1.id)
 
-        self.assertEquals(citations[1].id, extra_note.id)
-        self.assertEquals(citations[1].asset.id, extra_asset.id)
+        self.assertEqual(citations[1].id, extra_note.id)
+        self.assertEqual(citations[1].asset.id, extra_asset.id)
 
         gann = new_asset.global_annotation(new_asset.author, False)
-        self.assertEquals(citations[2].id, gann.id)
-        self.assertEquals(citations[2].asset.id, new_asset.id)
+        self.assertEqual(citations[2].id, gann.id)
+        self.assertEqual(citations[2].asset.id, new_asset.id)
 
     def test_user_analysis_count(self):
         SherdNoteFactory(
@@ -302,18 +305,18 @@ class AssetTest(MediathreadTestMixin, TestCase):
             title=None, range1=None, range2=None)
 
         # global notes y/n + global tag count + annotation count
-        self.assertEquals(0,
-                          self.asset1.user_analysis_count(self.instructor_two))
-        self.assertEquals(1,
-                          self.asset1.user_analysis_count(self.student_two))
-        self.assertEquals(4,
-                          self.asset1.user_analysis_count(self.instructor_one))
+        self.assertEqual(0,
+                         self.asset1.user_analysis_count(self.instructor_two))
+        self.assertEqual(1,
+                         self.asset1.user_analysis_count(self.student_two))
+        self.assertEqual(4,
+                         self.asset1.user_analysis_count(self.instructor_one))
 
     def test_assets_by_course(self):
         assets = Asset.objects.by_course(course=self.sample_course)
-        self.assertEquals(assets.count(), 1)
+        self.assertEqual(assets.count(), 1)
 
-        self.assertEquals(self.asset1, assets[0])
+        self.assertEqual(self.asset1, assets[0])
 
     def test_assets_by_course_and_user(self):
         # tweak an asset to have a non-primary archive label
@@ -327,30 +330,30 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         assets = Asset.objects.by_course_and_user(self.sample_course,
                                                   self.instructor_one)
-        self.assertEquals(assets.count(), 1)
+        self.assertEqual(assets.count(), 1)
         self.assertIsNotNone(assets[0], asset2)
 
         assets = Asset.objects.by_course_and_user(self.sample_course,
                                                   self.student_one)
-        self.assertEquals(assets.count(), 1)
+        self.assertEqual(assets.count(), 1)
         self.assertIsNotNone(assets[0], asset2)
 
         assets = Asset.objects.by_course_and_user(self.sample_course,
                                                   self.student_two)
-        self.assertEquals(assets.count(), 0)
+        self.assertEqual(assets.count(), 0)
 
     def test_source_unicode(self):
-        desc = self.asset1.primary.__unicode__()
+        desc = smart_text(self.asset1.primary)
         self.assertTrue('[image]' in desc)
         self.assertTrue('Sample Course' in desc)
 
     def test_external_collection_unicode(self):
         collection = ExternalCollectionFactory()
-        self.assertEquals(collection.__unicode__(), 'collection')
+        self.assertEqual(smart_text(collection), 'collection')
 
     def test_suggested_external_collection_unicode(self):
         collection = SuggestedExternalCollectionFactory()
-        self.assertEquals(collection.__unicode__(), 'collection')
+        self.assertEqual(smart_text(collection), 'collection')
 
     def test_html_source(self):
         with self.assertRaises(Source.DoesNotExist):
@@ -358,19 +361,19 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         src = SourceFactory(label='url', asset=self.asset1,
                             url="http://ccnmtl.columbia.edu")
-        self.assertEquals(src, self.asset1.html_source)
+        self.assertEqual(src, self.asset1.html_source)
 
     def test_xmeml_source(self):
         self.assertIsNone(self.asset1.xmeml_source())
         src = SourceFactory(label='xmeml', asset=self.asset1,
                             url="http://ccnmtl.columbia.edu")
-        self.assertEquals(src, self.asset1.xmeml_source())
+        self.assertEqual(src, self.asset1.xmeml_source())
 
     def test_sources(self):
         self.assertTrue('image' in self.asset1.sources)
 
         image_src = Source.objects.get(label='image', asset=self.asset1)
-        self.assertEquals(self.asset1.sources['image'], image_src)
+        self.assertEqual(self.asset1.sources['image'], image_src)
 
     def test_thumb_url_empty(self):
         self.assertIsNone(self.asset1.thumb_url)
@@ -378,35 +381,35 @@ class AssetTest(MediathreadTestMixin, TestCase):
     def test_thumb_url_valid(self):
         SourceFactory(label='thumb', asset=self.asset1,
                       url="http://ccnmtl.columbia.edu")
-        self.assertEquals(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
-        self.assertEquals(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
+        self.assertEqual(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
+        self.assertEqual(self.asset1.thumb_url, "http://ccnmtl.columbia.edu")
 
     def test_tags(self):
         tags = self.asset1.tags()
-        self.assertEquals(len(tags), 5)
-        self.assertEquals(tags[0].name, 'image')
-        self.assertEquals(tags[1].name, 'instructor_one_item')
-        self.assertEquals(tags[2].name, 'instructor_one_selection')
-        self.assertEquals(tags[3].name, 'student_one_item')
-        self.assertEquals(tags[4].name, 'student_one_selection')
+        self.assertEqual(len(tags), 5)
+        self.assertEqual(tags[0].name, 'image')
+        self.assertEqual(tags[1].name, 'instructor_one_item')
+        self.assertEqual(tags[2].name, 'instructor_one_selection')
+        self.assertEqual(tags[3].name, 'student_one_item')
+        self.assertEqual(tags[4].name, 'student_one_selection')
 
     def test_filter_tags_by_users(self):
         tags = self.asset1.filter_tags_by_users([self.student_one])
-        self.assertEquals(len(tags), 2)
-        self.assertEquals(tags[0].name, 'student_one_item')
-        self.assertEquals(tags[1].name, 'student_one_selection')
+        self.assertEqual(len(tags), 2)
+        self.assertEqual(tags[0].name, 'student_one_item')
+        self.assertEqual(tags[1].name, 'student_one_selection')
 
     def test_update_primary(self):
         s = self.asset1.primary
-        self.assertEquals(s.label, 'image')
+        self.assertEqual(s.label, 'image')
 
         # update
         self.asset1.update_primary('mp4_pseudo', 'something new')
         s = self.asset1.primary
 
         # verify the new value is returned
-        self.assertEquals(s.label, 'mp4_pseudo')
-        self.assertEquals(s.url, 'something new')
+        self.assertEqual(s.label, 'mp4_pseudo')
+        self.assertEqual(s.url, 'something new')
 
 
 class SourceTest(TestCase):

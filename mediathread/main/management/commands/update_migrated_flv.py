@@ -37,10 +37,10 @@ class Command(BaseCommand):
                     mp4_source.asset.course.title.encode('utf-8').strip(),
                     mp4_source.asset.id,
                     source.url, mp4_source.url)
-                print msg
+                print(msg)
 
                 if not options['fake']:
                     source.asset.update_primary('mp4_pseudo', mp4_source.url)
                 n += 1
 
-        print 'Updated {}'.format(n)
+        print('Updated {}'.format(n))

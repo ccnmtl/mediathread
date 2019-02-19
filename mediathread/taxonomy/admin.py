@@ -1,5 +1,6 @@
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from django.contrib import admin
+from django.utils.encoding import smart_text
 
 
 def term_vocabulary_name(obj):
@@ -10,7 +11,7 @@ term_vocabulary_name.short_description = 'Vocabulary'
 
 
 def term_vocabulary_related_name(obj):
-    return obj.vocabulary.content_object.__unicode__()
+    return smart_text(obj.vocabulary.content_object)
 
 
 term_vocabulary_related_name.short_description = 'Related To'
@@ -31,7 +32,7 @@ admin.site.register(TermRelationship)
 
 
 def vocabulary_related_name(obj):
-    return obj.content_object.__unicode__()
+    return smart_text(obj.content_object)
 
 
 vocabulary_related_name.short_description = 'Related To'

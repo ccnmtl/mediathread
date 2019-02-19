@@ -4,6 +4,7 @@ from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
 
+from mediathread.util import cmp
 from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 

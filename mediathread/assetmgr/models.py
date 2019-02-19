@@ -1,5 +1,8 @@
+from __future__ import unicode_literals
+
 import json
 import re
+from functools import reduce
 
 from courseaffils.models import Course
 from django.conf import settings
@@ -7,7 +10,10 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 from tagging.models import Tag
+
+from mediathread.util import cmp
 
 
 METADATA_ORIGINAL_OWNER = 'Original Owner'
@@ -27,6 +33,8 @@ class AssetManager(models.Manager):
         if not criteria:
             return (False, None)
 
+        # A simple for loop may be more readable than this reduce():
+        # https://stackoverflow.com/a/13638960/173630
         qry = reduce(lambda x, y: x | y,  # composable Q's
                      [models.Q(label=k, url=args[k], primary=True)
                       for k in criteria])
@@ -116,6 +124,7 @@ class AssetManager(models.Manager):
         return new_asset
 
 
+@python_2_unicode_compatible
 class Asset(models.Model):
     objects = AssetManager()  # custom manager
 
@@ -165,7 +174,7 @@ class Asset(models.Model):
         """
         return set(cls.primary_labels) & set(args.keys())
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s <%r> (%s)' % (self.title, self.pk, self.course.title)
 
     def metadata(self):
@@ -309,6 +318,7 @@ class Asset(models.Model):
         return count
 
 
+@python_2_unicode_compatible
 class Source(models.Model):
     asset = models.ForeignKey(Asset)
 
@@ -341,8 +351,8 @@ class Source(models.Model):
                                     editable=False,
                                     auto_now=True)
 
-    def __unicode__(self):
-        return u'[%s] %s' % (self.label, self.asset.__unicode__())
+    def __str__(self):
+        return '[%s] %s' % (self.label, smart_text(self.asset))
 
     def is_image(self):
         return (self.label == 'poster' or
@@ -362,6 +372,7 @@ class Source(models.Model):
         return url_processor(self.url, self.label, request)
 
 
+@python_2_unicode_compatible
 class ExternalCollection(models.Model):
     title = models.CharField(max_length=1024)
     url = models.CharField(max_length=1024)
@@ -370,7 +381,7 @@ class ExternalCollection(models.Model):
     course = models.ForeignKey(Course)
     uploader = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -378,13 +389,14 @@ class ExternalCollection(models.Model):
         unique_together = ("title", "course")
 
 
+@python_2_unicode_compatible
 class SuggestedExternalCollection(models.Model):
     title = models.CharField(max_length=1024, unique=True)
     url = models.CharField(max_length=1024)
     thumb_url = models.CharField(max_length=1024)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:

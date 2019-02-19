@@ -16,6 +16,7 @@ from tastypie.resources import ModelResource
 from courseaffils.lib import get_public_name
 from courseaffils.models import Course, CourseInfo
 from mediathread.djangosherd.models import SherdNote
+from mediathread.util import cmp
 from tastypie import fields
 
 

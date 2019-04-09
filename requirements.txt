@@ -39,7 +39,7 @@ editdistance==0.5.3
 
 pylint==1.9.4 # pyup: <2.0.0
 
-astroid==1.6.5 # pyup: <2.0.0  # pylint
+astroid==1.6.6 # pyup: <2.0.0  # pylint
 
 pyasn1==0.4.5
 ndg-httpsclient==0.5.1

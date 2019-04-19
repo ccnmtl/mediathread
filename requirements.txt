@@ -90,7 +90,7 @@ oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.0.1
 pylti==0.7.0
-nameparser==1.0.2
+nameparser==1.0.3
 django-bootstrap3==11.0.0
 ua_parser==0.8.0
 user_agents==1.1.0

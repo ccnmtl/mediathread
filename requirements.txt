@@ -138,6 +138,6 @@ pyyaml==5.1
 bandit==1.5.1
 funcsigs==1.0.2 
 mock==2.0.0
-pypanopto==0.0.6
+pypanopto==0.0.7
 functools32==3.2.3-2
 entrypoints==0.3

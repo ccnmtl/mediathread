@@ -11,7 +11,7 @@ configparser==3.7.4
 flake8==3.7.7
 lxml==4.3.3
 fuzzywuzzy==0.17.0  # lettuce
-mock==2.0.0  # sure
+mock==3.0.3  # sure
 sure==1.4.11  # lettuce
 extras==1.0.0
 linecache2==1.0.0  # traceback2

@@ -22,6 +22,33 @@ class LTIViewTest(TestCase):
         self.assertTrue(user in ctx.group.user_set.all())
         self.assertTrue(user in ctx.faculty_group.user_set.all())
 
+    def test_join_groups_student(self):
+        mixin = LTIAuthMixin()
+        ctx = LTICourseContextFactory()
+        user = UserFactory()
+
+        self.lti.lti_params['roles'] = u'Learner'
+
+        mixin.join_groups(self.lti, ctx, user)
+        self.assertTrue(user in ctx.group.user_set.all())
+        self.assertFalse(user in ctx.faculty_group.user_set.all())
+
+    def test_join_groups_teachingassistant(self):
+        mixin = LTIAuthMixin()
+        ctx = LTICourseContextFactory()
+        user = UserFactory()
+
+        self.lti.lti_params['roles'] = u'urn:lti:role:ims/lis/TeachingAssistant'
+
+        mixin.join_groups(self.lti, ctx, user)
+        self.assertTrue(user in ctx.group.user_set.all())
+        self.assertFalse(user in ctx.faculty_group.user_set.all())
+
+        with self.settings(LTI_ELEVATE_TEACHINGASSISTANTS=['instructure.edu']):
+            mixin.join_groups(self.lti, ctx, user)
+            self.assertTrue(user in ctx.group.user_set.all())
+            self.assertTrue(user in ctx.faculty_group.user_set.all())
+
     def test_launch_invalid_user(self):
         request = generate_lti_request()
 

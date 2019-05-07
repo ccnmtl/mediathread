@@ -38,7 +38,8 @@ class LTIViewTest(TestCase):
         ctx = LTICourseContextFactory()
         user = UserFactory()
 
-        self.lti.lti_params['roles'] = u'urn:lti:role:ims/lis/TeachingAssistant'
+        self.lti.lti_params['roles'] = \
+            u'urn:lti:role:ims/lis/TeachingAssistant'
 
         mixin.join_groups(self.lti, ctx, user)
         self.assertTrue(user in ctx.group.user_set.all())

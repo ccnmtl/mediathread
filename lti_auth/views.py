@@ -28,6 +28,11 @@ class LTIAuthMixin(object):
                 user.groups.add(ctx.faculty_group)
                 break
 
+            domains = getattr(settings, 'LTI_ELEVATE_TEACHINGASSISTANTS', [])
+            if 'teachingassistant' in role and lti.canvas_domain() in domains:
+                user.groups.add(ctx.faculty_group)
+                break
+
     def dispatch(self, request, *args, **kwargs):
         lti = LTI(self.request_type, self.role_type)
 

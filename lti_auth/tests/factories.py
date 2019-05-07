@@ -23,6 +23,7 @@ BASE_LTI_PARAMS = {
         u'urn:lti:instrole:ims/lis/Instructor,urn:lti:instrole:ims/lis/Staff',
     u'resource_link_id': u'-724d6c2b5fcc4a17a26b9120a1d463aa',
     u'user_id': u'student',
+    u'custom_canvas_api_domain': u'instructure.edu'
 }
 
 CONSUMERS = {

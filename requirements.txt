@@ -31,7 +31,7 @@ defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2
 coverage==4.5.3
 logilab-common==1.4.2
-lazy-object-proxy==1.4.0
+lazy-object-proxy==1.4.1
 wrapt==1.11.1
 unicodecsv==0.14.1
 
@@ -55,7 +55,7 @@ pyOpenSSL==19.0.0
 asn1crypto==0.24.0  # for pyOpenSSL
 cffi==1.12.3  # for pyOpenSSL
 
-requests==2.21.0
+requests==2.22.0
 contextlib2==0.5.5
 rcssmin==1.0.6
 rjsmin==1.0.12
@@ -79,7 +79,7 @@ django-debug-toolbar==1.11
 django-markwhat==1.6.1
 ipaddress==1.0.22
 text-unidecode==1.2  # for faker
-Faker==1.0.6
+Faker==1.0.7
 factory_boy==2.12.0
 django-impersonate==1.4.1
 django-registration-redux==2.6
@@ -93,7 +93,7 @@ pylti==0.7.0
 nameparser==1.0.3
 django-bootstrap3==11.0.0
 ua_parser==0.8.0
-user_agents==1.1.0
+user_agents==2.0
 django_user_agents==0.3.2
 gunicorn==19.9.0
 traitlets==4.3.2
@@ -117,7 +117,7 @@ django-smtp-ssl==1.0
 djangorestframework==3.7.7  # pyup: <3.8
 
 ccnmtlsettings==1.3.0 # pyup: <1.4.0
-django-extensions==2.1.6
+django-extensions==2.1.7
 typing==3.6.6 # needed for django-extensions
 
 boto==2.49.0

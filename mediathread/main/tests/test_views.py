@@ -19,9 +19,9 @@ from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
+from django.utils.encoding import smart_text
 from django.utils.html import escape
 from django.utils.text import slugify
-from django.utils.encoding import smart_text
 import factory
 from freezegun import freeze_time
 from threadedcomments.models import ThreadedComment
@@ -34,8 +34,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
     UserFactory, UserProfileFactory, MediathreadTestMixin,
     AssetFactory, ProjectFactory, SherdNoteFactory,
-    CourseInvitationFactory
-)
+    CourseInvitationFactory)
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
@@ -51,7 +50,7 @@ from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView, CourseManageSourcesView,
     CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView,
-    unis_list, CourseConvertMaterialsView)
+    unis_list, CourseConvertMaterialsView, CoursePanoptoSourceView)
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
 
@@ -1819,3 +1818,38 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
         with self.settings(ASSET_CONVERT_API=rv[0],
                            SERVER_ADMIN_SECRETKEYS={rv[0]: rv[1]}):
             self.assertEquals(view.get_conversion_endpoint(), rv)
+
+
+class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.view = CoursePanoptoSourceView()
+        self.view.request = RequestFactory().get('/')
+        self.view.request.course = self.sample_course
+
+    def test_already_imported(self):
+        self.assertFalse(self.view.already_imported('source url'))
+        AssetFactory(course=self.sample_course,
+                     author=self.student_one,
+                     primary_source='mp4_panopto')
+        self.assertTrue(self.view.already_imported('source url'))
+
+    def test_get_author(self):
+        self.assertEquals(
+            self.view.get_author('student_one'), self.student_one)
+
+        user = self.view.get_author('zz123')
+        self.assertTrue(self.sample_course.is_true_member(user))
+
+    def test_create_item(self):
+        with self.settings(PANOPTO_SERVER='localhost/'):
+            item = self.view.create_item(
+                'Doe, J.', self.student_one, 'session_id', 'thumb')
+
+            self.assertTrue(item.title, 'Doe, J.')
+            self.assertEquals(item.course, self.sample_course)
+            self.assertEquals(item.author, self.student_one)
+            self.assertEquals(item.primary.label, 'mp4_panopto')
+            self.assertEquals(item.primary.url, 'session_id')
+            self.assertEquals(item.thumb_url, 'https://localhost/thumb')

@@ -878,9 +878,7 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
             cache_dir=getattr(settings, 'ZEEP_CACHE_DIR', None))
 
     def get_sessions_list(self, session_mgr):
-        parent_folder = getattr(settings, 'PANOPTO_CONNECT_FOLDER', None)
-        folder_name = self.request.POST.get('folder_name', '')
-        folder = session_mgr.get_folder(parent_folder, folder_name)
+        folder = self.request.POST.get('folder_name', '')
         return session_mgr.get_session_list(folder)
 
     def already_imported(self, session_id):

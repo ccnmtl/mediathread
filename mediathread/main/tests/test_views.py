@@ -2,6 +2,7 @@
 # pylint: disable-msg=R0904
 # pylint: disable-msg=E1103
 from __future__ import unicode_literals
+from django.core.cache import cache
 
 from datetime import datetime
 import json
@@ -1798,6 +1799,9 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
                                              is_superuser=True,
                                              is_staff=True)
 
+    def tearDown(self):
+        cache.clear()
+
     def test_get_context_data(self):
         request = RequestFactory().get('/dashboard/convert/')
         request.user = self.superuser
@@ -1850,6 +1854,6 @@ class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
             self.assertTrue(item.title, 'Doe, J.')
             self.assertEquals(item.course, self.sample_course)
             self.assertEquals(item.author, self.student_one)
-            self.assertEquals(item.primary.label, 'mp4_panopto')
             self.assertEquals(item.primary.url, 'session_id')
             self.assertEquals(item.thumb_url, 'https://localhost/thumb')
+            self.assertEquals(item.primary.label, 'mp4_panopto')

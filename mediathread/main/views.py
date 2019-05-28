@@ -25,14 +25,15 @@ from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
+from django.utils.encoding import smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
-from django.utils.encoding import smart_text
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
+from panopto.session import PanoptoSessionManager
 import requests
 from threadedcomments.models import ThreadedComment
 
@@ -40,13 +41,13 @@ from lti_auth.models import LTICourseContext
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, SuggestedExternalCollection, \
-    ExternalCollection
+    ExternalCollection, Source
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     cached_course_is_faculty, course_information_title,
-    has_student_activity, allow_roster_changes)
+    has_student_activity, allow_roster_changes, get_upload_folder)
 from mediathread.main.forms import (
     ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
@@ -863,6 +864,77 @@ class CourseAcceptInvitationView(FormView):
 
     def get_success_url(self):
         return reverse('course-invite-complete')
+
+
+class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_panopto_source.html'
+
+    def get_session_manager(self):
+        return PanoptoSessionManager(
+            getattr(settings, 'PANOPTO_SERVER', None),
+            getattr(settings, 'PANOPTO_API_USER', None),
+            instance_name=getattr(settings, 'PANOPTO_INSTANCE_NAME', None),
+            password=getattr(settings, 'PANOPTO_API_PASSWORD', None),
+            cache_dir=getattr(settings, 'ZEEP_CACHE_DIR', None))
+
+    def get_sessions_list(self, session_mgr):
+        folder = self.request.POST.get('folder_name', '')
+        return session_mgr.get_session_list(folder)
+
+    def already_imported(self, session_id):
+        return Source.objects.filter(
+            label='mp4_panopto', url=session_id).count() > 0
+
+    def move_session(self, session_mgr, session_id):
+        folder_id = get_upload_folder(self.request.course)
+        session_mgr.move_sessions([session_id], folder_id)
+
+    def get_author(self, uni):
+        # If the student UNI is not yet in this course, add them as a student
+        user, created = User.objects.get_or_create(username=uni)
+        if not self.request.course.is_true_member(user):
+            self.request.course.group.user_set.add(user)
+        return user
+
+    def create_item(self, name, author, session_id, thumb_url):
+        # Create a Mediathread item using Session Name as the Item Title
+        # and the Session Description as the Student UNI
+        asset = Asset.objects.create(
+            course=self.request.course, title=name, author=author)
+        Source.objects.create(
+            asset=asset, primary=True, label='mp4_panopto', url=session_id)
+
+        turl = 'https://{}{}'.format(settings.PANOPTO_SERVER, thumb_url)
+        Source.objects.create(
+            asset=asset, primary=False, label='thumb', url=turl)
+        asset.global_annotation(author, auto_create=True)
+        return asset
+
+    def post(self, request, *args, **kwargs):
+        success_url = reverse('course-panopto-source')
+        session_mgr = self.get_session_manager()
+
+        for session in self.get_sessions_list(session_mgr):
+            if (session['State'] != 'Complete' or
+                self.already_imported(session['Id']) or
+                    not session['Description']):
+                continue
+
+            session_id = session['Id']
+
+            # Get the author via the UNI stashed in the session description
+            author = self.get_author(session['Description'])
+
+            # Create a Mediathread Item for this session
+            self.create_item(
+                session['Name'], author, session_id, session['ThumbUrl'])
+
+            # Move the item to this course's folder
+            self.move_session(session_mgr, session_id)
+
+        messages.add_message(
+            self.request, messages.INFO, 'Panopto source materials imported.')
+        return HttpResponseRedirect(success_url)
 
 
 class InstructorDashboardSettingsView(

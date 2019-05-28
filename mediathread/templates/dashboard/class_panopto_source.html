@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_course_dashboard.html' %}
+{% load assetlinks %}
+{% block title %}Panopto Source Folder{% endblock %}
+
+{% block switchcourse %}{% endblock %}
+
+{% block css %}
+<style>
+    ul.errorlist {
+        list-style: none;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block dashboard_module_header %}
+    <h2>Panopto Source Folder</div></h2>
+{% endblock %}
+
+{% block dashboard_content %}
+    <h3>Panopto Source Folder</h3>
+    <p>Import materials from a Panopto folder</p>
+    <form action="." method="POST" class="{% if form.errors %}has-error{% endif %}">
+        <label for="panopto-folder-name">Panopto Folder UUID: </label>
+        <input class="form-control" name="folder_name" id="panopto-folder-name" />
+
+        <br /><br />
+        <input class="btn btn-info" type="submit" name="clear-course" value="Submit"></input>
+    </form>
+
+    <hr />
+    <h4>Imported Materials</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Author</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

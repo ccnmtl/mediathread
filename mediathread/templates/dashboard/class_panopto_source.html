@@ -13,6 +13,9 @@
 </style>
 {% endblock %}
 
+{% block messages %}{% endblock %}
+
+
 {% block dashboard_module_header %}
     <h2>Panopto Source Folder</div></h2>
 {% endblock %}
@@ -28,20 +31,16 @@
         <input class="btn btn-info" type="submit" name="clear-course" value="Submit"></input>
     </form>
 
-    <hr />
-    <h4>Imported Materials</h4>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Author</th>
-                <th>Link</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+    {% if messages %}
+        <hr />
+        <h3>Import Results</h3>
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
 {% endblock %}

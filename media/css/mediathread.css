@@ -248,6 +248,10 @@ a.arrowClosed div.arrowIcon {
     color: #383838;
 }
 
+ul.messages li.error {
+    color: #dc3545;
+}
+
 /* ---- Student Dashboard Blocks ---- */
 
 

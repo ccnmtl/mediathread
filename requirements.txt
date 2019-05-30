@@ -112,7 +112,7 @@ prompt_toolkit==2.0.9
 pygments==2.4.2
 ipython==5.8.0 # pyup: <6.0.0
 ipdb==0.12
-freezegun==0.3.11
+freezegun==0.3.12
 django-smtp-ssl==1.0
 djangorestframework==3.7.7  # pyup: <3.8
 

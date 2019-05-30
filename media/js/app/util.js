@@ -171,30 +171,3 @@ function showMessage(msg, onclose, customTitle, position) {
         $dialogConfirm.dialog('widget').position(position);
     }
 }
-
-function confirmAction(msg, onOK, customTitle, position) {
-    var title = customTitle ? customTitle : 'Confirm Action';
-    var $dialogConfirm = jQuery('#dialog-confirm');
-    $dialogConfirm.html(msg);
-    $dialogConfirm.dialog({
-        resizable: false,
-        modal: true,
-        title: title,
-        close: function(evt, ui) {
-            $dialogConfirm.html('');
-        },
-        buttons: {
-            'Cancel': function() {
-                jQuery(this).dialog('close');
-            },
-            'OK': function() {
-                onOK();
-                jQuery(this).dialog('close');
-            }
-        }
-    });
-    // position newly opened dialog (using its parent container) below $div.
-    if (position) {
-        $dialogConfirm.dialog('widget').position(position);
-    }
-}

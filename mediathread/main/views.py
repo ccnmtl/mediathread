@@ -923,7 +923,7 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
             session_id = session['Id']
 
             # Get the author via the UNI stashed in the session description
-            author = self.get_author(session['Description'])
+            author = self.get_author(session['Description'].lower().strip())
 
             # Create a Mediathread Item for this session
             self.create_item(

@@ -869,6 +869,24 @@ class CourseAcceptInvitationView(FormView):
 class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
     template_name = 'dashboard/class_panopto_source.html'
 
+    def complete_session(self, session):
+        complete = session['State'] == 'Complete'
+        if not complete:
+            messages.add_message(
+                self.request, messages.ERROR,
+                '{} ({}) incomplete'.format(session['Name'], session['Id']))
+        return complete
+
+    def valid_description(self, session):
+        valid = ('Description' in session and
+                 session['Description'] and
+                 len(session['Description']) > 0)
+        if not valid:
+            msg = '{} ({}) has no UNI specified'.format(
+                session['Name'], session['Id'])
+            messages.add_message(self.request, messages.ERROR, msg)
+        return valid
+
     def get_session_manager(self):
         return PanoptoSessionManager(
             getattr(settings, 'PANOPTO_SERVER', None),
@@ -881,9 +899,16 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         folder = self.request.POST.get('folder_name', '')
         return session_mgr.get_session_list(folder)
 
-    def already_imported(self, session_id):
-        return Source.objects.filter(
+    def already_imported(self, session):
+        session_name = session['Name']
+        session_id = session['Id']
+        imported = Source.objects.filter(
             label='mp4_panopto', url=session_id).count() > 0
+        if imported:
+            messages.add_message(
+                self.request, messages.INFO,
+                '{} ({}) already imported'.format(session_name, session_id))
+        return imported
 
     def move_session(self, session_mgr, session_id):
         folder_id = get_upload_folder(self.request.course)
@@ -901,6 +926,7 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         # and the Session Description as the Student UNI
         asset = Asset.objects.create(
             course=self.request.course, title=name, author=author)
+        asset.save_tag(author, 'panopto import')
         Source.objects.create(
             asset=asset, primary=True, label='mp4_panopto', url=session_id)
 
@@ -915,25 +941,29 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         session_mgr = self.get_session_manager()
 
         for session in self.get_sessions_list(session_mgr):
-            if (session['State'] != 'Complete' or
-                self.already_imported(session['Id']) or
-                    not session['Description']):
+            if not self.complete_session(session):
+                continue
+            if self.already_imported(session):
+                continue
+            if not self.valid_description(session):
                 continue
 
-            session_id = session['Id']
-
             # Get the author via the UNI stashed in the session description
-            author = self.get_author(session['Description'])
+            author = self.get_author(session['Description'].lower().strip())
 
             # Create a Mediathread Item for this session
-            self.create_item(
+            session_id = session['Id']
+            item = self.create_item(
                 session['Name'], author, session_id, session['ThumbUrl'])
 
             # Move the item to this course's folder
             self.move_session(session_mgr, session_id)
 
-        messages.add_message(
-            self.request, messages.INFO, 'Panopto source materials imported.')
+            msg = '{} ({}) saved as <a href="/asset/{}">{}</a> for {}'.format(
+                session['Name'], session['Id'], item.id,
+                item.title, user_display_name(author))
+            messages.add_message(self.request, messages.INFO, msg)
+
         return HttpResponseRedirect(success_url)
 
 

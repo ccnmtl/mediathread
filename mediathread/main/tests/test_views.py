@@ -2,7 +2,6 @@
 # pylint: disable-msg=R0904
 # pylint: disable-msg=E1103
 from __future__ import unicode_literals
-from django.core.cache import cache
 
 from datetime import datetime
 import json
@@ -15,7 +14,9 @@ from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser, Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core import mail
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
@@ -1832,12 +1833,17 @@ class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
         self.view.request = RequestFactory().get('/')
         self.view.request.course = self.sample_course
 
+        setattr(self.view.request, 'session', 'session')
+        messages = FallbackStorage(self.view.request)
+        setattr(self.view.request, '_messages', messages)
+
     def test_already_imported(self):
-        self.assertFalse(self.view.already_imported('source url'))
+        session = {'Name': 'The Name', 'Id': 'source url'}
+        self.assertFalse(self.view.already_imported(session))
         AssetFactory(course=self.sample_course,
                      author=self.student_one,
                      primary_source='mp4_panopto')
-        self.assertTrue(self.view.already_imported('source url'))
+        self.assertTrue(self.view.already_imported(session))
 
     def test_get_author(self):
         self.assertEquals(

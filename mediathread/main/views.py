@@ -554,29 +554,29 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
         return (None, None)
 
-    def convert_media(self, url, secret, asset, folder):
+    def convert_media(self, user, course, url, secret, asset, folder):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
         nonce = '%smthc' % datetime.now().isoformat()
         digest = hmac.new(
             secret,
-            '%s:%s:%s' % (self.request.user.username, redirect_to, nonce),
+            '%s:%s:%s' % (user.username, redirect_to, nonce),
             hashlib.sha1).hexdigest()
 
         response = requests.post(url, {
-            'as': self.request.user.username,
+            'as': user.username,
             'redirect_url': redirect_to,
             'nonce': nonce,
             'hmac': digest,
             'folder': folder,
             'audio': asset.primary.is_audio(),
-            'set_course': self.request.course.group.name
+            'set_course': course.group.name
         })
         return response.status_code == 200
 
-    def convert_course_media(self, course, url, secret, folder):
+    def convert_course_media(self, user, course, url, secret, folder):
         for a in Asset.objects.filter(course=course):
             if a.upload_references() == 1 and not a.primary.is_panopto():
-                self.convert_media(url, secret, a, folder)
+                self.convert_media(user, course, url, secret, a, folder)
 
     def get_upload_folder(self, course):
         folder = course_details.get_upload_folder(course)
@@ -595,7 +595,8 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
         folder = self.get_upload_folder(self.request.course)
 
-        self.convert_course_media(self.request.course, url, secret, folder)
+        self.convert_course_media(
+            self.request.user, self.request.course, url, secret, folder)
 
         messages.add_message(self.request, messages.INFO,
                              'Materials were queued for conversion')

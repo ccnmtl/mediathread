@@ -573,6 +573,16 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
         })
         return response.status_code == 200
 
+    def convert_course_media(self, course, url, secret, folder):
+        for a in Asset.objects.filter(course=course):
+            if a.upload_references() == 1 and not a.primary.is_panopto():
+                self.convert_media(url, secret, a, folder)
+
+    def get_upload_folder(self, course):
+        folder = course_details.get_upload_folder(course)
+        if not folder:
+            folder = course_details.add_upload_folder(course)
+
     def post(self, request, *args, **kwargs):
         success_url = reverse('course-convert-materials')
         (url, secret) = self.get_conversion_endpoint()
@@ -582,13 +592,9 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
                 u'Conversion endpoint is not configured')
             return HttpResponseRedirect(success_url)
 
-        folder = course_details.get_upload_folder(self.request.course)
-        if not folder:
-            folder = course_details.add_upload_folder(self.request.course)
+        folder = self.get_upload_folder(self.request.course)
 
-        for a in Asset.objects.filter(course=self.request.course):
-            if a.upload_references() == 1 and not a.primary.is_panopto():
-                self.convert_media(url, secret, a, folder)
+        self.convert_course_media(self.request.course, url, secret, folder)
 
         messages.add_message(self.request, messages.INFO,
                              'Materials were queued for conversion')

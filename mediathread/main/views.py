@@ -582,6 +582,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
         folder = course_details.get_upload_folder(course)
         if not folder:
             folder = course_details.add_upload_folder(course)
+        return folder
 
     def post(self, request, *args, **kwargs):
         success_url = reverse('course-convert-materials')

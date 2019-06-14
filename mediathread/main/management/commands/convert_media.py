@@ -44,3 +44,4 @@ class Command(BaseCommand):
             folder = view.get_upload_folder(course)
             if folder and not fake:
                 view.convert_course_media(user, course, url, secret, folder)
+                print('Course {} media submitted'.format(course.id))

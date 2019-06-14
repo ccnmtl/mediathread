@@ -563,7 +563,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
             hashlib.sha1).hexdigest()
 
         response = requests.post(url, {
-            'as': user.username,
+            'as': asset.author.username,
             'redirect_url': redirect_to,
             'nonce': nonce,
             'hmac': digest,

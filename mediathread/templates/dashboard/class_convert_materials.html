@@ -28,7 +28,7 @@
             <p>The following media will be converted</p>
             <ul class="list-group">
                 {% for asset in assets %}
-                    {% if asset.upload_references == 1 and not asset.primary.is_panopto %}
+                    {% if asset.upload_references >= 1 and not asset.primary.is_panopto %}
                     <li class="list-group-item">
                         <a target="about:blank" href="{% url 'asset-view' asset.id %}">{{asset.title}}</a><br />
                         {{asset.primary.url}} {{references}}

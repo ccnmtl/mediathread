@@ -559,7 +559,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
         nonce = '%smthc' % datetime.now().isoformat()
         digest = hmac.new(
             secret,
-            '%s:%s:%s' % (user.username, redirect_to, nonce),
+            '%s:%s:%s' % (asset.author.username, redirect_to, nonce),
             hashlib.sha1).hexdigest()
 
         response = requests.post(url, {
@@ -575,7 +575,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
     def convert_course_media(self, user, course, url, secret, folder):
         for a in Asset.objects.filter(course=course):
-            if a.upload_references() == 1 and not a.primary.is_panopto():
+            if a.upload_references() >= 1 and not a.primary.is_panopto():
                 self.convert_media(user, course, url, secret, a, folder)
 
     def get_upload_folder(self, course):

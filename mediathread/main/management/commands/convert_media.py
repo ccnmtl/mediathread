@@ -25,7 +25,7 @@ class Command(BaseCommand):
             asset__added__gte=datetime(2014, 9, 1)).exclude(
                 label__in=invalid_labels)
         ids = qs.values_list('asset__course__id', flat=True).distinct()
-        return Course.objects.filter(id__in=ids)
+        return Course.objects.filter(id__in=ids).order_by('-created_at')
 
     def handle(self, *app_labels, **options):
         n = options['number']

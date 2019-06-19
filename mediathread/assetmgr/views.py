@@ -272,13 +272,23 @@ class AssetCreateView(View):
 
 class AssetUpdateView(View):
 
-    def get_asset_id(self, url):
-        matches = re.findall(r'/(\d+)/', url)
+    def get_matching_assets(self, wardenclyffe_id):
+        q = '"wardenclyffe-id": ["{}"]'.format(wardenclyffe_id)
+        return Asset.objects.filter(metadata_blob__contains=q)
 
-        if len(matches) > 0:
-            return int(matches[0])
+    def update_asset(self, asset, items):
+        for key, value in items:
+            # replace primary source completely. the labels will differ
+            if key in Asset.primary_labels:
+                if len(value) < 1:
+                    return False
 
-        return None
+                asset.update_primary(key, value)
+            else:
+                # update a secondary source based on label
+                sources = asset.source_set.filter(label=key)
+                sources.update(url=value)
+        return True
 
     ''' No login required so server2server interface is possible'''
     ''' Authentication is managed via courseaffils CourseAccess '''
@@ -287,25 +297,18 @@ class AssetUpdateView(View):
         if not CourseAccess.allowed(request):
             return HttpResponseForbidden()
 
-        try:
-            arg = self.request.POST.get('asset-url', None)
-            asset = Asset.objects.get(id=self.get_asset_id(arg))
-        except (TypeError, Asset.DoesNotExist):
+        wid = self.request.POST.get('metadata-wardenclyffe-id', None)
+        if not wid:
             return HttpResponseNotFound()
 
-        for key, value in request.POST.items():
-            # replace primary source completely. the labels will differ
-            if key in Asset.primary_labels:
-                if len(value) < 1:
-                    # don't empty out a primary source
-                    msg = 'Invalid primary source for {}'.format(key)
-                    return HttpResponseBadRequest(msg)
+        qs = self.get_matching_assets(wid)
+        if qs.count() == 0:
+            return HttpResponseNotFound()
 
-                asset.update_primary(key, value)
-            else:
-                # update a secondary source based on label
-                sources = asset.source_set.filter(label=key)
-                sources.update(url=value)
+        for asset in self.get_matching_assets(wid):
+            items = request.POST.items()
+            if not self.update_asset(asset, items):
+                return HttpResponseBadRequest()
 
         return HttpResponse('updated')
 

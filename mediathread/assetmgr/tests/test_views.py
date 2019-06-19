@@ -917,8 +917,9 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
-        self.asset = AssetFactory(course=self.sample_course,
-                                  primary_source='flv')
+        self.asset = AssetFactory(
+            course=self.sample_course, primary_source='flv',
+            metadata_blob='{"wardenclyffe-id": ["33210"], "license": [""]')
         SourceFactory(asset=self.asset, label='thumb', url='foo')
 
         self.url = reverse('asset-update-view')
@@ -931,13 +932,12 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
             'mp4_pseudo': ''
         }
 
-    def test_get_asset_id(self):
-        url = 'http://testserver/asset/'
-        self.assertIsNone(AssetUpdateView().get_asset_id(url))
+    def test_get_matching_assets(self):
+        self.assertEquals(
+            AssetUpdateView().get_matching_assets('123').count(), 0)
 
-        url = 'http://testserver/asset/53/'
-        aid = AssetUpdateView().get_asset_id(url)
-        self.assertEquals(int(aid), 53)
+        self.assertEquals(
+            AssetUpdateView().get_matching_assets('33210').first(), self.asset)
 
     def test_not_allowed(self):
         # anonymous get or post
@@ -965,12 +965,11 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
             self.assertEquals(response.status_code, 404)
 
             # Invalid
-            self.params['asset-url'] = reverse('asset-view', args=[999])
             response = self.client.post(self.url, self.params, follow=True)
             self.assertEquals(response.status_code, 404)
 
     def test_update_primary_and_thumb(self):
-        self.params['asset-url'] = reverse('asset-view', args=[self.asset.id])
+        self.params['metadata-wardenclyffe-id'] = '33210',
 
         secrets = {'http://testserver/': self.params['secret']}
         with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):

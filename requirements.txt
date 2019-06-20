@@ -125,7 +125,7 @@ boto==2.49.0
 functools32==3.2.3-2
 entrypoints==0.3
 django-storages==1.7.1
-django-cacheds3storage==0.1.2
+django-cacheds3storage==0.2.1
 
 requests-toolbelt==0.9.1
 pytz==2019.1

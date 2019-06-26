@@ -1,4 +1,4 @@
-/* global _: true, AssignmentView: true */
+/* global AssignmentView: true */
 /* global tinymceSettings:true, tinymce: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

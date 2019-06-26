@@ -1,4 +1,4 @@
-/* global _: true, Backbone: true, getVisibleContentHeight: true */
+/* global getVisibleContentHeight: true */
 /* global showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

@@ -1,7 +1,7 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
-/* global updateUserSetting: true, console: true */
+/* global updateUserSetting: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -132,7 +132,8 @@
 
             var theAsset;
             for (var key in asset_full.assets) {
-                if (asset_full.assets.hasOwnProperty(key)) {
+                if (Object.prototype.hasOwnProperty.call(
+                    asset_full.assets, key)) {
                     theAsset = asset_full.assets[key];
                     break;
                 }
@@ -488,7 +489,7 @@
             var list  = jQuery(element).find('ul.selections')[0];
             jQuery(list).find('li').remove();
 
-            if (this.hasOwnProperty('active_asset')) {
+            if (Object.prototype.hasOwnProperty.call(this, 'active_asset')) {
                 var activeAnnotations = this.active_asset.annotations.length;
                 for (var i = 0; i < activeAnnotations; i++) {
                     var ann = this.active_asset.annotations[i];

@@ -1,4 +1,4 @@
-/* global _: true, Backbone: true, tinymce: true, tinymceSettings: true */
+/* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {

@@ -1,4 +1,4 @@
-/* global _: true, AssignmentView: true, updateUserSetting: true */
+/* global AssignmentView: true, updateUserSetting: true */
 /* global MediaThread: true, tinymceSettings:true, tinymce: true */
 /* global showMessage: true, confirmAction: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers

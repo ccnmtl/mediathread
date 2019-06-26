@@ -1,4 +1,4 @@
-/* global escape: true, MediaThread: true, unescape: true */
+/* global MediaThread: true */
 /* exported _propertyCount, getVisibleContentHeight */
 /* exported switcher, toggleHelp, toggleHelpOverlay, storeData */
 /* exported retrieveData, showMessage, confirmAction */
@@ -7,7 +7,7 @@
 function _propertyCount(obj) {
     var count = 0;
     for (var k in obj) {
-        if (obj.hasOwnProperty(k)) {
+        if (Object.prototype.hasOwnProperty.call(obj, k)) {
             count++;
         }
     }

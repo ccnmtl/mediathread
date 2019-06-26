@@ -1,5 +1,5 @@
 /* jshint loopfunc: true */
-/* global _: true, Backbone: true, showMessage: true */
+/* global showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
@@ -534,7 +534,7 @@
             var self = this;
 
             for (var key in parentsArray) {
-                if (!parentsArray.hasOwnProperty(key)) {
+                if (!Object.prototype.hasOwnProperty.call(parentsArray, key)) {
                     continue;
                 }
                 var existingVocab = self.collection.getByDisplayName(key);
@@ -597,7 +597,8 @@
                 }
 
                 if (pL !== undefined && pL.length > 0) {
-                    var search = parentsArray.hasOwnProperty(pL);
+                    var search =
+                        Object.prototype.hasOwnProperty.call(parentsArray, pL);
                     if (!search) {
                         /*
                          * create the 'vocabulary' object

@@ -63,7 +63,7 @@ function buildshieldbox() {
         thisbrowsername = 'MSIE';
     }
     for (var key in browserlist) {
-        if (browserlist.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(browserlist, key)) {
             if (BrowserDetect.browser.toLowerCase() === key.toLowerCase() ||
                 (thisbrowsername && thisbrowsername.toLowerCase() ===
                     key.toLowerCase())) {

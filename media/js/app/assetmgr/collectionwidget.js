@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
-/* global Mustache: true, Sherd: true, console: true */
+/* global djangosherd_adaptAsset: true, MediaThread: true */
+/* global Mustache: true, Sherd: true */
 /* global CitationView: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -169,7 +169,8 @@ CollectionWidget.prototype.mapEvents = function() {
         'change', '.switcher-tool select.vocabulary', function(evt) {
             var option = evt.added || evt.removed;
             var vocab = jQuery(option.element).parent().attr('data-id');
-            if (!self.currentRecords.active_filters.hasOwnProperty(vocab)) {
+            if (!Object.prototype.hasOwnProperty.call(
+                self.currentRecords.active_filters, vocab)) {
                 self.currentRecords.active_filters[vocab] = [];
             }
 
@@ -505,7 +506,8 @@ CollectionWidget.prototype.updateSwitcher = function() {
 
             var values = [];
             for (var key in self.currentRecords.active_filters) {
-                if (self.currentRecords.active_filters.hasOwnProperty(key) &&
+                if (Object.prototype.hasOwnProperty.call(
+                    self.currentRecords.active_filters, key) &&
                     self.currentRecords.active_filters[key].length > 0) {
                     if (self.currentRecords.active_filters[key].split) {
                         var val = self.currentRecords.active_filters[key]
@@ -530,7 +532,8 @@ CollectionWidget.prototype.updateAssets = function(the_records) {
     this.switcher_context.space_viewer = the_records.space_viewer;
     this.switcher_context.selected_view = this.selected_view;
 
-    if (!the_records.hasOwnProperty('space_owner') ||
+    if (!Object.prototype.hasOwnProperty.call(
+        the_records, 'space_owner') ||
             the_records.space_owner === null) {
         this.switcher_context.selected_label = 'All Class Members';
         this.switcher_context.showing_all_items = true;
@@ -614,7 +617,7 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
 };
 
 CollectionWidget.prototype.initCitationView = function() {
-    if (!this.hasOwnProperty('citationView')) {
+    if (!Object.prototype.hasOwnProperty.call(this, 'citationView')) {
         // Setup the media display window.
         this.citationView = new CitationView();
         this.citationView.init({
@@ -715,9 +718,11 @@ CollectionWidget.prototype.filteredUrl = function() {
     var url = this.baseUrl();
 
     // tack on all the filters
-    if (this.currentRecords.hasOwnProperty('active_filters')) {
+    if (Object.prototype.hasOwnProperty.call(
+        this.currentRecords, 'active_filters')) {
         for (var filter in this.currentRecords.active_filters) {
-            if (this.currentRecords.active_filters.hasOwnProperty(filter) &&
+            if (Object.prototype.hasOwnProperty.call(
+                this.currentRecords.active_filters, filter) &&
                     this.isValidFilter(filter)) {
                 var val = this.currentRecords.active_filters[filter];
                 if (val) {

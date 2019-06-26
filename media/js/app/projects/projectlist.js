@@ -1,4 +1,4 @@
-/* global jQuery: true, STATIC_URL: true */
+/* global STATIC_URL: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
 /* global Mustache: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers

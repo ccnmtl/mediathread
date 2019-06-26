@@ -1,4 +1,4 @@
-/* global _: true, CitationView: true */
+/* global CitationView: true */
 /* global AssignmentEditView: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

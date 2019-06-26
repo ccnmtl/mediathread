@@ -1,4 +1,3 @@
-/* global _: true, Backbone: true */
 /* global confirmAction: true */
 
 (function() {

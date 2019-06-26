@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
-/* global djangosherd_adaptAsset: true, escape: true, MediaThread: true */
-/* global Mustache: true, Sherd: true, console: true */
+/* global djangosherd_adaptAsset: true, MediaThread: true */
+/* global Mustache: true, Sherd: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -25,9 +25,12 @@ var CollectionList = function(config) {
     self.create_annotation_thumbs = config.create_annotation_thumbs;
     self.create_asset_thumbs = config.create_asset_thumbs;
     self.$parent = config.$parent;
-    self.selected_view = config.hasOwnProperty('selectedView') ?
-        config.selectedView : 'Medium';
-    self.citable = config.hasOwnProperty('citable') ? config.citable : false;
+    self.selected_view =
+        Object.prototype.hasOwnProperty.call(config, 'selectedView') ?
+            config.selectedView : 'Medium';
+    self.citable =
+        Object.prototype.hasOwnProperty.call(config, 'citable') ?
+            config.citable : false;
     self.owners = config.owners;
     self.limits = {offset: 0, limit: 20};
     self.loading = false;
@@ -119,7 +122,8 @@ var CollectionList = function(config) {
         'change', 'select.vocabulary', function(evt) {
             var option = evt.added || evt.removed;
             var vocab = jQuery(option.element).parent().attr('data-id');
-            if (!self.current_records.active_filters.hasOwnProperty(vocab)) {
+            if (!Object.prototype.hasOwnProperty.call(
+                self.current_records.active_filters, vocab)) {
                 self.current_records.active_filters[vocab] = [];
             }
 
@@ -235,7 +239,8 @@ CollectionList.prototype.constructUrl = function(config, updating) {
         url = this.getSpaceUrl();
 
         for (var filter in this.current_records.active_filters) {
-            if (this.current_records.active_filters.hasOwnProperty(filter)) {
+            if (Object.prototype.hasOwnProperty.call(
+                this.current_records.active_filters, filter)) {
                 var val = this.current_records.active_filters[filter];
                 if (val !== null && val.length > 0) {
                     url += '&' + filter + '=' + escape(val.toString());
@@ -371,7 +376,8 @@ CollectionList.prototype.filter = function() {
     var url = self.getSpaceUrl();
 
     for (var filter in self.current_records.active_filters) {
-        if (self.current_records.active_filters.hasOwnProperty(filter)) {
+        if (Object.prototype.hasOwnProperty.call(
+            self.current_records.active_filters, filter)) {
             var val = self.current_records.active_filters[filter];
             if (val !== null && val.length > 0) {
                 url += '&' + filter + '=' + escape(val.toString());
@@ -391,7 +397,8 @@ CollectionList.prototype.filter = function() {
 };
 
 CollectionList.prototype.getShowingAllItems = function(json) {
-    return !json.hasOwnProperty('space_owner') || json.space_owner === null;
+    return !Object.prototype.hasOwnProperty.call(json, 'space_owner') ||
+        json.space_owner === null;
 };
 
 CollectionList.prototype.getSpaceUrl = function(active_tag, active_modified) {
@@ -563,7 +570,8 @@ CollectionList.prototype.updateSwitcher = function() {
 
             var values = [];
             for (var key in self.current_records.active_filters) {
-                if (self.current_records.active_filters.hasOwnProperty(key) &&
+                if (Object.prototype.hasOwnProperty.call(
+                    self.current_records.active_filters, key) &&
                     self.current_records.active_filters[key].length > 0) {
                     var val = self.current_records.active_filters[key]
                         .split(',');

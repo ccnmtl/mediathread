@@ -13,7 +13,7 @@ var SherdReport = function() {
         if (node.users) {
             jQuery('#reports-student-tbody tr').removeClass('highlight');
             for (var author in node.users) {
-                if (node.users.hasOwnProperty(author)) {
+                if (Object.prototype.hasOwnProperty.call(node.users, author)) {
                     jQuery('#reports-student-tbody tr.user-' + author)
                         .addClass('highlight');
                 }

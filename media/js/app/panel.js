@@ -92,7 +92,7 @@
 
             for (var i = 0; i < self.panels.length; i++) {
                 var panel = self.panels[i];
-                if (!panel.hasOwnProperty('loaded')) {
+                if (!Object.prototype.hasOwnProperty.call(panel, 'loaded')) {
 
                     // Add these new columns to the table, before the last
                     // column. The last column is reserved for a placeholder td

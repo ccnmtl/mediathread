@@ -94,7 +94,7 @@ nameparser==1.0.3
 django-bootstrap3==11.0.0
 ua_parser==0.8.0
 user_agents==2.0
-django_user_agents==0.3.2
+django_user_agents==0.4.0
 gunicorn==19.9.0
 traitlets==4.3.2
 ipython_genutils==0.2.0

@@ -83,7 +83,7 @@ Faker==1.0.7
 factory_boy==2.12.0
 django-impersonate==1.4.1
 django-registration-redux==2.6
-django-waffle==0.16.0
+django-waffle==0.17.0
 django-cors-headers==3.0.2
 httplib2==0.13.0
 oauth==1.0.1

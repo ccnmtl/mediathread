@@ -1,5 +1,5 @@
 # flake8: noqa
-from settings_shared import *
+from mediathread.settings_shared import *
 from ccnmtlsettings.production import common
 
 locals().update(
@@ -30,6 +30,6 @@ except:  # nosec
 
 # local_settings overrides everything
 try:
-    from local_settings import *
+    from mediathread.local_settings import *
 except ImportError:
     pass

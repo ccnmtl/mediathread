@@ -1,5 +1,5 @@
 # flake8: noqa
-from settings_shared import *
+from mediathread.settings_shared import *
 
 DEBUG = True
 DATABASES = {
@@ -17,6 +17,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 try:
-    from local_settings import *
+    from mediathread.local_settings import *
 except ImportError:
     pass

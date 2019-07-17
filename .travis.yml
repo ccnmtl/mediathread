@@ -1,5 +1,5 @@
 language: python
-sudo: false
+dist: xenial
 addons:
   firefox: "52.6.0esr"
 env:
@@ -7,8 +7,14 @@ env:
   - TEST_SUITE=harvest1
   - TEST_SUITE=harvest2
 python:
-  - "2.7.6"
   - "2.7"
+  - "3.6"
+matrix:
+  exclude:
+  - python: '3.6'
+    env: TEST_SUITE=harvest1
+  - python: '3.6'
+    env: TEST_SUITE=harvest2
 before_install:
   - pip install --upgrade setuptools pip wheel
 script:

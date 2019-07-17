@@ -13,8 +13,6 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from tagging.models import Tag
 
-from mediathread.util import cmp
-
 
 METADATA_ORIGINAL_OWNER = 'Original Owner'
 
@@ -259,8 +257,7 @@ class Asset(models.Model):
     def filter_tags_by_users(self, users, counts=False):
         tags = Tag.objects.usage_for_queryset(
             self.sherdnote_set.filter(author__in=users), counts=counts)
-        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
-        return tags
+        return sorted(tags, key=lambda tag: tag.name.lower())
 
     def global_annotation(self, user, auto_create=True):
         from mediathread.djangosherd.models import SherdNote

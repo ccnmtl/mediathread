@@ -16,7 +16,6 @@ from tastypie.resources import ModelResource
 from courseaffils.lib import get_public_name
 from courseaffils.models import Course, CourseInfo
 from mediathread.djangosherd.models import SherdNote
-from mediathread.util import cmp
 from tastypie import fields
 
 
@@ -128,7 +127,7 @@ class TagResource(ModelResource):
 
     def render_related(self, request, object_list):
         tags = Tag.objects.usage_for_queryset(object_list, counts=True)
-        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+        tags = sorted(tags, key=lambda x: x.name.lower())
 
         tag_last = len(tags) - 1
         data = []
@@ -144,7 +143,7 @@ class TagResource(ModelResource):
     def render_for_course(self, request, object_list):
         notes = SherdNote.objects.filter(asset__course=request.course)
         tags = Tag.objects.usage_for_queryset(notes)
-        tags.sort(lambda a, b: cmp(a.name.lower(), b.name.lower()))
+        tags = sorted(tags, key=lambda x: x.name.lower())
 
         counts = []
         if len(object_list) > 0:

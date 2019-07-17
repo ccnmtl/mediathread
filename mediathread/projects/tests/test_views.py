@@ -456,7 +456,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(the_json['revisions']), 1)
 
     def test_project_view_readonly(self):
-        version = self.project_private.versions().next()
+        version = next(self.project_private.versions())
         url = reverse('project-view-readonly',
                       kwargs={'project_id': self.project_private.id,
                               'version_number': version.revision_id})
@@ -1057,7 +1057,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
         self.assertEquals(len(the_json['assets']), 1)
 
-        notes = the_json['assets'].values()[0]['annotations']
+        notes = list(the_json['assets'].values())[0]['annotations']
         for idx, note in enumerate(notes):
             self.assertEquals(note['id'], visible[idx][0])
             self.assertEquals(note['editable'], visible[idx][1])

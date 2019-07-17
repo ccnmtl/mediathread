@@ -277,7 +277,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         note = new_asset.global_annotation(self.instructor_three, False)
         self.assertEquals(
             note.tags,
-            u',image, instructor_one_global,,instructor_two_global,')
+            ',image, instructor_one_global,,instructor_two_global,')
         self.assertIsNone(note.body)
 
     def test_migrate_with_notes(self):
@@ -311,7 +311,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(note.tags, '')
         self.assertEquals(
             note.body,
-            u'instructor one global noteinstructor two global note')
+            'instructor one global noteinstructor two global note')
 
     def test_migrate_tags_and_notes(self):
         data = {
@@ -343,10 +343,10 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         note = new_asset.global_annotation(self.instructor_three, False)
         self.assertEquals(
             note.tags,
-            u',image, instructor_one_global,,instructor_two_global,')
+            ',image, instructor_one_global,,instructor_two_global,')
         self.assertEquals(
             note.body,
-            u'instructor one global noteinstructor two global note')
+            'instructor one global noteinstructor two global note')
 
     def test_migrate_project(self):
         self.project1 = ProjectFactory.create(course=self.sample_course,
@@ -1123,8 +1123,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-invite-accept', kwargs={'uidb64': invite.uuid})
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
-        self.assertTrue(
-            'This invitation has already been accepted' in response.content)
+        self.assertContains(
+            response, 'This invitation has already been accepted')
 
     def test_accept_invite_get_invite(self):
         view = CourseAcceptInvitationView()
@@ -1398,9 +1398,9 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertIn(
             'Date Range: 2015-10-01 - 2015-12-13',
             mail.outbox[0].body)
-        self.assertIn(
-            'Consult/Demo request: [u\'demo\']',
-            mail.outbox[0].body)
+        self.assertTrue(
+            re.search(r'Consult\/Demo request: \[u?\'demo\'\]',
+                      mail.outbox[0].body))
         self.assertIn(
             'How will Mediathread be used to improve your class?\n' +
             'Just because!',

@@ -29,6 +29,6 @@ TEMPLATE_DEBUG = DEBUG
 DEV_ENV = True
 
 try:
-    from local_settings import *
+    from mediathread.local_settings import *
 except ImportError:
     pass

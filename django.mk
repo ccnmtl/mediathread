@@ -1,4 +1,4 @@
-# VERSION=1.6.0
+# VERSION=1.7.0
 
 # CHANGES:
 # 1.7.0 - TBA        - Now using python 3 by default
@@ -18,8 +18,8 @@ REQUIREMENTS ?= requirements.txt
 SYS_PYTHON ?= python
 PIP ?= $(VE)/bin/pip
 PY_SENTINAL ?= $(VE)/sentinal
-WHEEL_VERSION ?= 0.32.3
-PIP_VERSION ?= 18.1
+WHEEL_VERSION ?= 0.33.4
+PIP_VERSION ?= 19.1.1
 VIRTUALENV ?= virtualenv.py
 SUPPORT_DIR ?= requirements/virtualenv_support/
 MAX_COMPLEXITY ?= 10

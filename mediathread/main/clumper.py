@@ -1,3 +1,5 @@
+from functools import total_ordering, cmp_to_key
+
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from django_comments.models import Comment
 from mediathread.assetmgr.models import Asset
@@ -37,6 +39,7 @@ class Clumper(object):
         # will use ClumpItem.__cmp__
         return iter(sorted(self.items.values()))
 
+    @total_ordering
     @python_2_unicode_compatible
     class ClumpItem(object):
         things = None
@@ -48,8 +51,14 @@ class Clumper(object):
             self.primary = primary
             self.group_by = group_by
 
-        def __cmp__(self, other):
-            return self.order_by(self.things[0], other.things[0])
+        def __eq__(self, other):
+            return self.order_by(self.things[0], other.things[0]) == 0
+
+        def __ne__(self, other):
+            return not (self == other)
+
+        def __lt__(self, other):
+            return self.order_by(self.things[0], other.things[0]) < 0
 
         def __str__(self):
             return smart_text(self.things[0])
@@ -58,7 +67,7 @@ class Clumper(object):
             if len(self.things) < 4:
                 if obj not in self.things:  # no dups
                     self.things.append(obj)
-                    self.things.sort(self.order_by)
+                    self.things.sort(key=cmp_to_key(self.order_by))
 
         @staticmethod
         def order_by(obj_a, obj_b):

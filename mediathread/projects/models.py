@@ -641,7 +641,7 @@ class Project(models.Model):
 
     def latest_version(self):
         try:
-            version = Version.objects.get_for_object(self).get_unique().next()
+            version = next(Version.objects.get_for_object(self).get_unique())
             return version.revision_id
         except StopIteration:
             return None

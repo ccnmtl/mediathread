@@ -1,4 +1,6 @@
 # pylint: disable-msg=R0904
+from __future__ import unicode_literals
+
 import datetime
 import hashlib
 import hmac
@@ -70,8 +72,8 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             }, format='json')
         self.assertEqual(r.status_code, 400)
         self.assertEqual(
-            r.content, 'The selected asset didn\'t have the '
-            'correct data to be imported into Mediathread.')
+            r.content, b'The selected asset didn\'t have the '
+            b'correct data to be imported into Mediathread.')
 
     def test_sources_from_args(self):
         data = {'title': 'Bad Asset',
@@ -86,7 +88,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         data = {'title': 'Good Asset',
                 'asset-source': 'bookmarklet',
                 'image': 'https://www.flickr.com/',
-                'image-metadata': [u'w720h526;text/html']}
+                'image-metadata': ['w720h526;text/html']}
         request = RequestFactory().post('/save/', data)
         sources = AssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
@@ -791,8 +793,9 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
 
         nonce = '%smthc' % datetime.datetime.now().isoformat()
         digest = hmac.new(
-            'secret',
-            '%s:%s:%s' % (self.sample_course.id, note.id, nonce),
+            'secret'.encode('utf-8'),
+            '{}:{}:{}'.format(
+                self.sample_course.id, note.id, nonce).encode('utf-8'),
             hashlib.sha1).hexdigest()
 
         view = AssetEmbedView()

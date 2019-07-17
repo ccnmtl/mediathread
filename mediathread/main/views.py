@@ -25,7 +25,7 @@ from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
@@ -472,8 +472,12 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
         nonce = '%smthc' % datetime.now().isoformat()
         digest = hmac.new(
-            secret,
-            '%s:%s:%s' % (self.request.user.username, redirect_to, nonce),
+            smart_bytes(secret),
+            smart_bytes('{}:{}:{}'.format(
+                self.request.user.username,
+                redirect_to,
+                nonce
+            )),
             hashlib.sha1).hexdigest()
 
         response = requests.post(url, {
@@ -558,8 +562,9 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
         nonce = '%smthc' % datetime.now().isoformat()
         digest = hmac.new(
-            secret,
-            '%s:%s:%s' % (asset.author.username, redirect_to, nonce),
+            smart_bytes(secret),
+            smart_bytes('{}:{}:{}'.format(
+                asset.author.username, redirect_to, nonce)),
             hashlib.sha1).hexdigest()
 
         response = requests.post(url, {
@@ -1366,13 +1371,9 @@ class LTICourseCreate(LoggedInMixin, View):
         self.request.user.groups.add(group)
         self.request.user.groups.add(faculty_group)
 
-        # got or create the course
-        try:
-            course = \
-                Course.objects.get(group=group, faculty_group=faculty_group)
-        except Course.DoesNotExist:
-            course = Course.objects.create(
-                title=title, group=group, faculty_group=faculty_group)
+        course, created = Course.objects.get_or_create(
+            group=group, faculty_group=faculty_group,
+            defaults={'title': title})
 
         if d:
             # Add CourseInfo from the fields

@@ -1,5 +1,5 @@
 # flake8: noqa
-from settings_shared import *
+from mediathread.settings_shared import *
 
 # required settings:
 SECRET_KEY = os.environ['SECRET_KEY']

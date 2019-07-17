@@ -1,6 +1,7 @@
 # pylint: disable-msg=R0904
 from random import choice
-from string import letters
+
+from string import ascii_letters
 
 from courseaffils.lib import get_public_name
 
@@ -128,7 +129,7 @@ class ProjectResource(ModelResource):
         asset_resource = AssetResource()
         sherd_resource = SherdNoteResource()
 
-        rand = ''.join([choice(letters) for i in range(5)])  # nosec
+        rand = ''.join([choice(ascii_letters) for i in range(5)])  # nosec
 
         assets = {}
         notes = []

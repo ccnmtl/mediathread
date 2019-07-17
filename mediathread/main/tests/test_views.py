@@ -14,6 +14,7 @@ from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser, Group
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.messages import get_messages
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core import mail
 from django.core.cache import cache
@@ -1811,13 +1812,15 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
         view = CourseConvertMaterialsView()
         view.request = request
 
-        ctx = view.get_context_data()
-        self.assertFalse(ctx['endpoint'])
-        self.assertEquals(ctx['assets'].count(), 3)
+        with self.settings(ASSET_CONVERT_API=None):
+            ctx = view.get_context_data()
+            self.assertFalse(ctx['endpoint'])
+            self.assertEquals(ctx['assets'].count(), 3)
 
     def test_get_conversion_endpoint(self):
         view = CourseConvertMaterialsView()
-        self.assertEquals(view.get_conversion_endpoint(), (None, None))
+        with self.settings(SERVER_ADMIN_SECRETKEYS={}):
+            self.assertEquals(view.get_conversion_endpoint(), (None, None))
 
         rv = ('http://something', 'foo')
         with self.settings(ASSET_CONVERT_API=rv[0],
@@ -1847,9 +1850,9 @@ class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
 
     def test_get_author(self):
         self.assertEquals(
-            self.view.get_author('student_one'), self.student_one)
+            self.view.get_author('student_one'), (self.student_one, False))
 
-        user = self.view.get_author('zz123')
+        user, created = self.view.get_author('zz123')
         self.assertTrue(self.sample_course.is_true_member(user))
 
     def test_create_item(self):
@@ -1863,3 +1866,51 @@ class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
             self.assertEquals(item.primary.url, 'session_id')
             self.assertEquals(item.thumb_url, 'https://localhost/thumb')
             self.assertEquals(item.primary.label, 'mp4_panopto')
+
+    def test_complete_incomplete(self):
+        ctx = {'State': 'foo', 'Name': 'bar', 'Id': 1}
+        self.assertFalse(self.view.complete_session(ctx))
+        messages = [m.message for m in get_messages(self.view.request)]
+        self.assertTrue('bar (1) incomplete' in messages)
+
+    def test_complete_icomplete(self):
+        ctx = {'State': 'Complete', 'Name': 'bar', 'Id': 1}
+        self.assertTrue(self.view.complete_session(ctx))
+        messages = [m.message for m in get_messages(self.view.request)]
+        self.assertEquals(len(messages), 0)
+
+    def test_add_message(self):
+        item = AssetFactory(
+            id=1, title='Item',
+            course=self.sample_course, author=self.student_one,
+            primary_source='mp4_panopto')
+
+        session = {'Name': 'bar', 'Id': 1}
+        self.view.add_message(session, item, self.student_one, False)
+        messages = [m.message for m in get_messages(self.view.request)]
+        self.assertTrue(
+            'bar (1) saved as <a href="/asset/1/">Item</a> for Student One' in
+            messages)
+
+        session = {'Name': 'bar', 'Id': 1}
+        self.view.add_message(session, item, self.student_one, True)
+        messages = [m.message for m in get_messages(self.view.request)]
+        self.assertTrue(
+            ('bar (1) saved as <a href="/asset/1/">Item</a>'
+             ' for Student One. <b>student_one is a new user</b>') in messages)
+
+    def test_send_email(self):
+        item = AssetFactory(
+            id=1, title='Item',
+            course=self.sample_course, author=self.student_one,
+            primary_source='mp4_panopto')
+
+        self.view.send_email(self.student_one, item)
+
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(mail.outbox[0].subject,
+                         'Mediathread submission now available')
+        self.assertEquals(mail.outbox[0].from_email, settings.SERVER_EMAIL)
+        self.assertEquals(mail.outbox[0].to,
+                          [self.student_one.email])

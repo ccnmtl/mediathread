@@ -925,9 +925,10 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
     def get_author(self, uni):
         # If the student UNI is not yet in this course, add them as a student
         user, created = User.objects.get_or_create(username=uni)
+
         if not self.request.course.is_true_member(user):
             self.request.course.group.user_set.add(user)
-        return user
+        return user, created
 
     def create_item(self, name, author, session_id, thumb_url):
         # Create a Mediathread item using Session Name as the Item Title
@@ -944,6 +945,30 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         asset.global_annotation(author, auto_create=True)
         return asset
 
+    def add_message(self, session, item, author, created):
+        msg = '{} ({}) saved as <a href="/asset/{}/">{}</a> for {}'.format(
+            session['Name'], session['Id'], item.id,
+            item.title, user_display_name(author))
+        if created:
+            msg = '{}. <b>{} is a new user</b>'.format(
+                msg, author.username)
+        messages.add_message(self.request, messages.INFO, msg)
+
+    def send_email(self, author, item):
+        data = {
+            'course': self.request.course,
+            'domain': get_current_site(self.request).domain,
+            'item': item
+        }
+
+        email_address = (author.email or
+                         '{}@columbia.edu'.format(author.username))
+
+        send_template_email(
+            'Mediathread submission now available',
+            'main/mediathread_submission.txt',
+            data, email_address)
+
     def post(self, request, *args, **kwargs):
         success_url = reverse('course-panopto-source')
         session_mgr = self.get_session_manager()
@@ -957,7 +982,8 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
                 continue
 
             # Get the author via the UNI stashed in the session description
-            author = self.get_author(session['Description'].lower().strip())
+            author, created = \
+                self.get_author(session['Description'].lower().strip())
 
             # Create a Mediathread Item for this session
             session_id = session['Id']
@@ -967,10 +993,11 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
             # Move the item to this course's folder
             self.move_session(session_mgr, session_id)
 
-            msg = '{} ({}) saved as <a href="/asset/{}">{}</a> for {}'.format(
-                session['Name'], session['Id'], item.id,
-                item.title, user_display_name(author))
-            messages.add_message(self.request, messages.INFO, msg)
+            # Craft a message about this session
+            self.add_message(session, item, author, created)
+
+            # Send an email to the student letting them know the video is ready
+            self.send_email(author, item)
 
         return HttpResponseRedirect(success_url)
 

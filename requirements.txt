@@ -37,7 +37,7 @@ unicodecsv==0.14.1
 
 editdistance==0.5.3
 
-pylint==1.9.4 # pyup: <2.0.0
+pylint==1.9.5 # pyup: <2.0.0
 
 astroid==1.6.6 # pyup: <2.0.0  # pylint
 

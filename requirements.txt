@@ -123,7 +123,8 @@ typing==3.7.4 # needed for django-extensions
 futures==3.2.0; python_version < '3'
 s3transfer==0.2.1
 jmespath==0.9.4
-botocore==1.12.193
+
+botocore==1.12.194
 boto3==1.9.194
 
 

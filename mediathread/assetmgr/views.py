@@ -4,9 +4,17 @@ import hashlib
 import hmac
 import json
 import re
-import urllib
-import urllib2
-from urlparse import urlparse
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
+try:
+    from urllib.parse import urlparse, quote
+except ImportError:
+    from urlparse import urlparse
+    from urllib import quote
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
@@ -22,6 +30,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
+from django.utils.encoding import smart_bytes
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 
@@ -472,14 +481,15 @@ class RedirectToUploaderView(LoggedInCourseMixin, View):
 
         nonce = '%smthc' % datetime.datetime.now().isoformat()
 
-        digest = hmac.new(special[exc.url],
-                          '%s:%s:%s' % (username, redirect_back, nonce),
-                          hashlib.sha1).hexdigest()
+        digest = hmac.new(
+            smart_bytes(special[exc.url]),
+            smart_bytes('{}:{}:{}'.format(username, redirect_back, nonce)),
+            hashlib.sha1).hexdigest()
 
         url = ("%s?set_course=%s&as=%s&redirect_url=%s"
                "&nonce=%s&hmac=%s&audio=%s&folder=%s") % (
             exc.url, request.course.group.name, username,
-            urllib.quote(redirect_back), nonce, digest,
+            quote(redirect_back), nonce, digest,
             request.POST.get('audio', ''), self.get_upload_folder())
 
         return HttpResponseRedirect(url)
@@ -501,7 +511,7 @@ def final_cut_pro_xml(request, asset_id):
             return HttpResponse("Not Found: This annotation's asset does not \
             have a Final Cut Pro source XML associated with it", status=404)
 
-        the_file = urllib2.urlopen(xmeml.url)  # nosec
+        the_file = urlopen(xmeml.url)  # nosec
         assert the_file.code == 200
         the_video = VideoSequence(xml_string=the_file.read())
 
@@ -760,8 +770,8 @@ class AssetReferenceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             ctx['tags'] = TagResource().render_related(request, notes)
 
             # vocabulary
-            ctx['vocabulary'] = VocabularyResource().render_related(request,
-                                                                    notes)
+            ctx['vocabulary'] = VocabularyResource().render_related(
+                request, notes)
 
             # DiscussionIndex is misleading. Objects returned are
             # projects & discussions title, object_pk, content_type, modified
@@ -827,14 +837,16 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         nonce = '%smthc' % datetime.datetime.now().isoformat()
         digest = hmac.new(
-            secret,
-            '%s:%s:%s' % (self.request.course.id, selection.id, nonce),
+            smart_bytes(secret),
+            smart_bytes(
+                '{}:{}:{}'.format(
+                    self.request.course.id, selection.id, nonce)),
             hashlib.sha1).hexdigest()
 
         iframe_url = '%s://%s%s?nonce=%s&hmac=%s' % (
             self.request.scheme, self.request.get_host(),
             view_url, nonce, digest)
-        return urllib.quote(iframe_url, safe='~()*!.\'')
+        return quote(iframe_url, safe='~()*!.\'')
 
     def post(self, request):
         return_url = request.POST.get('return_url', '')
@@ -876,8 +888,8 @@ class AssetEmbedView(TemplateView):
         digest = self.request.GET.get('hmac')
 
         new_digest = hmac.new(
-            secret,
-            '%s:%s:%s' % (course_id, selection_id, nonce),
+            smart_bytes(secret),
+            smart_bytes('{}:{}:{}'.format(course_id, selection_id, nonce)),
             hashlib.sha1).hexdigest()
 
         return digest == new_digest

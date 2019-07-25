@@ -32,7 +32,9 @@ class SherdNoteResource(ModelResource):
                 }
             vocabulary[rel.term.vocabulary.id]['terms'].append(
                 termResource.render_one(bundle.request, rel.term))
-        return vocabulary.values()
+        return sorted(
+            list(vocabulary.values()),
+            key=lambda x: x.get('id'))
 
     def dehydrate(self, bundle):
         try:

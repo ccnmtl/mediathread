@@ -3,7 +3,12 @@
 from __future__ import unicode_literals
 
 from os.path import basename
-from urlparse import urlparse, parse_qs
+
+try:
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    from urlparse import urlparse, parse_qs
+
 from django.db import migrations
 from django.db.models import Q
 

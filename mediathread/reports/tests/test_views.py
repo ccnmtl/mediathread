@@ -147,7 +147,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue('my_feed' in response.context_data)
         self.assertIsNone(response.context_data['my_feed'].stuff)
 
-        items = response.context_data['my_feed'].items.values()
+        items = list(response.context_data['my_feed'].items.values())
 
         self.assertEquals(len(items), 3)
         self.assertEquals(items[0].content_object, self.asset1)
@@ -248,8 +248,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         data = ("Student,One,student_one@example.com,Title,"
                 "Columbia University,Pablo Picasso,User Story,")
 
-        self.assertTrue(header in response.content)
-        self.assertTrue(data in response.content)
+        self.assertContains(response, header)
+        self.assertContains(response, data)
 
 
 class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
@@ -327,8 +327,8 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
                                                self.instructor_one)
         rows = view.get_report_rows(responses)
 
-        rows.next()  # header
-        row = rows.next()
+        next(rows)  # header
+        row = next(rows)
         self.assertEquals(row[0], 'Student One')
         self.assertEquals(row[1], 'student_one')
         self.assertEquals(row[2], 'Response 1')
@@ -347,7 +347,7 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         self.assertEquals(row[15], 1)  # author collection
 
         with self.assertRaises(StopIteration):
-            rows.next()
+            next(rows)
 
     def test_view(self):
         url = reverse('assignment-detail-report', args=[self.assignment1.id])

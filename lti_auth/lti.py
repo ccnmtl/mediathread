@@ -1,4 +1,5 @@
 from django.conf import settings
+import six
 from pylti.common import (
     LTIException, LTINotInSessionException, LTI_SESSION_KEY,
     verify_request_common, LTIRoleException, LTI_ROLES)
@@ -152,9 +153,9 @@ class LTI(object):
         :raises: LTIException is request validation failed
         """
         if request.method == 'POST':
-            params = dict(request.POST.iteritems())
+            params = dict(six.iteritems(request.POST))
         else:
-            params = dict(request.GET.iteritems())
+            params = dict(six.iteritems(request.GET))
 
         try:
             verify_request_common(self._consumers(),

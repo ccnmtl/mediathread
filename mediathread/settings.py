@@ -1,5 +1,5 @@
 # flake8: noqa
-from settings_shared import *
+from mediathread.settings_shared import *
 
 # if you add a 'deploy_specific' directory
 # then you can put a settings.py file and templates/ overrides there
@@ -14,6 +14,6 @@ except:  # nosec
 
 # local_settings overrides everything
 try:
-    from local_settings import *
+    from mediathread.local_settings import *
 except ImportError:
     pass

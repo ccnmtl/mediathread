@@ -4,7 +4,6 @@ from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
 
-from mediathread.util import cmp
 from mediathread.api import ClassLevelAuthentication, FacultyAuthorization
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 
@@ -132,10 +131,7 @@ class VocabularyResource(ModelResource):
                 ctx[rel.term.vocabulary.id]['terms'].append(rel.term.id)
 
         values = ctx.values()
-        values.sort(lambda a, b: cmp(a['display_name'].lower(),
-                    b['display_name'].lower()))
-
-        return values
+        return sorted(values, key=lambda x: x.get('display_name').lower())
 
     def render_for_course(self, request, object_list):
         related = TermRelationship.objects.none()
@@ -150,7 +146,4 @@ class VocabularyResource(ModelResource):
                 term['count'] = related.filter(term__id=term['id']).count()
             data.append(ctx)
 
-        data.sort(lambda a, b: cmp(a['display_name'].lower(),
-                                   b['display_name'].lower()))
-
-        return data
+        return sorted(data, key=lambda x: x.get('display_name').lower())

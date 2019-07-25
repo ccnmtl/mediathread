@@ -45,17 +45,16 @@ class Annotation(models.Model):
     @staticmethod
     def secondsToCode(seconds_float, long_format=False):
         seconds = int(seconds_float)
-        # assuming DIV: watchout python3k!
-        hrs = seconds / 3600
-        mins = (seconds % 3600) / 60
+        hrs = seconds // 3600
+        mins = (seconds % 3600) // 60
         secs = seconds % 60
-        ret_val = "%02d" % secs
+        ret_val = '{:02d}'.format(secs)
         if mins or long_format:
-            ret_val = "%02d:" % mins + ret_val
+            ret_val = '{:02d}:'.format(mins) + ret_val
         elif not hrs:
-            ret_val = "0:" + ret_val
+            ret_val = '0:' + ret_val
         if hrs or long_format:
-            ret_val = "%02d:" % hrs + ret_val
+            ret_val = '{:02d}:'.format(hrs) + ret_val
         return ret_val
 
     def range_as_timecode(self):

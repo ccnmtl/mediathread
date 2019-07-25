@@ -37,7 +37,7 @@ unicodecsv==0.14.1
 
 editdistance==0.5.3
 
-pylint==1.9.5 # pyup: <2.0.0
+pylint==1.9.4 # pyup: <1.9.5
 
 astroid==1.6.6 # pyup: <2.0.0  # pylint
 
@@ -66,7 +66,7 @@ django-reversion==3.0.4
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.1
 django-threadedcomments==1.2
-django-courseaffils==2.1.15
+django-courseaffils==2.2.1
 django-statsd-mozilla==0.4.0
 raven==6.10.0
 django-appconf==1.0.3  # django_compressor
@@ -116,9 +116,11 @@ freezegun==0.3.12
 django-smtp-ssl==1.0
 djangorestframework==3.7.7  # pyup: <3.8
 
-ccnmtlsettings==1.3.0 # pyup: <1.4.0
+ccnmtlsettings==1.5.0
 django-extensions==2.1.9
-typing==3.7.4 # needed for django-extensions
+
+# needed for django-extensions
+typing==3.7.4; python_version < '3.5'
 
 futures==3.2.0; python_version < '3'
 s3transfer==0.2.1
@@ -126,8 +128,6 @@ jmespath==0.9.4
 botocore>=1.12.194,<1.13.0
 boto3>=1.9.194,<1.10.0
 
-
-functools32==3.2.3-2
 entrypoints==0.3
 django-storages==1.7.1
 django-cacheds3storage==0.2.1
@@ -143,5 +143,5 @@ pyyaml==5.1.1
 bandit==1.6.2
 funcsigs==1.0.2 
 pypanopto==0.0.9
-functools32==3.2.3-2
+functools32==3.2.3-2; python_version < '3'
 entrypoints==0.3

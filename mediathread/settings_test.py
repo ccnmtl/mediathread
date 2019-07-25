@@ -1,5 +1,5 @@
 # flake8: noqa
-from settings_shared import *
+from mediathread.settings_shared import *
 
 DEBUG = False
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
@@ -36,11 +36,11 @@ PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.MD5PasswordHasher',
 )
 
-MIDDLEWARE_CLASSES.remove(
+MIDDLEWARE.remove(
     'django_statsd.middleware.GraphiteRequestTimingMiddleware')
-MIDDLEWARE_CLASSES.remove(
+MIDDLEWARE.remove(
     'django_statsd.middleware.GraphiteMiddleware')
-MIDDLEWARE_CLASSES.remove(
+MIDDLEWARE.remove(
     'impersonate.middleware.ImpersonateMiddleware')
 
 ALLOWED_HOSTS.append('127.0.0.1')

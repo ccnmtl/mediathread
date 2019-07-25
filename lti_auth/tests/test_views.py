@@ -56,7 +56,7 @@ class LTIViewTest(TestCase):
         response = LTIRoutingView().dispatch(request)
         self.assertEquals(response.status_code, 200)
 
-        self.assertTrue('Authentication Failed' in response.content)
+        self.assertContains(response, 'Authentication Failed')
         self.assertFalse(request.session[LTI_SESSION_KEY])
 
     def test_launch_invalid_course(self):
@@ -66,7 +66,7 @@ class LTIViewTest(TestCase):
             response = LTIRoutingView().dispatch(request)
             self.assertEquals(response.status_code, 200)
 
-            self.assertTrue('Course Configuration' in response.content)
+            self.assertContains(response, 'Course Configuration')
 
     def test_launch(self):
         with self.settings(PYLTI_CONFIG={'consumers': CONSUMERS},

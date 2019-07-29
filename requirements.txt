@@ -85,7 +85,7 @@ django-impersonate==1.4.1
 django-registration-redux==2.6
 django-waffle==0.17.0
 django-cors-headers==3.0.2
-httplib2==0.13.0
+httplib2==0.13.1
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.0.1

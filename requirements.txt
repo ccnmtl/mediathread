@@ -41,7 +41,7 @@ pylint==1.9.4 # pyup: <1.9.5
 
 astroid==1.6.6 # pyup: <2.0.0  # pylint
 
-pyasn1==0.4.5
+pyasn1==0.4.6
 ndg-httpsclient==0.5.1
 
 chardet==3.0.4

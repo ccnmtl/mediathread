@@ -9,7 +9,7 @@ pycodestyle==2.5.0
 enum34==1.1.6; python_version < '3.4'
 configparser==3.8.1
 flake8==3.7.7
-lxml==4.4.0
+lxml==4.4.1
 fuzzywuzzy==0.17.0  # lettuce
 mock==3.0.5  # sure
 sure==1.4.11  # lettuce

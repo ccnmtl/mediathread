@@ -21,18 +21,19 @@ A new base.html without the course context overwritten in the template.
         <script src="/jsi18n"></script>
 
         {% if not debug %}
-            <script src="https://cdn.ravenjs.com/3.20.1/raven.min.js" crossorigin="anonymous"></script>
+            <script src="https://browser.sentry-cdn.com/5.6.1/bundle.min.js" integrity="sha384-pGTFmbQfua2KiaV2+ZLlfowPdd5VMT2xU4zCBcuJr7TVQozMO+I1FmPuVHY3u8KB" crossorigin="anonymous"></script>
             <script>
-            Raven.config('https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468', {
+            Sentry.init({
+                dsn: 'https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468',
                 whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
-            }).install();
+            });
             {% if user.is_anonymous %}
-            Raven.setUserContext({
+            Sentry.setUser({
                 email: 'none',
                 id: 'anonymous'
             });
             {% else %}
-            Raven.setUserContext({
+            Sentry.setUser({
                 email: '{{user.email}}',
                 id: '{{user.username}}'
             });

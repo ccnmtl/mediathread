@@ -140,7 +140,7 @@ configuration can be kept out of the docker image).
 
 DJANGO SITE INFRASTRUCTURE
 ----------------
-Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/1.6/ref/contrib/sites/
+Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/2.2/ref/contrib/sites/
 
 By default, Django creates a site called "example.com" with an id of 1. This id is referenced in settings_shared.py as SITE_ID=1.
 

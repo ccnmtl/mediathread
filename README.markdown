@@ -140,7 +140,7 @@ configuration can be kept out of the docker image).
 
 DJANGO SITE INFRASTRUCTURE
 ----------------
-Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/1.6/ref/contrib/sites/
+Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/2.2/ref/contrib/sites/
 
 By default, Django creates a site called "example.com" with an id of 1. This id is referenced in settings_shared.py as SITE_ID=1.
 
@@ -151,7 +151,7 @@ If a new site is created, update SITE_ID=<new site id> in your deploy_specific/s
 ALLOWED_HOSTS
 ----------------
 
-ALLOWED_HOSTS is "a list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent an attacker from poisoning caches and password reset emails with links to malicious hosts by submitting requests with a fake HTTP Host header, which is possible even under many seemingly-safe web server configurations." More here: https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
+ALLOWED_HOSTS is "a list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent an attacker from poisoning caches and password reset emails with links to malicious hosts by submitting requests with a fake HTTP Host header, which is possible even under many seemingly-safe web server configurations." More here: https://docs.djangoproject.com/en/2.2/ref/settings/#allowed-hosts
 
 Make sure the ALLOWED_HOSTS is set properly in your deploy_specific/settings.py or local_settings.py  
 
@@ -196,7 +196,7 @@ DJANGOSHERD_FLICKR_APIKEY='your key here'
 
 FLATPAGES
 ----------------
-Mediathread's About & Help pages are constructed using the Django Flat Pages architecture. (https://docs.djangoproject.com/en/1.6/ref/contrib/flatpages/). In order to setup pages for your site, follow these steps:
+Mediathread's About & Help pages are constructed using the Django Flat Pages architecture. (https://docs.djangoproject.com/en/2.2/ref/contrib/flatpages/). In order to setup pages for your site, follow these steps:
 
 1. Navigate to the Mediathread /admin/ area, Flatpages.
 

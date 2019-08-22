@@ -120,7 +120,7 @@ ccnmtlsettings==1.5.0
 django-extensions==2.1.9
 
 # needed for django-extensions
-typing==3.7.4; python_version < '3.5'
+typing==3.7.4.1; python_version < '3.5'
 
 futures==3.2.0; python_version < '3'
 s3transfer==0.2.1

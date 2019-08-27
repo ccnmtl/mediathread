@@ -214,9 +214,10 @@ A new base.html without the course context overwritten in the template.
                 <!-- ###### Footer ###### -->
                 <div id="footer">
 
-                    <!-- CCNMTL title/logo -->
-                    <a id="logo_ccnmtl" href="http://ctl.columbia.edu" target="_blank" title="Columbia for Teaching and Learning">
-                        <img src="{{STATIC_URL}}img/logo_ccnmtl.gif" alt="CCNMTL Logo">
+                    <!-- CTL title/logo -->
+                    <a id="logo_ctl" href="https://ctl.columbia.edu" target="_blank" title="Columbia Center for Teaching and Learning">
+                        <img width="160" height="29.6"
+                             src="{% static 'img/logo_ctl.png' %}" alt="CTL Logo">
                         <span class="sr-only">Visit ctl.columbia.edu</span>
                     </a>
 

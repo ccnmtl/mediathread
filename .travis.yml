@@ -1,7 +1,7 @@
 language: python
 dist: xenial
 addons:
-  firefox: "52.6.0esr"
+  firefox: "68.0.2esr"
 env:
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest1

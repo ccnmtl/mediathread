@@ -7,7 +7,7 @@ from mediathread.assetmgr.views import (
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
     most_recent, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
-    AnnotationCopyView)
+    AnnotationCopyView, ManageIngestView)
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -17,6 +17,9 @@ urlpatterns = [
     url(r'^archive/$',
         ManageExternalCollectionView.as_view(), {},
         'collection-add-or-remove'),
+    url(r'^ingest/$',
+        ManageIngestView.as_view(), {},
+        'ingest-enable-disable'),
 
     # Archive save or delete
     url(r'^references/(?P<asset_id>\d+)/$', AssetReferenceView.as_view(),

@@ -5,17 +5,6 @@ import hmac
 import json
 import re
 
-try:
-    from urllib.request import urlopen
-except ImportError:
-    from urllib2 import urlopen
-
-try:
-    from urllib.parse import urlparse, quote
-except ImportError:
-    from urlparse import urlparse
-    from urllib import quote
-
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
 from django.conf import settings
@@ -47,9 +36,21 @@ from mediathread.main.models import UserSetting
 from mediathread.main.util import log_sentry_error
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
-    LoggedInSuperuserMixin
+    LoggedInSuperuserMixin, LoggedInFacultyMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
+try:
+    from urllib.parse import urlparse, quote
+except ImportError:
+    from urlparse import urlparse
+    from urllib import quote
 
 
 def _parse_domain(url):
@@ -57,7 +58,8 @@ def _parse_domain(url):
     return '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
 
 
-class ManageExternalCollectionView(LoggedInCourseMixin, View):
+class ManageExternalCollectionView(
+        LoggedInCourseMixin, LoggedInFacultyMixin, View):
 
     def post(self, request):
         suggested_id = request.POST.get('suggested_id', None)
@@ -96,6 +98,22 @@ class ManageExternalCollectionView(LoggedInCourseMixin, View):
 
         redirect_url = request.POST.get('redirect-url',
                                         reverse('class-manage-sources'))
+        return HttpResponseRedirect(redirect_url)
+
+
+class ManageIngestView(LoggedInCourseMixin, LoggedInFacultyMixin, View):
+
+    def post(self, request):
+        enable = request.POST.get('enable', None)
+        if enable is None:
+            return HttpResponseBadRequest('Invalid request parameters')
+
+        if enable == '1':
+            course_details.add_ingest_folder(request.course)
+        else:
+            course_details.clear_ingest_folder(request.course)
+
+        redirect_url = reverse('class-manage-sources')
         return HttpResponseRedirect(redirect_url)
 
 

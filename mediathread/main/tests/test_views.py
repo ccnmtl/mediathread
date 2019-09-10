@@ -14,8 +14,6 @@ from courseaffils.tests.factories import AffilFactory, CourseFactory
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser, Group
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.messages import get_messages
-from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core import mail
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
@@ -53,7 +51,7 @@ from mediathread.main.views import (
     AffilActivateView,
     MigrateCourseView, ContactUsView, CourseManageSourcesView,
     CourseRosterView, CourseAddUserByUNIView, CourseAcceptInvitationView,
-    unis_list, CourseConvertMaterialsView, CoursePanoptoSourceView)
+    unis_list, CourseConvertMaterialsView)
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
 
@@ -1826,91 +1824,3 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
         with self.settings(ASSET_CONVERT_API=rv[0],
                            SERVER_ADMIN_SECRETKEYS={rv[0]: rv[1]}):
             self.assertEquals(view.get_conversion_endpoint(), rv)
-
-
-class CoursePanoptoSourceViewTest(MediathreadTestMixin, TestCase):
-
-    def setUp(self):
-        self.setup_sample_course()
-        self.view = CoursePanoptoSourceView()
-        self.view.request = RequestFactory().get('/')
-        self.view.request.course = self.sample_course
-
-        setattr(self.view.request, 'session', 'session')
-        messages = FallbackStorage(self.view.request)
-        setattr(self.view.request, '_messages', messages)
-
-    def test_already_imported(self):
-        session = {'Name': 'The Name', 'Id': 'source url'}
-        self.assertFalse(self.view.already_imported(session))
-        AssetFactory(course=self.sample_course,
-                     author=self.student_one,
-                     primary_source='mp4_panopto')
-        self.assertTrue(self.view.already_imported(session))
-
-    def test_get_author(self):
-        self.assertEquals(
-            self.view.get_author('student_one'), (self.student_one, False))
-
-        user, created = self.view.get_author('zz123')
-        self.assertTrue(self.sample_course.is_true_member(user))
-
-    def test_create_item(self):
-        with self.settings(PANOPTO_SERVER='localhost/'):
-            item = self.view.create_item(
-                'Doe, J.', self.student_one, 'session_id', 'thumb')
-
-            self.assertTrue(item.title, 'Doe, J.')
-            self.assertEquals(item.course, self.sample_course)
-            self.assertEquals(item.author, self.student_one)
-            self.assertEquals(item.primary.url, 'session_id')
-            self.assertEquals(item.thumb_url, 'https://localhost/thumb')
-            self.assertEquals(item.primary.label, 'mp4_panopto')
-
-    def test_complete_incomplete(self):
-        ctx = {'State': 'foo', 'Name': 'bar', 'Id': 1}
-        self.assertFalse(self.view.complete_session(ctx))
-        messages = [m.message for m in get_messages(self.view.request)]
-        self.assertTrue('bar (1) incomplete' in messages)
-
-    def test_complete_icomplete(self):
-        ctx = {'State': 'Complete', 'Name': 'bar', 'Id': 1}
-        self.assertTrue(self.view.complete_session(ctx))
-        messages = [m.message for m in get_messages(self.view.request)]
-        self.assertEquals(len(messages), 0)
-
-    def test_add_message(self):
-        item = AssetFactory(
-            id=1, title='Item',
-            course=self.sample_course, author=self.student_one,
-            primary_source='mp4_panopto')
-
-        session = {'Name': 'bar', 'Id': 1}
-        self.view.add_message(session, item, self.student_one, False)
-        messages = [m.message for m in get_messages(self.view.request)]
-        self.assertTrue(
-            'bar (1) saved as <a href="/asset/1/">Item</a> for Student One' in
-            messages)
-
-        session = {'Name': 'bar', 'Id': 1}
-        self.view.add_message(session, item, self.student_one, True)
-        messages = [m.message for m in get_messages(self.view.request)]
-        self.assertTrue(
-            ('bar (1) saved as <a href="/asset/1/">Item</a>'
-             ' for Student One. <b>student_one is a new user</b>') in messages)
-
-    def test_send_email(self):
-        item = AssetFactory(
-            id=1, title='Item',
-            course=self.sample_course, author=self.student_one,
-            primary_source='mp4_panopto')
-
-        self.view.send_email(self.student_one, item)
-
-        self.assertEqual(len(mail.outbox), 1)
-
-        self.assertEqual(mail.outbox[0].subject,
-                         'Mediathread submission now available')
-        self.assertEquals(mail.outbox[0].from_email, settings.SERVER_EMAIL)
-        self.assertEquals(mail.outbox[0].to,
-                          [self.student_one.email])

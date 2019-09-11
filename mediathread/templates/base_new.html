@@ -2,7 +2,7 @@
 A new base.html without the course context overwritten in the template.
 {% endcomment %}
 
-{% load user_projects coursetags compress static bootstrap3 %}
+{% load user_projects coursetags compress static bootstrap3 waffle_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,6 +58,9 @@ A new base.html without the course context overwritten in the template.
 
         <link rel="chrome-webstore-item"
               href="https://chrome.google.com/webstore/detail/gambcgmmppeklfmbahomokogelnaffbi">
+
+        <link rel="stylesheet" href="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.css" />
+        <script src="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.js"></script>
     </head>
 
     {% course_role for request.user in course as role_in_course %}
@@ -172,7 +175,11 @@ A new base.html without the course context overwritten in the template.
                                 <div id="course_information">
                                     <h1 id="course_title">
                                         {% block coursetitle %}
+                                            {% flag "addressable_courses" %}
+                                            <a href="{% url 'course_detail' course.pk %}" id="course_title_link">{{course.title}}</a>
+                                            {% else %}
                                             <a href="/" id="course_title_link">{{course.title}}</a>
+                                            {% endflag %}
                                         {% endblock %}
                                     </h1>
                                     <div class="clear: right;"></div>

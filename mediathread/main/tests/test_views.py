@@ -1776,7 +1776,7 @@ class CourseDetailViewAnonTest(TestCase):
         self.assertEqual(r.status_code, 302)
 
 
-class CourseDetailViewTest(LoggedInSuperuserTestMixin, TestCase):
+class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(CourseDetailViewTest, self).setUp()
         self.course = CourseFactory()
@@ -1787,6 +1787,30 @@ class CourseDetailViewTest(LoggedInSuperuserTestMixin, TestCase):
     def test_get(self):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
         self.assertEqual(r.status_code, 200)
+        self.assertContains(r, self.course.title)
+        self.assertContains(r, 'You are not a class member!')
+
+        # TODO:
+        # r = self.client.get(
+        #     reverse('course_detail', args=(self.course.pk,)) + 'asset/'
+        # )
+        # self.assertEqual(r.status_code, 200)
+        # self.assertContains(r, self.course.title)
+
+
+class CourseDetailSuperuserViewTest(LoggedInSuperuserTestMixin, TestCase):
+    def setUp(self):
+        super(CourseDetailSuperuserViewTest, self).setUp()
+        self.course = CourseFactory()
+        Collaboration.objects.get_or_create(
+            content_type=ContentType.objects.get_for_model(Course),
+            object_pk=str(self.course.pk), slug=slugify(self.course.title))
+
+    def test_get(self):
+        r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, self.course.title)
+        self.assertContains(r, 'You are not a class member!')
 
 
 class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):

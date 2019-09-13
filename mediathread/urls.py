@@ -159,6 +159,8 @@ urlpatterns = [
 
     url(r'^course/(?P<pk>\d+)/$', CourseDetailView.as_view(),
         name='course_detail'),
+    url(r'^course/(?P<course_pk>\d+)/asset/',
+        include('mediathread.assetmgr.urls')),
 
     url(r'^course/list/$',
         MethCourseListView.as_view(),

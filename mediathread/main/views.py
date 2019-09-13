@@ -128,8 +128,18 @@ def course_detail_view(request):
     return context
 
 
-class CourseDetailView(LoggedInSuperuserMixin, DetailView):
+class CourseDetailView(LoggedInMixin, DetailView):
     model = Course
+
+    def get(self, request, *args, **kwargs):
+        # Attach the course to the view, and the session, so the
+        # courseaffils middleware behaves correctly.
+        course_pk = kwargs.get('pk')
+        course = get_object_or_404(Course, pk=course_pk)
+        self.course = course
+        request.session[SESSION_KEY] = course
+
+        return super(CourseDetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)

@@ -172,7 +172,11 @@
                 <div id="course_information">
                     <h1 id="course_title">
                     {% block coursetitle %}
+                        {% flag "addressable_courses" %}
+                        <a href="{% url 'course_detail' course.pk %}" id="course_title_link">{{course.title}}</a>
+                        {% else %}
                         <a href="/" id="course_title_link">{{course.title}}</a>
+                        {% endflag %}
                     {% endblock %}
                     </h1>
                     <div class="clear: right;"></div>

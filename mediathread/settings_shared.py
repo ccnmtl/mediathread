@@ -47,6 +47,7 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
 )
 
 MIDDLEWARE += [  # noqa
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
@@ -78,6 +79,7 @@ INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'django_extensions',
     'rest_framework',
+    'debug_toolbar',
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"

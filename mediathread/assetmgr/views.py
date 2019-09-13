@@ -943,7 +943,7 @@ class AssetEmbedView(TemplateView):
 class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
-    def get(self, request, asset_id=None, annot_id=None):
+    def get(self, request, course_pk=None, asset_id=None, annot_id=None):
         if asset_id:
             try:
                 asset = Asset.objects.get(pk=asset_id, course=request.course)

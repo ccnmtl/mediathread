@@ -8,6 +8,7 @@ import os.path
 import re
 import sys
 import urllib3.contrib.pyopenssl
+import djcelery
 
 from ccnmtlsettings.shared import common
 
@@ -56,7 +57,9 @@ MIDDLEWARE += [  # noqa
 
 TEMPLATES[0]['DIRS'].insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
 
+
 INSTALLED_APPS += [  # noqa
+    'djcelery',
     'courseaffils',
     'tagging',
     'structuredcollaboration',
@@ -88,6 +91,10 @@ SERVER_EMAIL = "mediathread@example.com"
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+djcelery.setup_loader()
+BROKER_URL = "amqp://guest:guest@localhost:5672//mediathread"
+CELERYD_CONCURRENCY = 1
 
 
 # for AuthRequirementMiddleware. this should be a list of
@@ -214,6 +221,8 @@ if 'test' in sys.argv or 'jenkins' in sys.argv:
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
+    BROKER_BACKEND = 'memory'
+    CELERY_ALWAYS_EAGER = True
 
 BLOCKED_EMAIL_DOMAINS = []
 

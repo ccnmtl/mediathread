@@ -4765,3 +4765,17 @@ ul.section-tabs>li>a.active {
     font-weight: normal;
     margin-top: 8px;
 }
+
+.badge-danger {
+  background-color: #b94a48;
+}
+.badge-warning {
+  background-color: #f89406;
+}
+.badge-success {
+  background-color: #468847;
+}
+
+.page-count {
+    margin-top: 5px;
+}

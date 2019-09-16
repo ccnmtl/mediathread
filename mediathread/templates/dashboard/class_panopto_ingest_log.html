@@ -1,0 +1,38 @@
+{% extends 'dashboard/base_course_dashboard.html' %}
+
+{% block title %}{{block.super}}&mdash; Panopto Ingest Log{% endblock %}
+
+{% block dashboard_content %}
+    <div class="col-12 col-md">
+        <h3>Panopto Ingest Log</h3>
+        <div class="mb-5 pagination-container">
+            {% include 'dashboard/pagination.html' %}
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr><th>Logged</th><th>Session ID</th><th>Level</th><th>Message</th></tr>
+            </thead>
+            <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <td>{{object.created_at}}</td>
+                    <td>{{object.session_id}}</td>
+                    <td>
+                        {% if object.level == 20 %}
+                            <span class="badge badge-success">Complete</span>
+                        {% else %}{% if object.level == 30 %}
+                            <span class="badge badge-warning">Warning</span>
+                        {% else %}{% if object.level == 40 %}
+                            <span class="badge badge-danger">Danger</span>
+                        {% endif %}{% endif %}{% endif %}
+                    </td>
+                    <td>{{object.message}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-3 mb-5 pagination-container">
+            {% include 'dashboard/pagination.html' %}
+        </div>
+    </div>
+{% endblock %}

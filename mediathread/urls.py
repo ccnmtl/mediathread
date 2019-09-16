@@ -33,6 +33,7 @@ from mediathread.main.views import (
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
     CourseResendInviteView, set_user_setting, CoursePanoptoSourceView,
+    CoursePanoptoIngestLogView,
     LTICourseSelector, LTICourseCreate,
     CourseConvertMaterialsView)
 from mediathread.projects.views import (
@@ -208,6 +209,8 @@ urlpatterns = [
         name='course-delete-materials'),
     url(r'^dashboard/convert/materials/', CourseConvertMaterialsView.as_view(),
         name='course-convert-materials'),
+    url(r'^dashboard/ingest/', CoursePanoptoIngestLogView.as_view(),
+        name='course-panopto-ingest-log'),
     url(r'^dashboard/panopto/', CoursePanoptoSourceView.as_view(),
         name='course-panopto-source'),
 

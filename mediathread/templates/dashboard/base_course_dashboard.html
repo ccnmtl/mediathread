@@ -20,6 +20,7 @@
                     <li>
                         <a
                             {% if '/sources/' in request.path %}class="active"{% endif %}
+                            {% if '/ingest/' in request.path %}class="active"{% endif %}
                             href="/dashboard/sources/">Sources</a>
                     </li>
                     {% if user.is_staff %}

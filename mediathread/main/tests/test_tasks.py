@@ -10,6 +10,7 @@ from django.test.client import RequestFactory
 from mediathread.factories import MediathreadTestMixin, AssetFactory
 from mediathread.main.course_details import INGEST_FOLDER_KEY, \
     clear_ingest_folder
+from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.tasks import PanoptoIngester
 
 
@@ -42,23 +43,34 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
         self.assertEquals(self.ingester.get_courses().count(), 0)
 
     def test_log_message(self):
-        self.ingester.log_message(ERROR, 'logged')
+        self.ingester.log_message(
+            self.sample_course, {'Id': 4}, ERROR, 'logged')
 
         messages = [m.message for m in get_messages(self.request)]
         self.assertTrue('logged' in messages)
 
+        # if not request is passed, the log entries go to the database
         ingester = PanoptoIngester()
-        ingester.log_message(INFO, 'foo')
+        ingester.log_message(self.sample_course, {'Id': 4}, INFO, 'foo')
         messages = [m.message for m in get_messages(self.request)]
         self.assertFalse('foo' in messages)
 
+        log_entry = PanoptoIngestLogEntry.objects.first()
+        self.assertIsNotNone(log_entry)
+        self.assertEquals(log_entry.session_id, '4')
+        self.assertEquals(log_entry.course, self.sample_course)
+        self.assertEquals(log_entry.level, INFO)
+        self.assertEquals(log_entry.message, 'foo')
+
     def test_is_already_imported(self):
         session = {'Name': 'The Name', 'Id': 'source url'}
-        self.assertFalse(self.ingester.is_already_imported(session))
+        self.assertFalse(self.ingester.is_already_imported(
+            self.sample_course, session))
         AssetFactory(course=self.sample_course,
                      author=self.student_one,
                      primary_source='mp4_panopto')
-        self.assertTrue(self.ingester.is_already_imported(session))
+        self.assertTrue(self.ingester.is_already_imported(
+            self.sample_course, session))
 
     def test_get_author(self):
         self.assertEquals(
@@ -83,13 +95,15 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
     def test_complete_incomplete(self):
         ctx = {'State': 'foo', 'Name': 'bar', 'Id': 1}
-        self.assertFalse(self.ingester.is_session_complete(ctx))
+        self.assertFalse(self.ingester.is_session_complete(
+            self.sample_course, ctx))
         messages = [m.message for m in get_messages(self.request)]
         self.assertTrue('bar (1) incomplete' in messages)
 
     def test_complete_icomplete(self):
         ctx = {'State': 'Complete', 'Name': 'bar', 'Id': 1}
-        self.assertTrue(self.ingester.is_session_complete(ctx))
+        self.assertTrue(self.ingester.is_session_complete(
+            self.sample_course, ctx))
         messages = [m.message for m in get_messages(self.request)]
         self.assertEquals(len(messages), 0)
 
@@ -101,7 +115,7 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
         session = {'Name': 'bar', 'Id': 1}
         self.ingester.add_session_status(
-            session, item, self.student_one, False)
+            self.sample_course, session, item, self.student_one, False)
         messages = [m.message for m in get_messages(self.request)]
         self.assertTrue(
             'bar (1) saved as <a href="/asset/1/">Item</a> for Student One' in
@@ -109,7 +123,7 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
         session = {'Name': 'bar', 'Id': 1}
         self.ingester.add_session_status(
-            session, item, self.student_one, True)
+            self.sample_course, session, item, self.student_one, True)
         messages = [m.message for m in get_messages(self.request)]
         self.assertTrue(
             ('bar (1) saved as <a href="/asset/1/">Item</a>'

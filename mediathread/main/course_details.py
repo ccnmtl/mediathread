@@ -49,6 +49,17 @@ def get_upload_folder(course):
     return course.get_detail(UPLOAD_FOLDER_KEY, '')
 
 
+INGEST_FOLDER_KEY = "ingest_folder"
+
+
+def get_ingest_folder(course):
+    return course.get_detail(INGEST_FOLDER_KEY, '')
+
+
+def clear_ingest_folder(course):
+    return course.add_detail(INGEST_FOLDER_KEY, '')
+
+
 ALLOW_PUBLIC_COMPOSITIONS_KEY = "allow_public_compositions"
 ALLOW_PUBLIC_COMPOSITIONS_DEFAULT = 0
 
@@ -146,28 +157,44 @@ def has_student_activity(course):
 
 
 def add_upload_folder(course):
-    if get_upload_folder(course):
-        return
+    value = get_upload_folder(course)
+    if value:
+        return value
 
+    return _add_panopto_folder(
+        course, settings.PANOPTO_PARENT_FOLDER, UPLOAD_FOLDER_KEY)
+
+
+def add_ingest_folder(course):
+    value = get_ingest_folder(course)
+    if value:
+        return value
+
+    return _add_panopto_folder(
+        course, settings.PANOPTO_INGEST_FOLDER, INGEST_FOLDER_KEY)
+
+
+def _add_panopto_folder(course, parent_folder_uuid, key):
     session_mgr = PanoptoSessionManager(
         settings.PANOPTO_SERVER, settings.PANOPTO_API_USER,
         instance_name=settings.PANOPTO_INSTANCE_NAME,
         password=settings.PANOPTO_API_PASSWORD)
 
-    parent_folder = settings.PANOPTO_PARENT_FOLDER
+    parent_folder = parent_folder_uuid
     try:
         term_year = course.info.termyear()
         if term_year:
-            folder_id = session_mgr.get_folder(
-                settings.PANOPTO_PARENT_FOLDER, term_year)
+            folder_id = session_mgr.get_folder(parent_folder_uuid, term_year)
             if folder_id:
                 parent_folder = folder_id
     except CourseInfo.DoesNotExist:
         pass
 
-    course_folder = session_mgr.add_folder(course.title, parent_folder)
+    new_folder = session_mgr.get_folder(parent_folder, course.title)
+    if len(new_folder) < 1:
+        new_folder = session_mgr.add_folder(course.title, parent_folder)
 
-    if len(course_folder) > 0:
-        course.add_detail(UPLOAD_FOLDER_KEY, course_folder)
+    if len(new_folder) > 0:
+        course.add_detail(key, new_folder)
 
-    return course_folder
+    return new_folder

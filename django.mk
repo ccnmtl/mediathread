@@ -1,7 +1,9 @@
 # VERSION=1.7.0
 
 # CHANGES:
-# 1.7.0 - TBA        - Now using python 3 by default
+# 1.7.0 - 2018-05-31 - Now using python 3 by default
+#                    - Removed virtualenv.py in favor of python 3's
+#                      builtin venv capability.
 # 1.6.0 - 2017-09-05 - add bandit secure analysis configuration
 # 1.5.0 - 2017-08-24 - remove jshint/jscs in favor of eslint
 # 1.4.0 - 2017-06-06 - backout the switch to eslint. that's not really ready yet.
@@ -12,20 +14,25 @@
 
 VE ?= ./ve
 MANAGE ?= ./manage.py
-FLAKE8 ?= $(VE)/bin/flake8
-BANDIT ?= $(VE)/bin/bandit
 REQUIREMENTS ?= requirements.txt
-SYS_PYTHON ?= python
-PIP ?= $(VE)/bin/pip
 PY_SENTINAL ?= $(VE)/sentinal
-WHEEL_VERSION ?= 0.33.4
-PIP_VERSION ?= 19.1.1
+WHEEL_VERSION ?= 0.33.6
+PIP_VERSION ?= 19.2.3
 VIRTUALENV ?= virtualenv.py
 SUPPORT_DIR ?= requirements/virtualenv_support/
 MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
+BANDIT ?= $(VE)/bin/bandit
+FLAKE8 ?= $(VE)/bin/flake8
+PIP ?= $(VE)/bin/pip
+
+ifeq ($(TRAVIS),true)
+	SYS_PYTHON ?= python
+else
+	SYS_PYTHON ?= python3
+endif
 
 jenkins: check flake8 test eslint bandit
 
@@ -49,7 +56,7 @@ bandit: $(PY_SENTINAL)
 	$(BANDIT) --ini ./.bandit -r $(PY_DIRS)
 
 flake8: $(PY_SENTINAL)
-	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/migrations/*.py
+	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
 
 runserver: check
 	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)

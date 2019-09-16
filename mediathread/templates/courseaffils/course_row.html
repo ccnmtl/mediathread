@@ -1,13 +1,19 @@
-{% load methtags %}
+{% load methtags waffle_tags %}
 
 <tr {% if new_course == course.pk %}
         class="info"
     {% endif %}>
     <td class="course-choice">
         {% if course.is_course %}
+
+            {% flag "addressable_courses" %}
             <a class="choose-course"
-               href="?set_course={{course.group.name|urlencode}}{{next_redirect}}"
-            >{{course.title}}</a>
+               href="{% url 'course_detail' course.pk %}">{{course.title}}</a>
+            {% else %}
+            <a class="choose-course"
+               href="?set_course={{course.group.name|urlencode}}{{next_redirect}}">{{course.title}}</a>
+            {% endflag %}
+
         {% else %}
         {{course.coursedirectory_name}}
         <a href="{% url 'affil_activate' course.pk %}"

@@ -147,7 +147,7 @@
                             </h2>
                             <div class="ajaxloader">
                                 <div class="message">
-                                    <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
+                                    <img alt="Loading..." src="{% static 'img/ajax-loader.gif' %}">
                                     <br /><br />
                                     <div>Fetching compositions &amp; assignments</div>
                                 </div>
@@ -164,8 +164,14 @@
 
                         <div class="column-container">
                             <h2>Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
-                            <a class="btn btn-default collection right" href="/asset/">
-                                <img src="{{STATIC_URL}}img/viewfullcollection.png"
+                            {% flag "addressable_courses" %}
+                            <a class="btn btn-default collection right"
+                               href="{% url 'course_detail' course.pk %}asset/">
+                            {% else %}
+                            <a class="btn btn-default collection right"
+                               href="/asset/">
+                            {% endflag %}
+                                <img src="{% static 'img/viewfullcollection.png' %}"
                                      alt="view full collection icon" />
                                 View Full Collection
                             </a>

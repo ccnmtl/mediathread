@@ -18,18 +18,19 @@
         <script type="text/javascript" src="/jsi18n"></script>
 
         {% if not debug %}
-        <script src="https://cdn.ravenjs.com/3.20.1/raven.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/5.6.1/bundle.min.js" integrity="sha384-pGTFmbQfua2KiaV2+ZLlfowPdd5VMT2xU4zCBcuJr7TVQozMO+I1FmPuVHY3u8KB" crossorigin="anonymous"></script>
         <script>
-        Raven.config('https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468', {
+        Sentry.init({
+            dsn: 'https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468',
             whitelistUrls: [/mediathread\.stage\.ccnmtl\.columbia\.edu/]
-        }).install();
+        });
         {% if user.is_anonymous %}
-        Raven.setUserContext({
+        Sentry.setUser({
             email: 'none',
             id: 'anonymous'
         });
         {% else %}
-        Raven.setUserContext({
+        Sentry.setUser({
             email: '{{user.email}}',
             id: '{{user.username}}'
         });
@@ -171,7 +172,11 @@
                 <div id="course_information">
                     <h1 id="course_title">
                     {% block coursetitle %}
+                        {% flag "addressable_courses" %}
+                        <a href="{% url 'course_detail' course.pk %}" id="course_title_link">{{course.title}}</a>
+                        {% else %}
                         <a href="/" id="course_title_link">{{course.title}}</a>
+                        {% endflag %}
                     {% endblock %}
                     </h1>
                     <div class="clear: right;"></div>
@@ -213,9 +218,10 @@
         <!-- ###### Footer ###### -->
         <div id="footer">
 
-            <!-- CCNMTL title/logo -->
-            <a id="logo_ccnmtl" href="http://ctl.columbia.edu" target="_blank" title="Columbia for Teaching and Learning">
-                <img src="{{STATIC_URL}}img/logo_ccnmtl.gif" alt="CCNMTL Logo">
+            <!-- CTL title/logo -->
+            <a id="logo_ctl" href="https://ctl.columbia.edu" target="_blank" title="Columbia Center for Teaching and Learning">
+                <img width="160" height="29.6"
+                     src="{% static 'img/logo_ctl.png' %}" alt="CTL Logo">
                 <span class="sr-only">Visit ctl.columbia.edu</span>
             </a>
 

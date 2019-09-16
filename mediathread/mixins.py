@@ -2,6 +2,7 @@ import unicodecsv as csv
 import json
 
 from courseaffils.lib import in_course_or_404
+from courseaffils.models import Course
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -55,6 +56,13 @@ def faculty_only(func):
 class RestrictedMaterialsMixin(object):
 
     def dispatch(self, *args, **kwargs):
+        if not self.request.course:
+            # Get the course from the URL if it exists.
+            course_pk = kwargs.get('course_pk')
+            if course_pk:
+                course = get_object_or_404(Course, pk=course_pk)
+                self.request.course = course
+
         record_owner_name = kwargs.pop('record_owner_name', None)
         self.initialize(record_owner_name)
         return super(RestrictedMaterialsMixin, self).dispatch(*args, **kwargs)

@@ -1,3 +1,5 @@
+from celery.schedules import crontab
+from celery.task.base import periodic_task
 from courseaffils.models import Course
 from django.conf import settings
 from django.contrib import messages
@@ -12,8 +14,6 @@ from mediathread.main.course_details import (
 from mediathread.main.util import user_display_name, send_template_email
 
 
-# from celery.decorators import periodic_task
-# from celery.task.schedules import crontab
 class PanoptoIngester(object):
 
     def __init__(self, request=None):
@@ -153,8 +153,8 @@ class PanoptoIngester(object):
                 self.add_message(WARNING, msg)
 
 
-# @periodic_task(run_every=crontab(hour="*", minute="*", day_of_week="*"))
-# def panopto_ingest():
-#     print('Hourly Panopto Ingest Task')
-#
-#     PanoptoIngester().ingest()
+@periodic_task(run_every=crontab(hour="*", minute='*'))
+def panopto_ingest():
+    print('Hourly Panopto Ingest Task')
+
+    PanoptoIngester().ingest()

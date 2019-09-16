@@ -7,7 +7,6 @@ env:
   - TEST_SUITE=harvest1
   - TEST_SUITE=harvest2
 python:
-  - "2.7"
   - "3.6"
 matrix:
   exclude:

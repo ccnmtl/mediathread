@@ -153,7 +153,7 @@ class PanoptoIngester(object):
                 self.add_message(WARNING, msg)
 
 
-@periodic_task(run_every=crontab(hour="*", minute='*'))
+@periodic_task(run_every=crontab(hour="*", minute='0'))
 def panopto_ingest():
     print('Hourly Panopto Ingest Task')
 

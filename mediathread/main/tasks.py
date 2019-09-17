@@ -11,6 +11,7 @@ from panopto.session import PanoptoSessionManager
 from mediathread.assetmgr.models import Source, Asset
 from mediathread.main.course_details import (
     get_upload_folder, get_ingest_folder)
+from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.util import user_display_name, send_template_email
 
 
@@ -27,37 +28,39 @@ class PanoptoIngester(object):
             password=getattr(settings, 'PANOPTO_API_PASSWORD', None),
             cache_dir=getattr(settings, 'ZEEP_CACHE_DIR', None))
 
-    def log_message(self, level, msg):
+    def log_message(self, course, session, level, msg):
         if self.request is not None:
             messages.add_message(self.request, level, msg)
         else:
-            print(msg)
+            PanoptoIngestLogEntry.objects.create(
+                course=course, session_id=session['Id'],
+                level=level, message=msg)
 
-    def is_session_complete(self, session):
+    def is_session_complete(self, course, session):
         complete = session['State'] == 'Complete'
         if not complete:
             msg = '{} ({}) incomplete'.format(session['Name'], session['Id'])
-            self.log_message(ERROR, msg)
+            self.log_message(course, session, ERROR, msg)
         return complete
 
-    def is_description_valid(self, session):
+    def is_description_valid(self, course, session):
         valid = ('Description' in session and
                  session['Description'] and
                  len(session['Description']) > 0)
         if not valid:
             msg = '{} ({}) has no UNI specified'.format(
                 session['Name'], session['Id'])
-            self.log_message(ERROR, msg)
+            self.log_message(course, session, ERROR, msg)
         return valid
 
-    def is_already_imported(self, session):
+    def is_already_imported(self, course, session):
         session_name = session['Name']
         session_id = session['Id']
         imported = Source.objects.filter(
             label='mp4_panopto', url=session_id).count() > 0
         if imported:
             self.log_message(
-                INFO,
+                course, session, WARNING,
                 '{} ({}) already imported'.format(session_name, session_id))
         return imported
 
@@ -84,13 +87,13 @@ class PanoptoIngester(object):
         asset.global_annotation(author, auto_create=True)
         return asset
 
-    def add_session_status(self, session, item, author, created):
+    def add_session_status(self, course, session, item, author, created):
         msg = '{} ({}) saved as <a href="/asset/{}/">{}</a> for {}'.format(
             session['Name'], session['Id'], item.id,
             item.title, user_display_name(author))
         if created:
             msg = '{}. <b>{} is a new user</b>'.format(msg, author.username)
-        self.log_message(INFO, msg)
+        self.log_message(course, session, INFO, msg)
 
     def send_email(self, course, author, item):
         data = {
@@ -112,11 +115,11 @@ class PanoptoIngester(object):
         session_mgr = self.get_session_manager()
 
         for session in session_mgr.get_session_list(ingest_folder_id):
-            if not self.is_session_complete(session):
+            if not self.is_session_complete(course, session):
                 continue
-            if self.is_already_imported(session):
+            if self.is_already_imported(course, session):
                 continue
-            if not self.is_description_valid(session):
+            if not self.is_description_valid(course, session):
                 continue
 
             # Get the author via the UNI stashed in the session description
@@ -133,7 +136,7 @@ class PanoptoIngester(object):
             session_mgr.move_sessions([session_id], course_folder_id)
 
             # Craft a message about this session
-            self.add_session_status(session, item, author, created)
+            self.add_session_status(course, session, item, author, created)
 
             # Send an email to the student letting them know the video is ready
             self.send_email(course, author, item)
@@ -155,6 +158,4 @@ class PanoptoIngester(object):
 
 @periodic_task(run_every=crontab(hour="*", minute='0'))
 def panopto_ingest():
-    print('Hourly Panopto Ingest Task')
-
     PanoptoIngester().ingest()

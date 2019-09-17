@@ -51,7 +51,8 @@ from mediathread.main.forms import (
     ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
 )
-from mediathread.main.models import UserSetting, CourseInvitation
+from mediathread.main.models import (
+    UserSetting, CourseInvitation, PanoptoIngestLogEntry)
 from mediathread.main.tasks import PanoptoIngester
 from mediathread.main.util import (
     send_template_email, user_display_name, send_course_invitation_email,
@@ -219,6 +220,19 @@ def set_user_setting(request, user_name):
 
     json_stream = json.dumps({'success': True})
     return HttpResponse(json_stream, content_type='application/json')
+
+
+class CoursePanoptoIngestLogView(LoggedInFacultyMixin, ListView):
+    model = PanoptoIngestLogEntry
+    template_name = 'dashboard/class_panopto_ingest_log.html'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        cx = super(CoursePanoptoIngestLogView, self).get_context_data(**kwargs)
+        cx['base_url'] = u'{}?page='.format(
+            reverse('course-panopto-ingest-log'))
+
+        return cx
 
 
 class MigrateCourseView(LoggedInFacultyMixin, TemplateView):

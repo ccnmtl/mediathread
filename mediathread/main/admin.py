@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from mediathread.main.models import UserSetting, UserProfile, CourseInvitation
+from mediathread.main.models import (
+    UserSetting, UserProfile, CourseInvitation, PanoptoIngestLogEntry)
 
 
 class UserSettingAdmin(admin.ModelAdmin):
@@ -38,3 +39,4 @@ class CourseInvitationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CourseInvitation, CourseInvitationAdmin)
+admin.site.register(PanoptoIngestLogEntry)

@@ -93,3 +93,14 @@ class CourseInvitation(models.Model):
 
     def accepted(self):
         return self.accepted_at is not None
+
+
+class PanoptoIngestLogEntry(models.Model):
+    course = models.ForeignKey(Course)
+    session_id = models.TextField()
+    level = models.IntegerField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

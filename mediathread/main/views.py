@@ -227,7 +227,7 @@ class CoursePanoptoIngestLogView(LoggedInFacultyMixin, ListView):
     template_name = 'dashboard/class_panopto_ingest_log.html'
     paginate_by = 15
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         cx = super(CoursePanoptoIngestLogView, self).get_context_data(**kwargs)
         cx['base_url'] = u'{}?page='.format(
             reverse('course-panopto-ingest-log'))

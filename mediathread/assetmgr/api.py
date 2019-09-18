@@ -1,4 +1,6 @@
 # pylint: disable-msg=R0904
+from django.urls import reverse
+import waffle
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
@@ -44,7 +46,18 @@ class AssetResource(ModelResource):
     def dehydrate(self, bundle):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
-        bundle.data['local_url'] = bundle.obj.get_absolute_url()
+
+        if self.request and \
+           waffle.flag_is_active(self.request, 'addressable_courses') and \
+           hasattr(self.request, 'course'):
+            bundle.data['local_url'] = reverse(
+                'asset-view', kwargs={
+                    'course_pk': self.request.course.pk,
+                    'asset_id': bundle.obj.pk,
+                })
+        else:
+            bundle.data['local_url'] = bundle.obj.get_absolute_url()
+
         bundle.data['media_type_label'] = bundle.obj.media_type()
         bundle.data['editable_title'] = (
             bundle.request.user.is_staff or
@@ -70,6 +83,7 @@ class AssetResource(ModelResource):
         return bundle
 
     def render_one(self, request, asset, notes=None):
+        self.request = request
         try:
             bundle = self.build_bundle(obj=asset, request=request)
             dehydrated = self.full_dehydrate(bundle)
@@ -128,6 +142,7 @@ class AssetResource(ModelResource):
                 ctx[note.asset.id]['annotations'].append(note_ctx)
 
     def render_list(self, request, record_owner, record_viewer, assets, notes):
+        self.request = request
         note_resource = SherdNoteResource()
         ctx = {}
         for note in notes.all():
@@ -148,6 +163,7 @@ class AssetResource(ModelResource):
                       reverse=True)
 
     def render_assets(self, request, assets):
+        self.request = request
         lst = []
         for asset in assets.all():
             abundle = self.build_bundle(obj=asset, request=request)

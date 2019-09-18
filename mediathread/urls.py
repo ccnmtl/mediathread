@@ -158,6 +158,7 @@ urlpatterns = [
         AffilActivateView.as_view(),
         name='affil_activate'),
 
+    # New course-aware routes
     url(r'^course/(?P<pk>\d+)/$', CourseDetailView.as_view(),
         name='course_detail'),
     url(r'^course/(?P<course_pk>\d+)/asset/',

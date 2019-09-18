@@ -3,7 +3,6 @@ from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from tastypie import fields
-from tastypie.bundle import Bundle
 from tastypie.resources import ModelResource
 import json
 import time
@@ -72,7 +71,6 @@ class AssetResource(ModelResource):
 
     def render_one(self, request, asset, notes=None):
         try:
-            bundle = Bundle(request=request)
             bundle = self.build_bundle(obj=asset, request=request)
             dehydrated = self.full_dehydrate(bundle)
             the_json = self._meta.serializer.to_simple(dehydrated, None)

@@ -1302,8 +1302,8 @@ class LTICourseCreate(LoggedInMixin, View):
 
         messages.add_message(
             self.request, messages.INFO,
-            u'<strong>Success!</strong> {} is connected ' +
-            u'to Mediathread.'.format(title))
+            u'<strong>Success!</strong> ' +
+            u'{} is connected to Mediathread.'.format(title))
 
         self.notify_staff(course)
         self.thank_faculty(course)

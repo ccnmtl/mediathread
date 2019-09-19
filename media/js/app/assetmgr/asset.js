@@ -1018,23 +1018,34 @@
             if (window.history.pushState) {
                 var action = replace ? window.history.replaceState :
                     window.history.pushState;
-                var currentState = {asset_id: ((self.active_asset) ?
-                    self.active_asset.id : self.config.asset_id)};
+                var currentState = {
+                    asset_id: (
+                        self.active_asset ?
+                            self.active_asset.id : self.config.asset_id
+                    )
+                };
                 if (self.active_annotation) {
                     currentState.annotation_id = self.active_annotation.id;
+
+                    var assetPath = '';
+                    if (self.active_asset) {
+                        assetPath = self.active_asset.local_url;
+                    } else {
+                        assetPath = '/asset/' + currentState.asset_id + '/';
+                    }
+
                     action.apply(
                         window.history,
                         [
                             currentState, self.active_annotation.title,
-                            '/asset/' + currentState.asset_id +
-                                '/annotations/' + self.active_annotation.id +
-                                '/'
+                            assetPath + 'annotations/' +
+                                self.active_annotation.id + '/'
                         ]);
                 } else {
                     action.apply(
                         window.history, [
                             currentState, self.active_asset.title,
-                            '/asset/' + self.active_asset.id + '/'
+                            self.active_asset.local_url
                         ]);
                 }
             } else if (!replace) {

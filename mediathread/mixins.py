@@ -188,6 +188,13 @@ class LoggedInMixin(object):
 class LoggedInCourseMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        if not self.request.course:
+            # Get the course from the URL if it exists.
+            course_pk = kwargs.get('course_pk')
+            if course_pk:
+                course = get_object_or_404(Course, pk=course_pk)
+                self.request.course = course
+
         if not self.request.user.is_staff:
             in_course_or_404(self.request.user.username, self.request.course)
 

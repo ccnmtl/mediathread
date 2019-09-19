@@ -5,10 +5,13 @@ from string import ascii_letters
 
 from courseaffils.lib import get_public_name
 
+from django.urls import reverse
 from django.utils.encoding import smart_text
 
 from tastypie import fields
 from tastypie.resources import ModelResource
+
+import waffle
 
 from mediathread.api import UserResource, ClassLevelAuthentication
 from mediathread.assetmgr.api import AssetResource
@@ -53,7 +56,18 @@ class ProjectResource(ModelResource):
         bundle.data['description'] = bundle.obj.description()
         bundle.data['is_response'] = bundle.obj.assignment() is not None
         bundle.data['attribution'] = bundle.obj.attribution()
-        bundle.data['url'] = bundle.obj.get_absolute_url()
+
+        if hasattr(self, 'request') and \
+           waffle.flag_is_active(self.request, 'addressable_courses') and \
+           hasattr(self.request, 'course'):
+
+            bundle.data['url'] = reverse('project-workspace', kwargs={
+                'course_pk': self.request.course.pk,
+                'project_id': bundle.obj.pk,
+            })
+        else:
+            bundle.data['url'] = bundle.obj.get_absolute_url()
+
         bundle.data['due_date'] = bundle.obj.get_due_date()
         bundle.data['modified_date'] = bundle.obj.modified.strftime("%m/%d/%y")
         bundle.data['modified_time'] = bundle.obj.modified.strftime("%I:%M %p")
@@ -144,6 +158,7 @@ class ProjectResource(ModelResource):
         return assets, notes
 
     def render_one(self, request, project, version_number=None):
+        self.request = request
         bundle = self.build_bundle(obj=project, request=request)
         dehydrated = self.full_dehydrate(bundle)
         project_ctx = self._meta.serializer.to_simple(dehydrated, None)
@@ -193,6 +208,7 @@ class ProjectResource(ModelResource):
         return ctx
 
     def render_project(self, request, project):
+        self.request = request
         course = request.course
         user = request.user
 
@@ -223,6 +239,7 @@ class ProjectResource(ModelResource):
         return ctx
 
     def render_list(self, request, projects):
+        self.request = request
         lst = []
         for project in projects.all():
             bundle = self.build_bundle(obj=project, request=request)

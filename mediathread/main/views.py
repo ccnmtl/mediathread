@@ -946,7 +946,10 @@ class InstructorDashboardSettingsView(
 class MethCourseListView(LoggedInMixin, CourseListView):
     def get_context_data(self, **kwargs):
         context = super(MethCourseListView, self).get_context_data(**kwargs)
-        context.update({'courses': context['object_list']})
+
+        courses = context['object_list'].prefetch_related(
+            'faculty_group__user_set')
+        context.update({'courses': courses})
 
         courses = list(context.get('courses'))
         semester_view = self.request.GET.get('semester_view', 'current')

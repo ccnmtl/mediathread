@@ -47,7 +47,7 @@ class AssetResource(ModelResource):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
 
-        if self.request and \
+        if hasattr(self, 'request') and \
            waffle.flag_is_active(self.request, 'addressable_courses') and \
            hasattr(self.request, 'course'):
             bundle.data['local_url'] = reverse(

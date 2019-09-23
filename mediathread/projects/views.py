@@ -493,8 +493,10 @@ class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
         """
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
         show_feedback = kwargs.get('feedback', None) == "feedback"
-        data = {'space_owner': request.user.username,
-                'show_feedback': show_feedback}
+        data = {
+            'space_owner': request.user.username,
+            'show_feedback': show_feedback,
+        }
 
         if not request.is_ajax():
             self.template_name = 'projects/project.html'

@@ -221,6 +221,7 @@ class CreateReversionMixin(object):
     @transaction.atomic()
     @reversion.create_revision()
     def dispatch(self, *args, **kwargs):
+        kwargs.pop('course_pk', None)
         return super(CreateReversionMixin, self).dispatch(*args, **kwargs)
 
 

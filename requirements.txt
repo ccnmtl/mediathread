@@ -117,7 +117,7 @@ ipython==5.8.0 # pyup: <6.0.0
 ipdb==0.12.2
 freezegun==0.3.12
 django-smtp-ssl==1.0
-djangorestframework==3.7.7  # pyup: <3.8
+djangorestframework==3.9.4  # pyup: <3.10
 
 ccnmtlsettings==1.5.0
 django-extensions==2.1.9

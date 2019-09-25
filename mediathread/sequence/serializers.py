@@ -102,16 +102,18 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        current_user = self.context.get('request').user
+
         project = Project.objects.get(pk=validated_data.get('project'))
         if ProjectSequenceAsset.objects.filter(
-                sequence_asset__author=validated_data.get('author'),
+                sequence_asset__author=current_user,
                 project=project).exists():
             raise serializers.ValidationError(
                 'A SequenceAsset already exists for this project '
                 'and user.')
 
         instance = SequenceAsset.objects.create(
-            author=validated_data.get('author'),
+            author=current_user,
             course=validated_data.get('course'),
             spine=validated_data.get('spine'),
             spine_volume=validated_data.get('spine_volume', 80))

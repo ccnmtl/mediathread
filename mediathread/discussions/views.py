@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 from random import choice
 from string import ascii_letters
+import waffle
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -98,8 +99,15 @@ def discussion_create(request):
         new_threaded_comment.user)
 
     if not request.is_ajax():
-        return HttpResponseRedirect("/discussion/%d/" %
-                                    new_threaded_comment.id)
+        if waffle.flag_is_active(request, 'addressable_courses') and \
+           hasattr(request, 'course'):
+            return HttpResponseRedirect(
+                reverse('discussion-view',
+                        args=(request.course.pk, new_threaded_comment.id,)))
+        else:
+            return HttpResponseRedirect(
+                reverse('discussion-view',
+                        args=(new_threaded_comment.id,)))
     else:
         vocabulary = VocabularyResource().render_list(
             request, Vocabulary.objects.filter(course=request.course))

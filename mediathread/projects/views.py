@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import waffle
 
 from courseaffils.lib import get_public_name
 from django.contrib import messages
@@ -97,7 +98,13 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
                                  self.get_confirmation_message(policy))
 
         if not request.is_ajax():
-            return HttpResponseRedirect(project.get_absolute_url())
+            if waffle.flag_is_active(request, 'addressable_courses') and \
+               hasattr(request, 'course'):
+                return HttpResponseRedirect(
+                    reverse('project-workspace',
+                            args=(request.course.pk, project.pk,)))
+            else:
+                return HttpResponseRedirect(project.get_absolute_url())
         else:
             is_faculty = request.course.is_faculty(request.user)
             can_edit = project.can_edit(request.course, request.user)

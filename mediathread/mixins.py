@@ -204,6 +204,13 @@ class LoggedInCourseMixin(object):
 class LoggedInFacultyMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        if not self.request.course:
+            # Get the course from the URL if it exists.
+            course_pk = kwargs.get('course_pk')
+            if course_pk:
+                course = get_object_or_404(Course, pk=course_pk)
+                self.request.course = course
+
         if not cached_course_is_faculty(self.request.course,
                                         self.request.user):
             return HttpResponseForbidden("forbidden")

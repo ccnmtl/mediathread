@@ -60,7 +60,7 @@ contextlib2==0.6.0
 rcssmin==1.0.6
 rjsmin==1.0.12
 
-djangowind==1.2.1
+djangowind==1.2.2
 django-tagging==0.4.6
 django-reversion==3.0.4
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl

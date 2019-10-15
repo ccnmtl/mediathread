@@ -148,7 +148,7 @@ stevedore==1.31.0
 pyyaml==5.1.2
 bandit==1.6.2
 funcsigs==1.0.2 
-pypanopto==0.1.0
+pypanopto==0.1.1
 functools32==3.2.3-2; python_version < '3'
 entrypoints==0.3
 

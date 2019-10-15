@@ -217,6 +217,7 @@
             return function(text, render) {
                 return render(text).toLowerCase();
             };
-        }
+        },
+        addressableCourses: MediaThread.addressable_courses
     };
 })();

@@ -166,12 +166,33 @@ def add_upload_folder(course):
 
 
 def add_ingest_folder(course):
-    value = get_ingest_folder(course)
-    if value:
-        return value
+    folder_guid = get_ingest_folder(course)
+    if folder_guid:
+        return folder_guid
 
-    return _add_panopto_folder(
-        course, settings.PANOPTO_INGEST_FOLDER, INGEST_FOLDER_KEY)
+    parent_guid = settings.PANOPTO_INGEST_FOLDER
+
+    session_mgr = PanoptoSessionManager(
+        settings.PANOPTO_SERVER, settings.PANOPTO_API_USER,
+        instance_name=settings.PANOPTO_INSTANCE_NAME,
+        password=settings.PANOPTO_API_PASSWORD)
+
+    # Place under a department folder if it exists
+    dept_guid = session_mgr.get_folder(parent_guid, course.title[0:4])
+    if dept_guid:
+        parent_guid = dept_guid
+
+    # add the folder
+    folder_guid = session_mgr.get_folder(parent_guid, course.title)
+    if len(folder_guid) < 1:
+        folder_guid = session_mgr.add_folder(course.title, parent_guid)
+
+    if len(folder_guid) > 0:
+        course.add_detail(INGEST_FOLDER_KEY, folder_guid)
+        if dept_guid:
+            session_mgr.inherit_folder_access(parent_guid, folder_guid)
+
+    return folder_guid
 
 
 def _add_panopto_folder(course, parent_folder_uuid, key):

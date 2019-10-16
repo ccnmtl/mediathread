@@ -289,6 +289,12 @@ A new base.html without the course context overwritten in the template.
                 {% elif project %}
                 this.current_project = {{ project.pk }};
                 {% endif %}
+
+                {% flag "addressable_courses" %}
+                this.addressable_courses = true;
+                {% else %}
+                this.addressable_courses = false;
+                {% endflag %}
             })();
             </script>
 

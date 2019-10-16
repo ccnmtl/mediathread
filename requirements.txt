@@ -52,7 +52,7 @@ urllib3==1.25.6
 certifi==2019.9.11
 cryptography==2.7
 pyOpenSSL==19.0.0
-asn1crypto==1.1.0  # for pyOpenSSL
+asn1crypto==1.2.0  # for pyOpenSSL
 cffi==1.13.0  # for pyOpenSSL
 
 requests==2.22.0

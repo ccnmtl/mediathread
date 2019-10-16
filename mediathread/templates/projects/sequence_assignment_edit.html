@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load waffle_tags %}
 
 {% block title %}
     {% if form.instance %}{{form.instance.title}}{% else %}Create Assignment{% endif %}
@@ -53,8 +54,12 @@
                     <input type="hidden" name="project_type" value="sequence-assignment" />
 
                     {% if form.instance.id %}
+                        {% flag "addressable_courses" %}
+                        <a class="right small" href="{% url 'project-workspace' course.pk form.instance.id %}">
+                        {% else %}
                         <a class="right small" href="{% url 'project-workspace' form.instance.id %}">
-                            <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment 
+                        {% endflag %}
+                            <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment
                         </a>
                     {% endif %}
 

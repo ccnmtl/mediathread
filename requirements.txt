@@ -120,7 +120,7 @@ django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10
 
 ccnmtlsettings==1.5.0
-django-extensions==2.2.3
+django-extensions==2.2.5
 
 # needed for django-extensions
 typing==3.7.4.1; python_version < '3.5'

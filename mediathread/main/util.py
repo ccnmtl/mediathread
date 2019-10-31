@@ -6,7 +6,7 @@ from django.core.validators import validate_email
 from django.template import loader
 import requests
 from requests.exceptions import SSLError
-from raven import Client
+from sentry_sdk import capture_exception
 
 
 def send_template_email(subject, template_name, params, recipient):
@@ -54,10 +54,4 @@ def make_pmt_item(data):
 
 
 def log_sentry_error(msg):
-    try:
-        client = Client(settings.RAVEN_CONFIG['dsn'])
-    except (AttributeError, KeyError):
-        # If RAVEN_CONFIG isn't set, we can't log the error.
-        return
-
-    return client.captureMessage(msg)
+    return capture_exception(msg)

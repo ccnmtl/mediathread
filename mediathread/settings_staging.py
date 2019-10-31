@@ -1,6 +1,8 @@
 # flake8: noqa
 from mediathread.settings_shared import *
 from ccnmtlsettings.staging import common
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 locals().update(
     common(
@@ -33,3 +35,9 @@ try:
     from mediathread.local_settings import *
 except ImportError:
     pass
+
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=[DjangoIntegration()],
+    debug=True,
+)

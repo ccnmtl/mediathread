@@ -76,7 +76,7 @@ class RestrictedMaterialsMixin(object):
             self.record_owner = get_object_or_404(User,
                                                   username=record_owner_name)
 
-        # Is the current user faculty or a CCNMTL staff member
+        # Is the current user faculty or a CTL staff member
         self.is_viewer_faculty = cached_course_is_faculty(self.request.course,
                                                           self.record_viewer)
 

@@ -53,7 +53,7 @@ certifi==2019.9.11  # sentry-sdk
 cryptography==2.8
 pyOpenSSL==19.0.0
 asn1crypto==1.2.0  # for pyOpenSSL
-cffi==1.13.1  # for pyOpenSSL
+cffi==1.13.2  # for pyOpenSSL
 
 requests==2.22.0
 contextlib2==0.6.0.post1

@@ -1016,7 +1016,7 @@ Thank you for creating your Mediathread course: {}. You can always access this
 course by going to https://mediathread.ctl.columbia.edu.
 
 You are now ready to get started. Documentation is online here:
-http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread
+http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread
 
 If you are new to Mediathread, a CTL learning designer or your
 department specialist will check in with you in the coming days to

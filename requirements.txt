@@ -69,7 +69,7 @@ django-threadedcomments==1.2
 django-courseaffils==2.2.1
 django-statsd-mozilla==0.4.0
 raven==6.10.0  # Remove from ccnmtlsettings, then here.
-sentry-sdk==0.13.1
+sentry-sdk==0.13.2
 django-appconf==1.0.3  # django_compressor
 django-compressor==2.3
 django-jenkins==0.110.0

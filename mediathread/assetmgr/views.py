@@ -22,6 +22,7 @@ from django.template import loader
 from django.utils.encoding import smart_bytes
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
+from sentry_sdk import capture_exception
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -33,7 +34,6 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation
 from mediathread.main import course_details
 from mediathread.main.models import UserSetting
-from mediathread.main.util import log_sentry_error
 from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
     JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
     LoggedInSuperuserMixin, LoggedInFacultyMixin
@@ -248,7 +248,7 @@ class AssetCreateView(View):
             req_dict, asset__course=request.course)
 
         if success is False:
-            log_sentry_error(
+            capture_exception(
                 'Asset creation failed with request data: ' + str(req_dict))
             return HttpResponseBadRequest(
                 'The selected asset didn\'t have the correct data to be ' +

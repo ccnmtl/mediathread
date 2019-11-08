@@ -50,8 +50,4 @@ def make_pmt_item(data):
     try:
         return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
     except SSLError as e:
-        log_sentry_error(str(e))
-
-
-def log_sentry_error(msg):
-    return capture_exception(msg)
+        capture_exception(str(e))

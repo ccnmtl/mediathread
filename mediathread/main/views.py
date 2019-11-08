@@ -33,6 +33,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
+from sentry_sdk import capture_exception
 import requests
 from threadedcomments.models import ThreadedComment
 
@@ -56,7 +57,7 @@ from mediathread.main.models import (
 from mediathread.main.tasks import PanoptoIngester
 from mediathread.main.util import (
     send_template_email, user_display_name, send_course_invitation_email,
-    make_pmt_item, log_sentry_error
+    make_pmt_item
 )
 from mediathread.mixins import (
     ajax_required,
@@ -1181,7 +1182,7 @@ Faculty: {} <{}>
         if created:
             self.init_created_course(self.course, self.affil)
         else:
-            log_sentry_error(
+            capture_exception(
                 u'Attempted to create duplicate course for affil: ' +
                 u'{} - {}  Course: {}'.format(
                     self.affil.pk, self.affil.name,
@@ -1199,13 +1200,13 @@ Faculty: {} <{}>
             self.send_faculty_email(form, self.request.user)
         except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send faculty email.')
-            log_sentry_error(str(e))
+            capture_exception(str(e))
 
         try:
             self.send_staff_email(form, self.request.user)
         except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send staff email.')
-            log_sentry_error(str(e))
+            capture_exception(str(e))
 
         messages.success(self.request, 'You\'ve activated your course.')
         self.make_pmt_activation_item(form, self.request.user)

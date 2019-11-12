@@ -31,7 +31,7 @@ Mediathread_. There's additional info in our GitHub wiki:
 https://github.com/ccnmtl/mediathread/wiki which we are migrating over
 here.
 
-.. _Mediathread: http://mediathread.info/
+.. _Mediathread: https://mediathread.info/
 
 .. toctree::
    :maxdepth: 2

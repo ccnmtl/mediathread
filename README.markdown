@@ -7,16 +7,16 @@ Mediathread is a Django site for multimedia annotations facilitating
 collaboration on video and image analysis. Developed at the Columbia
 Center for New Media Teaching and Learning (CCNMTL)
 
-CODE: http://github.com/ccnmtl/mediathread  
-INFO: http://mediathread.info  
-FORUM: http://groups.google.com/group/mediathread   
+CODE: https://github.com/ccnmtl/mediathread
+INFO: https://mediathread.info
+FORUM: https://groups.google.com/group/mediathread
 
 REQUIREMENTS
 ------------
 Python 2.7
-Postgres (or MySQL)  
-Flowplayer installation for your site (See below for detailed instructions)  
-Flickr API Key if you want to bookmark from FLICKR    
+Postgres (or MySQL)
+Flowplayer installation for your site (See below for detailed instructions)
+Flickr API Key if you want to bookmark from FLICKR
 
 
 INSTALLATION
@@ -26,22 +26,22 @@ INSTALLATION
 
     git clone https://github.com/ccnmtl/mediathread.git
 
-2. Build the database  
-   For Postgres (preferred):  
-     A. Create the database `createdb mediathread`  
-  
-   For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)  
-     A. Edit the file `requirements.txt`  
-        - comment out the line `psycopg2`  
+2. Build the database
+   For Postgres (preferred):
+     A. Create the database `createdb mediathread`
+
+   For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)
+     A. Edit the file `requirements.txt`
+        - comment out the line `psycopg2`
         - uncomment the `MySQL-python` line.
 
-     B. Create the database  
-  
-    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql  
-  
-3. Customize settings  
+     B. Create the database
+
+    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
+
+3. Customize settings
     Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary.
-     
+
      For more extensive customization and template overrides, you can create a deploy_specific directory to house a site-specific settings.py file:
 
          $ mkdir deploy_specific
@@ -153,7 +153,7 @@ ALLOWED_HOSTS
 
 ALLOWED_HOSTS is "a list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent an attacker from poisoning caches and password reset emails with links to malicious hosts by submitting requests with a fake HTTP Host header, which is possible even under many seemingly-safe web server configurations." More here: https://docs.djangoproject.com/en/2.2/ref/settings/#allowed-hosts
 
-Make sure the ALLOWED_HOSTS is set properly in your deploy_specific/settings.py or local_settings.py  
+Make sure the ALLOWED_HOSTS is set properly in your deploy_specific/settings.py or local_settings.py
 
 
 APACHE
@@ -172,26 +172,26 @@ Flowplayer requires you to have a local installation and will not
 allow you to serve the player off their site. Free versions exist for both players.
 Here are the basic instructions to install Flowplayer on your systems and point Mediathread at it.
 
-1. Both versions are available here. https://flowplayer.org/pricing/#downloads. 
+1. Both versions are available here. https://flowplayer.org/pricing/#downloads.
 2. Install both versions on a public server on your site.
-3. In the same directory as the Flash player, also install:  
-    http://flash.flowplayer.org/plugins/streaming/rtmp.html - flowplayer.rtmp-3.2.13.swf  
-    http://flash.flowplayer.org/plugins/streaming/pseudostreaming.html - flowplayer.pseudostreaming-3.2.13.swf  
-    http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.11.swf  
-    
-4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:  
-FLOWPLAYER_SWF_LOCATION= 'http://servername/directory/flowplayer-3.2.15.swf'
-FLOWPLAYER_HTML5_LOCATION = 'http://<servername>/flowplayer-5.5.0/flowplayer.min.js'  
-FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.10.swf'  
-FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.11.swf'  
-FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.11.swf'  
+3. In the same directory as the Flash player, also install:
+    http://flash.flowplayer.org/plugins/streaming/rtmp.html - flowplayer.rtmp-3.2.13.swf
+    http://flash.flowplayer.org/plugins/streaming/pseudostreaming.html - flowplayer.pseudostreaming-3.2.13.swf
+    http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.11.swf
 
-* For Flash, the plugins are picked up automatically from the same directory, so don't need the full path.  
+4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:
+FLOWPLAYER_SWF_LOCATION= 'http://servername/directory/flowplayer-3.2.15.swf'
+FLOWPLAYER_HTML5_LOCATION = 'http://<servername>/flowplayer-5.5.0/flowplayer.min.js'
+FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.10.swf'
+FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.11.swf'
+FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.11.swf'
+
+* For Flash, the plugins are picked up automatically from the same directory, so don't need the full path.
 * These are the versions we are currently using in production here at CU.
 
 FLICKR
 ----------------
-In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.  
+In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.
 DJANGOSHERD_FLICKR_APIKEY='your key here'
 
 FLATPAGES
@@ -209,7 +209,7 @@ Mediathread's About & Help pages are constructed using the Django Flat Pages arc
 
 HELP DOCUMENTATION
 ----------------
-Our help documentation tailored for the Columbia community and our in-house video upload system is here: http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593. 
+Our help documentation tailored for the Columbia community and our in-house video upload system is here: http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593.
 
 And, Nate Autune helpfully added this a few months ago, "Thanks to Rebecca Darling from Wellesley College, who graciously gave
 permission to re-publish her "Mediathread Guide for Students" under a

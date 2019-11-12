@@ -40,7 +40,7 @@ To ensure consistency throughout the source code, please keep these rules in min
 * All features or bug fixes **must be tested** by one or more unit tests.
 * We follow the conventions contained in:
      * Python's [PEP8 Style Guide](https://www.python.org/dev/peps/pep-0008/) (enforced by [flake8](https://pypi.python.org/pypi/flake8))
-     * Javscript's [JSHint](http://jshint.com/) errors and warnings.  
+     * Javascript's [JSHint](http://jshint.com/) errors and warnings.
 * The master branch is continuously integrated by [Travis-CI](https://travis-ci.org/ccnmtl/mediathread), and all tests must pass before merging.
 
 ## <a name="trivial"></a>Making Trivial Changes
@@ -75,6 +75,6 @@ always necessary to create a new github issue or sign a contributor agreement.
 
 ## <a name="info"></a> Further Information
 For more information, see:
-* [Mediathread's Web Site](http://mediathread.info)
+* [Mediathread's Web Site](https://mediathread.info)
 * [Github Wiki](https://github.com/ccnmtl/mediathread/wiki)
 * [CTL's User Voice Knowledge Base](http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread)

@@ -68,7 +68,6 @@ django-contrib-comments==1.9.1
 django-threadedcomments==1.2
 django-courseaffils==2.2.1
 django-statsd-mozilla==0.4.0
-raven==6.10.0  # Remove from ccnmtlsettings, then here.
 sentry-sdk==0.13.2
 django-appconf==1.0.3  # django_compressor
 django-compressor==2.3
@@ -120,7 +119,7 @@ freezegun==0.3.12
 django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10
 
-ccnmtlsettings==1.5.0
+ccnmtlsettings==1.6.0
 django-extensions==2.2.5
 
 # needed for django-extensions

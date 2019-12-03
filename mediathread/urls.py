@@ -29,6 +29,7 @@ from mediathread.main.views import (
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, CourseDetailView, course_detail_view,
+    ReactCourseDetailView,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
@@ -159,6 +160,8 @@ urlpatterns = [
         name='affil_activate'),
 
     # New course-aware routes
+    url(r'^course/(?P<pk>\d+)/react/$', ReactCourseDetailView.as_view(),
+        name='react_course_detail'),
     url(r'^course/(?P<pk>\d+)/$', CourseDetailView.as_view(),
         name='course_detail'),
     url(r'^course/(?P<course_pk>\d+)/asset/',

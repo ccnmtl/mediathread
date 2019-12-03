@@ -36,8 +36,6 @@ div#asset-view-details .meta {
 #course_information {
     clear: both;
     display: block;
-    float: left;
-    height: 47px;
 }
 
 #mediathread_logo {
@@ -57,7 +55,6 @@ div#asset-view-details .meta {
 h1#course_title,
 h1#course_title a {
     font-weight: bold;
-    padding: 0;
     color: #383838;
 }
 

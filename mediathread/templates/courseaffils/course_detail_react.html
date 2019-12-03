@@ -1,0 +1,18 @@
+{% extends "base_new.html" %}
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/bundle.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+
+    <div id="react-container">
+        Loading...
+    </div>
+{% endblock %}

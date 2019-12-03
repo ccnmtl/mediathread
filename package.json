@@ -1,28 +1,43 @@
 {
   "name": "mediathread",
-  "version": "0.0.0",
-  "description": "Mediathread  ==========",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Media annotation tool",
+  "private": true,
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack -d --watch",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/ccnmtl/mediathread.git"
   },
-  "author": "",
-  "license": "BSD-2-Clause",
+  "author": "Columbia University Center for Teaching and Learning",
+  "license": "GPL-2.0-only",
   "bugs": {
     "url": "https://github.com/ccnmtl/mediathread/issues"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
     "eslint": "~6.7.0",
-    "jshint": "~2.10.0",
     "eslint-config-scanjs": "^1.0.0-beta4",
     "eslint-plugin-no-unsafe-innerhtml": "^1.0.16",
-    "eslint-plugin-security": "^1.4.0"
+    "eslint-plugin-security": "^1.4.0",
+    "jshint": "~2.10.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "js-cookie": "^2.2.1",
+    "ol": "^6.1.1",
+    "react": "~16.12.0",
+    "react-dom": "~16.12.0"
   }
 }

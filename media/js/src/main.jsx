@@ -10,7 +10,7 @@ class Main extends React.Component {
         this.state = {
             // Collection tab is default
             activeTab: 'collection',
-            assets: [],
+            assets: null,
             assetError: null
         };
 

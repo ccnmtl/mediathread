@@ -105,8 +105,17 @@ GridAsset.propTypes = {
 
 class AssetRow extends React.Component {
     render() {
+        const thumbnail = this.props.asset.thumb_url ||
+                          this.props.asset.sources.image.url;
         return <tr>
-            <td>{this.props.asset.title}</td>
+            <td>
+                {this.props.asset.title}
+                <span className="float-right">
+                    <img src={thumbnail}
+                         alt={'Thumbnail for ' + this.props.asset.title}
+                         height="75" />
+                </span>
+            </td>
             <td>{this.props.asset.primary_type}</td>
             <td>{this.props.asset.author.public_name}</td>
             <td>{this.props.asset.modified}</td>
@@ -177,13 +186,16 @@ export default class CollectionTab extends React.Component {
             }
         }
 
+        const alternateViewMode =
+            this.state.viewMode === 'grid' ? 'List' : 'Grid';
+
         return (
             <div>
                 <h1>Collection</h1>
                 <h1>All Items</h1>
                 <button className="button-sm float-right"
                         onClick={this.toggleViewMode}>
-                    {this.state.viewMode} view
+                    {alternateViewMode} view
                 </button>
                 <p>Select an item to create a selection from it.</p>
 

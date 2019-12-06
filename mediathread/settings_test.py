@@ -44,3 +44,5 @@ MIDDLEWARE.remove(
     'impersonate.middleware.ImpersonateMiddleware')
 
 ALLOWED_HOSTS.append('127.0.0.1')
+
+SESSION_COOKIE_SECURE = False

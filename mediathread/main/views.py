@@ -25,16 +25,18 @@ from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader
+from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
-from sentry_sdk import capture_exception
 import requests
+from sentry_sdk import capture_exception
 from threadedcomments.models import ThreadedComment
 
 from lti_auth.models import LTICourseContext
@@ -1236,6 +1238,7 @@ class LTICourseSelector(LoggedInMixin, View):
         return HttpResponseRedirect(url)
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class LTICourseCreate(LoggedInMixin, View):
 
     def notify_staff(self, course):

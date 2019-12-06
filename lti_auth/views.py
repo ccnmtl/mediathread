@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic.base import View, TemplateView
 
 from lti_auth.lti import LTI
@@ -69,6 +70,7 @@ class LTIAuthMixin(object):
         return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class LTIRoutingView(LTIAuthMixin, View):
     request_type = 'initial'
     role_type = 'any'
@@ -123,6 +125,7 @@ class LTIConfigView(TemplateView):
         return ctx
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class LTILandingPage(TemplateView):
     template_name = 'lti_auth/landing_page.html'
 
@@ -137,6 +140,7 @@ class LTILandingPage(TemplateView):
         }
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class LTICourseEnableView(View):
 
     @method_decorator(login_required)

@@ -4155,3 +4155,14 @@ ul.section-tabs>li>a.active {
 .page-count {
     margin-top: 5px;
 }
+
+.pipe-divider {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.image-overlay .badge {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}

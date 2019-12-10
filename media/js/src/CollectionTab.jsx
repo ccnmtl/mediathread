@@ -68,30 +68,33 @@ ClassSelections.propTypes = {
 class GridAsset extends React.Component {
     render() {
         const thumbnail = this.props.asset.thumb_url ||
-                          this.props.asset.sources.image.url;
+              this.props.asset.sources.image.url;
 
-        return <div className="card" key={this.props.asset.id}>
-            <img src={thumbnail}
-                 className="card-img-top" />
+        return <div className="card"
+                    key={this.props.asset.id}>
+                   <div className="image-overlay">
+                       <img src={thumbnail}
+                            className="card-img-top"
+                            alt={this.props.asset.title} />
+                       <span className="badge badge-secondary">
+                           {this.props.asset.primary_type}
+                       </span>
+                   </div>
 
-            <span className="badge badge-secondary">
-                {this.props.asset.primary_type}
-            </span>
-
-            <div className="card-body">
-                <h5 className="card-title">
-                    <a href={this.props.asset.local_url}>
-                        {this.props.asset.title}
-                    </a>
-                </h5>
-            </div>
-            <MySelections
-                annotations={this.props.asset.annotations}
-                currentUser={this.props.currentUser} />
-            <ClassSelections
-                annotations={this.props.asset.annotations}
-                currentUser={this.props.currentUser} />
-        </div>
+                   <div className="card-body">
+                       <h5 className="card-title">
+                           <a href={this.props.asset.local_url}>
+                               {this.props.asset.title}
+                           </a>
+                       </h5>
+                   </div>
+                   <MySelections
+                       annotations={this.props.asset.annotations}
+                       currentUser={this.props.currentUser} />
+                   <ClassSelections
+                       annotations={this.props.asset.annotations}
+                       currentUser={this.props.currentUser} />
+               </div>;
     }
 }
 
@@ -105,18 +108,18 @@ class AssetRow extends React.Component {
         const thumbnail = this.props.asset.thumb_url ||
                           this.props.asset.sources.image.url;
         return <tr>
-            <td>
-                {this.props.asset.title}
-                <span className="float-right">
-                    <img src={thumbnail}
-                         alt={'Thumbnail for ' + this.props.asset.title}
-                         height="75" />
-                </span>
-            </td>
-            <td>{this.props.asset.primary_type}</td>
-            <td>{this.props.asset.author.public_name}</td>
-            <td>{this.props.asset.modified}</td>
-        </tr>
+                   <td>
+                       {this.props.asset.title}
+                       <span className="float-right">
+                           <img src={thumbnail}
+                                alt={'Thumbnail for ' + this.props.asset.title}
+                                height="75" />
+                       </span>
+                   </td>
+                   <td>{this.props.asset.primary_type}</td>
+                   <td>{this.props.asset.author.public_name}</td>
+                   <td>{this.props.asset.modified}</td>
+               </tr>;
     }
 }
 

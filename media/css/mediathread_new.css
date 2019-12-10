@@ -4166,3 +4166,7 @@ ul.section-tabs>li>a.active {
     right: 10px;
     top: 10px;
 }
+
+.ol-map {
+    height: 200px;
+}

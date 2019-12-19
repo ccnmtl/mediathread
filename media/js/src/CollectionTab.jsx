@@ -1,109 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import AnnotationScroller from './AnnotationScroller';
+import GridAsset from './GridAsset';
 
-class MySelections extends React.Component {
-    render() {
-        let annotationsDom = null;
-        let annotations = [];
-
-        const me = this;
-        this.props.annotations.forEach(function(annotation) {
-            if (annotation.author.id === me.props.currentUser) {
-                annotations.push(annotation);
-            }
-        });
-
-        if (annotations.length > 0) {
-            annotationsDom = <React.Fragment>
-                <div className="dropdown-divider"></div>
-                <div className="card-body">
-                    <h5 className="card-title">My Annotations</h5>
-                    <AnnotationScroller annotations={annotations} />
-                </div>
-            </React.Fragment>;
-        }
-
-        return annotationsDom;
-    }
-}
-
-MySelections.propTypes = {
-    annotations: PropTypes.array,
-    currentUser: PropTypes.number.isRequired
-};
-
-class ClassSelections extends React.Component {
-    render() {
-        let annotationsDom = null;
-        let annotations = [];
-
-        const me = this;
-        this.props.annotations.forEach(function(annotation) {
-            if (annotation.author.id !== me.props.currentUser) {
-                annotations.push(annotation);
-            }
-        });
-
-        if (annotations.length > 0) {
-            annotationsDom = <React.Fragment>
-                <div className="dropdown-divider"></div>
-                <div className="card-body">
-                    <h5 className="card-title">Class Annotations</h5>
-                    <AnnotationScroller annotations={annotations} />
-                </div>
-            </React.Fragment>;
-        }
-
-        return annotationsDom;
-    }
-}
-
-ClassSelections.propTypes = {
-    annotations: PropTypes.array,
-    currentUser: PropTypes.number.isRequired
-};
-
-class GridAsset extends React.Component {
-    render() {
-        const thumbnail = this.props.asset.thumb_url ||
-              this.props.asset.sources.image.url;
-
-        return <div className="card"
-                    key={this.props.asset.id}>
-                   <div className="image-overlay">
-                       <img src={thumbnail}
-                            className="card-img-top"
-                            alt={this.props.asset.title} />
-                       <span className="badge badge-secondary">
-                           {this.props.asset.primary_type}
-                       </span>
-                   </div>
-
-                   <div className="card-body">
-                       <h5 className="card-title">
-                           <a href={this.props.asset.local_url}>
-                               {this.props.asset.title}
-                           </a>
-                       </h5>
-                   </div>
-                   <MySelections
-                       annotations={this.props.asset.annotations}
-                       currentUser={this.props.currentUser} />
-                   <ClassSelections
-                       annotations={this.props.asset.annotations}
-                       currentUser={this.props.currentUser} />
-               </div>;
-    }
-}
-
-GridAsset.propTypes = {
-    asset: PropTypes.object.isRequired,
-    currentUser: PropTypes.number.isRequired
-};
-
-class AssetRow extends React.Component {
+class RowAsset extends React.Component {
     render() {
         const thumbnail = this.props.asset.thumb_url ||
                           this.props.asset.sources.image.url;
@@ -123,7 +23,7 @@ class AssetRow extends React.Component {
     }
 }
 
-AssetRow.propTypes = {
+RowAsset.propTypes = {
     asset: PropTypes.object.isRequired
 };
 
@@ -164,7 +64,7 @@ export default class CollectionTab extends React.Component {
             }
         } else if (this.props.assets && this.state.viewMode === 'list') {
             this.props.assets.forEach(function(asset) {
-                assets.push(<AssetRow key={asset.id} asset={asset} />)
+                assets.push(<RowAsset key={asset.id} asset={asset} />)
             });
 
             if (assets.length === 0) {

@@ -3,12 +3,19 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import AnnotationScroller from './AnnotationScroller';
 
+import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
+import GeoJSON from 'ol/format/GeoJSON';
 import {getCenter} from 'ol/extent';
 import ImageLayer from 'ol/layer/Image';
+import VectorLayer from 'ol/layer/Vector';
+import Point from 'ol/geom/Point';
+import VectorSource from 'ol/source/Vector';
+import Polygon from 'ol/geom/Polygon';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
+import {RegularShape, Fill, Stroke, Style} from 'ol/style';
 
 class MySelections extends React.Component {
     render() {
@@ -27,7 +34,10 @@ class MySelections extends React.Component {
                 <div className="dropdown-divider"></div>
                 <div className="card-body">
                     <h5 className="card-title">My Annotations</h5>
-                    <AnnotationScroller annotations={annotations} />
+                    <AnnotationScroller
+                        annotations={annotations}
+                        onSelectedAnnotationUpdate={this.props.onSelectedAnnotationUpdate}
+                    />
                 </div>
             </React.Fragment>;
         }
@@ -38,6 +48,7 @@ class MySelections extends React.Component {
 
 MySelections.propTypes = {
     annotations: PropTypes.array,
+    onSelectedAnnotationUpdate: PropTypes.func.isRequired,
     currentUser: PropTypes.number.isRequired
 };
 
@@ -58,7 +69,10 @@ class ClassSelections extends React.Component {
                 <div className="dropdown-divider"></div>
                 <div className="card-body">
                     <h5 className="card-title">Class Annotations</h5>
-                    <AnnotationScroller annotations={annotations} />
+                    <AnnotationScroller
+                        annotations={annotations}
+                        onSelectedAnnotationUpdate={this.props.onSelectedAnnotationUpdate}
+                    />
                 </div>
             </React.Fragment>;
         }
@@ -69,10 +83,63 @@ class ClassSelections extends React.Component {
 
 ClassSelections.propTypes = {
     annotations: PropTypes.array,
+    onSelectedAnnotationUpdate: PropTypes.func.isRequired,
     currentUser: PropTypes.number.isRequired
 };
 
 export default class GridAsset extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            annotationLayer: new VectorLayer({
+                source: new VectorSource()
+            })
+        };
+
+        this.onSelectedAnnotationUpdate =
+            this.onSelectedAnnotationUpdate.bind(this);
+    }
+    onSelectedAnnotationUpdate(annotation) {
+        const stroke = new Stroke({color: 'black', width: 2});
+        const fill = new Fill({color: 'red'});
+        const style = new Style({
+            image: new RegularShape({
+                fill: fill,
+                stroke: stroke,
+                points: 4,
+                radius: 10,
+                angle: Math.PI / 4
+            })
+        });
+
+        const count = 25;
+        const e = 4500000;
+
+        //console.log(this.props.asset.annotations[annotation]);
+        const feature = new Feature({
+            geometry: new Polygon(
+                this.props.asset.annotations[annotation]
+                    .annotation.geometry.coordinates
+            )
+        });
+        feature.setStyle(style);
+
+        this.map.removeLayer(this.state.annotationLayer);
+
+        this.setState({
+            annotationLayer: new VectorLayer({
+                source: new VectorSource({
+                    features: [feature]
+                })
+            })
+        });
+
+        this.map.addLayer(this.state.annotationLayer);
+
+        console.log(this.map.getLayers());
+        //this.map.render();
+    }
     render() {
         const thumbnail = this.props.asset.thumb_url ||
                           this.props.asset.sources.image.url;
@@ -95,9 +162,11 @@ export default class GridAsset extends React.Component {
             </div>
             <MySelections
                 annotations={this.props.asset.annotations}
+                onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
                 currentUser={this.props.currentUser} />
             <ClassSelections
                 annotations={this.props.asset.annotations}
+                onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
                 currentUser={this.props.currentUser} />
         </div>;
     }
@@ -110,13 +179,14 @@ export default class GridAsset extends React.Component {
             this.props.asset.sources.image.width,
             this.props.asset.sources.image.height
         ];
+
         const projection = new Projection({
             code: 'xkcd-image',
             units: 'pixels',
             extent: extent
         });
 
-        new Map({
+        this.map = new Map({
             target: `map-${this.props.asset.id}`,
             layers: [
                 new ImageLayer({
@@ -125,7 +195,8 @@ export default class GridAsset extends React.Component {
                         projection: projection,
                         imageExtent: extent
                     })
-                })
+                }),
+                //this.state.annotationLayer
             ],
             view: new View({
                 projection: projection,

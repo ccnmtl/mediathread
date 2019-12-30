@@ -1,5 +1,5 @@
 language: python
-dist: xenial
+dist: bionic
 addons:
   firefox: "68.0.2esr"
 env:

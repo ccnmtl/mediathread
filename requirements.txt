@@ -73,7 +73,7 @@ django-courseaffils==2.2.1
 django-statsd-mozilla==0.4.0
 sentry-sdk==0.13.5
 django-appconf==1.0.3  # django_compressor
-django-compressor==2.3
+django-compressor==2.4
 django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0

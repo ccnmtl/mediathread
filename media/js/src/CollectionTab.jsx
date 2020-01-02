@@ -31,10 +31,13 @@ export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            viewMode: 'grid'
+            viewMode: 'grid',
+            titleFilter: '',
+            filteredAssets: this.props.assets
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
+        this.handleTitleFilterChange = this.handleTitleFilterChange.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -43,16 +46,42 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
+    handleTitleFilterChange(e) {
+        const str = e.target.value.trim().toLowerCase();
+        let filteredAssets = [];
+        this.props.assets.some(function(asset) {
+            if (asset.title.toLowerCase().indexOf(str) > -1) {
+                filteredAssets.push(asset);
+                return true;
+            }
+
+            asset.annotations.some(function(annotation) {
+                if (annotation.title.toLowerCase().indexOf(str) > -1) {
+                    filteredAssets.push(asset);
+                    return true;
+                }
+            });
+        });
+        this.setState({
+            titleFilter: str,
+            filteredAssets: filteredAssets
+        });
+    }
     render() {
         let assets = [];
         let assetsDom = 'Loading Assets...';
         const me = this;
 
+        let assetList = this.props.assets;
+        if (this.state.titleFilter) {
+            assetList = this.state.filteredAssets;
+        }
+
         if (this.props.assetError) {
             // Display error to user
             assetsDom = <strong>{this.props.assetError}</strong>;
-        } else if (this.props.assets && this.state.viewMode === 'grid') {
-            this.props.assets.forEach(function(asset) {
+        } else if (assetList && this.state.viewMode === 'grid') {
+            assetList.forEach(function(asset) {
                 assets.push(<GridAsset key={asset.id} asset={asset}
                                        currentUser={me.props.currentUser} />);
             });
@@ -62,8 +91,8 @@ export default class CollectionTab extends React.Component {
             } else {
                 assetsDom = <div className="card-columns">{assets}</div>;
             }
-        } else if (this.props.assets && this.state.viewMode === 'list') {
-            this.props.assets.forEach(function(asset) {
+        } else if (assetList && this.state.viewMode === 'list') {
+            assetList.forEach(function(asset) {
                 assets.push(<RowAsset key={asset.id} asset={asset} />)
             });
 
@@ -102,7 +131,10 @@ export default class CollectionTab extends React.Component {
                 <div className="input-group mb-3">
                     <label>
                         Title
-                        <input type="text" className="form-control"
+                        <input type="text" name="title"
+                               className="form-control"
+                               onChange={this.handleTitleFilterChange}
+                               defaultValue={this.state.titleFilter}
                                placeholder="Title of items and selections"
                                aria-label="Title" />
                     </label>

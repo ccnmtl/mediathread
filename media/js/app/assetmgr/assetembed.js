@@ -1,5 +1,6 @@
 /* exported initializeAssetEmbed */
 
+// eslint-disable-next-line no-unused-vars
 function initializeAssetEmbed(options) {
     jQuery(window).one('collection.ready', {'self': this},
         function(event, params) {

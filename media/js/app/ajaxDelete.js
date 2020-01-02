@@ -1,7 +1,7 @@
 /* global showMessage */
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 /* exported ajaxDelete */
 
+// eslint-disable-next-line no-unused-vars
 function ajaxDelete(link, containerId, opts) {
     var postUrl = null;
     if (link && link.href) {

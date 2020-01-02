@@ -20,11 +20,11 @@ const authedFetch = function(url, method = 'get', data = null) {
 
 const getAssets = function() {
     return authedFetch('/api/asset/?annotations=true')
-        .then(function(response, error) {
+        .then(function(response) {
             if (response.status === 200) {
                 return response.json();
             } else {
-                throw `Error loading assets: ` +
+                throw 'Error loading assets: ' +
                     `(${response.status}) ${response.statusText}`;
             }
         });

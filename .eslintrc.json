@@ -1,20 +1,30 @@
-module.exports = {
-    "env": {
-        "browser": true,
-        "jquery": true
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:security/recommended"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "plugins": [
+        "react",
         "security",
         "scanjs-rules",
         "no-unsafe-innerhtml"
     ],
-    "extends": [
-        "eslint:recommended",
-        "plugin:security/recommended"
-    ],
+    "env": {
+        "browser": true,
+        "jquery": true
+    },
     "globals": {
         "Backbone": true,
-        "_": true,
+        "_": true
     },
     "rules": {
         "indent": [
@@ -82,18 +92,18 @@ module.exports = {
         "scanjs-rules/property_mgmt": 1,
         "scanjs-rules/property_sessionStorage": 1,
 
-        'security/detect-buffer-noassert': 1,
-        'security/detect-child-process': 1,
-        'security/detect-disable-mustache-escape': 1,
-        'security/detect-eval-with-expression': 1,
-        'security/detect-new-buffer': 1,
-        'security/detect-no-csrf-before-method-override': 1,
-        'security/detect-non-literal-fs-filename': 1,
-        'security/detect-non-literal-regexp': 1,
-        'security/detect-non-literal-require': 0, /* requirejs conflict */
-        'security/detect-object-injection': 0, /* several false positives */
-        'security/detect-possible-timing-attacks': 1,
-        'security/detect-pseudoRandomBytes': 1,
-        'security/detect-unsafe-regex': 1
+        "security/detect-buffer-noassert": 1,
+        "security/detect-child-process": 1,
+        "security/detect-disable-mustache-escape": 1,
+        "security/detect-eval-with-expression": 1,
+        "security/detect-new-buffer": 1,
+        "security/detect-no-csrf-before-method-override": 1,
+        "security/detect-non-literal-fs-filename": 1,
+        "security/detect-non-literal-regexp": 1,
+        "security/detect-non-literal-require": 0, /* requirejs conflict */
+        "security/detect-object-injection": 0, /* several false positives */
+        "security/detect-possible-timing-attacks": 1,
+        "security/detect-pseudoRandomBytes": 1,
+        "security/detect-unsafe-regex": 1
     }
-};
+}

@@ -113,7 +113,7 @@ pickleshare==0.7.5
 simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.5
-wcwidth==0.1.7
+wcwidth==0.1.8
 prompt_toolkit==2.0.10 # pyup: <3.0.0
 pygments==2.5.2
 ipython==5.8.0 # pyup: <6.0.0

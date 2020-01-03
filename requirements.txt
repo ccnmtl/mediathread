@@ -60,7 +60,7 @@ contextlib2==0.6.0.post1
 rcssmin==1.0.6
 rjsmin==1.0.12
 
-djangowind==1.2.2
+djangowind==1.2.3
 django-tagging==0.4.6
 
 # pinned for django 1.11

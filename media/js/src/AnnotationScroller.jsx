@@ -18,6 +18,8 @@ export default class AnnotationScroller extends React.Component {
             this.setState({
                 currentAnnotation: this.state.currentAnnotation - 1
             });
+
+            this.props.onSelectedAnnotationUpdate(this.state.currentAnnotation);
         }
     }
     onNextClick(e) {
@@ -26,7 +28,13 @@ export default class AnnotationScroller extends React.Component {
             this.setState({
                 currentAnnotation: this.state.currentAnnotation + 1
             });
+
+            this.props.onSelectedAnnotationUpdate(this.state.currentAnnotation);
         }
+    }
+    showAnnotation() {
+        const selectedAnnotation = this.props.annotations[this.state.currentAnnotation];
+        const annotationData = JSON.parse(selectedAnnotation.annotation_data);
     }
     render() {
         const selectedAnnotation = this.props.annotations[this.state.currentAnnotation];
@@ -46,8 +54,12 @@ export default class AnnotationScroller extends React.Component {
             <a href="#" onClick={this.onNextClick}>Next &gt;</a>
         </div>;
     }
+    componentDidMount() {
+        this.showAnnotation();
+    }
 }
 
 AnnotationScroller.propTypes = {
     annotations: PropTypes.array.isRequired,
+    onSelectedAnnotationUpdate: PropTypes.func.isRequired
 };

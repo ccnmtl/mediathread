@@ -81,6 +81,7 @@ function buildshieldbox() {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function shieldbrowser(reqbrowser) {
     var browsername = false;
     var versionmismatch = false;

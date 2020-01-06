@@ -1,6 +1,7 @@
 //This script is taken from here: http://www.quirksmode.org/js/detect.html
 /* exported addLoadEvent */
 
+// eslint-disable-next-line no-unused-vars
 function addLoadEvent(func) {
     var oldonload = window.onload;
     if (typeof window.onload !== 'function') {

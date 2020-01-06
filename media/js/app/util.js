@@ -4,6 +4,7 @@
 /* exported retrieveData, showMessage, confirmAction */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
+// eslint-disable-next-line no-unused-vars
 function _propertyCount(obj) {
     var count = 0;
     for (var k in obj) {
@@ -14,6 +15,7 @@ function _propertyCount(obj) {
     return count;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getVisibleContentHeight() {
     var viewportheight;
 
@@ -36,6 +38,7 @@ function getVisibleContentHeight() {
         (20 + document.getElementById('header').clientHeight);
 }
 
+// eslint-disable-next-line no-unused-vars
 function switcher(event, a) {
     event.preventDefault();
     event.stopPropagation();
@@ -53,10 +56,12 @@ function switcher(event, a) {
     return false;
 }
 
+// eslint-disable-next-line no-unused-vars
 function updateUserSetting(user, setting, value) {
     jQuery.post('/setting/' + user + '/', {name: setting, value: value});
 }
 
+// eslint-disable-next-line no-unused-vars
 function toggleHelp(a, user, parent, helpContentId, callback) {
     jQuery(parent).toggleClass('on off');
     jQuery('#' + helpContentId).toggleClass('on off');
@@ -72,6 +77,7 @@ function toggleHelp(a, user, parent, helpContentId, callback) {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function toggleHelpOverlay(btn, user, helpContentId) {
     var overlayId = '#' + helpContentId + '-overlay';
     var tabId = '#' + helpContentId + '-tab';
@@ -95,6 +101,7 @@ function toggleHelpOverlay(btn, user, helpContentId) {
     return false;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getCookie(name) {
     var dc = document.cookie;
     var prefix = name + '=';
@@ -114,6 +121,7 @@ function getCookie(name) {
     return unescape(dc.substring(begin + prefix.length, end));
 }
 
+// eslint-disable-next-line no-unused-vars
 function setCookie(name, value, expires, path, domain, secure) {
     document.cookie = name + '=' + escape(value) +
         ((expires) ? '; expires=' + expires.toGMTString() : '') +
@@ -125,6 +133,7 @@ function setCookie(name, value, expires, path, domain, secure) {
 /* eslint-disable  scanjs-rules/property_localStorage */
 /* eslint-disable scanjs-rules/identifier_localStorage */
 
+// eslint-disable-next-line no-unused-vars
 function storeData(name, value, expires, path, domain, secure) {
     if (window.localStorage) {
         localStorage[name] = value;
@@ -133,6 +142,7 @@ function storeData(name, value, expires, path, domain, secure) {
     }
 }
 
+// eslint-disable-next-line no-unused-vars
 function retrieveData(name) {
     if (window.localStorage) {
         return localStorage.getItem(name);
@@ -144,6 +154,7 @@ function retrieveData(name) {
 /* eslint-enable scanjs-rules/property_localStorage */
 /* eslint-enable scanjs-rules/identifier_localStorage */
 
+// eslint-disable-next-line no-unused-vars
 function showMessage(msg, onclose, customTitle, position) {
     var title = customTitle ? customTitle : 'Success';
     var $dialogConfirm = jQuery('#dialog-confirm');

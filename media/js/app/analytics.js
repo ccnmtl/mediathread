@@ -11,6 +11,7 @@
  */
 /* exported MediathreadAnalytics */
 
+// eslint-disable-next-line no-unused-vars
 var MediathreadAnalytics = function(tracker) {
     var self = this;
     self.tracker = tracker;

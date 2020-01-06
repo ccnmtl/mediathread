@@ -1,6 +1,7 @@
 /* global STATIC_URL: true */
 /* exported tinymceSettings */
 
+// eslint-disable-next-line no-unused-vars
 var tinymceSettings = {
     'browser_spellcheck': true,
     'convert_urls': false,

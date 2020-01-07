@@ -143,11 +143,19 @@ export default class GridAsset extends React.Component {
     }
     render() {
         const thumbnail = this.asset.getThumbnail();
+        const type = this.asset.getType();
 
         return <div className="card" key={this.props.asset.id}>
             <div className="image-overlay">
+
+            {type === 'image' && (
                 <div id={`map-${this.props.asset.id}`}
                      className="ol-map"></div>
+            )}
+            {type === 'video' && (
+                <img style={{'maxWidth': '100%'}}
+                     src={this.asset.getThumbnail()} />
+            )}
                 <span className="badge badge-secondary">
                     {this.asset.getType()}
                 </span>
@@ -171,37 +179,39 @@ export default class GridAsset extends React.Component {
         </div>;
     }
     componentDidMount() {
-        const thumbnail = this.asset.getThumbnail();
-        const img = this.asset.getImage();
+        if (this.asset.getType() === 'image') {
+            const thumbnail = this.asset.getThumbnail();
+            const img = this.asset.getImage();
 
-        const extent = [
-            0, 0,
-            img.width, img.height
-        ];
+            const extent = [
+                0, 0,
+                img.width, img.height
+            ];
 
-        const projection = new Projection({
-            code: 'xkcd-image',
-            units: 'pixels',
-            extent: extent
-        });
+            const projection = new Projection({
+                code: 'xkcd-image',
+                units: 'pixels',
+                extent: extent
+            });
 
-        this.map = new Map({
-            target: `map-${this.props.asset.id}`,
-            layers: [
-                new ImageLayer({
-                    source: new Static({
-                        url: thumbnail,
-                        projection: projection,
-                        imageExtent: extent
+            this.map = new Map({
+                target: `map-${this.props.asset.id}`,
+                layers: [
+                    new ImageLayer({
+                        source: new Static({
+                            url: thumbnail,
+                            projection: projection,
+                            imageExtent: extent
+                        })
                     })
+                ],
+                view: new View({
+                    projection: projection,
+                    center: getCenter(extent),
+                    zoom: 1
                 })
-            ],
-            view: new View({
-                projection: projection,
-                center: getCenter(extent),
-                zoom: 1
-            })
-        });
+            });
+        }
     }
 }
 

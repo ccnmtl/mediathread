@@ -102,22 +102,11 @@ ua_parser==0.8.0
 user_agents==2.0
 django_user_agents==0.4.0
 gunicorn==19.10.0 # pyup: <20.0.0
-traitlets==4.3.3
-ipython_genutils==0.2.0
 path.py==11.5.2 # pyup: <12
-backports.shutil_get_terminal_size==1.0.0
-decorator==4.4.1
-pexpect==4.7.0
-ptyprocess==0.6.0
-pickleshare==0.7.5
 simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.5
-wcwidth==0.1.8
-prompt_toolkit==2.0.10 # pyup: <3.0.0
-pygments==2.5.2
-ipython==5.8.0 # pyup: <6.0.0
-ipdb==0.12.3
+
 freezegun==0.3.12
 django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10

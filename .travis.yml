@@ -15,7 +15,5 @@ matrix:
     env: TEST_SUITE=harvest1
   - python: '3.6'
     env: TEST_SUITE=harvest2
-before_install:
-  - pip install --upgrade setuptools pip wheel
 script:
   - make $TEST_SUITE

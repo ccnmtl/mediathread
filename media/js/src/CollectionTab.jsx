@@ -2,21 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import GridAsset from './GridAsset';
+import Asset from './Asset';
 
 class RowAsset extends React.Component {
+    constructor(props) {
+        super(props);
+        this.asset = new Asset(this.props.asset);
+    }
     render() {
-        const thumbnail = this.props.asset.thumb_url ||
-                          this.props.asset.sources.image.url;
         return <tr>
                    <td>
                        {this.props.asset.title}
                        <span className="float-right">
-                           <img src={thumbnail}
+                           <img src={this.asset.getThumbnail()}
                                 alt={'Thumbnail for ' + this.props.asset.title}
                                 height="75" />
                        </span>
                    </td>
-                   <td>{this.props.asset.primary_type}</td>
+                   <td>{this.asset.getType()}</td>
                    <td>{this.props.asset.author.public_name}</td>
                    <td>{this.props.asset.modified}</td>
                </tr>;

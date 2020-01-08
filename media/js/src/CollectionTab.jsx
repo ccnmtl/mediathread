@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
+import AssetFilter from './AssetFilter';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -88,18 +89,8 @@ export default class CollectionTab extends React.Component {
                 </button>
                 <p>Select an item to create a selection from it.</p>
 
-                <div className="input-group mb-3">
-                    <label>
-                        Title
-                        <input
-                            type="text" name="title"
-                            className="form-control"
-                            onChange={this.handleTitleFilterChange}
-                            defaultValue={this.state.titleFilter}
-                            placeholder="Title of items and selections"
-                            aria-label="Title" />
-                    </label>
-                </div>
+                <AssetFilter
+                    handleTitleFilterChange={this.handleTitleFilterChange} />
 
                 <div className="assets">
                     {assetsDom}

@@ -1,0 +1,132 @@
+{
+    "resource_uri": "",
+    "author": {
+        "resource_uri": "",
+        "id": 5252,
+        "username": "njn2118",
+        "public_name": "Nikolas Nyby"
+    },
+    "id": 56067,
+    "title": "Thinking-of-getting-a-cat.png",
+    "thumb_url": null,
+    "primary_type": "image",
+    "local_url": "/course/1379/asset/56067/",
+    "media_type_label": "image",
+    "editable_title": true,
+    "annotations": [{
+        "resource_uri": "",
+        "author": {
+            "resource_uri": "",
+            "id": 5252,
+            "username": "njn2118",
+            "public_name": "Nikolas Nyby"
+        },
+        "id": 326272,
+        "range1": -37,
+        "range2": -6.25,
+        "annotation_data": "{\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-46.5,-35.5],[-46.5,1.5],[-7,1.5000000000000036],[-7,-35.5],[-46.5,-35.5]]]},\"default\":false,\"x\":-37,\"y\":-6.25,\"zoom\":2,\"extent\":[-180,-90,180,90]}",
+        "title": "eye",
+        "is_global_annotation": false,
+        "asset_id": "56067",
+        "is_null": false,
+        "annotation": {
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            -46.5,
+                            -35.5
+                        ],
+                        [
+                            -46.5,
+                            1.5
+                        ],
+                        [
+                            -7,
+                            1.5000000000000036
+                        ],
+                        [
+                            -7,
+                            -35.5
+                        ],
+                        [
+                            -46.5,
+                            -35.5
+                        ]
+                    ]
+                ]
+            },
+            "annotation_count": 2,
+            "my_annotation_count": 2,
+            "modified": "01/06/20 04:38 PM",
+            "sources": {
+                "button": {
+                    "label": "button",
+                    "url": "cont",
+                    "width": 0,
+                    "height": 0,
+                    "primary": false
+                },
+                "asset-source": {
+                    "label": "asset-source",
+                    "url": "bookmarklet",
+                    "width": 0,
+                    "height": 0,
+                    "primary": false
+                },
+                "url": {
+                    "label": "url",
+                    "url": "https://www.google.com/search?q=cat&source=lnms&tbm=isch&sa=X&ved=2ahUKEwi9mbDC9-_mAhVNwFkKHd4PBksQ_AUoAXoECA0QAw&biw=1364&bih=985#imgrc=D_uCidpByFeeZM:#Thinking-of-getting-a-cat.png",
+                    "width": 0,
+                    "height": 0,
+                    "primary": false
+                },
+                "image": {
+                    "label": "image",
+                    "url": "https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png",
+                    "width": 1200,
+                    "height": 600,
+                    "primary": true
+                }
+            },
+            "editable": false,
+            "citable": false
+        }
+    }],
+    "annotation_count": 2,
+    "my_annotation_count": 2,
+    "modified": "01/06/20 04:38 PM",
+    "sources": {
+        "button": {
+            "label": "button",
+            "url": "cont",
+            "width": 0,
+            "height": 0,
+            "primary": false
+        },
+        "asset-source": {
+            "label": "asset-source",
+            "url": "bookmarklet",
+            "width": 0,
+            "height": 0,
+            "primary": false
+        },
+        "url": {
+            "label": "url",
+            "url": "https://www.google.com/search?q=cat&source=lnms&tbm=isch&sa=X&ved=2ahUKEwi9mbDC9-_mAhVNwFkKHd4PBksQ_AUoAXoECA0QAw&biw=1364&bih=985#imgrc=D_uCidpByFeeZM:#Thinking-of-getting-a-cat.png",
+            "width": 0,
+            "height": 0,
+            "primary": false
+        },
+        "image": {
+            "label": "image",
+            "url": "https://icatcare.org/app/uploads/2018/07/Thinking-of-getting-a-cat.png",
+            "width": 1200,
+            "height": 600,
+            "primary": true
+        }
+    },
+    "editable": false,
+    "citable": false
+}

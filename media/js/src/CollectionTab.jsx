@@ -123,6 +123,7 @@ export default class CollectionTab extends React.Component {
                 <h1>Collection</h1>
                 <h1>All Items</h1>
                 <button className="button-sm float-right"
+                        data-testid="viewtoggle"
                         onClick={this.toggleViewMode}>
                     {alternateViewMode} view
                 </button>

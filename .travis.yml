@@ -18,4 +18,5 @@ matrix:
 before_install:
   - pip install --upgrade setuptools pip wheel
 script:
+  - make jstest
   - make $TEST_SUITE

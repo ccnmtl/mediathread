@@ -1,5 +1,6 @@
+/* eslint-env node */
+
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
     entry: './media/js/src/main.jsx',

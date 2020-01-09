@@ -2,6 +2,12 @@ export default class Asset {
     constructor(data) {
         this.asset = data;
     }
+    /**
+     * Get asset type.
+     *
+     * This corresponds to Asset.primary_labels in
+     * mediathread/assetmgr/models.py
+     */
     getType() {
         let assetType = this.asset.primary_type;
         if (assetType === 'youtube' || assetType === 'mp4_pseudo') {

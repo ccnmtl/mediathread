@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 export default class AnnotationScroller extends React.Component {
@@ -33,14 +32,17 @@ export default class AnnotationScroller extends React.Component {
         }
     }
     showAnnotation() {
-        const selectedAnnotation = this.props.annotations[this.state.currentAnnotation];
-        const annotationData = JSON.parse(selectedAnnotation.annotation_data);
+        /*const selectedAnnotation =
+              this.props.annotations[this.state.currentAnnotation];
+        const annotationData = JSON.parse(selectedAnnotation.annotation_data);*/
     }
     render() {
-        const selectedAnnotation = this.props.annotations[this.state.currentAnnotation];
+        const selectedAnnotation =
+              this.props.annotations[this.state.currentAnnotation];
         return <div>
             <small>
-                {this.state.currentAnnotation + 1} of {this.props.annotations.length}
+                {this.state.currentAnnotation + 1} of
+                {this.props.annotations.length}
             </small>
 
             <div>

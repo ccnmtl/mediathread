@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* eslint-env jest, node */
 import fs from 'fs';
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
@@ -26,7 +26,7 @@ const fakeUser = {
 const assetData = fs.readFileSync('media/js/test/asset-fixture.json');
 const fakeAsset = JSON.parse(assetData);
 
-it('renders the collection tab grid layout', async () => {
+it('renders the collection tab grid layout', async() => {
     jest.spyOn(global, 'fetch').mockImplementation(
         () => Promise.resolve({
             json: () => Promise.resolve(fakeAsset)
@@ -34,7 +34,7 @@ it('renders the collection tab grid layout', async () => {
     );
 
     // Use the asynchronous version of act to apply resolved promises
-    await act(async () => {
+    await act(async() => {
         render(
             <CollectionTab
                 currentUser={fakeUser.id}
@@ -53,7 +53,7 @@ it('renders the collection tab grid layout', async () => {
     global.fetch.mockRestore();
 });
 
-it('renders the collection tab list layout', async () => {
+it('renders the collection tab list layout', async() => {
     jest.spyOn(global, 'fetch').mockImplementation(
         () => Promise.resolve({
             json: () => Promise.resolve(fakeAsset)
@@ -61,7 +61,7 @@ it('renders the collection tab list layout', async () => {
     );
 
     // Use the asynchronous version of act to apply resolved promises
-    await act(async () => {
+    await act(async() => {
         render(
             <CollectionTab
                 currentUser={fakeUser.id}
@@ -70,14 +70,14 @@ it('renders the collection tab list layout', async () => {
         );
     });
 
-    const button = document.querySelector("[data-testid=viewtoggle]");
-    expect(button.innerHTML).toBe("List view");
+    const button = document.querySelector('[data-testid=viewtoggle]');
+    expect(button.innerHTML).toBe('List view');
 
     act(() => {
-        button.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(button.innerHTML).toBe("Grid view");
+    expect(button.innerHTML).toBe('Grid view');
 
     expect(container.textContent).toContain('Collection');
     expect(container.textContent).toContain('Select an item');

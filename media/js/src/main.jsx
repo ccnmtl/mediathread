@@ -36,33 +36,45 @@ class Main extends React.Component {
     }
 
     render() {
-        return <div>
-            <nav className="nav nav-pills nav-justified">
-                <a className={'nav-link ' + (
-                    this.state.activeTab === 'collection' ? 'active' : '')}
-                   onClick={this.clickTab}
-                   href="collection/">
-                    Collection
-                </a>
-                <a className={'nav-link ' + (
-                    this.state.activeTab === 'assignments' ? 'active' : '')}
-                   onClick={this.clickTab}
-                   href="assignments/">
-                    Assignments
-                </a>
-                <a className={'nav-link ' + (
-                    this.state.activeTab === 'projects' ? 'active' : '')}
-                   onClick={this.clickTab}
-                   href="projects/">
-                    Projects
-                </a>
-            </nav>
+        return (
+            <div>
+                <nav className="nav nav-pills nav-justified">
+                    <a
+                        className={'nav-link ' + (
+                            this.state.activeTab === 'collection' ?
+                                'active' : ''
+                        )}
+                        onClick={this.clickTab}
+                        href="collection/">
+                        Collection
+                    </a>
+                    <a
+                        className={'nav-link ' + (
+                            this.state.activeTab === 'assignments' ?
+                                'active' : ''
+                        )}
+                        onClick={this.clickTab}
+                        href="assignments/">
+                        Assignments
+                    </a>
+                    <a
+                        className={'nav-link ' + (
+                            this.state.activeTab === 'projects' ?
+                                'active' : ''
+                        )}
+                        onClick={this.clickTab}
+                        href="projects/">
+                        Projects
+                    </a>
+                </nav>
 
-            {this.state.activeTab === 'collection' &&
-             <CollectionTab assets={this.state.assets}
-                            assetError={this.state.assetError}
-                            currentUser={this.state.currentUser} />}
-        </div>;
+                {this.state.activeTab === 'collection' &&
+                 <CollectionTab
+                     assets={this.state.assets}
+                     assetError={this.state.assetError}
+                     currentUser={this.state.currentUser} />}
+            </div>
+        );
     }
 }
 

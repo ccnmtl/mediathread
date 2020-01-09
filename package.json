@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "dev": "webpack -d --watch",
-    "eslint": "eslint media/js/src *.js",
+    "eslint": "eslint media/js/src media/js/src/**/*.jsx *.js",
     "build": "webpack"
   },
   "repository": {

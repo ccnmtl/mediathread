@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* eslint-env jest, node */
 import fs from 'fs';
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
@@ -19,7 +19,7 @@ afterEach(() => {
     container = null;
 });
 
-it('renders the asset', async () => {
+it('renders the asset', async() => {
     const fakeUser = {
         id: 12,
         name: 'Test User'
@@ -34,7 +34,7 @@ it('renders the asset', async () => {
     );
 
     // Use the asynchronous version of act to apply resolved promises
-    await act(async () => {
+    await act(async() => {
         render(
             <GridAsset
                 currentUser={fakeUser.id}

@@ -1,15 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import GeoJSON from 'ol/format/GeoJSON';
 import {getCenter} from 'ol/extent';
 import ImageLayer from 'ol/layer/Image';
 import VectorLayer from 'ol/layer/Vector';
-import Point from 'ol/geom/Point';
 import VectorSource from 'ol/source/Vector';
 import Polygon from 'ol/geom/Polygon';
 import Projection from 'ol/proj/Projection';
@@ -38,7 +35,8 @@ class MySelections extends React.Component {
                     <h5 className="card-title">My Annotations</h5>
                     <AnnotationScroller
                         annotations={annotations}
-                        onSelectedAnnotationUpdate={this.props.onSelectedAnnotationUpdate}
+                        onSelectedAnnotationUpdate={
+                            this.props.onSelectedAnnotationUpdate}
                     />
                 </div>
             </React.Fragment>;
@@ -73,7 +71,8 @@ class ClassSelections extends React.Component {
                     <h5 className="card-title">Class Annotations</h5>
                     <AnnotationScroller
                         annotations={annotations}
-                        onSelectedAnnotationUpdate={this.props.onSelectedAnnotationUpdate}
+                        onSelectedAnnotationUpdate={
+                            this.props.onSelectedAnnotationUpdate}
                     />
                 </div>
             </React.Fragment>;
@@ -142,41 +141,44 @@ export default class GridAsset extends React.Component {
         view.setCenter(center);
     }
     render() {
-        const thumbnail = this.asset.getThumbnail();
         const type = this.asset.getType();
 
-        return <div className="card" key={this.props.asset.id}>
-            <div className="image-overlay">
+        return (
+            <div className="card" key={this.props.asset.id}>
+                <div className="image-overlay">
 
-            {type === 'image' && (
-                <div id={`map-${this.props.asset.id}`}
-                     className="ol-map"></div>
-            )}
-            {type === 'video' && (
-                <img style={{'maxWidth': '100%'}}
-                     src={this.asset.getThumbnail()} />
-            )}
-                <span className="badge badge-secondary">
-                    {this.asset.getType()}
-                </span>
-            </div>
+                    {type === 'image' && (
+                        <div
+                            id={`map-${this.props.asset.id}`}
+                            className="ol-map"></div>
+                    )}
+                    {type === 'video' && (
+                        <img
+                            style={{'maxWidth': '100%'}}
+                            src={this.asset.getThumbnail()} />
+                    )}
+                    <span className="badge badge-secondary">
+                        {this.asset.getType()}
+                    </span>
+                </div>
 
-            <div className="card-body">
-                <h5 className="card-title">
-                    <a href={this.props.asset.local_url}>
-                        {this.props.asset.title}
-                    </a>
-                </h5>
+                <div className="card-body">
+                    <h5 className="card-title">
+                        <a href={this.props.asset.local_url}>
+                            {this.props.asset.title}
+                        </a>
+                    </h5>
+                </div>
+                <MySelections
+                    annotations={this.props.asset.annotations}
+                    onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
+                    currentUser={this.props.currentUser} />
+                <ClassSelections
+                    annotations={this.props.asset.annotations}
+                    onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
+                    currentUser={this.props.currentUser} />
             </div>
-            <MySelections
-                annotations={this.props.asset.annotations}
-                onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
-                currentUser={this.props.currentUser} />
-            <ClassSelections
-                annotations={this.props.asset.annotations}
-                onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
-                currentUser={this.props.currentUser} />
-        </div>;
+        );
     }
     componentDidMount() {
         if (this.asset.getType() === 'image') {

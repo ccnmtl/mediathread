@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import GridAsset from './GridAsset';
 import Asset from './Asset';
@@ -10,19 +9,22 @@ class RowAsset extends React.Component {
         this.asset = new Asset(this.props.asset);
     }
     render() {
-        return <tr>
-                   <td>
-                       {this.props.asset.title}
-                       <span className="float-right">
-                           <img src={this.asset.getThumbnail()}
-                                alt={'Thumbnail for ' + this.props.asset.title}
-                                height="75" />
-                       </span>
-                   </td>
-                   <td>{this.asset.getType()}</td>
-                   <td>{this.props.asset.author.public_name}</td>
-                   <td>{this.props.asset.modified}</td>
-               </tr>;
+        return (
+            <tr>
+                <td>
+                    {this.props.asset.title}
+                    <span className="float-right">
+                        <img
+                            src={this.asset.getThumbnail()}
+                            alt={'Thumbnail for ' + this.props.asset.title}
+                            height="75" />
+                    </span>
+                </td>
+                <td>{this.asset.getType()}</td>
+                <td>{this.props.asset.author.public_name}</td>
+                <td>{this.props.asset.modified}</td>
+            </tr>
+        );
     }
 }
 
@@ -85,22 +87,24 @@ export default class CollectionTab extends React.Component {
             assetsDom = <strong>{this.props.assetError}</strong>;
         } else if (assetList && this.state.viewMode === 'grid') {
             assetList.forEach(function(asset) {
-                assets.push(<GridAsset key={asset.id} asset={asset}
-                                       currentUser={me.props.currentUser} />);
+                assets.push(
+                    <GridAsset
+                        key={asset.id} asset={asset}
+                        currentUser={me.props.currentUser} />);
             });
 
             if (assets.length === 0) {
-                assetsDom = 'No assets found.'
+                assetsDom = 'No assets found.';
             } else {
                 assetsDom = <div className="card-columns">{assets}</div>;
             }
         } else if (assetList && this.state.viewMode === 'list') {
             assetList.forEach(function(asset) {
-                assets.push(<RowAsset key={asset.id} asset={asset} />)
+                assets.push(<RowAsset key={asset.id} asset={asset} />);
             });
 
             if (assets.length === 0) {
-                assetsDom = 'No assets found.'
+                assetsDom = 'No assets found.';
             } else {
                 assetsDom = <table className="table">
                     <thead>
@@ -125,9 +129,10 @@ export default class CollectionTab extends React.Component {
             <div>
                 <h1>Collection</h1>
                 <h1>All Items</h1>
-                <button className="button-sm float-right"
-                        data-testid="viewtoggle"
-                        onClick={this.toggleViewMode}>
+                <button
+                    className="button-sm float-right"
+                    data-testid="viewtoggle"
+                    onClick={this.toggleViewMode}>
                     {alternateViewMode} view
                 </button>
                 <p>Select an item to create a selection from it.</p>
@@ -135,12 +140,13 @@ export default class CollectionTab extends React.Component {
                 <div className="input-group mb-3">
                     <label>
                         Title
-                        <input type="text" name="title"
-                               className="form-control"
-                               onChange={this.handleTitleFilterChange}
-                               defaultValue={this.state.titleFilter}
-                               placeholder="Title of items and selections"
-                               aria-label="Title" />
+                        <input
+                            type="text" name="title"
+                            className="form-control"
+                            onChange={this.handleTitleFilterChange}
+                            defaultValue={this.state.titleFilter}
+                            placeholder="Title of items and selections"
+                            aria-label="Title" />
                     </label>
                 </div>
 

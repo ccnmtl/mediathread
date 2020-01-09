@@ -40,7 +40,7 @@ To ensure consistency throughout the source code, please keep these rules in min
 * All features or bug fixes **must be tested** by one or more unit tests.
 * We follow the conventions contained in:
      * Python's [PEP8 Style Guide](https://www.python.org/dev/peps/pep-0008/) (enforced by [flake8](https://pypi.python.org/pypi/flake8))
-     * Javascript's [JSHint](http://jshint.com/) errors and warnings.
+     * Javascript's [ESLint](https://eslint.org/) errors and warnings.
 * The master branch is continuously integrated by [Travis-CI](https://travis-ci.org/ccnmtl/mediathread), and all tests must pass before merging.
 
 ## <a name="trivial"></a>Making Trivial Changes
@@ -61,7 +61,7 @@ always necessary to create a new github issue or sign a contributor agreement.
     `master` branch.
 * Create your patch, **including appropriate test cases**.
 * Make commits of logical units.
-* Run `make jenkins` to make sure the code passes all validation, flake8, jshint and unit tests
+* Run `make jenkins` to make sure the code passes all validation, flake8, eslint and unit tests
 * Make sure your commit messages are in the proper format.
 
 ## <a name="submit"></a>Submitting Changes

@@ -35,7 +35,6 @@
     "eslint-plugin-security": "^1.4.0",
     "jest": "^24.9.0",
     "jsdom": "^15.2.1",
-    "jshint": "~2.10.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10"
   },

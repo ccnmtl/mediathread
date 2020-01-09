@@ -1,36 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
-import Asset from './Asset';
-
-class RowAsset extends React.Component {
-    constructor(props) {
-        super(props);
-        this.asset = new Asset(this.props.asset);
-    }
-    render() {
-        return (
-            <tr>
-                <td>
-                    {this.props.asset.title}
-                    <span className="float-right">
-                        <img
-                            src={this.asset.getThumbnail()}
-                            alt={'Thumbnail for ' + this.props.asset.title}
-                            height="75" />
-                    </span>
-                </td>
-                <td>{this.asset.getType()}</td>
-                <td>{this.props.asset.author.public_name}</td>
-                <td>{this.props.asset.modified}</td>
-            </tr>
-        );
-    }
-}
-
-RowAsset.propTypes = {
-    asset: PropTypes.object.isRequired
-};
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -99,27 +70,7 @@ export default class CollectionTab extends React.Component {
                 assetsDom = <div className="card-columns">{assets}</div>;
             }
         } else if (assetList && this.state.viewMode === 'list') {
-            assetList.forEach(function(asset) {
-                assets.push(<RowAsset key={asset.id} asset={asset} />);
-            });
-
-            if (assets.length === 0) {
-                assetsDom = 'No assets found.';
-            } else {
-                assetsDom = <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Item Title</th>
-                            <th scope="col">Item Type</th>
-                            <th scope="col">Item Owner</th>
-                            <th scope="col">Item Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {assets}
-                    </tbody>
-                </table>;
-            }
+            assetsDom = <CollectionListView assetList={assetList} />;
         }
 
         const alternateViewMode =

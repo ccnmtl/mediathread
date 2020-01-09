@@ -40,6 +40,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "get-youtube-id": "^1.0.1",
     "js-cookie": "^2.2.1",
     "ol": "^6.1.1",
     "react": "~16.12.0",

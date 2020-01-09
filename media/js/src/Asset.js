@@ -1,3 +1,5 @@
+import getYouTubeID from 'get-youtube-id';
+
 export default class Asset {
     constructor(data) {
         this.asset = data;
@@ -20,6 +22,17 @@ export default class Asset {
     getThumbnail() {
         if (!this.asset) {
             return null;
+        }
+
+        // Use youtube's thumbnail format for getting the biggest
+        // thumbnail available.
+        if (
+            this.asset.primary_type === 'youtube' &&
+                this.asset.sources &&
+                this.asset.sources.url
+        ) {
+            const youtubeId = getYouTubeID(this.asset.sources.url.url);
+            return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
         }
 
         return this.asset.thumb_url ||

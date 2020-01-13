@@ -4183,3 +4183,15 @@ ul.section-tabs>li>a.active {
     background-clip: padding-box;
     border-radius: .25rem;
 }
+
+.image-overlay {
+    position: relative;
+}
+
+.vid-timecode {
+    background-color: white;
+    color: black;
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+}

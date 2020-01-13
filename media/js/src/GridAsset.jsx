@@ -22,7 +22,7 @@ class MySelections extends React.Component {
         let annotations = [];
 
         const me = this;
-        this.props.annotations.forEach(function(annotation) {
+        this.props.asset.annotations.forEach(function(annotation) {
             if (annotation.author.id === me.props.currentUser) {
                 annotations.push(annotation);
             }
@@ -47,7 +47,7 @@ class MySelections extends React.Component {
 }
 
 MySelections.propTypes = {
-    annotations: PropTypes.array,
+    asset: PropTypes.object,
     onSelectedAnnotationUpdate: PropTypes.func.isRequired,
     currentUser: PropTypes.number.isRequired
 };
@@ -58,7 +58,7 @@ class ClassSelections extends React.Component {
         let annotations = [];
 
         const me = this;
-        this.props.annotations.forEach(function(annotation) {
+        this.props.asset.annotations.forEach(function(annotation) {
             if (annotation.author.id !== me.props.currentUser) {
                 annotations.push(annotation);
             }
@@ -83,7 +83,7 @@ class ClassSelections extends React.Component {
 }
 
 ClassSelections.propTypes = {
-    annotations: PropTypes.array,
+    asset: PropTypes.object,
     onSelectedAnnotationUpdate: PropTypes.func.isRequired,
     currentUser: PropTypes.number.isRequired
 };
@@ -95,7 +95,8 @@ export default class GridAsset extends React.Component {
         this.state = {
             annotationLayer: new VectorLayer({
                 source: new VectorSource()
-            })
+            }),
+            selectedAnnotation: null
         };
 
         this.asset = new Asset(this.props.asset);
@@ -104,49 +105,64 @@ export default class GridAsset extends React.Component {
             this.onSelectedAnnotationUpdate.bind(this);
     }
     onSelectedAnnotationUpdate(annotation) {
-        const stroke = new Stroke({color: 'black', width: 2});
-        const fill = new Fill({color: 'red'});
-        const style = new Style({
-            image: new RegularShape({
-                fill: fill,
-                stroke: stroke,
-                points: 4,
-                radius: 10,
-                angle: Math.PI / 4
-            })
-        });
-
+        const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
-        const poly = new Polygon(a.annotation.geometry.coordinates);
+        if (type === 'image') {
+            const stroke = new Stroke({color: 'black', width: 2});
+            const fill = new Fill({color: 'red'});
+            const style = new Style({
+                image: new RegularShape({
+                    fill: fill,
+                    stroke: stroke,
+                    points: 4,
+                    radius: 10,
+                    angle: Math.PI / 4
+                })
+            });
 
-        const feature = new Feature({
-            geometry: poly,
-            name: a.title
-        });
-        feature.setStyle(style);
+            const poly = new Polygon(a.annotation.geometry.coordinates);
 
-        this.map.removeLayer(this.state.annotationLayer);
+            const feature = new Feature({
+                geometry: poly,
+                name: a.title
+            });
+            feature.setStyle(style);
 
-        const newLayer = new VectorLayer({
-            source: new VectorSource({
-                features: [feature]
-            })
-        });
+            this.map.removeLayer(this.state.annotationLayer);
 
-        this.setState({newLayer});
-        this.map.addLayer(newLayer);
+            const newLayer = new VectorLayer({
+                source: new VectorSource({
+                    features: [feature]
+                })
+            });
 
-        const view = this.map.getView();
-        const center = getCenter(poly.getExtent());
-        view.setCenter(center);
+            this.setState({newLayer});
+            this.map.addLayer(newLayer);
+
+            const view = this.map.getView();
+            const center = getCenter(poly.getExtent());
+            view.setCenter(center);
+        } else if (type === 'video') {
+            this.setState({selectedAnnotation: a});
+        }
     }
     render() {
         const type = this.asset.getType();
 
+        let annotationDom = null;
+        if (type === 'video' && this.state.selectedAnnotation) {
+            annotationDom = (
+                <div className="vid-timecode">
+                    {this.state.selectedAnnotation.annotation.startCode}
+                    &nbsp;-&nbsp;
+                    {this.state.selectedAnnotation.annotation.endCode}
+                </div>
+            );
+        }
+
         return (
             <div className="card" key={this.props.asset.id}>
                 <div className="image-overlay">
-
                     {type === 'image' && (
                         <div
                             id={`map-${this.props.asset.id}`}
@@ -157,9 +173,8 @@ export default class GridAsset extends React.Component {
                             style={{'maxWidth': '100%'}}
                             src={this.asset.getThumbnail()} />
                     )}
-                    <span className="badge badge-secondary">
-                        {this.asset.getType()}
-                    </span>
+                    {annotationDom}
+                    <span className="badge badge-secondary">{type}</span>
                 </div>
 
                 <div className="card-body">
@@ -170,11 +185,11 @@ export default class GridAsset extends React.Component {
                     </h5>
                 </div>
                 <MySelections
-                    annotations={this.props.asset.annotations}
+                    asset={this.props.asset}
                     onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
                     currentUser={this.props.currentUser} />
                 <ClassSelections
-                    annotations={this.props.asset.annotations}
+                    asset={this.props.asset}
                     onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
                     currentUser={this.props.currentUser} />
             </div>

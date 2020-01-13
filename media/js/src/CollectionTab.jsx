@@ -15,6 +15,7 @@ export default class CollectionTab extends React.Component {
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
         this.handleTitleFilterChange = this.handleTitleFilterChange.bind(this);
+        this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -24,24 +25,38 @@ export default class CollectionTab extends React.Component {
         this.setState({viewMode: newMode});
     }
     handleTitleFilterChange(e) {
-        const str = e.target.value.trim().toLowerCase();
+        const query = e.target.value.trim().toLowerCase();
+        this.setState({titleFilter: query});
+    }
+    handleTitleFilterSearch(e) {
+        if (this.state.titleFilter.trim() === '') {
+            this.setState({filteredAssets: this.props.assets});
+            return;
+        }
+
         let filteredAssets = [];
+        const me = this;
+
         this.props.assets.some(function(asset) {
-            if (asset.title.toLowerCase().indexOf(str) > -1) {
+            if (
+                asset.title.toLowerCase().indexOf(
+                    me.state.titleFilter
+                ) > -1
+            ) {
                 filteredAssets.push(asset);
                 return true;
             }
 
             asset.annotations.some(function(annotation) {
-                if (annotation.title.toLowerCase().indexOf(str) > -1) {
+                if (
+                    annotation.title.toLowerCase().indexOf(
+                        me.state.titleFilter) > -1
+                ) {
                     filteredAssets.push(asset);
                     return true;
                 }
             });
-        });
-        this.setState({
-            titleFilter: str,
-            filteredAssets: filteredAssets
+            me.setState({filteredAssets: filteredAssets});
         });
     }
     render() {
@@ -50,7 +65,7 @@ export default class CollectionTab extends React.Component {
         const me = this;
 
         let assetList = this.props.assets;
-        if (this.state.titleFilter) {
+        if (this.state.filteredAssets) {
             assetList = this.state.filteredAssets;
         }
 
@@ -90,7 +105,11 @@ export default class CollectionTab extends React.Component {
                 <p>Select an item to create a selection from it.</p>
 
                 <AssetFilter
-                    handleTitleFilterChange={this.handleTitleFilterChange} />
+                    assets={this.props.assets}
+                    tags={this.props.tags}
+                    terms={this.props.terms}
+                    handleTitleFilterChange={this.handleTitleFilterChange}
+                    handleTitleFilterSearch={this.handleTitleFilterSearch} />
 
                 <div className="assets">
                     {assetsDom}
@@ -102,6 +121,8 @@ export default class CollectionTab extends React.Component {
 
 CollectionTab.propTypes = {
     assets: PropTypes.array,
+    tags: PropTypes.array,
+    terms: PropTypes.array,
     assetError: PropTypes.string,
     currentUser: PropTypes.number
 };

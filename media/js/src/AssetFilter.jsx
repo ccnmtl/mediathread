@@ -6,16 +6,83 @@ export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            titleFilter: '',
             selectedOwner: 'all'
         };
-        this.handleChange = this.handleChange.bind(this);
+
+        this.handleOwnerChange = this.handleOwnerChange.bind(this);
+        this.handleTitleSearch = this.handleTitleSearch.bind(this);
     }
-    handleChange(e) {
-        console.log('handleChange');
+    handleTitleSearch(e) {
+        if (e.key === 'Enter') {
+            this.props.handleTitleFilterSearch();
+        }
+    }
+    handleOwnerChange(e) {
+        this.setState({selectedOwner: e.value});
     }
     render() {
         const { selectedOwner } = this.state;
+
+        let ownersOptions = [];
+        if (this.props.assets) {
+            this.props.assets.forEach(function(asset) {
+                const usernames = ownersOptions.map(x => x.value);
+                if (!usernames.includes(asset.author.username)) {
+                    ownersOptions.push({
+                        label: asset.author.public_name,
+                        value: asset.author.username
+                    });
+                }
+            });
+
+            ownersOptions.sort(function(a, b) {
+                if (a.value < b.value) return -1;
+                if (a.value > b.value) return 1;
+                return 0;
+            });
+        }
+        ownersOptions.unshift({
+            value: 'all',
+            label: 'All Class Members'
+        });
+
+        let tagsOptions = [];
+        if (this.props.tags) {
+            this.props.tags.forEach(function(tag) {
+                tagsOptions.push({
+                    value: tag.name,
+                    label: `${tag.name} (${tag.count})`
+                });
+            });
+        }
+
+
+        const termGroupLabel = function(data) {
+            return (
+                <div>
+                    <span>{data.label}</span>
+                </div>
+            );
+        };
+
+        let termsOptions = [];
+        if (this.props.terms) {
+            this.props.terms.forEach(function(term) {
+                let termOptions = [];
+                term.term_set.forEach(function(t) {
+                    termOptions.push({
+                        label: `${t.display_name} ${t.count}`,
+                        value: t.name
+                    });
+                });
+
+                termsOptions.push({
+                    value: term.name,
+                    label: term.name,
+                    options: termOptions
+                });
+            });
+        }
 
         return (
             <div className="container mb-3">
@@ -50,13 +117,14 @@ export default class AssetFilter extends React.Component {
                             <input
                                 type="text" name="title"
                                 className="form-control"
-                                onChange={this.props.handleTitleFilterChange}
-                                defaultValue={this.state.titleFilter}
                                 placeholder="Title of items and selections"
+                                onChange={this.props.handleTitleFilterChange}
+                                onKeyDown={this.handleTitleSearch}
                                 aria-label="Title" />
                             <div className="input-group-append">
                                 <button
                                     className="btn btn-outline-secondary"
+                                    onClick={this.props.handleTitleFilterSearch}
                                     type="button" id="button-addon2">
                                     Go
                                 </button>
@@ -71,11 +139,9 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
-                                onChange={this.handleChange}
-                                value={selectedOwner}
-                                options={[
-                                    { value: 'all', label: 'All Class Members' }
-                                ]} />
+                                onChange={this.handleOwnerChange}
+                                defaultValue={selectedOwner}
+                                options={ownersOptions} />
                         </div>
 
                     </div>
@@ -87,18 +153,23 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
-                                onChange={this.handleChange} options={[]} />
+                                isMulti
+                                options={tagsOptions} />
                         </div>
                     </div>
 
                     <div className="col-md-4">
                         <div className="input-group">
                             <div className="input-group-prepend">
-                                <span className="input-group-text">Terms</span>
+                                <span className="input-group-text">
+                                    Terms
+                                </span>
                             </div>
                             <Select
                                 className="react-select"
-                                onChange={this.handleChange} options={[]} />
+                                isMulti
+                                formatGroupLabel={termGroupLabel}
+                                options={termsOptions} />
                         </div>
                     </div>
 
@@ -109,7 +180,15 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
-                                onChange={this.handleChange} options={[]} />
+                                options={[
+                                    { value: 'all', label: 'All' },
+                                    { value: 'today', label: 'Today' },
+                                    { value: 'yesterday', label: 'Yesterday' },
+                                    {
+                                        value: 'within-last-week',
+                                        label: 'Within the last week'
+                                    }
+                                ]} />
                         </div>
                     </div>
                 </div>
@@ -119,5 +198,9 @@ export default class AssetFilter extends React.Component {
 }
 
 AssetFilter.propTypes = {
-    handleTitleFilterChange: PropTypes.func.isRequired
+    handleTitleFilterChange: PropTypes.func.isRequired,
+    handleTitleFilterSearch: PropTypes.func.isRequired,
+    assets: PropTypes.array,
+    tags: PropTypes.array,
+    terms: PropTypes.array
 };

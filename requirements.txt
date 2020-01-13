@@ -118,10 +118,10 @@ django-extensions==2.2.5
 typing==3.7.4.1; python_version < '3.5'
 
 futures==3.2.0; python_version < '3'
-s3transfer==0.2.1
+s3transfer==0.3.0
 jmespath==0.9.4
 
-botocore>=1.13.0,<1.14.0
+botocore>=1.14.0,<1.15.0
 boto3==1.11.0
 
 entrypoints==0.3

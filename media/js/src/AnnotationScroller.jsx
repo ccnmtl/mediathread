@@ -41,7 +41,7 @@ export default class AnnotationScroller extends React.Component {
               this.props.annotations[this.state.currentAnnotation];
         return <div>
             <small>
-                {this.state.currentAnnotation + 1} of
+                {this.state.currentAnnotation + 1} of&nbsp;
                 {this.props.annotations.length}
             </small>
 

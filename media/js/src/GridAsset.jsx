@@ -213,6 +213,8 @@ export default class GridAsset extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
+                controls: [],
+                interactions: [],
                 layers: [
                     new ImageLayer({
                         source: new Static({

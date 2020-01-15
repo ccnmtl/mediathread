@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAssets} from './utils';
+import {getAssetData} from './utils';
 import CollectionTab from './CollectionTab';
 
 
@@ -15,9 +15,11 @@ class Main extends React.Component {
         };
 
         const me = this;
-        getAssets().then(function(d) {
+        getAssetData().then(function(d) {
             me.setState({
                 assets: d.assets,
+                tags: d.active_tags,
+                terms: d.active_vocabulary,
                 currentUser: d.space_viewer.id
             });
         }, function(e) {
@@ -71,6 +73,8 @@ class Main extends React.Component {
                 {this.state.activeTab === 'collection' &&
                  <CollectionTab
                      assets={this.state.assets}
+                     tags={this.state.tags}
+                     terms={this.state.terms}
                      assetError={this.state.assetError}
                      currentUser={this.state.currentUser} />}
             </div>

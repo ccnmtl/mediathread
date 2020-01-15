@@ -18,7 +18,7 @@ const authedFetch = function(url, method = 'get', data = null) {
     });
 };
 
-const getAssets = function() {
+const getAssetData = function() {
     return authedFetch('/api/asset/?annotations=true')
         .then(function(response) {
             if (response.status === 200) {
@@ -30,4 +30,4 @@ const getAssets = function() {
         });
 };
 
-export {getAssets};
+export {getAssetData};

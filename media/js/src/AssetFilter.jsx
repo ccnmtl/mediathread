@@ -5,12 +5,14 @@ import Select from 'react-select';
 export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selectedOwner: 'all'
-        };
 
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
+
+        this.allOption = {
+            value: 'all',
+            label: 'All Class Members'
+        };
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
@@ -18,41 +20,49 @@ export default class AssetFilter extends React.Component {
         }
     }
     handleOwnerChange(e) {
-        this.setState({selectedOwner: e.value});
     }
     render() {
-        const { selectedOwner } = this.state;
-
-        let ownersOptions = [];
+        let ownersOptions = [this.allOption];
         if (this.props.assets) {
-            this.props.assets.forEach(function(asset) {
-                const usernames = ownersOptions.map(x => x.value);
-                if (!usernames.includes(asset.author.username)) {
-                    ownersOptions.push({
+            ownersOptions = this.props.assets.reduce(function(a, asset) {
+                // If a already contains this user, skip it.
+                if (a.find(e => e.value === asset.author.username)) {
+                    return a;
+                }
+
+                // Insert this owner at the right position in a.
+                // Skip the first element ('all'), because this should
+                // always be at the top.
+                for (let i = 0; i < a.length; i++) {
+                    const newEl = {
                         label: asset.author.public_name,
                         value: asset.author.username
-                    });
+                    };
+                    if (
+                        a.length === 1 ||
+                            asset.author.username < a[i].value
+                    ) {
+                        a.splice(Math.max(i, 1), 0, newEl);
+                        break;
+                    } else if (i === (a.length - 1)) {
+                        // If this is reached, newEl belongs at
+                        // the end of the array.
+                        a.push(newEl);
+                        break;
+                    }
                 }
-            });
 
-            ownersOptions.sort(function(a, b) {
-                if (a.value < b.value) return -1;
-                if (a.value > b.value) return 1;
-                return 0;
-            });
+                return a;
+            }, ownersOptions);
         }
-        ownersOptions.unshift({
-            value: 'all',
-            label: 'All Class Members'
-        });
 
         let tagsOptions = [];
         if (this.props.tags) {
-            this.props.tags.forEach(function(tag) {
-                tagsOptions.push({
+            tagsOptions = this.props.tags.map(function(tag) {
+                return {
                     value: tag.name,
                     label: `${tag.name} (${tag.count})`
-                });
+                };
             });
         }
 
@@ -67,20 +77,20 @@ export default class AssetFilter extends React.Component {
 
         let termsOptions = [];
         if (this.props.terms) {
-            this.props.terms.forEach(function(term) {
+            termsOptions = this.props.terms.map(function(term) {
                 let termOptions = [];
                 term.term_set.forEach(function(t) {
                     termOptions.push({
-                        label: `${t.display_name} ${t.count}`,
+                        label: `${t.display_name} (${t.count})`,
                         value: t.name
                     });
                 });
 
-                termsOptions.push({
+                return {
                     value: term.name,
                     label: term.name,
                     options: termOptions
-                });
+                };
             });
         }
 
@@ -140,7 +150,7 @@ export default class AssetFilter extends React.Component {
                             <Select
                                 className="react-select"
                                 onChange={this.handleOwnerChange}
-                                defaultValue={selectedOwner}
+                                defaultValue={this.allOption}
                                 options={ownersOptions} />
                         </div>
 
@@ -180,6 +190,9 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
+                                defaultValue={{
+                                    value: 'all', label: 'All'
+                                }}
                                 options={[
                                     { value: 'all', label: 'All' },
                                     { value: 'today', label: 'Today' },

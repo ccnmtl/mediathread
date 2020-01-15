@@ -56,8 +56,9 @@ export default class CollectionTab extends React.Component {
                     return true;
                 }
             });
-            me.setState({filteredAssets: filteredAssets});
         });
+
+        this.setState({filteredAssets: filteredAssets});
     }
     render() {
         let assets = [];

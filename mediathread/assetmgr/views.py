@@ -20,6 +20,8 @@ from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
 from django.utils.encoding import smart_bytes
+from django.utils.decorators import method_decorator
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 from sentry_sdk import capture_exception
@@ -804,6 +806,7 @@ EMBED_WIDTH = 635
 EMBED_HEIGHT = 450
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          TemplateView):
 
@@ -886,6 +889,7 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return HttpResponseRedirect(url)
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
 class AssetEmbedView(TemplateView):
     template_name = 'assetmgr/asset_embed_view.html'
 

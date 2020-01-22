@@ -36,8 +36,7 @@ it('renders the asset filter', async() => {
                 assets={fakeAssets}
                 tags={[]}
                 terms={[]}
-                handleTitleFilterChange={function() {}}
-                handleTitleFilterSearch={function() {}} />,
+                handleFilteredAssetsUpdate={function() {}} />,
             container
         );
     });

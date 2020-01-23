@@ -9,10 +9,14 @@ export default class AssetFilter extends React.Component {
         this.filters = {
             owner: 'all',
             title: null,
+            tags: [],
+            terms: [],
             date: 'all'
         };
 
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
+        this.handleTagsChange = this.handleTagsChange.bind(this);
+        this.handleTermsChange = this.handleTermsChange.bind(this);
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
         this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
@@ -22,6 +26,14 @@ export default class AssetFilter extends React.Component {
             value: 'all',
             label: 'All Class Members'
         };
+    }
+    handleTagsChange(e) {
+        this.filters.tags = e;
+        this.filterAssets(this.filters);
+    }
+    handleTermsChange(e) {
+        this.filters.terms = e;
+        this.filterAssets(this.filters);
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
@@ -62,6 +74,10 @@ export default class AssetFilter extends React.Component {
             }
 
             asset.annotations.some(function(annotation) {
+                // TODO: filterObj needs to handle the annotation here
+                // instead of the asset, and then push only that
+                // annotation to filteredAssets if it passes. So, I
+                // need to refactor filteredAssets here.
                 if (filterObj(asset, filters)) {
                     filteredAssets.push(asset);
                     return false;
@@ -217,6 +233,7 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
+                                onChange={this.handleTagsChange}
                                 isMulti
                                 options={tagsOptions} />
                         </div>
@@ -231,6 +248,7 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
+                                onChange={this.handleTermsChange}
                                 isMulti
                                 formatGroupLabel={termGroupLabel}
                                 options={termsOptions} />

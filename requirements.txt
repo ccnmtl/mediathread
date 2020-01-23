@@ -107,7 +107,7 @@ simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.5
 
-freezegun==0.3.13
+freezegun==0.3.14
 django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10
 

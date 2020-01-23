@@ -1,13 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import {filterObj} from './utils';
 
 export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
+        this.filters = {
+            owner: 'all',
+            title: null,
+            date: 'all'
+        };
 
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
+        this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
+        this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
 
         this.allOption = {
             value: 'all',
@@ -16,10 +25,55 @@ export default class AssetFilter extends React.Component {
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
-            this.props.handleTitleFilterSearch();
+            this.handleTitleFilterSearch();
         }
     }
+    handleTitleFilterSearch() {
+        this.filterAssets(this.filters);
+    }
+    handleTitleChange(e) {
+        const query = e.target.value.trim().toLowerCase();
+        this.filters.title = query;
+    }
     handleOwnerChange(e) {
+        this.filters.owner = e.value;
+        this.filterAssets(this.filters);
+    }
+    handleDateChange(e) {
+        this.filters.date = e.value;
+        this.filterAssets(this.filters);
+    }
+    /**
+     * Filter this.props.assets into this.state.filteredAssets, based
+     * on the current state of this component's search filters.
+     */
+    filterAssets(filters) {
+        let filteredAssets = [];
+
+        if (!this.props.assets) {
+            this.props.handleFilteredAssetsUpdate(filteredAssets);
+            return;
+        }
+
+        this.props.assets.some(function(asset) {
+            if (filterObj(asset, filters)) {
+                filteredAssets.push(asset);
+                return false;
+            }
+
+            asset.annotations.some(function(annotation) {
+                if (filterObj(asset, filters)) {
+                    filteredAssets.push(asset);
+                    return false;
+                }
+            });
+        });
+        this.props.handleFilteredAssetsUpdate(filteredAssets);
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.assets !== this.props.assets) {
+            this.setState({filteredAssets: this.props.assets});
+        }
     }
     render() {
         let ownersOptions = [this.allOption];
@@ -128,13 +182,13 @@ export default class AssetFilter extends React.Component {
                                 type="text" name="title"
                                 className="form-control"
                                 placeholder="Title of items and selections"
-                                onChange={this.props.handleTitleFilterChange}
+                                onChange={this.handleTitleChange}
                                 onKeyDown={this.handleTitleSearch}
                                 aria-label="Title" />
                             <div className="input-group-append">
                                 <button
                                     className="btn btn-outline-secondary"
-                                    onClick={this.props.handleTitleFilterSearch}
+                                    onClick={this.handleTitleFilterSearch}
                                     type="button" id="button-addon2">
                                     Go
                                 </button>
@@ -190,6 +244,7 @@ export default class AssetFilter extends React.Component {
                             </div>
                             <Select
                                 className="react-select"
+                                onChange={this.handleDateChange}
                                 defaultValue={{
                                     value: 'all', label: 'All'
                                 }}
@@ -211,8 +266,7 @@ export default class AssetFilter extends React.Component {
 }
 
 AssetFilter.propTypes = {
-    handleTitleFilterChange: PropTypes.func.isRequired,
-    handleTitleFilterSearch: PropTypes.func.isRequired,
+    handleFilteredAssetsUpdate: PropTypes.func.isRequired,
     assets: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array

@@ -14,8 +14,8 @@ export default class CollectionTab extends React.Component {
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
-        this.handleTitleFilterChange = this.handleTitleFilterChange.bind(this);
-        this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
+        this.handleFilteredAssetsUpdate =
+            this.handleFilteredAssetsUpdate.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -24,40 +24,7 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
-    handleTitleFilterChange(e) {
-        const query = e.target.value.trim().toLowerCase();
-        this.setState({titleFilter: query});
-    }
-    handleTitleFilterSearch(e) {
-        if (this.state.titleFilter.trim() === '') {
-            this.setState({filteredAssets: this.props.assets});
-            return;
-        }
-
-        let filteredAssets = [];
-        const me = this;
-
-        this.props.assets.some(function(asset) {
-            if (
-                asset.title.toLowerCase().indexOf(
-                    me.state.titleFilter
-                ) > -1
-            ) {
-                filteredAssets.push(asset);
-                return true;
-            }
-
-            asset.annotations.some(function(annotation) {
-                if (
-                    annotation.title.toLowerCase().indexOf(
-                        me.state.titleFilter) > -1
-                ) {
-                    filteredAssets.push(asset);
-                    return true;
-                }
-            });
-        });
-
+    handleFilteredAssetsUpdate(filteredAssets) {
         this.setState({filteredAssets: filteredAssets});
     }
     render() {
@@ -109,8 +76,8 @@ export default class CollectionTab extends React.Component {
                     assets={this.props.assets}
                     tags={this.props.tags}
                     terms={this.props.terms}
-                    handleTitleFilterChange={this.handleTitleFilterChange}
-                    handleTitleFilterSearch={this.handleTitleFilterSearch} />
+                    handleFilteredAssetsUpdate={
+                        this.handleFilteredAssetsUpdate} />
 
                 <div className="assets">
                     {assetsDom}

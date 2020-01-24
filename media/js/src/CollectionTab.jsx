@@ -61,7 +61,7 @@ export default class CollectionTab extends React.Component {
             this.state.viewMode === 'grid' ? 'List' : 'Grid';
 
         return (
-            <div>
+            <div role="tabpanel" aria-labelledby="collection-tab">
                 <h1>Collection</h1>
                 <h1>All Items</h1>
                 <button

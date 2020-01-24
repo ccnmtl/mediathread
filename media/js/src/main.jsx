@@ -47,6 +47,7 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         onClick={this.clickTab}
+                        title="Collection"
                         href="collection/">
                         Collection
                     </a>
@@ -56,6 +57,7 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         onClick={this.clickTab}
+                        title="Assignments"
                         href="assignments/">
                         Assignments
                     </a>
@@ -65,6 +67,7 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         onClick={this.clickTab}
+                        title="Projects"
                         href="projects/">
                         Projects
                     </a>

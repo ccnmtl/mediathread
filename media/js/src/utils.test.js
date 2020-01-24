@@ -26,4 +26,18 @@ it('filters an object appropriately', () => {
         owner: 'abc123'
     };
     expect(filterObj(fakeAsset, filters)).toBe(null);
+
+    filters = {
+        title: null,
+        owner: 'all',
+        date: 'yesterday'
+    };
+    expect(filterObj(fakeAsset, filters)).toBe(null);
+
+    filters = {
+        title: null,
+        owner: 'all',
+        date: 'today'
+    };
+    expect(filterObj(fakeAsset, filters)).toBe(null);
 });

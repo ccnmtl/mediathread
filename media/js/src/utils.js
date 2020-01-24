@@ -33,7 +33,7 @@ const getAssetData = function() {
 const isSameDay = function(d1, d2) {
     return d1.getDay() === d2.getDay() &&
         d1.getMonth() === d2.getMonth() &&
-        d1.getYear() === d2.getYear();
+        d1.getFullYear() === d2.getFullYear();
 };
 
 /**
@@ -63,6 +63,11 @@ const filterObj = function(obj, filters) {
         return null;
     }
 
+    // Filter out non-matching tags
+    if (filters.tags) {
+        // TODO
+    }
+
     // Filter out non-matching dates
     if (
         filters.date &&
@@ -71,10 +76,19 @@ const filterObj = function(obj, filters) {
         const modified = obj.modified || obj.metadata.modified;
         const modifiedDate = new Date(modified);
 
-        let filterDate;
+        let filterDate = new Date();
         if (filters.date === 'today') {
-            filterDate = new Date();
             if (!isSameDay(filterDate, modifiedDate)) {
+                return null;
+            }
+        } else if (filters.date === 'yesterday') {
+            filterDate.setDate(filterDate.getDate() - 1);
+            if (!isSameDay(filterDate, modifiedDate)) {
+                return null;
+            }
+        } else if (filters.date === 'within-last-week') {
+            filterDate.setDate(filterDate.getDate() - 7);
+            if (modifiedDate < filterDate) {
                 return null;
             }
         }

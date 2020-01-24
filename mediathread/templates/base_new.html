@@ -72,6 +72,10 @@ A new base.html without the course context overwritten in the template.
 
     {% course_role for request.user in course as role_in_course %}
     <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
+        <div id="skip">
+            <a href="#pagecontent">Skip to main content</a>
+        </div>
+
         <div id="dialog-confirm" style="display: none"></div>
 
                 {% block masthead %}
@@ -225,7 +229,9 @@ A new base.html without the course context overwritten in the template.
                             {% endif %}
                         {% endblock %}
 
-                        {% block content %}{% endblock %}
+                        <div id="pagecontent">
+                            {% block content %}{% endblock %}
+                        </div>
 
                         <!-- ###### Don't touch this ###### -->
                         <div class="visualclear"></div><!-- id="visualclear" -->

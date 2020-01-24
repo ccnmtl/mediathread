@@ -171,6 +171,8 @@ export default class GridAsset extends React.Component {
                     {type === 'video' && (
                         <img
                             style={{'maxWidth': '100%'}}
+                            alt={'Video thumbnail for: ' +
+                                 this.props.asset.title}
                             src={this.asset.getThumbnail()} />
                     )}
                     {annotationDom}

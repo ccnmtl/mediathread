@@ -40,12 +40,14 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <nav className="nav nav-pills nav-justified">
+                <nav className="nav nav-pills nav-justified" role="tablist">
                     <a
                         className={'nav-link ' + (
                             this.state.activeTab === 'collection' ?
                                 'active' : ''
                         )}
+                        role="tab"
+                        aria-controls="collection"
                         onClick={this.clickTab}
                         href="collection/">
                         Collection
@@ -55,6 +57,8 @@ class Main extends React.Component {
                             this.state.activeTab === 'assignments' ?
                                 'active' : ''
                         )}
+                        role="tab"
+                        aria-controls="assignments"
                         onClick={this.clickTab}
                         href="assignments/">
                         Assignments
@@ -64,19 +68,24 @@ class Main extends React.Component {
                             this.state.activeTab === 'projects' ?
                                 'active' : ''
                         )}
+                        role="tab"
+                        aria-controls="projects"
                         onClick={this.clickTab}
                         href="projects/">
                         Projects
                     </a>
                 </nav>
 
-                {this.state.activeTab === 'collection' &&
-                 <CollectionTab
-                     assets={this.state.assets}
-                     tags={this.state.tags}
-                     terms={this.state.terms}
-                     assetError={this.state.assetError}
-                     currentUser={this.state.currentUser} />}
+                <div className="tab-content">
+                    {this.state.activeTab === 'collection' &&
+
+                     <CollectionTab
+                         assets={this.state.assets}
+                         tags={this.state.tags}
+                         terms={this.state.terms}
+                         assetError={this.state.assetError}
+                         currentUser={this.state.currentUser} />}
+                </div>
             </div>
         );
     }

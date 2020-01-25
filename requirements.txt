@@ -91,7 +91,7 @@ django-impersonate==1.4.1
 django-registration-redux==2.7
 django-waffle==0.19.0
 django-cors-headers==3.0.2 # pyup: <3.1.0
-httplib2==0.16.0
+httplib2==0.17.0
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.1.0

@@ -52,10 +52,10 @@ export default class AnnotationScroller extends React.Component {
             </div>
 
             <a href="#" title="Previous annotation"
-               onClick={this.onPrevClick}>&lt; Previous</a>
+                onClick={this.onPrevClick}>&lt; Previous</a>
             <span className="pipe-divider">|</span>
             <a href="#" title="Next annotation"
-               onClick={this.onNextClick}>Next &gt;</a>
+                onClick={this.onNextClick}>Next &gt;</a>
         </div>;
     }
     componentDidMount() {

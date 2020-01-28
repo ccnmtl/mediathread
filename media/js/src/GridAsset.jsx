@@ -181,8 +181,9 @@ export default class GridAsset extends React.Component {
 
                 <div className="card-body">
                     <h5 className="card-title">
-                        <a href={this.props.asset.local_url}
-                           title={this.props.asset.title}>
+                        <a
+                            href={this.props.asset.local_url}
+                            title={this.props.asset.title}>
                             {this.props.asset.title}
                         </a>
                     </h5>

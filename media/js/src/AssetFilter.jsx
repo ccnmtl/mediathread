@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {filterObj} from './utils';
+import {getAssets} from './utils';
 
 export default class AssetFilter extends React.Component {
     constructor(props) {
@@ -60,31 +60,16 @@ export default class AssetFilter extends React.Component {
      * on the current state of this component's search filters.
      */
     filterAssets(filters) {
-        let filteredAssets = [];
-
-        if (!this.props.assets) {
-            this.props.handleFilteredAssetsUpdate(filteredAssets);
-            return;
-        }
-
-        this.props.assets.some(function(asset) {
-            if (filterObj(asset, filters)) {
-                filteredAssets.push(asset);
-                return false;
-            }
-
-            asset.annotations.some(function(annotation) {
-                // TODO: filterObj needs to handle the annotation here
-                // instead of the asset, and then push only that
-                // annotation to filteredAssets if it passes. So, I
-                // need to refactor filteredAssets here.
-                if (filterObj(asset, filters)) {
-                    filteredAssets.push(asset);
-                    return false;
-                }
-            });
+        const me = this;
+        console.log(filters);
+        getAssets(
+            filters.title, filters.owner, filters.tags,
+            filters.terms, filters.date
+        ).then(function(d) {
+            me.props.onUpdateAssets(d.assets);
+        }, function(e) {
+            console.error('asset get error!', e);
         });
-        this.props.handleFilteredAssetsUpdate(filteredAssets);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.assets !== this.props.assets) {
@@ -284,8 +269,8 @@ export default class AssetFilter extends React.Component {
 }
 
 AssetFilter.propTypes = {
-    handleFilteredAssetsUpdate: PropTypes.func.isRequired,
     assets: PropTypes.array,
+    onUpdateAssets: PropTypes.func.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array
 };

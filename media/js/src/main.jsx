@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAssetData} from './utils';
+import {getAssets} from './utils';
 import CollectionTab from './CollectionTab';
 
 
@@ -15,7 +15,7 @@ class Main extends React.Component {
         };
 
         const me = this;
-        getAssetData().then(function(d) {
+        getAssets().then(function(d) {
             me.setState({
                 assets: d.assets,
                 tags: d.active_tags,
@@ -29,12 +29,17 @@ class Main extends React.Component {
         });
 
         this.clickTab = this.clickTab.bind(this);
+        this.onUpdateAssets = this.onUpdateAssets.bind(this);
     }
 
     clickTab(e) {
         e.preventDefault();
         const clicked = e.target.text.toLowerCase();
         this.setState({activeTab: clicked});
+    }
+
+    onUpdateAssets(assets) {
+        this.setState({assets: assets});
     }
 
     render() {
@@ -84,6 +89,7 @@ class Main extends React.Component {
 
                      <CollectionTab
                          assets={this.state.assets}
+                         onUpdateAssets={this.onUpdateAssets}
                          tags={this.state.tags}
                          terms={this.state.terms}
                          assetError={this.state.assetError}

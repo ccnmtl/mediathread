@@ -9,13 +9,10 @@ export default class CollectionTab extends React.Component {
         super(props);
         this.state = {
             viewMode: 'grid',
-            titleFilter: '',
-            filteredAssets: this.props.assets
+            titleFilter: ''
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
-        this.handleFilteredAssetsUpdate =
-            this.handleFilteredAssetsUpdate.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -24,18 +21,12 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
-    handleFilteredAssetsUpdate(filteredAssets) {
-        this.setState({filteredAssets: filteredAssets});
-    }
     render() {
         let assets = [];
         let assetsDom = 'Loading Assets...';
         const me = this;
 
         let assetList = this.props.assets;
-        if (this.state.filteredAssets) {
-            assetList = this.state.filteredAssets;
-        }
 
         if (this.props.assetError) {
             // Display error to user
@@ -74,10 +65,9 @@ export default class CollectionTab extends React.Component {
 
                 <AssetFilter
                     assets={this.props.assets}
+                    onUpdateAssets={this.props.onUpdateAssets}
                     tags={this.props.tags}
-                    terms={this.props.terms}
-                    handleFilteredAssetsUpdate={
-                        this.handleFilteredAssetsUpdate} />
+                    terms={this.props.terms} />
 
                 <div className="assets">
                     {assetsDom}
@@ -89,6 +79,7 @@ export default class CollectionTab extends React.Component {
 
 CollectionTab.propTypes = {
     assets: PropTypes.array,
+    onUpdateAssets: PropTypes.func.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array,
     assetError: PropTypes.string,

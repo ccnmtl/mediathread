@@ -36,7 +36,7 @@ it('renders the asset filter', async() => {
                 assets={fakeAssets}
                 tags={[]}
                 terms={[]}
-                handleFilteredAssetsUpdate={function() {}} />,
+                onUpdateAssets={function() {}} />,
             container
         );
     });

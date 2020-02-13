@@ -8,8 +8,7 @@ export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            viewMode: 'grid',
-            titleFilter: ''
+            viewMode: 'grid'
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
@@ -49,7 +48,7 @@ export default class CollectionTab extends React.Component {
         }
 
         const alternateViewMode =
-            this.state.viewMode === 'grid' ? 'List' : 'Grid';
+              this.state.viewMode === 'grid' ? 'List' : 'Grid';
 
         return (
             <div role="tabpanel" aria-labelledby="collection-tab">

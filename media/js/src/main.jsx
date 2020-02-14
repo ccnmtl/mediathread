@@ -11,6 +11,9 @@ class Main extends React.Component {
             // Collection tab is default
             activeTab: 'collection',
             assets: null,
+            // Total number of this collection's assets, ignoring
+            // pagination.
+            assetCount: null,
             assetError: null
         };
 
@@ -18,6 +21,7 @@ class Main extends React.Component {
         getAssets().then(function(d) {
             me.setState({
                 assets: d.assets,
+                assetCount: d.asset_count,
                 tags: d.active_tags,
                 terms: d.active_vocabulary,
                 currentUser: d.space_viewer.id
@@ -38,8 +42,14 @@ class Main extends React.Component {
         this.setState({activeTab: clicked});
     }
 
-    onUpdateAssets(assets) {
-        this.setState({assets: assets});
+    onUpdateAssets(assets, assetCount=null) {
+        if (assetCount === null) {
+            assetCount = this.state.assetCount;
+        }
+        this.setState({
+            assets: assets,
+            assetCount: assetCount
+        });
     }
 
     render() {
@@ -89,6 +99,7 @@ class Main extends React.Component {
 
                      <CollectionTab
                          assets={this.state.assets}
+                         assetCount={this.state.assetCount}
                          onUpdateAssets={this.onUpdateAssets}
                          tags={this.state.tags}
                          terms={this.state.terms}

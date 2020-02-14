@@ -18,6 +18,7 @@ export default class AssetFilter extends React.Component {
         };
 
         this.offset = 20;
+        this.updatePageCount();
 
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
@@ -37,7 +38,8 @@ export default class AssetFilter extends React.Component {
     nextPage() {
         const me = this;
         this.setState({
-            currentPage: this.state.currentPage + 1
+            currentPage: Math.min(
+                this.state.currentPage + 1, this.pageCount - 1)
         }, function() {
             me.filterAssets(me.filters);
         });
@@ -46,6 +48,14 @@ export default class AssetFilter extends React.Component {
         const me = this;
         this.setState({
             currentPage: Math.max(this.state.currentPage - 1, 0)
+        }, function() {
+            me.filterAssets(me.filters);
+        });
+    }
+    onPageClick(page) {
+        const me = this;
+        this.setState({
+            currentPage: page
         }, function() {
             me.filterAssets(me.filters);
         });
@@ -89,14 +99,20 @@ export default class AssetFilter extends React.Component {
             filters.terms, filters.date,
             this.state.currentPage * this.offset
         ).then(function(d) {
-            me.props.onUpdateAssets(d.assets);
+            me.props.onUpdateAssets(d.assets, d.asset_count);
         }, function(e) {
             console.error('asset get error!', e);
         });
     }
+    updatePageCount() {
+        this.pageCount = Math.ceil(this.props.assetCount / this.offset);
+    }
     componentDidUpdate(prevProps) {
         if (prevProps.assets !== this.props.assets) {
             this.setState({filteredAssets: this.props.assets});
+        }
+        if (prevProps.assetCount !== this.props.assetCount) {
+            this.updatePageCount();
         }
     }
     render() {
@@ -171,6 +187,20 @@ export default class AssetFilter extends React.Component {
             });
         }
 
+        const pages = [];
+        for (let i = 0; i < this.pageCount; i++) {
+            const disabled = this.state.currentPage === i ? 'disabled' : '';
+            pages.push(
+                <li key={i} className={`page-item ${disabled}`}>
+                    <a
+                        className="page-link" href="#"
+                        onClick={this.onPageClick.bind(this, i)}>
+                        {i + 1}
+                    </a>
+                </li>
+            );
+        }
+
         const pagination = (
             <nav aria-label="Page navigation example">
                 <ul className="pagination mt-2">
@@ -185,10 +215,13 @@ export default class AssetFilter extends React.Component {
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li className="page-item">
-                        <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
+                    {pages}
+                    <li className={
+                        'page-item ' + (
+                            this.state.currentPage >= this.pageCount - 1 ?
+                                'disabled' : ''
+                        )
+                    }>
                         <a
                             className="page-link" href="#"
                             onClick={this.nextPage}
@@ -307,7 +340,7 @@ export default class AssetFilter extends React.Component {
                                     { value: 'today', label: 'Today' },
                                     { value: 'yesterday', label: 'Yesterday' },
                                     {
-                                        value: 'within-last-week',
+                                        value: 'lastweek',
                                         label: 'Within the last week'
                                     }
                                 ]} />
@@ -322,6 +355,7 @@ export default class AssetFilter extends React.Component {
 
 AssetFilter.propTypes = {
     assets: PropTypes.array,
+    assetCount: PropTypes.number,
     onUpdateAssets: PropTypes.func.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array

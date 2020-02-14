@@ -6,6 +6,9 @@ import {getAssets} from './utils';
 export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            currentPage: 0
+        };
         this.filters = {
             owner: 'all',
             title: null,
@@ -14,6 +17,8 @@ export default class AssetFilter extends React.Component {
             date: 'all'
         };
 
+        this.offset = 20;
+
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleTermsChange = this.handleTermsChange.bind(this);
@@ -21,11 +26,29 @@ export default class AssetFilter extends React.Component {
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
         this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
 
         this.allOption = {
             value: 'all',
             label: 'All Class Members'
         };
+    }
+    nextPage() {
+        const me = this;
+        this.setState({
+            currentPage: this.state.currentPage + 1
+        }, function() {
+            me.filterAssets(me.filters);
+        });
+    }
+    prevPage() {
+        const me = this;
+        this.setState({
+            currentPage: Math.max(this.state.currentPage - 1, 0)
+        }, function() {
+            me.filterAssets(me.filters);
+        });
     }
     handleTagsChange(e) {
         this.filters.tags = e;
@@ -61,10 +84,10 @@ export default class AssetFilter extends React.Component {
      */
     filterAssets(filters) {
         const me = this;
-        console.log(filters);
         getAssets(
             filters.title, filters.owner, filters.tags,
-            filters.terms, filters.date
+            filters.terms, filters.date,
+            this.state.currentPage * this.offset
         ).then(function(d) {
             me.props.onUpdateAssets(d.assets);
         }, function(e) {
@@ -121,7 +144,6 @@ export default class AssetFilter extends React.Component {
             });
         }
 
-
         const termGroupLabel = function(data) {
             return (
                 <div>
@@ -148,6 +170,35 @@ export default class AssetFilter extends React.Component {
                 };
             });
         }
+
+        const pagination = (
+            <nav aria-label="Page navigation example">
+                <ul className="pagination mt-2">
+                    <li className={
+                        'page-item ' +
+                            (this.state.currentPage <= 0 ? 'disabled' : '')
+                    }>
+                        <a
+                            className="page-link" href="#"
+                            onClick={this.prevPage}
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li className="page-item">
+                        <a className="page-link" href="#">1</a>
+                    </li>
+                    <li className="page-item">
+                        <a
+                            className="page-link" href="#"
+                            onClick={this.nextPage}
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        );
 
         return (
             <div className="container mb-3">
@@ -263,6 +314,7 @@ export default class AssetFilter extends React.Component {
                         </div>
                     </div>
                 </div>
+                {pagination}
             </div>
         );
     }

@@ -55,4 +55,19 @@ const getAssets = function(
         });
 };
 
-export {getAssets};
+/**
+ * Get annotation metadata.
+ */
+const getAsset = function() {
+    return authedFetch('/asset/')
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error loading asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
+};
+
+export {getAssets, getAsset};

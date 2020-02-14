@@ -10,7 +10,7 @@ enum34==1.1.6; python_version < '3.4'
 configparser==4.0.2
 flake8==3.7.9
 lxml==4.5.0
-fuzzywuzzy==0.17.0  # lettuce
+fuzzywuzzy==0.18.0  # lettuce
 mock==3.0.5 # pyup: <4.0.0  # sure
 sure==1.4.11  # lettuce
 extras==1.0.0

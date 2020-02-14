@@ -1117,6 +1117,10 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             # needs to come before the pagination step
             ctx.update(self.add_metadata(request, assets))
 
+        # Return total asset count for this collection, for
+        # pagination.
+        ctx['asset_count'] = assets.count()
+
         # slice down the list to speed rendering
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)
 

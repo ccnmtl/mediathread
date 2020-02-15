@@ -39,6 +39,10 @@ const getAssets = function(
         params.append('modified', date);
     }
 
+    if (tags && tags.length > 0) {
+        params.append('tag', tags.map(tag => tag.value));
+    }
+
     let basePath = '/api/asset/';
     if (owner && owner !== 'all') {
         basePath = `/api/asset/user/${owner}/`;

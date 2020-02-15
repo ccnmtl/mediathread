@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAssets} from './utils';
+import {getAsset, getAssets} from './utils';
 import CollectionTab from './CollectionTab';
 
 
@@ -14,7 +14,8 @@ class Main extends React.Component {
             // Total number of this collection's assets, ignoring
             // pagination.
             assetCount: null,
-            assetError: null
+            assetError: null,
+            owners: null
         };
 
         const me = this;
@@ -30,6 +31,16 @@ class Main extends React.Component {
             me.setState({
                 assetError: e
             });
+        });
+
+        // Get collection metadata. For populating all the owners, for
+        // example.
+        getAsset().then(function(d) {
+            if (d.panels.length > 0) {
+                me.setState({owners: d.panels[0].owners});
+            }
+        }, function(e) {
+            console.error('getAsset error', e);
         });
 
         this.clickTab = this.clickTab.bind(this);
@@ -101,6 +112,7 @@ class Main extends React.Component {
                          assets={this.state.assets}
                          assetCount={this.state.assetCount}
                          onUpdateAssets={this.onUpdateAssets}
+                         owners={this.state.owners}
                          tags={this.state.tags}
                          terms={this.state.terms}
                          assetError={this.state.assetError}

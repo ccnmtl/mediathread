@@ -36,6 +36,8 @@ export default class AssetFilter extends React.Component {
         };
     }
     nextPage() {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: Math.min(
@@ -45,6 +47,8 @@ export default class AssetFilter extends React.Component {
         });
     }
     prevPage() {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: Math.max(this.state.currentPage - 1, 0)
@@ -53,6 +57,8 @@ export default class AssetFilter extends React.Component {
         });
     }
     onPageClick(page) {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: page
@@ -93,6 +99,8 @@ export default class AssetFilter extends React.Component {
      * on the current state of this component's search filters.
      */
     filterAssets(filters) {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         getAssets(
             filters.title, filters.owner, filters.tags,

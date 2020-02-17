@@ -36,6 +36,8 @@ export default class AssetFilter extends React.Component {
         };
     }
     nextPage() {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: Math.min(
@@ -45,6 +47,8 @@ export default class AssetFilter extends React.Component {
         });
     }
     prevPage() {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: Math.max(this.state.currentPage - 1, 0)
@@ -53,6 +57,8 @@ export default class AssetFilter extends React.Component {
         });
     }
     onPageClick(page) {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         this.setState({
             currentPage: page
@@ -93,6 +99,8 @@ export default class AssetFilter extends React.Component {
      * on the current state of this component's search filters.
      */
     filterAssets(filters) {
+        this.props.onUpdateAssets(null);
+
         const me = this;
         getAssets(
             filters.title, filters.owner, filters.tags,
@@ -117,37 +125,13 @@ export default class AssetFilter extends React.Component {
     }
     render() {
         let ownersOptions = [this.allOption];
-        if (this.props.assets) {
-            ownersOptions = this.props.assets.reduce(function(a, asset) {
-                // If a already contains this user, skip it.
-                if (a.find(e => e.value === asset.author.username)) {
-                    return a;
-                }
-
-                // Insert this owner at the right position in a.
-                // Skip the first element ('all'), because this should
-                // always be at the top.
-                for (let i = 0; i < a.length; i++) {
-                    const newEl = {
-                        label: asset.author.public_name,
-                        value: asset.author.username
-                    };
-                    if (
-                        a.length === 1 ||
-                            asset.author.username < a[i].value
-                    ) {
-                        a.splice(Math.max(i, 1), 0, newEl);
-                        break;
-                    } else if (i === (a.length - 1)) {
-                        // If this is reached, newEl belongs at
-                        // the end of the array.
-                        a.push(newEl);
-                        break;
-                    }
-                }
-
-                return a;
-            }, ownersOptions);
+        if (this.props.owners) {
+            this.props.owners.forEach(function(owner) {
+                ownersOptions.push({
+                    label: owner.public_name,
+                    value: owner.username
+                });
+            });
         }
 
         let tagsOptions = [];
@@ -357,6 +341,7 @@ AssetFilter.propTypes = {
     assets: PropTypes.array,
     assetCount: PropTypes.number,
     onUpdateAssets: PropTypes.func.isRequired,
+    owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array
 };

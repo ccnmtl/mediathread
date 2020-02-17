@@ -39,6 +39,10 @@ const getAssets = function(
         params.append('modified', date);
     }
 
+    if (tags && tags.length > 0) {
+        params.append('tag', tags.map(tag => tag.value));
+    }
+
     let basePath = '/api/asset/';
     if (owner && owner !== 'all') {
         basePath = `/api/asset/user/${owner}/`;
@@ -55,4 +59,19 @@ const getAssets = function(
         });
 };
 
-export {getAssets};
+/**
+ * Get annotation metadata.
+ */
+const getAsset = function() {
+    return authedFetch('/asset/')
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error loading asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
+};
+
+export {getAssets, getAsset};

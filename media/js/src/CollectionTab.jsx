@@ -66,6 +66,7 @@ export default class CollectionTab extends React.Component {
                     assets={this.props.assets}
                     assetCount={this.props.assetCount}
                     onUpdateAssets={this.props.onUpdateAssets}
+                    owners={this.props.owners}
                     tags={this.props.tags}
                     terms={this.props.terms} />
 
@@ -81,6 +82,7 @@ CollectionTab.propTypes = {
     assets: PropTypes.array,
     assetCount: PropTypes.number,
     onUpdateAssets: PropTypes.func.isRequired,
+    owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array,
     assetError: PropTypes.string,

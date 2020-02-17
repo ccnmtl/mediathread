@@ -47,7 +47,7 @@ ndg-httpsclient==0.5.1
 chardet==3.0.4
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
-idna==2.8
+idna==2.9
 urllib3==1.25.8  # sentry-sdk
 certifi==2019.11.28  # sentry-sdk
 cryptography==2.8
@@ -121,8 +121,8 @@ futures==3.2.0; python_version < '3'
 s3transfer==0.3.3
 jmespath==0.9.4
 
-botocore==1.15.0
-boto3>=1.11.0,<1.12.0
+botocore>=1.15.0,<1.16.0
+boto3==1.12.0
 
 entrypoints==0.3
 django-storages==1.8 # pyup: <1.9

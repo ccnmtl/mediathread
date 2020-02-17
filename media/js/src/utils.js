@@ -43,6 +43,12 @@ const getAssets = function(
         params.append('tag', tags.map(tag => tag.value));
     }
 
+    if (terms && terms.length > 0) {
+        terms.forEach(function(term) {
+            params.append(`vocabulary-${term.data.vocab_id}`, term.data.id);
+        });
+    }
+
     let basePath = '/api/asset/';
     if (owner && owner !== 'all') {
         basePath = `/api/asset/user/${owner}/`;

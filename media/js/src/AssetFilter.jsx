@@ -157,9 +157,13 @@ export default class AssetFilter extends React.Component {
             termsOptions = this.props.terms.map(function(term) {
                 let termOptions = [];
                 term.term_set.forEach(function(t) {
+                    const data = t;
+                    data.vocab_id = term.id;
+
                     termOptions.push({
                         label: `${t.display_name} (${t.count})`,
-                        value: t.name
+                        value: t.name,
+                        data: data
                     });
                 });
 

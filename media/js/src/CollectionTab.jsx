@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './AssetFilter';
+import AssetDetail from './AssetDetail';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            viewMode: 'grid'
+            viewMode: 'grid',
+            selectedAsset: null
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
+        this.toggleAssetView = this.toggleAssetView.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -20,6 +23,13 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
+    toggleAssetView(asset) {
+        if (!this.state.selectedAsset && asset) {
+            this.setState({selectedAsset: asset});
+        } else {
+            this.setState({selectedAsset: null});
+        }
+    }
     render() {
         let assets = [];
         let assetsDom = 'Loading Assets...';
@@ -27,7 +37,13 @@ export default class CollectionTab extends React.Component {
 
         let assetList = this.props.assets;
 
-        if (this.props.assetError) {
+        if (this.state.selectedAsset) {
+            assetsDom = (
+                <AssetDetail
+                    asset={this.state.selectedAsset}
+                    toggleAssetView={this.toggleAssetView} />
+            );
+        } else if (this.props.assetError) {
             // Display error to user
             assetsDom = <strong>{this.props.assetError}</strong>;
         } else if (assetList && this.state.viewMode === 'grid') {
@@ -35,6 +51,7 @@ export default class CollectionTab extends React.Component {
                 assets.push(
                     <GridAsset
                         key={asset.id} asset={asset}
+                        toggleAssetView={me.toggleAssetView}
                         currentUser={me.props.currentUser} />);
             });
 

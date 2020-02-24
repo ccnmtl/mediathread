@@ -182,7 +182,10 @@ export default class GridAsset extends React.Component {
                 <div className="card-body">
                     <h5 className="card-title">
                         <a
-                            href={this.props.asset.local_url}
+                            onClick={
+                                this.props.toggleAssetView.bind(
+                                    this, this.props.asset)}
+                            href="#"
                             title={this.props.asset.title}>
                             {this.props.asset.title}
                         </a>
@@ -240,5 +243,6 @@ export default class GridAsset extends React.Component {
 
 GridAsset.propTypes = {
     asset: PropTypes.object.isRequired,
-    currentUser: PropTypes.number.isRequired
+    currentUser: PropTypes.number.isRequired,
+    toggleAssetView: PropTypes.func.isRequired
 };

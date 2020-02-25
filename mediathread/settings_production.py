@@ -13,6 +13,13 @@ locals().update(
         s3static=True,
     ))
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 3600  # One Hour
+    }
+}
 
 TEMPLATES[0]['DIRS'].insert(
     0,

@@ -28,10 +28,10 @@ PROJECT_APPS = [
     'structuredcollaboration',
 ]
 
-CACHE_BACKEND = 'locmem:///'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'mediathread',
         'TIMEOUT': 3600  # One Hour
     }
 }

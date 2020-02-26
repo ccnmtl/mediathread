@@ -65,6 +65,35 @@ export default class AssetDetail extends React.Component {
             );
         });
 
+        const type = this.asset.getType();
+
+        let thumbnail = null;
+        let media = null;
+        if (type === 'image') {
+            media = (
+                <div
+                    id={`map-${this.props.asset.id}`}
+                    className="ol-map"></div>
+            );
+            thumbnail = (
+                <img
+                    className="img-fluid"
+                    alt={'Thumbnail for: ' +
+                         this.props.asset.title}
+                    src={this.asset.getThumbnail()} />
+            );
+        } else if (type === 'video') {
+            media = (
+                <img
+                    style={{'maxWidth': '100%'}}
+                    className="img-fluid"
+                    alt={'Video thumbnail for: ' +
+                         this.props.asset.title}
+                    src={this.asset.getThumbnail()} />
+            );
+            thumbnail = media;
+        }
+
         const createNewSelection = (
             <div
                 className="accordion" id="accordionExample1"
@@ -95,10 +124,7 @@ export default class AssetDetail extends React.Component {
                                     className="row no-gutters align-items-center">
                                     <div className="col-md-4">
                                         <div className="card-body">
-                                            <img
-                                                src="https://dummyimage.com/1600x900/000000/ffffff&text=Item&nbsp;Thumbnail"
-                                                className="img-fluid"
-                                                alt="Responsive image" />
+                                            {thumbnail}
                                         </div>
                                     </div>
                                     <div className="col-md-8">
@@ -146,26 +172,6 @@ export default class AssetDetail extends React.Component {
             </div>
         );
 
-        const type = this.asset.getType();
-
-        let thumbnail = null;
-        if (type === 'image') {
-            thumbnail = (
-                <div
-                    id={`map-${this.props.asset.id}`}
-                    className="ol-map"></div>
-            );
-        } else if (type === 'video') {
-            thumbnail = (
-                <img
-                    style={{'maxWidth': '100%'}}
-                    className="img-fluid"
-                    alt={'Video thumbnail for: ' +
-                         this.props.asset.title}
-                    src={this.asset.getThumbnail()} />
-            );
-        }
-
         return (
             <div className="container">
                 <button
@@ -189,7 +195,7 @@ export default class AssetDetail extends React.Component {
                             </a>
                         </h1>
 
-                        {thumbnail}
+                        {media}
 
                         <ul className="nav nav-pills nav-fill" id="pills-tab" role="tablist">
                             <li className="nav-item"> <a className="nav-link active" id="pills-details-tab" data-toggle="pill" href="#pills-details" role="tab" aria-controls="pills-details" aria-selected="true">Details</a> </li>

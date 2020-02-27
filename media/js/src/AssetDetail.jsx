@@ -280,40 +280,6 @@ export default class AssetDetail extends React.Component {
 
                         {createNewSelection}
 
-                        <button className="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Display Selections </button>
-                        <div className="dropdown-menu">
-                            <form className="px-4 py-3">
-                                <div className="form-group">
-                                    <label htmlFor="exampleDropdownFormEmail1">Group selections by:</label>
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked readOnly />
-                                        <label className="form-check-label" htmlFor="exampleRadios1"> author </label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" />
-                                        <label className="form-check-label" htmlFor="exampleRadios2"> tag </label>
-                                    </div>
-                                </div>
-                                <div className="dropdown-divider">
-                                </div>
-                                <div className="form-group">
-                                    <div className="form-check">
-                                        <input type="checkbox" className="form-check-input" id="dropdownCheck" />
-                                        <label className="form-check-label" htmlFor="dropdownCheck">
-                                            Display all selections.
-                                            <br />
-                                            <small className="text-muted">
-                                                This option shows all
-                                                selections graphically
-                                                on the video to the
-                                                left.
-                                            </small>
-                                        </label>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
                         <div className="accordion" id="accordionExample2">
                             <div className="card">
                                 <div className="card-header" id="headingOne">

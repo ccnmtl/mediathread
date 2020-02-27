@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactPlayer from 'react-player';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -28,6 +29,8 @@ export default class AssetDetail extends React.Component {
     }
 
     render() {
+        const type = this.asset.getType();
+
         const selections = [];
 
         const me = this;
@@ -65,8 +68,6 @@ export default class AssetDetail extends React.Component {
             );
         });
 
-        const type = this.asset.getType();
-
         let thumbnail = null;
         let media = null;
         if (type === 'image') {
@@ -83,7 +84,10 @@ export default class AssetDetail extends React.Component {
                     src={this.asset.getThumbnail()} />
             );
         } else if (type === 'video') {
-            media = (
+            const source = this.props.asset.sources.url.url ||
+                  this.props.asset.sources.youtube.url;
+            media = <ReactPlayer url={source} controls={true} width={480} />;
+            thumbnail = (
                 <img
                     style={{'maxWidth': '100%'}}
                     className="img-fluid"
@@ -91,7 +95,6 @@ export default class AssetDetail extends React.Component {
                          this.props.asset.title}
                     src={this.asset.getThumbnail()} />
             );
-            thumbnail = media;
         }
 
         const createNewSelection = (
@@ -109,13 +112,13 @@ export default class AssetDetail extends React.Component {
                                 data-target="#collapseZero"
                                 aria-expanded="true"
                                 aria-controls="collapseZero">
-                                Create a New Selection
+                                + Create a New Selection
                             </button>
                         </h2>
                     </div>
                     <div
                         id="collapseZero"
-                        className="collapse show"
+                        className="collapse hide"
                         aria-labelledby="headingZero"
                         data-parent="#accordionExample1">
                         <div className="card-body">
@@ -130,6 +133,17 @@ export default class AssetDetail extends React.Component {
                                     <div className="col-md-8">
                                         <div className="card-body">
                                             <form>
+                                                {type === 'video' && (
+                                                    <table>
+                                                        <tbody>
+                                                            <tr><td span="0"><div><label htmlFor="annotation-title">Selection Times</label></div></td></tr>
+                                                            <tr className="sherd-clipform-editing"><td><input type="button" className="btn-primary" readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td><input type="button" className="btn-primary" readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr className="sherd-clipform-editing"><td><input type="text" className="timecode" id="clipStart" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td style={{width: '10px', textAlign: 'center'}}>-</td><td><input type="text" className="timecode" id="clipEnd" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td className="sherd-clipform-play"><input type="image" title="Play Clip" className="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                )}
                                                 <div className="form-group">
                                                     <label htmlFor="exampleFormControlInput1">Selection Title</label>
                                                     <input type="email" className="form-control" id="exampleFormControlInput1" />
@@ -159,7 +173,14 @@ export default class AssetDetail extends React.Component {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <button type="button" className="btn btn-sm btn-secondary">Cancel</button> <button type="button" className="btn btn-sm btn-primary">Save</button>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-secondary">
+                                                        Cancel
+                                                    </button>
+                                                    <button type="button" className="btn btn-sm btn-primary">
+                                                        Save
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>

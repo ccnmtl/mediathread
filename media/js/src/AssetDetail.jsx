@@ -22,10 +22,45 @@ export default class AssetDetail extends React.Component {
             annotationLayer: new VectorLayer({
                 source: new VectorSource()
             }),
-            selectedAnnotation: null
+            selectedAnnotation: null,
+            annotationStartTime: 0,
+            annotationEndTime: 0
         };
 
+
+        this.playerRef = null;
+
         this.asset = new Asset(this.props.asset);
+        this.toggleVideoPlay = this.toggleVideoPlay.bind(this);
+        this.onStartTimeClick = this.onStartTimeClick.bind(this);
+        this.onEndTimeClick = this.onEndTimeClick.bind(this);
+    }
+
+    onPlayerReady() {
+        console.log('onReady');
+    }
+
+    onStartTimeClick(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        const time = player.getCurrentTime();
+        this.setState({annotationStartTime: time});
+    }
+    onEndTimeClick(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        const time = player.getCurrentTime();
+        this.setState({annotationEndTime: time});
+    }
+
+    toggleVideoPlay(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        if (!this.playerRef.player.isPlaying) {
+            player.playVideo();
+        } else {
+            player.pauseVideo();
+        }
     }
 
     render() {
@@ -86,7 +121,11 @@ export default class AssetDetail extends React.Component {
         } else if (type === 'video') {
             const source = this.props.asset.sources.url.url ||
                   this.props.asset.sources.youtube.url;
-            media = <ReactPlayer url={source} controls={true} width={480} />;
+            media = <ReactPlayer
+                        onReady={this.onPlayerReady}
+                        ref={r => this.playerRef = r}
+                        url={source}
+                        controls={true} width={480} />;
             thumbnail = (
                 <img
                     style={{'maxWidth': '100%'}}
@@ -118,7 +157,7 @@ export default class AssetDetail extends React.Component {
                     </div>
                     <div
                         id="collapseZero"
-                        className="collapse hide"
+                        className="collapse show"
                         aria-labelledby="headingZero"
                         data-parent="#accordionExample1">
                         <div className="card-body">
@@ -137,9 +176,37 @@ export default class AssetDetail extends React.Component {
                                                     <table>
                                                         <tbody>
                                                             <tr><td span="0"><div><label htmlFor="annotation-title">Selection Times</label></div></td></tr>
-                                                            <tr className="sherd-clipform-editing"><td><input type="button" className="btn-primary" readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td><input type="button" className="btn-primary" readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;</td>
+                                                            <tr className="sherd-clipform-editing">
+                                                                <td>
+                                                                    <input
+                                                                        type="button" className="btn-primary"
+                                                                        onClick={this.onStartTimeClick}
+                                                                        readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td>
+                                                                                                                                                                                                       <input
+                                                                                                                                                                                                           type="button" className="btn-primary"
+                                                                                                                                                                                                           onClick={this.onEndTimeClick}                                                                                                           readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;
+                                                                                                                                                                                                                                                                                                      </td>
                                                             </tr>
-                                                            <tr className="sherd-clipform-editing"><td><input type="text" className="timecode" id="clipStart" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td style={{width: '10px', textAlign: 'center'}}>-</td><td><input type="text" className="timecode" id="clipEnd" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td className="sherd-clipform-play"><input type="image" title="Play Clip" className="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png" /></td>
+                                                            <tr className="sherd-clipform-editing">
+                                                                <td>
+                                                                    <input
+                                                                        type="text" className="timecode" id="clipStart" readOnly
+                                                                        value={this.state.annotationStartTime} /><div className="helptext timecode">HH:MM:SS</div></td>
+                                                                <td style={{width: '10px', textAlign: 'center'}}>-</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text" className="timecode" id="clipEnd" readOnly
+                                                                        value={this.state.annotationEndTime} /><div className="helptext timecode">HH:MM:SS</div>
+                                                                                                                                                                                                                                                                    </td>
+                                                                <td className="sherd-clipform-play">
+                                                                    <input
+                                                                        type="image"
+                                                                        title="Play Clip"
+                                                                        className="regButton videoplay"
+                                                                        onClick={this.toggleVideoPlay}
+                                                                        src="/media/img/icons/meth_video_play.png" />
+
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

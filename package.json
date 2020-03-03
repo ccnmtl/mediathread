@@ -43,9 +43,10 @@
     "js-cookie": "^2.2.1",
     "ol": "^6.1.1",
     "react": "~16.13.0",
-    "react-data-table-component": "^6.2.0",
     "react-dom": "~16.13.0",
+    "react-data-table-component": "^6.2.0",
     "styled-components": "^5.0.1",
+    "react-player": "^1.15.2",
     "react-select": "^3.0.8",
     "whatwg-fetch": "^3.0.0"
   }

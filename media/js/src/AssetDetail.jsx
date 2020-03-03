@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactPlayer from 'react-player';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -28,6 +29,8 @@ export default class AssetDetail extends React.Component {
     }
 
     render() {
+        const type = this.asset.getType();
+
         const selections = [];
 
         const me = this;
@@ -65,6 +68,35 @@ export default class AssetDetail extends React.Component {
             );
         });
 
+        let thumbnail = null;
+        let media = null;
+        if (type === 'image') {
+            media = (
+                <div
+                    id={`map-${this.props.asset.id}`}
+                    className="ol-map"></div>
+            );
+            thumbnail = (
+                <img
+                    className="img-fluid"
+                    alt={'Thumbnail for: ' +
+                         this.props.asset.title}
+                    src={this.asset.getThumbnail()} />
+            );
+        } else if (type === 'video') {
+            const source = this.props.asset.sources.url.url ||
+                  this.props.asset.sources.youtube.url;
+            media = <ReactPlayer url={source} controls={true} width={480} />;
+            thumbnail = (
+                <img
+                    style={{'maxWidth': '100%'}}
+                    className="img-fluid"
+                    alt={'Video thumbnail for: ' +
+                         this.props.asset.title}
+                    src={this.asset.getThumbnail()} />
+            );
+        }
+
         const createNewSelection = (
             <div
                 className="accordion" id="accordionExample1"
@@ -80,13 +112,13 @@ export default class AssetDetail extends React.Component {
                                 data-target="#collapseZero"
                                 aria-expanded="true"
                                 aria-controls="collapseZero">
-                                Create a New Selection
+                                + Create a New Selection
                             </button>
                         </h2>
                     </div>
                     <div
                         id="collapseZero"
-                        className="collapse show"
+                        className="collapse hide"
                         aria-labelledby="headingZero"
                         data-parent="#accordionExample1">
                         <div className="card-body">
@@ -95,15 +127,23 @@ export default class AssetDetail extends React.Component {
                                     className="row no-gutters align-items-center">
                                     <div className="col-md-4">
                                         <div className="card-body">
-                                            <img
-                                                src="https://dummyimage.com/1600x900/000000/ffffff&text=Item&nbsp;Thumbnail"
-                                                className="img-fluid"
-                                                alt="Responsive image" />
+                                            {thumbnail}
                                         </div>
                                     </div>
                                     <div className="col-md-8">
                                         <div className="card-body">
                                             <form>
+                                                {type === 'video' && (
+                                                    <table>
+                                                        <tbody>
+                                                            <tr><td span="0"><div><label htmlFor="annotation-title">Selection Times</label></div></td></tr>
+                                                            <tr className="sherd-clipform-editing"><td><input type="button" className="btn-primary" readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td><input type="button" className="btn-primary" readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;</td>
+                                                            </tr>
+                                                            <tr className="sherd-clipform-editing"><td><input type="text" className="timecode" id="clipStart" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td style={{width: '10px', textAlign: 'center'}}>-</td><td><input type="text" className="timecode" id="clipEnd" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td className="sherd-clipform-play"><input type="image" title="Play Clip" className="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                )}
                                                 <div className="form-group">
                                                     <label htmlFor="exampleFormControlInput1">Selection Title</label>
                                                     <input type="email" className="form-control" id="exampleFormControlInput1" />
@@ -133,7 +173,14 @@ export default class AssetDetail extends React.Component {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <button type="button" className="btn btn-sm btn-secondary">Cancel</button> <button type="button" className="btn btn-sm btn-primary">Save</button>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-secondary">
+                                                        Cancel
+                                                    </button>
+                                                    <button type="button" className="btn btn-sm btn-primary">
+                                                        Save
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>
@@ -145,26 +192,6 @@ export default class AssetDetail extends React.Component {
                 </div>
             </div>
         );
-
-        const type = this.asset.getType();
-
-        let thumbnail = null;
-        if (type === 'image') {
-            thumbnail = (
-                <div
-                    id={`map-${this.props.asset.id}`}
-                    className="ol-map"></div>
-            );
-        } else if (type === 'video') {
-            thumbnail = (
-                <img
-                    style={{'maxWidth': '100%'}}
-                    className="img-fluid"
-                    alt={'Video thumbnail for: ' +
-                         this.props.asset.title}
-                    src={this.asset.getThumbnail()} />
-            );
-        }
 
         return (
             <div className="container">
@@ -189,7 +216,7 @@ export default class AssetDetail extends React.Component {
                             </a>
                         </h1>
 
-                        {thumbnail}
+                        {media}
 
                         <ul className="nav nav-pills nav-fill" id="pills-tab" role="tablist">
                             <li className="nav-item"> <a className="nav-link active" id="pills-details-tab" data-toggle="pill" href="#pills-details" role="tab" aria-controls="pills-details" aria-selected="true">Details</a> </li>

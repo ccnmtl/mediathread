@@ -94,4 +94,17 @@ const createSelection = function(assetId, data) {
     });
 };
 
-export {getAssets, getAsset, createSelection};
+const deleteSelection = function(assetId, selectionId) {
+    return authedFetch(
+        `/delete/${assetId}/annotations/${selectionId}/`, 'post'
+    ).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error deleting selection: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+export {getAssets, getAsset, createSelection, deleteSelection};

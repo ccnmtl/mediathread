@@ -14,7 +14,7 @@ import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
-import {createSelection} from './utils';
+import {createSelection, deleteSelection} from './utils';
 
 export default class AssetDetail extends React.Component {
     constructor(props) {
@@ -28,7 +28,6 @@ export default class AssetDetail extends React.Component {
             annotationEndTime: 0
         };
 
-
         this.playerRef = null;
 
         this.asset = new Asset(this.props.asset);
@@ -36,6 +35,7 @@ export default class AssetDetail extends React.Component {
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
+        this.onDeleteSelection = this.onDeleteSelection.bind(this);
     }
 
     onCreateSelection(e) {
@@ -54,6 +54,16 @@ export default class AssetDetail extends React.Component {
                 start: 0,
                 end: 99
             }
+        }.then(function() {
+            console.log('asset created');
+        }));
+    }
+
+    onDeleteSelection(e) {
+        e.preventDefault();
+        const selectionId = jQuery(e.target).closest('button')[0].dataset.id;
+        deleteSelection(this.asset.asset.id, selectionId).then(function() {
+            console.log('asset deleted');
         });
     }
 
@@ -103,6 +113,14 @@ export default class AssetDetail extends React.Component {
 
                         <div className="col-md-8">
                             <div className="card-body">
+                                <button
+                                    className="pull-right btn btn-danger"
+                                    data-id={s.id}
+                                    onClick={me.onDeleteSelection}>
+                                    <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
+                                    </svg>
+                                </button>
 
                                 <h5 className="card-title">{s.title}</h5>
 
@@ -415,7 +433,11 @@ export default class AssetDetail extends React.Component {
                                         <button className="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Marc</button>
                                     </h2>
                                 </div>
-                                <div id="collapseOne" className="collapse hide" aria-labelledby="headingOne" data-parent="#accordionExample2">
+                                <div
+                                    id="collapseOne"
+                                    className="collapse hide"
+                                    aria-labelledby="headingOne"
+                                    data-parent="#accordionExample2">
                                     {selections}
                                 </div>
                             </div>

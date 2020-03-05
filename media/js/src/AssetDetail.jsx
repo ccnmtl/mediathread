@@ -14,6 +14,7 @@ import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
+import {createSelection} from './utils';
 
 export default class AssetDetail extends React.Component {
     constructor(props) {
@@ -34,10 +35,29 @@ export default class AssetDetail extends React.Component {
         this.toggleVideoPlay = this.toggleVideoPlay.bind(this);
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
+        this.onCreateSelection = this.onCreateSelection.bind(this);
+    }
+
+    onCreateSelection(e) {
+        e.preventDefault();
+        createSelection(this.asset.asset.id, {
+            'annotation-title': document.getElementById('newSelectionTitle').value,
+            'annotation-tags': document.getElementById('newSelectionTags').value,
+            'annotation-body': document.getElementById('newSelectionNotes').value,
+            'annotation-range1': 0,
+            'annotation-range2': 99,
+            'annotation-annotation_data': {
+                startCode: this.state.annotationStartTime,
+                endCode: this.state.annotationEndTime,
+                duration: 251,
+                timeScale: 1,
+                start: 0,
+                end: 99
+            }
+        });
     }
 
     onPlayerReady() {
-        console.log('onReady');
     }
 
     onStartTimeClick(e) {
@@ -121,11 +141,13 @@ export default class AssetDetail extends React.Component {
         } else if (type === 'video') {
             const source = this.props.asset.sources.url.url ||
                   this.props.asset.sources.youtube.url;
-            media = <ReactPlayer
-                        onReady={this.onPlayerReady}
-                        ref={r => this.playerRef = r}
-                        url={source}
-                        controls={true} width={480} />;
+            media = (
+                <ReactPlayer
+                    onReady={this.onPlayerReady}
+                    ref={r => this.playerRef = r}
+                    url={source}
+                    controls={true} width={480} />
+            );
             thumbnail = (
                 <img
                     style={{'maxWidth': '100%'}}
@@ -138,7 +160,7 @@ export default class AssetDetail extends React.Component {
 
         const createNewSelection = (
             <div
-                className="accordion" id="accordionExample1"
+                className="accordion" id="selectionAccordion"
                 style={{margin: '1em 0em 1em 0em'}}>
 
                 <div className="card">
@@ -159,7 +181,7 @@ export default class AssetDetail extends React.Component {
                         id="collapseZero"
                         className="collapse show"
                         aria-labelledby="headingZero"
-                        data-parent="#accordionExample1">
+                        data-parent="#selectionAccordion">
                         <div className="card-body">
                             <div className="card mb-3 bg-highlight">
                                 <div
@@ -175,17 +197,26 @@ export default class AssetDetail extends React.Component {
                                                 {type === 'video' && (
                                                     <table>
                                                         <tbody>
-                                                            <tr><td span="0"><div><label htmlFor="annotation-title">Selection Times</label></div></td></tr>
+                                                            <tr>
+                                                                <td span="0">
+                                                                    <div><label htmlFor="annotation-title">Selection Times</label></div>
+                                                                </td>
+                                                            </tr>
                                                             <tr className="sherd-clipform-editing">
                                                                 <td>
                                                                     <input
                                                                         type="button" className="btn-primary"
                                                                         onClick={this.onStartTimeClick}
-                                                                        readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td>
-                                                                                                                                                                                                       <input
-                                                                                                                                                                                                           type="button" className="btn-primary"
-                                                                                                                                                                                                           onClick={this.onEndTimeClick}                                                                                                           readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;
-                                                                                                                                                                                                                                                                                                      </td>
+                                                                        readOnly value="Start Time" id="btnClipStart" />
+                                                                </td>
+                                                                <td width="10px">&nbsp;</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="button" className="btn-primary"
+                                                                        onClick={this.onEndTimeClick}
+                                                                        readOnly value="End Time" id="btnClipEnd" /> </td>
+                                                                <td>&nbsp;
+                                                                </td>
                                                             </tr>
                                                             <tr className="sherd-clipform-editing">
                                                                 <td>
@@ -197,7 +228,7 @@ export default class AssetDetail extends React.Component {
                                                                     <input
                                                                         type="text" className="timecode" id="clipEnd" readOnly
                                                                         value={this.state.annotationEndTime} /><div className="helptext timecode">HH:MM:SS</div>
-                                                                                                                                                                                                                                                                    </td>
+                                                                </td>
                                                                 <td className="sherd-clipform-play">
                                                                     <input
                                                                         type="image"
@@ -212,26 +243,26 @@ export default class AssetDetail extends React.Component {
                                                     </table>
                                                 )}
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlInput1">Selection Title</label>
-                                                    <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                                    <label htmlFor="newSelectionTitle">Selection Title</label>
+                                                    <input type="text" className="form-control" id="newSelectionTitle" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label
-                                                        htmlFor="exampleFormControlTextarea1">
+                                                        htmlFor="newSelectionNotes">
                                                         Notes
                                                     </label>
                                                     <textarea
                                                         className="form-control"
-                                                        id="exampleFormControlTextarea1"
+                                                        id="newSelectionNotes"
                                                         rows="3"></textarea>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlInput1">Tags</label>
-                                                    <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                                    <label htmlFor="newSelectionTags">Tags</label>
+                                                    <input type="text" className="form-control" id="newSelectionTags" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlSelect2">Terms</label>
-                                                    <select multiple className="form-control" id="exampleFormControlSelect2">
+                                                    <label htmlFor="newSelectionTerms">Terms</label>
+                                                    <select multiple className="form-control" id="newSelectionTerms">
                                                         <option>1</option>
                                                         <option>2</option>
                                                         <option>3</option>
@@ -245,7 +276,10 @@ export default class AssetDetail extends React.Component {
                                                         className="btn btn-sm btn-secondary">
                                                         Cancel
                                                     </button>
-                                                    <button type="button" className="btn btn-sm btn-primary">
+                                                    <button
+                                                        type="button"
+                                                        onClick={this.onCreateSelection}
+                                                        className="btn btn-sm btn-primary ml-2">
                                                         Save
                                                     </button>
                                                 </div>

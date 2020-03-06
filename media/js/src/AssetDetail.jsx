@@ -50,6 +50,8 @@ export default class AssetDetail extends React.Component {
 
     onCreateSelection(e) {
         e.preventDefault();
+        const me = this;
+
         createSelection(this.asset.asset.id, {
             'annotation-title': document.getElementById('newSelectionTitle').value,
             'annotation-tags': document.getElementById('newSelectionTags').value,
@@ -64,9 +66,14 @@ export default class AssetDetail extends React.Component {
                 start: 0,
                 end: 99
             }
-        }.then(function() {
+        }).then(function() {
             console.log('selection created');
-        }));
+
+            // Refresh the selections.
+            getAsset(me.asset.asset.id).then(function(d) {
+                me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+            });
+        });
     }
 
     onDeleteSelection(e) {

@@ -3,6 +3,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -20,12 +23,16 @@ export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            annotationLayer: new VectorLayer({
+            selectionLayer: new VectorLayer({
                 source: new VectorSource()
             }),
-            selectedAnnotation: null,
-            annotationStartTime: 0,
-            annotationEndTime: 0
+            selectedSelection: null,
+            selectionStartTime: 0,
+            selectionEndTime: 0,
+
+            deletingSelectionId: null,
+            showDeleteDialog: false,
+            showDeletedDialog: false
         };
 
         this.playerRef = null;
@@ -36,6 +43,9 @@ export default class AssetDetail extends React.Component {
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
+        this.showDeleteDialog = this.showDeleteDialog.bind(this);
+        this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
+        this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
     }
 
     onCreateSelection(e) {
@@ -47,8 +57,8 @@ export default class AssetDetail extends React.Component {
             'annotation-range1': 0,
             'annotation-range2': 99,
             'annotation-annotation_data': {
-                startCode: this.state.annotationStartTime,
-                endCode: this.state.annotationEndTime,
+                startCode: this.state.selectionStartTime,
+                endCode: this.state.selectionEndTime,
                 duration: 251,
                 timeScale: 1,
                 start: 0,
@@ -61,9 +71,14 @@ export default class AssetDetail extends React.Component {
 
     onDeleteSelection(e) {
         e.preventDefault();
-        const selectionId = jQuery(e.target).closest('button')[0].dataset.id;
-        deleteSelection(this.asset.asset.id, selectionId).then(function() {
-            console.log('asset deleted');
+        const me = this;
+
+        deleteSelection(
+            this.asset.asset.id,
+            this.state.deletingSelectionId
+        ).then(function() {
+            me.hideDeleteDialog();
+            me.setState({showDeletedDialog: true});
         });
     }
 
@@ -74,13 +89,13 @@ export default class AssetDetail extends React.Component {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
-        this.setState({annotationStartTime: time});
+        this.setState({selectionStartTime: time});
     }
     onEndTimeClick(e) {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
-        this.setState({annotationEndTime: time});
+        this.setState({selectionEndTime: time});
     }
 
     toggleVideoPlay(e) {
@@ -91,6 +106,25 @@ export default class AssetDetail extends React.Component {
         } else {
             player.pauseVideo();
         }
+    }
+
+    showDeleteDialog(e) {
+        const selectionId = jQuery(e.target).closest('button')[0].dataset.id;
+        this.setState({
+            deletingSelectionId: selectionId,
+            showDeleteDialog: true
+        });
+    }
+
+    hideDeleteDialog() {
+        this.setState({
+            deletingSelectionId: null,
+            showDeleteDialog: false
+        });
+    }
+
+    hideDeletedDialog() {
+        this.setState({showDeletedDialog: false});
     }
 
     render() {
@@ -116,7 +150,7 @@ export default class AssetDetail extends React.Component {
                                 <button
                                     className="pull-right btn btn-danger"
                                     data-id={s.id}
-                                    onClick={me.onDeleteSelection}>
+                                    onClick={me.showDeleteDialog}>
                                     <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
                                     </svg>
@@ -240,12 +274,12 @@ export default class AssetDetail extends React.Component {
                                                                 <td>
                                                                     <input
                                                                         type="text" className="timecode" id="clipStart" readOnly
-                                                                        value={this.state.annotationStartTime} /><div className="helptext timecode">HH:MM:SS</div></td>
+                                                                        value={this.state.selectionStartTime} /><div className="helptext timecode">HH:MM:SS</div></td>
                                                                 <td style={{width: '10px', textAlign: 'center'}}>-</td>
                                                                 <td>
                                                                     <input
                                                                         type="text" className="timecode" id="clipEnd" readOnly
-                                                                        value={this.state.annotationEndTime} /><div className="helptext timecode">HH:MM:SS</div>
+                                                                        value={this.state.selectionEndTime} /><div className="helptext timecode">HH:MM:SS</div>
                                                                 </td>
                                                                 <td className="sherd-clipform-play">
                                                                     <input
@@ -314,6 +348,11 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="container">
+                <Alert
+                    variant="danger" show={this.state.showDeletedDialog}
+                    onClose={this.hideDeletedDialog} dismissible>
+                    <Alert.Heading>Selection deleted.</Alert.Heading>
+                </Alert>
                 <button
                     onClick={this.props.toggleAssetView}
                     className="btn btn-secondary btn-sm mt-2">
@@ -446,6 +485,20 @@ export default class AssetDetail extends React.Component {
 
                 </div>
 
+                <Modal show={this.state.showDeleteDialog} onHide={this.hideDeleteDialog}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete annotation</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Delete this annotation?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.hideDeleteDialog}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={this.onDeleteSelection}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }

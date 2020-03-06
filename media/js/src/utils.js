@@ -96,7 +96,8 @@ const createSelection = function(assetId, data) {
 
 const deleteSelection = function(assetId, selectionId) {
     return authedFetch(
-        `/delete/${assetId}/annotations/${selectionId}/`, 'post'
+        `/asset/delete/${assetId}/annotations/${selectionId}/`,
+        'post'
     ).then(function(response) {
         if (response.status === 200) {
             return response.json();

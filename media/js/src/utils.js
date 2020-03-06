@@ -68,8 +68,12 @@ const getAssets = function(
 /**
  * Get annotation metadata.
  */
-const getAsset = function() {
-    return authedFetch('/asset/')
+const getAsset = function(id=null) {
+    let url = '/asset/';
+    if (id) {
+        url = `/api/asset/${id}/?annotations=true`;
+    }
+    return authedFetch(url)
         .then(function(response) {
             if (response.status === 200) {
                 return response.json();
@@ -82,7 +86,8 @@ const getAsset = function() {
 
 const createSelection = function(assetId, data) {
     return authedFetch(
-        `/asset/create/${assetId}/annotations/`, 'post',
+        `/asset/create/${assetId}/annotations/`,
+        'post',
         JSON.stringify(data)
     ).then(function(response) {
         if (response.status === 200) {

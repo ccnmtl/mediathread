@@ -15,6 +15,7 @@ export default class CollectionTab extends React.Component {
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
         this.toggleAssetView = this.toggleAssetView.bind(this);
+        this.onUpdateAsset = this.onUpdateAsset.bind(this);
     }
     toggleViewMode() {
         let newMode = 'list';
@@ -30,6 +31,9 @@ export default class CollectionTab extends React.Component {
             this.setState({selectedAsset: null});
         }
     }
+    onUpdateAsset(asset) {
+        this.setState({selectedAsset: asset});
+    }
     render() {
         let assets = [];
         let assetsDom = 'Loading Assets...';
@@ -41,7 +45,8 @@ export default class CollectionTab extends React.Component {
             assetsDom = (
                 <AssetDetail
                     asset={this.state.selectedAsset}
-                    toggleAssetView={this.toggleAssetView} />
+                    toggleAssetView={this.toggleAssetView}
+                    onUpdateAsset={this.onUpdateAsset} />
             );
         } else if (this.props.assetError) {
             // Display error to user

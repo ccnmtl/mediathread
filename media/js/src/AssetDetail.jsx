@@ -17,7 +17,7 @@ import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
-import {createSelection, deleteSelection} from './utils';
+import {getAsset, createSelection, deleteSelection} from './utils';
 
 export default class AssetDetail extends React.Component {
     constructor(props) {
@@ -65,7 +65,7 @@ export default class AssetDetail extends React.Component {
                 end: 99
             }
         }.then(function() {
-            console.log('asset created');
+            console.log('selection created');
         }));
     }
 
@@ -79,6 +79,11 @@ export default class AssetDetail extends React.Component {
         ).then(function() {
             me.hideDeleteDialog();
             me.setState({showDeletedDialog: true});
+
+            // Refresh the selections.
+            getAsset(me.asset.asset.id).then(function(d) {
+                me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+            });
         });
     }
 
@@ -544,5 +549,6 @@ export default class AssetDetail extends React.Component {
 
 AssetDetail.propTypes = {
     asset: PropTypes.object,
-    toggleAssetView: PropTypes.func.isRequired
+    toggleAssetView: PropTypes.func.isRequired,
+    onUpdateAsset: PropTypes.func.isRequired
 };

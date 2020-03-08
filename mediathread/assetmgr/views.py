@@ -374,6 +374,15 @@ def annotation_create(request, asset_id):
 
     form = request.POST.copy()
     form['annotation-context_pk'] = asset_id
+
+    # If the data comes through as json, parse the request.body into
+    # the form.
+    if request.content_type == 'application/json':
+        d = json.loads(request.body)
+        d['annotation-annotation_data'] = json.dumps(
+            d['annotation-annotation_data'])
+        form.update(d)
+
     request.POST = form
 
     form = request.GET.copy()

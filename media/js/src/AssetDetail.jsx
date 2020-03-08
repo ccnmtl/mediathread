@@ -3,6 +3,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -14,18 +17,126 @@ import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
+import {getAsset, createSelection, deleteSelection} from './utils';
 
 export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            annotationLayer: new VectorLayer({
+            selectionLayer: new VectorLayer({
                 source: new VectorSource()
             }),
-            selectedAnnotation: null
+            selectedSelection: null,
+            selectionStartTime: 0,
+            selectionEndTime: 0,
+
+            deletingSelectionId: null,
+            showDeleteDialog: false,
+            showDeletedDialog: false
         };
 
+        this.playerRef = null;
+
         this.asset = new Asset(this.props.asset);
+        this.toggleVideoPlay = this.toggleVideoPlay.bind(this);
+        this.onStartTimeClick = this.onStartTimeClick.bind(this);
+        this.onEndTimeClick = this.onEndTimeClick.bind(this);
+        this.onCreateSelection = this.onCreateSelection.bind(this);
+        this.onDeleteSelection = this.onDeleteSelection.bind(this);
+        this.showDeleteDialog = this.showDeleteDialog.bind(this);
+        this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
+        this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
+    }
+
+    onCreateSelection(e) {
+        e.preventDefault();
+        const me = this;
+
+        createSelection(this.asset.asset.id, {
+            'annotation-title': document.getElementById('newSelectionTitle').value,
+            'annotation-tags': document.getElementById('newSelectionTags').value,
+            'annotation-body': document.getElementById('newSelectionNotes').value,
+            'annotation-range1': 0,
+            'annotation-range2': 99,
+            'annotation-annotation_data': {
+                startCode: this.state.selectionStartTime,
+                endCode: this.state.selectionEndTime,
+                duration: 251,
+                timeScale: 1,
+                start: 0,
+                end: 99
+            }
+        }).then(function() {
+            console.log('selection created');
+
+            // Refresh the selections.
+            getAsset(me.asset.asset.id).then(function(d) {
+                me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+            });
+        });
+    }
+
+    onDeleteSelection(e) {
+        e.preventDefault();
+        const me = this;
+
+        deleteSelection(
+            this.asset.asset.id,
+            this.state.deletingSelectionId
+        ).then(function() {
+            me.hideDeleteDialog();
+            me.setState({showDeletedDialog: true});
+
+            // Refresh the selections.
+            getAsset(me.asset.asset.id).then(function(d) {
+                me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+            });
+        });
+    }
+
+    onPlayerReady() {
+    }
+
+    onStartTimeClick(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        const time = player.getCurrentTime();
+        this.setState({selectionStartTime: time});
+    }
+    onEndTimeClick(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        const time = player.getCurrentTime();
+        this.setState({selectionEndTime: time});
+    }
+
+    toggleVideoPlay(e) {
+        e.preventDefault();
+        const player = this.playerRef.getInternalPlayer();
+        if (!this.playerRef.player.isPlaying) {
+            player.playVideo();
+        } else {
+            player.pauseVideo();
+        }
+    }
+
+    showDeleteDialog(e) {
+        const selectionId = jQuery(e.target).closest('button')[0].dataset.id;
+        this.setState({
+            deletingSelectionId: selectionId,
+            showDeleteDialog: true
+        });
+    }
+
+    hideDeleteDialog() {
+        this.setState({
+            deletingSelectionId: null,
+            showDeleteDialog: false
+        });
+    }
+
+    hideDeletedDialog() {
+        this.setState({showDeletedDialog: false});
     }
 
     render() {
@@ -48,6 +159,14 @@ export default class AssetDetail extends React.Component {
 
                         <div className="col-md-8">
                             <div className="card-body">
+                                <button
+                                    className="pull-right btn btn-danger"
+                                    data-id={s.id}
+                                    onClick={me.showDeleteDialog}>
+                                    <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
+                                    </svg>
+                                </button>
 
                                 <h5 className="card-title">{s.title}</h5>
 
@@ -86,7 +205,13 @@ export default class AssetDetail extends React.Component {
         } else if (type === 'video') {
             const source = this.props.asset.sources.url.url ||
                   this.props.asset.sources.youtube.url;
-            media = <ReactPlayer url={source} controls={true} width={480} />;
+            media = (
+                <ReactPlayer
+                    onReady={this.onPlayerReady}
+                    ref={r => this.playerRef = r}
+                    url={source}
+                    controls={true} width={480} />
+            );
             thumbnail = (
                 <img
                     style={{'maxWidth': '100%'}}
@@ -99,7 +224,7 @@ export default class AssetDetail extends React.Component {
 
         const createNewSelection = (
             <div
-                className="accordion" id="accordionExample1"
+                className="accordion" id="selectionAccordion"
                 style={{margin: '1em 0em 1em 0em'}}>
 
                 <div className="card">
@@ -118,9 +243,9 @@ export default class AssetDetail extends React.Component {
                     </div>
                     <div
                         id="collapseZero"
-                        className="collapse hide"
+                        className="collapse show"
                         aria-labelledby="headingZero"
-                        data-parent="#accordionExample1">
+                        data-parent="#selectionAccordion">
                         <div className="card-body">
                             <div className="card mb-3 bg-highlight">
                                 <div
@@ -136,35 +261,72 @@ export default class AssetDetail extends React.Component {
                                                 {type === 'video' && (
                                                     <table>
                                                         <tbody>
-                                                            <tr><td span="0"><div><label htmlFor="annotation-title">Selection Times</label></div></td></tr>
-                                                            <tr className="sherd-clipform-editing"><td><input type="button" className="btn-primary" readOnly value="Start Time" id="btnClipStart" /> </td><td width="10px">&nbsp;</td><td><input type="button" className="btn-primary" readOnly value="End Time" id="btnClipEnd" /> </td><td>&nbsp;</td>
+                                                            <tr>
+                                                                <td span="0">
+                                                                    <div><label htmlFor="annotation-title">Selection Times</label></div>
+                                                                </td>
                                                             </tr>
-                                                            <tr className="sherd-clipform-editing"><td><input type="text" className="timecode" id="clipStart" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td style={{width: '10px', textAlign: 'center'}}>-</td><td><input type="text" className="timecode" id="clipEnd" readOnly value="00:00:00" /><div className="helptext timecode">HH:MM:SS</div></td><td className="sherd-clipform-play"><input type="image" title="Play Clip" className="regButton videoplay" id="btnPlayClip" src="/media/img/icons/meth_video_play.png" /></td>
+                                                            <tr className="sherd-clipform-editing">
+                                                                <td>
+                                                                    <input
+                                                                        type="button" className="btn-primary"
+                                                                        onClick={this.onStartTimeClick}
+                                                                        readOnly value="Start Time" id="btnClipStart" />
+                                                                </td>
+                                                                <td width="10px">&nbsp;</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="button" className="btn-primary"
+                                                                        onClick={this.onEndTimeClick}
+                                                                        readOnly value="End Time" id="btnClipEnd" /> </td>
+                                                                <td>&nbsp;
+                                                                </td>
+                                                            </tr>
+                                                            <tr className="sherd-clipform-editing">
+                                                                <td>
+                                                                    <input
+                                                                        type="text" className="timecode" id="clipStart" readOnly
+                                                                        value={this.state.selectionStartTime} /><div className="helptext timecode">HH:MM:SS</div></td>
+                                                                <td style={{width: '10px', textAlign: 'center'}}>-</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text" className="timecode" id="clipEnd" readOnly
+                                                                        value={this.state.selectionEndTime} /><div className="helptext timecode">HH:MM:SS</div>
+                                                                </td>
+                                                                <td className="sherd-clipform-play">
+                                                                    <input
+                                                                        type="image"
+                                                                        title="Play Clip"
+                                                                        className="regButton videoplay"
+                                                                        onClick={this.toggleVideoPlay}
+                                                                        src="/media/img/icons/meth_video_play.png" />
+
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 )}
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlInput1">Selection Title</label>
-                                                    <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                                    <label htmlFor="newSelectionTitle">Selection Title</label>
+                                                    <input type="text" className="form-control" id="newSelectionTitle" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label
-                                                        htmlFor="exampleFormControlTextarea1">
+                                                        htmlFor="newSelectionNotes">
                                                         Notes
                                                     </label>
                                                     <textarea
                                                         className="form-control"
-                                                        id="exampleFormControlTextarea1"
+                                                        id="newSelectionNotes"
                                                         rows="3"></textarea>
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlInput1">Tags</label>
-                                                    <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                                    <label htmlFor="newSelectionTags">Tags</label>
+                                                    <input type="text" className="form-control" id="newSelectionTags" />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="exampleFormControlSelect2">Terms</label>
-                                                    <select multiple className="form-control" id="exampleFormControlSelect2">
+                                                    <label htmlFor="newSelectionTerms">Terms</label>
+                                                    <select multiple className="form-control" id="newSelectionTerms">
                                                         <option>1</option>
                                                         <option>2</option>
                                                         <option>3</option>
@@ -178,7 +340,10 @@ export default class AssetDetail extends React.Component {
                                                         className="btn btn-sm btn-secondary">
                                                         Cancel
                                                     </button>
-                                                    <button type="button" className="btn btn-sm btn-primary">
+                                                    <button
+                                                        type="button"
+                                                        onClick={this.onCreateSelection}
+                                                        className="btn btn-sm btn-primary ml-2">
                                                         Save
                                                     </button>
                                                 </div>
@@ -195,6 +360,11 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="container">
+                <Alert
+                    variant="danger" show={this.state.showDeletedDialog}
+                    onClose={this.hideDeletedDialog} dismissible>
+                    <Alert.Heading>Selection deleted.</Alert.Heading>
+                </Alert>
                 <button
                     onClick={this.props.toggleAssetView}
                     className="btn btn-secondary btn-sm mt-2">
@@ -314,7 +484,11 @@ export default class AssetDetail extends React.Component {
                                         <button className="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Marc</button>
                                     </h2>
                                 </div>
-                                <div id="collapseOne" className="collapse hide" aria-labelledby="headingOne" data-parent="#accordionExample2">
+                                <div
+                                    id="collapseOne"
+                                    className="collapse hide"
+                                    aria-labelledby="headingOne"
+                                    data-parent="#accordionExample2">
                                     {selections}
                                 </div>
                             </div>
@@ -323,6 +497,20 @@ export default class AssetDetail extends React.Component {
 
                 </div>
 
+                <Modal show={this.state.showDeleteDialog} onHide={this.hideDeleteDialog}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete annotation</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Delete this annotation?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.hideDeleteDialog}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={this.onDeleteSelection}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
     }
@@ -368,5 +556,6 @@ export default class AssetDetail extends React.Component {
 
 AssetDetail.propTypes = {
     asset: PropTypes.object,
-    toggleAssetView: PropTypes.func.isRequired
+    toggleAssetView: PropTypes.func.isRequired,
+    onUpdateAsset: PropTypes.func.isRequired
 };

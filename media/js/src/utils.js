@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 /**
  * A wrapper for `fetch` that passes along auth credentials.
  */
-const authedFetch = function(url, method = 'get', data = null) {
+const authedFetch = function(url, method='get', data=null) {
     const token = Cookies.get('csrftoken');
     return fetch(url, {
         method: method,
@@ -68,8 +68,12 @@ const getAssets = function(
 /**
  * Get annotation metadata.
  */
-const getAsset = function() {
-    return authedFetch('/asset/')
+const getAsset = function(id=null) {
+    let url = '/asset/';
+    if (id) {
+        url = `/api/asset/${id}/?annotations=true`;
+    }
+    return authedFetch(url)
         .then(function(response) {
             if (response.status === 200) {
                 return response.json();
@@ -80,4 +84,33 @@ const getAsset = function() {
         });
 };
 
-export {getAssets, getAsset};
+const createSelection = function(assetId, data) {
+    return authedFetch(
+        `/asset/create/${assetId}/annotations/`,
+        'post',
+        JSON.stringify(data)
+    ).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error making selection: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+const deleteSelection = function(assetId, selectionId) {
+    return authedFetch(
+        `/asset/delete/${assetId}/annotations/${selectionId}/`,
+        'post'
+    ).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error deleting selection: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+export {getAssets, getAsset, createSelection, deleteSelection};

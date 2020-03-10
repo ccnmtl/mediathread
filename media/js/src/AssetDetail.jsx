@@ -142,50 +142,93 @@ export default class AssetDetail extends React.Component {
     render() {
         const type = this.asset.getType();
 
-        const selections = [];
+        const selectionsByAuthor = {};
+        const selectionsByAuthorDom = [];
 
         const me = this;
+
+        // Group the selections by author.
         this.props.asset.annotations.forEach(function(s) {
-            selections.push(
-                <div
-                    key={s.id}
-                    className="card" style={{'maxWidth': '540px'}}>
-                    <div className="row no-gutters">
-                        <div className="col-md-4">
-                            <img
-                                src={me.props.asset.thumb_url}
-                                className="card-img" alt="..." />
-                        </div>
+            if (selectionsByAuthor[s.author.id]) {
+                selectionsByAuthor[s.author.id].push(s);
+            } else {
+                selectionsByAuthor[s.author.id] = [s];
+            }
+        });
 
-                        <div className="col-md-8">
-                            <div className="card-body">
-                                <button
-                                    className="pull-right btn btn-danger"
-                                    data-id={s.id}
-                                    onClick={me.showDeleteDialog}>
-                                    <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
-                                    </svg>
-                                </button>
-
-                                <h5 className="card-title">{s.title}</h5>
-
-                                <p className="card-text">
-                                    {s.metadata.body}
-                                </p>
-
-                                <p className="card-text">
-                                    <small className="text-muted">
-                                        {s.metadata.modified}
-                                    </small>
-                                </p>
-
+        for (let [key, selections] of Object.entries(selectionsByAuthor)) {
+            let selectionsDom = [];
+            selections.forEach(function(s) {
+                selectionsDom.push(
+                    <div
+                        key={s.id}
+                        className="card" style={{'maxWidth': '540px'}}>
+                        <div className="row no-gutters">
+                            <div className="col-md-4">
+                                <img
+                                    src={me.props.asset.thumb_url}
+                                    className="card-img" alt="..." />
                             </div>
+
+                            <div className="col-md-8">
+                                <div className="card-body">
+                                    <button
+                                        className="pull-right btn btn-danger"
+                                        data-id={s.id}
+                                        onClick={me.showDeleteDialog}>
+                                        <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
+                                        </svg>
+                                    </button>
+
+                                    <h5 className="card-title">{s.title}</h5>
+
+                                    <p className="card-text">
+                                        {s.metadata.body}
+                                    </p>
+
+                                    <p className="card-text">
+                                        <small className="text-muted">
+                                            {s.metadata.modified}
+                                        </small>
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            });
+
+            let authorName = selections[0].author.public_name ||
+                selections[0].author.username;
+
+            let authorAccordion = (
+                <div key={key} className="accordion" id="accordionExample2">
+                    <div className="card">
+                        <div className="card-header" id="headingOne">
+                            <h2 className="mb-0">
+                                <button
+                                    className="btn btn-link" type="button"
+                                    data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                    {authorName}
+                                </button>
+                            </h2>
+                        </div>
+                        <div
+                            id="collapseOne"
+                            className="collapse hide"
+                            aria-labelledby="headingOne"
+                            data-parent="#accordionExample2">
+                            {selectionsDom}
                         </div>
                     </div>
                 </div>
             );
-        });
+
+            selectionsByAuthorDom.push(authorAccordion);
+        }
 
         let thumbnail = null;
         let media = null;
@@ -477,22 +520,7 @@ export default class AssetDetail extends React.Component {
 
                         {createNewSelection}
 
-                        <div className="accordion" id="accordionExample2">
-                            <div className="card">
-                                <div className="card-header" id="headingOne">
-                                    <h2 className="mb-0">
-                                        <button className="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Marc</button>
-                                    </h2>
-                                </div>
-                                <div
-                                    id="collapseOne"
-                                    className="collapse hide"
-                                    aria-labelledby="headingOne"
-                                    data-parent="#accordionExample2">
-                                    {selections}
-                                </div>
-                            </div>
-                        </div>
+                        {selectionsByAuthorDom}
                     </div>
 
                 </div>

@@ -32,7 +32,10 @@ export default class AssetDetail extends React.Component {
 
             deletingSelectionId: null,
             showDeleteDialog: false,
-            showDeletedDialog: false
+            showDeletedDialog: false,
+
+            createdSelectionTitle: '',
+            showCreatedDialog: false
         };
 
         this.playerRef = null;
@@ -46,14 +49,17 @@ export default class AssetDetail extends React.Component {
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
         this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
         this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
+        this.hideCreatedDialog = this.hideCreatedDialog.bind(this);
     }
 
     onCreateSelection(e) {
         e.preventDefault();
         const me = this;
 
+        const selectionTitle = document.getElementById('newSelectionTitle').value;
+
         createSelection(this.asset.asset.id, {
-            'annotation-title': document.getElementById('newSelectionTitle').value,
+            'annotation-title': selectionTitle,
             'annotation-tags': document.getElementById('newSelectionTags').value,
             'annotation-body': document.getElementById('newSelectionNotes').value,
             'annotation-range1': 0,
@@ -67,7 +73,10 @@ export default class AssetDetail extends React.Component {
                 end: 99
             }
         }).then(function() {
-            console.log('selection created');
+            me.setState({
+                createdSelectionTitle: selectionTitle,
+                showCreatedDialog: true
+            });
 
             // Refresh the selections.
             getAsset(me.asset.asset.id).then(function(d) {
@@ -137,6 +146,10 @@ export default class AssetDetail extends React.Component {
 
     hideDeletedDialog() {
         this.setState({showDeletedDialog: false});
+    }
+
+    hideCreatedDialog() {
+        this.setState({showCreatedDialog: false});
     }
 
     render() {
@@ -307,7 +320,9 @@ export default class AssetDetail extends React.Component {
                                                     </table>
                                                 )}
                                                 <div className="form-group">
-                                                    <label htmlFor="newSelectionTitle">Selection Title</label>
+                                                    <label htmlFor="newSelectionTitle">
+                                                        Selection Title
+                                                    </label>
                                                     <input type="text" className="form-control" id="newSelectionTitle" />
                                                 </div>
                                                 <div className="form-group">
@@ -361,10 +376,19 @@ export default class AssetDetail extends React.Component {
         return (
             <div className="container">
                 <Alert
+                    variant="success" show={this.state.showCreatedDialog}
+                    onClose={this.hideCreatedDialog} dismissible>
+                    <Alert.Heading>
+                        Selection &quot;{this.state.createdSelectionTitle}&quot; created.
+                    </Alert.Heading>
+                </Alert>
+
+                <Alert
                     variant="danger" show={this.state.showDeletedDialog}
                     onClose={this.hideDeletedDialog} dismissible>
                     <Alert.Heading>Selection deleted.</Alert.Heading>
                 </Alert>
+
                 <button
                     onClick={this.props.toggleAssetView}
                     className="btn btn-secondary btn-sm mt-2">

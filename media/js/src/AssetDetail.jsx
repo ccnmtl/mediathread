@@ -17,7 +17,10 @@ import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
-import {getAsset, createSelection, deleteSelection} from './utils';
+import {
+    getAsset, createSelection, deleteSelection,
+    formatTimecode, parseTimecode
+} from './utils';
 
 export default class AssetDetail extends React.Component {
     constructor(props) {
@@ -50,6 +53,9 @@ export default class AssetDetail extends React.Component {
         this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
         this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
         this.hideCreatedDialog = this.hideCreatedDialog.bind(this);
+
+        this.onStartTimeUpdate = this.onStartTimeUpdate.bind(this);
+        this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
     }
 
     onCreateSelection(e) {
@@ -106,10 +112,21 @@ export default class AssetDetail extends React.Component {
     onPlayerReady() {
     }
 
+    onStartTimeUpdate(e) {
+        const str = e.target.value;
+        this.setState({selectionStartTime: parseTimecode(str)});
+    }
+
+    onEndTimeUpdate(e) {
+        const str = e.target.value;
+        this.setState({selectionEndTime: parseTimecode(str)});
+    }
+
     onStartTimeClick(e) {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
+        console.log('time', time);
         this.setState({selectionStartTime: time});
     }
     onEndTimeClick(e) {
@@ -334,20 +351,25 @@ export default class AssetDetail extends React.Component {
                                                                     <input
                                                                         type="button" className="btn-primary"
                                                                         onClick={this.onEndTimeClick}
-                                                                        readOnly value="End Time" id="btnClipEnd" /> </td>
+                                                                        value="End Time" id="btnClipEnd" /> </td>
                                                                 <td>&nbsp;
                                                                 </td>
                                                             </tr>
                                                             <tr className="sherd-clipform-editing">
                                                                 <td>
                                                                     <input
-                                                                        type="text" className="timecode" id="clipStart" readOnly
-                                                                        value={this.state.selectionStartTime} /><div className="helptext timecode">HH:MM:SS</div></td>
+                                                                        type="text" className="timecode form-control"
+                                                                        id="clipStart" onChange={this.onStartTimeUpdate}
+                                                                        value={formatTimecode(this.state.selectionStartTime)} />
+                                                                    <div className="helptext timecode">HH:MM:SS</div>
+                                                                </td>
                                                                 <td style={{width: '10px', textAlign: 'center'}}>-</td>
                                                                 <td>
                                                                     <input
-                                                                        type="text" className="timecode" id="clipEnd" readOnly
-                                                                        value={this.state.selectionEndTime} /><div className="helptext timecode">HH:MM:SS</div>
+                                                                        type="text" className="timecode form-control"
+                                                                        id="clipEnd" onChange={this.onEndTimeUpdate}
+                                                                        value={formatTimecode(this.state.selectionEndTime)} />
+                                                                    <div className="helptext timecode">HH:MM:SS</div>
                                                                 </td>
                                                                 <td className="sherd-clipform-play">
                                                                     <input
@@ -510,14 +532,14 @@ export default class AssetDetail extends React.Component {
                                     <form>
                                         <div className="form-group">
                                             <label htmlFor="exampleFormControlInput1">Item Title</label>
-                                            <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                            <input type="text" className="form-control" id="exampleFormControlInput1" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="exampleFormControlTextarea1">Notes</label> <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="exampleFormControlInput1">Tags</label>
-                                            <input type="email" className="form-control" id="exampleFormControlInput1" />
+                                            <input type="text" className="form-control" id="exampleFormControlInput1" />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="exampleFormControlSelect2">Terms</label>

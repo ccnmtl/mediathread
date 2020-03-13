@@ -1,3 +1,4 @@
+import isFinite from 'lodash/isFinite';
 import Cookies from 'js-cookie';
 
 /**
@@ -113,4 +114,58 @@ const deleteSelection = function(assetId, selectionId) {
     });
 };
 
-export {getAssets, getAsset, createSelection, deleteSelection};
+const getHours = function(totalSeconds) {
+    return Math.floor(totalSeconds / 3600);
+};
+
+const getMinutes = function(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const seconds = totalSeconds - (hours * 3600);
+    return Math.floor(seconds / 60);
+};
+
+const getSeconds = function(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+    const seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+    return Math.floor(seconds);
+};
+
+/**
+ * Given a number of seconds as a float, return an array
+ * containing [hours, minutes, seconds].
+ */
+const getSeparatedTimeUnits = function(totalSeconds) {
+    return [
+        getHours(totalSeconds),
+        getMinutes(totalSeconds),
+        getSeconds(totalSeconds)
+    ];
+};
+
+const parseTimecode = function(str) {
+    const parts = str.split(':');
+    const col1 = Number(parts[0]);
+    const col2 = Number(parts[1]);
+    const col3 = Number(parts[2]);
+    if (isFinite(col1) && isFinite(col2) && isFinite(col3)) {
+        return (col1 * 60) + col2 + (col3 / 100);
+    } else {
+        return null;
+    }
+};
+
+const pad2 = function(number) {
+    return (number < 10 ? '0' : '') + number;
+};
+
+const formatTimecode = function(totalSeconds) {
+    const units = getSeparatedTimeUnits(totalSeconds);
+    return pad2(units[0]) + ':' + pad2(units[1]) + ':' + pad2(units[2]);
+};
+
+export {
+    getAssets, getAsset, createSelection, deleteSelection,
+    getHours, getMinutes, getSeconds,
+    pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode
+};

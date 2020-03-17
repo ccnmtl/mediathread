@@ -29,7 +29,13 @@ export default class AssetDetail extends React.Component {
             selectionLayer: new VectorLayer({
                 source: new VectorSource()
             }),
-            selectedSelection: null,
+
+            // The player seems to work better when it's loaded initially
+            // as 'playing', and then paused immediately onReady.
+            // https://github.com/CookPete/react-player/issues/536#issuecomment-453869837
+            playing: true,
+
+            // For creating a new selection
             selectionStartTime: 0,
             selectionEndTime: 0,
 
@@ -43,8 +49,9 @@ export default class AssetDetail extends React.Component {
 
         this.playerRef = null;
 
+        this.selection = null;
+
         this.asset = new Asset(this.props.asset);
-        this.toggleVideoPlay = this.toggleVideoPlay.bind(this);
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
@@ -56,6 +63,9 @@ export default class AssetDetail extends React.Component {
 
         this.onStartTimeUpdate = this.onStartTimeUpdate.bind(this);
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
+
+        this.onClickSelection = this.onClickSelection.bind(this);
+        this.onClickPlay = this.onClickPlay.bind(this);
     }
 
     onCreateSelection(e) {
@@ -68,15 +78,15 @@ export default class AssetDetail extends React.Component {
             'annotation-title': selectionTitle,
             'annotation-tags': document.getElementById('newSelectionTags').value,
             'annotation-body': document.getElementById('newSelectionNotes').value,
-            'annotation-range1': 0,
-            'annotation-range2': 99,
+            'annotation-range1': this.state.selectionStartTime,
+            'annotation-range2': this.state.selectionEndTime,
             'annotation-annotation_data': {
-                startCode: this.state.selectionStartTime,
-                endCode: this.state.selectionEndTime,
-                duration: 251,
+                startCode: formatTimecode(this.state.selectionStartTime),
+                endCode: formatTimecode(this.state.selectionEndTime),
+                duration: this.state.selectionEndTime - this.state.selectionStartTime,
                 timeScale: 1,
-                start: 0,
-                end: 99
+                start: this.state.selectionStartTime,
+                end: this.state.selectionEndTime
             }
         }).then(function() {
             me.setState({
@@ -109,7 +119,32 @@ export default class AssetDetail extends React.Component {
         });
     }
 
+    pause() {
+        const player = this.playerRef.getInternalPlayer();
+        if (player && player.pauseVideo) {
+            player.pauseVideo();
+        }
+    }
+
+    onPlayerPlay() {
+        if (!this.state.playing) {
+            this.pause();
+        }
+    }
+
     onPlayerReady() {
+        this.setState({playing: false});
+    }
+
+    onPlayerProgress(d) {
+        if (!this.selection) {
+            return;
+        }
+
+        // Compare progress to the currently playing selection
+        if (d.playedSeconds > this.selection.range2) {
+            this.pause();
+        }
     }
 
     onStartTimeUpdate(e) {
@@ -126,7 +161,6 @@ export default class AssetDetail extends React.Component {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
-        console.log('time', time);
         this.setState({selectionStartTime: time});
     }
     onEndTimeClick(e) {
@@ -136,18 +170,7 @@ export default class AssetDetail extends React.Component {
         this.setState({selectionEndTime: time});
     }
 
-    toggleVideoPlay(e) {
-        e.preventDefault();
-        const player = this.playerRef.getInternalPlayer();
-        if (!this.playerRef.player.isPlaying) {
-            player.playVideo();
-        } else {
-            player.pauseVideo();
-        }
-    }
-
-    showDeleteDialog(e) {
-        const selectionId = jQuery(e.target).closest('button')[0].dataset.id;
+    showDeleteDialog(selectionId) {
         this.setState({
             deletingSelectionId: selectionId,
             showDeleteDialog: true
@@ -167,6 +190,17 @@ export default class AssetDetail extends React.Component {
 
     hideCreatedDialog() {
         this.setState({showCreatedDialog: false});
+    }
+
+    onClickSelection(selection) {
+    }
+
+    onClickPlay(selection) {
+        const player = this.playerRef;
+
+        this.selection = selection;
+        this.setState({playing: true});
+        player.seekTo(selection.range1, 'seconds');
     }
 
     render() {
@@ -203,15 +237,41 @@ export default class AssetDetail extends React.Component {
                             <div className="col-md-8">
                                 <div className="card-body">
                                     <button
-                                        className="pull-right btn btn-danger"
+                                        className="btn btn-sm btn-danger"
                                         data-id={s.id}
-                                        onClick={me.showDeleteDialog}>
+                                        onClick={() => me.showDeleteDialog(s.id)}>
                                         <svg className="bi bi-trash-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M4.5 3a1 1 0 00-1 1v1a1 1 0 001 1H5v9a2 2 0 002 2h6a2 2 0 002-2V6h.5a1 1 0 001-1V4a1 1 0 00-1-1H12a1 1 0 00-1-1H9a1 1 0 00-1 1H4.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM10 7a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 0110 7zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clipRule="evenodd"></path>
                                         </svg>
                                     </button>
 
-                                    <h5 className="card-title">{s.title}</h5>
+                                    <button
+                                        className="ml-1 btn btn-sm btn-secondary"
+                                        data-id={s.id}>
+                                        <svg className="bi bi-pencil" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M13.293 3.293a1 1 0 011.414 0l2 2a1 1 0 010 1.414l-9 9a1 1 0 01-.39.242l-3 1a1 1 0 01-1.266-1.265l1-3a1 1 0 01.242-.391l9-9zM14 4l2 2-9 9-3 1 1-3 9-9z" clipRule="evenodd"></path>
+                                            <path fillRule="evenodd" d="M14.146 8.354l-2.5-2.5.708-.708 2.5 2.5-.708.708zM5 12v.5a.5.5 0 00.5.5H6v.5a.5.5 0 00.5.5H7v.5a.5.5 0 00.5.5H8v-1.5a.5.5 0 00-.5-.5H7v-.5a.5.5 0 00-.5-.5H5z" clipRule="evenodd"></path>
+                                        </svg>
+                                    </button>
+
+                                    <button
+                                        className="ml-1 btn btn-sm btn-secondary"
+                                        data-id={s.id}
+                                        onClick={() => me.onClickPlay(s)}>
+                                        <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M13.596 10.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V6.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
+                                        </svg>
+                                    </button>
+
+                                    <small className="ml-2">
+                                        {formatTimecode(s.range1)} &ndash; {formatTimecode(s.range2)}
+                                    </small>
+
+                                    <h5 className="card-title">
+                                        <a href="#" onClick={() => me.onClickSelection(s)}>
+                                            {s.title}
+                                        </a>
+                                    </h5>
 
                                     <p className="card-text">
                                         {s.metadata.body}
@@ -280,7 +340,10 @@ export default class AssetDetail extends React.Component {
                   this.props.asset.sources.youtube.url;
             media = (
                 <ReactPlayer
-                    onReady={this.onPlayerReady}
+                    onPlay={this.onPlayerPlay.bind(this)}
+                    onReady={this.onPlayerReady.bind(this)}
+                    onProgress={this.onPlayerProgress.bind(this)}
+                    playing={this.state.playing}
                     ref={r => this.playerRef = r}
                     url={source}
                     controls={true} width={480} />
@@ -371,15 +434,6 @@ export default class AssetDetail extends React.Component {
                                                                         value={formatTimecode(this.state.selectionEndTime)} />
                                                                     <div className="helptext timecode">HH:MM:SS</div>
                                                                 </td>
-                                                                <td className="sherd-clipform-play">
-                                                                    <input
-                                                                        type="image"
-                                                                        title="Play Clip"
-                                                                        className="regButton videoplay"
-                                                                        onClick={this.toggleVideoPlay}
-                                                                        src="/media/img/icons/meth_video_play.png" />
-
-                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -388,7 +442,10 @@ export default class AssetDetail extends React.Component {
                                                     <label htmlFor="newSelectionTitle">
                                                         Selection Title
                                                     </label>
-                                                    <input type="text" className="form-control" id="newSelectionTitle" />
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="newSelectionTitle" />
                                                 </div>
                                                 <div className="form-group">
                                                     <label
@@ -398,7 +455,8 @@ export default class AssetDetail extends React.Component {
                                                     <textarea
                                                         className="form-control"
                                                         id="newSelectionNotes"
-                                                        rows="3"></textarea>
+                                                        rows="3">
+                                                    </textarea>
                                                 </div>
                                                 <div className="form-group">
                                                     <label htmlFor="newSelectionTags">Tags</label>

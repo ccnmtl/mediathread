@@ -22,9 +22,11 @@ from django.template import loader
 from django.utils.encoding import smart_bytes
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.generic import DetailView
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 from sentry_sdk import capture_exception
+from waffle.mixins import WaffleFlagMixin
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -36,9 +38,11 @@ from mediathread.djangosherd.views import create_annotation, edit_annotation, \
     delete_annotation
 from mediathread.main import course_details
 from mediathread.main.models import UserSetting
-from mediathread.mixins import ajax_required, LoggedInCourseMixin, \
-    JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin, \
+from mediathread.mixins import (
+    ajax_required, LoggedInCourseMixin,
+    JSONResponseMixin, AjaxRequiredMixin, RestrictedMaterialsMixin,
     LoggedInSuperuserMixin, LoggedInFacultyMixin
+)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 
@@ -1033,6 +1037,19 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ctx['type'] = 'asset'
 
         return self.render_to_json_response(ctx)
+
+
+class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
+    model = Asset
+    waffle_flag = 'new_course_view'
+    template_name = 'courseaffils/course_detail_react.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReactAssetDetailView, self).get_context_data(**kwargs)
+        context.update({
+            'course': self.request.course
+        })
+        return context
 
 
 class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,

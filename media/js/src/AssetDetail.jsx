@@ -18,7 +18,7 @@ import Static from 'ol/source/ImageStatic';
 
 import Asset from './Asset';
 import {
-    getAsset, createSelection, deleteSelection,
+    getAsset, createSherdNote, deleteSelection,
     formatTimecode, parseTimecode
 } from './utils';
 
@@ -74,13 +74,13 @@ export default class AssetDetail extends React.Component {
 
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
-        createSelection(this.asset.asset.id, {
-            'annotation-title': selectionTitle,
-            'annotation-tags': document.getElementById('newSelectionTags').value,
-            'annotation-body': document.getElementById('newSelectionNotes').value,
-            'annotation-range1': this.state.selectionStartTime,
-            'annotation-range2': this.state.selectionEndTime,
-            'annotation-annotation_data': {
+        createSherdNote(this.asset.asset.id, {
+            'title': selectionTitle,
+            'tags': document.getElementById('newSelectionTags').value,
+            'body': document.getElementById('newSelectionNotes').value,
+            'range1': this.state.selectionStartTime,
+            'range2': this.state.selectionEndTime,
+            'annotation_data': {
                 startCode: formatTimecode(this.state.selectionStartTime),
                 endCode: formatTimecode(this.state.selectionEndTime),
                 duration: this.state.selectionEndTime - this.state.selectionStartTime,

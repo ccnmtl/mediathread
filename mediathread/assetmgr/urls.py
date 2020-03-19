@@ -7,7 +7,9 @@ from mediathread.assetmgr.views import (
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
     most_recent, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
-    AnnotationCopyView, ManageIngestView)
+    AnnotationCopyView, ManageIngestView
+)
+from mediathread.djangosherd.apiviews import SherdNoteCreate
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -35,6 +37,11 @@ urlpatterns = [
         AssetWorkspaceView.as_view(), {}, 'annotation-view'),
 
     url(r'^create/(?P<asset_id>\d+)/annotations/$', annotation_create),
+
+    # django-rest-framework
+    url(r'^(?P<asset_id>\d+)/sherdnote/create/$',
+        SherdNoteCreate.as_view(),
+        name='sherdnote-create'),
 
     url(r'^create/(?P<asset_id>\d+)/global/$', annotation_create_global),
 

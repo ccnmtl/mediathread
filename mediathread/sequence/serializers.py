@@ -1,7 +1,7 @@
 from decimal import Decimal
 from rest_framework import serializers
 
-from mediathread.djangosherd.serializers import SherdNoteSerializer
+from mediathread.djangosherd.serializers import SherdNoteReadOnlySerializer
 from mediathread.projects.models import Project, ProjectSequenceAsset
 from mediathread.sequence.models import (
     SequenceAsset, SequenceMediaElement, SequenceTextElement,
@@ -16,7 +16,7 @@ class SequenceMediaElementSerializer(serializers.ModelSerializer):
         model = SequenceMediaElement
         fields = ('media', 'media_asset', 'start_time', 'end_time', 'volume')
 
-    media = SherdNoteSerializer()
+    media = SherdNoteReadOnlySerializer()
     media_asset = serializers.ReadOnlyField(source='media.asset.id')
 
     def to_internal_value(self, data):
@@ -80,7 +80,7 @@ class SequenceAssetSerializer(serializers.ModelSerializer):
     author = serializers.PrimaryKeyRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())
     project = serializers.HiddenField(default=CurrentProjectDefault())
-    spine = SherdNoteSerializer(required=False, allow_null=True)
+    spine = SherdNoteReadOnlySerializer(required=False, allow_null=True)
     spine_asset = serializers.ReadOnlyField(source='spine.asset.id')
     media_elements = SequenceMediaElementSerializer(many=True)
     text_elements = SequenceTextElementSerializer(many=True)

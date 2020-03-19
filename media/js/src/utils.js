@@ -1,11 +1,11 @@
 import isFinite from 'lodash/isFinite';
-import Cookies from 'js-cookie';
 
 /**
  * A wrapper for `fetch` that passes along auth credentials.
  */
 const authedFetch = function(url, method='get', data=null) {
-    const token = Cookies.get('csrftoken');
+    const elt = document.getElementById('csrf-token');
+    const token = elt ? elt.getAttribute('content') : '';
     return fetch(url, {
         method: method,
         headers: {
@@ -100,6 +100,21 @@ const createSelection = function(assetId, data) {
     });
 };
 
+const createSherdNote = function(assetId, data) {
+    return authedFetch(
+        `/asset/${assetId}/sherdnote/create/`,
+        'post',
+        JSON.stringify(data)
+    ).then(function(response) {
+        if (response.status === 201) {
+            return response.json();
+        } else {
+            throw 'Error making sherdnote: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
 const deleteSelection = function(assetId, selectionId) {
     return authedFetch(
         `/asset/delete/${assetId}/annotations/${selectionId}/`,
@@ -165,7 +180,8 @@ const formatTimecode = function(totalSeconds) {
 };
 
 export {
-    getAssets, getAsset, createSelection, deleteSelection,
+    getAssets, getAsset, createSelection, createSherdNote,
+    deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode
 };

@@ -10,6 +10,7 @@ class Main extends React.Component {
         this.state = {
             // Collection tab is default
             activeTab: 'collection',
+            asset: null,
             assets: null,
             // Total number of this collection's assets, ignoring
             // pagination.
@@ -18,20 +19,42 @@ class Main extends React.Component {
             owners: null
         };
 
+        let assetId = null;
+        const re = /\/asset\/(\d+)\/$/;
+        const match = window.location.pathname.match(re);
+        if (match && match.length >= 2) {
+            assetId = parseInt(match[1], 10);
+        }
+
         const me = this;
-        getAssets().then(function(d) {
-            me.setState({
-                assets: d.assets,
-                assetCount: d.asset_count,
-                tags: d.active_tags,
-                terms: d.active_vocabulary,
-                currentUser: d.space_viewer.id
+
+        if (assetId) {
+            getAsset(assetId).then(function(d) {
+                console.log('d', d);
+                me.setState({
+                    asset: d.assets[assetId],
+                    assetCount: 1
+                });
+            }, function(e) {
+                me.setState({
+                    assetError: e
+                });
             });
-        }, function(e) {
-            me.setState({
-                assetError: e
+        } else {
+            getAssets().then(function(d) {
+                me.setState({
+                    assets: d.assets,
+                    assetCount: d.asset_count,
+                    tags: d.active_tags,
+                    terms: d.active_vocabulary,
+                    currentUser: d.space_viewer.id
+                });
+            }, function(e) {
+                me.setState({
+                    assetError: e
+                });
             });
-        });
+        }
 
         // Get collection metadata. For populating all the owners, for
         // example.
@@ -109,6 +132,7 @@ class Main extends React.Component {
                     {this.state.activeTab === 'collection' &&
 
                      <CollectionTab
+                         asset={this.state.asset}
                          assets={this.state.assets}
                          assetCount={this.state.assetCount}
                          onUpdateAssets={this.onUpdateAssets}

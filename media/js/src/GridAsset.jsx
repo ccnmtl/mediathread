@@ -160,6 +160,13 @@ export default class GridAsset extends React.Component {
             );
         }
 
+        let assetLink = '#';
+        if (window.MediaThread) {
+            const courseId = window.MediaThread.current_course;
+            assetLink =
+                `/course/${courseId}/react/asset/${this.props.asset.id}`;
+        }
+
         return (
             <div className="card" key={this.props.asset.id}>
                 <div className="image-overlay">
@@ -185,7 +192,7 @@ export default class GridAsset extends React.Component {
                             onClick={
                                 this.props.toggleAssetView.bind(
                                     this, this.props.asset)}
-                            href="#"
+                            href={assetLink}
                             title={this.props.asset.title}>
                             {this.props.asset.title}
                         </a>

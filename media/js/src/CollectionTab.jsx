@@ -17,6 +17,13 @@ export default class CollectionTab extends React.Component {
         this.toggleAssetView = this.toggleAssetView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.asset !== this.props.asset) {
+            this.setState({selectedAsset: this.props.asset});
+        }
+    }
+
     toggleViewMode() {
         let newMode = 'list';
         if (this.state.viewMode === 'list') {
@@ -24,7 +31,13 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
-    toggleAssetView(asset) {
+    toggleAssetView(asset, e) {
+        // If this was an <a> link, prevent default behavior.
+        if (e) {
+            e.preventDefault();
+            window.history.pushState(null, null, e.target.href);
+        }
+
         if (!this.state.selectedAsset && asset) {
             this.setState({selectedAsset: asset});
         } else {
@@ -101,6 +114,7 @@ export default class CollectionTab extends React.Component {
 }
 
 CollectionTab.propTypes = {
+    asset: PropTypes.object,
     assets: PropTypes.array,
     assetCount: PropTypes.number,
     onUpdateAssets: PropTypes.func.isRequired,

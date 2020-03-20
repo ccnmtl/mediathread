@@ -18,7 +18,9 @@ from tastypie.api import Api
 
 from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
-    AssetCollectionView, AssetDetailView, TagCollectionView,
+    AssetCollectionView,
+    AssetDetailView, ReactAssetDetailView,
+    TagCollectionView,
     RedirectToExternalCollectionView, RedirectToUploaderView,
     AssetCreateView, BookmarkletMigrationView, AssetUpdateView)
 from mediathread.main.forms import CustomRegistrationForm
@@ -162,6 +164,9 @@ urlpatterns = [
     # New course-aware routes
     url(r'^course/(?P<pk>\d+)/react/$', ReactCourseDetailView.as_view(),
         name='react_course_detail'),
+    url(r'^course/(?P<course_pk>\d+)/react/asset/(?P<pk>\d+)/$',
+        ReactAssetDetailView.as_view(),
+        name='react_asset_detail'),
     url(r'^course/(?P<pk>\d+)/$', CourseDetailView.as_view(),
         name='course_detail'),
     url(r'^course/(?P<course_pk>\d+)/asset/',

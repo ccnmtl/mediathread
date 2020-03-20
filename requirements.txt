@@ -71,7 +71,7 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.1
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.14.2
+sentry-sdk==0.14.3
 django-appconf==1.0.3  # django_compressor
 django-compressor==2.4
 django-jenkins==0.110.0

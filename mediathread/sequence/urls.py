@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import include, path
 from rest_framework import routers
 from mediathread.sequence.apiviews import (
     SequenceAssetViewSet, SequenceMediaElementViewSet,
@@ -13,5 +13,5 @@ router.register(r'textelements', SequenceTextElementViewSet)
 
 
 urlpatterns = [
-    url(r'^api/', include(router.urls)),
+    path('api/', include(router.urls)),
 ]

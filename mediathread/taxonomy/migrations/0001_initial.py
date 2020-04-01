@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -31,8 +32,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('term', models.ForeignKey(to='taxonomy.Term')),
+                ('content_type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='contenttypes.ContentType')),
+                ('term', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='taxonomy.Term')),
             ],
             options={
                 'ordering': ['term__display_name', 'id'],
@@ -49,7 +54,9 @@ class Migration(migrations.Migration):
                 ('single_select', models.BooleanField(default=False)),
                 ('onomy_url', models.TextField(null=True, blank=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
+                ('content_type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='contenttypes.ContentType')),
             ],
             options={
                 'ordering': ['display_name', 'id'],
@@ -63,7 +70,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='term',
             name='vocabulary',
-            field=models.ForeignKey(to='taxonomy.Vocabulary'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='taxonomy.Vocabulary'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

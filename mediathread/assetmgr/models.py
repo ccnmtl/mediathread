@@ -8,7 +8,7 @@ from courseaffils.models import Course
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from tagging.models import Tag
@@ -132,9 +132,10 @@ class Asset(models.Model):
                                     editable=False,
                                     auto_now=True)
 
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    course = models.ForeignKey(Course, related_name='asset_set')
+    course = models.ForeignKey(
+        Course, related_name='asset_set', on_delete=models.CASCADE)
 
     active = models.BooleanField(default=True)
 
@@ -315,7 +316,7 @@ class Asset(models.Model):
 
 @python_2_unicode_compatible
 class Source(models.Model):
-    asset = models.ForeignKey(Asset)
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
 
     # hint on source's nature, e.g. thumbnail
     # should be generally human readable
@@ -373,7 +374,7 @@ class ExternalCollection(models.Model):
     url = models.CharField(max_length=1024)
     thumb_url = models.CharField(max_length=1024, null=True, blank=True)
     description = models.TextField()
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     uploader = models.BooleanField(default=False)
 
     def __str__(self):

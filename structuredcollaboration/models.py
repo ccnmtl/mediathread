@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.core import urlresolvers
+from django.urls import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible, smart_text
@@ -55,8 +55,10 @@ class CollaborationManager(models.Manager):
 @python_2_unicode_compatible
 class Collaboration(models.Model):
     objects = CollaborationManager()
-    user = models.ForeignKey(User, null=True, blank=True)
-    group = models.ForeignKey(Group, null=True, blank=True)
+    user = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE)
+    group = models.ForeignKey(
+        Group, null=True, blank=True, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=1024, null=True, default=None)
     slug = models.SlugField(
@@ -65,7 +67,7 @@ class Collaboration(models.Model):
     # Content-object field
     content_type = models.ForeignKey(
         ContentType, related_name="collaboration_set_for_%(class)s",
-        null=True, blank=True)
+        null=True, blank=True, on_delete=models.CASCADE)
 
     object_pk = models.CharField(_('object ID'), max_length=255,
                                  null=True, blank=True)
@@ -73,14 +75,17 @@ class Collaboration(models.Model):
     content_object = GenericForeignKey(ct_field="content_type",
                                        fk_field="object_pk")
 
-    policy_record = models.ForeignKey(CollaborationPolicyRecord,
-                                      null=True, default=None, blank=True)
+    policy_record = models.ForeignKey(
+        CollaborationPolicyRecord,
+        null=True, default=None, blank=True, on_delete=models.CASCADE)
 
-    _parent = models.ForeignKey('self', related_name='children',
-                                null=True, default=None, blank=True)
+    _parent = models.ForeignKey(
+        'self', related_name='children',
+        null=True, default=None, blank=True, on_delete=models.CASCADE)
 
-    context = models.ForeignKey('self', related_name='context_children',
-                                null=True, default=None, blank=True)
+    context = models.ForeignKey(
+        'self', related_name='context_children',
+        null=True, default=None, blank=True, on_delete=models.CASCADE)
 
     def get_or_create_group(self):
         if not self.group:
@@ -96,16 +101,16 @@ class Collaboration(models.Model):
 
     def get_content_object_url(self):
         "Get a URL suitable for redirecting to the content object."
-        return urlresolvers.reverse(
+        return reverse(
             "comments-url-redirect",
             args=(self.content_type_id, self.object_pk)
         )
 
     def get_absolute_url(self):
-        return urlresolvers.reverse("collaboration-obj-view",
-                                    args=(self.context.slug,
-                                          self.content_type.model,
-                                          self.object_pk))
+        return reverse("collaboration-obj-view",
+                       args=(self.context.slug,
+                             self.content_type.model,
+                             self.object_pk))
 
     def permission_to(self, permission, course, user):
         return self.get_policy().permission_to(self, permission,

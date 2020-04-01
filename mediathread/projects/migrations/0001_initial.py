@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -30,9 +31,13 @@ class Migration(migrations.Migration):
                                                   verbose_name=b'due date',
                                                   blank=True)),
                 ('ordinality', models.IntegerField(default=-1)),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('course', models.ForeignKey(related_name='project_set',
-                                             to='courseaffils.Course')),
+                ('author', models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='project_set',
+                    to='courseaffils.Course')),
                 ('participants',
                  models.ManyToManyField(related_name='projects',
                                         null=True, verbose_name=b'Authors',

@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path
 
 from mediathread.discussions.views import (
     DiscussionView, DiscussionDeleteView, discussion_create,
@@ -7,17 +7,17 @@ from mediathread.discussions.views import (
 
 
 urlpatterns = [
-    url(r'^create/$', discussion_create, name='discussion-create'),
+    path('create/', discussion_create, name='discussion-create'),
 
-    url(r'^delete/(?P<discussion_id>\d+)/$',
-        DiscussionDeleteView.as_view(), {},
-        name='discussion-delete'),
+    path('delete/<int:discussion_id>/',
+         DiscussionDeleteView.as_view(), {},
+         name='discussion-delete'),
 
-    url(r'^comment/(?P<comment_id>\d+)/$',
-        comment_save,
-        name='comment-save'),
+    path('comment/<int:comment_id>/',
+         comment_save,
+         name='comment-save'),
 
-    url(r'^(?P<discussion_id>\d+)/$',
-        DiscussionView.as_view(), {}, 'discussion-view'),
+    path('<int:discussion_id>/',
+         DiscussionView.as_view(), {}, 'discussion-view'),
 
 ]

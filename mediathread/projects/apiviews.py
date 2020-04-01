@@ -28,7 +28,7 @@ class ProjectSequenceAssetViewSet(mixins.ListModelMixin, GenericViewSet):
         project_id = request.query_params.get('project', None)
         if project_id is not None:
             queryset = self.filter_by_project(request.user, project_id)
-        elif request.user.is_authenticated():
+        elif request.user.is_authenticated:
             queryset = self.filter_by_user(request.user)
         else:
             queryset = ProjectSequenceAsset.objects.none()

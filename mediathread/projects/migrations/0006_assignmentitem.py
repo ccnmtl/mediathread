@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -17,8 +18,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False,
                                         auto_created=True, primary_key=True)),
-                ('asset', models.ForeignKey(to='assetmgr.Asset')),
-                ('project', models.ForeignKey(to='projects.Project')),
+                ('asset', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='assetmgr.Asset')),
+                ('project', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='projects.Project')),
             ],
             options={
             },

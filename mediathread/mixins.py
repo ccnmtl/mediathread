@@ -35,7 +35,6 @@ def ajax_required(func):
         return func(request, *args, **kwargs)
 
     wrap.__doc__ = func.__doc__
-    wrap.__name__ = func.__name__
     return wrap
 
 
@@ -50,21 +49,19 @@ def attach_course_request(func):
         return func(request, *args, **kwargs)
 
     wrap.__doc__ = func.__doc__
-    wrap.__name__ = func.__name__
     return wrap
 
 
 def faculty_only(func):
 
     def wrap(request, *args, **kwargs):
-        if request.user is None or request.user.is_anonymous():
+        if request.user is None or request.user.is_anonymous:
             return HttpResponseForbidden("forbidden")
         if not cached_course_is_faculty(request.course, request.user):
             return HttpResponseForbidden("forbidden")
         return func(request, *args, **kwargs)
 
     wrap.__doc__ = func.__doc__
-    wrap.__name__ = func.__name__
     return wrap
 
 

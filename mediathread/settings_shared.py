@@ -40,6 +40,9 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
     'mediathread.main.views.django_settings'
 )
 
+MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
+    MIDDLEWARE  # noqa
+
 MIDDLEWARE += [  # noqa
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -179,6 +182,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = ('GET',)
 CORS_ALLOW_CREDENTIALS = True
+
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 def default_url_processor(url, label=None, request=None):

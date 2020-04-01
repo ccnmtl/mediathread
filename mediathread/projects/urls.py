@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import path, include
 from rest_framework import routers
 
 from mediathread.projects.apiviews import ProjectSequenceAssetViewSet
@@ -17,59 +17,59 @@ router.register(r'projectsequenceassets', ProjectSequenceAssetViewSet)
 
 
 urlpatterns = [
-    url(r'^api/', include(router.urls)),
-    url(r'^create/ja/$', SequenceAssignmentEditView.as_view(), {},
-        name='sequence-assignment-create'),
+    path('api/', include(router.urls)),
+    path('create/ja/', SequenceAssignmentEditView.as_view(), {},
+         name='sequence-assignment-create'),
 
-    url(r'^edit/ja/(?P<project_id>\d+)/$',
-        SequenceAssignmentEditView.as_view(), {},
-        name='sequence-assignment-edit'),
+    path('edit/ja/<int:project_id>/',
+         SequenceAssignmentEditView.as_view(), {},
+         name='sequence-assignment-edit'),
 
-    url(r'^create/sa/$', SelectionAssignmentEditView.as_view(), {},
-        name='selection-assignment-create'),
+    path('create/sa/', SelectionAssignmentEditView.as_view(), {},
+         name='selection-assignment-create'),
 
-    url(r'^edit/sa/(?P<project_id>\d+)/$',
-        SelectionAssignmentEditView.as_view(), {},
-        name='selection-assignment-edit'),
+    path('edit/sa/<int:project_id>/',
+         SelectionAssignmentEditView.as_view(), {},
+         name='selection-assignment-edit'),
 
-    url(r'^create/$', ProjectCreateView.as_view(), {}, "project-create"),
+    path('create/', ProjectCreateView.as_view(), {}, "project-create"),
 
-    url(r'^view/(?P<project_id>\d+)/$',
-        ProjectDispatchView.as_view(), {}, name='project-workspace'),
+    path('view/<int:project_id>/',
+         ProjectDispatchView.as_view(), {}, name='project-workspace'),
 
-    url(r'^view/(?P<project_id>\d+)/(?P<feedback>\w+)/$',
-        ProjectDispatchView.as_view(), {}, name='project-workspace-feedback'),
+    path('view/<int:project_id>/<slug:feedback>/',
+         ProjectDispatchView.as_view(), {}, name='project-workspace-feedback'),
 
-    url(r'^save/(?P<project_id>\d+)/$',
-        ProjectSaveView.as_view(), {},
-        name='project-save'),
+    path('save/<int:project_id>/',
+         ProjectSaveView.as_view(), {},
+         name='project-save'),
 
-    url(r'^export/msword/(?P<project_id>\d+)/$',
-        project_export_msword,
-        name='project-export-msword'),
+    path('export/msword/<int:project_id>/',
+         project_export_msword,
+         name='project-export-msword'),
 
-    url(r'^export/html/(?P<project_id>\d+)/$',
-        project_export_html,
-        name='project-export-html'),
+    path('export/html/<int:project_id>/',
+         project_export_html,
+         name='project-export-html'),
 
-    url(r'^delete/(?P<project_id>\d+)/$',
-        ProjectDeleteView.as_view(), {}, 'project-delete'),
+    path('delete/<int:project_id>/',
+         ProjectDeleteView.as_view(), {}, 'project-delete'),
 
-    url(r'^unsubmit/$',
-        UnsubmitResponseView.as_view(), {}, 'unsubmit-response'),
+    path('unsubmit/',
+         UnsubmitResponseView.as_view(), {}, 'unsubmit-response'),
 
-    url(r'^visibility/(?P<project_id>\d+)/$',
-        UpdateVisibilityView.as_view(), {}, 'project-visibility'),
+    path('visibility/<int:project_id>/',
+         UpdateVisibilityView.as_view(), {}, 'project-visibility'),
 
-    url(r'^revisions/(?P<project_id>\d+)/$',
-        project_revisions,
-        name='project-revisions'),
+    path('revisions/<int:project_id>/',
+         project_revisions,
+         name='project-revisions'),
 
     # view versioned read only
-    url(r'^view/(?P<project_id>\d+)/version/(?P<version_number>\d+)/$',
-        ProjectReadOnlyView.as_view(),
-        name='project-view-readonly'),
+    path('view/<int:project_id>/version/<int:version_number>/',
+         ProjectReadOnlyView.as_view(),
+         name='project-view-readonly'),
 
     # instructor information reorder
-    url(r'^sort/$', ProjectSortView.as_view(), name='project-sort'),
+    path('sort/', ProjectSortView.as_view(), name='project-sort'),
 ]

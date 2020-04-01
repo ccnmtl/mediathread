@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 import json
 import re
+import uuid
 
 from courseaffils.columbia import CourseStringMapper
 from courseaffils.lib import get_public_name
@@ -16,7 +17,7 @@ from django.contrib.auth.models import User, AnonymousUser, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
@@ -1133,8 +1134,10 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             in response.cookies['messages'].value)
 
     def test_accept_invite_invalid_uuid(self):
-        # no uuid
-        url = reverse('course-invite-accept', kwargs={'uidb64': None})
+        # random new uuid
+        url = reverse(
+            'course-invite-accept',
+            kwargs={'uidb64': uuid.uuid4()})
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 

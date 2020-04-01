@@ -11,7 +11,7 @@ from mediathread.main.course_details import get_guest_sandbox
 
 
 class UserSetting(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     value = models.CharField(max_length=255)
 
@@ -46,7 +46,8 @@ class UserProfile(models.Model):
     '''UserProfile adds extra information to a user,
     and associates the user with a group, school,
     and country.'''
-    user = models.OneToOneField(User, related_name='profile')
+    user = models.OneToOneField(
+        User, related_name='profile', on_delete=models.CASCADE)
     title = models.CharField(max_length=256, null=True, blank=True)
     institution = models.TextField()
     referred_by = models.TextField()
@@ -82,21 +83,23 @@ user_activated.connect(user_activated_callback)
 
 class CourseInvitation(models.Model):
     email = models.EmailField()
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     uuid = UUIDField(default=uuid.uuid4, editable=False)
 
-    invited_by = models.ForeignKey(User, related_name='invited_by')
+    invited_by = models.ForeignKey(
+        User, related_name='invited_by', on_delete=models.CASCADE)
     invited_at = models.DateTimeField(auto_now_add=True)
 
     accepted_at = models.DateTimeField(null=True)
-    accepted_user = models.ForeignKey(User, null=True)
+    accepted_user = models.ForeignKey(
+        User, null=True, on_delete=models.CASCADE)
 
     def accepted(self):
         return self.accepted_at is not None
 
 
 class PanoptoIngestLogEntry(models.Model):
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     session_id = models.TextField()
     level = models.IntegerField()
     message = models.TextField()

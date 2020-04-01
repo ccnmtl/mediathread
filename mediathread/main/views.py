@@ -18,7 +18,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.validators import validate_email
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
@@ -380,7 +380,7 @@ class ContactUsView(FormView):
         Returns the initial data to use for forms on this view.
         """
         initial = super(ContactUsView, self).get_initial()
-        if not self.request.user.is_anonymous():
+        if not self.request.user.is_anonymous:
             initial['name'] = self.request.user.get_full_name()
             initial['email'] = self.request.user.email
             initial['username'] = self.request.user.username
@@ -426,7 +426,7 @@ class IsLoggedInView(View):
     def get(self, request, *args, **kwargs):
         """This could be a privacy hole, but since it's just logged in status,
          it seems pretty harmless"""
-        logged_in = request.user.is_authenticated()
+        logged_in = request.user.is_authenticated
         course_selected = SESSION_KEY in request.session
         current = (request.GET.get('version', None) ==
                    settings.BOOKMARKLET_VERSION)
@@ -462,7 +462,7 @@ class IsLoggedInDataView(View):
     some JavaScript code along with the data, it just returns the data.
     """
     def get(self, request, *args, **kwargs):
-        logged_in = request.user.is_authenticated()
+        logged_in = request.user.is_authenticated
         course_selected = SESSION_KEY in request.session
 
         course_name = ''

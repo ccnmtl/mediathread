@@ -19,41 +19,43 @@
 VE ?= ./ve
 MANAGE ?= ./manage.py
 REQUIREMENTS ?= requirements.txt
+SYS_PYTHON ?= python3
 PY_SENTINAL ?= $(VE)/sentinal
-VIRTUALENV ?= virtualenv.py
-SUPPORT_DIR ?= requirements/virtualenv_support/
 WHEEL_VERSION ?= 0.34.2
 PIP_VERSION ?= 20.1.1
 MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
-BANDIT ?= $(VE)/bin/bandit
-FLAKE8 ?= $(VE)/bin/flake8
-PIP ?= $(VE)/bin/pip
 
 # Travis has issues here. See:
 # https://github.com/travis-ci/travis-ci/issues/9524
 ifeq ($(TRAVIS),true)
-	SYS_PYTHON ?= python
+	BANDIT ?= bandit
+	FLAKE8 ?= flake8
+	PIP ?= pip
+	COVERAGE ?= coverage
 else
-	SYS_PYTHON ?= python3
+	BANDIT ?= $(VE)/bin/bandit
+	FLAKE8 ?= $(VE)/bin/flake8
+	PIP ?= $(VE)/bin/pip
+	COVERAGE ?= $(VE)/bin/coverage
 endif
 
 jenkins: check flake8 test eslint bandit
 
-$(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
+$(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)
-	$(SYS_PYTHON) $(VIRTUALENV) --extra-search-dir=$(SUPPORT_DIR) --never-download $(VE)
+	$(SYS_PYTHON) -m venv $(VE)
 	$(PIP) install pip==$(PIP_VERSION)
 	$(PIP) install --upgrade setuptools
 	$(PIP) install wheel==$(WHEEL_VERSION)
 	$(PIP) install --no-deps --requirement $(REQUIREMENTS) --no-binary cryptography
-	$(SYS_PYTHON) $(VIRTUALENV) --relocatable $(VE)
 	touch $@
 
 test: $(PY_SENTINAL)
-	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
+	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP)
+	$(COVERAGE) xml -o reports/coverage.xml
 
 parallel-tests: $(PY_SENTINAL)
 	$(MANAGE) test --parallel

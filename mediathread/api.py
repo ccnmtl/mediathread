@@ -23,7 +23,7 @@ class ClassLevelAuthentication(Authentication):
     # All users must be logged into a specific class
     # before accessing the json API
     def is_authenticated(self, request, **kwargs):
-        return (request.user.is_authenticated() and
+        return (request.user.is_authenticated and
                 request.course and
                 request.course.is_member(request.user))
 

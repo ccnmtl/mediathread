@@ -2,7 +2,7 @@ from decimal import Decimal
 from json import loads
 
 from courseaffils.tests.factories import CourseFactory
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from mediathread.factories import SherdNoteFactory, UserFactory, ProjectFactory

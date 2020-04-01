@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -16,11 +17,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='termrelationship',
             name='sherdnote',
-            field=models.ForeignKey(to='djangosherd.SherdNote', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='djangosherd.SherdNote', null=True),
         ),
         migrations.AddField(
             model_name='vocabulary',
             name='course',
-            field=models.ForeignKey(to='courseaffils.Course', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='courseaffils.Course', null=True),
         ),
     ]

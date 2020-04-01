@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 from django.conf import settings
+import django.db.models.deletion
 import uuid
 
 
@@ -24,8 +25,12 @@ class Migration(migrations.Migration):
                 ('uuid', models.UUIDField(default=uuid.uuid4, editable=False)),
                 ('activated_at', models.DateTimeField(null=True)),
                 ('invited_at', models.DateTimeField(auto_now_add=True)),
-                ('course', models.ForeignKey(to='courseaffils.Course')),
-                ('invited_by', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='courseaffils.Course')),
+                ('invited_by', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

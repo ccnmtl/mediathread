@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -22,9 +23,14 @@ class Migration(migrations.Migration):
                     auto_created=True, primary_key=True)),
                 ('added', models.DateTimeField(auto_now_add=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('course', models.ForeignKey(to='courseaffils.Course')),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='courseaffils.Course')),
                 ('spine', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT,
                     blank=True, to='djangosherd.SherdNote', null=True)),
             ],
         ),
@@ -41,8 +47,11 @@ class Migration(migrations.Migration):
                 ('end_time', models.DecimalField(
                     max_digits=12, decimal_places=5)),
                 ('juxtaposition', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
                     to='sequence.SequenceAsset')),
-                ('media', models.ForeignKey(to='djangosherd.SherdNote')),
+                ('media', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='djangosherd.SherdNote')),
             ],
         ),
         migrations.CreateModel(
@@ -59,6 +68,7 @@ class Migration(migrations.Migration):
                     max_digits=12, decimal_places=5)),
                 ('text', models.TextField()),
                 ('juxtaposition', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
                     to='sequence.SequenceAsset')),
             ],
         ),

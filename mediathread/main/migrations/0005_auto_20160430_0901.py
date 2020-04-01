@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -16,12 +17,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='courseinvitation',
             name='activated_user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL, null=True),
         ),
         migrations.AlterField(
             model_name='courseinvitation',
             name='invited_by',
-            field=models.ForeignKey(related_name='invited_by',
-                                    to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='invited_by',
+                to=settings.AUTH_USER_MODEL),
         ),
     ]

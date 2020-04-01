@@ -223,4 +223,21 @@
         },
         addressableCourses: MediaThread.addressable_courses
     };
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    jQuery.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                var csrftoken = jQuery('[name="csrf-token"]');
+                if (csrftoken.length > 0) {
+                    var csrftokenval = csrftoken[0].content;
+                    xhr.setRequestHeader('X-CSRFToken', csrftokenval);
+                }
+            }
+        }
+    });
 })();

@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory

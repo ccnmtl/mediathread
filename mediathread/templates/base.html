@@ -7,6 +7,8 @@
         <meta charset="utf-8">
         <title>Mediathread {% block title %}&mdash; Switch Course{% endblock %}</title>
 
+        <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
+
         <script type="text/javascript" src='{% static "jquery/js/jquery-2.2.4.min.js" %}'></script>
         {% bootstrap_javascript %}
         <script src='{% static "jquery/js/jquery-ui.min.js" %}'></script>

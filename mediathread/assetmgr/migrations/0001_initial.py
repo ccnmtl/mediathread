@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -23,8 +24,12 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=True)),
                 ('title', models.CharField(max_length=1024)),
                 ('metadata_blob', models.TextField(help_text=b'Be careful, this is a JSON blob and NOT a place to enter the description, etc, and is easy to format incorrectly. Make sure not to add any "\'s.', blank=True)),
-                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('course', models.ForeignKey(related_name='asset_set', to='courseaffils.Course')),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
+                ('course', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='asset_set', to='courseaffils.Course')),
             ],
             options={
                 'permissions': (('can_upload_for', 'Can upload assets for others'),),
@@ -43,7 +48,9 @@ class Migration(migrations.Migration):
                 ('height', models.PositiveSmallIntegerField(default=0)),
                 ('width', models.PositiveSmallIntegerField(default=0)),
                 ('modified', models.DateTimeField(auto_now=True, verbose_name=b'date modified')),
-                ('asset', models.ForeignKey(to='assetmgr.Asset')),
+                ('asset', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='assetmgr.Asset')),
             ],
             options={
             },

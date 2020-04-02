@@ -50,7 +50,7 @@ chardet==3.0.4
 idna==2.9
 urllib3==1.25.8  # sentry-sdk
 certifi==2020.4.5.1  # sentry-sdk
-cryptography==2.8
+cryptography==2.9
 pyOpenSSL==19.1.0
 asn1crypto==1.3.0  # for pyOpenSSL
 cffi==1.14.0  # for pyOpenSSL

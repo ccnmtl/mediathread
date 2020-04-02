@@ -496,6 +496,12 @@ export default class AssetDetail extends React.Component {
             </div>
         );
 
+        let backLink = '#';
+        if (window.MediaThread) {
+            const courseId = window.MediaThread.current_course;
+            backLink = `/course/${courseId}/react/`;
+        }
+
         return (
             <div className="container">
                 <Alert
@@ -512,8 +518,9 @@ export default class AssetDetail extends React.Component {
                     <Alert.Heading>Selection deleted.</Alert.Heading>
                 </Alert>
 
-                <button
+                <a
                     onClick={this.props.toggleAssetView}
+                    href={backLink}
                     className="btn btn-secondary btn-sm mt-2">
                     <svg
                         className="octicon octicon-arrow-left octicon-before"
@@ -523,7 +530,7 @@ export default class AssetDetail extends React.Component {
                             fillRule="evenodd" fill="white"
                             d="M6 3L0 8l6 5v-3h4V6H6z"></path>
                     </svg> Back
-                </button>
+                </a>
                 <div className="row">
 
                     <div className="col-sm-6">

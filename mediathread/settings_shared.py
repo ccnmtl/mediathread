@@ -40,6 +40,8 @@ TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
     'mediathread.main.views.django_settings'
 )
 
+# Prepend the CookiesSameSite middleware to the beginning of
+# MIDDLEWARE. It needs to be first to work correctly.
 MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
     MIDDLEWARE  # noqa
 

@@ -95,7 +95,7 @@ django-cors-headers==3.0.2 # pyup: <3.1.0
 # needed for django <2.1
 django-cookies-samesite==0.5.1
 
-httplib2==0.17.0
+httplib2==0.17.1
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.1.0

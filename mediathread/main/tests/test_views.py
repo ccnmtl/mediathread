@@ -1788,7 +1788,7 @@ class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, self.course.title)
-        self.assertContains(r, 'You are not a class member!')
+        self.assertContains(r, 'Course Non-member')
 
         # TODO:
         # r = self.client.get(
@@ -1810,7 +1810,7 @@ class CourseDetailSuperuserViewTest(LoggedInSuperuserTestMixin, TestCase):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
         self.assertEqual(r.status_code, 200)
         self.assertContains(r, self.course.title)
-        self.assertContains(r, 'You are not a class member!')
+        self.assertContains(r, 'Course Non-member')
 
 
 class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):

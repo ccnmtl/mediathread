@@ -154,7 +154,7 @@ urlpatterns = [
     # Contact us forms.
     url(r'^contact/success/$',
         TemplateView.as_view(template_name='main/contact_success.html')),
-    url(r'^contact/$', ContactUsView.as_view()),
+    url(r'^contact/$', ContactUsView.as_view(), name='contact-us'),
     url(r'^course/request/success/$', TemplateView.as_view(
         template_name='main/course_request_success.html')),
     url(r'^affil/(?P<pk>\d+)/activate/$',

@@ -40,6 +40,9 @@ export default class CollectionTab extends React.Component {
 
         if (!this.state.selectedAsset && asset) {
             this.setState({selectedAsset: asset});
+
+            // Scroll to top when entering asset detail view.
+            window.scrollTo(0, 0);
         } else {
             this.setState({selectedAsset: null});
         }

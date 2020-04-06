@@ -12,6 +12,9 @@ from rest_framework.authentication import (
 )
 
 
+# Mediathread doesn't have CsrfViewMiddleware in its MIDDLEWARE
+# settings, unfortunately. Exempt csrf from ajax calls until that's
+# enabled.
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     # https://stackoverflow.com/a/30875830/173630
     def enforce_csrf(self, request):

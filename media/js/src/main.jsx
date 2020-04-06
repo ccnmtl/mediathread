@@ -30,7 +30,6 @@ class Main extends React.Component {
 
         if (assetId) {
             getAsset(assetId).then(function(d) {
-                console.log('d', d);
                 me.setState({
                     asset: d.assets[assetId],
                     assetCount: 1

@@ -1,4 +1,4 @@
-{% load cache user_projects coursetags compress static bootstrap3 waffle_tags %}
+{% load cache user_projects coursetags compress static bootstrap3 %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +85,7 @@
                         {% if course %}
                             {% if role_in_course == "non-member" %}
                                 <li>
-                                    <div class="nonmember">You are not a class member!</div>
+                                    <span class="badge badge-warning">Course Non-member</span>
                                 </li>
                             {% endif %}
                             {% if user.is_impersonate %}
@@ -174,20 +174,17 @@
             </div>
             {% block courseinformation %}
                 {% if not read_only_view %}
-                <div id="course_information">
-                    <h1 id="course_title">
-                    {% block coursetitle %}
-                        {% flag "addressable_courses" %}
-                        {% if course %}
-                            <a href="{% url 'course_detail' course.pk %}" id="course_title_link">{{course.title}}</a>
-                        {% endif %}
-                        {% else %}
-                        <a href="/" id="course_title_link">{{course.title}}</a>
-                        {% endflag %}
-                    {% endblock %}
-                    </h1>
-                    <div class="clear: right;"></div>
-                </div>
+                    <div id="course_information">
+                        <h1 id="course_title">
+                            {% block coursetitle %}
+                                {% if course and course.pk %}
+                                    <a href="{% url 'course_detail' course.pk %}"
+                                       id="course_title_link">{{course.title}}</a>
+                                {% endif %}
+                            {% endblock %}
+                        </h1>
+                        <div class="clear: right;"></div>
+                    </div>
                 {% endif %}
             {% endblock %}
 
@@ -291,12 +288,6 @@
             {% elif project %}
             this.current_project = {{ project.pk }};
             {% endif %}
-
-            {% flag "addressable_courses" %}
-            this.addressable_courses = true;
-            {% else %}
-            this.addressable_courses = false;
-            {% endflag %}
         })();
     </script>
 

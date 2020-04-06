@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load tagging_tags user_projects helpful_tags coursetags comments %}
+{% load tagging_tags user_projects helpful_tags coursetags comments static %}
 {% load waffle_tags %}
 
 {% block title %}
@@ -163,13 +163,17 @@
 
                 <div class="column-container">
                     <h2>Collection<div class="actions">{% include "help/help_button.html" %}</div></h2>
-                    <a class="btn btn-default collection right" href="/asset/">
-                        <img src="{{STATIC_URL}}img/viewfullcollection.png"
-                            alt="view full collection icon" />
-                                View Full Collection
-                    </a>
 
-                <div class="visualclear"></div>
+                    {% if request.course %}
+                        <a class="btn btn-default collection right"
+                           href="{% url 'asset-collection-view' request.course.pk %}">
+                            <img src="{% static 'img/viewfullcollection.png' %}"
+                                 alt="view full collection icon" />
+                            View Full Collection
+                        </a>
+                    {% endif %}
+
+                    <div class="visualclear"></div>
                 <br />
                 <div class="collection_content">
                     <a href="#"
@@ -186,7 +190,7 @@
                         {% elif request.user_agent.browser.family == 'Firefox' %}
                         {% include "assetmgr/install_firefox_extension.html" %}
                         {% endif %}
-                    </div> <!-- end import into collection box --> 
+                    </div> <!-- end import into collection box -->
 
                 </div><!-- end collection content box -->
                 {% if can_upload and uploader %}

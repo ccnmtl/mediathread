@@ -42,33 +42,16 @@
     </a>
     <div id="create-project-menu" style="display: none;">
         {{#is_faculty}}
-            {{#addressableCourses}}
-                <form action="/course/{{course.id}}/project/create/"
-                      method="post" class="create-form">
-            {{/addressableCourses}}
-            {{^addressableCourses}}
-                <form action="/project/create/"
-                      method="post" class="create-form">
-            {{/addressableCourses}}
+            <form action="/course/{{course.id}}/project/create/"
+                  method="post" class="create-form">
             <input type="hidden" name="project_type" value="assignment"/>
             <input type="submit" value="Create Composition Assignment" />
         </form>
-        {{#addressableCourses}}
-            <a href="/course/{{course.id}}/project/create/sa/">Create Selection Assignment</a>
-            <a href="/course/{{course.id}}/project/create/ja/">Create Sequence Assignment</a>
-        {{/addressableCourses}}
-        {{^addressableCourses}}
-            <a href="/project/create/sa/">Create Selection Assignment</a>
-            <a href="/project/create/ja/">Create Sequence Assignment</a>
-        {{/addressableCourses}}
+        <a href="/course/{{course.id}}/project/create/sa/">Create Selection Assignment</a>
+        <a href="/course/{{course.id}}/project/create/ja/">Create Sequence Assignment</a>
         <hr class="divideLinks" />
 
-        {{#addressableCourses}}
-            <form action="/course/{{course.id}}/project/create/" method="post" class="create-form">
-        {{/addressableCourses}}
-        {{^addressableCourses}}
-            <form action="/project/create/" method="post" class="create-form">
-        {{/addressableCourses}}
+        <form action="/course/{{course.id}}/project/create/" method="post" class="create-form">
             <input type="hidden" name="project_type" value="composition"/>
             <input type="submit" value="Create Composition" />
         </form>
@@ -90,23 +73,13 @@
 
             <hr class="divideLinks" />
 
-            {{#addressableCourses}}
-                <form action="/course/{{course.id}}/project/create/" method="post">
-            {{/addressableCourses}}
-            {{^addressableCourses}}
-                <form action="/project/create/" method="post">
-            {{/addressableCourses}}
+            <form action="/course/{{course.id}}/project/create/" method="post">
                 <input type="hidden" name="project_type" value="composition"/>
                 <input type="submit" value="Create Composition" />
             </form>
         {{/is_faculty}}
 
-        {{#addressableCourses}}
-            <form action="/course/{{course.id}}/project/create/" method="post" class="create-form">
-        {{/addressableCourses}}
-        {{^addressableCourses}}
-            <form action="/project/create/" method="post" class="create-form">
-        {{/addressableCourses}}
+        <form action="/course/{{course.id}}/project/create/" method="post" class="create-form">
         <input type="hidden" name="project_type" value="sequence"/>
         <input type="submit" value="Create Sequence" />
         </form>
@@ -184,7 +157,7 @@
                                     {{^is_faculty}}
                                         <div class="clearfix"></div>
                                         <br />
-                                        <form action="/project/create/" method="post">
+                                        <form action="/course/{{course.id}}/project/create/" method="post">
                                             <input type="hidden" name="parent" value="{{id}}" />
                                             <input type="hidden" name="project_type" value="composition" />
                                             <input type="hidden" name="title" value="My Response" />

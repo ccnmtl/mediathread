@@ -2,7 +2,7 @@
 A new base.html without the course context overwritten in the template.
 {% endcomment %}
 
-{% load user_projects coursetags compress static waffle_tags %}
+{% load user_projects coursetags compress static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -199,8 +199,8 @@ A new base.html without the course context overwritten in the template.
                 this.assignments_todo = {{assignments_todo}};
                 {% endif %}
 
-                {% if course %}
-                this.current_course = {{ course.pk }};
+                {% if request.course %}
+                this.current_course = {{ request.course.pk }};
                 {% endif %}
 
                 {% if the_response %}
@@ -208,12 +208,6 @@ A new base.html without the course context overwritten in the template.
                 {% elif project %}
                 this.current_project = {{ project.pk }};
                 {% endif %}
-
-                {% flag "addressable_courses" %}
-                this.addressable_courses = true;
-                {% else %}
-                this.addressable_courses = false;
-                {% endflag %}
 
                 this.tag_cache = {};
             })();

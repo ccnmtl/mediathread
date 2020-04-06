@@ -35,6 +35,7 @@
 
             jQuery.ajax({
                 url: urlWithCourse(options.url),
+                method: 'GET',
                 dataType: 'json',
                 cache: false, // Chrome & IE cache aggressively
                 success: function(json) {

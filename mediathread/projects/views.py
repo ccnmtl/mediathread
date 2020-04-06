@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
@@ -19,7 +20,6 @@ from django.urls import reverse
 from django.views.generic.base import View, TemplateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import allow_http
-import json
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
@@ -290,6 +290,7 @@ class ProjectPublicView(View):
 
         project_id = int(collab.object_pk)
         project = Project.objects.get(id=project_id)
+        request.course = project.course
         parent = project.assignment()
         if (project.is_selection_assignment() or
                 (parent and parent.is_selection_assignment())):
@@ -354,7 +355,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
     template_name = 'projects/composition.html'
 
-    def get(self, request, project_id, version_number=None):
+    def get(self, request, project_id, version_number=1):
         """
         A single panel read-only view of the specified project/version combo.
         No assignment, response or feedback access/links.

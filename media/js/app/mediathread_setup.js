@@ -4,7 +4,8 @@
 (function() {
     MediaThread.urls = {
         'annotation-form': function(assetId, annotationId) {
-            return '/asset/' + assetId + '/annotations/' + annotationId;
+            return '/asset/' + assetId + '/annotations/' + annotationId +
+                '/?course=' + MediaThread.current_course;
         },
         'home-space': function(username) {
             return '/?username=' + username;
@@ -19,7 +20,8 @@
             return '/project/sort/';
         },
         'your-space': function(username, tag, modified, citable, mediaType) {
-            return '/api/asset/user/' + username + '/?' +
+            return '/api/asset/user/' + username + '/' +
+                '?course=' + MediaThread.current_course +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
                 (citable ? '&annotations=true' : '') +
@@ -27,7 +29,8 @@
                 (mediaType ? '&media_type=' + mediaType : '');
         },
         'all-space': function(tag, modified, citable, mediaType) {
-            return '/api/asset/?' +
+            return '/api/asset/' +
+                '?course=' + MediaThread.current_course +
                 (tag ? '&tag=' + tag : '') +
                 (modified ? '&modified=' + modified : '') +
                 (citable ? '&annotations=true' : '') +
@@ -45,42 +48,52 @@
             return base;
         },
         'assets': function(username, withAnnotations) {
-            return '/annotations/' + (username ? username + '/' : '');
+            return '/annotations/' + (username ? username + '/' : '') +
+                '?course=' + MediaThread.current_course;
         },
         'asset-delete': function(assetId) {
-            return '/asset/delete/' + assetId + '/';
+            return '/asset/delete/' + assetId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'asset-view': function(assetId) {
-            return '/asset/' + assetId + '/';
+            return '/asset/' + assetId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'asset-json': function(assetId, withAnnotations, parentId) {
             if (parentId !== undefined) {
-                return '/api/project/' + parentId + '/' + assetId + '/';
+                return '/api/project/' + parentId + '/' + assetId +
+                    '/?course=' + MediaThread.current_course;
             } else {
                 return '/api/asset/' + assetId +
-                    (withAnnotations ? '/?annotations=true' : '/');
+                    '/?course=' + MediaThread.current_course +
+                    (withAnnotations ? '&annotations=true' : '');
             }
         },
         'annotation-create': function(assetId) {
             // a.k.a. server-side annotation-containers
-            return '/asset/create/' + assetId + '/annotations/';
+            return '/asset/create/' + assetId + '/annotations/' +
+                '?course=' + MediaThread.current_course;
         },
         'annotation-create-global': function(assetId) {
             // a.k.a. server-side annotation-containers
-            return '/asset/create/' + assetId + '/global/';
+            return '/asset/create/' + assetId + '/global/' +
+                '?course=' + MediaThread.current_course;
         },
         'annotation-edit': function(assetId, annotationId) {
             // server-side annotation-form assetmgr:views.py:annotationview
             return '/asset/save/' + assetId +
-                '/annotations/' + annotationId + '/';
+                '/annotations/' + annotationId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'annotation-delete': function(assetId, annotationId) {
             return '/asset/delete/' + assetId +
-                '/annotations/' + annotationId + '/';
+                '/annotations/' + annotationId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'annotation-copy': function(assetId, annotationId) {
             return '/asset/copy/' + assetId +
-            '/annotations/' + annotationId + '/';
+                '/annotations/' + annotationId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'project-view': function(projectId) {
             return '/project/view/' + projectId + '/';
@@ -106,25 +119,32 @@
                 + projectId + '/';
         },
         'discussion-view': function(discussionId) {
-            return '/discussion/' + discussionId + '/';
+            return '/discussion/' + discussionId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'discussion-create': function() {
-            return '/discussion/create/';
+            return '/discussion/create/' +
+                '?course=' + MediaThread.current_course;
         },
         'comment-edit': function(commentId) {
-            return '/discussion/comment/' + commentId + '/';
+            return '/discussion/comment/' + commentId + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'comment-create': function() {
-            return '/comments/post/';
+            return '/comments/post/' +
+                '?course=' + MediaThread.current_course;
         },
         'tags': function() {
-            return '/api/tag/';
+            return '/api/tag/' +
+                '?course=' + MediaThread.current_course;
         },
         'references': function(asset) {
-            return '/asset/references/' + asset.id + '/';
+            return '/asset/references/' + asset.id + '/' +
+                '?course=' + MediaThread.current_course;
         },
         'selection-assignment-workspace': function(assetId) {
-            return '/asset/' + assetId + '/?standalone=1';
+            return '/asset/' + assetId + '/?standalone=1' +
+                '&course=' + MediaThread.current_course;
         }
     };
 
@@ -224,8 +244,7 @@
         },
         getCourseId: function() {
             return MediaThread.current_course;
-        },
-        addressableCourses: MediaThread.addressable_courses
+        }
     };
 
     function csrfSafeMethod(method) {

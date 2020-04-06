@@ -1,6 +1,6 @@
 /* global STATIC_URL: true */
 /* global _propertyCount: true, ajaxDelete: true, MediaThread: true */
-/* global Mustache: true, showMessage: true */
+/* global Mustache: true, showMessage: true, urlWithCourse */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 var ProjectList = function(config) {
@@ -78,12 +78,16 @@ ProjectList.prototype.deleteProject = function(icon) {
 ProjectList.prototype.refreshUrl = function() {
     var self = this;
     var url;
+
     if (!self.space_owner) {
         url = MediaThread.urls['all-projects']();
     } else {
         url = MediaThread.urls['your-projects'](self.space_owner);
     }
+
     url += '?page=' + self.page;
+    url = urlWithCourse(url, MediaThread.current_course);
+
     return url;
 };
 

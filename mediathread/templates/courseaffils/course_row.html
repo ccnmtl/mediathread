@@ -1,4 +1,4 @@
-{% load methtags waffle_tags %}
+{% load methtags %}
 
 <tr {% if new_course == course.pk %}
         class="info"
@@ -12,7 +12,6 @@
             <a href="{% url 'affil_activate' course.pk %}"
                class="btn btn-primary btn-xs">Activate</a>
         {% endif %}
-
     </td>
     <td>
         {% if course.info.termyear %}

@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, MediaThread: true */
-/* global Mustache: true, Sherd: true */
+/* global Mustache: true, Sherd: true, urlWithCourse */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -256,8 +256,16 @@ CollectionList.prototype.constructUrl = function(config, updating) {
     }
 
     if (updating) {
-        url += '&offset=' + this.limits.offset + '&limit=' + this.limits.limit;
+        var urlParams = {
+            offset: this.limits.offset,
+            limit: this.limits.limit
+        };
+
+        url += '&' + jQuery.param(urlParams);
     }
+
+    url = urlWithCourse(url, MediaThread.current_course);
+
     return url;
 };
 

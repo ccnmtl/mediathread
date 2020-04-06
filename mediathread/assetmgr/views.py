@@ -103,10 +103,9 @@ class ManageExternalCollectionView(
 
         messages.add_message(request, messages.INFO, msg)
 
-        redirect_url = request.POST.get('redirect-url',
-                                        reverse(
-                                            'course-manage-sources',
-                                            args=[request.course.pk]))
+        redirect_url = request.POST.get(
+            'redirect-url',
+            reverse('course-manage-sources', args=[request.course.pk]))
         return HttpResponseRedirect(redirect_url)
 
 

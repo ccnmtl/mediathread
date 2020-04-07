@@ -1,14 +1,10 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 
 {% load comments user_projects %}
 
-{% block dashboard_module_header %}
+
+{% block dashboard_content %}
     <h2>Report: Assignment Responses</h2>
-{% endblock %}
-
-
-{% block dashboard_module %}
-
 {% if assignments %}
 
 <table class="table table-bordered">

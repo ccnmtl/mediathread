@@ -45,6 +45,22 @@
                             {% if '/roster/' in request.path %}class="active"{% endif %}
                             href="/dashboard/roster/">Roster</a>
                     </li>
+                    <li>
+                        <a
+                            {% if '/reports/class_assignments/' in request.path %}class="active"{% endif %}
+                            href="/reports/class_assignments/">Course Assignments</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/reports/class_activity/' in request.path %}class="active"{% endif %}
+                            href="/reports/class_activity/">Course Activity</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/reports/class_summary/' in request.path %}class="active"{% endif %}
+                            href="/reports/class_summary/">Course Member Contributions</a>
+                    </li>
+
                     {% if user.is_superuser %}
                         <li>
                             <a {% if '/delete/' in request.path %}class="active"{% endif %}

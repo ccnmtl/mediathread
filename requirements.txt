@@ -69,7 +69,7 @@ django-reversion==3.0.4  # pyup: <3.0.5
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.2
 django-threadedcomments==1.2
-django-courseaffils==2.2.3
+django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
 sentry-sdk==0.14.3
 django-appconf==1.0.3  # pyup: <1.0.4

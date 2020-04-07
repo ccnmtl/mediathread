@@ -3,20 +3,27 @@ import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './AssetFilter';
+import AssetDetail from './AssetDetail';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             viewMode: 'grid',
-            titleFilter: '',
-            filteredAssets: this.props.assets
+            selectedAsset: null
         };
 
         this.toggleViewMode = this.toggleViewMode.bind(this);
-        this.handleFilteredAssetsUpdate =
-            this.handleFilteredAssetsUpdate.bind(this);
+        this.toggleAssetView = this.toggleAssetView.bind(this);
+        this.onUpdateAsset = this.onUpdateAsset.bind(this);
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.asset !== this.props.asset) {
+            this.setState({selectedAsset: this.props.asset});
+        }
+    }
+
     toggleViewMode() {
         let newMode = 'list';
         if (this.state.viewMode === 'list') {
@@ -24,8 +31,24 @@ export default class CollectionTab extends React.Component {
         }
         this.setState({viewMode: newMode});
     }
-    handleFilteredAssetsUpdate(filteredAssets) {
-        this.setState({filteredAssets: filteredAssets});
+    toggleAssetView(asset, e) {
+        // If this was an <a> link, prevent default behavior.
+        if (e) {
+            e.preventDefault();
+            window.history.pushState(null, null, e.target.href);
+        }
+
+        if (!this.state.selectedAsset && asset) {
+            this.setState({selectedAsset: asset});
+
+            // Scroll to top when entering asset detail view.
+            window.scrollTo(0, 0);
+        } else {
+            this.setState({selectedAsset: null});
+        }
+    }
+    onUpdateAsset(asset) {
+        this.setState({selectedAsset: asset});
     }
     render() {
         let assets = [];
@@ -33,11 +56,15 @@ export default class CollectionTab extends React.Component {
         const me = this;
 
         let assetList = this.props.assets;
-        if (this.state.filteredAssets) {
-            assetList = this.state.filteredAssets;
-        }
 
-        if (this.props.assetError) {
+        if (this.state.selectedAsset) {
+            assetsDom = (
+                <AssetDetail
+                    asset={this.state.selectedAsset}
+                    toggleAssetView={this.toggleAssetView}
+                    onUpdateAsset={this.onUpdateAsset} />
+            );
+        } else if (this.props.assetError) {
             // Display error to user
             assetsDom = <strong>{this.props.assetError}</strong>;
         } else if (assetList && this.state.viewMode === 'grid') {
@@ -45,6 +72,7 @@ export default class CollectionTab extends React.Component {
                 assets.push(
                     <GridAsset
                         key={asset.id} asset={asset}
+                        toggleAssetView={me.toggleAssetView}
                         currentUser={me.props.currentUser} />);
             });
 
@@ -58,7 +86,7 @@ export default class CollectionTab extends React.Component {
         }
 
         const alternateViewMode =
-            this.state.viewMode === 'grid' ? 'List' : 'Grid';
+              this.state.viewMode === 'grid' ? 'List' : 'Grid';
 
         return (
             <div role="tabpanel" aria-labelledby="collection-tab">
@@ -74,10 +102,11 @@ export default class CollectionTab extends React.Component {
 
                 <AssetFilter
                     assets={this.props.assets}
+                    assetCount={this.props.assetCount}
+                    onUpdateAssets={this.props.onUpdateAssets}
+                    owners={this.props.owners}
                     tags={this.props.tags}
-                    terms={this.props.terms}
-                    handleFilteredAssetsUpdate={
-                        this.handleFilteredAssetsUpdate} />
+                    terms={this.props.terms} />
 
                 <div className="assets">
                     {assetsDom}
@@ -88,7 +117,11 @@ export default class CollectionTab extends React.Component {
 }
 
 CollectionTab.propTypes = {
+    asset: PropTypes.object,
     assets: PropTypes.array,
+    assetCount: PropTypes.number,
+    onUpdateAssets: PropTypes.func.isRequired,
+    owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array,
     assetError: PropTypes.string,

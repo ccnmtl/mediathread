@@ -38,6 +38,7 @@ it('renders the collection tab grid layout', async() => {
         render(
             <CollectionTab
                 currentUser={fakeUser.id}
+                onUpdateAssets={function() {}}
                 assets={[fakeAsset]} />,
             container
         );
@@ -65,6 +66,7 @@ it('renders the collection tab list layout', async() => {
         render(
             <CollectionTab
                 currentUser={fakeUser.id}
+                onUpdateAssets={function() {}}
                 assets={[fakeAsset]} />,
             container
         );

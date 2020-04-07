@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAssetData} from './utils';
+import {getAsset, getAssets} from './utils';
 import CollectionTab from './CollectionTab';
 
 
@@ -10,31 +10,79 @@ class Main extends React.Component {
         this.state = {
             // Collection tab is default
             activeTab: 'collection',
+            asset: null,
             assets: null,
-            assetError: null
+            // Total number of this collection's assets, ignoring
+            // pagination.
+            assetCount: null,
+            assetError: null,
+            owners: null
         };
 
+        let assetId = null;
+        const re = /\/asset\/(\d+)\/$/;
+        const match = window.location.pathname.match(re);
+        if (match && match.length >= 2) {
+            assetId = parseInt(match[1], 10);
+        }
+
         const me = this;
-        getAssetData().then(function(d) {
-            me.setState({
-                assets: d.assets,
-                tags: d.active_tags,
-                terms: d.active_vocabulary,
-                currentUser: d.space_viewer.id
+
+        if (assetId) {
+            getAsset(assetId).then(function(d) {
+                me.setState({
+                    asset: d.assets[assetId],
+                    assetCount: 1
+                });
+            }, function(e) {
+                me.setState({
+                    assetError: e
+                });
             });
+        } else {
+            getAssets().then(function(d) {
+                me.setState({
+                    assets: d.assets,
+                    assetCount: d.asset_count,
+                    tags: d.active_tags,
+                    terms: d.active_vocabulary,
+                    currentUser: d.space_viewer.id
+                });
+            }, function(e) {
+                me.setState({
+                    assetError: e
+                });
+            });
+        }
+
+        // Get collection metadata. For populating all the owners, for
+        // example.
+        getAsset().then(function(d) {
+            if (d.panels.length > 0) {
+                me.setState({owners: d.panels[0].owners});
+            }
         }, function(e) {
-            me.setState({
-                assetError: e
-            });
+            console.error('getAsset error', e);
         });
 
         this.clickTab = this.clickTab.bind(this);
+        this.onUpdateAssets = this.onUpdateAssets.bind(this);
     }
 
     clickTab(e) {
         e.preventDefault();
         const clicked = e.target.text.toLowerCase();
         this.setState({activeTab: clicked});
+    }
+
+    onUpdateAssets(assets, assetCount=null) {
+        if (assetCount === null) {
+            assetCount = this.state.assetCount;
+        }
+        this.setState({
+            assets: assets,
+            assetCount: assetCount
+        });
     }
 
     render() {
@@ -83,7 +131,11 @@ class Main extends React.Component {
                     {this.state.activeTab === 'collection' &&
 
                      <CollectionTab
+                         asset={this.state.asset}
                          assets={this.state.assets}
+                         assetCount={this.state.assetCount}
+                         onUpdateAssets={this.onUpdateAssets}
+                         owners={this.state.owners}
                          tags={this.state.tags}
                          terms={this.state.terms}
                          assetError={this.state.assetError}

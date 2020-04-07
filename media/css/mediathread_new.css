@@ -2646,7 +2646,6 @@ tr.sherd-clipform-editing td {
     padding-right: 0;
 }
 
-.sherd-clipform-editing input.timecode,
 .sherd-clipform-editing input[type="button"] {
     width: 80%;
 }
@@ -3958,10 +3957,6 @@ div.ui-dialog div.asset-view-details h2 {
 }
 
 /* Fix bootstrap styles */
-.navbar * {
-    font-weight: normal !important;
-}
-
 a.btn.btn-default {
     color: #333;
     font-weight: normal;

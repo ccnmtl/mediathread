@@ -160,6 +160,13 @@ export default class GridAsset extends React.Component {
             );
         }
 
+        let assetLink = '#';
+        if (window.MediaThread) {
+            const courseId = window.MediaThread.current_course;
+            assetLink =
+                `/course/${courseId}/react/asset/${this.props.asset.id}`;
+        }
+
         return (
             <div className="card" key={this.props.asset.id}>
                 <div className="image-overlay">
@@ -181,8 +188,12 @@ export default class GridAsset extends React.Component {
 
                 <div className="card-body">
                     <h5 className="card-title">
-                        <a href={this.props.asset.local_url}
-                           title={this.props.asset.title}>
+                        <a
+                            onClick={
+                                this.props.toggleAssetView.bind(
+                                    this, this.props.asset)}
+                            href={assetLink}
+                            title={this.props.asset.title}>
                             {this.props.asset.title}
                         </a>
                     </h5>
@@ -239,5 +250,6 @@ export default class GridAsset extends React.Component {
 
 GridAsset.propTypes = {
     asset: PropTypes.object.isRequired,
-    currentUser: PropTypes.number.isRequired
+    currentUser: PropTypes.number.isRequired,
+    toggleAssetView: PropTypes.func.isRequired
 };

@@ -1,38 +1,38 @@
-Django==1.11.27 # pyup: <2.0
-psycopg2==2.8.4
+Django==1.11.29 # pyup: <2.0
+psycopg2==2.8.5
 #for MySQL: MySQL-python==1.2.5
 statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.1.1
 mccabe==0.6.1
 pycodestyle==2.5.0
-enum34==1.1.6; python_version < '3.4'
-configparser==4.0.2
+enum34==1.1.10; python_version < '3.4'
+configparser==4.0.2  # pyup: <5.0.0
 flake8==3.7.9
-lxml==4.4.2
-fuzzywuzzy==0.17.0  # lettuce
-mock==3.0.5  # sure
+lxml==4.5.0
+fuzzywuzzy==0.18.0  # lettuce
+mock==3.0.5 # pyup: <4.0.0  # sure
 sure==1.4.11  # lettuce
 extras==1.0.0
 linecache2==1.0.0  # traceback2
 traceback2==1.4.0  # testtools
 fixtures==3.0.0
-testtools==2.3.0  # python-subunit
+testtools==2.4.0  # python-subunit
 pbr>=0.11
 testscenarios==0.5.0  # python-subunit
-python-subunit==1.3.0  # lettuce
+python-subunit==1.4.0  # lettuce
 requirements/src/lettuce-0.2.25.ccnmtl-py2.py3-none-any.whl
 selenium==3.141.0
 six==1.14.0
-sqlparse==0.3.0  # django-debug-toolbar
+sqlparse==0.3.1  # django-debug-toolbar
 python-mimeparse==1.6.0  # tastypie
 python-dateutil==2.8.1  # tastypie
 defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.3
-coverage==4.5.4
+coverage==4.5.4  # pyup: <5
 logilab-common==1.4.4  # pyup: <1.5
 lazy-object-proxy==1.4.3
-wrapt==1.11.2
+wrapt==1.12.1
 unicodecsv==0.14.1
 
 editdistance==0.5.3
@@ -47,21 +47,21 @@ ndg-httpsclient==0.5.1
 chardet==3.0.4
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
-idna==2.8
+idna==2.9
 urllib3==1.25.8  # sentry-sdk
-certifi==2019.11.28  # sentry-sdk
+certifi==2020.4.5.1  # sentry-sdk
 cryptography==2.8
 pyOpenSSL==19.1.0
 asn1crypto==1.3.0  # for pyOpenSSL
-cffi==1.13.2  # for pyOpenSSL
+cffi==1.14.0  # for pyOpenSSL
 
-requests==2.22.0
+requests==2.23.0
 contextlib2==0.6.0.post1
 rcssmin==1.0.6
 rjsmin==1.1.0
 
 djangowind==1.2.3
-django-tagging==0.4.6
+django-tagging==0.4.6  # pyup: <0.5.0
 
 # pinned for django 1.11
 django-reversion==3.0.4  # pyup: <3.0.5
@@ -69,10 +69,10 @@ django-reversion==3.0.4  # pyup: <3.0.5
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.2
 django-threadedcomments==1.2
-django-courseaffils==2.2.1
+django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.14.1
-django-appconf==1.0.3  # django_compressor
+sentry-sdk==0.14.3
+django-appconf==1.0.3  # pyup: <1.0.4
 django-compressor==2.4
 django-jenkins==0.110.0
 django-stagingcontext==0.1.0
@@ -87,19 +87,23 @@ ipaddress==1.0.23
 text-unidecode==1.3  # for faker
 Faker==3.0.1  # pyup: <4.0.0
 factory_boy==2.12.0
-django-impersonate==1.4.1
+django-impersonate==1.5
 django-registration-redux==2.7
-django-waffle==0.19.0
+django-waffle==0.20.0
 django-cors-headers==3.0.2 # pyup: <3.1.0
-httplib2==0.17.0
+
+# needed for django <2.1
+django-cookies-samesite==0.5.1
+
+httplib2==0.17.1
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.1.0
 pylti==0.7.0
-nameparser==1.0.5
+nameparser==1.0.6
 django-bootstrap3==11.1.0  # pyup: <12.0.0
-ua_parser==0.8.0
-user_agents==2.0
+ua_parser==0.10.0
+user_agents==2.1
 django_user_agents==0.4.0
 gunicorn==19.10.0 # pyup: <20.0.0
 path.py==11.5.2 # pyup: <12
@@ -107,25 +111,25 @@ simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.5
 
-freezegun==0.3.14
+freezegun==0.3.15
 django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10
 
 ccnmtlsettings==1.7.0
-django-extensions==2.2.6
+django-extensions==2.2.9
 
 # needed for django-extensions
 typing==3.7.4.1; python_version < '3.5'
 
 futures==3.2.0; python_version < '3'
-s3transfer==0.3.2
-jmespath==0.9.4
+s3transfer==0.3.3
+jmespath==0.9.5
 
-botocore>=1.14.0,<1.15.0
-boto3>=1.11.0,<1.12.0
+botocore>=1.15.0,<1.16.0
+boto3>=1.12.0,<1.13.0
 
 entrypoints==0.3
-django-storages==1.8
+django-storages==1.8 # pyup: <1.9
 django-cacheds3storage==0.2.1
 
 requests-toolbelt==0.9.1
@@ -137,15 +141,15 @@ appdirs==1.4.3  # zeep
 attrs==19.3.0  # zeep
 zeep==3.4.0
 
-stevedore==1.31.0
-pyyaml==5.3
+stevedore==1.32.0
+pyyaml==5.3.1
 bandit==1.6.2
 funcsigs==1.0.2 
 pypanopto==0.1.1
 functools32==3.2.3-2; python_version < '3'
 entrypoints==0.3
 
-billiard==3.6.1.0
+billiard==3.6.3.0
 anyjson==0.3.3
 vine==1.3.0
 amqp==2.4.2 # pyup: < 2.5
@@ -154,3 +158,5 @@ kombu==3.0.37 # pyup: <4.0.0
 celery==3.1.26.post2 # pyup: <4.0.0
 django-celery==3.2.2 # pyup: <3.3.0
 
+# memcached
+pylibmc==1.6.1

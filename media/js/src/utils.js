@@ -1,10 +1,11 @@
-import Cookies from 'js-cookie';
+import isFinite from 'lodash/isFinite';
 
 /**
  * A wrapper for `fetch` that passes along auth credentials.
  */
-const authedFetch = function(url, method = 'get', data = null) {
-    const token = Cookies.get('csrftoken');
+const authedFetch = function(url, method='get', data=null) {
+    const elt = document.getElementById('csrf-token');
+    const token = elt ? elt.getAttribute('content') : '';
     return fetch(url, {
         method: method,
         headers: {
@@ -18,8 +19,43 @@ const authedFetch = function(url, method = 'get', data = null) {
     });
 };
 
-const getAssetData = function() {
-    return authedFetch('/api/asset/?annotations=true')
+const getAssets = function(
+    title='', owner='', tags=[], terms=[], date='all',
+    offset=0
+) {
+    const params = new URLSearchParams();
+
+    // Pagination
+    params.append('limit', 20);
+    params.append('offset', offset);
+
+    // Always include the annotations
+    params.append('annotations', true);
+
+    if (title) {
+        params.append('search_text', title);
+    }
+
+    if (date !== 'all') {
+        params.append('modified', date);
+    }
+
+    if (tags && tags.length > 0) {
+        params.append('tag', tags.map(tag => tag.value));
+    }
+
+    if (terms && terms.length > 0) {
+        terms.forEach(function(term) {
+            params.append(`vocabulary-${term.data.vocab_id}`, term.data.id);
+        });
+    }
+
+    let basePath = '/api/asset/';
+    if (owner && owner !== 'all') {
+        basePath = `/api/asset/user/${owner}/`;
+    }
+
+    return authedFetch(basePath + '?' + params.toString())
         .then(function(response) {
             if (response.status === 200) {
                 return response.json();
@@ -30,71 +66,122 @@ const getAssetData = function() {
         });
 };
 
-const isSameDay = function(d1, d2) {
-    return d1.getDay() === d2.getDay() &&
-        d1.getMonth() === d2.getMonth() &&
-        d1.getFullYear() === d2.getFullYear();
+/**
+ * Get annotation metadata.
+ */
+const getAsset = function(id=null) {
+    let url = '/asset/';
+    if (id) {
+        url = `/api/asset/${id}/?annotations=true`;
+    }
+    return authedFetch(url)
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error loading asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
+};
+
+const createSelection = function(assetId, data) {
+    return authedFetch(
+        `/asset/create/${assetId}/annotations/`,
+        'post',
+        JSON.stringify(data)
+    ).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error making selection: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+const createSherdNote = function(assetId, data) {
+    return authedFetch(
+        `/asset/${assetId}/sherdnote/create/`,
+        'post',
+        JSON.stringify(data)
+    ).then(function(response) {
+        if (response.status === 201) {
+            return response.json();
+        } else {
+            throw 'Error making sherdnote: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+const deleteSelection = function(assetId, selectionId) {
+    return authedFetch(
+        `/asset/delete/${assetId}/annotations/${selectionId}/`,
+        'post'
+    ).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error deleting selection: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
+const getHours = function(totalSeconds) {
+    return Math.floor(totalSeconds / 3600);
+};
+
+const getMinutes = function(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const seconds = totalSeconds - (hours * 3600);
+    return Math.floor(seconds / 60);
+};
+
+const getSeconds = function(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+    const seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+    return Math.floor(seconds);
 };
 
 /**
- * Filter an asset-like object based on the given filters.
- *
- * obj can be an asset or an asset annotation.
- *
- * Returns obj if it passes the filters, otherwise null.
+ * Given a number of seconds as a float, return an array
+ * containing [hours, minutes, seconds].
  */
-const filterObj = function(obj, filters) {
-    // Filter out non-matching titles
-    if (
-        filters.title && (
-            obj.title.toLowerCase().indexOf(
-                filters.title
-            ) === -1)
-    ) {
-        return null;
-    }
-
-    // Filter out non-matching owners
-    if (
-        filters.owner &&
-            filters.owner !== 'all' &&
-            filters.owner !== obj.author.username
-    ) {
-        return null;
-    }
-
-    // Filter out non-matching tags
-    if (filters.tags) {
-        // TODO
-    }
-
-    // Filter out non-matching dates
-    if (
-        filters.date &&
-            filters.date !== 'all'
-    ) {
-        const modified = obj.modified || obj.metadata.modified;
-        const modifiedDate = new Date(modified);
-
-        let filterDate = new Date();
-        if (filters.date === 'today') {
-            if (!isSameDay(filterDate, modifiedDate)) {
-                return null;
-            }
-        } else if (filters.date === 'yesterday') {
-            filterDate.setDate(filterDate.getDate() - 1);
-            if (!isSameDay(filterDate, modifiedDate)) {
-                return null;
-            }
-        } else if (filters.date === 'within-last-week') {
-            filterDate.setDate(filterDate.getDate() - 7);
-            if (modifiedDate < filterDate) {
-                return null;
-            }
-        }
-    }
-
-    return obj;
+const getSeparatedTimeUnits = function(totalSeconds) {
+    return [
+        getHours(totalSeconds),
+        getMinutes(totalSeconds),
+        getSeconds(totalSeconds)
+    ];
 };
 
-export {getAssetData, filterObj};
+const parseTimecode = function(str) {
+    const parts = str.split(':');
+    const col1 = Number(parts[0]);
+    const col2 = Number(parts[1]);
+    const col3 = Number(parts[2]);
+    if (isFinite(col1) && isFinite(col2) && isFinite(col3)) {
+        return (col1 * 60) + col2 + (col3 / 100);
+    } else {
+        return null;
+    }
+};
+
+const pad2 = function(number) {
+    return (number < 10 ? '0' : '') + number;
+};
+
+const formatTimecode = function(totalSeconds) {
+    const units = getSeparatedTimeUnits(totalSeconds);
+    return pad2(units[0]) + ':' + pad2(units[1]) + ':' + pad2(units[2]);
+};
+
+export {
+    getAssets, getAsset, createSelection, createSherdNote,
+    deleteSelection,
+    getHours, getMinutes, getSeconds,
+    pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode
+};

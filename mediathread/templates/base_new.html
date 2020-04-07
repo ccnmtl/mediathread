@@ -10,6 +10,8 @@ A new base.html without the course context overwritten in the template.
         <meta charset="utf-8">
         <title>Mediathread {% block title %}{% endblock %}</title>
 
+        <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
+
         <script src='{% static "jquery/js/jquery-3.4.1.min.js" %}'></script>
 
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -79,130 +81,22 @@ A new base.html without the course context overwritten in the template.
         <div id="dialog-confirm" style="display: none"></div>
 
                 {% block masthead %}
-                    <!-- ###### Site banner ###### -->
-                    <div id="header">
-                        <div id="standardnav_container">
-                            <div id="mediathread_logo">
-                                <a href="/" title="Home">
-                                    <img src='{% static "img/logo_mediathread_new.png" %}' alt="mediathread logo" width="156" height="45" />
-                                    <span class="sr-only">Home</span>
-                                </a>
+                    {% include "navbar.html" %}
+
+                    {% block courseinformation %}
+                        {% if not read_only_view %}
+                            <div id="course_information">
+                                <h1 id="course_title">
+                                    {% block coursetitle %}
+                                        <a href="{% url 'course_detail' course.pk %}"
+                                           title="{{course.title}}"
+                                           id="course_title_link">{{course.title}}</a>
+                                    {% endblock %}
+                                </h1>
+                                <div style="clear: right;"></div>
                             </div>
-                            {% block standardnav %}
-                                <ul id="standardnav">
-                                    {% if course %}
-                                        {% if role_in_course == "non-member" %}
-                                            <li>
-                                                <div class="nonmember">You are not a class member!</div>
-                                            </li>
-                                        {% endif %}
-                                        {% if user.is_impersonate %}
-                                            <li>
-                                                <a class="warning" href="/impersonate/stop/" title="Impersonate Stop">Impersonate Stop</a>
-                                            </li>
-                                        {% endif %}
-
-                                        {% if role_in_course == 'instructor' %}
-                                            <li>
-                                                <a href="{% url 'course-settings-general' %}" title="Course Settings">
-                                                    Course Settings
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <div class="settings_menu reports closed">
-                                                    <div class="float-right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                                    <div class="float-left settings_menu_title">Reports</div>
-                                                </div>
-                                                <div class="visualclear"></div>
-                                                <!-- Settings Menu -->
-                                                <div class="settings_submenu" style="display: none">
-                                                    <a href="/reports/class_assignments/" title="Assignment Responses">Assignment Responses</a>
-                                                    <a href="/reports/class_activity/" title="Class Activity">Class Activity</a>
-                                                    <a href="/reports/class_summary/" title="Class Member Contributions">Class Member Contributions</a>
-                                                    {% if user.is_staff %}
-                                                        <hr />
-                                                        <a href="/reports/activity/course/" title="Activity by Course">Activity by Course</a>
-                                                        <a href="/reports/self-registration/" title="Self-Registration Report">Self-Registration Report</a>
-                                                    {% endif %}
-                                                </div>
-                                            </li>
-                                        {% endif %}
-                                        <li>
-                                            {% block standardnav_help %}
-                                                <div class="settings_menu help closed">
-                                                    <div class="float-right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                                    <div class="float-left settings_menu_title">Help</div>
-                                                </div>
-                                                <div class="visualclear"></div>
-                                                <!-- Settings Menu -->
-                                                <div class="settings_submenu" style="display: none">
-                                                    <a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread" title="Knowledge Base">Knowledge Base</a>
-                                                    <a href="/contact/" title="Contact Us">Contact Us</a>
-                                                </div>
-                                            {% endblock %}
-                                        </li>
-                                        <li class="divider-vertical"></li>
-                                        <li>
-                                            <div class="settings_menu user closed">
-                                                <div class="float-right ui-icon-reverse ui-icon-triangle-1-s"></div>
-                                                <div class="float-left settings_menu_title">{% public_name for user %}</div>
-                                            </div>
-                                            <div class="visualclear"></div>
-                                            <!-- Settings Menu -->
-                                            <div class="settings_submenu" style="display: none">
-                                                {% if user.is_staff %}
-                                                    <a href="/admin/" title="Admin">Admin</a>
-                                                {% endif %}
-                                                {% if user.is_superuser %}
-                                                    <a href="/impersonate/search/" title="Impersonate">Impersonate</a>
-                                                {% endif %}
-
-                                                {% num_courses for user as user_courses %}
-                                                {% if role_in_course == 'instructor' or user_courses > 1 or user.is_staff %}
-                                                    <a href="/?unset_course" title="My Courses">My Courses</a>
-                                                {% endif %}
-
-                                                {% if user.has_usable_password %}
-                                                    <a href="/accounts/password_change/" title="Change Password">Change Password</a>
-                                                {% endif %}
-
-                                                <a href="/accounts/logout/?next=/" title="Log Out">Log Out</a>
-                                            </div>
-                                        </li>
-                                    {% else %}
-                                        <li><div unselectable="on"><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread" title="Help">Help</a></div></li>
-                                        {% if request.user.is_authenticated %}
-                                            <li><a href="/accounts/logout/?next=/" title="Log Out">Log Out</a></li>
-                                        {% else %}
-                                            <li><a href="/accounts/login/" title="Log In">Log In</a></li>
-                                        {% endif %}
-                                    {% endif %}
-                                </ul>
-                            {% endblock %}
-                        </div>
-                        {% block courseinformation %}
-                            {% if not read_only_view %}
-                                <div id="course_information">
-                                    <h1 id="course_title">
-                                        {% block coursetitle %}
-                                            {% flag "addressable_courses" %}
-                                            <a href="{% url 'course_detail' course.pk %}"
-                                               title="{{course.title}}"
-                                               id="course_title_link">{{course.title}}</a>
-                                            {% else %}
-                                            <a href="/"
-                                               title="{{course.title}}"
-                                               id="course_title_link">{{course.title}}</a>
-                                            {% endflag %}
-                                        {% endblock %}
-                                    </h1>
-                                    <div style="clear: right;"></div>
-                                </div>
-                            {% endif %}
-                        {% endblock %}
-
-                    </div><!-- id="header" -->
-
+                        {% endif %}
+                    {% endblock %}
                 {% endblock %}
 
         {% block container %}

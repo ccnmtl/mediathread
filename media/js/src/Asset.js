@@ -12,9 +12,14 @@ export default class Asset {
      */
     getType() {
         let assetType = this.asset.primary_type;
-        if (assetType === 'youtube' || assetType === 'mp4_pseudo') {
+        if (
+            assetType === 'youtube' ||
+            assetType === 'vimeo' ||
+            assetType === 'mp4_pseudo' ||
+            assetType === 'mp4_panopto'
+        ) {
             assetType = 'video';
-        } else if (assetType === 'image_fpxid') {
+        } else if (assetType === 'image_fpxid' || assetType === 'image_fpx') {
             assetType = 'image';
         }
         return assetType;

@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {filterObj} from './utils';
+import {getAssets} from './utils';
 
 export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            currentPage: 0
+        };
         this.filters = {
             owner: 'all',
             title: null,
@@ -14,6 +17,9 @@ export default class AssetFilter extends React.Component {
             date: 'all'
         };
 
+        this.offset = 20;
+        this.updatePageCount();
+
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleTermsChange = this.handleTermsChange.bind(this);
@@ -21,11 +27,44 @@ export default class AssetFilter extends React.Component {
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
         this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
 
         this.allOption = {
             value: 'all',
             label: 'All Class Members'
         };
+    }
+    nextPage() {
+        this.props.onUpdateAssets(null);
+
+        const me = this;
+        this.setState({
+            currentPage: Math.min(
+                this.state.currentPage + 1, this.pageCount - 1)
+        }, function() {
+            me.filterAssets(me.filters);
+        });
+    }
+    prevPage() {
+        this.props.onUpdateAssets(null);
+
+        const me = this;
+        this.setState({
+            currentPage: Math.max(this.state.currentPage - 1, 0)
+        }, function() {
+            me.filterAssets(me.filters);
+        });
+    }
+    onPageClick(page) {
+        this.props.onUpdateAssets(null);
+
+        const me = this;
+        this.setState({
+            currentPage: page
+        }, function() {
+            me.filterAssets(me.filters);
+        });
     }
     handleTagsChange(e) {
         this.filters.tags = e;
@@ -60,70 +99,39 @@ export default class AssetFilter extends React.Component {
      * on the current state of this component's search filters.
      */
     filterAssets(filters) {
-        let filteredAssets = [];
+        this.props.onUpdateAssets(null);
 
-        if (!this.props.assets) {
-            this.props.handleFilteredAssetsUpdate(filteredAssets);
-            return;
-        }
-
-        this.props.assets.some(function(asset) {
-            if (filterObj(asset, filters)) {
-                filteredAssets.push(asset);
-                return false;
-            }
-
-            asset.annotations.some(function(annotation) {
-                // TODO: filterObj needs to handle the annotation here
-                // instead of the asset, and then push only that
-                // annotation to filteredAssets if it passes. So, I
-                // need to refactor filteredAssets here.
-                if (filterObj(asset, filters)) {
-                    filteredAssets.push(asset);
-                    return false;
-                }
-            });
+        const me = this;
+        getAssets(
+            filters.title, filters.owner, filters.tags,
+            filters.terms, filters.date,
+            this.state.currentPage * this.offset
+        ).then(function(d) {
+            me.props.onUpdateAssets(d.assets, d.asset_count);
+        }, function(e) {
+            console.error('asset get error!', e);
         });
-        this.props.handleFilteredAssetsUpdate(filteredAssets);
+    }
+    updatePageCount() {
+        this.pageCount = Math.ceil(this.props.assetCount / this.offset);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.assets !== this.props.assets) {
             this.setState({filteredAssets: this.props.assets});
         }
+        if (prevProps.assetCount !== this.props.assetCount) {
+            this.updatePageCount();
+        }
     }
     render() {
         let ownersOptions = [this.allOption];
-        if (this.props.assets) {
-            ownersOptions = this.props.assets.reduce(function(a, asset) {
-                // If a already contains this user, skip it.
-                if (a.find(e => e.value === asset.author.username)) {
-                    return a;
-                }
-
-                // Insert this owner at the right position in a.
-                // Skip the first element ('all'), because this should
-                // always be at the top.
-                for (let i = 0; i < a.length; i++) {
-                    const newEl = {
-                        label: asset.author.public_name,
-                        value: asset.author.username
-                    };
-                    if (
-                        a.length === 1 ||
-                            asset.author.username < a[i].value
-                    ) {
-                        a.splice(Math.max(i, 1), 0, newEl);
-                        break;
-                    } else if (i === (a.length - 1)) {
-                        // If this is reached, newEl belongs at
-                        // the end of the array.
-                        a.push(newEl);
-                        break;
-                    }
-                }
-
-                return a;
-            }, ownersOptions);
+        if (this.props.owners) {
+            this.props.owners.forEach(function(owner) {
+                ownersOptions.push({
+                    label: owner.public_name,
+                    value: owner.username
+                });
+            });
         }
 
         let tagsOptions = [];
@@ -135,7 +143,6 @@ export default class AssetFilter extends React.Component {
                 };
             });
         }
-
 
         const termGroupLabel = function(data) {
             return (
@@ -150,9 +157,13 @@ export default class AssetFilter extends React.Component {
             termsOptions = this.props.terms.map(function(term) {
                 let termOptions = [];
                 term.term_set.forEach(function(t) {
+                    const data = t;
+                    data.vocab_id = term.id;
+
                     termOptions.push({
                         label: `${t.display_name} (${t.count})`,
-                        value: t.name
+                        value: t.name,
+                        data: data
                     });
                 });
 
@@ -163,6 +174,52 @@ export default class AssetFilter extends React.Component {
                 };
             });
         }
+
+        const pages = [];
+        for (let i = 0; i < this.pageCount; i++) {
+            const disabled = this.state.currentPage === i ? 'disabled' : '';
+            pages.push(
+                <li key={i} className={`page-item ${disabled}`}>
+                    <a
+                        className="page-link" href="#"
+                        onClick={this.onPageClick.bind(this, i)}>
+                        {i + 1}
+                    </a>
+                </li>
+            );
+        }
+
+        const pagination = (
+            <nav aria-label="Page navigation example">
+                <ul className="pagination mt-2">
+                    <li className={
+                        'page-item ' +
+                            (this.state.currentPage <= 0 ? 'disabled' : '')
+                    }>
+                        <a
+                            className="page-link" href="#"
+                            onClick={this.prevPage}
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {pages}
+                    <li className={
+                        'page-item ' + (
+                            this.state.currentPage >= this.pageCount - 1 ?
+                                'disabled' : ''
+                        )
+                    }>
+                        <a
+                            className="page-link" href="#"
+                            onClick={this.nextPage}
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        );
 
         return (
             <div className="container mb-3">
@@ -271,21 +328,24 @@ export default class AssetFilter extends React.Component {
                                     { value: 'today', label: 'Today' },
                                     { value: 'yesterday', label: 'Yesterday' },
                                     {
-                                        value: 'within-last-week',
+                                        value: 'lastweek',
                                         label: 'Within the last week'
                                     }
                                 ]} />
                         </div>
                     </div>
                 </div>
+                {pagination}
             </div>
         );
     }
 }
 
 AssetFilter.propTypes = {
-    handleFilteredAssetsUpdate: PropTypes.func.isRequired,
     assets: PropTypes.array,
+    assetCount: PropTypes.number,
+    onUpdateAssets: PropTypes.func.isRequired,
+    owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array
 };

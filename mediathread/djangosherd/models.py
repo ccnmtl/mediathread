@@ -320,6 +320,10 @@ class SherdNoteManager(models.Manager):
 
 @python_2_unicode_compatible
 class SherdNote(Annotation):
+    """
+    SherdNote extends Annotation, and is generally used for what you
+    would think of as an "annotation". It has a title, author, etc.
+    """
     objects = SherdNoteManager()
 
     title = models.CharField(blank=True, max_length=1024, null=True)

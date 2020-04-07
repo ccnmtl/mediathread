@@ -28,10 +28,10 @@ PROJECT_APPS = [
     'structuredcollaboration',
 ]
 
-CACHE_BACKEND = 'locmem:///'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'mediathread',
         'TIMEOUT': 3600  # One Hour
     }
 }
@@ -39,6 +39,11 @@ CACHES = {
 TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
     'mediathread.main.views.django_settings'
 )
+
+# Prepend the CookiesSameSite middleware to the beginning of
+# MIDDLEWARE. It needs to be first to work correctly.
+MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
+    MIDDLEWARE  # noqa
 
 MIDDLEWARE += [  # noqa
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -60,7 +65,6 @@ INSTALLED_APPS += [  # noqa
     'mediathread.djangosherd',
     'mediathread.projects',
     'mediathread.discussions',
-    'mediathread.juxtapose',
     'mediathread.sequence',
     'threadedcomments',
     'django_comments',
@@ -179,6 +183,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = ('GET',)
 CORS_ALLOW_CREDENTIALS = True
+
+SESSION_COOKIE_SAMESITE = 'None'
 
 
 def default_url_processor(url, label=None, request=None):

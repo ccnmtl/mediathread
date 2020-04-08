@@ -28,16 +28,17 @@ Feature: Instructor Dashboard
 
         Finished using Selenium
 
-    Scenario: instructor_dashboard.feature 2. Class Activity
+    Scenario: instructor_dashboard.feature 2. Course Activity
         Using selenium
         Given there is a sample response
         Given there are sample assets
         Given I am instructor_one in Sample Course
 
-        When I open the reports menu
-        There is a "Class Activity" link
-        When I click the "Class Activity" link
-        Then I see "Report: Class Activity"
+        When I click the "Course Settings" link
+        Then I am at the Course Settings page
+        There is a "Course Activity" link
+        When I click the "Course Activity" link
+        Then I see "Report: Course Activity"
 
         And there is a "MAAP Award Reception" link
         And there is a "Sample Assignment Response" link
@@ -75,8 +76,9 @@ Feature: Instructor Dashboard
         Given there is a sample response
         Given I am instructor_one in Sample Course
 
-        When I open the reports menu
-        When I click the "Assignment Responses" link
+        When I click the "Course Settings" link
+        Then I am at the Course Settings page
+        When I click the "Course Assignments" link
         Then there is a "1 / 3" link
         When I click the "1 / 3" link
         Then I see "Assignment Report: Sample Assignment"
@@ -97,8 +99,9 @@ Feature: Instructor Dashboard
         Given there is a sample response
         Given I am instructor_one in Sample Course
 
-        When I open the reports menu
-        When I click the "Class Member Contributions" link
-        Then I see "Report: Class Member Contributions"
+        When I click the "Course Settings" link
+        Then I am at the Course Settings page
+        When I click the "Course Member Contributions" link
+        Then I see "Report: Course Member Contributions"
 
-        Finished using Selenium  
+        Finished using Selenium

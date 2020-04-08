@@ -6,10 +6,11 @@ Feature: Homepage
 
         There is a "Course Settings" link
 
-        When I open the reports menu
-        Then there is an "Assignment Responses" link
-        And there is a "Class Activity" link
-        And there is a "Class Member Contributions" link
+        When I click the "Course Settings" link
+        Then I am at the Course Settings page
+        Then there is an "Course Assignments" link
+        And there is a "Course Activity" link
+        And there is a "Course Member Contributions" link
 
         And there is a From Your Instructor column
         And there is a Composition column
@@ -80,12 +81,12 @@ Feature: Homepage
         When I click the "Sample Assignment Response" link
         Then I am at the Sample Assignment Response page
         And there is an open Composition panel
-        And the Composition title is "Sample Assignment Response" 
+        And the Composition title is "Sample Assignment Response"
 
         Finished using Selenium
 
 
-    Scenario Outline: homepage.feature 5. Instructor User Settings menu 
+    Scenario Outline: homepage.feature 5. Instructor User Settings menu
         Using selenium
         Given I am instructor_one in Sample Course
         Given the home workspace is loaded
@@ -96,11 +97,11 @@ Feature: Homepage
         There is not an "Admin" link
 
         When I click the "Log Out" link
-        Then I am at the Login page 
+        Then I am at the Login page
 
         Finished using Selenium
 
-    Scenario Outline: homepage.feature 5. Student User Settings menu 
+    Scenario Outline: homepage.feature 5. Student User Settings menu
         Using selenium
         Given I am student_one in Sample Course
         Given the home workspace is loaded
@@ -111,6 +112,6 @@ Feature: Homepage
         There is not an "Admin" link
 
         When I click the "Log Out" link
-        Then I am at the Login page 
+        Then I am at the Login page
 
         Finished using Selenium

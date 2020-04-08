@@ -91,9 +91,7 @@ A new base.html without the course context overwritten in the template.
                     {% if not read_only_view %}
                         <h6 class="course-title">
                             {% block coursetitle %}
-                                <a href="{% url 'course_detail' course.pk %}"
-                                   title="{{course.title}}"
-                                   id="course_title_link">{{course.title}}</a>
+                                {{course.title}}
                             {% endblock %}
                         </h6>
                     {% endif %}

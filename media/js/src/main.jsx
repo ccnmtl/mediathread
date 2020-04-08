@@ -88,9 +88,11 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <nav className="nav nav-pills nav-justified" role="tablist">
+                <nav id="three-section-tabs"
+                     className="nav nav-tabs flex-column flex-sm-row"
+                     role="tablist">
                     <a
-                        className={'nav-link ' + (
+                        className={'flex-sm-fill text-sm-center nav-link ' + (
                             this.state.activeTab === 'collection' ?
                                 'active' : ''
                         )}
@@ -102,7 +104,7 @@ class Main extends React.Component {
                         Collection
                     </a>
                     <a
-                        className={'nav-link ' + (
+                        className={'flex-sm-fill text-sm-center nav-link ' + (
                             this.state.activeTab === 'assignments' ?
                                 'active' : ''
                         )}
@@ -114,7 +116,7 @@ class Main extends React.Component {
                         Assignments
                     </a>
                     <a
-                        className={'nav-link ' + (
+                        className={'flex-sm-fill text-sm-center nav-link ' + (
                             this.state.activeTab === 'projects' ?
                                 'active' : ''
                         )}

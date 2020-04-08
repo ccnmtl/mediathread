@@ -6,12 +6,6 @@ Feature: Homepage
 
         There is a "Course Settings" link
 
-        When I click the "Course Settings" link
-        Then I am at the Course Settings page
-        Then there is an "Course Assignments" link
-        And there is a "Course Activity" link
-        And there is a "Course Member Contributions" link
-
         And there is a From Your Instructor column
         And there is a Composition column
         And there is a Collection column
@@ -32,7 +26,6 @@ Feature: Homepage
         Given I am student_one in Sample Course
 
         There is not a "Course Settings" link
-        And there is no reports menu
 
         And there is not a From Your Instructor column
         And there is a Composition column

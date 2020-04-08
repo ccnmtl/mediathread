@@ -1,11 +1,8 @@
-{% extends "dashboard/base_dashboard.html" %}
+{% extends 'dashboard/base_course_dashboard.html' %}
 {% load comments user_projects coursetags %}
 
-{% block dashboard_module_header %}
-    <h2>Assignment Report: {{assignment.title}}</h2>
-{% endblock %}
-
-{% block dashboard_module %}
+{% block dashboard_content %}
+<h2>Assignment Report: {{assignment.title}}</h2>
 <a class="right"
     href="{% url 'assignment-detail-report' assignment.id %}">
     Download Detail

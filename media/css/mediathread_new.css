@@ -4215,19 +4215,6 @@ ul.section-tabs>li>a.active {
     height: 200px;
 }
 
-.react-select {
-    flex: 1 1 0%;
-    width: 100%;
-    height: calc(1.5em + .75rem + 2px);
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border-radius: .25rem;
-}
-
 .image-overlay {
     position: relative;
 }
@@ -4253,4 +4240,19 @@ ul.section-tabs>li>a.active {
     position: static;
     width: auto;
     height: auto;
+}
+
+#search-well {
+    border-radius: .25em;
+    background-color: #f6f6f6;
+    padding: .5em .5em 0em .5em;
+    margin-bottom: 1em;
+}
+
+#search-well label {
+    font-size: .8em;
+}
+
+#search-well .form-group {
+    z-index: 3;
 }

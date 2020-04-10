@@ -41,7 +41,7 @@ it('renders the asset filter', async() => {
         );
     });
 
-    expect(container.textContent).toContain('Go');
+    expect(container.textContent).toContain('Search');
 
     // remove the mock to ensure tests are completely isolated
     global.fetch.mockRestore();

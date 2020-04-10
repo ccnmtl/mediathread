@@ -221,104 +221,113 @@ export default class AssetFilter extends React.Component {
             </nav>
         );
 
+        // Make the react-select inputs look like Bootstrap's
+        // form-control-sm.
+        //
+        // https://react-select.com/styles#style-object
+        //
+        const reactSelectStyles = {
+            container: (provided, state) => ({
+                ...provided,
+                padding: '0'
+            }),
+            control: (provided, state) => ({
+                // ...provided,
+                display: 'flex',
+                height: 'calc(1.5em + .5rem + 2px)'
+            }),
+            singleValue: (provided, state) => ({
+                ...provided,
+                top: '45%'
+            }),
+            placeholder: (provided, state) => ({
+                ...provided,
+                top: '45%'
+            }),
+            menu: (provided, state) => ({
+                ...provided,
+                zIndex: '3',
+                backgroundColor: 'white'
+            }),
+            menuList: (provided, state) => ({
+                ...provided,
+                backgroundColor: 'white',
+                zIndex: '3',
+                backgroundColor: 'white'
+            })
+        };
+
         return (
-            <div className="container mb-3">
-                <div className="row">
-                    <div className="col-md-4">
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <svg
-                                        className="bi bi-search"
-                                        width="1em" height="1em"
-                                        viewBox="0 0 20 20" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            fillRule="evenodd"
-                                            d={'M12.442 12.442a1 1 0 ' +
-                                               '011.415 0l3.85 3.85a1 1 ' +
-                                               '0 01-1.414 ' +
-                                               '1.415l-3.85-3.85a1 1 0 ' +
-                                               '010-1.415z'}
-                                            clipRule="evenodd" />
-                                        <path
-                                            fillRule="evenodd"
-                                            d={'M8.5 14a5.5 5.5 0 100-11 ' +
-                                               '5.5 5.5 0 000 11zM15 ' +
-                                               '8.5a6.5 6.5 0 11-13 0 ' +
-                                               '6.5 6.5 0 0113 0z'}
-                                            clipRule="evenodd" />
-                                    </svg>
-                                </span>
-                            </div>
-                            <input
-                                type="text" name="title"
-                                className="form-control"
-                                placeholder="Title of items and selections"
-                                onChange={this.handleTitleChange}
-                                onKeyDown={this.handleTitleSearch}
-                                aria-label="Title" />
-                            <div className="input-group-append">
-                                <button
-                                    className="btn btn-outline-secondary"
-                                    onClick={this.handleTitleFilterSearch}
-                                    type="button" id="button-addon2">
-                                    Go
-                                </button>
+            <React.Fragment>
+                <form id="search-well">
+                    <div className="form-row">
+                        <div className="form-group col-md-4">
+                            <label htmlFor="filter-search">Title</label>
+                            <div className="input-group mb-3">
+                                <input
+                                    id="filter-search"
+                                    type="text"
+                                    className="form-control form-control-sm"
+                                    placeholder="Search for..."
+                                    onChange={this.handleTitleChange}
+                                    onKeyDown={this.handleTitleSearch} />
+                                <div className="input-group-append">
+                                    <a
+                                        href="#"
+                                        className="btn btn-secondary btn-sm"
+                                        type="button"
+                                        onClick={this.handleTitleFilterSearch}>
+                                        Search
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="col-md-4">
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">Owner</span>
-                            </div>
+                        <div className="form-group col-md-2">
+                            <label htmlFor="owner-filter">Owner</label>
                             <Select
-                                className="react-select"
+                                id="owner-filter"
+                                styles={reactSelectStyles}
+                                menuContainerStyle={{ zIndex: 5 }}
+                                className={
+                                    'react-select form-control form-control-sm'
+                                }
                                 onChange={this.handleOwnerChange}
                                 defaultValue={this.allOption}
                                 options={ownersOptions} />
                         </div>
-
-                    </div>
-
-                    <div className="col-md-4">
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">Tags</span>
-                            </div>
+                        <div className="form-group col-md-2">
+                            <label htmlFor="tag-filter">Tag</label>
                             <Select
-                                className="react-select"
+                                id="tag-filter"
+                                styles={reactSelectStyles}
+                                className={
+                                    'react-select form-control form-control-sm'
+                                }
                                 onChange={this.handleTagsChange}
                                 isMulti
                                 options={tagsOptions} />
                         </div>
-                    </div>
-
-                    <div className="col-md-4">
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    Terms
-                                </span>
-                            </div>
+                        <div className="form-group col-md-2">
+                            <label htmlFor="term-filter">Term</label>
                             <Select
-                                className="react-select"
+                                id="term-filter"
+                                styles={reactSelectStyles}
+                                className={
+                                    'react-select form-control form-control-sm'
+                                }
                                 onChange={this.handleTermsChange}
                                 isMulti
                                 formatGroupLabel={termGroupLabel}
                                 options={termsOptions} />
                         </div>
-                    </div>
-
-                    <div className="col">
-                        <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">Date</span>
-                            </div>
+                        <div className="form-group col-md-2">
+                            <label htmlFor="filter-date">Date</label>
                             <Select
-                                className="react-select"
+                                id="filter-date"
+                                styles={reactSelectStyles}
+                                className={
+                                    'react-select form-control form-control-sm'
+                                }
                                 onChange={this.handleDateChange}
                                 defaultValue={{
                                     value: 'all', label: 'All'
@@ -334,9 +343,9 @@ export default class AssetFilter extends React.Component {
                                 ]} />
                         </div>
                     </div>
-                </div>
+                </form>
                 {pagination}
-            </div>
+            </React.Fragment>
         );
     }
 }

@@ -88,16 +88,16 @@ class Main extends React.Component {
     render() {
         return (
             <div>
-                <nav id="three-section-tabs"
-                     className="nav nav-tabs flex-column flex-sm-row"
-                     role="tablist">
+                <nav
+                    id="three-section-tabs"
+                    className="nav nav-tabs flex-column flex-sm-row"
+                    role="tablist">
                     <a
                         className={'flex-sm-fill text-sm-center nav-link ' + (
                             this.state.activeTab === 'collection' ?
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="collection"
                         onClick={this.clickTab}
                         title="Collection"
                         href="collection/">
@@ -109,7 +109,6 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="assignments"
                         onClick={this.clickTab}
                         title="Assignments"
                         href="assignments/">
@@ -121,7 +120,6 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="projects"
                         onClick={this.clickTab}
                         title="Projects"
                         href="projects/">

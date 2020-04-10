@@ -89,16 +89,8 @@ export default class CollectionTab extends React.Component {
               this.state.viewMode === 'grid' ? 'List' : 'Grid';
 
         return (
-            <div role="tabpanel" aria-labelledby="collection-tab">
+            <div role="tabpanel">
                 <h1>Collection</h1>
-                <h1>All Items</h1>
-                <button
-                    className="button-sm float-right"
-                    data-testid="viewtoggle"
-                    onClick={this.toggleViewMode}>
-                    {alternateViewMode} view
-                </button>
-                <p>Select an item to create a selection from it.</p>
 
                 <AssetFilter
                     assets={this.props.assets}
@@ -107,6 +99,13 @@ export default class CollectionTab extends React.Component {
                     owners={this.props.owners}
                     tags={this.props.tags}
                     terms={this.props.terms} />
+
+                <button
+                    className="button-sm float-right"
+                    data-testid="viewtoggle"
+                    onClick={this.toggleViewMode}>
+                    {alternateViewMode} view
+                </button>
 
                 <div className="assets">
                     {assetsDom}

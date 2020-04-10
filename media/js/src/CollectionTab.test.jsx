@@ -45,7 +45,6 @@ it('renders the collection tab grid layout', async() => {
     });
 
     expect(container.textContent).toContain('Collection');
-    expect(container.textContent).toContain('Select an item');
     expect(container.textContent).toContain(fakeAsset.title);
     expect(container.textContent).toContain('Previous');
     expect(container.textContent).toContain('Next');
@@ -82,7 +81,6 @@ it('renders the collection tab list layout', async() => {
     expect(button.innerHTML).toBe('Grid view');
 
     expect(container.textContent).toContain('Collection');
-    expect(container.textContent).toContain('Select an item');
     expect(container.textContent).toContain(fakeAsset.title);
     expect(container.textContent).not.toContain('Previous');
     expect(container.textContent).not.toContain('Next');

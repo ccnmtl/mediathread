@@ -89,7 +89,7 @@ export default class CollectionTab extends React.Component {
               this.state.viewMode === 'grid' ? 'List' : 'Grid';
 
         return (
-            <div role="tabpanel" aria-labelledby="collection-tab">
+            <div role="tabpanel">
                 <h1>Collection</h1>
 
                 <AssetFilter

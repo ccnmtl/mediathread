@@ -98,7 +98,6 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="collection"
                         onClick={this.clickTab}
                         title="Collection"
                         href="collection/">
@@ -110,7 +109,6 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="assignments"
                         onClick={this.clickTab}
                         title="Assignments"
                         href="assignments/">
@@ -122,7 +120,6 @@ class Main extends React.Component {
                                 'active' : ''
                         )}
                         role="tab"
-                        aria-controls="projects"
                         onClick={this.clickTab}
                         title="Projects"
                         href="projects/">

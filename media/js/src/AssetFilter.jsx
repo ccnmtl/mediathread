@@ -232,7 +232,7 @@ export default class AssetFilter extends React.Component {
                 padding: '0'
             }),
             control: (provided, state) => ({
-                ...provided,
+                // ...provided,
                 display: 'flex',
                 height: 'calc(1.5em + .5rem + 2px)'
             }),
@@ -269,8 +269,6 @@ export default class AssetFilter extends React.Component {
                                     type="text"
                                     className="form-control form-control-sm"
                                     placeholder="Search for..."
-                                    aria-label="Search for..."
-                                    aria-describedby="button-addon"
                                     onChange={this.handleTitleChange}
                                     onKeyDown={this.handleTitleSearch} />
                                 <div className="input-group-append">

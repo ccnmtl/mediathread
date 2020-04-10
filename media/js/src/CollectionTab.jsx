@@ -90,7 +90,7 @@ export default class CollectionTab extends React.Component {
 
         return (
             <div role="tabpanel">
-                <h1>Collection</h1>
+                <h1 className="page-title">Collection</h1>
 
                 <AssetFilter
                     assets={this.props.assets}

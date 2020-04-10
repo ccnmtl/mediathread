@@ -71,19 +71,15 @@ it('renders the collection tab list layout', async() => {
         );
     });
 
-    const button = document.querySelector('[data-testid=viewtoggle]');
-    expect(button.innerHTML).toBe('List view');
+    const button = document.querySelector('[data-testid=viewtoggle-list]');
+    expect(button.innerHTML).toBe('List');
 
     act(() => {
         button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(button.innerHTML).toBe('Grid view');
-
     expect(container.textContent).toContain('Collection');
     expect(container.textContent).toContain(fakeAsset.title);
-    expect(container.textContent).not.toContain('Previous');
-    expect(container.textContent).not.toContain('Next');
 
     // remove the mock to ensure tests are completely isolated
     global.fetch.mockRestore();

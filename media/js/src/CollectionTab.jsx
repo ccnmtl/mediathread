@@ -13,7 +13,7 @@ export default class CollectionTab extends React.Component {
             selectedAsset: null
         };
 
-        this.toggleViewMode = this.toggleViewMode.bind(this);
+        this.setViewMode = this.setViewMode.bind(this);
         this.toggleAssetView = this.toggleAssetView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
     }
@@ -24,13 +24,10 @@ export default class CollectionTab extends React.Component {
         }
     }
 
-    toggleViewMode() {
-        let newMode = 'list';
-        if (this.state.viewMode === 'list') {
-            newMode = 'grid';
-        }
-        this.setState({viewMode: newMode});
+    setViewMode(mode) {
+        this.setState({viewMode: mode});
     }
+
     toggleAssetView(asset, e) {
         // If this was an <a> link, prevent default behavior.
         if (e) {
@@ -85,9 +82,6 @@ export default class CollectionTab extends React.Component {
             assetsDom = <CollectionListView assetList={assetList} />;
         }
 
-        const alternateViewMode =
-              this.state.viewMode === 'grid' ? 'List' : 'Grid';
-
         return (
             <div role="tabpanel">
                 <h1 className="page-title">Collection</h1>
@@ -95,17 +89,12 @@ export default class CollectionTab extends React.Component {
                 <AssetFilter
                     assets={this.props.assets}
                     assetCount={this.props.assetCount}
-                    onUpdateAssets={this.props.onUpdateAssets}
                     owners={this.props.owners}
                     tags={this.props.tags}
-                    terms={this.props.terms} />
-
-                <button
-                    className="button-sm float-right"
-                    data-testid="viewtoggle"
-                    onClick={this.toggleViewMode}>
-                    {alternateViewMode} view
-                </button>
+                    terms={this.props.terms}
+                    viewMode={this.state.viewMode}
+                    onUpdateAssets={this.props.onUpdateAssets}
+                    setViewMode={this.setViewMode} />
 
                 <div className="assets">
                     {assetsDom}

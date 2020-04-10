@@ -3,8 +3,22 @@
 }
 
 /* accessible blue */
-a {
+a, a.page-link {
     color: #0056b3;
+}
+
+.page-item.active .page-link {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-outline-primary {
+    color: #0056b3;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active {
+    background-color: #0056b3;
+    border-color: #0056b3;
 }
 
 h1, h2, h3, h4, h5, h6 {

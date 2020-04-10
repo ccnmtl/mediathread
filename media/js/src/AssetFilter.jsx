@@ -227,18 +227,32 @@ export default class AssetFilter extends React.Component {
         // https://react-select.com/styles#style-object
         //
         const reactSelectStyles = {
-            container: () => ({
-                padding: 0
+            container: (provided, state) => ({
+                ...provided,
+                padding: '0'
             }),
-            control: () => ({
-                display: 'flex'
+            control: (provided, state) => ({
+                ...provided,
+                display: 'flex',
+                height: 'calc(1.5em + .5rem + 2px)'
             }),
-            menu: () => ({
-                zIndex: 3,
+            singleValue: (provided, state) => ({
+                ...provided,
+                top: '45%'
+            }),
+            placeholder: (provided, state) => ({
+                ...provided,
+                top: '45%'
+            }),
+            menu: (provided, state) => ({
+                ...provided,
+                zIndex: '3',
                 backgroundColor: 'white'
             }),
-            menuList: () => ({
-                zIndex: 3,
+            menuList: (provided, state) => ({
+                ...provided,
+                backgroundColor: 'white',
+                zIndex: '3',
                 backgroundColor: 'white'
             })
         };

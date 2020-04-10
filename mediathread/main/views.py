@@ -1197,10 +1197,10 @@ Faculty: {} <{}>
             messages.error(
                 self.request,
                 u'There was an error activating your course. The ' +
-                u'<strong><a href="?{}">{}</a></strong> ' +
-                u'course already exists.'.format(
+                u'<strong><a href="?{}">{}</a></strong> '.format(
                     urlencode({'set_course': self.course.group.name}),
-                    self.course.title))
+                    self.course.title) +
+                u'course already exists.')
             return super(AffilActivateView, self).form_valid(form)
 
         try:

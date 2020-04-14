@@ -284,12 +284,15 @@ export default class AssetFilter extends React.Component {
         const reactSelectStyles = {
             container: (provided, state) => ({
                 ...provided,
-                padding: '0'
+                padding: 0,
+                height: 'fit-content',
+                zIndex: 4
             }),
             control: (provided, state) => ({
-                // ...provided,
-                display: 'flex',
-                height: 'calc(1.5em + .5rem + 2px)'
+                ...provided,
+                borderWidth: 0,
+                minHeight: 'fit-content',
+                height: 'fit-content'
             }),
             singleValue: (provided, state) => ({
                 ...provided,
@@ -301,13 +304,21 @@ export default class AssetFilter extends React.Component {
             }),
             menu: (provided, state) => ({
                 ...provided,
-                zIndex: '3',
-                backgroundColor: 'white'
+                backgroundColor: 'white',
+                zIndex: 4
             }),
             menuList: (provided, state) => ({
                 ...provided,
                 backgroundColor: 'white',
-                zIndex: '3'
+                zIndex: 4
+            }),
+            indicatorsContainer: (provided, state) => ({
+                ...provided,
+                height: '29px'
+            }),
+            input: (provided, state) => ({
+                ...provided,
+                height: '21px'
             })
         };
 

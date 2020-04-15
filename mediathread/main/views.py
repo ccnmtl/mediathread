@@ -136,15 +136,14 @@ def course_detail_view(request):
 class CourseDetailView(LoggedInMixin, DetailView):
     model = Course
 
-    def get(self, request, *args, **kwargs):
-        # Attach the course to the view, and the session, so the
-        # courseaffils middleware behaves correctly.
+    def dispatch(self, request, *args, **kwargs):
         course_pk = kwargs.get('pk')
         course = get_object_or_404(Course, pk=course_pk)
+        request.course = course
         self.course = course
         request.session[SESSION_KEY] = course
 
-        return super(CourseDetailView, self).get(request, *args, **kwargs)
+        return super(CourseDetailView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(CourseDetailView, self).get_context_data(**kwargs)

@@ -287,7 +287,7 @@ export default class AssetFilter extends React.Component {
                 ...provided,
                 padding: 0,
                 height: 'fit-content',
-                zIndex: 4
+                zIndex: 5
             }),
             control: (provided, state) => ({
                 ...provided,
@@ -303,14 +303,8 @@ export default class AssetFilter extends React.Component {
                 ...provided,
                 top: '45%'
             }),
-            menu: (provided, state) => ({
+            menuPortal: (provided, state) => ({
                 ...provided,
-                backgroundColor: 'white',
-                zIndex: 4
-            }),
-            menuList: (provided, state) => ({
-                ...provided,
-                backgroundColor: 'white',
                 zIndex: 4
             }),
             indicatorsContainer: (provided, state) => ({
@@ -352,6 +346,7 @@ export default class AssetFilter extends React.Component {
                             <label htmlFor="owner-filter">Owner</label>
                             <Select
                                 id="owner-filter"
+                                menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 menuContainerStyle={{ zIndex: 5 }}
                                 className={
@@ -365,6 +360,7 @@ export default class AssetFilter extends React.Component {
                             <label htmlFor="tag-filter">Tag</label>
                             <Select
                                 id="tag-filter"
+                                menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 className={
                                     'react-select form-control form-control-sm'
@@ -377,6 +373,7 @@ export default class AssetFilter extends React.Component {
                             <label htmlFor="term-filter">Term</label>
                             <Select
                                 id="term-filter"
+                                menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 className={
                                     'react-select form-control form-control-sm'
@@ -390,6 +387,7 @@ export default class AssetFilter extends React.Component {
                             <label htmlFor="filter-date">Date</label>
                             <Select
                                 id="filter-date"
+                                menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 className={
                                     'react-select form-control form-control-sm'

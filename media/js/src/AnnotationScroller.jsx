@@ -14,21 +14,23 @@ export default class AnnotationScroller extends React.Component {
     onPrevClick(e) {
         e.preventDefault();
         if (this.state.currentAnnotation > 0) {
+            const newAnnotation = this.state.currentAnnotation - 1;
             this.setState({
-                currentAnnotation: this.state.currentAnnotation - 1
+                currentAnnotation: newAnnotation
             });
 
-            this.props.onSelectedAnnotationUpdate(this.state.currentAnnotation);
+            this.props.onSelectedAnnotationUpdate(newAnnotation);
         }
     }
     onNextClick(e) {
         e.preventDefault();
         if (this.state.currentAnnotation < this.props.annotations.length - 1) {
+            const newAnnotation = this.state.currentAnnotation + 1;
             this.setState({
-                currentAnnotation: this.state.currentAnnotation + 1
+                currentAnnotation: newAnnotation
             });
 
-            this.props.onSelectedAnnotationUpdate(this.state.currentAnnotation);
+            this.props.onSelectedAnnotationUpdate(newAnnotation);
         }
     }
     showAnnotation() {

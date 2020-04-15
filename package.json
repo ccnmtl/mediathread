@@ -41,7 +41,7 @@
   "dependencies": {
     "get-youtube-id": "^1.0.1",
     "lodash": "^4.17.15",
-    "ol": "^6.1.1",
+    "ol": "^6.3.1",
     "react": "~16.13.0",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-data-table-component": "^6.2.0",

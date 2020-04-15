@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
+import GeoJSON from 'ol/format/GeoJSON';
+import MultiPoint from 'ol/geom/MultiPoint';
 import {getCenter} from 'ol/extent';
 import ImageLayer from 'ol/layer/Image';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
-import Polygon from 'ol/geom/Polygon';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
-import {RegularShape, Fill, Stroke, Style} from 'ol/style';
+import {
+    Circle as CircleStyle, Fill, Stroke, Style
+} from 'ol/style';
 
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
@@ -93,57 +95,110 @@ export default class GridAsset extends React.Component {
         super(props);
 
         this.state = {
-            annotationLayer: new VectorLayer({
-                source: new VectorSource()
-            }),
             selectedAnnotation: null
         };
+
+        this.annotationLayer = new VectorLayer({
+            source: new VectorSource()
+        });
 
         this.asset = new Asset(this.props.asset);
 
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);
     }
+    /**
+     * Transform a relative geometry object to absolute, given a width,
+     * height, and zoom.
+     */
+    transform(geometry, width, height, zoom) {
+        return {
+            type: geometry.type,
+            coordinates: [
+                geometry.coordinates[0].map(function(el) {
+                    return [
+                        (width / 2) + (el[0] * (zoom * 2)),
+                        (height / 2) + (el[1] * (zoom * 2))
+                    ];
+                })
+            ]
+        };
+    }
     onSelectedAnnotationUpdate(annotation) {
         const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
+
+        this.setState({selectedAnnotation: a});
+
         if (type === 'image') {
-            const stroke = new Stroke({color: 'black', width: 2});
-            const fill = new Fill({color: 'red'});
-            const style = new Style({
-                image: new RegularShape({
-                    fill: fill,
-                    stroke: stroke,
-                    points: 4,
-                    radius: 10,
-                    angle: Math.PI / 4
+            const styles = [
+                new Style({
+                    stroke: new Stroke({
+                        color: 'blue',
+                        width: 3
+                    }),
+                    fill: new Fill({
+                        color: 'rgba(0, 0, 255, 0.1)'
+                    })
+                }),
+                new Style({
+                    image: new CircleStyle({
+                        radius: 4,
+                        fill: new Fill({
+                            color: 'orange'
+                        })
+                    }),
+                    geometry: function(feature) {
+                        // return the coordinates of the first ring of
+                        // the polygon
+                        var coordinates =
+                            feature.getGeometry().getCoordinates()[0];
+                        return new MultiPoint(coordinates);
+                    }
                 })
+            ];
+
+            this.map.removeLayer(this.annotationLayer);
+
+            const img = this.asset.getImage();
+            const geometry = this.transform(
+                a.annotation.geometry,
+                img.width, img.height,
+                a.annotation.zoom
+            );
+            const geojsonObject = {
+                type: 'FeatureCollection',
+                crs: {
+                    type: 'name',
+                    properties: {
+                        name: 'Flatland:1'
+                    }
+                },
+                features: [
+                    {
+                        type: 'Feature',
+                        geometry: geometry
+                    }
+                ]
+            };
+
+            const source = new VectorSource({
+                features: new GeoJSON().readFeatures(geojsonObject)
             });
-
-            const poly = new Polygon(a.annotation.geometry.coordinates);
-
-            const feature = new Feature({
-                geometry: poly,
-                name: a.title
-            });
-            feature.setStyle(style);
-
-            this.map.removeLayer(this.state.annotationLayer);
 
             const newLayer = new VectorLayer({
-                source: new VectorSource({
-                    features: [feature]
-                })
+                source: source,
+                style: styles
             });
 
-            this.setState({newLayer});
+            this.annotationLayer = newLayer;
             this.map.addLayer(newLayer);
 
+            // Fit the selection in the view
+            const feature = source.getFeatures()[0];
+            const polygon = feature.getGeometry();
             const view = this.map.getView();
-            const center = getCenter(poly.getExtent());
-            view.setCenter(center);
-        } else if (type === 'video') {
-            this.setState({selectedAnnotation: a});
+            view.fit(polygon, {padding: [20, 20, 20, 20]});
         }
     }
     render() {
@@ -211,7 +266,6 @@ export default class GridAsset extends React.Component {
     }
     componentDidMount() {
         if (this.asset.getType() === 'image') {
-            const thumbnail = this.asset.getThumbnail();
             const img = this.asset.getImage();
 
             const extent = [
@@ -220,7 +274,7 @@ export default class GridAsset extends React.Component {
             ];
 
             const projection = new Projection({
-                code: 'xkcd-image',
+                code: 'Flatland:1',
                 units: 'pixels',
                 extent: extent
             });
@@ -232,7 +286,7 @@ export default class GridAsset extends React.Component {
                 layers: [
                     new ImageLayer({
                         source: new Static({
-                            url: thumbnail,
+                            url: img.url,
                             projection: projection,
                             imageExtent: extent
                         })
@@ -241,7 +295,7 @@ export default class GridAsset extends React.Component {
                 view: new View({
                     projection: projection,
                     center: getCenter(extent),
-                    zoom: 1
+                    zoom: 0.5
                 })
             });
         }

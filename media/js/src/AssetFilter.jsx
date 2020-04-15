@@ -245,7 +245,8 @@ export default class AssetFilter extends React.Component {
                         </li>
                         <li className="page-item active">
                             <div className="page-link">
-                                {this.state.currentPage + 1} of {this.pageCount}
+                                {this.state.currentPage + 1} of {
+                                    Math.max(this.pageCount, 1)}
                                 <span className="sr-only">(current)</span>
                             </div>
                         </li>

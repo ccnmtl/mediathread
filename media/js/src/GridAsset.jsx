@@ -17,24 +17,18 @@ import {
 
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
+import {capitalizeFirstLetter} from './utils';
 
-class MySelections extends React.Component {
+class Selections extends React.Component {
     render() {
         let annotationsDom = null;
-        let annotations = [];
-
-        const me = this;
-        this.props.asset.annotations.forEach(function(annotation) {
-            if (annotation.author.id === me.props.currentUser) {
-                annotations.push(annotation);
-            }
-        });
+        const annotations = this.props.asset.annotations;
 
         if (annotations.length > 0) {
             annotationsDom = <React.Fragment>
-                <div className="dropdown-divider"></div>
+                <hr />
                 <div className="card-body">
-                    <h5 className="card-title">My Annotations</h5>
+                    <h6>Selections</h6>
                     <AnnotationScroller
                         annotations={annotations}
                         onSelectedAnnotationUpdate={
@@ -48,43 +42,7 @@ class MySelections extends React.Component {
     }
 }
 
-MySelections.propTypes = {
-    asset: PropTypes.object,
-    onSelectedAnnotationUpdate: PropTypes.func.isRequired,
-    currentUser: PropTypes.number.isRequired
-};
-
-class ClassSelections extends React.Component {
-    render() {
-        let annotationsDom = null;
-        let annotations = [];
-
-        const me = this;
-        this.props.asset.annotations.forEach(function(annotation) {
-            if (annotation.author.id !== me.props.currentUser) {
-                annotations.push(annotation);
-            }
-        });
-
-        if (annotations.length > 0) {
-            annotationsDom = <React.Fragment>
-                <div className="dropdown-divider"></div>
-                <div className="card-body">
-                    <h5 className="card-title">Class Annotations</h5>
-                    <AnnotationScroller
-                        annotations={annotations}
-                        onSelectedAnnotationUpdate={
-                            this.props.onSelectedAnnotationUpdate}
-                    />
-                </div>
-            </React.Fragment>;
-        }
-
-        return annotationsDom;
-    }
-}
-
-ClassSelections.propTypes = {
+Selections.propTypes = {
     asset: PropTypes.object,
     onSelectedAnnotationUpdate: PropTypes.func.isRequired,
     currentUser: PropTypes.number.isRequired
@@ -207,10 +165,12 @@ export default class GridAsset extends React.Component {
         let annotationDom = null;
         if (type === 'video' && this.state.selectedAnnotation) {
             annotationDom = (
-                <div className="vid-timecode">
-                    {this.state.selectedAnnotation.annotation.startCode}
-                    &nbsp;-&nbsp;
-                    {this.state.selectedAnnotation.annotation.endCode}
+                <div className="timecode">
+                    <span className="badge badge-dark">
+                        {this.state.selectedAnnotation.annotation.startCode}
+                        &nbsp;-&nbsp;
+                        {this.state.selectedAnnotation.annotation.endCode}
+                    </span>
                 </div>
             );
         }
@@ -224,21 +184,32 @@ export default class GridAsset extends React.Component {
 
         return (
             <div className="card" key={this.props.asset.id}>
-                <div className="image-overlay">
-                    {type === 'image' && (
-                        <div
-                            id={`map-${this.props.asset.id}`}
-                            className="ol-map"></div>
-                    )}
-                    {type === 'video' && (
-                        <img
-                            style={{'maxWidth': '100%'}}
-                            alt={'Video thumbnail for: ' +
-                                 this.props.asset.title}
-                            src={this.asset.getThumbnail()} />
-                    )}
-                    {annotationDom}
-                    <span className="badge badge-secondary">{type}</span>
+                <div className="card-thumbnail">
+                    <div className="media-type">
+                        <span className="badge badge-light">
+                            {capitalizeFirstLetter(type)}
+                        </span>
+                    </div>
+                    <div className="image-overlay">
+                        <a
+                            href={assetLink}
+                            title={this.props.asset.title}>
+                            {type === 'image' && (
+                                <div
+                                    className="ol-map mx-auto d-block img-fluid"
+                                    id={`map-${this.props.asset.id}`}></div>
+                            )}
+                            {type === 'video' && (
+                                <img
+                                    className="mx-auto d-block img-fluid"
+                                    style={{'maxWidth': '100%'}}
+                                    alt={'Video thumbnail for: ' +
+                                         this.props.asset.title}
+                                    src={this.asset.getThumbnail()} />
+                            )}
+                        </a>
+                        {annotationDom}
+                    </div>
                 </div>
 
                 <div className="card-body">
@@ -252,15 +223,13 @@ export default class GridAsset extends React.Component {
                             {this.props.asset.title}
                         </a>
                     </h5>
+                    <Selections
+                        asset={this.props.asset}
+                        onSelectedAnnotationUpdate={
+                            this.onSelectedAnnotationUpdate}
+                        currentUser={this.props.currentUser} />
                 </div>
-                <MySelections
-                    asset={this.props.asset}
-                    onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
-                    currentUser={this.props.currentUser} />
-                <ClassSelections
-                    asset={this.props.asset}
-                    onSelectedAnnotationUpdate={this.onSelectedAnnotationUpdate}
-                    currentUser={this.props.currentUser} />
+
             </div>
         );
     }

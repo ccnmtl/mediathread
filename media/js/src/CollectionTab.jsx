@@ -49,11 +49,12 @@ export default class CollectionTab extends React.Component {
     }
     render() {
         let assets = [];
-        let assetsDom = <div className="alert alert-info" role="alert">
-                            <strong>Just a moment.</strong>
-                            Mediathread is currently loading all of
-                            the items within this collection.
-                        </div>;
+        let assetsDom = (
+            <div className="alert alert-info" role="alert">
+                <strong>Just a moment.</strong>&nbsp;
+                Mediathread is currently loading all of
+                the items within this collection.
+            </div>);
         const me = this;
 
         let assetList = this.props.assets;
@@ -69,18 +70,37 @@ export default class CollectionTab extends React.Component {
             // Display error to user
             assetsDom = <strong>{this.props.assetError}</strong>;
         } else if (assetList && this.state.viewMode === 'grid') {
-            assetList.forEach(function(asset) {
-                assets.push(
+            let assetGroup = [];
+            assetList.forEach(function(asset, idx) {
+                // Put the assets in card-groups, three at a time.
+                if (assetGroup.length >= 3) {
+                    assets.push(
+                        <div key={idx} className="card-group">
+                            {assetGroup}
+                        </div>
+                    );
+                    assetGroup = [];
+                }
+
+                assetGroup.push(
                     <GridAsset
                         key={asset.id} asset={asset}
                         toggleAssetView={me.toggleAssetView}
                         currentUser={me.props.currentUser} />);
             });
 
+            if (assetGroup.length > 0) {
+                assets.push(
+                    <div key={assetGroup.length} className="card-group">
+                        {assetGroup}
+                    </div>
+                );
+            }
+
             if (assets.length === 0) {
                 assetsDom = 'No assets found.';
             } else {
-                assetsDom = <div className="card-columns">{assets}</div>;
+                assetsDom = <div>{assets}</div>;
             }
         } else if (assetList && this.state.viewMode === 'list') {
             assetsDom = <CollectionListView assetList={assetList} />;

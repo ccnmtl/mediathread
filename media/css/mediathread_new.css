@@ -25,6 +25,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
 }
 
+h6 {
+    text-transform: uppercase;
+}
+
 h1.page-title {
     padding: .5em 0em .5em 0em;
 }
@@ -4219,26 +4223,31 @@ ul.section-tabs>li>a.active {
     margin-right: 4px;
 }
 
-.image-overlay .badge {
+.image-overlay .media-type>.badge {
     position: absolute;
     right: 10px;
     top: 10px;
-}
-
-.ol-map {
-    height: 200px;
 }
 
 .image-overlay {
     position: relative;
 }
 
-.vid-timecode {
-    background-color: white;
-    color: black;
+.timecode {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
+    left: 50%;
+    bottom: .8em;
+}
+
+/*
+  Centered with this method here:
+  https://stackoverflow.com/a/1777282/173630
+ */
+.timecode .badge-dark {
+    position: relative;
+    left: -50%;
+    background-color: black;
+    color: yellow;
 }
 
 #skip a {
@@ -4269,4 +4278,26 @@ ul.section-tabs>li>a.active {
 
 #search-well .form-group {
     z-index: 4;
+}
+
+.card-thumbnail {
+    background-color: #999;
+    position: relative;
+}
+
+.card-thumbnail img, .ol-map {
+    height: 12em;
+}
+
+.card-title, .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.media-type {
+    position: absolute;
+    left: .8em;
+    top: .8em;
+    z-index: 1;
 }

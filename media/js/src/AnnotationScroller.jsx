@@ -41,24 +41,54 @@ export default class AnnotationScroller extends React.Component {
     render() {
         const selectedAnnotation =
               this.props.annotations[this.state.currentAnnotation];
-        return <div>
-            <small>
-                {this.state.currentAnnotation + 1} of&nbsp;
-                {this.props.annotations.length}
-            </small>
-
+        return (
             <div>
-                <strong>
-                    {selectedAnnotation.title}
-                </strong>
-            </div>
+                <p className="card-text">
+                    <strong>
+                        {selectedAnnotation.title}
+                    </strong>
+                </p>
 
-            <a href="#" title="Previous annotation"
-                onClick={this.onPrevClick}>&lt; Previous</a>
-            <span className="pipe-divider">|</span>
-            <a href="#" title="Next annotation"
-                onClick={this.onNextClick}>Next &gt;</a>
-        </div>;
+
+                <nav aria-label="Annotation navigation">
+                    <ul className="pagination btn-sm">
+                        <li className={
+                            'page-item ' + (
+                                this.state.currentAnnotation > 0 ?
+                                    '' : 'disabled'
+                            )
+                        }>
+                            <a
+                                className="page-link" href="#"
+                                onClick={this.onPrevClick}
+                                aria-label="Previous">
+                                <span aria-hidden="true">«</span>
+                            </a>
+                        </li>
+                        <li className="page-item">
+                            <a className="page-link" href="#">
+                                {this.state.currentAnnotation + 1} of&nbsp;
+                                {this.props.annotations.length}
+                            </a>
+                        </li>
+                        <li className={
+                            'page-item ' + (
+                                (this.state.currentAnnotation <
+                                 (this.props.annotations.length - 1)) ?
+                                    '' : 'disabled'
+                            )
+                        }>
+                            <a
+                                className="page-link" href="#"
+                                onClick={this.onNextClick}
+                                aria-label="Next">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        );
     }
     componentDidMount() {
         this.showAnnotation();

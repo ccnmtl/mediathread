@@ -49,7 +49,11 @@ export default class CollectionTab extends React.Component {
     }
     render() {
         let assets = [];
-        let assetsDom = 'Loading Assets...';
+        let assetsDom = <div className="alert alert-info" role="alert">
+                            <strong>Just a moment.</strong>
+                            Mediathread is currently loading all of
+                            the items within this collection.
+                        </div>;
         const me = this;
 
         let assetList = this.props.assets;

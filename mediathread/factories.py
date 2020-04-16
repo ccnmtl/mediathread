@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
-import re
+import json
 
 from courseaffils.models import Course
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.test.client import RequestFactory
 from django.utils.text import slugify
 import factory
@@ -195,10 +196,18 @@ class CourseInvitationFactory(factory.DjangoModelFactory):
 class MediathreadTestMixin(object):
 
     def create_discussion(self, course, instructor):
-        data = {'comment_html': '%s Discussion' % course.title,
-                'obj_pk': course.id,
-                'model': 'course', 'app_label': 'courseaffils'}
-        request = RequestFactory().post('/discussion/create/', data)
+        data = {
+            'comment_html': '%s Discussion' % course.title,
+            'obj_pk': course.id,
+            'model': 'course',
+            'app_label': 'courseaffils'
+        }
+        request = RequestFactory().post(
+            reverse('discussion-create', args=[course.pk]),
+            data,
+            # Mock an ajax request because the response is simpler to
+            # deal with manually here.
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         request.user = instructor
         request.course = course
         request.collaboration_context, created = \
@@ -207,8 +216,10 @@ class MediathreadTestMixin(object):
                 object_pk=str(course.pk))
         response = discussion_create(request)
 
-        parent_id = re.search(r'\d+', response.url).group()
-        return ThreadedComment.objects.get(id=parent_id)
+        response_data = json.loads(response.content)
+        thread_id = response_data.get('context').get('discussion').get('id')
+
+        return ThreadedComment.objects.get(id=thread_id)
 
     def add_comment(self, parent_comment, author):
         comment = ThreadedComment.objects.create(

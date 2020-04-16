@@ -1,5 +1,6 @@
 from courseaffils.middleware import CourseManagerMiddleware, SESSION_KEY
 from courseaffils.models import Course
+from django.shortcuts import get_object_or_404
 
 from lti_auth.models import LTICourseContext
 from mediathread.main.views import MethCourseListView
@@ -24,6 +25,18 @@ class MethCourseManagerMiddleware(CourseManagerMiddleware):
             except LTICourseContext.DoesNotExist:
                 # the course *should* exist, but don't break if it doesn't
                 pass
+
+        # Don't display the switch course view when making an ajax
+        # request that contains the 'course' GET param. Ultimately,
+        # the course_list_view() part of this middleware should be
+        # removed, or at least be changed to a simpler redirect-style
+        # override.
+        course_id = request.GET.get('course')
+        if course_id:
+            course = get_object_or_404(Course, pk=course_id)
+            request.course = course
+            self.decorate_request(request, course)
+            return None
 
         return super(MethCourseManagerMiddleware, self).process_request(
             request, MethCourseListView)

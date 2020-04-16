@@ -2,7 +2,6 @@ import unicodecsv as csv
 import json
 
 from courseaffils.lib import in_course_or_404
-from courseaffils.models import Course
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -17,6 +16,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible
 from mediathread.projects.models import Project, ProjectNote
+from mediathread.util import attach_course_to_request
 
 
 def ajax_required(func):
@@ -56,12 +56,7 @@ def faculty_only(func):
 class RestrictedMaterialsMixin(object):
 
     def dispatch(self, *args, **kwargs):
-        if not self.request.course:
-            # Get the course from the URL if it exists.
-            course_pk = kwargs.get('course_pk')
-            if course_pk:
-                course = get_object_or_404(Course, pk=course_pk)
-                self.request.course = course
+        self.request = attach_course_to_request(self.request, **kwargs)
 
         record_owner_name = kwargs.pop('record_owner_name', None)
         self.initialize(record_owner_name)
@@ -188,12 +183,7 @@ class LoggedInMixin(object):
 class LoggedInCourseMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        if not self.request.course:
-            # Get the course from the URL if it exists.
-            course_pk = kwargs.get('course_pk')
-            if course_pk:
-                course = get_object_or_404(Course, pk=course_pk)
-                self.request.course = course
+        self.request = attach_course_to_request(self.request, **kwargs)
 
         if not self.request.user.is_staff:
             in_course_or_404(self.request.user.username, self.request.course)
@@ -204,12 +194,7 @@ class LoggedInCourseMixin(object):
 class LoggedInFacultyMixin(object):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        if not self.request.course:
-            # Get the course from the URL if it exists.
-            course_pk = kwargs.get('course_pk')
-            if course_pk:
-                course = get_object_or_404(Course, pk=course_pk)
-                self.request.course = course
+        self.request = attach_course_to_request(self.request, **kwargs)
 
         if not cached_course_is_faculty(self.request.course,
                                         self.request.user):
@@ -221,6 +206,8 @@ class LoggedInFacultyMixin(object):
 class LoggedInSuperuserMixin(object):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
+        self.request = attach_course_to_request(self.request, **kwargs)
+
         return super(LoggedInSuperuserMixin, self).dispatch(*args, **kwargs)
 
 

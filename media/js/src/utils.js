@@ -179,9 +179,16 @@ const formatTimecode = function(totalSeconds) {
     return pad2(units[0]) + ':' + pad2(units[1]) + ':' + pad2(units[2]);
 };
 
+const capitalizeFirstLetter = function(str) {
+    return str.length ?
+        str.charAt(0).toUpperCase() + str.slice(1)
+        : str;
+};
+
 export {
     getAssets, getAsset, createSelection, createSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
-    pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode
+    pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
+    capitalizeFirstLetter
 };

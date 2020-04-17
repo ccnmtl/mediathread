@@ -26,3 +26,5 @@ wheelhouse
 mediathread/templates/debug.html
 docs/_build/
 geckodriver.log
+cypress/videos
+cypress/screenshots

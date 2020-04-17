@@ -216,12 +216,32 @@ LTI_EXTRA_PARAMETERS = ['custom_course_context']
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
-if 'test' in sys.argv or 'jenkins' in sys.argv:
+if 'test' in sys.argv or \
+   'jenkins' in sys.argv or \
+   'integrationserver' in sys.argv:
+    DEBUG = False
+    TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
     BROKER_BACKEND = 'memory'
     CELERY_ALWAYS_EAGER = True
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+if 'integrationserver' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+            'HOST': '',
+            'PORT': '',
+            'USER': '',
+            'PASSWORD': '',
+            'ATOMIC_REQUESTS': True,
+        }
+    }
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 BLOCKED_EMAIL_DOMAINS = []
 

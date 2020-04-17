@@ -3,6 +3,7 @@ dist: bionic
 addons:
   firefox: "68.7.0esr"
 env:
+  - TEST_SUITE=jstest
   - TEST_SUITE=jenkins
   - TEST_SUITE=harvest1
   - TEST_SUITE=harvest2
@@ -11,10 +12,11 @@ python:
   - "3.6"
 matrix:
   exclude:
+  - python: '2.7'
+    env: TEST_SUITE=jstest
   - python: '3.6'
     env: TEST_SUITE=harvest1
   - python: '3.6'
     env: TEST_SUITE=harvest2
 script:
-  - make jstest
   - make $TEST_SUITE

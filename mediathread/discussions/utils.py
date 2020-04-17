@@ -8,8 +8,11 @@ from structuredcollaboration.models import Collaboration
 def get_course_discussions(course):
 
     content_type = ContentType.objects.get_for_model(Course)
-    parent = Collaboration.objects.get(object_pk=course.id,
-                                       content_type=content_type)
+    try:
+        parent = Collaboration.objects.get(
+            object_pk=course.id, content_type=content_type)
+    except Collaboration.DoesNotExist:
+        return []
 
     content_type = ContentType.objects.get_for_model(ThreadedComment)
     colls = Collaboration.objects.filter(_parent=parent,

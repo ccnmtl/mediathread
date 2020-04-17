@@ -182,3 +182,22 @@ function showMessage(msg, onclose, customTitle, position) {
         $dialogConfirm.dialog('widget').position(position);
     }
 }
+
+/**
+ * Append course ID as a GET param to the url, if necessary.
+ */
+// eslint-disable-next-line no-unused-vars
+function urlWithCourse(url, courseId) {
+    if (!courseId) {
+        courseId = MediaThread.current_course;
+    }
+
+    if (!url.match(/(\?|&)course=\d+/)) {
+        if (url.match(/\?\w+=/)) {
+            return url + '&course=' + courseId;
+        } else {
+            return url + '?course=' + courseId;
+        }
+    }
+    return url;
+}

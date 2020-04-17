@@ -158,9 +158,9 @@ class AssetResource(ModelResource):
                 pass  # don't break in this situation
 
         values = ctx.values()
-        return sorted(values,
-                      key=lambda value: self.to_time(value['modified']),
-                      reverse=True)
+        return sorted(
+            values,
+            key=lambda value: value.get('title', '').lower())
 
     def render_assets(self, request, assets):
         self.request = request

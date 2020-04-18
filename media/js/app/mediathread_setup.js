@@ -218,6 +218,9 @@
                 return render(text).toLowerCase();
             };
         },
+        getCourseId: function() {
+            return MediaThread.current_course;
+        },
         addressableCourses: MediaThread.addressable_courses
     };
 })();

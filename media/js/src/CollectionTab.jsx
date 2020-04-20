@@ -4,6 +4,7 @@ import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './AssetFilter';
 import AssetDetail from './AssetDetail';
+import NoAssetsFound from './NoAssetsFound';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -98,7 +99,7 @@ export default class CollectionTab extends React.Component {
             }
 
             if (assets.length === 0) {
-                assetsDom = 'No assets found.';
+                assetsDom = <NoAssetsFound />;
             } else {
                 assetsDom = <div>{assets}</div>;
             }

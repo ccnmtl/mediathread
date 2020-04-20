@@ -21,24 +21,25 @@ import {capitalizeFirstLetter} from './utils';
 
 class Selections extends React.Component {
     render() {
-        let annotationsDom = null;
         const annotations = this.props.asset.annotations;
-
-        if (annotations.length > 0) {
-            annotationsDom = <React.Fragment>
+        return (
+            <React.Fragment>
                 <hr />
-                <div className="card-body">
-                    <h6>Selections</h6>
+                <h6>Selections</h6>
+                {annotations.length > 0 && (
                     <AnnotationScroller
                         annotations={annotations}
                         onSelectedAnnotationUpdate={
                             this.props.onSelectedAnnotationUpdate}
                     />
-                </div>
-            </React.Fragment>;
-        }
-
-        return annotationsDom;
+                )}
+                {annotations.length <= 0 && (
+                    <p className="card-text text-muted">
+                        None
+                    </p>
+                )}
+            </React.Fragment>
+        );
     }
 }
 

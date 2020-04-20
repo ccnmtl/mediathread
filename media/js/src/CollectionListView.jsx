@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
+import NoAssetsFound from './NoAssetsFound';
 
 export default class CollectionListView extends React.Component {
     render() {
-        if (this.props.assetList === 0) {
-            return 'No assets found.';
+        if (this.props.assetList.length === 0) {
+            return <NoAssetsFound />;
         } else {
             const columns = [
                 {

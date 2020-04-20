@@ -147,6 +147,9 @@ class Main extends React.Component {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    const loadingMsg = document.querySelector('.react-loading-msg');
+    loadingMsg.remove();
+
     const domContainer = document.querySelector('#react-container');
     ReactDOM.render(<Main />, domContainer);
 });

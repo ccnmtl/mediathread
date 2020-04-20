@@ -5,6 +5,15 @@
     Home
 {% endblock %}
 
+{% block masthead %}
+    {% include "navbar.html" %}
+    <div class="alert alert-dark react-loading-msg" role="alert">
+        <span class="spinner-border spinner-border-sm text-dark"
+              role="status" aria-hidden="true"></span>
+        <strong>Hang on.</strong> Mediathread is currently loading.
+    </div>
+{% endblock %}
+
 {% block js %}
     <script src="{% static 'js/bundle.js' %}"></script>
 {% endblock %}
@@ -12,9 +21,5 @@
 {% block content %}
     {{ block.super }}
 
-    <div id="react-container">
-        <div class="alert alert-dark" role="alert">
-            <strong>Hang on.</strong> Mediathread is currently loading.
-        </div>
-    </div>
+    <div id="react-container"></div>
 {% endblock %}

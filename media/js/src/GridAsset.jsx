@@ -219,8 +219,10 @@ export default class GridAsset extends React.Component {
                                 this.props.toggleAssetView.bind(
                                     this, this.props.asset)}
                             href={assetLink}
-                            title={this.props.asset.title}>
-                            {this.props.asset.title}
+                            title={this.props.asset.title}
+                            dangerouslySetInnerHTML={{
+                                __html: this.props.asset.title
+                            }}>
                         </a>
                     </h5>
                     <Selections

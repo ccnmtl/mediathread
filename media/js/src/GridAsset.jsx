@@ -184,55 +184,59 @@ export default class GridAsset extends React.Component {
         }
 
         return (
-            <div className="card" key={this.props.asset.id}>
-                <div className="card-thumbnail">
-                    <div className="media-type">
-                        <span className="badge badge-light">
-                            {capitalizeFirstLetter(type)}
-                        </span>
+            <div className="col-sm-4">
+                <div className="card" key={this.props.asset.id}>
+                    <div className="card-thumbnail">
+                        <div className="media-type">
+                            <span className="badge badge-light">
+                                {capitalizeFirstLetter(type)}
+                            </span>
+                        </div>
+                        <div className="image-overlay">
+                            <a
+                                href={assetLink}
+                                title={this.props.asset.title}>
+                                {type === 'image' && (
+                                    <div
+                                        className={
+                                            'ol-map mx-auto d-block img-fluid'
+                                        }
+                                        id={`map-${this.props.asset.id}`}></div>
+                                )}
+                                {type === 'video' && (
+                                    <img
+                                        className="mx-auto d-block img-fluid"
+                                        style={{'maxWidth': '100%'}}
+                                        alt={'Video thumbnail for: ' +
+                                             this.props.asset.title}
+                                        src={this.asset.getThumbnail()} />
+                                )}
+                            </a>
+                            {annotationDom}
+                        </div>
                     </div>
-                    <div className="image-overlay">
-                        <a
-                            href={assetLink}
-                            title={this.props.asset.title}>
-                            {type === 'image' && (
-                                <div
-                                    className="ol-map mx-auto d-block img-fluid"
-                                    id={`map-${this.props.asset.id}`}></div>
-                            )}
-                            {type === 'video' && (
-                                <img
-                                    className="mx-auto d-block img-fluid"
-                                    style={{'maxWidth': '100%'}}
-                                    alt={'Video thumbnail for: ' +
-                                         this.props.asset.title}
-                                    src={this.asset.getThumbnail()} />
-                            )}
-                        </a>
-                        {annotationDom}
+
+                    <div className="card-body">
+                        <h5 className="card-title">
+                            <a
+                                onClick={
+                                    this.props.toggleAssetView.bind(
+                                        this, this.props.asset)}
+                                href={assetLink}
+                                title={this.props.asset.title}
+                                dangerouslySetInnerHTML={{
+                                    __html: this.props.asset.title
+                                }}>
+                            </a>
+                        </h5>
+                        <Selections
+                            asset={this.props.asset}
+                            onSelectedAnnotationUpdate={
+                                this.onSelectedAnnotationUpdate}
+                            currentUser={this.props.currentUser} />
                     </div>
-                </div>
 
-                <div className="card-body">
-                    <h5 className="card-title">
-                        <a
-                            onClick={
-                                this.props.toggleAssetView.bind(
-                                    this, this.props.asset)}
-                            href={assetLink}
-                            title={this.props.asset.title}
-                            dangerouslySetInnerHTML={{
-                                __html: this.props.asset.title
-                            }}>
-                        </a>
-                    </h5>
-                    <Selections
-                        asset={this.props.asset}
-                        onSelectedAnnotationUpdate={
-                            this.onSelectedAnnotationUpdate}
-                        currentUser={this.props.currentUser} />
                 </div>
-
             </div>
         );
     }

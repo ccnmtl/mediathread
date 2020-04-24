@@ -21,13 +21,17 @@ const authedFetch = function(url, method='get', data=null) {
 
 const getAssets = function(
     title='', owner='', tags=[], terms=[], date='all',
-    offset=0
+    offset=0, orderBy='title'
 ) {
     const params = new URLSearchParams();
 
     // Pagination
     params.append('limit', 20);
     params.append('offset', offset);
+
+    // Ordering
+    // https://django-tastypie.readthedocs.io/en/latest/resources.html#ordering
+    params.append('order_by', orderBy);
 
     // Always include the annotations
     params.append('annotations', true);

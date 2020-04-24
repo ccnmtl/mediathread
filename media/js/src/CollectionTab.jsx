@@ -107,7 +107,11 @@ export default class CollectionTab extends React.Component {
                 assetsDom = <div>{assets}</div>;
             }
         } else if (assetList && this.state.viewMode === 'list') {
-            assetsDom = <CollectionListView assetList={assetList} />;
+            assetsDom = (
+                <CollectionListView
+                    assets={assetList}
+                    onUpdateAssets={this.props.onUpdateAssets} />
+            );
         }
 
         return (

@@ -16,12 +16,12 @@ class AssetResource(ModelResource):
 
     class Meta:
         queryset = Asset.objects.none()
-        excludes = ['added', 'modified', 'course',
+        excludes = ['added', 'course',
                     'active', 'metadata_blob']
         list_allowed_methods = []
         detail_allowed_methods = []
         authentication = ClassLevelAuthentication()
-        ordering = ['modified', 'id', 'title']
+        ordering = ['modified', 'id', 'title', 'author']
 
     def __init__(self, *args, **kwargs):
         # @todo: extras is a side-effect of the Mustache templating system
@@ -145,6 +145,10 @@ class AssetResource(ModelResource):
         self.request = request
         note_resource = SherdNoteResource()
         ctx = {}
+
+        # Sort notes with tastypie's built-in ordering
+        notes = self.apply_sorting(notes, request.GET.dict())
+
         for note in notes.all():
             try:
                 note.asset.primary
@@ -158,19 +162,11 @@ class AssetResource(ModelResource):
                 pass  # don't break in this situation
 
         values = ctx.values()
-        return sorted(
-            values,
-            key=lambda value: value.get('title', '').lower())
 
-    def render_assets(self, request, assets):
-        self.request = request
-        lst = []
-        for asset in assets.all():
-            abundle = self.build_bundle(obj=asset, request=request)
-            dehydrated = self.full_dehydrate(abundle)
-            ctx = self._meta.serializer.to_simple(dehydrated, None)
-            lst.append(ctx)
-        return sorted(lst, key=lambda item: item.title)
+        # Need to sort the assets here in python, instead of in the db, because
+        # the asset list here depends on the notes.
+        ordering = get_ordering(request)
+        return sort_assets(values, ordering)
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(
@@ -178,6 +174,42 @@ class AssetResource(ModelResource):
             key=lambda bundle: bundle.data['modified'],
             reverse=True)
         return to_be_serialized
+
+
+def sort_assets(assets, ordering):
+    if ordering.get('order_by') == 'title':
+        def sort_func(x):
+            return x.get('title', '').strip().lower()
+    elif ordering.get('order_by') == 'author':
+        def sort_func(x):
+            return x.get('author').get('public_name')
+    else:
+        def sort_func(x):
+            return x.get(ordering.get('order_by'), '')
+
+    return sorted(
+        assets,
+        key=sort_func,
+        reverse=ordering.get('reverse'))
+
+
+def get_ordering(request):
+    """
+    Get the ordering from a request object
+
+    Returns a dict with order_by (field name) and reverse (asc or
+    desc) values.
+    """
+    order_by = request.GET.get('order_by', 'title')
+    order_reverse = False
+    if order_by.startswith('-'):
+        order_by = order_by[1:]
+        order_reverse = True
+
+    return {
+        'order_by': order_by,
+        'reverse': order_reverse,
+    }
 
 
 def add_note_ctx_to_json(note_ctx, the_json):

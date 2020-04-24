@@ -41,12 +41,22 @@ export default class AnnotationScroller extends React.Component {
     render() {
         const selectedAnnotation =
               this.props.annotations[this.state.currentAnnotation];
+
+        let assetLink = '#';
+        if (window.MediaThread) {
+            const courseId = window.MediaThread.current_course;
+            // TODO: link to annotation, not just asset.
+            assetLink =
+                `/course/${courseId}/react/asset/` +
+                selectedAnnotation.asset_id;
+        }
+
         return (
             <div>
                 <p className="card-text">
-                    <strong>
+                    <a href={assetLink} title={selectedAnnotation.title}>
                         {selectedAnnotation.title}
-                    </strong>
+                    </a>
                 </p>
 
 

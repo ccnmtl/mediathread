@@ -16,3 +16,5 @@ harvest1: $(PY_SENTINAL)
 harvest2: $(PY_SENTINAL)
 	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 3 -a mediathread.projects
 
+integrationserver: $(PY_SENTINAL)
+	$(MANAGE) integrationserver

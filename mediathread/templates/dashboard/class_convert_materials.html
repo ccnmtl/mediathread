@@ -22,7 +22,7 @@
     {% if not endpoint %}
         This utility is not configured for your environment.
     {% else %}
-        <form action="{% url 'course-convert-materials' %}"
+        <form action="{% url 'course-convert-materials' request.course.pk %}"
          name="course-clear-form" method="POST"
          class="{% if form.errors %}has-error{% endif %}">
             <p>The following media will be converted</p>

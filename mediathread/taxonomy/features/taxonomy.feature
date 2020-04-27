@@ -49,7 +49,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 
@@ -80,7 +80,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 
@@ -113,7 +113,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 
@@ -144,7 +144,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
         
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
         
@@ -180,7 +180,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 
@@ -224,7 +224,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 
@@ -252,7 +252,7 @@ Feature: Taxonomy
         Given I am instructor_one in Sample Course
 
         # shortcut to taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         Given the taxonomy workspace is loaded
         I see "Create Concept"
 

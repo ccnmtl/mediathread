@@ -5,15 +5,15 @@ Feature: Instructor Dashboard
         Given I am student_one in Sample Course
 
         # Manage Sources
-        When I access the url "/dashboard/sources/"
+        When I access the course url "/dashboard/sources/"
         I see "forbidden"
 
         # Publishing Settings
-        When I access the url "/dashboard/settings/"
+        When I access the course url "/dashboard/settings/"
         I see "forbidden"
 
         # Taxonomy
-        When I access the url "/taxonomy/"
+        When I access the course url "/taxonomy/"
         I see "forbidden"
 
         # Reports

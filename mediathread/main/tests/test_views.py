@@ -123,15 +123,18 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue(
             self.client.login(username=self.student_one.username,
                               password='test'))
-        response = self.client.get('/dashboard/migrate/')
+        response = self.client.get(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 403)
 
     def test_not_logged_in(self):
-        response = self.client.get('/dashboard/migrate/')
+        response = self.client.get(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 302)
 
     def test_get_context_data(self):
-        request = RequestFactory().get('/dashboard/migrate/')
+        request = RequestFactory().get(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]))
         request.user = self.instructor_three
         request.course = self.sample_course
 
@@ -165,7 +168,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
     def test_post_invalidcourse(self):
         data = {'fromCourse': 42}
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -180,7 +185,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
             'on_behalf_of': self.alt_student.id
         }
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -197,7 +204,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
             'on_behalf_of': self.alt_instructor.id
         }
 
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.superuser
         request.course = self.sample_course
 
@@ -215,7 +224,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -256,7 +267,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -289,7 +302,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -322,7 +337,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -363,7 +380,9 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         # Migrate assets from SampleCourse into Alternate Course
         # test_instructor_three is a member of both courses
-        request = RequestFactory().post('/dashboard/migrate/', data)
+        request = RequestFactory().post(
+            reverse('dashboard-migrate', args=[self.sample_course.pk]),
+            data)
         request.user = self.instructor_three
         request.course = self.alt_course
 
@@ -562,18 +581,21 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
         self.superuser = UserFactory(is_staff=True, is_superuser=True)
 
     def test_not_logged_in(self):
-        response = self.client.get('/dashboard/sources/')
+        response = self.client.get(
+            reverse('class-manage-sources', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 302)
 
     def test_as_student(self):
         self.assertTrue(
             self.client.login(username=self.student_one.username,
                               password='test'))
-        response = self.client.get('/dashboard/sources/')
+        response = self.client.get(
+            reverse('class-manage-sources', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 403)
 
     def test_get_context(self):
-        request = RequestFactory().get('/dashboard/sources/')
+        request = RequestFactory().get(
+            reverse('class-manage-sources', args=[self.sample_course.pk]))
         request.user = self.instructor_one
         request.course = self.sample_course
 
@@ -597,7 +619,9 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
             course_details.UPLOAD_PERMISSION_ADMINISTRATOR
         }
 
-        self.client.post('/dashboard/sources/', data)
+        self.client.post(
+            reverse('class-manage-sources', args=[self.sample_course.pk]),
+            data)
         self.assertTrue(course_details.can_upload(self.superuser,
                                                   self.sample_course))
         self.assertFalse(course_details.can_upload(self.instructor_one,
@@ -779,7 +803,7 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(self.alt_comment, comments.first())
 
     def test_access(self):
-        url = reverse('course-delete-materials')
+        url = reverse('course-delete-materials', args=[self.sample_course.pk])
         data = {'clear_all': True, 'username': self.student_one.username}
 
         self.client.login(username=self.student_one.username, password='test')
@@ -787,7 +811,7 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_clear_all(self):
-        url = reverse('course-delete-materials')
+        url = reverse('course-delete-materials', args=[self.sample_course.pk])
         data = {'clear_all': True, 'username': self.superuser.username}
 
         self.client.login(username=self.superuser.username, password='test')
@@ -816,7 +840,7 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
             Course.objects.filter(title='Sample Course').exists())
 
     def test_clear_student_only(self):
-        url = reverse('course-delete-materials')
+        url = reverse('course-delete-materials', args=[self.sample_course.pk])
         data = {'clear_all': False, 'username': self.superuser.username}
 
         self.client.login(username=self.superuser.username, password='test')
@@ -851,7 +875,7 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
             Course.objects.filter(title='Sample Course').exists())
 
     def test_clear_and_delete_course(self):
-        url = reverse('course-delete-materials')
+        url = reverse('course-delete-materials', args=[self.sample_course.pk])
         data = {
             'clear_all': True,
             'username': self.superuser.username,
@@ -886,7 +910,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
-        self.url = reverse('course-roster')
+        self.url = reverse('course-roster', args=[self.sample_course.pk])
 
     def test_validate_uni(self):
         view = CourseAddUserByUNIView()
@@ -1423,8 +1447,9 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
 class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(InstructorDashboardSettingsViewTest, self).setUp()
-        self.url = reverse('course-settings-general')
         self.course = CourseFactory()
+        self.url = reverse(
+            'course-settings-general', args=[self.course.pk])
 
         self.u.groups.add(self.course.group)
         self.u.groups.add(self.course.faculty_group)
@@ -1433,7 +1458,8 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.client.get(set_course_url)
 
     def test_get(self):
-        response = self.client.get(reverse('course-settings-general'))
+        response = self.client.get(
+            reverse('course-settings-general', args=[self.course.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.course.title)
         self.assertContains(response, 'Course Settings')
@@ -1441,7 +1467,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_post(self):
         response = self.client.post(
-            reverse('course-settings-general'),
+            reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1462,7 +1488,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(allow_item_download(course), False)
 
         response = self.client.post(
-            reverse('course-settings-general'),
+            reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1486,7 +1512,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(allow_item_download(course), True)
 
         response = self.client.post(
-            reverse('course-settings-general'),
+            reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1502,7 +1528,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         # course in a different term.
         CourseFactory(title='New Title')
         response = self.client.post(
-            reverse('course-settings-general'),
+            reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
                 'homepage_title': 'new homepage title',
@@ -1525,7 +1551,7 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
     def test_post_empty_title(self):
         CourseFactory(title='New Title')
         response = self.client.post(
-            reverse('course-settings-general'),
+            reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': '     ',
                 'homepage_title': 'new homepage title',
@@ -1551,14 +1577,15 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
 
     def test_post_reset(self):
         CourseFactory(title='New Title')
-        response = self.client.post(reverse('course-settings-general'), {
-            'title': '     ',
-            'homepage_title': 'doesnt update',
-            'publish_to_world': False,
-            'see_eachothers_items': True,
-            'see_eachothers_selections': False,
-            'reset': True,
-        }, follow=True)
+        response = self.client.post(
+            reverse('course-settings-general', args=[self.course.pk]), {
+                'title': '     ',
+                'homepage_title': 'doesnt update',
+                'publish_to_world': False,
+                'see_eachothers_items': True,
+                'see_eachothers_selections': False,
+                'reset': True,
+            }, follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.course.title)
@@ -1575,27 +1602,29 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
 
-        response = self.client.post(reverse('course-settings-general'), {
-            'title': 'New Title 1',
-            'homepage_title': 'updated homepage title',
-            'publish_to_world': True,
-            'see_eachothers_items': True,
-            'see_eachothers_selections': True
-        }, follow=True)
+        response = self.client.post(
+            reverse('course-settings-general', args=[self.course.pk]), {
+                'title': 'New Title 1',
+                'homepage_title': 'updated homepage title',
+                'publish_to_world': True,
+                'see_eachothers_items': True,
+                'see_eachothers_selections': True
+            }, follow=True)
         self.assertEqual(response.status_code, 200)
         course.refresh_from_db()
         self.assertEqual(course.title, 'New Title 1')
         self.assertEqual(course_information_title(course),
                          'updated homepage title')
 
-        response = self.client.post(reverse('course-settings-general'), {
-            'title': 'New Title',
-            'homepage_title': 'doesnt update',
-            'publish_to_world': True,
-            'see_eachothers_items': True,
-            'see_eachothers_selections': True,
-            'reset': True,
-        }, follow=True)
+        response = self.client.post(
+            reverse('course-settings-general', args=[self.course.pk]), {
+                'title': 'New Title',
+                'homepage_title': 'doesnt update',
+                'publish_to_world': True,
+                'see_eachothers_items': True,
+                'see_eachothers_selections': True,
+                'reset': True,
+            }, follow=True)
         self.assertEqual(response.status_code, 200)
         course.refresh_from_db()
         self.assertEqual(course.title, 'New Title 1')

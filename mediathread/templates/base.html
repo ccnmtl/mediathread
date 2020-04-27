@@ -92,9 +92,9 @@
                                 </li>
                             {% endif %}
 
-                            {% if role_in_course == 'instructor' %}
+                            {% if role_in_course == 'instructor' and course %}
                             <li>
-                                <a href="{% url 'course-settings-general' %}">
+                                <a href="{% url 'course-settings-general' course.pk %}">
                                     Course Settings
                                 </a>
                             </li>

@@ -204,14 +204,16 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
+        kwargs.pop('course_pk')
         perm = request.POST.get(course_details.UPLOAD_PERMISSION_KEY)
         request.course.add_detail(course_details.UPLOAD_PERMISSION_KEY, perm)
 
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')
 
-        return HttpResponseRedirect(reverse("class-manage-sources"))
+        return HttpResponseRedirect(
+            reverse('class-manage-sources', args=[request.course.pk]))
 
 
 @allow_http("POST")
@@ -565,7 +567,8 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
             self.request.course.delete()
             self.success_url = '/?unset_course'
         else:
-            self.success_url = reverse('course-delete-materials')
+            self.success_url = reverse(
+                'course-delete-materials', args=[self.request.course.pk])
             messages.add_message(self.request, messages.INFO,
                                  'All requested materials were deleted')
 
@@ -627,7 +630,8 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
         return folder
 
     def post(self, request, *args, **kwargs):
-        success_url = reverse('course-convert-materials')
+        success_url = reverse(
+            'course-convert-materials', args=[request.course.pk])
         (url, secret) = self.get_conversion_endpoint()
         if not url:
             messages.add_message(
@@ -654,6 +658,7 @@ class CourseRosterView(LoggedInFacultyMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = ListView.get_context_data(self, **kwargs)
+        ctx['course'] = self.request.course
         ctx['invitations'] = CourseInvitation.objects.filter(
             course=self.request.course)
         ctx['blocked'] = settings.BLOCKED_EMAIL_DOMAINS
@@ -671,7 +676,8 @@ class CoursePromoteUserView(LoggedInFacultyMixin, View):
         msg = u'{} is now faculty'.format(user_display_name(student))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=[request.course.pk]))
 
 
 class CourseDemoteUserView(LoggedInFacultyMixin, View):
@@ -684,7 +690,8 @@ class CourseDemoteUserView(LoggedInFacultyMixin, View):
         msg = u'{} is now a student'.format(user_display_name(faculty))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+                reverse('course-roster', args=[request.course.pk]))
 
 
 class CourseRemoveUserView(LoggedInFacultyMixin, View):
@@ -703,7 +710,8 @@ class CourseRemoveUserView(LoggedInFacultyMixin, View):
             user_display_name(user))
         messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=[request.course.pk]))
 
 
 def unis_list(unis):
@@ -732,7 +740,7 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
     def post(self, request):
         unis = request.POST.get('unis', None)
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=[request.course.pk])
 
         if unis is None:
             msg = 'Please enter a comma-separated list of UNIs'
@@ -771,7 +779,8 @@ class CourseAddUserByUNIView(LoggedInFacultyMixin, View):
 
                 messages.add_message(request, messages.INFO, msg)
 
-        return HttpResponseRedirect(reverse('course-roster'))
+        return HttpResponseRedirect(
+            reverse('course-roster', args=[request.course.pk]))
 
 
 class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
@@ -835,7 +844,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
                 raise ValidationError(msg, code='blocked')
 
     def post(self, request):
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=[request.course.pk])
         emails = self.request.POST.get('emails', None)
 
         if emails is None:
@@ -863,7 +872,7 @@ class CourseInviteUserByEmailView(LoggedInFacultyMixin, View):
 class CourseResendInviteView(LoggedInFacultyMixin, View):
 
     def post(self, request):
-        url = reverse('course-roster')
+        url = reverse('course-roster', args=[request.course.pk])
         pk = request.POST.get('invite-id', None)
         invite = get_object_or_404(CourseInvitation, pk=pk)
 
@@ -941,7 +950,8 @@ class InstructorDashboardSettingsView(
         return course
 
     def get_success_url(self):
-        return reverse('course-settings-general')
+        return reverse(
+            'course-settings-general', args=[self.request.course.pk])
 
     def get_context_data(self, *args, **kwargs):
         ctx = super(InstructorDashboardSettingsView, self).get_context_data(

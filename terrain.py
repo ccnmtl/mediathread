@@ -18,9 +18,7 @@ from selenium.webdriver.support.expected_conditions import (
     visibility_of_element_located, invisibility_of_element_located,
     visibility_of, presence_of_element_located)
 from selenium.webdriver.support.ui import WebDriverWait
-
 import selenium.webdriver.support.ui as ui
-
 
 try:
     from lxml import html  # nosec
@@ -42,8 +40,11 @@ def reset_database(variables):
 
     world.browser.get(django.django_url("/test/clear/"))
 
-    # add the sample course and some user data by default
+    # This needs to be imported here instead of at the top of the
+    # file, to let the app load.
     from mediathread.factories import MediathreadTestMixin
+
+    # Add the sample course and some user data by default
     world.mixin = MediathreadTestMixin()
     world.mixin.setup_sample_course()
 
@@ -142,6 +143,17 @@ def there_is_a_teaching_assistant_in_sample_course(step):
 
 @step(r'I access the url "(.*)"')
 def access_url(step, url):
+    if world.using_selenium:
+        world.browser.get(django.django_url(url))
+    else:
+        response = world.client.get(django.django_url(url))
+        world.dom = html.fromstring(response.content)
+
+
+@step(r'I access the course url "(.*)"')
+def access_course_url(step, url):
+    url = '/course/' + str(world.mixin.sample_course.pk) + url
+
     if world.using_selenium:
         world.browser.get(django.django_url(url))
     else:
@@ -305,23 +317,26 @@ def there_is_a_text_link(step, text):
 
 @step(u'I click the "([^"]*)" link')
 def i_click_the_link(step, text):
+    text = text.strip()
+
     if not world.using_selenium:
         for a in world.dom.cssselect("a"):
             if a.text:
-                if text.strip().lower() in a.text.strip().lower():
+                if text.lower() in a.text.strip().lower():
                     href = a.attrib['href']
                     response = world.client.get(django.django_url(href))
                     world.dom = html.fromstring(response.content)
                     return
-        assert False, "could not find the '%s' link" % text
+        assert False, 'Couldn\'t find link for: ' + text
     else:
         try:
             link = world.browser.find_element_by_partial_link_text(text)
-            assert link.is_displayed()
-            link.click()
         except NoSuchElementException:
             world.browser.get_screenshot_as_file("/tmp/selenium.png")  # nosec
-            assert False, text
+            assert False, 'Couldn\'t find link for: ' + text
+
+        assert link.is_displayed()
+        link.click()
 
 
 @step(u'I scroll to the "([^"]*)" link')
@@ -586,7 +601,10 @@ def i_click_the_title_item_name_icon(step, title, name):
 @step(u'Given publish to world is ([^"]*)')
 def given_publish_to_world_is_value(step, value):
     if world.using_selenium:
-        world.browser.get(django.django_url("/dashboard/settings/"))
+        world.browser.get(django.django_url(
+            '/course/{}/dashboard/settings/'.format(
+                world.mixin.sample_course.pk)
+        ))
 
         elt = world.browser.find_element_by_id("id_publish_to_world")
         if value == 'enabled' and elt.get_attribute('checked') is None:
@@ -598,7 +616,11 @@ def given_publish_to_world_is_value(step, value):
             'button[type="submit"]')
         if elt:
             elt.click()
-            world.browser.get(django.django_url("/"))
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, 'pagebody')))
+
+        world.browser.get(django.django_url('/'))
 
 
 @step(u'Then publish to world is ([^"]*)')
@@ -883,7 +905,10 @@ def i_save_the_project_changes(step):
 @step(u'Given the selection visibility is set to "([^"]*)"')
 def given_the_selection_visibility_is_value(step, value):
     if world.using_selenium:
-        world.browser.get(django.django_url("/dashboard/settings/"))
+        world.browser.get(django.django_url(
+            '/course/{}/dashboard/settings/'.format(
+                world.mixin.sample_course.pk)
+        ))
 
         elt = world.browser.find_element_by_id(
             'id_see_eachothers_selections')
@@ -896,13 +921,20 @@ def given_the_selection_visibility_is_value(step, value):
             'button[type="submit"]')
         if elt:
             elt.click()
-            world.browser.get(django.django_url("/"))
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, 'pagebody')))
+
+        world.browser.get(django.django_url('/'))
 
 
 @step(u'Given the item visibility is set to "([^"]*)"')
 def given_the_item_visibility_is_value(step, value):
     if world.using_selenium:
-        world.browser.get(django.django_url("/dashboard/settings/"))
+        world.browser.get(django.django_url(
+            '/course/{}/dashboard/settings/'.format(
+                world.mixin.sample_course.pk)
+        ))
 
         elt = world.browser.find_element_by_id("id_see_eachothers_items")
         if value == 'Yes' and elt.get_attribute('checked') is None:
@@ -914,7 +946,11 @@ def given_the_item_visibility_is_value(step, value):
             'button[type="submit"]')
         if elt:
             elt.click()
-            world.browser.get(django.django_url("/"))
+
+        wait = ui.WebDriverWait(world.browser, 5)
+        wait.until(visibility_of_element_located((By.ID, 'pagebody')))
+
+        world.browser.get(django.django_url('/'))
 
 
 def get_selector_from_ftype(ftype):

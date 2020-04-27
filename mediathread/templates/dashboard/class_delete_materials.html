@@ -34,7 +34,7 @@
 
 {% block dashboard_content %}
     <h3>Delete Materials</h3>
-    <form action="{% url 'course-delete-materials' %}"
+    <form action="{% url 'course-delete-materials' request.course.pk %}"
      name="course-clear-form" method="POST"
      class="{% if form.errors %}has-error{% endif %}">
         <div class="alert alert-danger">

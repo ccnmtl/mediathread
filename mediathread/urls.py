@@ -199,7 +199,8 @@ urlpatterns = [
 
     url(r'^dashboard/migrate/materials/(?P<course_id>\d+)/$',
         MigrateMaterialsView.as_view(), {}, 'dashboard-migrate-materials'),
-    url(r'^dashboard/migrate/$', MigrateCourseView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/migrate/$',
+        MigrateCourseView.as_view(),
         {}, 'dashboard-migrate'),
     url(r'^dashboard/roster/promote/', CoursePromoteUserView.as_view(),
         name='course-roster-promote'),
@@ -213,18 +214,23 @@ urlpatterns = [
         name='course-roster-invite-email'),
     url(r'^dashboard/roster/resend/email/', CourseResendInviteView.as_view(),
         name='course-roster-resend-email'),
-    url(r'^dashboard/roster/', CourseRosterView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/roster/',
+        CourseRosterView.as_view(),
         name='course-roster'),
 
-    url(r'^dashboard/sources/', CourseManageSourcesView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/sources/',
+        CourseManageSourcesView.as_view(),
         name='class-manage-sources'),
-    url(r'^dashboard/delete/materials/', CourseDeleteMaterialsView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/delete/materials/',
+        CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),
-    url(r'^dashboard/convert/materials/', CourseConvertMaterialsView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/convert/materials/',
+        CourseConvertMaterialsView.as_view(),
         name='course-convert-materials'),
     url(r'^dashboard/ingest/', CoursePanoptoIngestLogView.as_view(),
         name='course-panopto-ingest-log'),
-    url(r'^dashboard/panopto/', CoursePanoptoSourceView.as_view(),
+    url(r'^course/(?P<course_pk>\d+)/dashboard/panopto/',
+        CoursePanoptoSourceView.as_view(),
         name='course-panopto-source'),
 
     # Discussion
@@ -254,7 +260,7 @@ urlpatterns = [
     url(r'^project/', include('mediathread.projects.urls')),
 
     # Instructor Dashboard
-    url(r'^dashboard/settings/$',
+    url(r'^course/(?P<course_pk>\d+)/dashboard/settings/$',
         InstructorDashboardSettingsView.as_view(),
         name='course-settings-general'),
 
@@ -270,7 +276,8 @@ urlpatterns = [
     url(r'^stats/', TemplateView.as_view(template_name='stats.html')),
     url(r'^smoketest/', include('smoketest.urls')),
 
-    url(r'^taxonomy/', include('mediathread.taxonomy.urls')),
+    url(r'^course/(?P<course_pk>\d+)/taxonomy/',
+        include('mediathread.taxonomy.urls')),
 
     url(r'^lti/', include('lti_auth.urls')),
 

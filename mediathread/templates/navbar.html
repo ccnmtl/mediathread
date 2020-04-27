@@ -28,10 +28,10 @@
                     </a>
                 </div>
             </li>
-            {% if role_in_course == 'instructor' %}
+            {% if role_in_course == 'instructor' and request.course %}
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="{% url 'course-settings-general' %}"
+                       href="{% url 'course-settings-general' request.course.pk %}"
                        title="Configure Course">
                         Configure Course
                     </a>

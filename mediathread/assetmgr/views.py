@@ -103,7 +103,9 @@ class ManageExternalCollectionView(
         messages.add_message(request, messages.INFO, msg)
 
         redirect_url = request.POST.get('redirect-url',
-                                        reverse('class-manage-sources'))
+                                        reverse(
+                                            'class-manage-sources',
+                                            args=[request.course.pk]))
         return HttpResponseRedirect(redirect_url)
 
 
@@ -119,7 +121,8 @@ class ManageIngestView(LoggedInCourseMixin, LoggedInFacultyMixin, View):
         else:
             course_details.clear_ingest_folder(request.course)
 
-        redirect_url = reverse('class-manage-sources')
+        redirect_url = reverse(
+            'class-manage-sources', args=[request.course.pk])
         return HttpResponseRedirect(redirect_url)
 
 

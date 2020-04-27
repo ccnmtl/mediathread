@@ -39,6 +39,21 @@ def ajax_required(func):
     return wrap
 
 
+def attach_course_request(func):
+    """
+    Attach course to the request, based on the url kwarg.
+    """
+    def wrap(request, *args, **kwargs):
+        request = attach_course_to_request(request, **kwargs)
+        kwargs.pop('course_pk', None)
+
+        return func(request, *args, **kwargs)
+
+    wrap.__doc__ = func.__doc__
+    wrap.__name__ = func.__name__
+    return wrap
+
+
 def faculty_only(func):
 
     def wrap(request, *args, **kwargs):

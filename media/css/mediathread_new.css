@@ -4325,3 +4325,7 @@ ul.section-tabs>li>a.active {
         border-radius: 0;
     }
 }
+
+.react-data-table div.alert {
+    width: 100%;
+}

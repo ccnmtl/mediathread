@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DataTable, { createTheme } from 'react-data-table-component';
-import NoAssetsFound from './NoAssetsFound';
+import LoadingAssets from './alerts/LoadingAssets';
+import NoAssetsFound from './alerts/NoAssetsFound';
 import {getAssets} from './utils';
 
 export default class CollectionListView extends React.Component {
@@ -117,11 +118,13 @@ export default class CollectionListView extends React.Component {
             <DataTable
                 theme="mediathread"
                 customStyles={styles}
+                className="react-data-table"
                 columns={columns}
                 highlightOnHover
                 striped
                 sortServer
                 progressPending={this.state.loading}
+                progressComponent={<LoadingAssets />}
                 onSort={this.handleSort}
                 data={this.props.assets} />
         );

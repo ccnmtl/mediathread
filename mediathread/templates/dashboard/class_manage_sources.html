@@ -16,7 +16,7 @@
     To designate a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source".</p>
 
     {% for suggested in suggested_collections %}
-        {% map_course_collection course suggested as course_collection %}
+        {% map_course_collection request.course suggested as course_collection %}
         <div class="suggested-collection">
             <form action="{% url 'collection-add-or-remove' %}" method="POST">
                 <table>

@@ -40,11 +40,11 @@ Feature: Sources
         Then there is an Remove button
 
         # Under Add to My Collection
-        When I click the "Sample Course" link
+        When I access the course url "/"
         I see 1 source
 
         #Remove
-        When I click the "Course Settings" link
+        When I access the course url "/dashboard/settings/"
         Then I am at the Course Settings page
         When I click the "Sources" link
         Then I am at the Sources page
@@ -53,7 +53,7 @@ Feature: Sources
         Then I see "YouTube has been disabled for your class"
 
         # Under Add to My Collection
-        When I click the "Sample Course" link
+        When I access the course url "/"
         I see 0 source
 
         Finished using Selenium

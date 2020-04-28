@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from djangohelpers.lib import allow_http, rendered_with
-from mediathread.mixins import faculty_only
+from mediathread.mixins import attach_course_request, faculty_only
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
     Term, TermRelationship
 
 
 @login_required
+@attach_course_request
 @allow_http("GET")
 @rendered_with('taxonomy/taxonomy.html')
 @faculty_only

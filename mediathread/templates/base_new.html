@@ -73,7 +73,7 @@ A new base.html without the course context overwritten in the template.
         <script src="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.js"></script>
     </head>
 
-    {% course_role for request.user in course as role_in_course %}
+    {% course_role for request.user in request.course as role_in_course %}
     <body class="role-{{role_in_course}} {% block extra_body_class %}{% endblock %}">
         <div id="skip">
             <a href="#pagecontent">Skip to main content</a>

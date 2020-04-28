@@ -632,3 +632,80 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
         objects = the_json['assets']
         self.assertEqual(len(objects), 2)
+
+    def test_order_by(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student_one.username,
+                password='test'))
+
+        asset1 = AssetFactory.create(
+            title='ABCDE',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset1, author=self.student_one)
+
+        asset2 = AssetFactory.create(
+            title='zebra',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset2, author=self.student_one)
+
+        asset3 = AssetFactory.create(
+            title='Zelda',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset3, author=self.student_one)
+
+        url = '/api/asset/?order_by=title'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 5)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[0]['title'], 'ABCDE')
+        self.assertEqual(objects[4]['title'], 'Zelda')
+
+        url = '/api/asset/?order_by=-title'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 5)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[4]['title'], 'ABCDE')
+        self.assertEqual(objects[0]['title'], 'Zelda')
+
+        url = '/api/asset/?order_by=author'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 5)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+
+        url = '/api/asset/?order_by=selections'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 5)
+        self.assertEqual(objects[0]['primary_type'], 'video')
+        self.assertEqual(objects[0]['title'], 'asset 31')
+        self.assertEqual(objects[0]['annotation_count'], 1)
+        self.assertEqual(objects[4]['title'], 'asset 30')
+        self.assertEqual(objects[4]['annotation_count'], 2)
+
+        url = '/api/asset/?order_by=-selections'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 5)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[0]['title'], 'asset 30')
+        self.assertEqual(objects[0]['annotation_count'], 2)
+        self.assertEqual(objects[4]['title'], 'Zelda')
+        self.assertEqual(objects[4]['annotation_count'], 1)

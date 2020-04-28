@@ -1,13 +1,86 @@
 # pylint: disable-msg=R0904
-from django.urls import reverse
 import waffle
+import json
+import time
+from django.urls import reverse
 from mediathread.api import ClassLevelAuthentication, UserResource
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.djangosherd.api import SherdNoteResource
 from tastypie import fields
 from tastypie.resources import ModelResource
-import json
-import time
+
+
+def sort_by_title(x):
+    return x.get('title', '').strip().lower()
+
+
+def sort_by_selections(x):
+    count = x.get('annotation_count', 0)
+    try:
+        return int(count)
+    except ValueError:
+        return 0
+
+
+def sort_by_author(x):
+    return x.get('author').get('public_name')
+
+
+def sort_by_default(order_by, x):
+    return x.get(order_by, None)
+
+
+def get_sort_function(order_by):
+    if order_by == 'title':
+        return sort_by_title
+    elif order_by == 'selections':
+        return sort_by_selections
+    elif order_by == 'author':
+        return sort_by_author
+
+    return sort_by_default(order_by)
+
+
+def sort_assets(assets, ordering):
+    order_by = ordering.get('order_by')
+    sort_func = get_sort_function(order_by)
+
+    return sorted(
+        assets,
+        key=sort_func,
+        reverse=ordering.get('reverse'))
+
+
+def get_ordering(request):
+    """
+    Get the ordering from a request object
+
+    Returns a dict with order_by (field name) and reverse (asc or
+    desc) values.
+    """
+    order_by = request.GET.get('order_by', 'title')
+    order_reverse = False
+    if order_by.startswith('-'):
+        order_by = order_by[1:]
+        order_reverse = True
+
+    return {
+        'order_by': order_by,
+        'reverse': order_reverse,
+    }
+
+
+def add_note_ctx_to_json(note_ctx, the_json):
+    if note_ctx['is_global_annotation']:
+        the_json['global_annotation'] = note_ctx
+
+        the_json['global_annotation_analysis'] = (
+            len(note_ctx['vocabulary']) > 0 or
+            len(note_ctx['metadata']['body']) > 0 or
+            len(note_ctx['metadata']['tags']) > 0)
+    else:
+        the_json['annotations'].append(note_ctx)
+    return the_json
 
 
 class AssetResource(ModelResource):
@@ -146,9 +219,6 @@ class AssetResource(ModelResource):
         note_resource = SherdNoteResource()
         ctx = {}
 
-        # Sort notes with tastypie's built-in ordering
-        notes = self.apply_sorting(notes, request.GET.dict())
-
         for note in notes.all():
             try:
                 note.asset.primary
@@ -174,52 +244,3 @@ class AssetResource(ModelResource):
             key=lambda bundle: bundle.data['modified'],
             reverse=True)
         return to_be_serialized
-
-
-def sort_assets(assets, ordering):
-    if ordering.get('order_by') == 'title':
-        def sort_func(x):
-            return x.get('title', '').strip().lower()
-    elif ordering.get('order_by') == 'author':
-        def sort_func(x):
-            return x.get('author').get('public_name')
-    else:
-        def sort_func(x):
-            return x.get(ordering.get('order_by'), '')
-
-    return sorted(
-        assets,
-        key=sort_func,
-        reverse=ordering.get('reverse'))
-
-
-def get_ordering(request):
-    """
-    Get the ordering from a request object
-
-    Returns a dict with order_by (field name) and reverse (asc or
-    desc) values.
-    """
-    order_by = request.GET.get('order_by', 'title')
-    order_reverse = False
-    if order_by.startswith('-'):
-        order_by = order_by[1:]
-        order_reverse = True
-
-    return {
-        'order_by': order_by,
-        'reverse': order_reverse,
-    }
-
-
-def add_note_ctx_to_json(note_ctx, the_json):
-    if note_ctx['is_global_annotation']:
-        the_json['global_annotation'] = note_ctx
-
-        the_json['global_annotation_analysis'] = (
-            len(note_ctx['vocabulary']) > 0 or
-            len(note_ctx['metadata']['body']) > 0 or
-            len(note_ctx['metadata']['tags']) > 0)
-    else:
-        the_json['annotations'].append(note_ctx)
-    return the_json

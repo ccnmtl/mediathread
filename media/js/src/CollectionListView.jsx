@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DataTable, { createTheme } from 'react-data-table-component';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
-import {getAssets} from './utils';
+import {formatDay, getAssets} from './utils';
 
 export default class CollectionListView extends React.Component {
     constructor(props) {
@@ -69,6 +69,7 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Date',
+                format: formatDay,
                 selector: 'modified',
                 sortable: true
             }

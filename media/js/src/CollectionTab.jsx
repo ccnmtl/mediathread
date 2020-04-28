@@ -4,7 +4,8 @@ import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './AssetFilter';
 import AssetDetail from './AssetDetail';
-import NoAssetsFound from './NoAssetsFound';
+import LoadingAssets from './alerts/LoadingAssets';
+import NoAssetsFound from './alerts/NoAssetsFound';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -50,15 +51,7 @@ export default class CollectionTab extends React.Component {
     }
     render() {
         let assets = [];
-        let assetsDom = (
-            <div className="alert alert-info" role="alert">
-                <span
-                    className="spinner-border spinner-border-sm text-dark"
-                    role="status" aria-hidden="true"></span>&nbsp;
-                <strong>Just a moment.</strong>&nbsp;
-                Mediathread is currently loading all of
-                the items within this collection.
-            </div>);
+        let assetsDom = <LoadingAssets />;
         const me = this;
 
         let assetList = this.props.assets;

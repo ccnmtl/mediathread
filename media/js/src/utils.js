@@ -189,10 +189,26 @@ const capitalizeFirstLetter = function(str) {
         : str;
 };
 
+/**
+ * Display the day of an annotation object's modified time.
+ * e.g. 05.08.2018
+ *
+ * Returns a string.
+ */
+const formatDay = function(obj) {
+    const dateStr = obj.modified;
+    const date = new Date(Date.parse(dateStr));
+    return date.toLocaleDateString(undefined, {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+    }).replace(/\//g, '.');
+};
+
 export {
     getAssets, getAsset, createSelection, createSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
-    capitalizeFirstLetter
+    capitalizeFirstLetter, formatDay
 };

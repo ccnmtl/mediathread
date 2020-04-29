@@ -134,7 +134,7 @@ django-storages==1.8 # pyup: <1.9
 django-cacheds3storage==0.2.1
 
 requests-toolbelt==0.9.1
-pytz==2019.2
+pytz==2020.1
 isodate==0.6.0
 cached-property==1.5.1
 

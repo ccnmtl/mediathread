@@ -29,9 +29,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.sample_course = Course.objects.get(title='Sample Course')
         self.alt_course = Course.objects.get(title="Alternate Course")
 
-        self.asset1 = AssetFactory.create(course=self.sample_course,
-                                          author=self.instructor_one,
-                                          primary_source='image')
+        self.asset1 = AssetFactory.create(
+            title="Test Asset 1",
+            course=self.sample_course,
+            author=self.instructor_one,
+            primary_source='image')
 
         self.student_note = SherdNoteFactory(
             asset=self.asset1, author=self.student_one,
@@ -52,9 +54,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             body='instructor one global note',
             title=None, range1=None, range2=None)
 
-        self.asset2 = AssetFactory.create(course=self.sample_course,
-                                          author=self.instructor_one,
-                                          primary_source='video')
+        self.asset2 = AssetFactory.create(
+            title='Test Asset 2',
+            course=self.sample_course,
+            author=self.instructor_one,
+            primary_source='video')
         self.asset2_instructor_note = SherdNoteFactory(
             asset=self.asset2, author=self.instructor_one,
             tags=',video, instructor_one_selection,',
@@ -640,7 +644,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
                 password='test'))
 
         asset1 = AssetFactory.create(
-            title='ABCDE',
+            title='abcde',
             course=self.sample_course,
             author=self.student_one,
             primary_source='image')
@@ -656,17 +660,25 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             asset=asset2, author=self.student_one)
 
         asset3 = AssetFactory.create(
-            title='Zelda',
+            title='maurice',
             course=self.sample_course,
             author=self.instructor_one,
             primary_source='image')
         SherdNoteFactory(
             asset=asset3, author=self.student_one)
 
-        # Make 60 more items in this course to trigger pagination
+        asset4 = AssetFactory.create(
+            title='ZZzzzzz',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset4, author=self.student_one)
+
+        # Make 50 more items in this course to trigger pagination
         for i in range(50):
             asset = AssetFactory.create(
-                title='Item {}'.format(i),
+                title='item {}'.format(i),
                 course=self.sample_course,
                 author=self.student_one,
                 primary_source='image')
@@ -676,24 +688,28 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         url = '/api/asset/?order_by=title'
         response = self.client.get(url)
         the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
         objects = the_json['assets']
         self.assertEqual(len(objects), 20)
         self.assertEqual(objects[0]['primary_type'], 'image')
-        self.assertEqual(objects[0]['title'], 'ABCDE')
-        self.assertEqual(objects[19]['title'], 'Item 25')
+        self.assertEqual(objects[0]['title'], 'abcde')
+        self.assertEqual(objects[10]['title'], 'item 17')
+        self.assertEqual(objects[19]['title'], 'item 25')
 
         url = '/api/asset/?order_by=-title'
         response = self.client.get(url)
         the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
         objects = the_json['assets']
         self.assertEqual(len(objects), 20)
-        self.assertEqual(objects[0]['primary_type'], 'image')
         self.assertEqual(objects[0]['title'], 'zebra')
-        self.assertEqual(objects[4]['title'], 'Item 9')
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[19]['title'], 'item 38')
 
         url = '/api/asset/?order_by=author'
         response = self.client.get(url)
         the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
         objects = the_json['assets']
         self.assertEqual(len(objects), 20)
         self.assertEqual(objects[0]['primary_type'], 'image')
@@ -701,6 +717,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         url = '/api/asset/?order_by=-author'
         response = self.client.get(url)
         the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
         objects = the_json['assets']
         self.assertEqual(len(objects), 20)
         self.assertEqual(objects[0]['primary_type'], 'image')

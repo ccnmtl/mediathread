@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models.functions import Lower
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
@@ -1136,7 +1137,10 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         # Order by title, by default.
         ordering = request.GET.get('order_by', 'title')
-        assets = assets.order_by(ordering)
+        if ordering == 'title' or ordering == 'author':
+            assets = assets.order_by(Lower(ordering))
+        else:
+            assets = assets.order_by(ordering)
 
         offset = int(request.GET.get("offset", 0))
         limit = int(request.GET.get("limit", 20))

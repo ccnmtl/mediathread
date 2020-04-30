@@ -18,6 +18,8 @@ python:
 matrix:
   exclude:
   - python: '2.7'
+    env: TEST_SUITE=jenkins
+  - python: '2.7'
     env: TEST_SUITE=jstest
   - python: '2.7'
     env: TEST_SUITE=cypress

@@ -68,7 +68,7 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Media',
                 selector: 'primary_type',
-                sortable: true
+                sortable: false
             },
             {
                 name: 'Owner',
@@ -132,9 +132,10 @@ export default class CollectionListView extends React.Component {
                 dense
                 highlightOnHover
                 striped
-                sortServer
                 progressPending={this.state.loading}
                 progressComponent={<LoadingAssets />}
+                sortServer
+                defaultSortField="title"
                 onSort={this.handleSort}
                 data={this.props.assets} />
         );

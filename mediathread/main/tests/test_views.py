@@ -454,7 +454,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         self.assertEquals(the_json['course']['title'], 'Sample Course')
-        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEquals(len(the_json['assets']), 2)
 
         self.assertEquals(the_json['assets'][0]['title'],
                           self.asset1.title)

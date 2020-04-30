@@ -50,17 +50,17 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Selections',
                 selector: 'annotation_count',
-                sortable: true
+                sortable: false
             },
             {
                 name: 'Tags',
                 selector: 'tags',
-                sortable: true
+                sortable: false
             },
             {
                 name: 'Terms',
                 selector: 'terms',
-                sortable: true
+                sortable: false
             },
             {
                 name: 'Media',

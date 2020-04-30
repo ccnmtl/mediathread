@@ -10,66 +10,6 @@ from tastypie import fields
 from tastypie.resources import ModelResource
 
 
-def sort_by_title(x):
-    return x.get('title', '').strip().lower()
-
-
-def sort_by_selections(x):
-    count = x.get('annotation_count', 0)
-    try:
-        return int(count)
-    except ValueError:
-        return 0
-
-
-def sort_by_author(x):
-    return x.get('author').get('public_name')
-
-
-def sort_by_default(order_by, x):
-    return x.get(order_by, None)
-
-
-def get_sort_function(order_by):
-    if order_by == 'title':
-        return sort_by_title
-    elif order_by == 'selections':
-        return sort_by_selections
-    elif order_by == 'author':
-        return sort_by_author
-
-    return sort_by_default(order_by)
-
-
-def sort_assets(assets, ordering):
-    order_by = ordering.get('order_by')
-    sort_func = get_sort_function(order_by)
-
-    return sorted(
-        assets,
-        key=sort_func,
-        reverse=ordering.get('reverse'))
-
-
-def get_ordering(request):
-    """
-    Get the ordering from a request object
-
-    Returns a dict with order_by (field name) and reverse (asc or
-    desc) values.
-    """
-    order_by = request.GET.get('order_by', 'title')
-    order_reverse = False
-    if order_by.startswith('-'):
-        order_by = order_by[1:]
-        order_reverse = True
-
-    return {
-        'order_by': order_by,
-        'reverse': order_reverse,
-    }
-
-
 def add_note_ctx_to_json(note_ctx, the_json):
     if note_ctx['is_global_annotation']:
         the_json['global_annotation'] = note_ctx
@@ -188,12 +128,12 @@ class AssetResource(ModelResource):
         }
         return ctx
 
-    def update_asset_context(self, request, ctx, note):
-        if note.asset.id not in ctx:
-            abundle = self.build_bundle(obj=note.asset, request=request)
+    def update_asset_context(self, request, ctx, asset):
+        if asset.id not in ctx:
+            abundle = self.build_bundle(obj=asset, request=request)
             dehydrated = self.full_dehydrate(abundle)
             asset_ctx = self._meta.serializer.to_simple(dehydrated, None)
-            ctx[note.asset.id] = asset_ctx
+            ctx[asset.id] = asset_ctx
 
     def update_note_context(self, request, ctx, note_res, note, owner, viewer):
         is_global = note.is_global_annotation()
@@ -219,24 +159,22 @@ class AssetResource(ModelResource):
         note_resource = SherdNoteResource()
         ctx = {}
 
+        for asset in assets.all():
+            self.update_asset_context(request, ctx, asset)
+
         for note in notes.all():
             try:
                 note.asset.primary
 
-                self.update_asset_context(request, ctx, note)
-
-                self.update_note_context(request, ctx, note_resource, note,
-                                         record_owner, record_viewer)
+                self.update_note_context(
+                    request, ctx, note_resource, note,
+                    record_owner, record_viewer)
 
             except Source.DoesNotExist:
                 pass  # don't break in this situation
 
         values = ctx.values()
-
-        # Need to sort the assets here in python, instead of in the db, because
-        # the asset list here depends on the notes.
-        ordering = get_ordering(request)
-        return sort_assets(values, ordering)
+        return list(values)
 
     def alter_list_data_to_serialize(self, request, to_be_serialized):
         to_be_serialized['objects'] = sorted(

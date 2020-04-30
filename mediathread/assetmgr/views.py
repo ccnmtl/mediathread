@@ -12,7 +12,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.aggregates import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
@@ -778,8 +777,8 @@ class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
 
         # @todo - factor out the tastypie interim json step
         ar = AssetResource(include_annotations=True)
-        api_response = ar.render_list(request, None, request.user,
-                                      assets, notes)
+        api_response = ar.render_list(
+            request, None, request.user, assets, notes)
 
         if len(api_response) == 0:
             return HttpResponse("There are no videos in your collection")
@@ -1055,6 +1054,67 @@ class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
         return context
 
 
+def sort_by_title(x):
+    return x.get('title', '').strip().lower()
+
+
+def sort_by_selections(x):
+    count = x.get('annotation_count', 0)
+    try:
+        return int(count)
+    except ValueError:
+        return 0
+
+
+def sort_by_author(x):
+    return x.get('author').get('public_name')
+
+
+def sort_by_default(order_by, x):
+    return x.get(order_by, None)
+
+
+def get_sort_function(order_by):
+    if order_by == 'title':
+        return sort_by_title
+    elif order_by == 'selections':
+        return sort_by_selections
+    elif order_by == 'author':
+        return sort_by_author
+
+    return sort_by_default(order_by)
+
+
+def sort_assets(assets, ordering):
+    return assets.order_by('title')
+    order_by = ordering.get('order_by')
+    sort_func = get_sort_function(order_by)
+
+    return sorted(
+        assets,
+        key=sort_func,
+        reverse=ordering.get('reverse'))
+
+
+def get_ordering(request):
+    """
+    Get the ordering from a request object
+
+    Returns a dict with order_by (field name) and reverse (asc or
+    desc) values.
+    """
+    order_by = request.GET.get('order_by', 'title')
+    order_reverse = False
+    if order_by.startswith('-'):
+        order_by = order_by[1:]
+        order_reverse = True
+
+    return {
+        'order_by': order_by,
+        'reverse': order_reverse,
+    }
+
+
 class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                           JSONResponseMixin, View):
     """
@@ -1099,10 +1159,9 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ares = AssetResource(include_annotations=include_annotations,
                              extras={'editable': self.viewing_own_records,
                                      'citable': citable})
-        ctx['assets'] = ares.render_list(request,
-                                         self.record_owner,
-                                         self.record_viewer,
-                                         assets, notes)
+        ctx['assets'] = ares.render_list(
+            request, self.record_owner, self.record_viewer,
+            assets, notes)
 
         return ctx
 
@@ -1118,24 +1177,27 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return {'active_tags': tags, 'active_vocabulary': vocab}
 
     def apply_pagination(self, assets, notes, offset, limit):
-        # sort the object list via aggregation on the visible notes
-        assets = notes.values('asset')
-        assets = assets.annotate(last_modified=Max('modified'))
-        assets = assets.order_by('-last_modified')
-
-        # slice the list
+        """
+        Returns an (assets, notes) tuple, limited by limit, and offset
+        by offset.
+        """
         assets = assets[offset:offset + limit]
-        ids = [a['asset'] for a in assets]
+        ids = [a.pk for a in assets]
         return (assets, notes.filter(asset__id__in=ids))
 
     def get(self, request):
         if (self.record_owner):
-            assets = Asset.objects.by_course_and_user(request.course,
-                                                      self.record_owner)
+            assets = Asset.objects.by_course_and_user(
+                request.course,
+                self.record_owner)
         else:
             assets = Asset.objects.by_course(request.course)
 
         (assets, notes) = self.visible_assets_and_notes(request, assets)
+
+        # Order by title, by default.
+        ordering = request.GET.get('order_by', 'title')
+        assets = assets.order_by(ordering)
 
         offset = int(request.GET.get("offset", 0))
         limit = int(request.GET.get("limit", 20))
@@ -1150,7 +1212,6 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         # pagination.
         ctx['asset_count'] = assets.count()
 
-        # slice down the list to speed rendering
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)
 
         # assemble the context

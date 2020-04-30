@@ -45,7 +45,8 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Title',
                 selector: 'title',
-                sortable: true
+                sortable: true,
+                wrap: true
             },
             {
                 name: 'Selections',
@@ -55,12 +56,14 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Tags',
                 selector: 'tags',
-                sortable: false
+                sortable: false,
+                wrap: true
             },
             {
                 name: 'Terms',
                 selector: 'terms',
-                sortable: false
+                sortable: false,
+                wrap: true
             },
             {
                 name: 'Media',
@@ -69,7 +72,7 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Owner',
-                selector: 'author.public_name',
+                selector: 'author.username',
                 sortable: true
             },
             {
@@ -126,6 +129,7 @@ export default class CollectionListView extends React.Component {
                 customStyles={styles}
                 className="react-data-table"
                 columns={columns}
+                dense
                 highlightOnHover
                 striped
                 sortServer

@@ -680,7 +680,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEqual(len(objects), 20)
         self.assertEqual(objects[0]['primary_type'], 'image')
         self.assertEqual(objects[0]['title'], 'ABCDE')
-        self.assertEqual(objects[4]['title'], 'Item 11')
+        self.assertEqual(objects[19]['title'], 'Item 25')
 
         url = '/api/asset/?order_by=-title'
         response = self.client.get(url)

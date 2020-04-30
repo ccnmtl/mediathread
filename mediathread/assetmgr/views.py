@@ -1054,67 +1054,6 @@ class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
         return context
 
 
-def sort_by_title(x):
-    return x.get('title', '').strip().lower()
-
-
-def sort_by_selections(x):
-    count = x.get('annotation_count', 0)
-    try:
-        return int(count)
-    except ValueError:
-        return 0
-
-
-def sort_by_author(x):
-    return x.get('author').get('public_name')
-
-
-def sort_by_default(order_by, x):
-    return x.get(order_by, None)
-
-
-def get_sort_function(order_by):
-    if order_by == 'title':
-        return sort_by_title
-    elif order_by == 'selections':
-        return sort_by_selections
-    elif order_by == 'author':
-        return sort_by_author
-
-    return sort_by_default(order_by)
-
-
-def sort_assets(assets, ordering):
-    return assets.order_by('title')
-    order_by = ordering.get('order_by')
-    sort_func = get_sort_function(order_by)
-
-    return sorted(
-        assets,
-        key=sort_func,
-        reverse=ordering.get('reverse'))
-
-
-def get_ordering(request):
-    """
-    Get the ordering from a request object
-
-    Returns a dict with order_by (field name) and reverse (asc or
-    desc) values.
-    """
-    order_by = request.GET.get('order_by', 'title')
-    order_reverse = False
-    if order_by.startswith('-'):
-        order_by = order_by[1:]
-        order_reverse = True
-
-    return {
-        'order_by': order_by,
-        'reverse': order_reverse,
-    }
-
-
 class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                           JSONResponseMixin, View):
     """

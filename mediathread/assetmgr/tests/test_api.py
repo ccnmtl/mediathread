@@ -702,9 +702,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEqual(the_json.get('asset_count'), 56)
         objects = the_json['assets']
         self.assertEqual(len(objects), 20)
-        self.assertEqual(objects[0]['title'], 'zebra')
+        self.assertEqual(objects[0]['title'], 'ZZzzzzz')
         self.assertEqual(objects[0]['primary_type'], 'image')
-        self.assertEqual(objects[19]['title'], 'item 38')
+        self.assertEqual(objects[19]['title'], 'item 40')
 
         url = '/api/asset/?order_by=author'
         response = self.client.get(url)

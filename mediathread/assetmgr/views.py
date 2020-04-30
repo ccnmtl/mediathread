@@ -1137,8 +1137,20 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
         # Order by title, by default.
         ordering = request.GET.get('order_by', 'title')
-        if ordering == 'title' or ordering == 'author':
-            assets = assets.order_by(Lower(ordering))
+
+        if 'title' in ordering:
+            if ordering[0] == '-':
+                ordering = ordering[1:]
+                assets = assets.order_by(Lower(ordering)).reverse()
+            else:
+                assets = assets.order_by(Lower(ordering))
+        elif 'author' in ordering:
+            assets = assets.order_by(
+                Lower('author__last_name'),
+                Lower('author__first_name'),
+                Lower('author__username'))
+            if ordering[0] == '-':
+                assets = assets.reverse()
         else:
             assets = assets.order_by(ordering)
 

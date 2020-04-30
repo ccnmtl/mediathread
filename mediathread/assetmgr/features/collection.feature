@@ -35,8 +35,8 @@ Feature: Collection View
         And the Collection panel has a "Mediathread: Introduction" item
 
         When I clear all tags
-        When I select "Student One" as the owner
-        Then the owner is "Student One" in the Collection column
+        When I select "One, Student" as the owner
+        Then the owner is "One, Student" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
 
@@ -95,8 +95,8 @@ Feature: Collection View
 
         # Instructor One
         Given the collection workspace is loaded
-        When I select "Instructor One" as the owner
-        Then the owner is "Instructor One" in the Collection column
+        When I select "One, Instructor" as the owner
+        Then the owner is "One, Instructor" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
 
@@ -106,7 +106,7 @@ Feature: Collection View
 
         # Student One
         When I clear all tags
-        And I select "Student One" as the owner
+        And I select "One, Student" as the owner
         Then the owner is "Me" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
@@ -117,8 +117,8 @@ Feature: Collection View
 
         # Student Two
         When I clear all tags
-        And I select "Student Two" as the owner
-        Then the owner is "Student Two" in the Collection column
+        And I select "Two, Student" as the owner
+        Then the owner is "Two, Student" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
 
@@ -168,7 +168,7 @@ Feature: Collection View
         Given the collection workspace is loaded
 
         # Instructor One
-        When I select "Instructor One" as the owner
+        When I select "One, Instructor" as the owner
         Then the owner is "Me" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
@@ -180,8 +180,8 @@ Feature: Collection View
 
         # Student One
         When I clear all tags
-        And I select "Student One" as the owner
-        Then the owner is "Student One" in the Collection column
+        And I select "One, Student" as the owner
+        Then the owner is "One, Student" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
 
@@ -237,8 +237,8 @@ Feature: Collection View
         # Except the fact that the item is in his collection
 
         # Instructor One
-        When I select "Instructor One" as the owner
-        Then the owner is "Instructor One" in the Collection column
+        When I select "One, Instructor" as the owner
+        Then the owner is "One, Instructor" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 0 by me
 
@@ -247,7 +247,7 @@ Feature: Collection View
 
         # Student One
         When I clear all tags
-        When I select "Student One" as the owner
+        When I select "One, Student" as the owner
         Then the owner is "Me" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And the "MAAP Award Reception" item has 1 selections, 1 by me
@@ -259,8 +259,8 @@ Feature: Collection View
 
         # Student Two
         When I clear all tags
-        When I select "Student Two" as the owner
-        Then the owner is "Student Two" in the Collection column
+        When I select "Two, Student" as the owner
+        Then the owner is "Two, Student" in the Collection column
         Then the Collection panel has a "MAAP Award Reception" item
         And I can filter by "student_two_selection (0)" in the Collection column
         When I clear all tags

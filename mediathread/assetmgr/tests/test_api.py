@@ -102,12 +102,12 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         self.assertAssetEquals(
             objects[1], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_restricted_getall_as_student(self):
@@ -130,12 +130,12 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         selections = [self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         self.assertAssetEquals(
             objects[1], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_getall_as_instructor(self):
@@ -156,14 +156,14 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(match), 1)
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(match[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         match = [x for x in objects if x['id'] == self.asset2.id]
         self.assertEquals(len(match), 1)
         self.assertAssetEquals(
             match[0], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_restricted_getall_as_instructor(self):
@@ -325,7 +325,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
         self.assertEquals(asset['global_annotation']['id'],
@@ -353,7 +353,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
         self.assertEquals(asset['global_annotation']['id'],
@@ -380,7 +380,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 
@@ -404,7 +404,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 
@@ -488,7 +488,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(asset, self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 

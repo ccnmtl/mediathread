@@ -72,8 +72,9 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Owner',
-                selector: 'author.username',
-                sortable: true
+                selector: 'author.public_name',
+                sortable: true,
+                wrap: true
             },
             {
                 name: 'Date',

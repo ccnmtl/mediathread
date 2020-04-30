@@ -13,10 +13,10 @@ from tastypie.authorization import Authorization
 from tastypie.constants import ALL
 from tastypie.resources import ModelResource
 
-from courseaffils.lib import get_public_name
 from courseaffils.models import Course, CourseInfo
-from mediathread.djangosherd.models import SherdNote
 from tastypie import fields
+from mediathread.djangosherd.models import SherdNote
+from mediathread.main.util import user_display_name_last_first
 
 
 class ClassLevelAuthentication(Authentication):
@@ -68,8 +68,7 @@ class UserResource(ModelResource):
         filtering = {'id': ALL, 'username': ALL}
 
     def dehydrate(self, bundle):
-        bundle.data['public_name'] = get_public_name(bundle.obj,
-                                                     bundle.request)
+        bundle.data['public_name'] = user_display_name_last_first(bundle.obj)
         return bundle
 
     def render_one(self, request, user):

@@ -14,8 +14,8 @@ Feature: Homepage Delete Operations. Project, Item
         Given there is a sample response
         Given I am instructor_one in Sample Course
         
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has 1 response named "Sample Assignment Response"
         The "Sample Assignment Response" project has no delete icon
         

@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.aggregates import Max
+from django.db.models.functions import Lower
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect, Http404
@@ -778,8 +778,8 @@ class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
 
         # @todo - factor out the tastypie interim json step
         ar = AssetResource(include_annotations=True)
-        api_response = ar.render_list(request, None, request.user,
-                                      assets, notes)
+        api_response = ar.render_list(
+            request, None, request.user, assets, notes)
 
         if len(api_response) == 0:
             return HttpResponse("There are no videos in your collection")
@@ -1099,10 +1099,9 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ares = AssetResource(include_annotations=include_annotations,
                              extras={'editable': self.viewing_own_records,
                                      'citable': citable})
-        ctx['assets'] = ares.render_list(request,
-                                         self.record_owner,
-                                         self.record_viewer,
-                                         assets, notes)
+        ctx['assets'] = ares.render_list(
+            request, self.record_owner, self.record_viewer,
+            assets, notes)
 
         return ctx
 
@@ -1118,24 +1117,42 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return {'active_tags': tags, 'active_vocabulary': vocab}
 
     def apply_pagination(self, assets, notes, offset, limit):
-        # sort the object list via aggregation on the visible notes
-        assets = notes.values('asset')
-        assets = assets.annotate(last_modified=Max('modified'))
-        assets = assets.order_by('-last_modified')
-
-        # slice the list
+        """
+        Returns an (assets, notes) tuple, limited by limit, and offset
+        by offset.
+        """
         assets = assets[offset:offset + limit]
-        ids = [a['asset'] for a in assets]
+        ids = [a.pk for a in assets]
         return (assets, notes.filter(asset__id__in=ids))
 
     def get(self, request):
         if (self.record_owner):
-            assets = Asset.objects.by_course_and_user(request.course,
-                                                      self.record_owner)
+            assets = Asset.objects.by_course_and_user(
+                request.course,
+                self.record_owner)
         else:
             assets = Asset.objects.by_course(request.course)
 
         (assets, notes) = self.visible_assets_and_notes(request, assets)
+
+        # Order by title, by default.
+        ordering = request.GET.get('order_by', 'title')
+
+        if 'title' in ordering:
+            if ordering[0] == '-':
+                ordering = ordering[1:]
+                assets = assets.order_by(Lower(ordering)).reverse()
+            else:
+                assets = assets.order_by(Lower(ordering))
+        elif 'author' in ordering:
+            assets = assets.order_by(
+                Lower('author__last_name'),
+                Lower('author__first_name'),
+                Lower('author__username'))
+            if ordering[0] == '-':
+                assets = assets.reverse()
+        else:
+            assets = assets.order_by(ordering)
 
         offset = int(request.GET.get("offset", 0))
         limit = int(request.GET.get("limit", 20))
@@ -1150,7 +1167,6 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         # pagination.
         ctx['asset_count'] = assets.count()
 
-        # slice down the list to speed rendering
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)
 
         # assemble the context

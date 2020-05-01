@@ -344,7 +344,10 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         if settings.SURELINK_URL:
             assets = assets.exclude(
                 source__url__startswith=settings.SURELINK_URL)
-        assets = assets.filter(sherdnote_set__author__id__in=faculty)
+        assets = assets.filter(
+            sherdnote_set__author__id__in=faculty
+        ).exclude(source__label='flv_pseudo')
+
         notes = SherdNote.objects.get_related_notes(
             assets, None, faculty, True).exclude_primary_types(['flv_pseudo'])
 

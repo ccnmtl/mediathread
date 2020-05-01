@@ -29,9 +29,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.sample_course = Course.objects.get(title='Sample Course')
         self.alt_course = Course.objects.get(title="Alternate Course")
 
-        self.asset1 = AssetFactory.create(course=self.sample_course,
-                                          author=self.instructor_one,
-                                          primary_source='image')
+        self.asset1 = AssetFactory.create(
+            title="Test Asset 1",
+            course=self.sample_course,
+            author=self.instructor_one,
+            primary_source='image')
 
         self.student_note = SherdNoteFactory(
             asset=self.asset1, author=self.student_one,
@@ -52,9 +54,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             body='instructor one global note',
             title=None, range1=None, range2=None)
 
-        self.asset2 = AssetFactory.create(course=self.sample_course,
-                                          author=self.instructor_one,
-                                          primary_source='video')
+        self.asset2 = AssetFactory.create(
+            title='Test Asset 2',
+            course=self.sample_course,
+            author=self.instructor_one,
+            primary_source='video')
         self.asset2_instructor_note = SherdNoteFactory(
             asset=self.asset2, author=self.instructor_one,
             tags=',video, instructor_one_selection,',
@@ -98,12 +102,12 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         self.assertAssetEquals(
             objects[1], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_restricted_getall_as_student(self):
@@ -126,12 +130,12 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         selections = [self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         self.assertAssetEquals(
             objects[1], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_getall_as_instructor(self):
@@ -152,14 +156,14 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(match), 1)
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(match[0], self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         match = [x for x in objects if x['id'] == self.asset2.id]
         self.assertEquals(len(match), 1)
         self.assertAssetEquals(
             match[0], self.asset2.title,
-            'Instructor One', 'video', [self.asset2_instructor_note.id])
+            'One, Instructor', 'video', [self.asset2_instructor_note.id])
         self.assertFalse('global_annotation' in objects[1])
 
     def test_restricted_getall_as_instructor(self):
@@ -321,7 +325,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
         self.assertEquals(asset['global_annotation']['id'],
@@ -349,7 +353,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
         self.assertEquals(asset['global_annotation']['id'],
@@ -376,7 +380,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 
@@ -400,7 +404,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.assertAssetEquals(
             asset,
             self.asset1.title,
-            'Instructor One', 'image', selections)
+            'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 
@@ -484,7 +488,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         selections = [self.instructor_note.id, self.student_note.id]
         asset = the_json['assets'][str(self.asset1.id)]
         self.assertAssetEquals(asset, self.asset1.title,
-                               'Instructor One', 'image', selections)
+                               'One, Instructor', 'image', selections)
 
         self.assertFalse('global_annotation' in asset)
 
@@ -632,3 +636,88 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
         objects = the_json['assets']
         self.assertEqual(len(objects), 2)
+
+    def test_order_by(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student_one.username,
+                password='test'))
+
+        asset1 = AssetFactory.create(
+            title='abcde',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset1, author=self.student_one)
+
+        asset2 = AssetFactory.create(
+            title='zebra',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset2, author=self.student_one)
+
+        asset3 = AssetFactory.create(
+            title='maurice',
+            course=self.sample_course,
+            author=self.instructor_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset3, author=self.student_one)
+
+        asset4 = AssetFactory.create(
+            title='ZZzzzzz',
+            course=self.sample_course,
+            author=self.student_one,
+            primary_source='image')
+        SherdNoteFactory(
+            asset=asset4, author=self.student_one)
+
+        # Make 50 more items in this course to trigger pagination
+        for i in range(50):
+            asset = AssetFactory.create(
+                title='item {}'.format(i),
+                course=self.sample_course,
+                author=self.student_one,
+                primary_source='image')
+            SherdNoteFactory(
+                asset=asset, author=self.student_one)
+
+        url = '/api/asset/?order_by=title'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 20)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[0]['title'], 'abcde')
+        self.assertEqual(objects[10]['title'], 'item 17')
+        self.assertEqual(objects[19]['title'], 'item 25')
+
+        url = '/api/asset/?order_by=-title'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 20)
+        self.assertEqual(objects[0]['title'], 'ZZzzzzz')
+        self.assertEqual(objects[0]['primary_type'], 'image')
+        self.assertEqual(objects[19]['title'], 'item 40')
+
+        url = '/api/asset/?order_by=author'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 20)
+        self.assertEqual(objects[0]['primary_type'], 'image')
+
+        url = '/api/asset/?order_by=-author'
+        response = self.client.get(url)
+        the_json = json.loads(response.content)
+        self.assertEqual(the_json.get('asset_count'), 56)
+        objects = the_json['assets']
+        self.assertEqual(len(objects), 20)
+        self.assertEqual(objects[0]['primary_type'], 'image')

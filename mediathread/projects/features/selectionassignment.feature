@@ -72,8 +72,8 @@ Feature: Selection Assignment
         Given there is a sample selection assignment and response
         Given I am instructor_one in Sample Course
 
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has 1 project named "Sample Selection Assignment"
         Then the composition panel has 1 response named "My Response"
 

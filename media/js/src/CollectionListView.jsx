@@ -21,7 +21,7 @@ export default class CollectionListView extends React.Component {
         if (sortField === 'owner') {
             sortField = 'author';
         } else if (sortField === 'date') {
-            sortField = 'modified';
+            sortField = 'added';
         }
 
         const orderBy = sortDirection === 'asc' ? sortField : '-' + sortField;
@@ -45,32 +45,41 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Title',
                 selector: 'title',
-                sortable: true
+                sortable: true,
+                wrap: true
+            },
+            {
+                name: 'Selections',
+                selector: 'annotation_count',
+                sortable: false
             },
             {
                 name: 'Tags',
                 selector: 'tags',
-                sortable: true
+                sortable: false,
+                wrap: true
             },
             {
                 name: 'Terms',
                 selector: 'terms',
-                sortable: true
+                sortable: false,
+                wrap: true
             },
             {
                 name: 'Media',
                 selector: 'primary_type',
-                sortable: true
+                sortable: false
             },
             {
                 name: 'Owner',
                 selector: 'author.public_name',
-                sortable: true
+                sortable: true,
+                wrap: true
             },
             {
                 name: 'Date',
                 format: formatDay,
-                selector: 'modified',
+                selector: 'added',
                 sortable: true
             }
         ];
@@ -121,11 +130,13 @@ export default class CollectionListView extends React.Component {
                 customStyles={styles}
                 className="react-data-table"
                 columns={columns}
+                dense
                 highlightOnHover
                 striped
-                sortServer
                 progressPending={this.state.loading}
                 progressComponent={<LoadingAssets />}
+                sortServer
+                defaultSortField="title"
                 onSort={this.handleSort}
                 data={this.props.assets} />
         );

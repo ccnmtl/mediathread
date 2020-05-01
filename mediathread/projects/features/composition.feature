@@ -145,14 +145,14 @@ Feature: Composition
 
         # Try to view as student two
         Given I am student_two in Sample Course
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         # Try to view as test_instructor
         Given I am instructor_one in Sample Course
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has <count> projects named "<title>"
 
         Finished using Selenium

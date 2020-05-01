@@ -23,7 +23,7 @@ class UserApiTest(TestCase):
 
         member = UserResource().render_one(None, student_one)
 
-        self.assertEquals(member['public_name'], "Student One")
+        self.assertEquals(member['public_name'], "One, Student")
 
     def test_render_list(self):
         u = UserFactory(username='test_student_one',
@@ -53,10 +53,10 @@ class UserApiTest(TestCase):
         self.assertEquals(len(members), 6)
         self.assertEquals(members[0]['public_name'], "test_instructor_two")
         self.assertEquals(members[1]['public_name'], "test_student_three")
-        self.assertEquals(members[2]['public_name'], "Teacher's Assistant")
-        self.assertEquals(members[3]['public_name'], "Instructor One")
-        self.assertEquals(members[4]['public_name'], "Student One")
-        self.assertEquals(members[5]['public_name'], "Student Two")
+        self.assertEquals(members[2]['public_name'], "Assistant, Teacher's")
+        self.assertEquals(members[3]['public_name'], "One, Instructor")
+        self.assertEquals(members[4]['public_name'], "One, Student")
+        self.assertEquals(members[5]['public_name'], "Two, Student")
 
     def test_get_course_list(self):
         g1 = GroupFactory(name="group1")

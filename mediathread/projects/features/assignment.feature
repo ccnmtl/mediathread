@@ -117,8 +117,8 @@ Feature: Assignment
         Given there is a sample response
         Given I am instructor_one in Sample Course
 
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has 1 project named "Sample Assignment"
         Then the composition panel has 1 response named "Sample Assignment Response"
 
@@ -155,12 +155,12 @@ Feature: Assignment
         Then there is a comment from "Instructor One"
 
         Give I am student_two in Sample Course
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has 0 projects named "Sample Assignment Response"
         And there is not a "Read Instructor Feedback" link
 
-        When I select "Student Two" as the owner in the Composition column
+        When I select "Two, Student" as the owner in the Composition column
         Then the owner is "Me" in the Composition column
 
         When I click the "Sample Assignment" link
@@ -188,8 +188,8 @@ Feature: Assignment
         Then there is a "<status>" link
 
         Give I am <username> in Sample Course 
-        When I select "Student One" as the owner in the Composition column
-        Then the owner is "Student One" in the Composition column
+        When I select "One, Student" as the owner in the Composition column
+        Then the owner is "One, Student" in the Composition column
         Then the composition panel has <count> responses named "Sample Assignment Response"
 
         # the response must be deleted

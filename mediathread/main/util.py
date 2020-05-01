@@ -36,6 +36,18 @@ def user_display_name(user):
     return user.get_full_name() or user.username
 
 
+def user_display_name_last_first(user):
+    if user is None or \
+       (hasattr(user, 'is_anonymous') and user.is_anonymous):
+        return 'Anonymous'
+
+    if user.first_name and user.last_name:
+        return '{}, {}'.format(
+            user.last_name, user.first_name)
+
+    return user.username
+
+
 def make_pmt_item(data):
     """Make a PMT item containing the given data.
 

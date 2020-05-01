@@ -134,6 +134,7 @@ class AssetResource(ModelResource):
             abundle = self.build_bundle(obj=asset, request=request)
             dehydrated = self.full_dehydrate(abundle)
             asset_ctx = self._meta.serializer.to_simple(dehydrated, None)
+            asset_ctx['tags'] = [tag.name for tag in asset.tags()]
             ctx[asset.id] = asset_ctx
 
     def update_note_context(self, request, ctx, note_res, note, owner, viewer):

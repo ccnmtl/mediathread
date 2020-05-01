@@ -57,7 +57,14 @@ export default class CollectionListView extends React.Component {
                 name: 'Tags',
                 selector: 'tags',
                 sortable: false,
-                wrap: true
+                wrap: true,
+                format: function(row) {
+                    if (row && row.tags) {
+                        return row.tags.join(', ');
+                    }
+
+                    return row.tags;
+                }
             },
             {
                 name: 'Terms',

@@ -205,10 +205,29 @@ const formatDay = function(obj) {
     }).replace(/\//g, '.');
 };
 
+const getAssetType = function(primaryType) {
+    let type = primaryType;
+
+    if (
+        primaryType === 'youtube' ||
+            primaryType === 'vimeo' ||
+            primaryType === 'mp4_pseudo' ||
+            primaryType === 'mp4_panopto' ||
+            primaryType === 'quicktime' ||
+            primaryType === 'video_pseudo'
+    ) {
+        type = 'video';
+    } else if (primaryType === 'image_fpxid' || primaryType === 'image_fpx') {
+        type = 'image';
+    }
+
+    return type;
+};
+
 export {
     getAssets, getAsset, createSelection, createSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
-    capitalizeFirstLetter, formatDay
+    capitalizeFirstLetter, formatDay, getAssetType
 };

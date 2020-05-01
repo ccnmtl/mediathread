@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DataTable, { createTheme } from 'react-data-table-component';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
-import {formatDay, getAssets} from './utils';
+import {formatDay, getAssets, getAssetType} from './utils';
 
 export default class CollectionListView extends React.Component {
     constructor(props) {
@@ -68,7 +68,10 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Media',
                 selector: 'primary_type',
-                sortable: false
+                sortable: false,
+                format: function(row) {
+                    return getAssetType(row.primary_type);
+                }
             },
             {
                 name: 'Owner',

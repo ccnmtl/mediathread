@@ -34,7 +34,7 @@ class AssetResource(ModelResource):
         list_allowed_methods = []
         detail_allowed_methods = []
         authentication = ClassLevelAuthentication()
-        ordering = ['modified', 'id', 'title', 'author']
+        ordering = ['added', 'modified', 'id', 'title', 'author']
 
     def __init__(self, *args, **kwargs):
         # @todo: extras is a side-effect of the Mustache templating system
@@ -79,6 +79,7 @@ class AssetResource(ModelResource):
         bundle.data['annotations'] = []
         bundle.data['annotation_count'] = 0
         bundle.data['my_annotation_count'] = 0
+        bundle.data['added'] = self.format_time(bundle.obj.added)
         bundle.data['modified'] = self.format_time(bundle.obj.modified)
 
         sources = {}

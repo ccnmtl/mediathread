@@ -21,7 +21,7 @@ export default class CollectionListView extends React.Component {
         if (sortField === 'owner') {
             sortField = 'author';
         } else if (sortField === 'date') {
-            sortField = 'modified';
+            sortField = 'added';
         }
 
         const orderBy = sortDirection === 'asc' ? sortField : '-' + sortField;
@@ -79,7 +79,7 @@ export default class CollectionListView extends React.Component {
             {
                 name: 'Date',
                 format: formatDay,
-                selector: 'modified',
+                selector: 'added',
                 sortable: true
             }
         ];

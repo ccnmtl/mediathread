@@ -196,7 +196,7 @@ const capitalizeFirstLetter = function(str) {
  * Returns a string.
  */
 const formatDay = function(obj) {
-    const dateStr = obj.modified;
+    const dateStr = obj.added;
     const date = new Date(Date.parse(dateStr));
     return date.toLocaleDateString(undefined, {
         month: '2-digit',

@@ -22,7 +22,7 @@
             <div>
                 <img class="pull-left" src='{% static "img/icons/icon-16.png" %}' alt_text="mediathread icon" />
                 <div class="title pull-left" title="{{title}}">
-                    {{title}}
+                    <a href="/asset/{{item_id}}"> {{title}} </a>
                     {% if timecode %}
                         <br />
                         <div class="timecode small">
@@ -86,4 +86,3 @@
     </script>
 </body>
 </html>
-

@@ -1,4 +1,5 @@
 import getYouTubeID from 'get-youtube-id';
+import {getAssetType} from './utils';
 
 export default class Asset {
     constructor(data) {
@@ -11,18 +12,7 @@ export default class Asset {
      * mediathread/assetmgr/models.py
      */
     getType() {
-        let assetType = this.asset.primary_type;
-        if (
-            assetType === 'youtube' ||
-            assetType === 'vimeo' ||
-            assetType === 'mp4_pseudo' ||
-            assetType === 'mp4_panopto'
-        ) {
-            assetType = 'video';
-        } else if (assetType === 'image_fpxid' || assetType === 'image_fpx') {
-            assetType = 'image';
-        }
-        return assetType;
+        return getAssetType(this.asset.primary_type);
     }
     getThumbnail() {
         if (!this.asset) {

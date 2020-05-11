@@ -8,7 +8,7 @@ mccabe==0.6.1
 pycodestyle==2.5.0
 enum34==1.1.10; python_version < '3.4'
 configparser==4.0.2  # pyup: <5.0.0
-flake8==3.7.9
+flake8==3.8.0
 lxml==4.5.0
 fuzzywuzzy==0.18.0  # lettuce
 mock==3.0.5 # pyup: <4.0.0  # sure

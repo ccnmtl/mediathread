@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "cypress:run": "cypress run",
-    "cypress:ffrun": "cypress run --headed --browser firefox",
+    "cypress:ffrun": "cypress run --headless --browser firefox",
     "cypress:ffopen": "cypress open --browser firefox",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:run",
     "dev": "webpack -d --watch",

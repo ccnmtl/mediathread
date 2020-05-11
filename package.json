@@ -9,6 +9,8 @@
   "scripts": {
     "test": "jest",
     "cypress:run": "cypress run",
+    "cypress:ffrun": "cypress run --headed --browser firefox",
+    "cypress:ffopen": "cypress open --browser firefox",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:run",
     "dev": "webpack -d --watch",
     "eslint": "eslint media/js/src media/js/src/**/*.jsx *.js",
@@ -30,7 +32,7 @@
     "@babel/preset-react": "^7.7.4",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
-    "cypress": "^4.4.0",
+    "cypress": "^4.5.0",
     "eslint": "~6.8.0",
     "eslint-config-scanjs": "^1.0.0-beta4",
     "eslint-plugin-no-unsafe-innerhtml": "^1.0.16",

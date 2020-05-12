@@ -5,7 +5,7 @@ statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.2.0
 mccabe==0.6.1
-pycodestyle==2.5.0
+pycodestyle==2.6.0
 enum34==1.1.10; python_version < '3.4'
 configparser==4.0.2  # pyup: <5.0.0
 flake8==3.7.9

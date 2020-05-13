@@ -162,4 +162,4 @@ celery==3.1.26.post2 # pyup: <4.0.0
 django-celery==3.2.2 # pyup: <3.3.0
 
 # memcached
-pylibmc==1.6.1
+pylibmc==1.6.1; sys_platform == 'linux'

@@ -8,6 +8,8 @@ mccabe==0.6.1
 pycodestyle==2.6.0
 enum34==1.1.10; python_version < '3.4'
 configparser==4.0.2  # pyup: <5.0.0
+importlib-metadata==1.6.0  # for flake8
+zipp==1.2.0  # for flake8
 flake8==3.8.1
 lxml==4.5.0
 fuzzywuzzy==0.18.0  # lettuce

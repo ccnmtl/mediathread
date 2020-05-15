@@ -67,7 +67,7 @@ djangowind==1.2.3
 django-tagging==0.4.6  # pyup: <0.5.0
 
 # pinned for django 1.11
-django-reversion==3.0.7  # pyup: <3.0.5
+django-reversion>=3.0.4,<3.0.5
 
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.2

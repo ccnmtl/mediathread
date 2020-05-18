@@ -74,7 +74,7 @@ django-threadedcomments==1.2
 django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
 sentry-sdk==0.14.4
-django-appconf==1.0.3  # pyup: <1.0.4
+django-appconf==1.0.4  # pyup: <1.0.4
 django-compressor==2.4
 django-jenkins==0.110.0
 django-stagingcontext==0.1.0

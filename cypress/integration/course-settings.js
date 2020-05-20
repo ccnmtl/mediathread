@@ -4,7 +4,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
     return false;
-})
+});
 
 describe('Course Settings', function() {
 
@@ -35,6 +35,7 @@ describe('Course Settings', function() {
         cy.get('input#id_see_eachothers_items').should('be.checked');
         cy.get('input#id_see_eachothers_selections').should('be.checked');
     });
+
     it('changes selection visibility to "off"', function() {
         cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
         cy.get('input#id_see_eachothers_items').click();

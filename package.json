@@ -52,7 +52,7 @@
     "react-bootstrap": "^1.0.1",
     "react-data-table-component": "^6.9.2",
     "react-dom": "~16.13.0",
-    "react-player": "^2.0.1",
+    "react-player": "^2.1.0",
     "react-select": "^3.0.8",
     "styled-components": "^5.0.1",
     "whatwg-fetch": "^3.0.0"

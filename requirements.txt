@@ -31,7 +31,7 @@ python-mimeparse==1.6.0  # tastypie
 python-dateutil==2.8.1  # tastypie
 defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2 # pyup: < 0.14.3
-coverage>=4.5.4,<5
+coverage==5.1
 logilab-common>=1.4.4,<1.5
 lazy-object-proxy==1.4.3
 wrapt==1.12.1
@@ -76,7 +76,6 @@ django-statsd-mozilla==0.4.0
 sentry-sdk==0.14.4
 django-appconf==1.0.3  # pyup: <1.0.4
 django-compressor==2.4
-django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2

@@ -95,7 +95,7 @@ django-waffle==0.20.0
 django-cors-headers==3.0.2 # pyup: <3.1.0
 
 # needed for django <2.1
-django-cookies-samesite==0.6.1
+django-cookies-samesite==0.6.2
 
 httplib2==0.18.0
 oauth==1.0.1

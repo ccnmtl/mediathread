@@ -79,7 +79,7 @@ django-compressor==2.4
 django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
-django-smoketest==1.1.0
+django-smoketest==1.1.2
 
 # pinned for py2.7
 django-debug-toolbar==1.11 # pyup: <2.0

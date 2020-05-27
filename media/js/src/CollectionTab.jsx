@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './AssetFilter';
-import AssetDetail from './AssetDetail';
+import AssetDetail from './assetDetail/AssetDetail';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 

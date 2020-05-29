@@ -4289,6 +4289,10 @@ ul.section-tabs>li>a.active {
     height: 12em;
 }
 
+.asset-detail .ol-map {
+    height: 24em;
+}
+
 .card-title, .card-text {
     white-space: nowrap;
     overflow: hidden;

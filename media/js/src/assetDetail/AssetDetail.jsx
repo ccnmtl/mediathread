@@ -302,7 +302,16 @@ export default class AssetDetail extends React.Component {
                             />
                         )}
                         {this.state.tab === 'createSelection' && (
-                            <CreateSelection asset={this.props.asset} />
+                            <CreateSelection
+                                asset={this.props.asset}
+                                selectionStartTime={this.state.selectionStartTime}
+                                selectionEndTime={this.state.selectionEndTime}
+                                onStartTimeUpdate={this.onStartTimeUpdate}
+                                onEndTimeUpdate={this.onEndTimeUpdate}
+                                onStartTimeClick={this.onStartTimeClick}
+                                onEndTimeClick={this.onEndTimeClick}
+                                onCreateSelection={this.onCreateSelection}
+                            />
                         )}
                         {this.state.tab === 'viewItem' && (
                             <ViewItem asset={this.props.asset} />

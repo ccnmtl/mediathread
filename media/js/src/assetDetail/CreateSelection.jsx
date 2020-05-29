@@ -85,14 +85,14 @@ export default class CreateSelection extends React.Component {
                                                                     <td>
                                                                         <input
                                                                             type="button" className="btn-primary"
-                                                                            onClick={this.onStartTimeClick}
+                                                                            onClick={this.props.onStartTimeClick}
                                                                             readOnly value="Start Time" id="btnClipStart" />
                                                                     </td>
                                                                     <td width="10px">&nbsp;</td>
                                                                     <td>
                                                                         <input
                                                                             type="button" className="btn-primary"
-                                                                            onClick={this.onEndTimeClick}
+                                                                            onClick={this.props.onEndTimeClick}
                                                                             value="End Time" id="btnClipEnd" /> </td>
                                                                     <td>&nbsp;
                                                                     </td>
@@ -101,16 +101,18 @@ export default class CreateSelection extends React.Component {
                                                                     <td>
                                                                         <input
                                                                             type="text" className="timecode form-control"
-                                                                            id="clipStart" onChange={this.onStartTimeUpdate}
-                                                                            value={formatTimecode(this.state.selectionStartTime)} />
+                                                                            id="clipStart"
+                                                                            onChange={this.props.onStartTimeUpdate}
+                                                                            value={formatTimecode(this.props.selectionStartTime)} />
                                                                         <div className="helptext timecode">HH:MM:SS</div>
                                                                     </td>
                                                                     <td style={{width: '10px', textAlign: 'center'}}>-</td>
                                                                     <td>
                                                                         <input
                                                                             type="text" className="timecode form-control"
-                                                                            id="clipEnd" onChange={this.onEndTimeUpdate}
-                                                                            value={formatTimecode(this.state.selectionEndTime)} />
+                                                                            id="clipEnd"
+                                                                            onChange={this.props.onEndTimeUpdate}
+                                                                            value={formatTimecode(this.props.selectionEndTime)} />
                                                                         <div className="helptext timecode">HH:MM:SS</div>
                                                                     </td>
                                                                 </tr>
@@ -159,7 +161,7 @@ export default class CreateSelection extends React.Component {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            onClick={this.onCreateSelection}
+                                                            onClick={this.props.onCreateSelection}
                                                             className="btn btn-sm btn-primary ml-2">
                                                             Save
                                                         </button>
@@ -180,5 +182,12 @@ export default class CreateSelection extends React.Component {
 }
 
 CreateSelection.propTypes = {
-    asset: PropTypes.object
+    asset: PropTypes.object,
+    selectionStartTime: PropTypes.number,
+    selectionEndTime: PropTypes.number,
+    onStartTimeUpdate: PropTypes.func.isRequired,
+    onEndTimeUpdate: PropTypes.func.isRequired,
+    onStartTimeClick: PropTypes.func.isRequired,
+    onEndTimeClick: PropTypes.func.isRequired,
+    onCreateSelection: PropTypes.func.isRequired
 };

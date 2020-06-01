@@ -76,6 +76,7 @@ django-statsd-mozilla==0.4.0
 sentry-sdk==0.14.4
 django-appconf==1.0.3  # pyup: <1.0.4
 django-compressor==2.4
+django-jenkins==0.110.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2

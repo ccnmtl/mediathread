@@ -205,6 +205,12 @@ const formatDay = function(obj) {
     }).replace(/\//g, '.');
 };
 
+/**
+ * Get asset type.
+ *
+ * This corresponds to Asset.primary_labels in
+ * mediathread/assetmgr/models.py
+ */
 const getAssetType = function(primaryType) {
     let type = primaryType;
 
@@ -224,10 +230,15 @@ const getAssetType = function(primaryType) {
     return type;
 };
 
+const handleBrokenImage = function(assetType) {
+    this.src = `/media/img/thumb_${assetType}.png`;
+};
+
 export {
     getAssets, getAsset, createSelection, createSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
-    capitalizeFirstLetter, formatDay, getAssetType
+    capitalizeFirstLetter, formatDay, getAssetType,
+    handleBrokenImage
 };

@@ -5,12 +5,6 @@ export default class Asset {
     constructor(data) {
         this.asset = data;
     }
-    /**
-     * Get asset type.
-     *
-     * This corresponds to Asset.primary_labels in
-     * mediathread/assetmgr/models.py
-     */
     getType() {
         return getAssetType(this.asset.primary_type);
     }

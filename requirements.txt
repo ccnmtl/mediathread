@@ -11,7 +11,7 @@ configparser>=4.0.2,<5.0.0
 importlib-metadata==1.6.0  # for flake8
 zipp>=1.2.0,<2.0.0
 flake8==3.8.2
-lxml==4.5.0
+lxml==4.5.1
 fuzzywuzzy==0.18.0  # lettuce
 mock==3.0.5 # pyup: <4.0.0  # sure
 sure==1.4.11  # lettuce

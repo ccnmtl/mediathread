@@ -107,7 +107,7 @@ django-bootstrap3==11.1.0  # pyup: <12.0.0
 ua_parser==0.10.0
 user_agents==2.1
 django_user_agents==0.4.0
-gunicorn==19.10.0 # pyup: <20.0.0
+gunicorn==20.0.4 # pyup: <20.0.0
 path.py==11.5.2 # pyup: <12
 simplegeneric==0.8.1
 scandir==1.10.0

@@ -17,7 +17,7 @@ import {
 
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
-import {capitalizeFirstLetter} from './utils';
+import {capitalizeFirstLetter, handleBrokenImage} from './utils';
 
 class Selections extends React.Component {
     render() {
@@ -209,7 +209,10 @@ export default class GridAsset extends React.Component {
                                         style={{'maxWidth': '100%'}}
                                         alt={'Video thumbnail for: ' +
                                              this.props.asset.title}
-                                        src={this.asset.getThumbnail()} />
+                                        src={
+                                            this.asset.getThumbnail() ||
+                                                '/media/img/thumb_video.png'}
+                                        onError={() => handleBrokenImage(type)} />
                                 )}
                             </a>
                             {annotationDom}

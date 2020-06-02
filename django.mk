@@ -31,7 +31,6 @@ PY_DIRS ?= $(APP)
 BANDIT ?= $(VE)/bin/bandit
 FLAKE8 ?= $(VE)/bin/flake8
 PIP ?= $(VE)/bin/pip
-COVERAGE ?= $(VE)/bin/coverage
 
 # Travis has issues here. See:
 # https://github.com/travis-ci/travis-ci/issues/9524
@@ -50,11 +49,11 @@ $(PY_SENTINAL): $(REQUIREMENTS) $(VIRTUALENV) $(SUPPORT_DIR)*
 	$(PIP) install --upgrade setuptools
 	$(PIP) install wheel==$(WHEEL_VERSION)
 	$(PIP) install --no-deps --requirement $(REQUIREMENTS) --no-binary cryptography
+	$(SYS_PYTHON) $(VIRTUALENV) --relocatable $(VE)
 	touch $@
 
 test: $(PY_SENTINAL)
-	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP)
-	$(COVERAGE) xml -o reports/coverage.xml
+	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
 
 parallel-tests: $(PY_SENTINAL)
 	$(MANAGE) test --parallel

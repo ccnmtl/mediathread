@@ -2708,12 +2708,7 @@ tr.sherd-clipform-editing td {
     width: 80%;
 }
 
-.sherd-clipform-editing input.timecode {
-    text-align: right;
-}
-
 .sherd-clipform-editing .helptext.timecode {
-    text-align: right;
     width: 89%;
 }
 
@@ -4231,12 +4226,6 @@ ul.section-tabs>li>a.active {
 
 .image-overlay {
     position: relative;
-}
-
-.timecode {
-    position: absolute;
-    left: 50%;
-    bottom: .8em;
 }
 
 /*

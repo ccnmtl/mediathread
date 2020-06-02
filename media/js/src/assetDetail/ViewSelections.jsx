@@ -66,7 +66,7 @@ export default class ViewSelections extends React.Component {
                         </div>
                         <div
                             id="collapseOne"
-                            className="collapse hide"
+                            className="collapse show"
                             aria-labelledby="headingOne"
                             data-parent="#accordionExample2">
                             {selectionsDom}

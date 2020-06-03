@@ -7,6 +7,7 @@ addons:
       # for Cypress
       - libgconf-2-4
 env:
+  - TEST_SUITE=eslint
   - TEST_SUITE=jstest
   - TEST_SUITE=jenkins
   - TEST_SUITE=cypress
@@ -23,6 +24,8 @@ matrix:
     env: TEST_SUITE=jstest
   - python: '2.7'
     env: TEST_SUITE=cypress
+  - python: '2.7'
+    env: TEST_SUITE=eslint
   - python: '3.6'
     env: TEST_SUITE=harvest1
   - python: '3.6'

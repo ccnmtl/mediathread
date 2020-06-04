@@ -9,6 +9,7 @@ import Nav from 'react-bootstrap/Nav';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {getCenter} from 'ol/extent';
+import Draw from 'ol/interaction/Draw';
 import ImageLayer from 'ol/layer/Image';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -28,10 +29,6 @@ export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectionLayer: new VectorLayer({
-                source: new VectorSource()
-            }),
-
             // The player seems to work better when it's loaded initially
             // as 'playing', and then paused immediately onReady.
             // https://github.com/CookPete/react-player/issues/536#issuecomment-453869837
@@ -51,8 +48,13 @@ export default class AssetDetail extends React.Component {
             tab: 'viewSelections'
         };
 
-        this.playerRef = null;
+        this.draw = null;
+        this.selectionSource = new VectorSource({wrapX: false});
+        this.selectionLayer = new VectorLayer({
+            source: this.selectionSource
+        });
 
+        this.playerRef = null;
         this.selection = null;
 
         this.asset = new Asset(this.props.asset);
@@ -72,6 +74,8 @@ export default class AssetDetail extends React.Component {
         this.onClickPlay = this.onClickPlay.bind(this);
 
         this.onSelectTab = this.onSelectTab.bind(this);
+
+        this.addInteraction = this.addInteraction.bind(this);
     }
 
     onCreateSelection(e) {
@@ -218,10 +222,54 @@ export default class AssetDetail extends React.Component {
 
         let media = null;
         if (type === 'image') {
+            let annotationTools = null;
+            if (this.state.tab === 'createSelection') {
+                annotationTools = (
+                    <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
+                        <form>
+                            <div className="form-row align-items-center">
+                                <div className="col-sm-4">
+                                    <div className="input-group">
+                                        <div className="form-check form-control-sm">
+                                            <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" disabled="" />
+                                            <label className="form-check-label" htmlFor="defaultCheck1">
+                                                Overlay All Selection Graphics
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-8">
+                                    <button type="button" className="btn btn-outline-light btn-sm mr-2"
+                                            onClick={() => this.addInteraction('Polygon')}>
+                                        <svg className="bi bi-pentagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 0l8 6.5-3 9.5H3L0 6.5 8 0z"></path>
+                                        </svg> Polygon
+                                    </button>
+                                    <button type="button" className="btn btn-outline-light btn-sm mr-2">
+                                        <svg className="bi bi-plus-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4a.5.5 0 00-1 0v3.5H4a.5.5 0 000 1h3.5V12a.5.5 0 001 0V8.5H12a.5.5 0 000-1H8.5V4z" clipRule="evenodd"></path>
+                                        </svg> Zoom In
+                                    </button>
+                                    <button type="button" className="btn btn-outline-light btn-sm">
+                                        <svg className="bi bi-dash-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM4 7.5a.5.5 0 000 1h8a.5.5 0 000-1H4z" clipRule="evenodd"></path>
+                                        </svg> Zoom Out
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                );
+            }
+
             media = (
-                <div
-                    id={`map-${this.props.asset.id}`}
-                    className="ol-map"></div>
+                <React.Fragment>
+                    {annotationTools}
+                    <div
+                        id={`map-${this.props.asset.id}`}
+                        className="ol-map"></div>
+                </React.Fragment>
             );
         } else if (type === 'video') {
             const source = this.props.asset.sources.url.url ||
@@ -374,8 +422,6 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
-                controls: [],
-                interactions: [],
                 layers: [
                     new ImageLayer({
                         source: new Static({
@@ -383,7 +429,8 @@ export default class AssetDetail extends React.Component {
                             projection: projection,
                             imageExtent: extent
                         })
-                    })
+                    }),
+                    this.selectionLayer
                 ],
                 view: new View({
                     projection: projection,
@@ -391,7 +438,21 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
+
         }
+    }
+
+    addInteraction(drawType) {
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
+
+        this.draw = new Draw({
+            source: this.selectionSource,
+            type: 'Polygon'
+        });
+
+        this.map.addInteraction(this.draw);
     }
 }
 

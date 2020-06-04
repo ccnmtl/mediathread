@@ -143,7 +143,7 @@ appdirs==1.4.4  # zeep
 attrs==19.3.0  # zeep
 zeep==3.4.0
 
-stevedore==1.32.0
+stevedore==2.0.0
 pyyaml==5.3.1
 bandit==1.6.2
 funcsigs==1.0.2 

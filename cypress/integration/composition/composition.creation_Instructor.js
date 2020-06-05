@@ -21,12 +21,13 @@ describe('Instructor Creates Composition', () => {
         cy.get('.panhandle-stripe.composition').should('exist');
         cy.get('.panel-subcontainer-title').contains('Untitled').should('exist');
         cy.contains('ul', 'Instructor One').should('exist');
-        cy.get('.project-visibility-description').should('exist');
+        cy.get('.project-visibility-description').contains('Draft').should('exist');
         cy.get('td.panel-container.open.composition').should('exist');
         cy.get('.project-revisionbutton').should('exist');
         cy.get('.project-previewbutton').should('exist');
+        cy.contains('Edit').should('not.exist');
         cy.get('.project-savebutton').should('exist');
-        cy.get('.participant_list').should('exist');
+        cy.get('.participant_list').contains('Authors').should('exist');
     });
     it('should save a composition', () => {
         cy.visit('/project/view/1');
@@ -61,6 +62,6 @@ describe('Instructor Creates Composition', () => {
         cy.get('li.projectlist').its('length').should('be.gt', 0);
         cy.get('.asset_title').should('contain', 'Composition: Scenario 1');
         cy.get('.metadata-value-author').should('contain', 'Instructor One');
-    })
+    });
 
 });

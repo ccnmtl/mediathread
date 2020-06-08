@@ -10,10 +10,10 @@ describe('Student Creates Composition', () => {
 
     beforeEach(() => {
       cy.login('student_one', 'test');
-      cy.visit('/course/1/');
     });
 
     it('should check composition panel edit features', () => {
+      cy.visit('/course/1/');
       cy.get('#homepage-create-menu').should('exist').click();
       cy.get('#create-project-menu input[type="submit"]')
         .contains('Create Composition').click();

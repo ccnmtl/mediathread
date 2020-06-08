@@ -42,7 +42,7 @@ editdistance==0.5.3
 pylint==1.9.5; python_version < '3.5'  # pyup: ignore
 pylint==2.5.3; python_version >= '3.5'
 
-astroid==2.4.2 # pyup: <2.0.0  # pylint
+astroid>=1.6.6,<2.0.0
 
 pyasn1==0.4.8
 ndg-httpsclient==0.5.1

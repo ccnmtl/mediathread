@@ -10,10 +10,10 @@ describe('Instructor Creates Composition', () => {
 
     beforeEach(() => {
       cy.login('instructor_one', 'test');
+      cy.visit('/course/1/', { timeout: 80000 });
     });
 
     it('should check composition panel features', () => {
-      cy.visit('/course/1/');
       cy.get('#homepage-create-menu').should('exist').click();
       cy.get('#create-project-menu input[type="submit"]')
         .eq(1).contains('Create Composition').click();
@@ -30,8 +30,7 @@ describe('Instructor Creates Composition', () => {
       cy.get('.participant_list').contains('Authors').should('exist');
     });
     it('should save a composition', () => {
-      cy.visit('/course/1/');
-      cy.visit('/project/view/1');
+      cy.visit('/project/view/1', { timeout: 80000 });
       cy.get('.panel-subcontainer-title > .form-control').clear()
         .type('Composition: Scenario 1');
       cy.getIframeBody().find('p').click()
@@ -50,8 +49,7 @@ describe('Instructor Creates Composition', () => {
       cy.get('.project-savebutton').should('contain', 'Saved');
     });
     it('should toggle the preview mode', () => {
-      cy.visit('/course/1/');
-      cy.visit('/project/view/1');
+      cy.visit('/project/view/1', { timeout: 80000 });
       cy.get('.project-previewbutton').trigger('mouseover').click();
       cy.get('.project-revisionbutton').should('exist');
       cy.contains('Edit').should('exist');
@@ -60,8 +58,7 @@ describe('Instructor Creates Composition', () => {
       cy.get('.participant_list').should('not.be', 'visable');
     });
     it('should show on Home', () => {
-      cy.visit('/course/1/');
-      cy.visit('/');
+      cy.visit('/', { timeout: 80000 });
       cy.get('#course_title_link').should('exist').click();
       cy.get('#loaded').should('exist');
       cy.get('li.projectlist').its('length').should('be.gt', 0);

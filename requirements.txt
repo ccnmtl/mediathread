@@ -13,7 +13,7 @@ zipp>=1.2.0,<2.0.0
 flake8==3.8.3
 lxml==4.5.1
 fuzzywuzzy==0.18.0  # lettuce
-mock==3.0.5 # pyup: <4.0.0  # sure
+mock==4.0.2 # pyup: <4.0.0  # sure
 sure==1.4.11  # lettuce
 extras==1.0.0
 linecache2==1.0.0  # traceback2

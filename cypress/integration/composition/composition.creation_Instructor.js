@@ -17,7 +17,9 @@ describe('Instructor Creates Composition', () => {
       cy.log('should check composition panel features');
       cy.get('#homepage-create-menu').should('exist').click();
       cy.get('#create-project-menu input[type="submit"]')
-        .eq(1).contains('Create Composition').click();
+        .eq(1).contains('Create Composition')
+      cy.get('#create-project-menu input[type="submit"]')
+        .eq(1).click();
       cy.get('#loaded').should('exist');
       cy.get('.panhandle-stripe.composition').should('exist');
       cy.get('.panel-subcontainer-title').contains('Untitled').should('exist');

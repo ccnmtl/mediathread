@@ -30,24 +30,11 @@ describe('Instructor Course Sources', function() {
     });
 });
 
-describe('Student Course Sources', function() {
-
-    before(function() {
-        cy.login('student_one', 'test');
-        cy.visit('/course/1');
-    });
-
-    it('should show YouTube as a source, as a Student', function() {
-        cy.get('.recommend_source').contains('YouTube').should('exist');
-    });
-});
-
 describe('Removing Course Source', function() {
 
     beforeEach(function() {
         cy.login('instructor_one', 'test');
-        cy.visit('/course/1');
-        cy.get('a[href*="settings"]').click();
+        cy.visit('/course/1/dashboard/settings/');
         cy.get('a[href*="sources"]').click();
     });
 
@@ -57,9 +44,4 @@ describe('Removing Course Source', function() {
           .click();
         cy.contains('Remove').should('not.exist');
     });
-
-    it('should should not show any recommended source', function() {
-        cy.visit('/course/1/');
-        cy.get('.recommend_source').should('not.exist');
-  });
 });

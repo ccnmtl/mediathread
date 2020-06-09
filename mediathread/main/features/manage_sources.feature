@@ -39,10 +39,6 @@ Feature: Sources
         Then I see "YouTube has been enabled for your class"
         Then there is an Remove button
 
-        # Under Add to My Collection
-        When I access the course url "/"
-        I see 1 source
-
         #Remove
         When I access the course url "/dashboard/settings/"
         Then I am at the Course Settings page
@@ -51,9 +47,5 @@ Feature: Sources
 
         When I click the Remove button
         Then I see "YouTube has been disabled for your class"
-
-        # Under Add to My Collection
-        When I access the course url "/"
-        I see 0 source
 
         Finished using Selenium

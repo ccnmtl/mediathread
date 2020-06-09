@@ -61,11 +61,7 @@ describe('Instructor Creates Composition', () => {
     });
     it('should show on Home', () => {
         cy.visit('/');
-        cy.get('#course_title_link').should('exist').click();
-        cy.get('#loaded').should('exist');
-        cy.get('li.projectlist').its('length').should('be.gt', 0);
-        cy.get('.asset_title').should('contain', 'Composition: Scenario 1');
-        cy.get('.metadata-value-author').should('contain', 'Instructor One');
+        // TODO: write this test when new Assignments tab is done.
     });
 
 });

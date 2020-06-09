@@ -194,88 +194,91 @@ export default class AssetFilter extends React.Component {
             );
         }
 
-        const pagination = (
-            <div id="view-pagination" className="row">
-                <div className="col-md-6">
-                    <div
-                        id="view-toggle" className="btn-group"
-                        role="group" aria-label="View Toggle">
-                        <a
-                            href="#"
-                            data-testid="viewtoggle-grid"
-                            onClick={() => this.props.setViewMode('grid')}
-                            className={'btn btn-outline-primary btn-sm ' + (
-                                this.props.viewMode === 'grid' ? 'active' : ''
+        let pagination = null;
+        if (!this.props.hidePagination) {
+            pagination = (
+                <div id="view-pagination" className="row">
+                    <div className="col-md-6">
+                        <div
+                            id="view-toggle" className="btn-group"
+                            role="group" aria-label="View Toggle">
+                            <a
+                                href="#"
+                                data-testid="viewtoggle-grid"
+                                onClick={() => this.props.setViewMode('grid')}
+                                className={'btn btn-outline-primary btn-sm ' + (
+                                    this.props.viewMode === 'grid' ? 'active' : ''
+                                )}>
+                                Grid
+                            </a>
+                            <a
+                                href="#"
+                                data-testid="viewtoggle-list"
+                                onClick={() => this.props.setViewMode('list')}
+                                className={'btn btn-outline-primary btn-sm ' + (
+                                    this.props.viewMode === 'list' ? 'active' : ''
+                                )}>
+                                List
+                            </a>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <ul
+                            className="pagination nav justify-content-end btn-sm"
+                            style={{padding: 0}}>
+                            <li className={'page-item ' + (
+                                this.state.currentPage <= 0 ? 'disabled' : ''
                             )}>
-                            Grid
-                        </a>
-                        <a
-                            href="#"
-                            data-testid="viewtoggle-list"
-                            onClick={() => this.props.setViewMode('list')}
-                            className={'btn btn-outline-primary btn-sm ' + (
-                                this.props.viewMode === 'list' ? 'active' : ''
+                                <a className="page-link" href="#"
+                                   aria-label="First"
+                                   onClick={this.firstPage}>
+                                    First
+                                </a>
+                            </li>
+                            <li className={'page-item ' + (
+                                this.state.currentPage <= 0 ? 'disabled' : ''
                             )}>
-                            List
-                        </a>
+                                <a
+                                    className="page-link" href="#"
+                                    aria-label="Previous"
+                                    onClick={this.prevPage}>
+                                    Previous
+                                </a>
+                            </li>
+                            <li className="page-item active">
+                                <div className="page-link">
+                                    {this.state.currentPage + 1} of {
+                                        Math.max(this.pageCount, 1)}
+                                    <span className="sr-only">(current)</span>
+                                </div>
+                            </li>
+                            <li className={'page-item ' + (
+                                this.state.currentPage >= this.pageCount - 1 ?
+                                    'disabled' : ''
+                            )}>
+                                <a
+                                    className="page-link" href="#"
+                                    aria-label="Next"
+                                    onClick={this.nextPage}>
+                                    Next
+                                </a>
+                            </li>
+                            <li className={'page-item ' + (
+                                this.state.currentPage >= this.pageCount - 1 ?
+                                    'disabled' : ''
+                            )}>
+                                <a
+                                    className="page-link" href="#"
+                                    aria-label="Last"
+                                    onClick={this.lastPage}>
+                                    Last
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div className="col-md-6">
-                    <ul
-                        className="pagination nav justify-content-end btn-sm"
-                        style={{padding: 0}}>
-                        <li className={'page-item ' + (
-                            this.state.currentPage <= 0 ? 'disabled' : ''
-                        )}>
-                            <a className="page-link" href="#"
-                                aria-label="First"
-                                onClick={this.firstPage}>
-                                First
-                            </a>
-                        </li>
-                        <li className={'page-item ' + (
-                            this.state.currentPage <= 0 ? 'disabled' : ''
-                        )}>
-                            <a
-                                className="page-link" href="#"
-                                aria-label="Previous"
-                                onClick={this.prevPage}>
-                                Previous
-                            </a>
-                        </li>
-                        <li className="page-item active">
-                            <div className="page-link">
-                                {this.state.currentPage + 1} of {
-                                    Math.max(this.pageCount, 1)}
-                                <span className="sr-only">(current)</span>
-                            </div>
-                        </li>
-                        <li className={'page-item ' + (
-                            this.state.currentPage >= this.pageCount - 1 ?
-                                'disabled' : ''
-                        )}>
-                            <a
-                                className="page-link" href="#"
-                                aria-label="Next"
-                                onClick={this.nextPage}>
-                                Next
-                            </a>
-                        </li>
-                        <li className={'page-item ' + (
-                            this.state.currentPage >= this.pageCount - 1 ?
-                                'disabled' : ''
-                        )}>
-                            <a
-                                className="page-link" href="#"
-                                aria-label="Last"
-                                onClick={this.lastPage}>
-                                Last
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        );
+            );
+        }
 
         // Make the react-select inputs look like Bootstrap's
         // form-control-sm.
@@ -417,6 +420,7 @@ export default class AssetFilter extends React.Component {
 AssetFilter.propTypes = {
     assets: PropTypes.array,
     assetCount: PropTypes.number,
+    hidePagination: PropTypes.bool.isRequired,
     owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array,

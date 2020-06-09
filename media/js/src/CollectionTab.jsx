@@ -136,6 +136,7 @@ export default class CollectionTab extends React.Component {
                 <AssetFilter
                     assets={this.props.assets}
                     assetCount={this.props.assetCount}
+                    hidePagination={!!this.state.selectedAsset}
                     owners={this.props.owners}
                     tags={this.props.tags}
                     terms={this.props.terms}

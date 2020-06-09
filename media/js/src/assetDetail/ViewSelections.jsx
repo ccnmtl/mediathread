@@ -6,87 +6,70 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import Asset from '../Asset';
-import SelectionAccordionItem from '../SelectionAccordionItem';
-
 export default class ViewSelections extends React.Component {
-    constructor(props) {
-        super(props);
-        this.asset = new Asset(this.props.asset);
-    }
-
     render() {
-        const type = this.asset.getType();
+        const selections = [];
+        this.props.asset.annotations.forEach(function(s, idx) {
+            selections.push(
+                <div key={idx} className="card w-100 card-selection active">
+                    <div className="card-body">
+                        <h5 className="card-title">
+                            {s.title}
+                        </h5>
 
-        const selectionsByAuthor = {};
-        const selectionsByAuthorDom = [];
+                        {s.metadata && s.metadata.tags.length > 0 && (
+                            <p className="card-text">
+                                {s.metadata.tags}
+                            </p>
+                        )}
+                        {s.vocabulary && s.vocabulary.length > 0 && (
+                            <p className="card-text">
+                                {s.vocabulary}
+                            </p>
+                        )}
+                        {s.metadata && s.metadata.body && (
+                            <p className="card-text">
+                                {s.metadata.body}
+                            </p>
+                        )}
 
-        const me = this;
-
-        // Group the selections by author.
-        this.props.asset.annotations.forEach(function(s) {
-            if (selectionsByAuthor[s.author.id]) {
-                selectionsByAuthor[s.author.id].push(s);
-            } else {
-                selectionsByAuthor[s.author.id] = [s];
-            }
-        });
-
-        for (let [key, selections] of Object.entries(selectionsByAuthor)) {
-            let selectionsDom = [];
-            selections.forEach(function(s) {
-                selectionsDom.push(
-                    <SelectionAccordionItem
-                        key={s.id}
-                        asset={me.props.asset}
-                        type={type}
-                        selection={s}
-                        onClickPlay={me.props.onClickPlay}
-                        onClickSelection={me.props.onClickSelection}
-                        showDeleteDialog={me.props.showDeleteDialog}
-                    />
-                );
-            });
-
-            let authorName = selections[0].author.public_name ||
-                selections[0].author.username;
-
-            let authorAccordion = (
-                <div key={key} className="accordion" id="accordionExample2">
-                    <div className="card">
-                        <div className="card-header" id="headingOne">
-                            <h2 className="mb-0">
-                                <button
-                                    className="btn btn-link" type="button"
-                                    data-toggle="collapse" data-target="#collapseOne"
-                                    aria-expanded="true" aria-controls="collapseOne">
-                                    {authorName}
-                                </button>
-                            </h2>
-                        </div>
-                        <div
-                            id="collapseOne"
-                            className="collapse show"
-                            aria-labelledby="headingOne"
-                            data-parent="#accordionExample2">
-                            {selectionsDom}
-                        </div>
+                        <a href="#" className="btn btn-secondary btn-sm">Edit</a>&nbsp;
+                        <a href="#" className="btn btn-secondary btn-sm">Copy</a>&nbsp;
+                        <a href="#" className="btn btn-primary btn-sm disabled">View</a>
                     </div>
                 </div>
             );
-
-            selectionsByAuthorDom.push(authorAccordion);
-        }
+        });
 
         return (
             <React.Fragment>
-                <h2>Selections from &quot;{this.props.asset.title}&quot;</h2>
-                <div
-                    className="accordion" id="selectionAccordion"
-                    style={{margin: '1em 0em 1em 0em'}}>
+                <h2>
+                    Selections from <a href="#">{this.props.asset.title}</a>
+                </h2>
+
+                <div className="btn-group">
+                    <a
+                        className="btn btn-light dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">Group </a>
+                    <div className="dropdown-menu">
+                        <a className="dropdown-item" href="#">by author</a>
+                        <a className="dropdown-item" href="#">by tag</a>
+                    </div>
+                </div>
+                &nbsp;
+                <div className="btn-group">
+                    <a
+                        className="btn btn-light dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">Sort </a>
+                    <div className="dropdown-menu">
+                        <a className="dropdown-item" href="#">in ascending order</a>
+                        <a className="dropdown-item" href="#">in descending order</a>
+                    </div>
                 </div>
 
-                {selectionsByAuthorDom}
+                {selections}
 
                 <Modal
                     show={this.props.showDeleteDialogBool}

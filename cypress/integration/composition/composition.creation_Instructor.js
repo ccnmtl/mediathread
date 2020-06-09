@@ -51,6 +51,7 @@ describe('Instructor Creates Composition', () => {
       cy.get('.project-savebutton').should('contain', 'Saved');
 
       cy.log('toggle preview mode');
+      cy.get('#cu-privacy-notice-icon').click();
       cy.get('.project-previewbutton').trigger('mouseover').click();
       cy.get('.project-revisionbutton').should('exist');
       cy.contains('Edit').should('exist');

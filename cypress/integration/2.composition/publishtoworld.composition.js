@@ -13,6 +13,7 @@ describe('Publish To World Public Composition', () => {
     });
 
     it('enables publish to world in the course & creates project', () => {
+      cy.log('enable publish to world');
       cy.login('instructor_one', 'test');
       cy.visit('/course/1/dashboard/settings/');
       if(cy.get('input#id_publish_to_world').should('not.be.checked'))
@@ -22,23 +23,34 @@ describe('Publish To World Public Composition', () => {
       cy.get('#cu-privacy-notice-icon').click();
       cy.get('.btn-primary').contains('Save').click();
       cy.get('input#id_publish_to_world').should('be.checked');
-      // cy.wait(500);
+
+      cy.log('create a project from the home page');
       cy.visit('/course/1/');
       cy.get('#homepage-create-menu').click();
       cy.get('#create-project-menu input[type="submit"]')
-        .eq(1).contains('Create Composition').click();
+        .eq(1).contains('Create Composition')
+      cy.get('#create-project-menu input[type="submit"]')
+        .eq(1).click();
       cy.get('#loaded').should('exist');
+
+      cy.log('add title and some text');
       cy.get('.panel-subcontainer-title > .form-control').clear()
         .type('Composition Public: Scenario 1A');
       cy.getIframeBody().find('p').click()
         .type('The Columbia Center for New Teaching and Learning');
+
+      cy.log('insert an asset');
       cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
       cy.get('#asset-item-1 > .citationTemplate > .materialCitation')
         .click();
+
+      cy.log('save project and set project visibility to public');
       cy.get('.project-savebutton').click();
       cy.contains('Whole World - a public url is provided').click();
       cy.get('.btn-primary').contains('Save').click();
       cy.get('.project-visibility-link').should('contain', 'Published to World');
+
+      cy.log('log out and go to permalink');
       //TODO: Figure out a cleaner way to do this?
       cy.get('.last-version-public')
         .should('have.attr', 'href')
@@ -51,7 +63,6 @@ describe('Publish To World Public Composition', () => {
       cy.get('.participants_chosen').should('contain', 'Instructor One');
       cy.get('.project-title').should('contain', 'Composition Public: Scenario 1A');
       cy.get('.last-version-public').should('exist');
-        //.and('contains', 'permalink');
       cy.get('.project-revisionbutton').should('not.exist');
       cy.contains('Edit').should('not.exist');
       cy.contains('Preview').should('not.exist');

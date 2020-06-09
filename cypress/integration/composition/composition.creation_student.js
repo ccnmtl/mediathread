@@ -10,10 +10,11 @@ describe('Student Creates Composition', () => {
 
     beforeEach(() => {
       cy.login('student_one', 'test');
-      cy.visit('/course/1/', { timeout: 120000 });
+      cy.visit('/course/1/');
     });
 
-    it('should check composition panel edit features', () => {
+    it('should creare a Composition as a Student', () => {
+      cy.log('should check composition panel edit features');
       cy.get('#homepage-create-menu').should('exist').click();
       cy.get('#create-project-menu input[type="submit"]')
         .contains('Create Composition').click();
@@ -28,9 +29,8 @@ describe('Student Creates Composition', () => {
       cy.contains('Edit').should('not.exist');
       cy.get('.project-savebutton').should('exist');
       cy.get('.participant_list').contains('Authors').should('exist');
-    });
-    it('should save a composition', () => {
-      cy.visit('/project/view/2/', { timeout: 120000 });
+
+      cy.log('should save a composition');
       cy.get('.panel-subcontainer-title > .form-control').clear()
         .type('Composition: Scenario 2');
       cy.getIframeBody().find('p').click()
@@ -38,18 +38,18 @@ describe('Student Creates Composition', () => {
       cy.get('.project-savebutton').click();
       cy.get('.btn-primary').contains('Save').click();
       cy.get('.project-savebutton').should('contain', 'Saved');
-    });
-    it('should toggle the preview mode', () => {
-      cy.visit('/project/view/2', { timeout: 120000 });
+
+      cy.log('should toggle preview mode');
       cy.get('.project-previewbutton').trigger('mouseover').click();
       cy.get('.project-revisionbutton').should('exist');
       cy.contains('Edit').should('exist');
       cy.contains('Preview').should('not.exist');
       cy.get('.project-savebutton').should('contain', 'Saved');
       cy.get('.participant_list').should('not.be', 'visable');
+
     });
     it('should show on Home', () => {
-      cy.visit('/', { timeout: 120000 });
+      cy.visit('/');
       cy.get('#course_title_link').should('exist').click();
       cy.get('#loaded').should('exist');
       cy.get('li.projectlist').its('length').should('be.gt', 0);

@@ -107,9 +107,31 @@ export default class CollectionTab extends React.Component {
             );
         }
 
+        let backButton = null;
+        if (this.state.selectedAsset) {
+            const courseUrl = window.location.href.replace(/\/asset\/\d+/, '');
+            backButton = (
+                <div className="btn-group mb-1" role="group"
+                     aria-label="View Toggle">
+                    <a
+                        href={courseUrl}
+                        onClick={this.toggleAssetView}
+                        title="Back"
+                        className="btn btn-outline-secondary btn-sm">
+                        <svg className="bi bi-caret-left-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 00-1.659-.753l-5.48 4.796a1 1 0 000 1.506z"></path>
+                        </svg>
+                        Back to Full Collection View
+                    </a>
+                </div>
+            );
+        }
+
         return (
             <div role="tabpanel">
                 <h1 className="page-title">Collection</h1>
+
+                {backButton}
 
                 <AssetFilter
                     assets={this.props.assets}

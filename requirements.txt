@@ -32,7 +32,7 @@ python-dateutil==2.8.1  # tastypie
 defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2 # pyup: < 0.14.3
 coverage>=4.5.4,<5
-logilab-common>=1.4.4,<1.5
+logilab-common>=1.4.4,<1.8
 lazy-object-proxy==1.5.0
 wrapt==1.12.1
 unicodecsv==0.14.1

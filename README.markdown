@@ -1,6 +1,6 @@
 # Mediathread
 
-[![Build Status](https://travis-ci.org/ccnmtl/mediathread.svg?branch=master)](https://travis-ci.org/ccnmtl/mediathread)
+[![Build Status](https://travis-ci.com/ccnmtl/mediathread.svg?branch=master)](https://travis-ci.com/ccnmtl/mediathread)
 [![Documentation Status](https://readthedocs.org/projects/mediathread/badge/?version=latest)](https://mediathread.readthedocs.io/en/latest/?badge=latest)
 
 Mediathread is a Django site for multimedia annotations facilitating

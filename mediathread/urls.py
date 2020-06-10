@@ -217,7 +217,7 @@ urlpatterns = [
 
     url(r'^course/(?P<course_pk>\d+)/dashboard/sources/',
         CourseManageSourcesView.as_view(),
-        name='class-manage-sources'),
+        name='course-manage-sources'),
     url(r'^course/(?P<course_pk>\d+)/dashboard/delete/materials/',
         CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),

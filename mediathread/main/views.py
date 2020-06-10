@@ -207,7 +207,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
                              'Your changes were saved.')
 
         return HttpResponseRedirect(
-            reverse('class-manage-sources', args=[request.course.pk]))
+            reverse('course-manage-sources', args=[request.course.pk]))
 
 
 @allow_http("POST")

@@ -32,7 +32,7 @@ describe('Student Project Visibility', () => {
       cy.get('.switcher-top').click();
       cy.get('#choice_all_items > .switcher-choice').click();
       cy.get('.projectlist').should('exist')
-        .and('contain', 'Composition Visibility: Scenario 3');
+        .and('contain', 'Composition Public: Scenario 3');
     });
     it('creates a project as Student one', () => {
       cy.login('student_one', 'test');

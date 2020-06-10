@@ -16,11 +16,11 @@ describe('Course Settings', function() {
     });
 
     after(() => {
-      cy.clearCookies();
+        cy.clearCookies();
     });
 
     it('navigates to the Course Settings page', function() {
-      cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
+        cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
     });
 
     it('has its publish to world option off by default', function() {

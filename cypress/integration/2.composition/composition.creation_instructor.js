@@ -7,19 +7,24 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 });
 
 describe('Instructor Creates Composition', () => {
-
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+        cy.wait(500);
     });
 
     it('should create a composition as an Instructor', () => {
         cy.log('should check composition panel features');
-        cy.get('#homepage-create-menu').should('exist').click();
-        cy.get('#create-project-menu input[type="submit"]')
-            .eq(1).contains('Create Composition')
-        cy.get('#create-project-menu input[type="submit"]')
-            .eq(1).click();
+
+        cy.visit('/course/1/project/create/', {
+            method: 'POST',
+            body: {
+                project_type: 'composition'
+            }
+        });
+
+        cy.wait(500);
+
         cy.get('#loaded').should('exist');
         cy.get('.panhandle-stripe.composition').should('exist');
         cy.get('.panel-subcontainer-title').contains('Untitled').should('exist');
@@ -59,6 +64,7 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-savebutton').should('contain', 'Saved');
         cy.get('.participant_list').should('not.be', 'visable');
     });
+
     it('should show on Home', () => {
         cy.visit('/');
         // TODO: write this test when new Assignments tab is done.

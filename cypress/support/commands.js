@@ -29,12 +29,12 @@
 Cypress.Commands.add('login', (username, password) => {
     return cy.request({
         method: 'POST',
-        url: 'http://localhost:8000/accounts/login/',
+        url: '/accounts/login/',
         form: true,
         body: {
-            username,
-            password,
-        },
+            username: username,
+            password: password
+        }
     });
 });
 

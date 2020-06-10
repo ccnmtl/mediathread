@@ -1,6 +1,7 @@
 {
     "extends": [
         "eslint:recommended",
+        "plugin:cypress/recommended",
         "plugin:react/recommended",
         "plugin:security/recommended"
     ],

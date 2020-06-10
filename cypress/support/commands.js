@@ -14,36 +14,38 @@
 //
 //
 // -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
+// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject,
+//   options) => { ... })
 //
 //
 // -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
+// Cypress.Commands.add("dismiss", { prevSubject: 'optional'},
+//   (subject, options) => { ... })
 //
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-   return cy.request({
-     method: 'POST',
-     url: 'http://localhost:8000/accounts/login/',
-     form: true,
-     body: {
-       username,
-       password,
-     },
-   });
- });
+    return cy.request({
+        method: 'POST',
+        url: 'http://localhost:8000/accounts/login/',
+        form: true,
+        body: {
+            username,
+            password,
+        },
+    });
+});
 
 Cypress.Commands.add('getIframeBody', () => {
-  // get the iframe > document > body
-  // and retry until the body element is not empty
-  return cy
-  .get('iframe')
-  .its('0.contentDocument.body').should('not.be.empty')
-  // wraps "body" DOM element to allow
-  // chaining more Cypress commands, like ".find(...)"
-  // https://on.cypress.io/wrap
-  .then(cy.wrap);
+    // get the iframe > document > body
+    // and retry until the body element is not empty
+    return cy
+        .get('iframe')
+        .its('0.contentDocument.body').should('not.be.empty')
+    // wraps "body" DOM element to allow
+    // chaining more Cypress commands, like ".find(...)"
+    // https://on.cypress.io/wrap
+        .then(cy.wrap);
 });

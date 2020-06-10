@@ -15,6 +15,10 @@ describe('Course Settings', function() {
         cy.get('a[href*="settings"]').click();
     });
 
+    after(() => {
+      cy.clearCookies();
+    });
+
     it('navigates to the Course Settings page', function() {
       cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
     });

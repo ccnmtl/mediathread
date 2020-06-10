@@ -16,7 +16,7 @@ describe('Student Project Visibility', () => {
         .eq(1).contains('Create Composition').click();
       cy.get('#loaded').should('exist');
       cy.get('.panel-subcontainer-title > .form-control').clear()
-        .type('Composition Visibility: Scenario 3');
+        .type('Composition Public: Scenario 3');
       cy.get('.project-savebutton').click();
       cy.contains('Whole Class - all class members can view').click();
       cy.get('.btn-primary').contains('Save').click();
@@ -28,11 +28,11 @@ describe('Student Project Visibility', () => {
       cy.visit('/course/1/');
       cy.get('.instructor-list')
         .should('have.length', 1)
-        .and('contain', 'Composition Visibility: Scenario 3');
+        .and('contain', 'Composition Public: Scenario 3');
       cy.get('.switcher-top').click();
       cy.get('#choice_all_items > .switcher-choice').click();
       cy.get('.projectlist').should('exist')
-        .and('contain', 'Composition Visibility: Scenario 3');
+        .and('contain', 'Composition Public: Scenario 3');
     });
     it('creates a project as Student one', () => {
       cy.login('student_one', 'test');
@@ -42,7 +42,7 @@ describe('Student Project Visibility', () => {
         .contains('Create Composition').click();
       cy.get('#loaded').should('exist');
       cy.get('.panel-subcontainer-title > .form-control').clear()
-        .type('Visibility');
+        .type('Public');
       cy.get('.project-savebutton').click();
       cy.contains('Whole Class - all class members can view').click();
       cy.get('.btn-primary').contains('Save').click();
@@ -56,6 +56,6 @@ describe('Student Project Visibility', () => {
       cy.get('.switcher-choice.owner').contains('One, Student').click();
       cy.get('.metadata-value-author').contains('Student One');
       cy.get('.projectlist').should('exist')
-        .and('contain', 'Visibility');
+        .and('contain', 'Public');
     })
 });

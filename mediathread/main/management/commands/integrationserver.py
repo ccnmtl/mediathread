@@ -50,6 +50,7 @@ class Command(BaseCommand):
         m.setup_sample_course()
         m.setup_alternate_course()
         m.setup_suggested_collection()
+        m.setup_sample_assets()
 
         shutdown_message = (
             '\nServer stopped.\nNote that the test database, %r, has not been '

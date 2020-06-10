@@ -8,14 +8,14 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Instructor Course Sources', function() {
 
-    beforeEach(function () {
+    beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.get('a[href*="settings"]').click();
         cy.get('a[href*="sources"]').click();
     });
 
-    it('should navigate to Sources page', function() {
+    it('should navigate to Sources page', () => {
         cy.url().should('match', /course\/1\/dashboard\/sources\/$/);
     });
 
@@ -30,7 +30,7 @@ describe('Instructor Course Sources', function() {
     });
 });
 
-describe('Removing Course Source', function() {
+describe('Removing Course Source', () => {
 
     beforeEach(function() {
         cy.login('instructor_one', 'test');

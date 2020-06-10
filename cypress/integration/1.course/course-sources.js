@@ -25,8 +25,8 @@ describe('Instructor Course Sources', function() {
     });
 
     it('should show YouTube as a source', function() {
-      cy.visit('/course/1/');
-      cy.get('.recommend_source').contains('YouTube').should('exist');
+        cy.visit('/course/1/');
+        cy.get('.recommend_source').contains('YouTube').should('exist');
     });
 });
 
@@ -40,8 +40,8 @@ describe('Removing Course Source', function() {
 
     it('should remove YouTube as a source to the class', function() {
         cy.get('input#youtube.btn.btn-default')
-          .should('have.value', 'Remove')
-          .click();
+            .should('have.value', 'Remove')
+            .click();
         cy.contains('Remove').should('not.exist');
     });
 });

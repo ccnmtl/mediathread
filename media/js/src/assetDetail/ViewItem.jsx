@@ -8,6 +8,26 @@ export default class ViewItem extends React.Component {
                 <h3>
                     Item References within Course
                 </h3>
+
+                <div className="btn-group">
+                    <a
+                        className="btn btn-light dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Sort by
+                    </a>
+                    <div className="dropdown-menu">
+                        <a className="dropdown-item" href="#">
+                            Title, A &ndash; Z
+                        </a>
+                        <a className="dropdown-item" href="#">
+                            Title, Z &ndash; A
+                        </a>
+                        <a className="dropdown-item" href="#">
+                            Something else
+                        </a>
+                    </div>
+                </div>
             </div>
         );
 

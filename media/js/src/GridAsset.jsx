@@ -180,7 +180,7 @@ export default class GridAsset extends React.Component {
         if (window.MediaThread) {
             const courseId = window.MediaThread.current_course;
             assetLink =
-                `/course/${courseId}/react/asset/${this.props.asset.id}`;
+                `/course/${courseId}/react/asset/${this.props.asset.id}/`;
         }
 
         return (

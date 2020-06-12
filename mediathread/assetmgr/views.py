@@ -1045,7 +1045,7 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
     model = Asset
     waffle_flag = 'new_course_view'
-    template_name = 'courseaffils/course_detail_react.html'
+    template_name = 'courseaffils/course_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReactAssetDetailView, self).get_context_data(**kwargs)

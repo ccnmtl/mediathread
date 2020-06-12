@@ -52,10 +52,7 @@ export default class AssetDetail extends React.Component {
         };
 
         this.draw = null;
-        this.selectionSource = new VectorSource({wrapX: false});
-        this.selectionLayer = new VectorLayer({
-            source: this.selectionSource
-        });
+
 
         this.playerRef = null;
         this.selection = null;
@@ -441,6 +438,11 @@ export default class AssetDetail extends React.Component {
                 extent: extent
             });
 
+            this.selectionSource = new VectorSource({wrapX: false});
+            const selectionLayer = new VectorLayer({
+                source: this.selectionSource
+            });
+
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
                 layers: [
@@ -451,7 +453,7 @@ export default class AssetDetail extends React.Component {
                             imageExtent: extent
                         })
                     }),
-                    this.selectionLayer
+                    selectionLayer
                 ],
                 view: new View({
                     projection: projection,

@@ -10,9 +10,7 @@ describe('Course Settings', function() {
 
     beforeEach(function() {
         cy.login('instructor_one', 'test');
-        cy.visit('/course/1/');
-        // Click Course Settings
-        cy.get('a[href*="settings"]').click();
+        cy.visit('/course/1/dashboard/settings/');
     });
 
     after(() => {

@@ -42,6 +42,8 @@ MIDDLEWARE.remove(
     'django_statsd.middleware.GraphiteMiddleware')
 MIDDLEWARE.remove(
     'impersonate.middleware.ImpersonateMiddleware')
+MIDDLEWARE.remove(
+    'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ALLOWED_HOSTS.append('127.0.0.1')
 

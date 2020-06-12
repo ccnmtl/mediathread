@@ -219,8 +219,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 if 'test' in sys.argv or \
    'jenkins' in sys.argv or \
    'integrationserver' in sys.argv:
-    DEBUG = False
+    DEBUG = True
     TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
+    MIDDLEWARE.remove(
+        'debug_toolbar.middleware.DebugToolbarMiddleware')
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )

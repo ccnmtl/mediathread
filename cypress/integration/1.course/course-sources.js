@@ -23,11 +23,6 @@ describe('Instructor Course Sources', function() {
         cy.get('#youtube').click();
         cy.get('#youtube').should('have.value', 'Remove');
     });
-
-    it('should show YouTube as a source', function() {
-        cy.visit('/course/1/');
-        cy.get('.recommend_source').contains('YouTube').should('exist');
-    });
 });
 
 describe('Removing Course Source', function() {

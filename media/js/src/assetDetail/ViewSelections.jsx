@@ -3,6 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
@@ -10,6 +11,20 @@ export default class ViewSelections extends React.Component {
     render() {
         const selections = [];
         this.props.asset.annotations.forEach(function(s, idx) {
+            const tags = [];
+            if (s.metadata && s.metadata.tags) {
+                s.metadata.tags.forEach(function(tag, idx) {
+                    tags.push(<a key={idx} href="#">{tag.name}</a>);
+                });
+            }
+
+            const terms = [];
+            if (s.vocabulary) {
+                s.vocabulary.forEach(function(term, idx) {
+                    terms.push(<a key={idx} href="#">{term.name}</a>);
+                });
+            }
+
             selections.push(
                 <div key={idx} className="card w-100 card-selection active">
                     <div className="card-body">
@@ -17,16 +32,18 @@ export default class ViewSelections extends React.Component {
                             {s.title}
                         </h5>
 
-                        {s.metadata && s.metadata.tags.length > 0 && (
+                        {tags.length > 0 && (
                             <p className="card-text">
-                                {s.metadata.tags}
+                                {tags}
                             </p>
                         )}
-                        {s.vocabulary && s.vocabulary.length > 0 && (
+
+                        {terms.length > 0 && (
                             <p className="card-text">
-                                {s.vocabulary}
+                                {terms}
                             </p>
                         )}
+
                         {s.metadata && s.metadata.body && (
                             <p className="card-text">
                                 {s.metadata.body}
@@ -68,6 +85,11 @@ export default class ViewSelections extends React.Component {
                         <a className="dropdown-item" href="#">in descending order</a>
                     </div>
                 </div>
+
+                <Alert variant="warning" show={!selections.length}>
+                    There are no selections of this item.&nbsp;
+                    <Alert.Link href="#">Create a selection</Alert.Link> now to begin.
+                </Alert>
 
                 {selections}
 

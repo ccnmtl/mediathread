@@ -84,32 +84,78 @@ export default class AssetDetail extends React.Component {
     onCreateSelection(e) {
         e.preventDefault();
         const me = this;
+        const type = this.asset.getType();
 
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
-        createSherdNote(this.asset.asset.id, {
-            'title': selectionTitle,
-            'tags': document.getElementById('newSelectionTags').value,
-            'body': document.getElementById('newSelectionNotes').value,
-            'range1': this.state.selectionStartTime,
-            'range2': this.state.selectionEndTime,
-            'annotation_data': {
-                startCode: formatTimecode(this.state.selectionStartTime),
-                endCode: formatTimecode(this.state.selectionEndTime),
-                duration: this.state.selectionEndTime - this.state.selectionStartTime,
-                timeScale: 1,
-                start: this.state.selectionStartTime,
-                end: this.state.selectionEndTime
-            }
-        }).then(function() {
+        let promise = null;
+
+        if (type === 'image') {
+            const features = this.selectionSource.getFeatures();
+            const coords = [];
+            let extent = null;
+            features.forEach(function(feature) {
+                const geometry = feature.getGeometry();
+                coords.push(geometry.getCoordinates());
+
+                if (extent) {
+                    extent = geometry.getExtent().extend(extent);
+                } else {
+                    extent = geometry.getExtent();
+                }
+            });
+
+            promise = createSherdNote(this.asset.asset.id, {
+                title: selectionTitle,
+                tags: document.getElementById('newSelectionTags').value,
+                body: document.getElementById('newSelectionNotes').value,
+                range1: -2,
+                range2: -1,
+                annotation_data: {
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent
+                }
+            });
+        } else if (type === 'video') {
+            promise = createSherdNote(this.asset.asset.id, {
+                title: selectionTitle,
+                tags: document.getElementById('newSelectionTags').value,
+                body: document.getElementById('newSelectionNotes').value,
+                range1: this.state.selectionStartTime,
+                range2: this.state.selectionEndTime,
+                annotation_data: {
+                    startCode: formatTimecode(this.state.selectionStartTime),
+                    endCode: formatTimecode(this.state.selectionEndTime),
+                    duration: this.state.selectionEndTime -
+                        this.state.selectionStartTime,
+                    timeScale: 1,
+                    start: this.state.selectionStartTime,
+                    end: this.state.selectionEndTime
+                }
+            });
+        }
+
+        return promise.then(function() {
             me.setState({
                 createdSelectionTitle: selectionTitle,
                 showCreatedDialog: true
+            }, function() {
+                const elt = document.getElementById('create-success-alert');
+                elt.scrollIntoView();
             });
 
             // Refresh the selections.
-            getAsset(me.asset.asset.id).then(function(d) {
+            return getAsset(me.asset.asset.id).then(function(d) {
                 me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+
+
             });
         }, function(errorText) {
             me.setState({
@@ -302,7 +348,8 @@ export default class AssetDetail extends React.Component {
             <div className="container asset-detail">
                 <Alert
                     variant="success" show={this.state.showCreatedDialog}
-                    onClose={this.hideCreatedDialog} dismissible>
+                    onClose={this.hideCreatedDialog} dismissible
+                    id="create-success-alert">
                     <Alert.Heading>
                         Selection &quot;{this.state.createdSelectionTitle}&quot; created.
                     </Alert.Heading>

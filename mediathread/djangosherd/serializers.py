@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -86,7 +88,7 @@ class SherdNoteSerializer(serializers.ModelSerializer):
             'author': author,
             'range1': range1_fl,
             'range2': range2_fl,
-            'annotation_data': annotation_data,
+            'annotation_data': json.dumps(annotation_data),
             'asset': asset,
         }
 

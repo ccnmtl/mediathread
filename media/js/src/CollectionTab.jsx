@@ -109,7 +109,8 @@ export default class CollectionTab extends React.Component {
 
         let backButton = null;
         if (this.state.selectedAsset) {
-            const courseUrl = window.location.href.replace(/\/asset\/\d+/, '');
+            const courseUrl = window.location.href.replace(
+                /\/react\/asset\/\d+/, '');
             backButton = (
                 <div className="btn-group mb-1" role="group"
                      aria-label="View Toggle">

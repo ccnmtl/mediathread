@@ -31,7 +31,6 @@ from mediathread.main.views import (
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, CourseDetailView, course_detail_view,
-    ReactCourseDetailView,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
@@ -162,8 +161,6 @@ urlpatterns = [
         name='affil_activate'),
 
     # New course-aware routes
-    url(r'^course/(?P<pk>\d+)/react/$', ReactCourseDetailView.as_view(),
-        name='react_course_detail'),
     url(r'^course/(?P<course_pk>\d+)/react/asset/(?P<pk>\d+)/$',
         ReactAssetDetailView.as_view(),
         name='react_asset_detail'),
@@ -220,7 +217,7 @@ urlpatterns = [
 
     url(r'^course/(?P<course_pk>\d+)/dashboard/sources/',
         CourseManageSourcesView.as_view(),
-        name='class-manage-sources'),
+        name='course-manage-sources'),
     url(r'^course/(?P<course_pk>\d+)/dashboard/delete/materials/',
         CourseDeleteMaterialsView.as_view(),
         name='course-delete-materials'),

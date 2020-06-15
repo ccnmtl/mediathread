@@ -14,6 +14,7 @@ test data dynamically using factories
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connection
+from waffle.models import Flag
 from mediathread.factories import (
     MediathreadTestMixin
 )
@@ -53,9 +54,13 @@ class Command(BaseCommand):
         m.setup_sample_assets()
         m.setup_sample_assignment()
 
+        Flag(name='addressable_courses', everyone=True)
+        Flag(name='new_course_view', everyone=True)
+
         shutdown_message = (
-            '\nServer stopped.\nNote that the test database, %r, has not been '
-            'deleted. You can explore it on your own.' % db_name
+            '\nServer stopped.' +
+            '\nNote that the test database, {}, '.format(db_name) +
+            'has not been deleted. You can explore it on your own.'
         )
 
         # - Because we defer to 'runserver' there's no easy way to clean up the

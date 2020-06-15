@@ -104,7 +104,7 @@ class ManageExternalCollectionView(
 
         redirect_url = request.POST.get('redirect-url',
                                         reverse(
-                                            'class-manage-sources',
+                                            'course-manage-sources',
                                             args=[request.course.pk]))
         return HttpResponseRedirect(redirect_url)
 
@@ -122,7 +122,7 @@ class ManageIngestView(LoggedInCourseMixin, LoggedInFacultyMixin, View):
             course_details.clear_ingest_folder(request.course)
 
         redirect_url = reverse(
-            'class-manage-sources', args=[request.course.pk])
+            'course-manage-sources', args=[request.course.pk])
         return HttpResponseRedirect(redirect_url)
 
 
@@ -1045,7 +1045,7 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
     model = Asset
     waffle_flag = 'new_course_view'
-    template_name = 'courseaffils/course_detail_react.html'
+    template_name = 'courseaffils/course_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReactAssetDetailView, self).get_context_data(**kwargs)

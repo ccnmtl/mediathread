@@ -22,7 +22,7 @@
                         <a
                             {% if '/sources/' in request.path %}class="active"{% endif %}
                             {% if '/ingest/' in request.path %}class="active"{% endif %}
-                            href="{% url 'class-manage-sources' request.course.pk %}">Sources</a>
+                            href="{% url 'course-manage-sources' request.course.pk %}">Sources</a>
                     </li>
                     {% if user.is_staff %}
                     <li>

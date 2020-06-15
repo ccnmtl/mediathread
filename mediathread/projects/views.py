@@ -99,7 +99,7 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
 
         if not request.is_ajax():
             if waffle.flag_is_active(request, 'addressable_courses') and \
-               hasattr(request, 'course'):
+               hasattr(request, 'course') and request.course:
                 return HttpResponseRedirect(
                     reverse('project-workspace',
                             args=(request.course.pk, project.pk,)))

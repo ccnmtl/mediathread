@@ -70,7 +70,6 @@ from mediathread.mixins import (
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
-from waffle.mixins import WaffleFlagMixin
 
 
 # returns important setting information for all web pages.
@@ -175,11 +174,6 @@ class CourseDetailView(LoggedInMixin, DetailView):
         return context
 
 
-class ReactCourseDetailView(WaffleFlagMixin, CourseDetailView):
-    waffle_flag = 'new_course_view'
-    template_name = 'courseaffils/course_detail_react.html'
-
-
 class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     template_name = 'dashboard/class_manage_sources.html'
 
@@ -213,7 +207,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
                              'Your changes were saved.')
 
         return HttpResponseRedirect(
-            reverse('class-manage-sources', args=[request.course.pk]))
+            reverse('course-manage-sources', args=[request.course.pk]))
 
 
 @allow_http("POST")

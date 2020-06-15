@@ -582,7 +582,7 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
 
     def test_not_logged_in(self):
         response = self.client.get(
-            reverse('class-manage-sources', args=[self.sample_course.pk]))
+            reverse('course-manage-sources', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 302)
 
     def test_as_student(self):
@@ -590,12 +590,12 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.student_one.username,
                               password='test'))
         response = self.client.get(
-            reverse('class-manage-sources', args=[self.sample_course.pk]))
+            reverse('course-manage-sources', args=[self.sample_course.pk]))
         self.assertEquals(response.status_code, 403)
 
     def test_get_context(self):
         request = RequestFactory().get(
-            reverse('class-manage-sources', args=[self.sample_course.pk]))
+            reverse('course-manage-sources', args=[self.sample_course.pk]))
         request.user = self.instructor_one
         request.course = self.sample_course
 
@@ -620,7 +620,7 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
         }
 
         self.client.post(
-            reverse('class-manage-sources', args=[self.sample_course.pk]),
+            reverse('course-manage-sources', args=[self.sample_course.pk]),
             data)
         self.assertTrue(course_details.can_upload(self.superuser,
                                                   self.sample_course))

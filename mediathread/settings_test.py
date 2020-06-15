@@ -43,6 +43,10 @@ MIDDLEWARE.remove(
 MIDDLEWARE.remove(
     'impersonate.middleware.ImpersonateMiddleware')
 
+# django-debug-toolbar is not needed for testing
+INSTALLED_APPS.remove('debug_toolbar')
+MIDDLEWARE.remove('debug_toolbar.middleware.DebugToolbarMiddleware')
+
 ALLOWED_HOSTS.append('127.0.0.1')
 
 SESSION_COOKIE_SECURE = False

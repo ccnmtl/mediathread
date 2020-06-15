@@ -113,8 +113,16 @@ const createSherdNote = function(assetId, data) {
         if (response.status === 201) {
             return response.json();
         } else {
-            throw 'Error making sherdnote: ' +
-                `(${response.status}) ${response.statusText}`;
+            return response.json().then(json => {
+                let errorText = '';
+
+                for (let key in json) {
+                    errorText += `${key}: ${json[key]}\n`;
+                }
+                errorText = errorText.slice(0, -1);
+
+                throw errorText;
+            });
         }
     });
 };

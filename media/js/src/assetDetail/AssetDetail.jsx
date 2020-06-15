@@ -45,6 +45,9 @@ export default class AssetDetail extends React.Component {
             createdSelectionTitle: '',
             showCreatedDialog: false,
 
+            showCreateError: false,
+            createError: null,
+
             tab: 'viewSelections'
         };
 
@@ -107,6 +110,14 @@ export default class AssetDetail extends React.Component {
             // Refresh the selections.
             getAsset(me.asset.asset.id).then(function(d) {
                 me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+            });
+        }, function(errorText) {
+            me.setState({
+                showCreateError: true,
+                createError: errorText
+            }, function() {
+                const elt = document.getElementById('create-error-alert');
+                elt.scrollIntoView();
             });
         });
     }
@@ -301,6 +312,15 @@ export default class AssetDetail extends React.Component {
                     variant="danger" show={this.state.showDeletedDialog}
                     onClose={this.hideDeletedDialog} dismissible>
                     <Alert.Heading>Selection deleted.</Alert.Heading>
+                </Alert>
+
+                <Alert
+                    variant="danger" show={this.state.showCreateError}
+                    id="create-error-alert">
+                    <Alert.Heading>Error creating selection.</Alert.Heading>
+                    <p>
+                        {this.state.createError}
+                    </p>
                 </Alert>
 
                 <h1 className="text-center">

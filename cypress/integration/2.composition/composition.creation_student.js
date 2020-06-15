@@ -20,9 +20,11 @@ describe('Student Creates Composition', () => {
             .contains('Create Composition').click();
         cy.get('#loaded').should('exist');
         cy.get('.panhandle-stripe.composition').should('exist');
-        cy.get('.panel-subcontainer-title').contains('Untitled').should('exist');
+        cy.get('.panel-subcontainer-title')
+            .contains('Untitled').should('exist');
         cy.contains('ul', 'Student One').should('exist');
-        cy.get('.project-visibility-description').contains('Draft').should('exist');
+        cy.get('.project-visibility-description')
+            .contains('Draft').should('exist');
         cy.get('td.panel-container.open.composition').should('exist');
         cy.get('.project-revisionbutton').should('exist');
         cy.get('.project-previewbutton').should('exist');

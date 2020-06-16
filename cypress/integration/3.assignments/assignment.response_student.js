@@ -8,20 +8,15 @@ describe('Assignment Feature: Student Response', () => {
 
     beforeEach(() => {
         cy.login('student_one', 'test');
-        cy.visit('/course/1/');
+        cy.visit('/project/view/1');
+        //TODO: Test navigation to sample project from new Assignments tab
     });
 
     it('creates a response as a Student', () => {
         cy.log('respond as a student');
         cy.get('#cu-privacy-notice-icon').click();
-        cy.get('.projectlist a.asset_title')
-            .should('contain', 'Sample Assignment');
-        //Assignment doesn't have name of author
-        cy.get('ul.instructor-list').should('not.contain', 'Sample Assignment');
-        cy.get('.asset_title').contains('Sample Assignment').click();
-        cy.get('#loaded').should('exist');
         cy.title().should('eq', 'Mediathread Sample Assignment');
-        //cy.get('.project-title').should('contain', 'Sample Assignment');
+        cy.get('.project-title').should('contain', 'Sample Assignment');
         cy.get('.panel-container.open.assignment').should('exist');
         cy.get('.project-revisionbutton').should('not.exist');
         cy.contains('Edit').should('not.exist');
@@ -32,7 +27,8 @@ describe('Assignment Feature: Student Response', () => {
         cy.contains('Respond to Assignment').should('exist');
 
         cy.log('create the response');
-        cy.get('div > .assignment').trigger('mouseover').click({ force: true });
+        cy.contains('Respond to Assignment').trigger('mouseover')
+            .click({ force: true });
         cy.get('.pantab.composition').should('exist');
         cy.get('.panel-container.open.assignment').should('exist');
         cy.get('.panel-container.open.composition').should('exist');
@@ -45,7 +41,7 @@ describe('Assignment Feature: Student Response', () => {
         cy.log('Add a title and some text');
         cy.get('.panel-subcontainer-title input[type=text]').clear()
             .type('Sample Assignment Response');
-        cy.getIframeBody().find('#id_comment_ifr').click()
+        cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
 

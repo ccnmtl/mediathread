@@ -59,6 +59,75 @@ class SherdNoteTestsAsStudent(
         self.assertEqual(note.range2, 27.565)
         self.assertEqual(note.author, self.u)
 
+    def test_create_sherdnote_on_own_image_asset(self):
+        """
+        Ensure we can create a new SherdNote (annotation) object.
+        """
+        asset = AssetFactory(
+            primary_source='image', author=self.u, course=self.sample_course)
+        url = reverse('sherdnote-create', kwargs={'asset_id': asset.pk})
+
+        response = self.client.post(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST,
+                         'Empty POST data fails')
+
+        data = {
+            'title': 'Image annotation',
+            'body': 'Image annotation body',
+            'range1': -2,
+            'range2': -1,
+            'annotation_data': {
+                'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': [
+                        [
+                            [
+                                [276.88964843749994, 128.6806640625],
+                                [323.78417968749994, 14.2275390625],
+                                [435.80566406249994, 100.990234375],
+                                [276.88964843749994, 128.6806640625]
+                            ]
+                        ]
+                    ]
+                },
+                'default': False,
+                'x': -2,
+                'y': -1,
+                'zoom': 1,
+                'extent': [
+                    276.88964843749994,
+                    14.2275390625,
+                    435.80566406249994,
+                    128.6806640625
+                ]
+            }
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SherdNote.objects.count(), 1)
+        note = SherdNote.objects.get()
+        self.assertEqual(note.title, 'Image annotation')
+        self.assertEqual(note.body, 'Image annotation body')
+        self.assertEqual(note.range1, -2)
+        self.assertEqual(note.range2, -1)
+        self.assertEqual(note.author, self.u)
+
+        # Test annotation data (this saves/loads as JSON text)
+        annotation_data = note.annotation()
+        self.assertEqual(annotation_data['geometry']['type'], 'Polygon')
+        self.assertEqual(
+            annotation_data['geometry']['coordinates'][0][0][0],
+            [276.88964843749994, 128.6806640625])
+        self.assertEqual(
+            annotation_data['extent'], [
+                276.88964843749994,
+                14.2275390625,
+                435.80566406249994,
+                128.6806640625
+            ]
+        )
+
     def test_create_sherdnote_on_asset_not_visible(self):
         asset = AssetFactory(primary_source='image')
         url = reverse('sherdnote-create', kwargs={'asset_id': asset.pk})

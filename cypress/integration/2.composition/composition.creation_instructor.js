@@ -27,9 +27,11 @@ describe('Instructor Creates Composition', () => {
 
         cy.get('#loaded').should('exist');
         cy.get('.panhandle-stripe.composition').should('exist');
-        cy.get('.panel-subcontainer-title').contains('Untitled').should('exist');
+        cy.get('.panel-subcontainer-title').contains('Untitled')
+            .should('exist');
         cy.contains('ul', 'Instructor One').should('exist');
-        cy.get('.project-visibility-description').contains('Draft').should('exist');
+        cy.get('.project-visibility-description').contains('Draft')
+            .should('exist');
         cy.get('td.panel-container.open.composition').should('exist');
         cy.get('.project-revisionbutton').should('exist');
         cy.get('.project-previewbutton').should('exist');
@@ -44,7 +46,7 @@ describe('Instructor Creates Composition', () => {
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
         cy.get('#id_publish').find('li')
-            .should('contain', 'Draft - only you can view')
+            .should('contain', 'Draft - only you can view');
         cy.get('input[name=publish]:checked').should('exist');
         cy.get('#id_publish').find('li')
             .should('contain', 'Whole Class - all class members can view');
@@ -52,7 +54,7 @@ describe('Instructor Creates Composition', () => {
             .should('not.contain', 'Whole World - a public url is provided');
         cy.get('.project-savebutton').contains('Save').click();
         cy.get('.project-visibility-link').should('exist');
-        cy.get('.btn-primary').contains('Save').click();
+        cy.get('.btn-save-project').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('toggle preview mode');

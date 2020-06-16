@@ -17,7 +17,10 @@ import {
 
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
-import {capitalizeFirstLetter, handleBrokenImage} from './utils';
+import {
+    capitalizeFirstLetter, handleBrokenImage,
+    getCoordStyles, transform
+} from './utils';
 
 class Selections extends React.Component {
     render() {
@@ -57,7 +60,7 @@ export default class GridAsset extends React.Component {
             selectedAnnotation: null
         };
 
-        this.annotationLayer = new VectorLayer({
+        this.selectionLayer = new VectorLayer({
             source: new VectorSource()
         });
 
@@ -66,23 +69,6 @@ export default class GridAsset extends React.Component {
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);
     }
-    /**
-     * Transform a relative geometry object to absolute, given a width,
-     * height, and zoom.
-     */
-    transform(geometry, width, height, zoom) {
-        return {
-            type: geometry.type,
-            coordinates: [
-                geometry.coordinates[0].map(function(el) {
-                    return [
-                        (width / 2) + (el[0] * (zoom * 2)),
-                        (height / 2) + (el[1] * (zoom * 2))
-                    ];
-                })
-            ]
-        };
-    }
     onSelectedAnnotationUpdate(annotation) {
         const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
@@ -90,37 +76,12 @@ export default class GridAsset extends React.Component {
         this.setState({selectedAnnotation: a});
 
         if (type === 'image') {
-            const styles = [
-                new Style({
-                    stroke: new Stroke({
-                        color: 'blue',
-                        width: 3
-                    }),
-                    fill: new Fill({
-                        color: 'rgba(0, 0, 255, 0.1)'
-                    })
-                }),
-                new Style({
-                    image: new CircleStyle({
-                        radius: 4,
-                        fill: new Fill({
-                            color: 'orange'
-                        })
-                    }),
-                    geometry: function(feature) {
-                        // return the coordinates of the first ring of
-                        // the polygon
-                        var coordinates =
-                            feature.getGeometry().getCoordinates()[0];
-                        return new MultiPoint(coordinates);
-                    }
-                })
-            ];
+            const styles = getCoordStyles();
 
-            this.map.removeLayer(this.annotationLayer);
+            this.map.removeLayer(this.selectionLayer);
 
             const img = this.asset.getImage();
-            const geometry = this.transform(
+            const geometry = transform(
                 a.annotation.geometry,
                 img.width, img.height,
                 a.annotation.zoom
@@ -150,7 +111,7 @@ export default class GridAsset extends React.Component {
                 style: styles
             });
 
-            this.annotationLayer = newLayer;
+            this.selectionLayer = newLayer;
             this.map.addLayer(newLayer);
 
             // Fit the selection in the view

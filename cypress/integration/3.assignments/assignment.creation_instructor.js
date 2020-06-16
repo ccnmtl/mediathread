@@ -52,11 +52,6 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.participant_list').should('not.be', 'visible');
 
         //TODO: Test when the project shows up in new Assignments tab.
-        // cy.log('project shows');
-        // cy.visit('/course/1/');
-        //cy.get('#loaded').should('exist');
-        //cy.get('.asset_title').should('contain', 'Assignment: Scenario 1');
-        //cy.get('.metadata-value-author').should('contain', 'Instructor One');
 
         cy.log('view the project in preview mode');
         cy.contains('Assignment: Scenario 1').click();

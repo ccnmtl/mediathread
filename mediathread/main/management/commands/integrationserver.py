@@ -52,6 +52,7 @@ class Command(BaseCommand):
         m.setup_alternate_course()
         m.setup_suggested_collection()
         m.setup_sample_assets()
+        m.setup_sample_assignment()
 
         Flag(name='addressable_courses', everyone=True)
         Flag(name='new_course_view', everyone=True)

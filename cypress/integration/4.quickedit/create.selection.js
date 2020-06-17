@@ -21,6 +21,7 @@ describe('Instructor creates a selection', () => {
                 project_type: 'composition'
             }
         });
+        cy.wait(500);
         cy.get('#loaded').should('exist');
 
         cy.log('add a title and some text');

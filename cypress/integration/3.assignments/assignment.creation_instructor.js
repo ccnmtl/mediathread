@@ -9,6 +9,7 @@ describe('Assignment Feature: Instructor Creation', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+        cy.wait(500);
     });
 
     it('Instructor Creates Assignment', () => {
@@ -20,6 +21,9 @@ describe('Assignment Feature: Instructor Creation', () => {
                 project_type: 'assignment'
             }
         });
+
+        cy.wait(500);
+
         //cy.get('#loaded').should('exist'); Change in code?
         cy.title().should('eq', 'Mediathread Untitled');
         cy.get('.panel-container.open.assignment').should('exist');

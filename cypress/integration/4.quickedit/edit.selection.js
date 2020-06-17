@@ -36,7 +36,8 @@ describe('Instructor creates a selection', () => {
         cy.get('#asset-item-2').should('contain', 'Mediathread: Introduction');
 
         cy.log('click the +/create button next to the asset');
-        cy.get('#asset-item-2').find('.create_annotation_icon')
+        //TODO: Find a cleaner way to do this
+        cy.get('#annotation-7 > .selection-level-info > tbody > :nth-child(1) > .selection-trash > .actions > .edit-annotation > .edit_icon')
             .click({ force: true });
 
         cy.log('verify the create form is visible');
@@ -48,13 +49,13 @@ describe('Instructor creates a selection', () => {
         cy.get('[name="Save"]').should('exist');
         cy.get('#id_annotation-title').type('Test Selection');
         cy.get('#edit-annotation-form #s2id_id_annotation-tags .select2-input')
-            .type('abc{enter}');
+            .type('def{enter}');
         cy.get('#annotation-body > #id_annotation-body')
-            .type('Here are my new notes');
+            .type('Here are my selection notes');
         cy.get('[name="Save"]').click({ force: true });
         cy.get('#annotation-current').should('not.be', 'visible');
         cy.contains('Test Selection').should('have.attr', 'href');
-        cy.contains('Here are my new notes').should('exist');
-        cy.get('[href="abc"]').should('exist');
+        cy.contains('Here are my selection notes').should('exist');
+        cy.get('[href="def"]').should('exist');
     });
 });

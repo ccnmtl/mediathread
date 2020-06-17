@@ -10,6 +10,7 @@ describe('Instructor creates a selection', () => {
     before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+        cy.wait(500);
     });
 
     it('should create a project as an Instructor', () => {

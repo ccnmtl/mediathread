@@ -1,4 +1,8 @@
 import isFinite from 'lodash/isFinite';
+import {
+    Circle as CircleStyle, Fill, Stroke, Style
+} from 'ol/style';
+import MultiPoint from 'ol/geom/MultiPoint';
 
 /**
  * A wrapper for `fetch` that passes along auth credentials.
@@ -242,11 +246,61 @@ const handleBrokenImage = function(assetType) {
     this.src = `/media/img/thumb_${assetType}.png`;
 };
 
+/**
+ * Get annotation/selection display openlayers styles.
+ */
+const getCoordStyles = function() {
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: 'blue',
+                width: 3
+            }),
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            })
+        }),
+        new Style({
+            image: new CircleStyle({
+                radius: 4,
+                fill: new Fill({
+                    color: 'orange'
+                })
+            }),
+            geometry: function(feature) {
+                // return the coordinates of the first ring of
+                // the polygon
+                var coordinates =
+                    feature.getGeometry().getCoordinates()[0];
+                return new MultiPoint(coordinates);
+            }
+        })
+    ];
+};
+
+/**
+ * Transform a relative geometry object to absolute, given a width,
+ * height, and zoom.
+ */
+const transform = function(geometry, width, height, zoom) {
+    return {
+        type: geometry.type,
+        coordinates: [
+            geometry.coordinates[0].map(function(el) {
+                return [
+                    (width / 2) + (el[0] * (zoom * 2)),
+                    (height / 2) + (el[1] * (zoom * 2))
+                ];
+            })
+        ]
+    };
+};
+
 export {
     getAssets, getAsset, createSelection, createSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
-    handleBrokenImage
+    handleBrokenImage, getCoordStyles, transform
 };

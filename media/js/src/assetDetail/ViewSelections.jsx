@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 
 export default class ViewSelections extends React.Component {
     render() {
+        const me = this;
         const selections = [];
         this.props.asset.annotations.forEach(function(s, idx) {
             const tags = [];
@@ -50,9 +51,17 @@ export default class ViewSelections extends React.Component {
                             </p>
                         )}
 
-                        <a href="#" className="btn btn-secondary btn-sm">Edit</a>&nbsp;
-                        <a href="#" className="btn btn-secondary btn-sm">Copy</a>&nbsp;
-                        <a href="#" className="btn btn-primary btn-sm disabled">View</a>
+                        <a href="#" className="btn btn-secondary btn-sm">
+                            Edit
+                        </a>&nbsp;
+                        <a href="#" className="btn btn-secondary btn-sm">
+                            Copy
+                        </a>&nbsp;
+                        <a
+                            href="#" className="btn btn-primary btn-sm"
+                            onClick={(e) => me.props.onViewSelection(e, s)}>
+                            View
+                        </a>
                     </div>
                 </div>
             );
@@ -118,7 +127,7 @@ export default class ViewSelections extends React.Component {
 ViewSelections.propTypes = {
     asset: PropTypes.object,
     onClickPlay: PropTypes.func.isRequired,
-    onClickSelection: PropTypes.func.isRequired,
+    onViewSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialogBool: PropTypes.bool.isRequired

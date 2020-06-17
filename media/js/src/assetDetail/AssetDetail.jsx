@@ -144,7 +144,8 @@ export default class AssetDetail extends React.Component {
         return promise.then(function() {
             me.setState({
                 createdSelectionTitle: selectionTitle,
-                showCreatedDialog: true
+                showCreatedDialog: true,
+                tab: 'viewSelections'
             }, function() {
                 const elt = document.getElementById('create-success-alert');
                 elt.scrollIntoView();

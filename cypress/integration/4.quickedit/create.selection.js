@@ -9,8 +9,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Instructor creates a selection', () => {
     before(() => {
         cy.login('instructor_one', 'test');
-        cy.visit('/course/1/');
-        cy.wait();
+        cy.visit('/course/1/').should((win) => {
+            expect(win.MediaThread).to.exist;
+        });
     });
 
     it('should create a project as an Instructor', () => {
@@ -21,8 +22,9 @@ describe('Instructor creates a selection', () => {
             body: {
                 project_type: 'composition'
             }
+        }).should((win) => {
+            expect(win.MediaThread).to.exist;
         });
-        cy.wait(500);
         cy.get('#loaded').should('exist');
 
         cy.log('add a title and some text');

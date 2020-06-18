@@ -9,7 +9,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Instructor Edits the Item Metadata', () => {
     before(() => {
         cy.login('instructor_one', 'test');
-        cy.visit('/course/1/');
+        cy.visit('/course/1/').should((win) => {
+            expect(win.MediaThread).to.exist;
+        });
     });
 
     it('should create a composition as an Instructor', () => {
@@ -20,8 +22,11 @@ describe('Instructor Edits the Item Metadata', () => {
             body: {
                 project_type: 'composition'
             }
+        }).should((win) => {
+            expect(win.MediaThread).to.exist;
         });
-        cy.wait(500);
+
+        cy.window();
         cy.get('#loaded').should('exist');
 
         cy.log('add a title and some text');

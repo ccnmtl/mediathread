@@ -394,7 +394,7 @@ export default class AssetDetail extends React.Component {
         }
 
         return (
-            <div className="container asset-detail">
+            <div className="tab-content asset-detail">
                 <Alert
                     variant="success" show={this.state.showCreatedDialog}
                     onClose={this.hideCreatedDialog} dismissible

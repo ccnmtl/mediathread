@@ -6,7 +6,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false;
 });
 
-describe('Taxonomy Feature: Edit', () => {
+describe('Taxonomy Feature: Create Term, Edit Taxonomy', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
@@ -14,7 +14,7 @@ describe('Taxonomy Feature: Edit', () => {
         cy.get('a[href*="taxonomy"]').click();
     });
 
-    it('should Create, Duplicate, Delete Taxonomy', () => {
+    it('should create term and edit Taxonomy', () => {
 
         cy.log('shortcut to taxonomy');
         cy.title().should('include', 'Course Vocabulary Workspace');
@@ -28,15 +28,25 @@ describe('Taxonomy Feature: Edit', () => {
         cy.get('.create-vocabulary-submit').click({force: true});
         cy.contains('Colors').should('exist');
 
+        cy.log('create term');
+        cy.get('.terms > .form-control').type('Red');
+        cy.get('.create-term-submit').click({force: true});
+        cy.get('div.term-display h5').should('contain', 'Red');
+
         cy.log('edit the taxonomy');
-        cy.get('.edit_icon').should('exist');
-        cy.get('.edit_icon').click({force: true});
+        cy.get('.edit-vocabulary-open > .edit_icon').should('exist');
+        cy.get('.edit-vocabulary-open > .edit_icon').click({force: true});
 
         cy.log('name and save');
         cy.get('#id_display_name').clear({force: true})
             .type('Shapes', {force: true});
-        cy.get('.create-vocabulary-submit').click({force: true});
+        cy.get('.edit-vocabulary-submit').click({force: true});
         cy.contains('Shapes').should('exist');
         cy.contains('Colors').should('not.exist');
+    });
+    it('clean up', () => {
+        cy.get('.delete-vocabulary > .delete_icon').click();
+        cy.get('.ui-dialog-buttonset > :nth-child(2)').click();
+        cy.contains('Shapes').should('not.be', 'visible');
     });
 });

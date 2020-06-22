@@ -11,25 +11,8 @@ env:
   - TEST_SUITE=jstest
   - TEST_SUITE=jenkins
   - TEST_SUITE=cypress
-  - TEST_SUITE=harvest1
-  - TEST_SUITE=harvest2
 python:
-  - "2.7"
   - "3.6"
-matrix:
-  exclude:
-  - python: '2.7'
-    env: TEST_SUITE=jenkins
-  - python: '2.7'
-    env: TEST_SUITE=jstest
-  - python: '2.7'
-    env: TEST_SUITE=cypress
-  - python: '2.7'
-    env: TEST_SUITE=eslint
-  - python: '3.6'
-    env: TEST_SUITE=harvest1
-  - python: '3.6'
-    env: TEST_SUITE=harvest2
 cache:
   npm: true
   pip: true

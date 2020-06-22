@@ -3,7 +3,7 @@ APP=mediathread
 # sherdjs isn't jscs clean yet so for now:
 JS_FILES=media/js/app media/js/src cypress/**/*.js
 MAX_COMPLEXITY=7
-PY_DIRS=$(APP) lti_auth structuredcollaboration terrain.py
+PY_DIRS=$(APP) lti_auth structuredcollaboration
 FLAKE8_IGNORE=W605
 
 all: jenkins

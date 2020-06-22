@@ -13,10 +13,10 @@ FORUM: https://groups.google.com/group/mediathread
 
 REQUIREMENTS
 ------------
-Python 2.7
-Postgres (or MySQL)
-Flowplayer installation for your site (See below for detailed instructions)
-Flickr API Key if you want to bookmark from FLICKR
+* Python 3.6
+* Postgres (or MySQL)
+* Flowplayer installation for your site (See below for detailed instructions)
+* Flickr API Key if you want to bookmark from FLICKR
 
 
 INSTALLATION

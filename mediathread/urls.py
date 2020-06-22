@@ -33,7 +33,7 @@ from mediathread.main.views import (
     CourseDeleteMaterialsView, CourseDetailView, course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
-    CourseInviteUserByEmailView, CourseAcceptInvitationView, ClearTestCache,
+    CourseInviteUserByEmailView, CourseAcceptInvitationView,
     CourseResendInviteView, set_user_setting, CoursePanoptoSourceView,
     CoursePanoptoIngestLogView,
     LTICourseSelector, LTICourseCreate,
@@ -277,8 +277,6 @@ urlpatterns = [
         include('mediathread.taxonomy.urls')),
 
     url(r'^lti/', include('lti_auth.urls')),
-
-    url(r'^test/clear/', ClearTestCache.as_view()),
 
     # Public To World Access ###
     url(r'^s/(?P<context_slug>\w+)/(?P<obj_type>\w+)/(?P<obj_id>\d+)/',

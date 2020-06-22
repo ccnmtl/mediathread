@@ -13,10 +13,8 @@ from courseaffils.views import get_courses_for_user, CourseListView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group, User
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -1332,16 +1330,6 @@ class LTICourseCreate(LoggedInMixin, View):
 
         url = reverse('lti-landing-page', args=[course_context])
         return HttpResponseRedirect(url)
-
-
-class ClearTestCache(View):
-    def get(self, request, *args, **kwargs):
-        # for selenium test use only
-        if hasattr(settings, 'LETTUCE_DJANGO_APP'):
-            cache.clear()
-            ContentType.objects.clear_cache()
-
-        return HttpResponse()
 
 
 def error_500(request):

@@ -4231,8 +4231,14 @@ ul.section-tabs>li>a.active {
 /*
   Centered with this method here:
   https://stackoverflow.com/a/1777282/173630
- */
-.timecode .badge-dark {
+*/
+.card-thumbnail .timecode {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+}
+
+.card-thumbnail .timecode .badge-dark {
     position: relative;
     left: -50%;
     background-color: black;

@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Publish To World Public Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
@@ -48,7 +40,8 @@ describe('Publish To World Public Composition', () => {
         cy.get('.project-savebutton').click();
         cy.contains('Whole World - a public url is provided').click();
         cy.get('.btn-primary').contains('Save').click();
-        cy.get('.project-visibility-link').should('contain', 'Published to World');
+        cy.get('.project-visibility-link')
+            .should('contain', 'Published to World');
 
         cy.log('log out and go to permalink');
         //TODO: Figure out a cleaner way to do this?
@@ -60,8 +53,10 @@ describe('Publish To World Public Composition', () => {
                 cy.visit(href);
 
                 cy.get('td.panel-container.open.composition').should('exist');
-                cy.get('.participants_chosen').should('contain', 'Instructor One');
-                cy.get('.project-title').should('contain', 'Composition Public: Scenario 1A');
+                cy.get('.participants_chosen')
+                    .should('contain', 'Instructor One');
+                cy.get('.project-title')
+                    .should('contain', 'Composition Public: Scenario 1A');
                 cy.get('.last-version-public').should('exist');
                 cy.get('.project-revisionbutton').should('not.exist');
                 cy.contains('Edit').should('not.exist');
@@ -71,7 +66,8 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.materialCitation').click();
 
                 //TODO: figure out why clicking on the asset title logs you out.
-                //cy.get('.annotation-title > a').should('exist').and('contain', 'MAAP Award Reception')
+                //cy.get('.annotation-title > a').should('exist')
+                //.and('contain', 'MAAP Award Reception')
             });
     });
 });

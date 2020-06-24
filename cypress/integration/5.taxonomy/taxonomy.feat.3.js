@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Taxonomy Feature: Create, Duplicate, Delete Term', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');

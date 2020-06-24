@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Student Project Visibility', () => {
     beforeEach(() => {
         cy.login('student_one', 'test');
@@ -31,7 +23,8 @@ describe('Student Project Visibility', () => {
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-primary').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Published to Class');
+        cy.get('.project-visibility-link')
+            .should('contain', 'Published to Class');
     });
 
     // it('views composition as a Student', () => {
@@ -62,7 +55,8 @@ describe('Student Project Visibility', () => {
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-primary').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Published to Class');
+        cy.get('.project-visibility-link')
+            .should('contain', 'Published to Class');
     });
 
     // it('views Student One composition as Student Two', () => {

@@ -40,4 +40,20 @@ export default class Asset {
         return this.asset.sources.image ||
             this.asset.sources.thumb;
     }
+    getVideo() {
+        if (!this.asset || !this.asset.sources) {
+            return null;
+        }
+
+        let source = null;
+
+        if (this.asset.primary_type === 'mp4_pseudo') {
+            source = this.asset.sources.mp4_pseudo.url;
+        } else {
+            source = this.asset.sources.url.url ||
+                this.asset.sources.youtube.url;
+        }
+
+        return source;
+    }
 }

@@ -73,7 +73,6 @@ export default class AssetDetail extends React.Component {
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
 
         this.onViewSelection = this.onViewSelection.bind(this);
-        this.onClickPlay = this.onClickPlay.bind(this);
 
         this.onSelectTab = this.onSelectTab.bind(this);
 
@@ -306,15 +305,11 @@ export default class AssetDetail extends React.Component {
             const polygon = feature.getGeometry();
             const view = this.map.getView();
             view.fit(polygon, {padding: [20, 20, 20, 20]});
+        } else if (type === 'video') {
+            const player = this.playerRef;
+            player.seekTo(a.range1, 'seconds');
+            this.setState({playing: true});
         }
-    }
-
-    onClickPlay(selection) {
-        const player = this.playerRef;
-
-        this.selection = selection;
-        this.setState({playing: true});
-        player.seekTo(selection.range1, 'seconds');
     }
 
     onSelectTab(tabName) {
@@ -491,7 +486,6 @@ export default class AssetDetail extends React.Component {
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}
-                                onClickPlay={this.onClickPlay}
                                 onViewSelection={this.onViewSelection}
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}

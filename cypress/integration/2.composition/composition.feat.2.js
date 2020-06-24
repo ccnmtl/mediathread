@@ -7,7 +7,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 });
 
 describe('Student Creates Composition', () => {
-
     beforeEach(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');

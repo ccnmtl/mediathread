@@ -32,6 +32,7 @@ describe('Discussion View: Create Discussion', () => {
         //TODO: test discussion creation from homepage
         cy.title().should('contain', 'Discussion');
         cy.get('#comment-form-submit').click();
+        cy.get('td.panel-container.open.discussion').should('exist');
         cy.contains('Respond').should('exist');
         cy.contains('Edit').should('exist');
         cy.get('#course_title_link').click();

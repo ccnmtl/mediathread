@@ -195,7 +195,7 @@ export default class AssetDetail extends React.Component {
 
     onPlayerPlay() {
         if (!this.state.playing) {
-            this.pause();
+            //this.pause();
         }
     }
 
@@ -379,8 +379,6 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (type === 'video') {
-            const source = this.props.asset.sources.url.url ||
-                  this.props.asset.sources.youtube.url;
             media = (
                 <ReactPlayer
                     onPlay={this.onPlayerPlay.bind(this)}
@@ -388,7 +386,7 @@ export default class AssetDetail extends React.Component {
                     onProgress={this.onPlayerProgress.bind(this)}
                     playing={this.state.playing}
                     ref={r => this.playerRef = r}
-                    url={source}
+                    url={this.asset.getVideo()}
                     controls={true} width={480} />
             );
         }

@@ -23,7 +23,8 @@ describe('Selection Assignment Feat: Instructor Creation', () => {
         cy.contains('Next').click({force: true});
         cy.get('.help-inline').should('contain', 'An item must be selected');
         cy.get('#record-1').should('exist');
-        cy.get('#asset-item-1').trigger('mouseover').click({force: true});
+        cy.get('.gallery-item').find('#asset-item-1').click();
+        cy.get('.selected-item > :nth-child(1) > #record-1').should('exist');
         cy.contains('Next').click({force: true});
         cy.contains('Write title').should('exist');
         cy.contains('Next').click({force: true});
@@ -39,7 +40,6 @@ describe('Selection Assignment Feat: Instructor Creation', () => {
         cy.contains('Please choose how responses will be viewed')
             .should('exist');
         cy.get('#id_response_view_policy_0').click({force: true});
-
         cy.get('input[name="due_date"]').type('01/01/2030');
         cy.contains('Next').click({force: true});
         cy.contains('Publish assignment to students').should('exist');

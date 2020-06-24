@@ -194,9 +194,7 @@ export default class AssetDetail extends React.Component {
     }
 
     onPlayerPlay() {
-        if (!this.state.playing) {
-            //this.pause();
-        }
+        this.setState({playing: true});
     }
 
     onPlayerReady() {
@@ -380,14 +378,17 @@ export default class AssetDetail extends React.Component {
             );
         } else if (type === 'video') {
             media = (
-                <ReactPlayer
-                    onPlay={this.onPlayerPlay.bind(this)}
-                    onReady={this.onPlayerReady.bind(this)}
-                    onProgress={this.onPlayerProgress.bind(this)}
-                    playing={this.state.playing}
-                    ref={r => this.playerRef = r}
-                    url={this.asset.getVideo()}
-                    controls={true} width={480} />
+                <div className="embed-responsive embed-responsive-4by3">
+                    <ReactPlayer
+                        className="react-player embed-responsive-item"
+                        onPlay={this.onPlayerPlay.bind(this)}
+                        onReady={this.onPlayerReady.bind(this)}
+                        onProgress={this.onPlayerProgress.bind(this)}
+                        playing={this.state.playing}
+                        ref={r => this.playerRef = r}
+                        url={this.asset.getVideo()}
+                        controls={true}/>
+                </div>
             );
         }
 

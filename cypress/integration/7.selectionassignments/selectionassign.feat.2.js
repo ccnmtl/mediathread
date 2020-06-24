@@ -9,6 +9,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
     before(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
+        cy.title().should('eq', 'Mediathread Home');
     });
 
     it('should create student response', () => {
@@ -22,8 +23,8 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
                 title: 'My Response'
             }
         });
-        cy.get('#cu-privacy-notice-icon').click({force: true});
         cy.title().should('contain', 'Sample Selection Assignment');
+        cy.get('#cu-privacy-notice-icon').click({force: true});
         cy.contains('Create a selection').click({force: true});
         cy.get('[name="Save"]').should('exist');
         cy.get('[name="Save"]').click({force: true});

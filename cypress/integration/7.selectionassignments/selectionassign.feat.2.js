@@ -9,7 +9,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
     before(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
-        cy.title().should('eq', 'Mediathread Home');
+        cy.wait(500);
     });
 
     it('should create student response', () => {

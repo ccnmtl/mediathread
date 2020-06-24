@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Selection Assignment Feat: Instructor adds & edits feedback', () => {
 
     before(() => {

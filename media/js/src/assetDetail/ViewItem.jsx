@@ -69,7 +69,7 @@ export default class ViewItem extends React.Component {
                     </div>
                 </div>
 
-                <Alert variant="warning" classNameshow={
+                <Alert variant="warning" show={
                     this.state.references && this.state.references.length === 0
                 }>
                     There are no references in this course.

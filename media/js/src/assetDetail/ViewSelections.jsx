@@ -126,7 +126,6 @@ export default class ViewSelections extends React.Component {
 
 ViewSelections.propTypes = {
     asset: PropTypes.object,
-    onClickPlay: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,

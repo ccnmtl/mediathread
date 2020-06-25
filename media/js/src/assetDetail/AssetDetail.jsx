@@ -73,7 +73,6 @@ export default class AssetDetail extends React.Component {
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
 
         this.onViewSelection = this.onViewSelection.bind(this);
-        this.onClickPlay = this.onClickPlay.bind(this);
 
         this.onSelectTab = this.onSelectTab.bind(this);
 
@@ -194,9 +193,7 @@ export default class AssetDetail extends React.Component {
     }
 
     onPlayerPlay() {
-        if (!this.state.playing) {
-            this.pause();
-        }
+        this.setState({playing: true});
     }
 
     onPlayerReady() {
@@ -308,15 +305,11 @@ export default class AssetDetail extends React.Component {
             const polygon = feature.getGeometry();
             const view = this.map.getView();
             view.fit(polygon, {padding: [20, 20, 20, 20]});
+        } else if (type === 'video') {
+            const player = this.playerRef;
+            player.seekTo(a.range1, 'seconds');
+            this.setState({playing: true});
         }
-    }
-
-    onClickPlay(selection) {
-        const player = this.playerRef;
-
-        this.selection = selection;
-        this.setState({playing: true});
-        player.seekTo(selection.range1, 'seconds');
     }
 
     onSelectTab(tabName) {
@@ -379,17 +372,18 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (type === 'video') {
-            const source = this.props.asset.sources.url.url ||
-                  this.props.asset.sources.youtube.url;
             media = (
-                <ReactPlayer
-                    onPlay={this.onPlayerPlay.bind(this)}
-                    onReady={this.onPlayerReady.bind(this)}
-                    onProgress={this.onPlayerProgress.bind(this)}
-                    playing={this.state.playing}
-                    ref={r => this.playerRef = r}
-                    url={source}
-                    controls={true} width={480} />
+                <div className="embed-responsive embed-responsive-4by3">
+                    <ReactPlayer
+                        className="react-player embed-responsive-item"
+                        onPlay={this.onPlayerPlay.bind(this)}
+                        onReady={this.onPlayerReady.bind(this)}
+                        onProgress={this.onPlayerProgress.bind(this)}
+                        playing={this.state.playing}
+                        ref={r => this.playerRef = r}
+                        url={this.asset.getVideo()}
+                        controls={true}/>
+                </div>
             );
         }
 
@@ -492,7 +486,6 @@ export default class AssetDetail extends React.Component {
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}
-                                onClickPlay={this.onClickPlay}
                                 onViewSelection={this.onViewSelection}
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}

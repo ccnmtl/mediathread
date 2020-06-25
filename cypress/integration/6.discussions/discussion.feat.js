@@ -1,6 +1,6 @@
 describe('Discussion View: Create Discussion', () => {
 
-    beforeEach(() => {
+    before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.wait(500);

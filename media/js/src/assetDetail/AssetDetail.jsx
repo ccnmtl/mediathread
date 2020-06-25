@@ -31,10 +31,7 @@ export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // The player seems to work better when it's loaded initially
-            // as 'playing', and then paused immediately onReady.
-            // https://github.com/CookPete/react-player/issues/536#issuecomment-453869837
-            playing: true,
+            playing: false,
 
             // For creating a new selection
             selectionStartTime: 0,
@@ -194,10 +191,6 @@ export default class AssetDetail extends React.Component {
 
     onPlayerPlay() {
         this.setState({playing: true});
-    }
-
-    onPlayerReady() {
-        this.setState({playing: false});
     }
 
     onPlayerProgress(d) {
@@ -377,7 +370,6 @@ export default class AssetDetail extends React.Component {
                     <ReactPlayer
                         className="react-player embed-responsive-item"
                         onPlay={this.onPlayerPlay.bind(this)}
-                        onReady={this.onPlayerReady.bind(this)}
                         onProgress={this.onPlayerProgress.bind(this)}
                         playing={this.state.playing}
                         ref={r => this.playerRef = r}

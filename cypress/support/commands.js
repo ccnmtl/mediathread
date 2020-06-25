@@ -43,7 +43,7 @@ Cypress.Commands.add('login', (username, password) => {
                     csrfmiddlewaretoken: token
                 }
             }).then(() => {
-                return cy.getCookie('csrftoken').its('value')
+                return cy.getCookie('csrftoken').its('value');
             });
         });
     });

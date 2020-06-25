@@ -59,6 +59,7 @@ export default class AssetDetail extends React.Component {
         this.asset = new Asset(this.props.asset);
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
+        this.onPlayerPlay = this.onPlayerPlay.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
@@ -365,17 +366,85 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (type === 'video') {
+            let annotationTools = null;
+            if (this.state.tab === 'createSelection') {
+                annotationTools = (
+                    <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
+                        <form>
+                            <div className="form-row align-items-center">
+                                <div className="col-sm-4">
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <button
+                                                onClick={this.onStartTimeClick}
+                                                type="button"
+                                                className="btn btn-outline-light btn-sm">
+                                                Start&nbsp;
+                                                <svg className="bi bi-skip-backward-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fillRule="evenodd" d="M.5 3.5A.5.5 0 000 4v8a.5.5 0 001 0V4a.5.5 0 00-.5-.5z" clipRule="evenodd"></path> <path d="M.904 8.697l6.363 3.692c.54.313 1.233-.066 1.233-.697V4.308c0-.63-.692-1.01-1.233-.696L.904 7.304a.802.802 0 000 1.393z"></path> <path d="M8.404 8.697l6.363 3.692c.54.313 1.233-.066 1.233-.697V4.308c0-.63-.693-1.01-1.233-.696L8.404 7.304a.802.802 0 000 1.393z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <input
+                                            value={formatTimecode(this.state.selectionStartTime)}
+                                            readOnly
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            id="inlineFormInputStartTime" />
+                                    </div>
+                                </div>
+                                <div className="col-sm-4">
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <button
+                                                onClick={this.onEndTimeClick}
+                                                type="button"
+                                                className="btn btn-outline-light btn-sm">
+                                                Stop&nbsp;
+                                                <svg className="bi bi-skip-forward-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fillRule="evenodd" d="M15.5 3.5a.5.5 0 01.5.5v8a.5.5 0 01-1 0V4a.5.5 0 01.5-.5z" clipRule="evenodd"></path> <path d="M7.596 8.697l-6.363 3.692C.693 12.702 0 12.322 0 11.692V4.308c0-.63.693-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path> <path d="M15.096 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.693-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <input
+                                            value={formatTimecode(this.state.selectionEndTime)}
+                                            readOnly
+                                            type="text"
+                                            className="form-control form-control-sm"
+                                            id="inlineFormInputEndTime" />
+                                    </div>
+                                </div>
+                                <div className="col-sm-2">
+                                    <button
+                                        onClick={this.onPlayerPlay}
+                                        type="button"
+                                        className="btn btn-outline-light btn-sm">
+                                        Play
+                                        <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                );
+            }
+
             media = (
-                <div className="embed-responsive embed-responsive-4by3">
-                    <ReactPlayer
-                        className="react-player embed-responsive-item"
-                        onPlay={this.onPlayerPlay.bind(this)}
-                        onProgress={this.onPlayerProgress.bind(this)}
-                        playing={this.state.playing}
-                        ref={r => this.playerRef = r}
-                        url={this.asset.getVideo()}
-                        controls={true}/>
-                </div>
+                <React.Fragment>
+                    {annotationTools}
+                    <div className="embed-responsive embed-responsive-4by3">
+                        <ReactPlayer
+                            className="react-player embed-responsive-item"
+                            onPlay={this.onPlayerPlay.bind(this)}
+                            onProgress={this.onPlayerProgress.bind(this)}
+                            playing={this.state.playing}
+                            ref={r => this.playerRef = r}
+                            url={this.asset.getVideo()}
+                            controls={true} />
+                    </div>
+                </React.Fragment>
             );
         }
 

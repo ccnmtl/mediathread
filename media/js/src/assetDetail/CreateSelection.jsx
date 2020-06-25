@@ -3,19 +3,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Asset from '../Asset';
-
-import {formatTimecode} from '../utils';
-
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
-        this.asset = new Asset(this.props.asset);
     }
 
     render() {
-        const type = this.asset.getType();
-
         return (
             <React.Fragment>
                 <h3>Additional Selection Information</h3>
@@ -32,52 +25,6 @@ export default class CreateSelection extends React.Component {
                             </h5>
 
                             <form>
-                                {type === 'video' && (
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td span="0">
-                                                    <div><label htmlFor="annotation-title">Selection Times</label></div>
-                                                </td>
-                                            </tr>
-                                            <tr className="sherd-clipform-editing">
-                                                <td>
-                                                    <input
-                                                        type="button" className="btn-primary"
-                                                        onClick={this.props.onStartTimeClick}
-                                                        readOnly value="Start Time" id="btnClipStart" />
-                                                </td>
-                                                <td width="10px">&nbsp;</td>
-                                                <td>
-                                                    <input
-                                                        type="button" className="btn-primary"
-                                                        onClick={this.props.onEndTimeClick}
-                                                        value="End Time" id="btnClipEnd" /> </td>
-                                                <td>&nbsp;
-                                                </td>
-                                            </tr>
-                                            <tr className="sherd-clipform-editing">
-                                                <td>
-                                                    <input
-                                                        type="text" className="timecode form-control"
-                                                        id="clipStart"
-                                                        onChange={this.props.onStartTimeUpdate}
-                                                        value={formatTimecode(this.props.selectionStartTime)} />
-                                                    <div className="helptext timecode">HH:MM:SS</div>
-                                                </td>
-                                                <td style={{width: '10px', textAlign: 'center'}}>-</td>
-                                                <td>
-                                                    <input
-                                                        type="text" className="timecode form-control"
-                                                        id="clipEnd"
-                                                        onChange={this.props.onEndTimeUpdate}
-                                                        value={formatTimecode(this.props.selectionEndTime)} />
-                                                    <div className="helptext timecode">HH:MM:SS</div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                )}
                                 <div className="form-group">
                                     <label htmlFor="newSelectionTitle">
                                         Title

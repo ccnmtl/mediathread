@@ -4305,7 +4305,7 @@ ul.section-tabs>li>a.active {
     margin-bottom: 1em;
 }
 
-.assets .col-sm-4 {
+.assets .card-group>.col-sm-4 {
     padding: 0;
 }
 

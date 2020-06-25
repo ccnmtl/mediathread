@@ -45,15 +45,18 @@ export default class Asset {
             return null;
         }
 
-        let source = null;
+        let url = null;
 
         if (this.asset.primary_type === 'mp4_pseudo') {
-            source = this.asset.sources.mp4_pseudo.url;
-        } else {
-            source = this.asset.sources.url.url ||
-                this.asset.sources.youtube.url;
+            url = this.asset.sources.mp4_pseudo.url;
+        } else if (this.asset.primary_type === 'mp4_panopto') {
+            url = this.asset.sources.mp4_panopto.url;
+        } else if (this.asset.sources.url) {
+            url = this.asset.sources.url.url;
+        } else if (this.asset.sources.youtube) {
+            url = this.asset.sources.youtube.url;
         }
 
-        return source;
+        return url;
     }
 }

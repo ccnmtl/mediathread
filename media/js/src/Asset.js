@@ -40,23 +40,54 @@ export default class Asset {
         return this.asset.sources.image ||
             this.asset.sources.thumb;
     }
-    getVideo() {
-        if (!this.asset || !this.asset.sources) {
-            return null;
+    /**
+     * extractSource
+     *
+     * Return an object containing this asset's source URL.
+     * Taken from Juxtapose.
+     */
+    extractSource() {
+        const o = this.asset.sources;
+        if (o.youtube && o.youtube.url) {
+            const youtubeID = getYouTubeID(o.youtube.url);
+            return {
+                url: `https://youtube.com/watch?v=${youtubeID}`,
+                host: 'youtube'
+            };
         }
-
-        let url = null;
-
-        if (this.asset.primary_type === 'mp4_pseudo') {
-            url = this.asset.sources.mp4_pseudo.url;
-        } else if (this.asset.primary_type === 'mp4_panopto') {
-            url = this.asset.sources.mp4_panopto.url;
-        } else if (this.asset.sources.url) {
-            url = this.asset.sources.url.url;
-        } else if (this.asset.sources.youtube) {
-            url = this.asset.sources.youtube.url;
+        if (o.vimeo && o.vimeo.url) {
+            return {
+                url: o.vimeo.url,
+                host: 'vimeo'
+            };
         }
-
-        return url;
+        if (o.video && o.video.url) {
+            return {
+                url: o.video.url
+            };
+        }
+        if (o.mp4_pseudo && o.mp4_pseudo.url) {
+            return {
+                url: o.mp4_pseudo.url
+            };
+        }
+        if (o.mp4_panopto && o.mp4_panopto.url) {
+            return {
+                url: o.mp4_panopto.url
+            };
+        }
+        if (o.mp4_audio && o.mp4_audio.url) {
+            return {
+                url: o.mp4_audio.url
+            };
+        }
+        if (o.image && o.image.url) {
+            return {
+                url: o.image.url,
+                width: o.image.width,
+                height: o.image.height
+            };
+        }
+        return null;
     }
 }

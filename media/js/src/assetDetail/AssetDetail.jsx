@@ -479,9 +479,9 @@ export default class AssetDetail extends React.Component {
                     </p>
                 </Alert>
 
-                <h1 className="text-center">
+                <h2 className="text-center">
                     {this.props.asset.title}
-                </h1>
+                </h2>
 
                 <Nav
                     className="justify-content-center mb-4"

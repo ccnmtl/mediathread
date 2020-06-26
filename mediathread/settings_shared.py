@@ -235,7 +235,6 @@ if 'integrationserver' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'test_mediathread',
             'HOST': '',
             'PORT': 5432,
             'USER': '',

@@ -13,8 +13,6 @@ describe('Discussion View: Create Discussion', () => {
     });
 
     it('Instructor Creates Discussion', () => {
-        cy.log('create assignment');
-        cy.get('#cu-privacy-notice-icon').click();
         cy.visit('/discussion/create/', {
             method: 'POST',
             body: {
@@ -26,6 +24,8 @@ describe('Discussion View: Create Discussion', () => {
         });
 
         cy.wait(500);
+        cy.log('create assignment');
+        cy.get('#cu-privacy-notice-icon').click();
         //TODO: test discussion creation from homepage
         cy.title().should('contain', 'Discussion');
         cy.get('#comment-form-submit').click();

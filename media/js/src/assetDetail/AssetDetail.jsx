@@ -443,6 +443,8 @@ export default class AssetDetail extends React.Component {
                     <div className="embed-responsive embed-responsive-4by3">
                         <ReactPlayer
                             className="react-player embed-responsive-item"
+                            width="auto"
+                            height="auto"
                             onPlay={this.onPlayerPlay.bind(this)}
                             onProgress={this.onPlayerProgress.bind(this)}
                             playing={this.state.playing}

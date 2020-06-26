@@ -12,7 +12,6 @@ export default class CreateSelection extends React.Component {
         return (
             <React.Fragment>
                 <h3>Additional Selection Information</h3>
-
                 <div className="card w-100">
                     <div
                         id="collapseZero"
@@ -20,10 +19,6 @@ export default class CreateSelection extends React.Component {
                         aria-labelledby="headingZero"
                         data-parent="#selectionAccordion">
                         <div className="card-body">
-                            <h5 className="card-title">
-                                Add Selection Details
-                            </h5>
-
                             <form>
                                 <div className="form-group">
                                     <label htmlFor="newSelectionTitle">

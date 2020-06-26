@@ -69,10 +69,9 @@ export default class ViewSelections extends React.Component {
 
         return (
             <React.Fragment>
-                <h2>
-                    Selections from <a href="#">{this.props.asset.title}</a>
-                </h2>
-
+                <h3>
+                    Selections
+                </h3>
                 <div className="btn-group">
                     <a
                         className="btn btn-light dropdown-toggle"

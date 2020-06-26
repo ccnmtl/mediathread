@@ -22,6 +22,23 @@ export default class Asset {
         ) {
             const youtubeId = getYouTubeID(this.asset.sources.url.url);
             return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+        } else if (
+            this.asset.primary_type === 'vimeo' &&
+                this.asset.sources &&
+                this.asset.sources.vimeo
+        ) {
+            const vUrl = this.asset.sources.vimeo.url;
+            const url = `https://vimeo.com/api/oembed.json?url=${vUrl}`;
+            return fetch(url).then(function(response) {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Error loading Vimeo thumbnail: ' +
+                        `(${response.status}) ${response.statusText}`;
+                }
+            }).then(function(d) {
+                return d.thumbnail_url;
+            });
         }
 
         return this.asset.thumb_url ||

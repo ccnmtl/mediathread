@@ -1,6 +1,6 @@
 describe('Assignment Feature: Instructor Creation', () => {
 
-    beforeEach(() => {
+    before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.wait(500);

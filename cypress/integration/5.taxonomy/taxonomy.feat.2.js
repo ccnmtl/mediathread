@@ -31,6 +31,7 @@ describe('Taxonomy Feature: Edit', () => {
         cy.contains('Shapes').should('exist');
         cy.contains('Colors').should('not.exist');
     });
+
     it('clean up', () => {
         cy.get('.delete_icon').click();
         cy.get('.ui-dialog-buttonset > :nth-child(2)').click();

@@ -45,6 +45,7 @@ describe('Taxonomy Feature: Edit Terms', () => {
         cy.contains('Refresh').click();
         cy.get('[data-id="Red"]').should('exist');
     });
+
     it('clean up', () => {
       cy.get('#vocabulary-wrapper-7 > .vocabulary-display > .actions > .delete-vocabulary > .delete_icon')
             .click();

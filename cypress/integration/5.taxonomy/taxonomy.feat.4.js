@@ -34,6 +34,7 @@ describe('Taxonomy Feature: Edit Terms', () => {
         cy.get('[data-id="Blue"]').should('exist');
         cy.get('div.term-display h5').should('not.be', 'visible');
     });
+
     it('clean up', () => {
         cy.get('.delete-vocabulary > .delete_icon').click();
         cy.get('.ui-dialog-buttonset > :nth-child(2)').click();

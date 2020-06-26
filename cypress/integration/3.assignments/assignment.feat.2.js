@@ -1,6 +1,6 @@
 describe('Assignment Feature: Student Response', () => {
 
-    beforeEach(() => {
+    before(() => {
         cy.login('student_one', 'test');
         cy.visit('/project/view/1');
         cy.wait(500);

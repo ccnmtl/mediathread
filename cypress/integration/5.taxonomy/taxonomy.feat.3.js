@@ -37,6 +37,7 @@ describe('Taxonomy Feature: Create, Duplicate, Delete Term', () => {
         cy.contains('OK').click();
         cy.get('div.term-display h5').should('not.be', 'visible');
     });
+
     it('clean up', () => {
         cy.get('.delete-vocabulary > .delete_icon').click();
         cy.get('.ui-dialog-buttonset > :nth-child(2)').click();

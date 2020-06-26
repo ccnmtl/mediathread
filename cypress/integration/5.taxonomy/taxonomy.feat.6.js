@@ -29,6 +29,7 @@ describe('Taxonomy Feature: Try invalid Onomy url', () => {
         cy.get('[data-id="Purple"]').should('not.exist');
         cy.get('[data-id="Red"]').should('not.exist');
     });
+
     it('clean up', () => {
         cy.get('.delete_icon').click();
         cy.get('.ui-dialog-buttonset > :nth-child(2)').click();

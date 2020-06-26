@@ -28,7 +28,7 @@
 
 Cypress.Commands.add('login', (username, password) => {
     return cy.request({
-        url: '/accounts/login/',
+        url: '/',
         method: 'GET'
     }).then(() => {
         cy.getCookie('csrftoken').its('value').then((token) => {

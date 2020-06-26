@@ -1,5 +1,5 @@
 describe('Taxonomy Feature: Refresh', () => {
-    beforeEach(() => {
+    before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.get('a[href*="settings"]').click();

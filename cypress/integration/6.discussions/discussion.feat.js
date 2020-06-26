@@ -25,7 +25,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('#cu-privacy-notice-icon').click();
         //TODO: test discussion creation from homepage
         cy.title().should('contain', 'Discussion');
-        cy.get('#comment-form-submit').click();
+        cy.get('#comment-form-submit').click({force: true});
         cy.get('td.panel-container.open.discussion').should('exist');
         cy.contains('Respond').should('exist');
         cy.contains('Edit').should('exist');

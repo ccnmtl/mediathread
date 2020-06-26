@@ -14,8 +14,10 @@ from django.contrib.auth.models import User
 from django.db.models.functions import Lower
 from django.urls import reverse
 from django.db.models.query_utils import Q
-from django.http import HttpResponse, HttpResponseForbidden, \
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseForbidden,
     HttpResponseRedirect, Http404
+)
 from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
@@ -242,6 +244,25 @@ class AssetCreateView(View):
                 metadata[key[len('metadata-'):]] = req_dict.getlist(key)
         return metadata
 
+    @staticmethod
+    def process_request_data(req_dict):
+        """
+        Populate site-specific source url if only url is present.
+        """
+        if not req_dict.get('url'):
+            return req_dict
+
+        d = req_dict.copy()
+        if re.match(r'https://(\w+\.)?vimeo.com', req_dict.get('url')) and \
+           not req_dict.get('vimeo'):
+            d['vimeo'] = req_dict.get('url')
+        elif re.match(
+                r'https://(\w+\.)?youtube.com',
+                req_dict.get('url')) and not req_dict.get('youtube'):
+            d['youtube'] = req_dict.get('url')
+
+        return d
+
     ''' No login required so server2server interface is possible'''
     def post(self, request):
         user = self.parse_user(request)
@@ -250,15 +271,16 @@ class AssetCreateView(View):
                 "You must be a member of the course to add assets.")
 
         req_dict = getattr(request, request.method)
+        d = self.process_request_data(req_dict)
 
-        metadata = self.parse_metadata(req_dict)
-        title = req_dict.get('title', '')
+        metadata = self.parse_metadata(d)
+        title = d.get('title', '')
         success, asset = Asset.objects.get_by_args(
-            req_dict, asset__course=request.course)
+            d, asset__course=request.course)
 
         if success is False:
             capture_exception(
-                'Asset creation failed with request data: ' + str(req_dict))
+                'Asset creation failed with request data: ' + str(d))
             return HttpResponseBadRequest(
                 'The selected asset didn\'t have the correct data to be ' +
                 'imported into Mediathread.')
@@ -269,7 +291,10 @@ class AssetCreateView(View):
                           author=user)
             asset.save()
 
-            self.add_sources(request, asset)
+            req = HttpRequest()
+            req.method = 'POST'
+            req.POST.update(d)
+            self.add_sources(req, asset)
 
             self.add_tags(asset, user, metadata)
 

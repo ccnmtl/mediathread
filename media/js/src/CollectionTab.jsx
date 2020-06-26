@@ -88,7 +88,7 @@ export default class CollectionTab extends React.Component {
 
             if (assetGroup.length > 0) {
                 assets.push(
-                    <div key={assetGroup.length} className="card-group">
+                    <div key={assetGroup[0].key} className="card-group">
                         {assetGroup}
                     </div>
                 );

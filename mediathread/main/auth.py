@@ -27,7 +27,7 @@ class CourseGroupMapper(object):
 
         try:
             conditions = user is not None and \
-                         user.is_authenticated() and \
+                         user.is_authenticated and \
                          d is not None and \
                          d['member'] == 'fc' and \
                          year is not None and \

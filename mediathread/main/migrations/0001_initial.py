@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -23,8 +24,10 @@ class Migration(migrations.Migration):
                 ('referred_by', models.TextField()),
                 ('user_story', models.TextField(null=True, blank=True)),
                 ('self_registered', models.BooleanField(default=False)),
-                ('user', models.OneToOneField(related_name='profile',
-                                              to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='profile',
+                    to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -37,7 +40,9 @@ class Migration(migrations.Migration):
                                         auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=255)),
                 ('value', models.CharField(max_length=255)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },

@@ -7,7 +7,7 @@ import re
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.query_utils import Q
 from django.utils.encoding import python_2_unicode_compatible, smart_text
@@ -327,8 +327,11 @@ class SherdNote(Annotation):
     objects = SherdNoteManager()
 
     title = models.CharField(blank=True, max_length=1024, null=True)
-    asset = models.ForeignKey(Asset, related_name="sherdnote_set")
-    author = models.ForeignKey(User, null=True, blank=True)
+    asset = models.ForeignKey(
+        Asset, related_name="sherdnote_set",
+        on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE)
     tags = TagField(max_length=1024)
     body = models.TextField(blank=True, null=True)
     added = models.DateTimeField('date created', editable=False,
@@ -415,14 +418,16 @@ class DiscussionIndex(models.Model):
     2. what discussions are connected to a particular asset (for asset page)
     3. what new comments should be featured in Clumper
     """
-    participant = models.ForeignKey(User, null=True)
-    collaboration = models.ForeignKey(Collaboration)
+    participant = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    collaboration = models.ForeignKey(Collaboration, on_delete=models.CASCADE)
 
-    asset = models.ForeignKey(Asset, null=True,
-                              related_name="discussion_references")
+    asset = models.ForeignKey(
+        Asset, null=True,
+        related_name="discussion_references",
+        on_delete=models.CASCADE)
 
     # just for use-case #3
-    comment = models.ForeignKey(Comment, null=True)
+    comment = models.ForeignKey(Comment, null=True, on_delete=models.CASCADE)
     modified = models.DateTimeField(auto_now=True)  # update on save
 
     def __str__(self):

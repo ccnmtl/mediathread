@@ -184,7 +184,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = ('GET',)
 CORS_ALLOW_CREDENTIALS = True
 
-SESSION_COOKIE_SAMESITE = 'None'
+DCS_SESSION_COOKIE_SAMESITE = 'None'
 
 
 def default_url_processor(url, label=None, request=None):

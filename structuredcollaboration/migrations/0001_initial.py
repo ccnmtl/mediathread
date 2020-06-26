@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -22,7 +23,9 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(default=None, max_length=1024, null=True)),
                 ('slug', models.SlugField(default=None, null=True, blank=True)),
                 ('object_pk', models.CharField(max_length=255, null=True, verbose_name='object ID', blank=True)),
-                ('_parent', models.ForeignKey(related_name='children', default=None, blank=True, to='structuredcollaboration.Collaboration', null=True)),
+                ('_parent', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='children', default=None, blank=True, to='structuredcollaboration.Collaboration', null=True)),
             ],
             options={
                 'ordering': ['title'],
@@ -42,31 +45,41 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='collaboration',
             name='_policy',
-            field=models.ForeignKey(default=None, blank=True, to='structuredcollaboration.CollaborationPolicyRecord', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                default=None, blank=True, to='structuredcollaboration.CollaborationPolicyRecord', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='collaboration',
             name='content_type',
-            field=models.ForeignKey(related_name='collaboration_set_for_collaboration', blank=True, to='contenttypes.ContentType', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='collaboration_set_for_collaboration', blank=True, to='contenttypes.ContentType', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='collaboration',
             name='context',
-            field=models.ForeignKey(related_name='context_children', default=None, blank=True, to='structuredcollaboration.Collaboration', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='context_children', default=None, blank=True, to='structuredcollaboration.Collaboration', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='collaboration',
             name='group',
-            field=models.ForeignKey(blank=True, to='auth.Group', null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                blank=True, to='auth.Group', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='collaboration',
             name='user',
-            field=models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                blank=True, to=settings.AUTH_USER_MODEL, null=True),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

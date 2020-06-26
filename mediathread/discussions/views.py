@@ -7,14 +7,17 @@ import waffle
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import View
 from django.utils.encoding import smart_text
-import django_comments
+from django.utils.decorators import method_decorator
 from django_comments.models import COMMENT_MAX_LENGTH
+
+import django_comments
 from djangohelpers.lib import rendered_with, allow_http
 from threadedcomments.models import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
@@ -134,7 +137,7 @@ class DiscussionDeleteView(LoggedInFacultyMixin, View):
         ctype = ContentType.objects.get_for_model(ThreadedComment)
         collaboration = get_object_or_404(Collaboration,
                                           content_type=ctype,
-                                          object_pk=str(root_comment.id))
+                                          object_pk=root_comment.pk)
 
         root_comment.delete()
         collaboration.delete()
@@ -143,6 +146,7 @@ class DiscussionDeleteView(LoggedInFacultyMixin, View):
 
 class DiscussionView(LoggedInCourseMixin, View):
 
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         """Show a threadedcomments discussion of an arbitrary object.
         discussion_id is the pk of the root comment."""

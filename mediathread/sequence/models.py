@@ -8,7 +8,7 @@ from mediathread.djangosherd.models import SherdNote
 class SequenceAsset(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     # The course foreign key refers to which course the SequenceAsset
     # belongs to as a general Mediathread asset independent of the
     # assignment (project) structure. SequenceAssets that are created
@@ -16,8 +16,9 @@ class SequenceAsset(models.Model):
     # with a course via the Project, through the
     # ProjectSequenceAssignment model, so this field is superfluous
     # for those SequenceAssets.
-    course = models.ForeignKey(Course)
-    spine = models.ForeignKey(SherdNote, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    spine = models.ForeignKey(
+        SherdNote, blank=True, null=True, on_delete=models.PROTECT)
     # Default is 80 instead of 100 because that's react-player's default
     # volume.
     spine_volume = models.PositiveSmallIntegerField(
@@ -53,7 +54,7 @@ class SequenceMediaElement(models.Model):
         default=80, validators=[MaxValueValidator(100)])
     start_time = models.DecimalField(max_digits=12, decimal_places=5)
     end_time = models.DecimalField(max_digits=12, decimal_places=5)
-    media = models.ForeignKey(SherdNote)
+    media = models.ForeignKey(SherdNote, on_delete=models.CASCADE)
 
 
 class SequenceTextElement(models.Model):

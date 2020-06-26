@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -15,12 +16,14 @@ class Migration(migrations.Migration):
             model_name='sequencemediaelement',
             name='sequence_asset',
             field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
                 related_name='media_elements', to='sequence.SequenceAsset'),
         ),
         migrations.AlterField(
             model_name='sequencetextelement',
             name='sequence_asset',
             field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
                 related_name='text_elements', to='sequence.SequenceAsset'),
         ),
     ]

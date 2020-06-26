@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 from django.conf import settings
 import tagging.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -32,7 +33,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('modified', models.DateTimeField(auto_now=True)),
-                ('asset', models.ForeignKey(related_name='discussion_references', to='assetmgr.Asset', null=True)),
+                ('asset', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='discussion_references', to='assetmgr.Asset', null=True)),
             ],
             options={
             },
@@ -41,14 +44,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SherdNote',
             fields=[
-                ('annotation_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='djangosherd.Annotation')),
+                ('annotation_ptr', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    parent_link=True, auto_created=True, primary_key=True, serialize=False, to='djangosherd.Annotation')),
                 ('title', models.CharField(max_length=1024, null=True, blank=True)),
                 ('tags', tagging.fields.TagField(max_length=255, blank=True)),
                 ('body', models.TextField(null=True, blank=True)),
                 ('added', models.DateTimeField(verbose_name=b'date created', editable=False)),
                 ('modified', models.DateTimeField(verbose_name=b'date modified', editable=False)),
-                ('asset', models.ForeignKey(related_name='sherdnote_set', to='assetmgr.Asset')),
-                ('author', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('asset', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='sherdnote_set', to='assetmgr.Asset')),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },

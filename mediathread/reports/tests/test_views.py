@@ -2,7 +2,7 @@ from datetime import datetime
 from json import loads
 
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 

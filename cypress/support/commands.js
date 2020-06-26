@@ -28,13 +28,24 @@
 
 Cypress.Commands.add('login', (username, password) => {
     return cy.request({
-        method: 'POST',
         url: '/accounts/login/',
-        form: true,
-        body: {
-            username: username,
-            password: password
-        }
+        method: 'GET'
+    }).then(() => {
+        cy.getCookie('csrftoken').its('value').then((token) => {
+            cy.request({
+                url: '/accounts/login/',
+                method: 'POST',
+                form: true,
+                followRedirect: true,
+                body: {
+                    username: username,
+                    password: password,
+                    csrfmiddlewaretoken: token
+                }
+            }).then(() => {
+                return cy.getCookie('csrftoken').its('value');
+            });
+        });
     });
 });
 

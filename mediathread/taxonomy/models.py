@@ -15,7 +15,7 @@ class Vocabulary(models.Model):
     single_select = models.BooleanField(default=False)
     onomy_url = models.TextField(null=True, blank=True)
     skos_uri = models.CharField(null=True, blank=True, max_length=100)
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['display_name', 'id']
@@ -37,7 +37,7 @@ class VocabularyForm(forms.ModelForm):
 @python_2_unicode_compatible
 class Term(models.Model):
     name = models.SlugField(max_length=100)
-    vocabulary = models.ForeignKey(Vocabulary)
+    vocabulary = models.ForeignKey(Vocabulary, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100)
     description = models.CharField(null=True, blank=True, max_length=256)
     ordinality = models.IntegerField(null=True, blank=True, default=0)
@@ -69,8 +69,8 @@ class TermForm(forms.ModelForm):
 
 
 class TermRelationship(models.Model):
-    term = models.ForeignKey(Term)
-    sherdnote = models.ForeignKey(SherdNote)
+    term = models.ForeignKey(Term, on_delete=models.CASCADE)
+    sherdnote = models.ForeignKey(SherdNote, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('term', 'sherdnote')

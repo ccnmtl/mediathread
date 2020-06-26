@@ -3,7 +3,7 @@ import re
 
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 from django_comments.forms import CommentSecurityForm

@@ -8,7 +8,7 @@ from json import loads
 import json
 
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http.response import Http404, HttpResponseRedirect
 from django.test import TestCase
 from django.test.client import RequestFactory
@@ -303,7 +303,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         panel = the_json["panels"][0]
         self.assertIsNone(panel["current_annotation"])
-        self.assertEquals(panel["current_asset"], str(asset1.id))
+        self.assertEquals(panel["current_asset"], asset1.id)
         self.assertEquals(panel["panel_state"], "open")
         self.assertEquals(panel["panel_state_label"], "Annotate Media")
         self.assertTrue(panel["show_collection"])

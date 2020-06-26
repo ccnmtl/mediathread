@@ -1,4 +1,10 @@
-describe('Instructor Feat: Course Activity', () => {
+Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false;
+});
+
+describe('Instructor Feat: Test Create Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
@@ -17,7 +23,6 @@ describe('Instructor Feat: Course Activity', () => {
         });
 
         cy.wait(500);
-
         cy.get('#loaded').should('exist');
         cy.get('.panhandle-stripe.composition').should('exist');
         cy.get('.panel-subcontainer-title').contains('Untitled')
@@ -28,7 +33,7 @@ describe('Instructor Feat: Course Activity', () => {
         cy.get('.project-savebutton').click();
         cy.get('.btn-save-project').click();
         cy.title().should('contain', 'Instructor Feature 4');
-        cy.get('#course_title_link').click();
+        cy.get('#course_title_link').click({force: true});
         cy.contains('Instructor Feature 4').should('exist');
     });
 });

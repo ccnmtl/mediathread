@@ -57,7 +57,8 @@ export default class GridAsset extends React.Component {
         super(props);
 
         this.state = {
-            selectedAnnotation: null
+            selectedAnnotation: null,
+            thumbnailUrl: '/media/img/thumb_video.png'
         };
 
         this.selectionLayer = new VectorLayer({
@@ -69,6 +70,7 @@ export default class GridAsset extends React.Component {
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);
     }
+
     onSelectedAnnotationUpdate(annotation) {
         const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
@@ -170,9 +172,7 @@ export default class GridAsset extends React.Component {
                                         style={{'maxWidth': '100%'}}
                                         alt={'Video thumbnail for: ' +
                                              this.props.asset.title}
-                                        src={
-                                            this.asset.getThumbnail() ||
-                                                '/media/img/thumb_video.png'}
+                                        src={this.state.thumbnailUrl}
                                         onError={() => handleBrokenImage(type)} />
                                 )}
                             </a>
@@ -205,6 +205,16 @@ export default class GridAsset extends React.Component {
         );
     }
     componentDidMount() {
+        let thumbnail = this.asset.getThumbnail();
+        if (typeof thumbnail === 'string') {
+            this.setState({thumbnailUrl: this.asset.getThumbnail()});
+        } else if (thumbnail.then) {
+            const me = this;
+            this.asset.getThumbnail().then(function(url) {
+                me.setState({thumbnailUrl: url});
+            });
+        }
+
         if (this.asset.getType() === 'image') {
             const img = this.asset.getImage();
 

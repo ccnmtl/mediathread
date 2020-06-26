@@ -13,6 +13,10 @@ env:
   - TEST_SUITE=cypress
 python:
   - "3.6"
+before_install:
+  - sudo apt-get install --yes postgresql-10-postgis-2.4
+before_script:
+  - psql -c 'create database test_mediathread;' -U postgres
 cache:
   npm: true
   pip: true

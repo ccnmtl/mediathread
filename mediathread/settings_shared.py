@@ -223,6 +223,7 @@ if 'test' in sys.argv or \
     TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
     MIDDLEWARE.remove(
         'debug_toolbar.middleware.DebugToolbarMiddleware')
+    INSTALLED_APPS.remove('debug_toolbar')
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
@@ -233,15 +234,16 @@ if 'test' in sys.argv or \
 if 'integrationserver' in sys.argv:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'test_mediathread',
             'HOST': '',
-            'PORT': '',
+            'PORT': 5432,
             'USER': '',
             'PASSWORD': '',
             'ATOMIC_REQUESTS': True,
         }
     }
+
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 

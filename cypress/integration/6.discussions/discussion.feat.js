@@ -9,7 +9,6 @@ describe('Discussion View: Create Discussion', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
     });
 
     it('Instructor Creates Discussion', () => {
@@ -24,7 +23,6 @@ describe('Discussion View: Create Discussion', () => {
                 obj_pk: '1'
             }
         });
-        cy.wait(500);
         //TODO: test discussion creation from homepage
         cy.title().should('contain', 'Discussion');
         cy.get('#comment-form-submit').click();

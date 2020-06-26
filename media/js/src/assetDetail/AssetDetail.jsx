@@ -59,7 +59,7 @@ export default class AssetDetail extends React.Component {
         this.asset = new Asset(this.props.asset);
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
-        this.onPlayerPlay = this.onPlayerPlay.bind(this);
+        this.onPlayToggle = this.onPlayToggle.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
@@ -190,8 +190,8 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onPlayerPlay() {
-        this.setState({playing: true});
+    onPlayToggle() {
+        this.setState({playing: !this.state.playing});
     }
 
     onPlayerProgress(d) {
@@ -430,13 +430,25 @@ export default class AssetDetail extends React.Component {
                                 </div>
                                 <div className="col-sm-2">
                                     <button
-                                        onClick={this.onPlayerPlay}
+                                        onClick={this.onPlayToggle}
                                         type="button"
                                         className="btn btn-outline-light btn-sm">
-                                        Play
-                                        <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
-                                        </svg>
+                                        {this.state.playing && (
+                                            <React.Fragment>
+                                                <svg className="bi bi-pause-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+                                                </svg>
+                                                Pause
+                                            </React.Fragment>
+                                        )}
+                                        {!this.state.playing && (
+                                            <React.Fragment>
+                                                <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
+                                                </svg>
+                                                Play
+                                            </React.Fragment>
+                                        )}
                                     </button>
                                 </div>
                             </div>
@@ -459,7 +471,6 @@ export default class AssetDetail extends React.Component {
                             className="react-player embed-responsive-item"
                             width="auto"
                             height="auto"
-                            onPlay={this.onPlayerPlay.bind(this)}
                             onProgress={this.onPlayerProgress.bind(this)}
                             playing={this.state.playing}
                             ref={r => this.playerRef = r}

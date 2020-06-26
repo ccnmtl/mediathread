@@ -54,6 +54,7 @@ class Command(BaseCommand):
         m.setup_sample_assets()
         m.setup_sample_assignment()
         m.setup_sample_selection_assignment()
+        m.setup_sample_assignment_and_response()
 
         Flag(name='addressable_courses', everyone=True)
         Flag(name='new_course_view', everyone=True)

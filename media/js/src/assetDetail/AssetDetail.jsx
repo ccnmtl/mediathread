@@ -219,13 +219,30 @@ export default class AssetDetail extends React.Component {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
-        this.setState({selectionStartTime: time});
+
+        if (typeof time === 'number') {
+            this.setState({selectionStartTime: time});
+        } else if (time.then) {
+            const me = this;
+            time.then(function(t) {
+                me.setState({selectionStartTime: t});
+            });
+        }
     }
+
     onEndTimeClick(e) {
         e.preventDefault();
         const player = this.playerRef.getInternalPlayer();
         const time = player.getCurrentTime();
-        this.setState({selectionEndTime: time});
+
+        if (typeof time === 'number') {
+            this.setState({selectionEndTime: time});
+        } else if (time.then) {
+            const me = this;
+            time.then(function(t) {
+                me.setState({selectionEndTime: t});
+            });
+        }
     }
 
     showDeleteDialog(selectionId) {

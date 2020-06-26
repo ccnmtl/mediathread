@@ -431,6 +431,12 @@ export default class AssetDetail extends React.Component {
                 );
             }
 
+            const source = this.asset.extractSource();
+            let vidUrl = null;
+            if (source) {
+                vidUrl = source.url;
+            }
+
             media = (
                 <React.Fragment>
                     {annotationTools}
@@ -441,7 +447,7 @@ export default class AssetDetail extends React.Component {
                             onProgress={this.onPlayerProgress.bind(this)}
                             playing={this.state.playing}
                             ref={r => this.playerRef = r}
-                            url={this.asset.getVideo()}
+                            url={vidUrl}
                             controls={true} />
                     </div>
                 </React.Fragment>

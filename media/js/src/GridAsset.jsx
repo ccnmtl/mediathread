@@ -208,7 +208,7 @@ export default class GridAsset extends React.Component {
         let thumbnail = this.asset.getThumbnail();
         if (typeof thumbnail === 'string') {
             this.setState({thumbnailUrl: this.asset.getThumbnail()});
-        } else if (thumbnail.then) {
+        } else if (thumbnail && thumbnail.then) {
             const me = this;
             this.asset.getThumbnail().then(function(url) {
                 me.setState({thumbnailUrl: url});

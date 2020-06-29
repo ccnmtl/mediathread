@@ -471,7 +471,6 @@ export default class AssetDetail extends React.Component {
                             className="react-player embed-responsive-item"
                             width="100%"
                             height="100%"
-                            onPlay={this.onPlayerPlay.bind(this)}
                             onProgress={this.onPlayerProgress.bind(this)}
                             playing={this.state.playing}
                             ref={r => this.playerRef = r}

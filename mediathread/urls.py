@@ -9,17 +9,14 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
     PasswordResetConfirmView
 )
-import django.contrib.auth.views
 from django.contrib.auth.views import LogoutView
+import django.contrib.auth.views
+from django.urls import include, path
 from django.views.generic.base import TemplateView
 from django.views.i18n import JavaScriptCatalog
 import django.views.i18n
 import django.views.static
 import djangowind.views
-from django.urls import include, path
-from registration.backends.default.views import RegistrationView
-from tastypie.api import Api
-
 from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
     AssetCollectionView,
@@ -44,8 +41,10 @@ from mediathread.main.views import (
     CourseConvertMaterialsView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
-    ProjectPublicView)
+    ProjectPublicView, ProjectListView, AssignmentListView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
+from registration.backends.default.views import RegistrationView
+from tastypie.api import Api
 
 
 tastypie_api = Api('')
@@ -185,6 +184,13 @@ urlpatterns = [
          LTICourseCreate.as_view(), name='lti-course-create'),
     path('course/lti/<slug:context>/',
          LTICourseSelector.as_view(), name='lti-course-select'),
+
+    path('course/<int:course_pk>/projects/',
+         ProjectListView.as_view(),
+         name='project-list'),
+    path('course/<int:course_pk>/assignments/',
+         AssignmentListView.as_view(),
+         name='assignment-list'),
 
     # Bookmarklet
     path('accounts/logged_in.js', IsLoggedInView.as_view(), {},

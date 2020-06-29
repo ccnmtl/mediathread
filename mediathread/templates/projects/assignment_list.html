@@ -1,0 +1,27 @@
+{% extends "base_new.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
+            role="tablist">
+            <a class="flex-sm-fill text-sm-center nav-link " role="tab"
+                title="Collection" href="{% url 'course_detail' course.pk %}">
+                Collection
+            </a>
+            <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
+                href="{% url 'assignment-list' course.pk %}"
+                title="Assignments" href="assignments/">Assignments</a>
+            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
+                href="{% url 'project-list' course.pk %}"
+                title="Projects" href="projects/">Projects</a>
+        </nav>
+        <div class="tab-content">
+            <div role="tabpanel">
+                <h1 class="page-title">Assignments</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

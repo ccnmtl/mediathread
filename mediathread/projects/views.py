@@ -1,23 +1,21 @@
 from datetime import datetime
-import json
-import waffle
 
-from courseaffils.lib import get_public_name
+from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
-from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.views.generic.base import View, TemplateView
+from django.views.generic.list import ListView
 from djangohelpers.lib import allow_http
-from reversion.models import Version
-
+import json
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
@@ -38,7 +36,9 @@ from mediathread.projects.models import (
     Project, ProjectNote, PUBLISH_DRAFT, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from reversion.models import Version
 from structuredcollaboration.models import Collaboration
+import waffle
 
 
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
@@ -676,6 +676,45 @@ class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                                    editable=can_edit)
         context = resource.render_one(request, project)
         return self.render_to_json_response(context)
+
+
+class ProjectListView(LoggedInCourseMixin, ListView):
+
+    template_name = 'projects/project_list.html'
+    model = Project
+    paginate_by = 20
+
+    def get_project_owner(self):
+        project_owner = self.request.GET.get('owner', None)
+        if project_owner:
+            in_course_or_404(project_owner, self.request.course)
+            return get_object_or_404(User, username=project_owner)
+        else:
+            # viewing own work by default
+            return self.request.user
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['owner'] = self.get_project_owner()
+        ctx['course'] = self.request.course
+        return ctx
+
+    def get_queryset(self):
+        return Project.objects.none()
+
+
+class AssignmentListView(ProjectListView):
+    template_name = 'projects/assignment_list.html'
+    model = Project
+    paginate_by = 20
+
+    def filter(self, qs):
+        return qs
+
+    def get_queryset(self):
+        qs = Project.objects.none()
+        qs = self.filter(qs)
+        return qs
 
 
 class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,

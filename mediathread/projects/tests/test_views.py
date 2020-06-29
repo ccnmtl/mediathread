@@ -1,13 +1,12 @@
 # pylint: disable-msg=R0904
 from datetime import datetime
-import json
 
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
+from django.http.response import Http404
 from django.test import TestCase, RequestFactory
-import reversion
-from reversion.models import Version
-
+from django.urls import reverse
+import json
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
     ProjectNoteFactory
@@ -20,7 +19,9 @@ from mediathread.projects.models import (
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.views import (
     SelectionAssignmentView, ProjectItemView,
-    SequenceAssignmentView)
+    SequenceAssignmentView, ProjectListView)
+import reversion
+from reversion.models import Version
 from structuredcollaboration.models import Collaboration
 
 
@@ -1123,3 +1124,70 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         self.assert_visible_notes(self.instructor_one,
                                   [(self.note_one.id, False, True),
                                    (self.note_two.id, False, True)])
+
+
+class ProjectListViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+    def test_get_project_owner_self(self):
+        view = ProjectListView()
+        url = reverse('project-list', args=[self.sample_course.id])
+        view.request = RequestFactory().get(url)
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+        self.assertEquals(view.get_project_owner(), self.student_one)
+
+    def test_get_project_owner_invalid(self):
+        view = ProjectListView()
+        url = reverse('project-list', args=[self.sample_course.id])
+        url = '{}?owner=foo'.format(url)
+        view.request = RequestFactory().get(url)
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+
+        with self.assertRaises((User.DoesNotExist, Http404)):
+            view.get_project_owner()
+
+    def test_get_project_owner_alt_course(self):
+        view = ProjectListView()
+        url = reverse('project-list', args=[self.sample_course.id])
+        url = '{}?owner=alt_student'.format(url)
+        view.request = RequestFactory().get(url)
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+
+        with self.assertRaisesRegexp(Http404, 'not enrolled'):
+            view.get_project_owner()
+
+    def test_anonymous(self):
+        url = reverse('project-list', args=[self.sample_course.id])
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+
+    def test_get(self):
+        url = reverse('project-list', args=[self.sample_course.id])
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+
+
+class AssignmentListViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+    def test_anonymous(self):
+        url = reverse('assignment-list', args=[self.sample_course.id])
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+
+    def test_get(self):
+        url = reverse('assignment-list', args=[self.sample_course.id])
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)

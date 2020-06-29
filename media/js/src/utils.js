@@ -257,8 +257,8 @@ const getAssetType = function(primaryType) {
 };
 
 const handleBrokenImage = function(assetType) {
-    // eslint-disable-next-line scanjs-rules/assign_to_src
     if (this) {
+        // eslint-disable-next-line scanjs-rules/assign_to_src
         this.src = `/media/img/thumb_${assetType}.png`;
     }
 };

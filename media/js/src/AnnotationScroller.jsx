@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {getCourseUrl} from './utils';
 
 export default class AnnotationScroller extends React.Component {
     constructor(props) {
@@ -42,14 +43,10 @@ export default class AnnotationScroller extends React.Component {
         const selectedAnnotation =
               this.props.annotations[this.state.currentAnnotation];
 
-        let assetLink = '#';
-        if (window.MediaThread) {
-            const courseId = window.MediaThread.current_course;
-            // TODO: link to annotation, not just asset.
-            assetLink =
-                `/course/${courseId}/react/asset/` +
-                selectedAnnotation.asset_id;
-        }
+        // TODO: link to annotation, not just asset.
+        const courseUrl = getCourseUrl();
+        const assetLink = `${courseUrl}react/asset/` +
+              selectedAnnotation.asset_id + '/';
 
         return (
             <div>

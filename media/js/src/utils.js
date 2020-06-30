@@ -313,6 +313,22 @@ const transform = function(geometry, width, height, zoom) {
     };
 };
 
+/**
+ * Given a react-player ref, return its current time.
+ *
+ * Returns a number, or a Promise on Vimeo videos.
+ */
+const getPlayerTime = function(playerRef) {
+    const player = playerRef.getInternalPlayer();
+    if (player.getCurrentTime && typeof player.getCurrentTime === 'function') {
+        return player.getCurrentTime();
+    } else if (!isNaN(player.currentTime)) {
+        return player.currentTime;
+    }
+
+    return null;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection, createSherdNote,
@@ -320,5 +336,6 @@ export {
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
-    handleBrokenImage, getCoordStyles, transform
+    handleBrokenImage, getCoordStyles, transform,
+    getPlayerTime
 };

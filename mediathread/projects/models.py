@@ -166,6 +166,12 @@ class ProjectManager(models.Manager):
         return visible
 
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
+        """
+            Retrieve all assignments, responses and projects authored or
+            co-authored by the user.
+            Return projects that the viewer has rights to view, sorted based
+            on the viewer's role.
+        """
         projects = Project.objects.filter(
             Q(author=user, course=course) |
             Q(participants=user, course=course)
@@ -185,6 +191,29 @@ class ProjectManager(models.Manager):
                      key=lambda project: project.feedback_date() or
                      project.modified)
         return lst
+
+    def projects_visible_by_course_and_author(self, course, viewer, author):
+        """
+            Retrieve all projects authored or co-authored by author
+            "Projects" here means standalone compositions or sequences
+            Return projects that the viewer has rights to view
+        """
+        types = [PROJECT_TYPE_COMPOSITION, PROJECT_TYPE_SEQUENCE]
+        projects = Project.objects.filter(
+            Q(author=author, course=course) |
+            Q(participants=author, course=course)
+        ).filter(project_type__in=types).distinct()
+
+        collabs = Collaboration.objects.get_for_object_list(
+            projects).filter(_parent=None)
+
+        lst = []
+        for collab in collabs:
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                lst.append(project.id)
+
+        return Project.objects.filter(id__in=lst)
 
     def responses_by_course(self, course, viewer):
         projects = Project.objects.filter(
@@ -233,6 +262,27 @@ class ProjectManager(models.Manager):
         ids = [int(c.object_pk) for c in lst]
         return Project.objects.filter(id__in=ids).order_by('ordinality',
                                                            'title')
+
+    def visible_assignments_by_course(self, course, viewer):
+        """
+            Retrieve all assignments for a course. Students will see published
+            assignments. Instructors will see published assignments +
+            their own draft assignments.
+        """
+        exclude = [PROJECT_TYPE_COMPOSITION, PROJECT_TYPE_SEQUENCE]
+        qs = Project.objects.filter(
+            course=course, author__in=course.faculty_group.user_set.all())
+        qs = qs.exclude(project_type__in=[exclude])
+
+        collabs = Collaboration.objects.get_for_object_list(qs)
+
+        lst = []
+        for collab in collabs:
+            project = collab.content_object
+            if project.can_read(course, viewer, collab):
+                lst.append(project.id)
+
+        return Project.objects.filter(id__in=lst)
 
     def unresponded_assignments(self, course, user):
         qs = Project.objects.filter(

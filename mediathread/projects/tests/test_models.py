@@ -335,6 +335,29 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(visible_projects[0], self.project_class_shared)
         self.assertEquals(visible_projects[1], self.project_instructor_shared)
 
+    def test_projects_visible_by_course_and_author(self):
+        visible = Project.objects.projects_visible_by_course_and_author(
+            self.sample_course, self.student_one, self.student_one)
+        self.assertEquals(len(visible), 3)
+        self.assertTrue(self.project_class_shared in visible)
+        self.assertTrue(self.project_instructor_shared in visible)
+        self.assertTrue(self.project_private in visible)
+
+        visible = Project.objects.projects_visible_by_course_and_author(
+            self.sample_course, self.student_one, self.instructor_one)
+        self.assertEquals(len(visible), 0)
+
+        visible = Project.objects.projects_visible_by_course_and_author(
+            self.sample_course, self.student_two, self.student_one)
+        self.assertEquals(len(visible), 1)
+        self.assertEquals(visible[0], self.project_class_shared)
+
+        visible = Project.objects.projects_visible_by_course_and_author(
+            self.sample_course, self.instructor_one, self.student_one)
+        self.assertEquals(len(visible), 2)
+        self.assertTrue(self.project_class_shared in visible)
+        self.assertTrue(self.project_instructor_shared in visible)
+
     def assert_responses_by_course(self, viewer, visible, hidden):
         self.assertEquals(
             Project.objects.responses_by_course(self.sample_course, viewer),
@@ -653,6 +676,23 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
     def test_can_read_composition_assignment_response(self):
         self.can_read_assignment_response(self.assignment)
+
+    def test_visible_assignments_by_course_student(self):
+        lst = Project.objects.visible_assignments_by_course(
+            self.sample_course, self.student_one)
+        self.assertEquals(len(lst), 3)
+        self.assertTrue(self.selection_assignment in lst)
+        self.assertTrue(self.sequence_assignment in lst)
+        self.assertTrue(self.assignment in lst)
+
+    def test_visible_assignments_by_course_faculty(self):
+        lst = Project.objects.visible_assignments_by_course(
+            self.sample_course, self.instructor_one)
+        self.assertEquals(len(lst), 4)
+        self.assertTrue(self.selection_assignment in lst)
+        self.assertTrue(self.sequence_assignment in lst)
+        self.assertTrue(self.assignment in lst)
+        self.assertTrue(self.draft_assignment in lst)
 
     def test_unresponded_assignments(self):
         lst = Project.objects.unresponded_assignments(self.sample_course,

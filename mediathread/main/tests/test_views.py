@@ -59,12 +59,9 @@ from structuredcollaboration.models import Collaboration
 
 class SimpleViewTest(TestCase):
     def test_index(self):
-        # it should redirect us somewhere.
-        response = self.client.get("/")
-        self.assertEquals(response.status_code, 302)
-        # for now, we don't care where. really, we
-        # are just making sure it's not a 500 error
-        # at this point
+        # Mediathread splash page should appear
+        response = self.client.get('/')
+        self.assertEquals(response.status_code, 200)
 
     def test_500(self):
         with self.assertRaises(Exception):

@@ -33,7 +33,7 @@ describe('Instructor Feat: Test Create Composition', () => {
         cy.get('.project-savebutton').click();
         cy.get('.btn-save-project').click();
         cy.title().should('contain', 'Instructor Feature 4');
-        cy.get('#course_title_link').click({force: true});
+        cy.visit('/course/1/oldhome/');
         cy.contains('Instructor Feature 4').should('exist');
     });
 });

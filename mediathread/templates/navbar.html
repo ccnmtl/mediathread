@@ -1,7 +1,7 @@
 {% load user_projects coursetags static %}
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #000;">
-    <a title="Mediathread" class="navbar-brand" href="#">
+    <a title="Mediathread" class="navbar-brand" href="/">
         <img src='{% static "img/logo_mediathread.svg" %}'
              width="156" height="45"
              alt="Mediathread logo" />
@@ -48,7 +48,7 @@
             {% endif %}
 
             <li class="nav-item dropdown ml-auto">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                <a class="nav-link dropdown-toggle" href="#" id="userMenu"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% if role_in_course == "non-member" %}
                         <span class="badge badge-warning">Course Non-member</span>
@@ -56,7 +56,7 @@
                     Hi, {{ user.first_name }}! ({{ user.username }})
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="/?unset_course" title="My Courses">
+                    <a class="dropdown-item" href="{% url 'course_list' %}" title="My Courses">
                         My Courses
                     </a>
                     {% if user.is_staff %}

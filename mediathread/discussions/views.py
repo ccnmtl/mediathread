@@ -141,7 +141,8 @@ class DiscussionDeleteView(LoggedInFacultyMixin, View):
 
         root_comment.delete()
         collaboration.delete()
-        return HttpResponseRedirect(reverse('home'))
+        url = reverse('assignment-list', args=[request.course.id])
+        return HttpResponseRedirect(url)
 
 
 class DiscussionView(LoggedInCourseMixin, View):

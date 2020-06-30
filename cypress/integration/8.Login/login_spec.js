@@ -1,7 +1,8 @@
 describe('Log In Feature: Test Instructor Login', () => {
     it('Logs in as instructor_one', () => {
-        cy.visit('/');
+        cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('instructor_one').blur();
@@ -13,14 +14,15 @@ describe('Log In Feature: Test Instructor Login', () => {
         cy.get('.choose-course').click();
         cy.title().should('contain', 'Home');
         cy.visit('/accounts/logout/?next=/');
-        cy.title().should('contain', 'Login');
+        cy.title().should('contain', 'Splash');
     });
 });
 
 describe('Log In Feature: Test Invalid login', () => {
     it('should not log in', () => {
-        cy.visit('/');
+        cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('foo').blur();
@@ -32,8 +34,9 @@ describe('Log In Feature: Test Invalid login', () => {
 
 describe('Log In Feature: Test Student Login', () => {
     it('should test student login', () => {
-        cy.visit('/');
+        cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('student_one').blur();
@@ -41,14 +44,15 @@ describe('Log In Feature: Test Student Login', () => {
         cy.get('#login-local input[type="submit"]').click();
         cy.title().should('contain', 'Home');
         cy.visit('/accounts/logout/?next=/');
-        cy.title().should('contain', 'Login');
+        cy.title().should('contain', 'Splash');
     });
 });
 
 describe('Log In Feature: Test Switch Course feature', () => {
     it('should test student login', () => {
-        cy.visit('/');
+        cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('student_three').blur();
@@ -62,15 +66,15 @@ describe('Log In Feature: Test Switch Course feature', () => {
         cy.contains('Sample Course').should('exist')
             .and('have.attr', 'href');
         cy.contains('Alternate Course').click();
-        cy.get('#course_title_link').should('contain', 'Alternate Course');
+        cy.get('#course-title').should('contain', 'Alternate Course');
 
-        cy.get('.settings_menu.user').click({force: true});
-        cy.get('a[href="/?unset_course"]').should('exist');
-        cy.get('a[href="/?unset_course"]').click();
+        cy.get('#userMenu').click({force: true});
+        cy.get('a[href="/course/list/"]').should('exist');
+        cy.get('a[href="/course/list/"]').click();
         cy.title().should('contain', 'My Courses');
 
         cy.get('#sandboxes_link').click();
         cy.contains('Sample Course').click();
-        cy.get('#course_title_link').should('contain', 'Sample Course');
+        cy.get('#course-title').should('contain', 'Sample Course');
     });
 });

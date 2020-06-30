@@ -1,6 +1,8 @@
 describe('Log In', function() {
     it('Logs in as instructor_one', function() {
-        cy.visit('http://localhost:8000');
+        cy.visit('/accounts/login/');
+        cy.title().should('contain', 'Login');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('instructor_one').blur();

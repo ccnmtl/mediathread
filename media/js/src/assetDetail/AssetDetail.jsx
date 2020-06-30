@@ -496,15 +496,6 @@ export default class AssetDetail extends React.Component {
                     <Alert.Heading>Selection deleted.</Alert.Heading>
                 </Alert>
 
-                <Alert
-                    variant="danger" show={this.state.showCreateError}
-                    id="create-error-alert">
-                    <Alert.Heading>Error creating selection.</Alert.Heading>
-                    <p>
-                        {this.state.createError}
-                    </p>
-                </Alert>
-
                 <h2 className="text-center">
                     {this.props.asset.title}
                 </h2>
@@ -594,6 +585,8 @@ export default class AssetDetail extends React.Component {
                                 onStartTimeClick={this.onStartTimeClick}
                                 onEndTimeClick={this.onEndTimeClick}
                                 onCreateSelection={this.onCreateSelection}
+                                showCreateError={this.state.showCreateError}
+                                createError={this.state.createError}
                             />
                         )}
                         {this.state.tab === 'viewItem' && (

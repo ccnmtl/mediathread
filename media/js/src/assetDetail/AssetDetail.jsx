@@ -77,7 +77,7 @@ export default class AssetDetail extends React.Component {
         this.addInteraction = this.addInteraction.bind(this);
     }
 
-    onCreateSelection(e) {
+    onCreateSelection(e, tags, terms) {
         e.preventDefault();
         const me = this;
         const type = this.asset.getType();
@@ -103,7 +103,8 @@ export default class AssetDetail extends React.Component {
 
             promise = createSherdNote(this.asset.asset.id, {
                 title: selectionTitle,
-                tags: document.getElementById('newSelectionTags').value,
+                tags: tags,
+                terms: terms,
                 body: document.getElementById('newSelectionNotes').value,
                 range1: -2,
                 range2: -1,
@@ -122,7 +123,8 @@ export default class AssetDetail extends React.Component {
         } else if (type === 'video') {
             promise = createSherdNote(this.asset.asset.id, {
                 title: selectionTitle,
-                tags: document.getElementById('newSelectionTags').value,
+                tags: tags,
+                terms: terms,
                 body: document.getElementById('newSelectionNotes').value,
                 range1: this.state.selectionStartTime,
                 range2: this.state.selectionEndTime,
@@ -586,6 +588,8 @@ export default class AssetDetail extends React.Component {
                         {this.state.tab === 'createSelection' && (
                             <CreateSelection
                                 asset={this.props.asset}
+                                tags={this.props.tags}
+                                terms={this.props.terms}
                                 selectionStartTime={this.state.selectionStartTime}
                                 selectionEndTime={this.state.selectionEndTime}
                                 onStartTimeUpdate={this.onStartTimeUpdate}
@@ -666,6 +670,8 @@ export default class AssetDetail extends React.Component {
 
 AssetDetail.propTypes = {
     asset: PropTypes.object,
+    tags: PropTypes.array,
+    terms: PropTypes.array,
     toggleAssetView: PropTypes.func.isRequired,
     onUpdateAsset: PropTypes.func.isRequired
 };

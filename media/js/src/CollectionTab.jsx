@@ -60,6 +60,8 @@ export default class CollectionTab extends React.Component {
             assetsDom = (
                 <AssetDetail
                     asset={this.state.selectedAsset}
+                    tags={this.props.tags}
+                    terms={this.props.terms}
                     toggleAssetView={this.toggleAssetView}
                     onUpdateAsset={this.onUpdateAsset} />
             );

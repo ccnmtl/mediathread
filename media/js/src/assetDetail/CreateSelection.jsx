@@ -3,6 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Alert from 'react-bootstrap/Alert';
+
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
@@ -12,6 +14,16 @@ export default class CreateSelection extends React.Component {
         return (
             <React.Fragment>
                 <h3>Additional Selection Information</h3>
+
+                <Alert
+                    variant="danger" show={this.props.showCreateError}
+                    id="create-error-alert">
+                    <Alert.Heading>Error creating selection.</Alert.Heading>
+                    <p>
+                        {this.props.createError}
+                    </p>
+                </Alert>
+
                 <div className="card w-100">
                     <div
                         id="collapseZero"
@@ -79,5 +91,7 @@ CreateSelection.propTypes = {
     onEndTimeUpdate: PropTypes.func.isRequired,
     onStartTimeClick: PropTypes.func.isRequired,
     onEndTimeClick: PropTypes.func.isRequired,
-    onCreateSelection: PropTypes.func.isRequired
+    onCreateSelection: PropTypes.func.isRequired,
+    showCreateError: PropTypes.bool.isRequired,
+    createError: PropTypes.string
 };

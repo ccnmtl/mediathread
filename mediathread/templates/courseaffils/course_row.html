@@ -5,19 +5,12 @@
     {% endif %}>
     <td class="course-choice">
         {% if course.is_course %}
-
-            {% flag "addressable_courses" %}
             <a class="choose-course"
                href="{% url 'course_detail' course.pk %}">{{course.title}}</a>
-            {% else %}
-            <a class="choose-course"
-               href="?set_course={{course.group.name|urlencode}}{{next_redirect}}">{{course.title}}</a>
-            {% endflag %}
-
         {% else %}
-        {{course.coursedirectory_name}}
-        <a href="{% url 'affil_activate' course.pk %}"
-           class="btn btn-primary btn-xs">Activate</a>
+            {{course.coursedirectory_name}}
+            <a href="{% url 'affil_activate' course.pk %}"
+               class="btn btn-primary btn-xs">Activate</a>
         {% endif %}
 
     </td>

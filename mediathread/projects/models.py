@@ -168,7 +168,7 @@ class ProjectManager(models.Manager):
     def visible_by_course_and_user(self, course, viewer, user, is_faculty):
         """
             Retrieve all assignments, responses and projects authored or
-            co-authored by viewer.
+            co-authored by the user.
             Return projects that the viewer has rights to view, sorted based
             on the viewer's role.
         """
@@ -194,7 +194,7 @@ class ProjectManager(models.Manager):
 
     def projects_visible_by_course_and_author(self, course, viewer, author):
         """
-            Retrieve all projects authored or co-authored by viewer
+            Retrieve all projects authored or co-authored by author
             "Projects" here means standalone compositions or sequences
             Return projects that the viewer has rights to view
         """

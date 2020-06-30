@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAsset, getAssets} from './utils';
+import {getAsset, getAssets, getCourseUrl} from './utils';
 import CollectionTab from './CollectionTab';
 
 
@@ -8,8 +8,6 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // Collection tab is default
-            activeTab: 'collection',
             asset: null,
             assets: null,
             // Total number of this collection's assets, ignoring
@@ -65,14 +63,7 @@ class Main extends React.Component {
             console.error('getAsset error', e);
         });
 
-        this.clickTab = this.clickTab.bind(this);
         this.onUpdateAssets = this.onUpdateAssets.bind(this);
-    }
-
-    clickTab(e) {
-        e.preventDefault();
-        const clicked = e.target.text.toLowerCase();
-        this.setState({activeTab: clicked});
     }
 
     onUpdateAssets(assets, assetCount=null) {
@@ -86,6 +77,7 @@ class Main extends React.Component {
     }
 
     render() {
+        const courseUrl = getCourseUrl();
         return (
             <div>
                 <nav
@@ -93,53 +85,39 @@ class Main extends React.Component {
                     className="nav nav-tabs flex-column flex-sm-row"
                     role="tablist">
                     <a
-                        className={'flex-sm-fill text-sm-center nav-link ' + (
-                            this.state.activeTab === 'collection' ?
-                                'active' : ''
-                        )}
+                        className="flex-sm-fill text-sm-center nav-link active"
                         role="tab"
-                        onClick={this.clickTab}
                         title="Collection"
-                        href="collection/">
+                        href={courseUrl}>
                         Collection
                     </a>
                     <a
-                        className={'flex-sm-fill text-sm-center nav-link ' + (
-                            this.state.activeTab === 'assignments' ?
-                                'active' : ''
-                        )}
+                        className="flex-sm-fill text-sm-center nav-link"
                         role="tab"
-                        onClick={this.clickTab}
                         title="Assignments"
-                        href="assignments/">
+                        href={`${courseUrl}assignments/`}>
                         Assignments
                     </a>
                     <a
-                        className={'flex-sm-fill text-sm-center nav-link ' + (
-                            this.state.activeTab === 'projects' ?
-                                'active' : ''
-                        )}
+                        className="flex-sm-fill text-sm-center nav-link"
                         role="tab"
-                        onClick={this.clickTab}
                         title="Projects"
-                        href="projects/">
+                        href={`${courseUrl}projects/`}>
                         Projects
                     </a>
                 </nav>
 
                 <div className="tab-content">
-                    {this.state.activeTab === 'collection' &&
-
-                     <CollectionTab
-                         asset={this.state.asset}
-                         assets={this.state.assets}
-                         assetCount={this.state.assetCount}
-                         onUpdateAssets={this.onUpdateAssets}
-                         owners={this.state.owners}
-                         tags={this.state.tags}
-                         terms={this.state.terms}
-                         assetError={this.state.assetError}
-                         currentUser={this.state.currentUser} />}
+                    <CollectionTab
+                        asset={this.state.asset}
+                        assets={this.state.assets}
+                        assetCount={this.state.assetCount}
+                        onUpdateAssets={this.onUpdateAssets}
+                        owners={this.state.owners}
+                        tags={this.state.tags}
+                        terms={this.state.terms}
+                        assetError={this.state.assetError}
+                        currentUser={this.state.currentUser} />
                 </div>
             </div>
         );

@@ -329,6 +329,15 @@ const getPlayerTime = function(playerRef) {
     return null;
 };
 
+const getCourseUrl = function() {
+    let courseUrl = '';
+    if (window.MediaThread) {
+        const courseId = window.MediaThread.current_course;
+        courseUrl = `/course/${courseId}/`;
+    }
+    return courseUrl;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection, createSherdNote,
@@ -337,5 +346,5 @@ export {
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getCoordStyles, transform,
-    getPlayerTime
+    getPlayerTime, getCourseUrl
 };

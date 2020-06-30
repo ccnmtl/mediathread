@@ -19,7 +19,7 @@ import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
 import {
     capitalizeFirstLetter, handleBrokenImage,
-    getCoordStyles, transform
+    getCoordStyles, transform, getCourseUrl
 } from './utils';
 
 class Selections extends React.Component {
@@ -139,12 +139,8 @@ export default class GridAsset extends React.Component {
             );
         }
 
-        let assetLink = '#';
-        if (window.MediaThread) {
-            const courseId = window.MediaThread.current_course;
-            assetLink =
-                `/course/${courseId}/react/asset/${this.props.asset.id}/`;
-        }
+        const courseUrl = getCourseUrl();
+        const assetLink = `${courseUrl}react/asset/${this.props.asset.id}/`;
 
         return (
             <div className="col-sm-4">

@@ -48,26 +48,28 @@
             {% endif %}
 
             <li class="nav-item dropdown ml-auto">
-                <a class="nav-link dropdown-toggle" href="#" id="userMenu"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% if role_in_course == "non-member" %}
-                        <span class="badge badge-warning">Course Non-member</span>
-                    {% endif %}
-                    Hi, {{ user.first_name }}! ({{ user.username }})
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{% url 'course_list' %}" title="My Courses">
-                        My Courses
+                {% if request.user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle" href="#" id="userMenu"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if role_in_course == "non-member" %}
+                            <span class="badge badge-warning">Course Non-member</span>
+                        {% endif %}
+                        Hi, {{ user.first_name }}! ({{ user.username }})
                     </a>
-                    {% if user.is_staff %}
-                        <a class="dropdown-item" href="/admin/" title="Administer">Administer</a>
-                    {% endif %}
-                    {% if user.is_superuser %}
-                        <a class="dropdown-item" href="/impersonate/search/" title="Impersonate">
-                            Impersonate
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'course_list' %}" title="My Courses">
+                            My Courses
                         </a>
-                    {% endif %}
-                </div>
+                        {% if user.is_staff %}
+                            <a class="dropdown-item" href="/admin/" title="Administer">Administer</a>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <a class="dropdown-item" href="/impersonate/search/" title="Impersonate">
+                                Impersonate
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
             </li>
 
             <li class="nav-item">

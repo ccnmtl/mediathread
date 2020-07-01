@@ -1,0 +1,66 @@
+{% extends "base_new.html" %}
+{% load static %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+
+{% block css %}
+    <link rel="stylesheet" href='{% static "css/mediathreadinfo/custom.css" %}' media="screen" />
+    <link rel="stylesheet" href='{% static "css/mediathreadinfo/entryforms.css" %}' media="screen" />
+{% endblock %}
+
+{% block masthead %}
+{% endblock %}
+
+{% block extra_body_class %}
+text-center
+{% endblock %}
+
+{% block container %}
+
+        <div class="form-signin">
+          <a href="/"><img src='{% static "img/logo-mediathread-bgdark.svg" %}' alt="mediathread logo" /></a>
+
+          <h1 class="text-light">Sign In</h1>
+
+          <!-- GUEST LOGIN -->
+          <p class="lead text-light">I have a <strong>Guest</strong> account.</p>
+          {% if form.errors %}
+              <div class="alert alert-danger" role="alert">
+                  <div><b>Invalid username/password</b></div><br />
+                  Please try again. Note that both username and password are case-sensitive.
+              </div>
+          {% endif %}
+          <form id="login-local" name="login_local" method="post" action=".">
+              {% csrf_token %}
+              <div class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
+                  <label for="id_username" class="sr-only">Username</label>
+                  <input type="text" id="id_username" maxlength="254" name="username" class="form-control" placeholder="User ID" required autofocus>
+
+                  <label for="id_password" class="sr-only">Password</label>
+                  <input type="password" id="id_password" class="form-control" name="password"
+                      placeholder="Password" required>
+              </div>
+
+              <input id="guest-login" class="btn btn-lg btn-secondary btn-block" type="button" value="Guest Log In"{% if form.errors %} style="display: none"{% endif %}
+                      onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
+              <input class="btn btn-lg btn-secondary btn-block login-local-form" type="submit" value="Log In" {% if not form.errors %} style="display: none"{% endif %} />
+              <input type="hidden" name="next" value="{{ next|urlencode }}" />
+
+
+              <hr style="border: 1px solid white;" />
+              <p class="text-light">
+                  <a class="text-light" href="/accounts/password_reset/"> I forgot my ID and/or password.</a> | <a class="text-light" href="{% url 'registration_register' %}">I don't have an account.</a>
+              </p>
+          </form>
+        </div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block collection-modal %}
+{% endblock %}

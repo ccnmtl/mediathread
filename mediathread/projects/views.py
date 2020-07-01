@@ -713,8 +713,9 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         return qs.order_by(sort_by)
 
     def get_queryset(self):
-        return Project.objects.projects_visible_by_course_and_owner(
+        qs = Project.objects.projects_visible_by_course_and_owner(
             self.request.course, self.request.user, self.get_project_owner())
+        return self.sort_queryset(qs)
 
 
 class AssignmentListView(ProjectListView):

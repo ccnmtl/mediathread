@@ -280,9 +280,10 @@
                 this.current_user = {{request.user.id}};
                 this.current_username = "{{request.user.username}}";
                 this.user_full_name = "{% public_name for request.user %}";
-                {% if course %}
-                    this.current_course = {{ course.pk }};
-                {% endif %}
+            {% endif %}
+
+            {% if course %}
+            this.current_course = {{ course.pk }};
             {% endif %}
 
             {% if the_response %}

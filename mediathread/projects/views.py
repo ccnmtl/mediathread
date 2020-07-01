@@ -363,6 +363,8 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             course = request.course
             if not course:
                 public_url = project.public_url()
+                request.course = project.course
+                course = request.course
             else:
                 # versioned view
                 public_url = reverse('project-view-readonly',
@@ -372,6 +374,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             data['project'] = project
             data['version'] = version_number
             data['public_url'] = public_url
+            data['course'] = course
             return self.render_to_response(data)
         else:
             if version_number:

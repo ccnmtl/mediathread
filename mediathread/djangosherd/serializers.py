@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from mediathread.assetmgr.serializers import AssetSerializer
 from mediathread.djangosherd.models import SherdNote
+from mediathread.taxonomy.models import Term, TermRelationship
 
 
 class SherdNoteReadOnlySerializer(serializers.ModelSerializer):
@@ -48,6 +49,8 @@ class SherdNoteSerializer(serializers.ModelSerializer):
         range2 = data.get('range2')
         annotation_data = data.get('annotation_data')
         asset = data.get('asset')
+        tags = data.get('tags')
+        terms = data.get('terms')
 
         # Perform the data validation.
         if not title:
@@ -90,7 +93,18 @@ class SherdNoteSerializer(serializers.ModelSerializer):
             'range2': range2_fl,
             'annotation_data': json.dumps(annotation_data),
             'asset': asset,
+            'tags': tags,
+            'terms': terms,
         }
 
     def create(self, validated_data):
-        return SherdNote.objects.create(**validated_data)
+        terms = validated_data.pop('terms')
+        note = SherdNote.objects.create(**validated_data)
+
+        # Make a TermRelationship object for each related term.
+        if terms:
+            for term_id in terms:
+                term = Term.objects.get(pk=term_id)
+                TermRelationship.objects.create(term=term, sherdnote=note)
+
+        return note

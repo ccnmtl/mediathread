@@ -192,12 +192,13 @@ function urlWithCourse(url, courseId) {
         courseId = MediaThread.current_course;
     }
 
-    if (!url.match(/(\?|&)course=\d+/)) {
+    if (courseId && !url.match(/(\?|&)course=\d+/)) {
         if (url.match(/\?\w+=/)) {
             return url + '&course=' + courseId;
         } else {
             return url + '?course=' + courseId;
         }
     }
+
     return url;
 }

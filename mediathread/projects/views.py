@@ -682,7 +682,7 @@ class ProjectListView(LoggedInCourseMixin, ListView):
 
     template_name = 'projects/project_list.html'
     model = Project
-    paginate_by = 20
+    paginate_by = 10
 
     def get_project_owner(self):
         project_owner = self.request.GET.get('owner', None)
@@ -696,11 +696,22 @@ class ProjectListView(LoggedInCourseMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['owner'] = self.get_project_owner()
+        ctx['owners'] = self.request.course.members
         ctx['course'] = self.request.course
+        ctx['sortby'] = self.request.GET.get('sortby', 'title')
+        ctx['direction'] = self.request.GET.get('direction', 'asc')
         return ctx
 
+    def sort_queryset(self, qs):
+        sort_by = self.request.GET.get('sortby', 'title')
+        direction = self.request.GET.get('direction', 'asc')
+        if direction == 'desc':
+            sort_by = '-{}'.format(sort_by)
+        return qs.order_by(sort_by)
+
     def get_queryset(self):
-        return Project.objects.none()
+        return Project.objects.projects_visible_by_course_and_owner(
+            self.request.course, self.request.user, self.get_project_owner())
 
 
 class AssignmentListView(ProjectListView):
@@ -708,13 +719,9 @@ class AssignmentListView(ProjectListView):
     model = Project
     paginate_by = 20
 
-    def filter(self, qs):
-        return qs
-
     def get_queryset(self):
-        qs = Project.objects.none()
-        qs = self.filter(qs)
-        return qs
+        return Project.objects.visible_assignments_by_course(
+            self.request.course, self.request.user)
 
 
 class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,

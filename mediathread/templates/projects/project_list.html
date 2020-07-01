@@ -1,4 +1,10 @@
 {% extends "base_new.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
+{% endblock %}
 
 {% block content %}
 <div>
@@ -18,10 +24,146 @@
         </nav>
         <div class="tab-content">
             <div role="tabpanel">
-                <h1 class="page-title">Projects</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-title">Projects</h1>
+                    </div>
+                </div>
+                <div id="search-well">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="owner-filter">Owner</label>
+                            <select id="select-owner" name="owner" class="form-control form-control-sm">
+                                <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
+                                {% for o in owners %}
+                                    {% if o != user %}
+                                        <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
+                                            {% if o.last_name %}
+                                                {{o.first_name}} {{o.last_name}}
+                                                {% if o.username|length < 10 %}({{o.username}}){% else %}(...){% endif %}
+                                            {% else %}
+                                                {{o.username}}
+                                            {% endif %}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4 offset-md-4">
+                            <div class="btn-group float-right mt-4" role="group">
+                                <form action="{% url 'project-create' course.id %}" method="post">
+                                    <input type="hidden" name="project_type" value="composition" />
+                                    <button id="add-composition-button" type="submit" class="btn btn-outline-secondary mr-2">
+                                        Add Composition
+                                    </button> 
+                                </form>
+                                <form action="{% url 'project-create' course.id %}" method="post">
+                                    <input type="hidden" name="project_type" value="sequence" />
+                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary">
+                                        Add Sequence
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="search-form" action="." method="get">
+                    <input type="hidden" name="owner" value="{{owner}}">
+                    <input type="hidden" name="sortby" value="{{sortby}}">
+                    <input type="hidden" name="direction" value="{{direction}}">
+                    <input type="hidden" name="page" value="{{page_obj.number}}">
+                    <div class="row">
+                        <div class="col-12">
+                            {% if object_list.exists %}
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped w-100 tablesorter">
+                                        <thead class="thead-darkgray">
+                                            <th data-sort-by="title"
+                                                class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                                                Project Title
+                                            </th>
+                                            <th>
+                                                Authors
+                                            </th>
+                                            <th data-sort-by="project_type"
+                                                class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+                                                Type
+                                            </th>
+                                            <th data-sort-by="visibility">
+                                                Visibility
+                                            </th>
+                                            <th data-sort-by="modified"
+                                                class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+                                                Modified
+                                            </th>
+                                        </thead>
+                                        <tbody>
+                                        {% for object in object_list %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
+                                                        {{object.title}}
+                                                    </a>
+                                                </td>
+                                                <td>{{object.attribution}}</td>
+                                                <td>{{object.description}}</td>
+                                                <td>{{object.visibility}}</td>
+                                                <td>{{object.modified}}</td>
+                                            </tr>
+                                        {% empty %}
+                                            No projects found
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-6 offset-md-6">
+                            {% include 'projects/pagination.html' %}
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block js %}
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('#select-owner').on('change', (evt) => {
+                const $frm = jQuery('#search-form');
+                const owner = jQuery(evt.currentTarget).val();
+                $frm.find('[name="owner"]').val(owner);
+                $frm.find('[name="page"]').val(1);
+                jQuery('#search-form').submit();
+            });
+            jQuery('#search-form .sortable').on('click', (evt) => {
+                const $frm = jQuery('#search-form');
+
+                let direction = 'asc';
+                const sortBy = jQuery(evt.currentTarget).data('sort-by');
+                if (sortBy === $frm.find('[name="sortby"]').val()) {
+                    if ($frm.find('[name="direction"]').val() === 'asc') {
+                        direction = 'desc';
+                    }
+                }
+
+                $frm.find('[name="page"]').val(1);
+                $frm.find('[name="direction"]').val(direction);
+                $frm.find('[name="sortby"]').val(sortBy);
+                $frm.submit();
+            });
+            jQuery('#search-form a.page-link').on('click', (evt) => {
+                const $frm = jQuery('#search-form');
+                const pageNo = jQuery(evt.currentTarget).data('page-number');
+                $frm.find('[name="page"]').val(pageNo);
+                $frm.submit();
+            });
+        });
+    </script>
 {% endblock %}

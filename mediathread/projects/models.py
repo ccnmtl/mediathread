@@ -192,7 +192,7 @@ class ProjectManager(models.Manager):
                      project.modified)
         return lst
 
-    def projects_visible_by_course_and_author(self, course, viewer, author):
+    def projects_visible_by_course_and_owner(self, course, viewer, owner):
         """
             Retrieve all projects authored or co-authored by author
             "Projects" here means standalone compositions or sequences
@@ -200,8 +200,8 @@ class ProjectManager(models.Manager):
         """
         types = [PROJECT_TYPE_COMPOSITION, PROJECT_TYPE_SEQUENCE]
         projects = Project.objects.filter(
-            Q(author=author, course=course) |
-            Q(participants=author, course=course)
+            Q(author=owner, course=course) |
+            Q(participants=owner, course=course)
         ).filter(project_type__in=types).distinct()
 
         collabs = Collaboration.objects.get_for_object_list(
@@ -440,7 +440,10 @@ class Project(models.Model):
 
         assignment = self.assignment()
         if not assignment:
-            return 'Composition'
+            if self.is_composition():
+                return 'Composition'
+            else:
+                return 'Sequence'
 
         if assignment.is_selection_assignment():
             return 'Selection Assignment Response'

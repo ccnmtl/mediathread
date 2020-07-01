@@ -5,6 +5,7 @@
 /* accessible blue */
 a, a.page-link {
     color: #0056b3;
+    cursor: pointer;
 }
 
 .page-item.active .page-link {
@@ -4325,6 +4326,24 @@ ul.section-tabs>li>a.active {
     }
 }
 
-.react-data-table div.alert {
-    width: 100%;
+.table .thead-darkgray th {
+    color: rgba(33,37,41);
+    font-weight: 700;
+    background-color: #cccccc;
+    border-color: #cccccc;
+}
+
+.table th.sortable {
+    background-image: url(../img/sortable/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+
+.table th.sortable.asc {
+    background-image: url(../img/sortable/asc.gif);
+}
+
+.table th.sortable.desc {
+    background-image: url(../img/sortable/desc.gif);
 }

@@ -335,24 +335,24 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(visible_projects[0], self.project_class_shared)
         self.assertEquals(visible_projects[1], self.project_instructor_shared)
 
-    def test_projects_visible_by_course_and_author(self):
-        visible = Project.objects.projects_visible_by_course_and_author(
+    def test_projects_visible_by_course_and_owner(self):
+        visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_one, self.student_one)
         self.assertEquals(len(visible), 3)
         self.assertTrue(self.project_class_shared in visible)
         self.assertTrue(self.project_instructor_shared in visible)
         self.assertTrue(self.project_private in visible)
 
-        visible = Project.objects.projects_visible_by_course_and_author(
+        visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_one, self.instructor_one)
         self.assertEquals(len(visible), 0)
 
-        visible = Project.objects.projects_visible_by_course_and_author(
+        visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_two, self.student_one)
         self.assertEquals(len(visible), 1)
         self.assertEquals(visible[0], self.project_class_shared)
 
-        visible = Project.objects.projects_visible_by_course_and_author(
+        visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.instructor_one, self.student_one)
         self.assertEquals(len(visible), 2)
         self.assertTrue(self.project_class_shared in visible)

@@ -189,9 +189,10 @@ A new base.html without the course context overwritten in the template.
                 this.current_user = {{request.user.id}};
                 this.current_username = "{{request.user.username}}";
                 this.user_full_name = "{% public_name for request.user %}";
+                {% endif %}
+
                 {% if course %}
                 this.current_course = {{ course.pk }};
-                {% endif %}
                 {% endif %}
 
                 {% if the_response %}

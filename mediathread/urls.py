@@ -9,7 +9,7 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
     PasswordResetConfirmView
 )
-from django.contrib.auth.views import LogoutView
+from django.contrib.auth.views import LogoutView, LoginView
 import django.contrib.auth.views
 from django.urls import include, path
 from django.views.generic.base import TemplateView
@@ -85,6 +85,10 @@ urlpatterns = [
     admin_logout_page,
     logout_page,
     path('admin/', admin.site.urls),
+
+    path('accounts/login/',
+         LoginView.as_view(template_name='registration/login_darkmode.html'),
+         name='login'),
 
     # override the default urls for password
     path('password/change/',

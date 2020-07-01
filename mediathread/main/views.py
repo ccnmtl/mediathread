@@ -88,9 +88,28 @@ def django_settings(request):
             'EXPERIMENTAL': 'experimental' in request.COOKIES}
 
 
-@rendered_with('homepage.html')
-def course_detail_view(request):
-    if not request.course:
+class SplashView(TemplateView):
+    template_name = 'main/splash.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_anonymous:
+            return super(SplashView, self).dispatch(request, *args, **kwargs)
+
+        qs = Course.objects.filter(group__user=request.user)
+        if qs.count() == 1:
+            course_url = reverse('course_detail', args=[qs.first().id])
+            return HttpResponseRedirect(course_url)
+        else:
+            return HttpResponseRedirect(reverse('course_list'))
+
+
+@rendered_with('main/deprecated_homepage.html')
+def deprecated_course_detail_view(request, course_pk):
+    try:
+        course = get_object_or_404(Course, pk=course_pk)
+        request.course = course
+        request.session[SESSION_KEY] = course
+    except Course.DoesNotExist:
         return HttpResponseRedirect('/accounts/login/')
 
     logged_in_user = request.user
@@ -99,8 +118,6 @@ def course_detail_view(request):
         user_name = request.GET['username']
         in_course_or_404(user_name, request.course)
         classwork_owner = get_object_or_404(User, username=user_name)
-
-    course = request.course
 
     qs = ExternalCollection.objects.filter(course=request.course)
     collections = qs.filter(uploader=False).order_by('title')
@@ -1235,7 +1252,7 @@ class LTICourseSelector(LoggedInMixin, View):
                 'after you log out of Courseworks.')
 
             ctx = LTICourseContext.objects.get(lms_course_context=context)
-            url = u'/?set_course={}'.format(ctx.group.name)
+            url = reverse('course_detail', args=[ctx.group.course.id])
         except LTICourseContext.DoesNotExist:
             url = '/'
 

@@ -31,14 +31,14 @@ from mediathread.main.views import (
     InstructorDashboardSettingsView,
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
-    CourseDeleteMaterialsView, CourseDetailView, course_detail_view,
+    CourseDeleteMaterialsView, CourseDetailView,
+    deprecated_course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView,
     CourseResendInviteView, set_user_setting, CoursePanoptoSourceView,
-    CoursePanoptoIngestLogView,
-    LTICourseSelector, LTICourseCreate,
-    CourseConvertMaterialsView)
+    CoursePanoptoIngestLogView, CourseConvertMaterialsView,
+    LTICourseSelector, LTICourseCreate, SplashView,)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView, ProjectListView, AssignmentListView)
@@ -80,7 +80,10 @@ if hasattr(settings, 'CAS_BASE'):
 
 
 urlpatterns = [
-    path('', course_detail_view, name='home'),
+    path('', SplashView.as_view(), name='splash'),
+    path('course/<int:course_pk>/oldhome/',
+         deprecated_course_detail_view,
+         name='home'),
     path('500', error_500, name='error_500'),
     admin_logout_page,
     logout_page,

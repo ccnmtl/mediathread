@@ -34,7 +34,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('#comment-form-submit').click();
         cy.contains('Respond').should('exist');
         cy.contains('Edit').should('exist');
-        cy.get('#course_title_link').click();
+        cy.visit('/course/1/oldhome/');
         cy.get('#loaded').should('exist');
         cy.contains('Discussion Title').should('have.attr', 'href');
         cy.contains('Discussion Title').click();

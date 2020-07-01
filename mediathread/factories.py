@@ -303,8 +303,7 @@ class MediathreadTestMixin(object):
 
     def switch_course(self, client, course):
         # assumes there is a logged in user
-        set_course_url = '/?set_course=%s' % course.group.name
-        return client.get(set_course_url)
+        return client.get(reverse('course_detail', args=[course.id]))
 
     def enable_upload(self, course):
         ExternalCollectionFactory.create(course=course,

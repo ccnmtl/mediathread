@@ -56,7 +56,7 @@ describe('Assignment Feature: Student Response', () => {
             .should('contain', 'Submitted to Instructor');
 
         cy.log('Verify home display');
-        cy.get('#course_title_link').click({ force: true });
+        cy.visit('/course/1/oldhome/');
         cy.get('#loaded').should('exist');
         cy.contains('Submitted to Instructor').should('exist');
         cy.contains('Sample Assignment Response').should('exist');

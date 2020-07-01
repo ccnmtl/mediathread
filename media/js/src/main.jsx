@@ -30,7 +30,9 @@ class Main extends React.Component {
             getAsset(assetId).then(function(d) {
                 me.setState({
                     asset: d.assets[assetId],
-                    assetCount: 1
+                    assetCount: 1,
+                    tags: d.active_tags,
+                    terms: d.active_vocabulary
                 });
             }, function(e) {
                 me.setState({

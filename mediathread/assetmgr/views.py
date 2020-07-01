@@ -1024,13 +1024,23 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             'current_asset': asset_id,
             'current_annotation': annot_id,
             'update_history': True,
-            'show_collection': True}]
+            'show_collection': True
+        }]
 
         return self.render_to_json_response(ctx)
 
 
 class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                       JSONResponseMixin, View):
+
+    def get_tags_and_terms(self, request, assets):
+        notes = SherdNote.objects.get_related_notes(
+            assets, self.record_owner or None, self.visible_authors,
+            self.all_items_are_visible)
+
+        tags = TagResource().render_for_course(request, notes)
+        vocab = VocabularyResource().render_for_course(request, notes)
+        return {'active_tags': tags, 'active_vocabulary': vocab}
 
     def get(self, request, asset_id):
         the_assets = Asset.objects.filter(pk=asset_id, course=request.course)
@@ -1063,6 +1073,7 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ctx = AssetResource().render_one_context(request, asset, notes)
         ctx['user_settings'] = {'help_item_detail_view': help_setting}
         ctx['type'] = 'asset'
+        ctx.update(self.get_tags_and_terms(request, assets))
 
         return self.render_to_json_response(ctx)
 

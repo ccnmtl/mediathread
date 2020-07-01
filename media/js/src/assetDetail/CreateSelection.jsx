@@ -6,14 +6,36 @@ import PropTypes from 'prop-types';
 import Alert from 'react-bootstrap/Alert';
 import Creatable from 'react-select/creatable';
 import Select from 'react-select';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            validated: false
+        };
+
         this.tagsRef = React.createRef();
         this.termsRef = React.createRef();
         this.onCreateSelection = this.onCreateSelection.bind(this);
+
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit(e) {
+        const form = e.currentTarget;
+
+        if (form.checkValidity() === false) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            return this.onCreateSelection(e);
+        }
+
+        return this.setState({validated: true});
     }
     onCreateSelection(e) {
         // Get the tags and terms values from the react-select
@@ -24,21 +46,24 @@ export default class CreateSelection extends React.Component {
         // Tags are handled as a space-separated CharField, while
         // Terms are handled with primary keys.
         let tags = '';
-        rawTags.forEach(function(tag) {
-            tags += tag.value + ' ';
-        });
+        if (rawTags) {
+            rawTags.forEach(function(tag) {
+                tags += tag.value + ' ';
+            });
+        }
 
         if (tags.length) {
             tags = tags.slice(0, -1);
         }
 
         const terms = [];
-        rawTerms.forEach(function(term) {
-            if (term && term.data) {
-                terms.push(term.data.id);
-            }
-        });
-
+        if (rawTerms) {
+            rawTerms.forEach(function(term) {
+                if (term && term.data) {
+                    terms.push(term.data.id);
+                }
+            });
+        }
 
         return this.props.onCreateSelection(e, tags, terms);
     }
@@ -118,16 +143,15 @@ export default class CreateSelection extends React.Component {
                         aria-labelledby="headingZero"
                         data-parent="#selectionAccordion">
                         <div className="card-body">
-                            <form>
-                                <div className="form-group">
-                                    <label htmlFor="newSelectionTitle">
+                            <Form
+                                validated={this.state.validated}
+                                onSubmit={this.handleSubmit}>
+                                <Form.Group controlId="newSelectionTitle">
+                                    <Form.Label>
                                         Title
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="newSelectionTitle" />
-                                </div>
+                                    </Form.Label>
+                                    <Form.Control required type="text" />
+                                </Form.Group>
 
                                 <div className="form-group">
                                     <label htmlFor="newSelectionTags">Tags</label>
@@ -155,7 +179,7 @@ export default class CreateSelection extends React.Component {
                                         options={termsOptions} />
                                 </div>
 
-                                <div className="form-group">
+                                <Form.Group>
                                     <label
                                         htmlFor="newSelectionNotes">
                                         Notes
@@ -165,17 +189,12 @@ export default class CreateSelection extends React.Component {
                                         id="newSelectionNotes"
                                         rows="3">
                                     </textarea>
-                                </div>
+                                </Form.Group>
 
-                                <div>
-                                    <button
-                                        type="button"
-                                        onClick={this.onCreateSelection}
-                                        className="btn btn-sm btn-primary ml-2">
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
+                                <Form.Group>
+                                    <Button type="submit" size="sm">Save</Button>
+                                </Form.Group>
+                            </Form>
                         </div>
                     </div>
                 </div>

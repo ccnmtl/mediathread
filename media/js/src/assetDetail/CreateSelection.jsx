@@ -13,7 +13,7 @@ export default class CreateSelection extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h3>Additional Selection Information</h3>
+                <h3>Additional Selection Details</h3>
 
                 <Alert
                     variant="danger" show={this.props.showCreateError}

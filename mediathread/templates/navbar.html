@@ -13,21 +13,8 @@
         aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 <div class="collapse navbar-collapse" id="navbarNavDropdown">
   <ul class="navbar-nav w-100">
-        <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Get Support </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="faculty.html">Faculty</a>
-            <a class="dropdown-item" href="students.html">Students</a>
-            <a class="dropdown-item" href="{% url 'contact-us' %}">Contact Us</a>
-        </div>
-        </li>
-        <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Use Mediathread </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="value.html">Pedagogical Value</a>
-            <a class="dropdown-item" href="examples.html">Examples</a>
-        </div>
-        </li>
+
+    <!-- Only show if not logged in -->
     {% if not request.user.is_authenticated %}
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#"
@@ -41,8 +28,30 @@
             <a class="dropdown-item" href="/history">Mediathread History</a>
         </div>
         </li>
+    {% endif %}
+
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Use Mediathread </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="value.html">Pedagogical Value</a>
+            <a class="dropdown-item" href="examples.html">Examples</a>
+        </div>
+        </li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Get Support </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Faculty</a>
+            <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Students</a>
+            <a class="dropdown-item" href="{% url 'contact-us' %}">Contact Us</a>
+        </div>
+        </li>
+
+    <!-- Only show if not logged in -->
+    {% if not request.user.is_authenticated %}
         <li class="nav-item"> <a class="nav-link" href="getinvolved.html"> Get Involved </a> </li>
     {% endif %}
+
+    <!-- Logged in logic -->
     {% if role_in_course == 'instructor' and request.course %}
         <li class="nav-item">
             <a class="nav-link"
@@ -62,25 +71,30 @@
     {% endif %}
 
         <li class="nav-item dropdown ml-auto">
+
           {% if request.user.is_authenticated %}
             <a class="nav-link dropdown-toggle" href="#" id="userMenu"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {% if role_in_course == "non-member" %}
                     <span class="badge badge-warning">Course Non-member</span>
                 {% endif %}
+
                 {% if user.first_name %}
                   Hi, {{ user.first_name }}! ({{ user.username }})
                 {% else %}
                   Hi, {{ user.username }}!
                 {% endif %}
             </a>
+
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="{% url 'course_list' %}" title="My Courses">
                     My Courses
                 </a>
+
                 {% if user.is_staff %}
                     <a class="dropdown-item" href="/admin/" title="Administer">Administer</a>
                 {% endif %}
+
                 {% if user.is_superuser %}
                     <a class="dropdown-item" href="/impersonate/search/" title="Impersonate">
                         Impersonate</a>
@@ -97,7 +111,7 @@
                 </a>
             {% else %}
                 <a href="signup.html" class="btn btn-outline-secondary" style="margin-right:.25em;">Sign Up</a>
-                <a href="/accounts/login" class="btn btn-outline-light">Sign In</a>
+                <a href="/accounts/login/" class="btn btn-outline-light">Sign In</a>
             {% endif %}
         </li>
   </ul>

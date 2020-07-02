@@ -1174,6 +1174,43 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
+        ctx = response.context_data
+        self.assertEquals(ctx['object_list'].count(), 0)
+        self.assertEquals(ctx['owner'].username, 'student_one')
+        self.assertEquals(ctx['sortby'], 'title')
+        self.assertEquals(ctx['direction'], 'asc')
+        self.assertEquals(ctx['course'].title, 'Sample Course')
+
+    def test_get_sorted(self):
+        self.client.login(username=self.student_one.username,
+                          password='test')
+
+        p1 = ProjectFactory.create(
+                course=self.sample_course, author=self.student_one,
+                title='A', policy='PrivateEditorsAreOwners')
+        p2 = ProjectFactory.create(
+                course=self.sample_course, author=self.student_one,
+                title='B', policy='PrivateEditorsAreOwners')
+
+        url = reverse('project-list', args=[self.sample_course.id])
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        ctx = response.context_data
+        self.assertEquals(ctx['object_list'].count(), 2)
+        self.assertEquals(ctx['object_list'][0], p1)
+        self.assertEquals(ctx['object_list'][1], p2)
+        self.assertEquals(ctx['sortby'], 'title')
+        self.assertEquals(ctx['direction'], 'asc')
+
+        url = '{}?direction=desc'.format(url)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        ctx = response.context_data
+        self.assertEquals(ctx['object_list'].count(), 2)
+        self.assertEquals(ctx['object_list'][0], p2)
+        self.assertEquals(ctx['object_list'][1], p1)
+        self.assertEquals(ctx['direction'], 'desc')
+
 
 class AssignmentListViewTest(MediathreadTestMixin, TestCase):
 

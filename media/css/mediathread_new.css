@@ -8,6 +8,12 @@ a, a.page-link {
     cursor: pointer;
 }
 
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link:focus,
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link:hover,
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #0056b3;
+}
+
 .page-item.active .page-link {
     background-color: #0056b3;
     border-color: #0056b3;
@@ -17,6 +23,8 @@ a, a.page-link {
     color: #0056b3;
 }
 
+.badge-primary,
+.btn-primary,
 .btn-outline-primary:not(:disabled):not(.disabled).active {
     background-color: #0056b3;
     border-color: #0056b3;
@@ -4331,6 +4339,7 @@ ul.section-tabs>li>a.active {
     font-weight: 700;
     background-color: #cccccc;
     border-color: #cccccc;
+    vertical-align: middle;
 }
 
 .table th.sortable {

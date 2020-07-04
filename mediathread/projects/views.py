@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
+from django.db.models import F, Value, CharField
+from django.db.models.functions import Concat
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -38,7 +40,6 @@ from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
-import waffle
 
 
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
@@ -98,13 +99,9 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
                                  self.get_confirmation_message(policy))
 
         if not request.is_ajax():
-            if waffle.flag_is_active(request, 'addressable_courses') and \
-               hasattr(request, 'course') and request.course:
-                return HttpResponseRedirect(
-                    reverse('project-workspace',
-                            args=(request.course.pk, project.pk,)))
-            else:
-                return HttpResponseRedirect(project.get_absolute_url())
+            return HttpResponseRedirect(
+                reverse('project-workspace',
+                        args=(request.course.pk, project.pk)))
         else:
             is_faculty = request.course.is_faculty(request.user)
             can_edit = project.can_edit(request.course, request.user)
@@ -699,33 +696,52 @@ class ProjectListView(LoggedInCourseMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['owner'] = self.get_project_owner()
-        ctx['owners'] = self.request.course.members
         ctx['course'] = self.request.course
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
+
+        a = Project.objects.unresponded_assignments(
+            self.request.course, self.request.user)
+        ctx['unresponded'] = len(a)
+
         return ctx
 
-    def sort_queryset(self, qs):
-        sort_by = self.request.GET.get('sortby', 'title')
-        direction = self.request.GET.get('direction', 'asc')
+    def annotate_full_name(self, qs):
+        qs = qs.annotate(full_name=Concat(
+            F('author__first_name'),
+            Value(' '),
+            F('author__last_name'), output_field=CharField()))
+        return qs
+
+    def sort_queryset(self, qs, default_field, default_direction):
+        sort_by = self.request.GET.get('sortby', default_field)
+        direction = self.request.GET.get('direction', default_direction)
+
+        if sort_by == 'full_name':
+            qs = self.annotate_full_name(qs)
+
         if direction == 'desc':
-            sort_by = '-{}'.format(sort_by)
-        return qs.order_by(sort_by)
+            return qs.order_by(F(sort_by).desc(nulls_last=True))
+        else:
+            return qs.order_by(F(sort_by).asc(nulls_first=True))
 
     def get_queryset(self):
         qs = Project.objects.projects_visible_by_course_and_owner(
             self.request.course, self.request.user, self.get_project_owner())
-        return self.sort_queryset(qs)
+        qs = self.sort_queryset(qs, 'title', 'asc')
+        return qs.select_related('author').prefetch_related('participants')
 
 
 class AssignmentListView(ProjectListView):
     template_name = 'projects/assignment_list.html'
     model = Project
-    paginate_by = 20
+    paginate_by = 10
 
     def get_queryset(self):
-        return Project.objects.visible_assignments_by_course(
+        qs = Project.objects.visible_assignments_by_course(
             self.request.course, self.request.user)
+        qs = self.sort_queryset(qs, 'due_date', 'desc')
+        return qs.select_related('author').prefetch_related('participants')
 
 
 class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,

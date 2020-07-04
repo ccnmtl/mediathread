@@ -216,7 +216,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         response = self.client.post('/project/create/', data, follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.redirect_chain[0][0].startswith(
-            '/project/view/'))
+            '/course/{}/project/view/'.format(self.sample_course.id)))
 
         project = Project.objects.get(course=self.sample_course,
                                       title='Untitled')
@@ -1168,6 +1168,11 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_get(self):
+        # one assignment
+        ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+
         url = reverse('project-list', args=[self.sample_course.id])
         self.client.login(username=self.student_one.username,
                           password='test')
@@ -1180,11 +1185,11 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['sortby'], 'title')
         self.assertEquals(ctx['direction'], 'asc')
         self.assertEquals(ctx['course'].title, 'Sample Course')
+        self.assertEquals(ctx['unresponded'], 1)
 
     def test_get_sorted(self):
         self.client.login(username=self.student_one.username,
                           password='test')
-
         p1 = ProjectFactory.create(
                 course=self.sample_course, author=self.student_one,
                 title='A', policy='PrivateEditorsAreOwners')
@@ -1228,3 +1233,35 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
                           password='test')
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+
+    def test_sort_by_full_name(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+
+        a1 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected', project_type='assignment')
+        a2 = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_two,
+            policy='CourseProtected', project_type='assignment')
+
+        url = reverse('assignment-list', args=[self.sample_course.id])
+        response = self.client.get(
+            '{}?sortby=full_name&direction=asc'.format(url))
+        self.assertEquals(response.status_code, 200)
+        ctx = response.context_data
+        self.assertEquals(ctx['object_list'].count(), 2)
+        self.assertEquals(ctx['object_list'][0], a1)
+        self.assertEquals(ctx['object_list'][1], a2)
+        self.assertEquals(ctx['sortby'], 'full_name')
+        self.assertEquals(ctx['direction'], 'asc')
+
+        response = self.client.get(
+            '{}?sortby=full_name&direction=desc'.format(url))
+        self.assertEquals(response.status_code, 200)
+        ctx = response.context_data
+        self.assertEquals(ctx['object_list'].count(), 2)
+        self.assertEquals(ctx['object_list'][0], a2)
+        self.assertEquals(ctx['object_list'][1], a1)
+        self.assertEquals(ctx['sortby'], 'full_name')
+        self.assertEquals(ctx['direction'], 'desc')

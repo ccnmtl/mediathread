@@ -40,9 +40,9 @@ PUBLISH_WHOLE_WORLD = \
 
 SHORT_NAME = {
     'PrivateEditorsAreOwners': 'Draft',
-    'InstructorShared': 'Submitted to Instructor',
-    'CourseProtected': 'Published to Class',
-    'PublicEditorsAreOwners': 'Published to World',
+    'InstructorShared': 'Shared with Instructor',
+    'CourseProtected': 'Shared with Class',
+    'PublicEditorsAreOwners': 'Shared with World',
     'PrivateStudentAndFaculty': 'with Instructors',
 }
 
@@ -272,7 +272,7 @@ class ProjectManager(models.Manager):
         exclude = [PROJECT_TYPE_COMPOSITION, PROJECT_TYPE_SEQUENCE]
         qs = Project.objects.filter(
             course=course, author__in=course.faculty_group.user_set.all())
-        qs = qs.exclude(project_type__in=[exclude])
+        qs = qs.exclude(project_type__in=exclude)
 
         collabs = Collaboration.objects.get_for_object_list(qs)
 

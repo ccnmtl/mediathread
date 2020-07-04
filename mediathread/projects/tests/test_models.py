@@ -140,16 +140,16 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         project = Project.objects.get(id=self.project_class_shared.id)
         self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(), 'Published to Class')
+        self.assertEquals(project.visibility_short(), 'Shared with Class')
 
         project = Project.objects.get(id=self.project_instructor_shared.id)
         self.assertEquals(project.description(), 'Composition')
         self.assertEquals(project.visibility_short(),
-                          'Submitted to Instructor')
+                          'Shared with Instructor')
 
         assignment = Project.objects.get(id=self.assignment.id)
         self.assertEquals(assignment.description(), 'Composition Assignment')
-        self.assertEquals(assignment.visibility_short(), 'Published to Class')
+        self.assertEquals(assignment.visibility_short(), 'Shared with Class')
 
         sassignment = Project.objects.get(id=self.selection_assignment.id)
         self.assertEquals(sassignment.description(), 'Selection Assignment')
@@ -187,7 +187,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertEquals(new_project.author, self.alt_instructor)
         self.assertEquals(new_project.course, self.alt_course)
         self.assertEquals(new_project.description(), 'Composition Assignment')
-        self.assertEquals(new_project.visibility_short(), 'Published to Class')
+        self.assertEquals(new_project.visibility_short(), 'Shared with Class')
         self.assertEquals(AssignmentItem.objects.count(), 0)
 
     def test_migrate_selection_assignment(self):
@@ -263,7 +263,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         project = self.alt_course.project_set.all()[0]
         self.assertEquals(project.title, self.assignment.title)
         self.assertEquals(project.description(), 'Composition Assignment')
-        self.assertEquals(project.visibility_short(), 'Published to Class')
+        self.assertEquals(project.visibility_short(), 'Shared with Class')
         self.assertEquals(project.author, self.alt_instructor)
 
         citations = SherdNote.objects.references_in_string(project.body,

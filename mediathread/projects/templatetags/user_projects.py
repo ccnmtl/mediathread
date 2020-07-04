@@ -19,8 +19,16 @@ class UserCourses(TemplateTagNode):
 register.tag('num_courses', UserCourses.process_tag)
 
 
+@register.filter(name='assignment_responses')
 def assignment_responses(project, request):
     return project.responses(request.course, request.user)
 
 
-register.filter(assignment_responses)
+@register.simple_tag
+def filter_responses(user, responses):
+    for response in responses:
+        if user == response.author or \
+                response.participants.filter(id=user.id).exists():
+            return response
+
+    return None

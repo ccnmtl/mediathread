@@ -48,7 +48,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('.project-savebutton').click();
         cy.contains('Whole World - a public url is provided').click();
         cy.get('.btn-primary').contains('Save').click();
-        cy.get('.project-visibility-link').should('contain', 'Published to World');
+        cy.get('.project-visibility-link').should('contain', 'Shared with World');
 
         cy.log('log out and go to permalink');
         //TODO: Figure out a cleaner way to do this?

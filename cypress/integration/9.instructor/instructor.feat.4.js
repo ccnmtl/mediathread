@@ -20,7 +20,7 @@ describe('Instructor Feat: Test Assignment Responses', () => {
         cy.contains('Assignment Report: Sample Assignment').should('exist');
         cy.contains('Student One').should('exist');
         cy.contains('Sample Assignment Response').should('have.attr', 'href');
-        cy.contains('Submitted to Instructor').should('exist');
+        cy.contains('Shared with Instructor').should('exist');
         cy.contains('No').should('exist');
 
         cy.contains('Sample Assignment Response').click();

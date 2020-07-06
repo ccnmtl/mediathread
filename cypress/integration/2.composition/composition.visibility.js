@@ -31,7 +31,7 @@ describe('Student Project Visibility', () => {
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-primary').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Published to Class');
+        cy.get('.project-visibility-link').should('contain', 'Shared with Class');
     });
 
     // it('views composition as a Student', () => {
@@ -62,7 +62,7 @@ describe('Student Project Visibility', () => {
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-primary').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Published to Class');
+        cy.get('.project-visibility-link').should('contain', 'Shared with Class');
     });
 
     // it('views Student One composition as Student Two', () => {

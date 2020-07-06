@@ -1,7 +1,18 @@
 {% extends "base_new.html" %}
+{% load coursetags static user_projects %}
+
+{% block title %}
+Assignments
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
+{% endblock %}
 
 {% block content %}
-<div>
+{% course_role for request.user in request.course as role_in_course %}
+<div class="">
     <div>
         <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
             role="tablist">
@@ -11,17 +22,231 @@
             </a>
             <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
                 href="{% url 'assignment-list' course.pk %}"
-                title="Assignments" href="assignments/">Assignments</a>
+                title="Assignments" href="assignments/">
+                    Assignments
+                    {% if role_in_course == 'student' and unresponded > 0 %}
+                        <span class="badge badge-primary ml-2">{{unresponded}}</span>
+                    {% endif %}
+            </a>
             <a class="flex-sm-fill text-sm-center nav-link" role="tab"
                 href="{% url 'project-list' course.pk %}"
                 title="Projects" href="projects/">Projects</a>
         </nav>
         <div class="tab-content">
             <div role="tabpanel">
-                <h1 class="page-title">Assignments</h1>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="col-md-6">
+                        <h1 class="page-title">Assignments</h1>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        {% if role_in_course != "student" %}
+                            <div class="form-group col-md-12">
+                                <div class="btn-group" role="group">
+                                    <form action="{% url 'project-create' course.id %}" method="post">
+                                        <input type="hidden" name="project_type" value="assignment" />
+                                        <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
+                                            Add Composition Assignment
+                                        </button>
+                                    </form>
+                                    <a class="btn btn-sm btn-outline-secondary mr-2"
+                                        href="{% url 'selection-assignment-create' course.id %}">
+                                        Add Selection Assignment
+                                    </a>
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                        href="{% url 'sequence-assignment-create' course.id %}">
+                                        Add Sequence Assignment
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div id="search-well">
+                </div>
+                {% if paginator.num_pages > 1 %}
+                <div class="row">
+                    <div class="col-md-6 offset-md-6">
+                        <div class="text-right">
+                            {% include 'projects/pagination.html' %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <form id="search-form" action="." method="get">
+                    <input type="hidden" name="sortby" value="{{sortby}}">
+                    <input type="hidden" name="direction" value="{{direction}}">
+                    <input type="hidden" name="page" value="{{page_obj.number}}">
+                </form>
+                <div class="row">
+                    <div class="col-12">
+                        {% if object_list.exists %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped w-100 tablesorter">
+                                    <thead class="thead-darkgray">
+                                        <th data-sort-by="due_date"
+                                            class="sortable {% if sortby == 'due_date' %}{{direction}}{% endif %}">
+                                            Due Date
+                                        </th>
+                                        <th data-sort-by="title"
+                                            class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                                            Title
+                                        </th>
+                                        <th>
+                                            Status
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                        {% if role_in_course != 'student' %}
+                                            <th>
+                                                Responses
+                                            </th>
+                                            <th data-sort-by="full_name"
+                                                class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
+                                                Authors
+                                            </th>
+                                        {% endif %}
+                                        <th data-sort-by="project_type"
+                                            class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+                                            Type
+                                        </th>
+                                        <th data-sort-by="modified"
+                                            class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+                                            Modified
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                    {% for object in object_list %}
+                                        {% with responses=object|assignment_responses:request %}
+                                        {% filter_responses request.user responses as response %}
+                                        <tr>
+                                            <td>
+                                                {% if object.due_date %}
+                                                    {{object.due_date|date:"n/j/y g:iA"}}<br />
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    {% if role_in_course == "student" %}
+                                                        {{object.title}}
+                                                    {% else %}
+                                                        <a href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
+                                                            {{object.title}}
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if role_in_course == "student" %}
+                                                    {% if response %}
+                                                        {% if response.is_submitted %}
+                                                            <div>Submitted {{response.date_submitted|date:"n/j/y g:iA"}}</div>
+                                                            <div>{{response.visibility_short}}</div>
+                                                        {% else %}
+                                                            {{response.visibility_short}}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {{object.visibility_short}}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if role_in_course == "student" %}
+                                                    {% if not response %}
+                                                        <form action="{% url 'project-create' course.id %}" method="post">
+                                                            <input type="hidden" name="parent" value="{{object.id}}">
+                                                            <input type="hidden" name="project_type" value="{{object.project_type}}">
+                                                            <input type="hidden" name="title" value="My Response">
+                                                            <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
+                                                        </form>
+                                                    {% else %}{% if response.feedback_discussion %}
+                                                        <a class="btn btn-sm btn-primary btn-block"
+                                                            href="{% url 'project-workspace' course.id response.id %}" title="{{response.title}}">
+                                                            View Feedback
+                                                        </a>
+                                                    {% else %}{% if response.is_submitted %}
+                                                        <a class="btn btn-sm btn-secondary btn-block"
+                                                            href="{% url 'project-workspace' course.id response.id %}" title="{{response.title}}">
+                                                            View Response
+                                                        </a>
+                                                    {% else %}
+                                                        <a class="btn btn-sm btn-primary btn-block"
+                                                            href="{% url 'project-workspace' course.id response.id %}" title="{{response.title}}">
+                                                            Edit Response
+                                                        </a>
+                                                    {% endif %}{% endif %}{% endif %}
+                                                {% else %}
+                                                    <a class="btn btn-sm btn-primary btn-block"
+                                                        href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
+                                                        Edit
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                            {% if role_in_course != "student" %}
+                                                <td class="text-center">
+                                                    {% if role_in_course != "student" %}
+                                                        {{responses|length}} / {{course.students|length}}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{object.attribution}}
+                                                </td>
+                                            {% endif %}
+                                            <td>
+                                                {{object.description}}
+                                            </td>
+                                            <td>
+                                                {% if role_in_course == "student" %}
+                                                    {% if response %}
+                                                    {{response.modified|date:"n/j/y g:iA"}}
+                                                {% endif %}
+                                                {% else %}
+                                                    {{object.modified}}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endwith %}
+                                    {% empty %}
+                                        No projects found
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block js %}
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('.sortable').on('click', (evt) => {
+                const $frm = jQuery('#search-form');
+
+                let direction = 'asc';
+                const sortBy = jQuery(evt.currentTarget).data('sort-by');
+                if (sortBy === $frm.find('[name="sortby"]').val()) {
+                    if ($frm.find('[name="direction"]').val() === 'asc') {
+                        direction = 'desc';
+                    }
+                }
+
+                $frm.find('[name="page"]').val(1);
+                $frm.find('[name="direction"]').val(direction);
+                $frm.find('[name="sortby"]').val(sortBy);
+                $frm.submit();
+            });
+            jQuery('a.page-link').on('click', (evt) => {
+                const $frm = jQuery('#search-form');
+                const pageNo = jQuery(evt.currentTarget).data('page-number');
+                $frm.find('[name="page"]').val(pageNo);
+                $frm.submit();
+            });
+        });
+    </script>
 {% endblock %}

@@ -332,7 +332,7 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         self.assertEquals(row[0], 'Student One')
         self.assertEquals(row[1], 'student_one')
         self.assertEquals(row[2], 'Response 1')
-        self.assertEquals(row[3], 'Submitted to Instructor')
+        self.assertEquals(row[3], 'Shared with Instructor')
         self.assertIsNone(row[4])
         # row[5] modified date
         self.assertFalse(row[6])

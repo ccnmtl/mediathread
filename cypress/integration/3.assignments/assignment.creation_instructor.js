@@ -42,7 +42,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.btn-primary').contains('Save');
         cy.get('.btn-primary').click();
         cy.get('.project-visibility-link')
-            .should('contain', 'Published to Class');
+            .should('contain', 'Shared with Class');
         cy.get('.panel-container.open.assignment').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
 
@@ -66,7 +66,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.participants_chosen').should('contain', 'Instructor One');
         cy.get('.project-visibility-link').should('have.attr', 'href');
         cy.get('.project-visibility-description')
-            .should('contain', 'Published to Class');
+            .should('contain', 'Shared with Class');
         cy.get('td.panel-container.open.assignment').should('exist');
         cy.get('.project-revisionbutton').should('exist');
         cy.get('.participant_list').should('not.be', 'visible');

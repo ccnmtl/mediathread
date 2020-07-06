@@ -1,8 +1,9 @@
 from django.template.base import Template
 from django.template.context import Context
 from django.test.testcases import TestCase
-
-from mediathread.factories import UserFactory, MediathreadTestMixin
+from mediathread.factories import UserFactory, MediathreadTestMixin, \
+    ProjectFactory
+from mediathread.projects.templatetags.user_projects import filter_responses
 
 
 class TestTemplateTags(MediathreadTestMixin, TestCase):
@@ -24,3 +25,18 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
             "{{user_courses}}"
         ).render(Context({'user': self.instructor_three}))
         self.assertEqual(out, "2")
+
+    def test_filter_responses(self):
+        p1 = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            title='B', policy='PrivateEditorsAreOwners')
+        p2 = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            title='A', policy='PrivateEditorsAreOwners')
+        self.assertEquals(p2, filter_responses(self.student_one, [p1, p2]))
+
+        shared = ProjectFactory.create(
+            course=self.sample_course, author=self.student_two,
+            title='B', policy='PrivateEditorsAreOwners')
+        shared.participants.add(self.student_one)
+        self.assertEquals(shared, filter_responses(self.student_one, [shared]))

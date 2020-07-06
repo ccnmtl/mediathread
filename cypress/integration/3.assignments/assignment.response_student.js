@@ -53,12 +53,12 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.btn-primary').contains('Save');
         cy.get('.btn-primary').click();
         cy.get('.project-visibility-link')
-            .should('contain', 'Submitted to Instructor');
+            .should('contain', 'Shared with Instructor');
 
         cy.log('Verify home display');
         cy.visit('/course/1/oldhome/');
         cy.get('#loaded').should('exist');
-        cy.contains('Submitted to Instructor').should('exist');
+        cy.contains('Shared with Instructor').should('exist');
         cy.contains('Sample Assignment Response').should('exist');
         cy.contains('by Student One').should('exist');
     });

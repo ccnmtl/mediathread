@@ -23,9 +23,9 @@
                 Learn More
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="/about">About Mediathread</a>
-            <a class="dropdown-item" href="/testimonials">Testimonials</a>
-            <a class="dropdown-item" href="/history">Mediathread History</a>
+            <a class="dropdown-item" href="/about/">About Mediathread</a>
+            <a class="dropdown-item" href="/testimonials/">Testimonials</a>
+            <a class="dropdown-item" href="/history/">Mediathread History</a>
         </div>
         </li>
     {% endif %}
@@ -33,22 +33,23 @@
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Use Mediathread </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="value.html">Pedagogical Value</a>
-            <a class="dropdown-item" href="examples.html">Examples</a>
+            <a class="dropdown-item" href="/value/">Pedagogical Value</a>
+            <a class="dropdown-item" href="/examples/">Examples</a>
         </div>
         </li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Get Support </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Faculty</a>
-            <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Students</a>
+            <a class="dropdown-item" href="/faculty/">Faculty</a>
+            <a class="dropdown-item" href="/students/">Students</a>
+            <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Knowledge Base</a>
             <a class="dropdown-item" href="{% url 'contact-us' %}">Contact Us</a>
         </div>
         </li>
 
     <!-- Only show if not logged in -->
     {% if not request.user.is_authenticated %}
-        <li class="nav-item"> <a class="nav-link" href="getinvolved.html"> Get Involved </a> </li>
+        <li class="nav-item"> <a class="nav-link" href="/getinvolved/"> Get Involved </a> </li>
     {% endif %}
 
     <!-- Logged in logic -->

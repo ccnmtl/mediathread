@@ -14,8 +14,8 @@
     </div>
 {% endblock %}
 
-{% block js %}
-    <script src="{% static 'js/bundle.js' %}?cachebust=v1"></script>
+{% block uncompressable_js %}
+    <script src="{% static 'js/bundle.js' %}"></script>
 {% endblock %}
 
 {% block content %}

@@ -1,0 +1,21 @@
+{% extends "base_new.html" %}
+{% load static %}
+
+<title>{% block title %}{{flatpage.title}}{% endblock %}</title>
+
+{% block css %}
+    <link rel="stylesheet" href='{% static "css/mediathreadinfo/custom.css" %}' media="screen" />
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    {{ flatpage.content }}
+{% endblock %}
+
+{% block footer %}
+<footer class="footer mt-auto py-3 bg-dark">
+  <div class="container">
+    <span class="text-muted">Place sticky footer content here.</span>
+  </div>
+</footer>
+{% endblock %}

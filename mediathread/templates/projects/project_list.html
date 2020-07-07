@@ -105,6 +105,9 @@ Projects
                                             <th data-sort-by="visibility">
                                                 Status
                                             </th>
+                                            <th>
+                                                Action
+                                            </th>
                                             <th data-sort-by="full_name"
                                                 class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
                                                 Authors
@@ -115,18 +118,22 @@ Projects
                                             </th>
                                             <th data-sort-by="modified"
                                                 class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
-                                                Modified
+                                                Last Updated
                                             </th>
                                         </thead>
                                         <tbody>
                                         {% for object in object_list %}
                                             <tr>
                                                 <td>
-                                                    <a href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
-                                                        {{object.title}}
-                                                    </a>
+                                                    {{object.title}}
                                                 </td>
                                                 <td>{{object.visibility_short}}</td>
+                                                <td>
+                                                    <a class="btn btn-sm btn-primary btn-block"
+                                                        href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
+                                                        View
+                                                    </a>
+                                                </td>
                                                 <td>{{object.attribution}}</td>
                                                 <td>{{object.description}}</td>
                                                 <td>{{object.modified|date:"n/j/y g:iA"}}</td>

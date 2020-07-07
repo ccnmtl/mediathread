@@ -12,7 +12,7 @@ Assignments
 
 {% block content %}
 {% course_role for request.user in request.course as role_in_course %}
-<div class="">
+<div>
     <div>
         <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
             role="tablist">
@@ -149,7 +149,7 @@ Assignments
                                                     {% if not response %}
                                                         <form action="{% url 'project-create' course.id %}" method="post">
                                                             <input type="hidden" name="parent" value="{{object.id}}">
-                                                            <input type="hidden" name="project_type" value="{{object.project_type}}">
+                                                            <input type="hidden" name="project_type" value="composition">
                                                             <input type="hidden" name="title" value="My Response">
                                                             <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
                                                         </form>

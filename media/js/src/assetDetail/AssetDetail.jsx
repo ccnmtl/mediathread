@@ -492,15 +492,6 @@ export default class AssetDetail extends React.Component {
         return (
             <div className="tab-content asset-detail">
                 <Alert
-                    variant="success" show={this.state.showCreatedDialog}
-                    onClose={this.hideCreatedDialog} dismissible
-                    id="create-success-alert">
-                    <Alert.Heading>
-                        Selection &quot;{this.state.createdSelectionTitle}&quot; created.
-                    </Alert.Heading>
-                </Alert>
-
-                <Alert
                     variant="danger" show={this.state.showDeletedDialog}
                     onClose={this.hideDeletedDialog} dismissible>
                     <Alert.Heading>Selection deleted.</Alert.Heading>
@@ -576,6 +567,15 @@ export default class AssetDetail extends React.Component {
                     </div>
 
                     <div className="col-sm-6">
+                        <Alert
+                            variant="success" show={this.state.showCreatedDialog}
+                            onClose={this.hideCreatedDialog} dismissible
+                            id="create-success-alert">
+                            <Alert.Heading>
+                                Selection &quot;{this.state.createdSelectionTitle}&quot; created.
+                            </Alert.Heading>
+                        </Alert>
+
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}

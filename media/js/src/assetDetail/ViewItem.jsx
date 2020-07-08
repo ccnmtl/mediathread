@@ -1,3 +1,5 @@
+/* eslint max-len: 0 */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -21,6 +23,17 @@ export default class ViewItem extends React.Component {
     }
     render() {
         const references = [];
+
+        let authorId = null;
+        if (this.props.asset && this.props.asset.author) {
+            authorId = this.props.asset.author.id;
+        }
+
+        let userIsAuthor = false;
+        if (window.MediaThread && window.MediaThread.current_user) {
+            userIsAuthor = authorId === window.MediaThread.current_user;
+        }
+
         if (this.state.references) {
             this.state.references.forEach(function(reference, idx) {
                 references.push(
@@ -48,6 +61,41 @@ export default class ViewItem extends React.Component {
 
         return (
             <div className="tab-content" id="pills-tabContent">
+                <table className="table mt-1">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Item Name</th>
+                            <td>
+                                {this.props.asset.title}
+                                &nbsp;
+                                {userIsAuthor && (
+                                    <button type="submit" className="btn btn-secondary btn-sm">
+                                        Rename
+                                    </button>
+                                )}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Permalink</th>
+                            <td>
+                                <a href="">
+                                    {window.location.href}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Creator</th>
+                            <td>
+                                {this.props.asset.author.public_name} ({this.props.asset.author.username})
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button type="submit" className="btn btn-danger btn-sm mb-2">
+                    Delete
+                </button>
+
                 <h3>
                     Item References within Course
                 </h3>

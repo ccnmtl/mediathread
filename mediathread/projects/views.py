@@ -334,7 +334,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
     """
 
-    template_name = 'projects/project.html'
+    template_name = 'projects/composition.html'
 
     def get(self, request, project_id, version_number=None):
         """
@@ -442,11 +442,12 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
         elif (project.is_sequence_assignment() or
                 (parent and parent.is_sequence_assignment())):
             view = SequenceAssignmentView.as_view()
-        elif (project.is_sequence()):
+        elif project.is_sequence():
             view = SequenceEditView.as_view()
+        elif parent:
+            view = CompositionAssignmentView.as_view()
         else:
-            # Composition view
-            view = DefaultProjectView.as_view()
+            view = CompositionView.as_view()
 
         return view(request, *args, **kwargs)
 
@@ -480,9 +481,9 @@ class SequenceAssignmentView(AssignmentView):
         }
 
 
-class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
-                         JSONResponseMixin, TemplateView):
-    """Displays the Composition project view."""
+class CompositionAssignmentView(LoggedInCourseMixin, ProjectReadableMixin,
+                                JSONResponseMixin, TemplateView):
+    """Displays the Composition assignment view."""
 
     def get(self, request, *args, **kwargs):
         """
@@ -506,7 +507,7 @@ class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
         }
 
         if not request.is_ajax():
-            self.template_name = 'projects/project.html'
+            self.template_name = 'projects/composition_assignment.html'
             data['project'] = project
             return self.render_to_response(data)
         else:
@@ -603,6 +604,70 @@ class DefaultProjectView(LoggedInCourseMixin, ProjectReadableMixin,
                          'context': threaded_comment_json(request,
                                                           feedback_discussion)}
                 panels.append(panel)
+
+            # Create a place for asset editing
+            panel = {'panel_state': 'closed',
+                     'panel_state_label': "Item Details",
+                     'template': 'asset_quick_edit',
+                     'update_history': False,
+                     'owners': owners,
+                     'vocabulary': vocabulary,
+                     'context': {'type': 'asset'}}
+            panels.append(panel)
+
+            return self.render_to_json_response(data)
+
+
+class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
+                      JSONResponseMixin, TemplateView):
+    """Displays the Composition project view."""
+
+    def get(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
+        show_feedback = kwargs.get('feedback', None) == "feedback"
+        data = {
+            'space_owner': request.user.username,
+            'show_feedback': show_feedback,
+        }
+
+        if not request.is_ajax():
+            self.template_name = 'projects/composition.html'
+            data['project'] = project
+            return self.render_to_response(data)
+        else:
+            panels = []
+
+            lst = Vocabulary.objects.filter(course=request.course)
+            lst = lst.prefetch_related('term_set')
+            vocabulary = VocabularyResource().render_list(request, lst)
+
+            owners = UserResource().render_list(request,
+                                                request.course.members)
+
+            is_faculty = request.course.is_faculty(request.user)
+            can_edit = project.can_edit(request.course, request.user)
+
+            # Requested project, can be either an assignment or composition
+            resource = ProjectResource(record_viewer=request.user,
+                                       is_viewer_faculty=is_faculty,
+                                       editable=can_edit)
+            project_context = resource.render_one(request, project)
+
+            # only editing if it's new
+            project_context['editing'] = \
+                True if can_edit and len(project.body) < 1 else False
+
+            project_context['create_instructor_feedback'] = False
+
+            panel = {'is_faculty': is_faculty,
+                     'panel_state': 'closed' if show_feedback else 'open',
+                     'context': project_context,
+                     'template': 'project',
+                     'owners': owners,
+                     'vocabulary': vocabulary}
+            panels.append(panel)
+
+            data['panels'] = panels
 
             # Create a place for asset editing
             panel = {'panel_state': 'closed',

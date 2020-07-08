@@ -12,7 +12,7 @@ Assignments
 
 {% block content %}
 {% course_role for request.user in request.course as role_in_course %}
-<div class="">
+<div>
     <div>
         <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
             role="tablist">
@@ -112,7 +112,7 @@ Assignments
                                         </th>
                                         <th data-sort-by="modified"
                                             class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
-                                            Modified
+                                            Last Updated
                                         </th>
                                     </thead>
                                     <tbody>
@@ -122,18 +122,12 @@ Assignments
                                         <tr>
                                             <td>
                                                 {% if object.due_date %}
-                                                    {{object.due_date|date:"n/j/y g:iA"}}<br />
+                                                    {{object.due_date|date:"n/j/y"}}<br />
                                                 {% endif %}
                                             </td>
                                             <td>
                                                 <div>
-                                                    {% if role_in_course == "student" %}
-                                                        {{object.title}}
-                                                    {% else %}
-                                                        <a href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
-                                                            {{object.title}}
-                                                        </a>
-                                                    {% endif %}
+                                                    {{object.title}}
                                                 </div>
                                             </td>
                                             <td>
@@ -155,7 +149,7 @@ Assignments
                                                     {% if not response %}
                                                         <form action="{% url 'project-create' course.id %}" method="post">
                                                             <input type="hidden" name="parent" value="{{object.id}}">
-                                                            <input type="hidden" name="project_type" value="{{object.project_type}}">
+                                                            <input type="hidden" name="project_type" value="composition">
                                                             <input type="hidden" name="title" value="My Response">
                                                             <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
                                                         </form>
@@ -178,7 +172,7 @@ Assignments
                                                 {% else %}
                                                     <a class="btn btn-sm btn-primary btn-block"
                                                         href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
-                                                        Edit
+                                                        View
                                                     </a>
                                                 {% endif %}
                                             </td>

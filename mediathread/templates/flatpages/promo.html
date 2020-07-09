@@ -7,9 +7,13 @@
     <link rel="stylesheet" href='{% static "css/mediathreadinfo/custom.css" %}' media="screen" />
 {% endblock %}
 
-{% block content %}
-    {{ block.super }}
-    {{ flatpage.content }}
+{% block collection-modal %}
+{% endblock %}
+
+{% block container %}
+    <div class="container-fluid p-0">
+        {{ flatpage.content }}
+    </div>
 {% endblock %}
 
 {% block footer %}

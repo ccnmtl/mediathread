@@ -146,12 +146,14 @@ def deprecated_course_detail_view(request, course_pk):
 
     return context
 
+
 class CollectionAddView(LoggedInCourseMixin, TemplateView):
     template_name = 'main/collection_add.html'
 
     def get_context_data(self, **kwargs):
         context = super(CollectionAddView, self).get_context_data(**kwargs)
         return context
+
 
 class CourseDetailView(LoggedInMixin, DetailView):
     model = Course

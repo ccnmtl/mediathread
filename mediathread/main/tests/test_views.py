@@ -1878,13 +1878,13 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
                            SERVER_ADMIN_SECRETKEYS={rv[0]: rv[1]}):
             self.assertEquals(view.get_conversion_endpoint(), rv)
 
+
 class CollectionAddViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
 
     def test_get(self):
-
         url = reverse('collection-add-view', args=[self.sample_course.id])
         response = self.client.get(url)
         self.assertEquals(response.status_code, 302)

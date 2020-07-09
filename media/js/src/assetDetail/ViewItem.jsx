@@ -93,7 +93,7 @@ export default class ViewItem extends React.Component {
                 </table>
 
                 <button type="submit" className="btn btn-danger btn-sm mb-2">
-                    Delete
+                    Remove from my Collection
                 </button>
 
                 <h3>

@@ -531,39 +531,6 @@ export default class AssetDetail extends React.Component {
 
                     <div className="col-sm-6">
                         {media}
-                        {this.state.tab === 'viewItem' && (
-                            <React.Fragment>
-                                <table className="table mt-1">
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">Item Name</th>
-                                            <td>
-                                                {this.props.asset.title}
-                                                &nbsp;
-                                                <button type="submit" className="btn btn-secondary btn-sm">Rename</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Permalink</th>
-                                            <td>
-                                                <a href="">
-                                                    {window.location.href}
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Creator</th>
-                                            <td>
-                                                {this.props.asset.author.public_name} ({this.props.asset.author.username})
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button type="submit" className="btn btn-danger btn-sm">
-                                    Delete
-                                </button>
-                            </React.Fragment>
-                        )}
                     </div>
 
                     <div className="col-sm-6">

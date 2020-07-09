@@ -152,6 +152,24 @@ class CollectionAddView(LoggedInCourseMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CollectionAddView, self).get_context_data(**kwargs)
+
+        qs = ExternalCollection.objects.filter(course=self.request.course)
+        collections = qs.filter(uploader=False).order_by('title')
+        uploader = qs.filter(uploader=True).first()
+
+        owners = []
+        if (self.request.course.is_member(self.request.user) and
+            (self.request.user.is_staff or
+             self.request.user.has_perm('assetmgr.can_upload_for'))):
+            owners = UserResource().render_list(self.request, self.request.course.members)
+
+        context.update({
+            'collections': collections,
+            'uploader': uploader,
+            'can_upload': False,
+            'owners': owners,
+        })
+
         return context
 
 
@@ -171,10 +189,6 @@ class CourseDetailView(LoggedInMixin, DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         course = context.get('object')
 
-        qs = ExternalCollection.objects.filter(course=course)
-        collections = qs.filter(uploader=False).order_by('title')
-        uploader = qs.filter(uploader=True).first()
-
         owners = []
         if (course.is_member(self.request.user) and
             (self.request.user.is_staff or
@@ -188,10 +202,6 @@ class CourseDetailView(LoggedInMixin, DetailView):
             'faculty_feed': Project.objects.faculty_compositions(
                 course, self.request.user),
             'is_faculty': cached_course_is_faculty(course, self.request.user),
-            'discussions': get_course_discussions(course),
-            'collections': collections,
-            'uploader': uploader,
-            'can_upload': False,
             'owners': owners,
         })
         return context

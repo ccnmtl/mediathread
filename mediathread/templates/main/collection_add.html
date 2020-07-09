@@ -1,0 +1,61 @@
+{% extends "base_new.html" %}
+{% load static %}
+
+{% block title %}
+Add to Collection
+{% endblock %}
+
+{% block content %}
+<div>
+    <div>
+        <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
+            role="tablist">
+            <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
+                title="Collection" href="{% url 'course_detail' request.course.pk %}">
+                Collection
+            </a>
+            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
+                href="{% url 'assignment-list' request.course.pk %}"
+                title="Assignments" href="assignments/">
+                Assignments
+                {% if role_in_course == 'student' and unresponded > 0 %}
+                    <span class="badge badge-primary ml-2">{{unresponded}}</span>
+                {% endif %}
+            </a>
+            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
+                href="{% url 'project-list' request.course.pk %}"
+                title="Projects" href="projects/">Projects</a>
+        </nav>
+        <div class="tab-content">
+            <div role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-title">Add to Collection</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 order-md-2">
+                        <h2>Upload Media</h2>
+                        <p class="lead">
+                            Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
+                        </p>
+                    </div>
+                    <div class="col-md-6 order-md-1">
+                        <h2>Import Media</h2>
+                        <p class="lead">
+				            Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
+			            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        jQuery(document).ready(function() {
+        });
+    </script>
+{% endblock %}

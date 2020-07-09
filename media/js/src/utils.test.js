@@ -2,7 +2,8 @@
 
 import {
     formatTimecode, pad2,
-    getSeparatedTimeUnits, parseTimecode
+    getSeparatedTimeUnits, parseTimecode,
+    groupByTag, getTagName
 } from './utils';
 
 
@@ -74,5 +75,18 @@ describe('pad2', () => {
         expect(pad2(10)).toBe('10');
         expect(pad2(99)).toBe('99');
         expect(pad2(100)).toBe('100');
+    });
+});
+
+describe('groupByTag', () => {
+    it('accepts an empty array', () => {
+        expect(groupByTag([])).toStrictEqual({});
+    });
+});
+
+describe('getTagName', () => {
+    it('accepts an empty array', () => {
+        expect(getTagName(123, [])).toBe('No Tags');
+        expect(getTagName(0, [])).toBe('No Tags');
     });
 });

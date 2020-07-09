@@ -1,4 +1,6 @@
 import isFinite from 'lodash/isFinite';
+import groupBy from 'lodash.groupby';
+
 import {
     Circle as CircleStyle, Fill, Stroke, Style
 } from 'ol/style';
@@ -338,6 +340,65 @@ const getCourseUrl = function() {
     return courseUrl;
 };
 
+/**
+ * Given an array of selections, return an object of those selections
+ * grouped by author.
+ */
+const groupByAuthor = function(selections) {
+    return groupBy(selections, function(s) {
+        return s.author.id;
+    });
+};
+
+/**
+ * Given an array of selections, return an object of those selections
+ * grouped by tag.
+ */
+const groupByTag = function(selections) {
+    const o = {};
+
+    selections.forEach(function(s) {
+        if (
+            s.metadata && s.metadata.tags &&
+                s.metadata.tags.length
+        ) {
+            s.metadata.tags.forEach(function(tag) {
+                if (!Object.prototype.hasOwnProperty.call(o, tag.id)) {
+                    o[tag.id] = [s];
+                } else {
+                    o[tag.id].push(s);
+                }
+            });
+        } else {
+            if (!Object.prototype.hasOwnProperty.call(o, 0)) {
+                o[0] = [s];
+            } else {
+                o[0].push(s);
+            }
+        }
+    });
+
+    return o;
+};
+
+/**
+ * Given a tag ID and a selection, return the tag name.
+ */
+const getTagName = function(tagId, selection) {
+    let tagName = 'No Tags';
+
+    if (selection.metadata && selection.metadata.tags) {
+        selection.metadata.tags.forEach(function(tag) {
+            if (parseInt(tag.id, 10) === parseInt(tagId, 10)) {
+                tagName = tag.name;
+                return;
+            }
+        });
+    }
+
+    return tagName;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection, createSherdNote,
@@ -346,5 +407,6 @@ export {
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getCoordStyles, transform,
-    getPlayerTime, getCourseUrl
+    getPlayerTime, getCourseUrl,
+    groupByAuthor, groupByTag, getTagName
 };

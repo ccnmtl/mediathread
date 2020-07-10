@@ -359,9 +359,16 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertTrue(self.project_instructor_shared in visible)
 
     def assert_responses_by_course(self, viewer, visible, hidden):
-        self.assertEquals(
-            Project.objects.responses_by_course(self.sample_course, viewer),
-            (visible, hidden))
+        visible_responses, hidden_responses = \
+            Project.objects.responses_by_course(self.sample_course, viewer)
+
+        for response in visible:
+            self.assertTrue(response in visible_responses)
+            self.assertTrue(response not in hidden_responses)
+
+        for response in hidden:
+            self.assertTrue(response not in visible_responses)
+            self.assertTrue(response in hidden_responses)
 
     def test_responses_by_course(self):
         # no responses

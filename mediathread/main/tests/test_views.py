@@ -1811,7 +1811,7 @@ class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
         self.course = CourseFactory()
         Collaboration.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(Course),
-            object_pk=str(self.course.pk), slug=slugify(self.course.title))
+            object_pk=self.course.pk, slug=slugify(self.course.title))
 
     def test_get(self):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
@@ -1833,7 +1833,7 @@ class CourseDetailSuperuserViewTest(LoggedInSuperuserTestMixin, TestCase):
         self.course = CourseFactory()
         Collaboration.objects.get_or_create(
             content_type=ContentType.objects.get_for_model(Course),
-            object_pk=str(self.course.pk), slug=slugify(self.course.title))
+            object_pk=self.course.pk, slug=slugify(self.course.title))
 
     def test_get(self):
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))

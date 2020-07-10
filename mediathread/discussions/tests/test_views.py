@@ -53,7 +53,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         request.collaboration_context, created = \
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
+                object_pk=self.sample_course.pk)
         discussion_create(request)
 
         discussion = project.feedback_discussion()
@@ -70,7 +70,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         ctype = ContentType.objects.get(model='threadedcomment',
                                         app_label='threadedcomments')
         coll = Collaboration.objects.get(content_type=ctype,
-                                         object_pk=str(discussion_id))
+                                         object_pk=discussion_id)
         self.assertEquals(coll.content_object, discussion)
 
         url = reverse('discussion-delete', args=[discussion_id])
@@ -95,7 +95,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
 
         with self.assertRaises(Collaboration.DoesNotExist):
             Collaboration.objects.get(content_type=ctype,
-                                      object_pk=str(discussion_id))
+                                      object_pk=discussion_id)
 
     def test_view_discussions(self):
         self.setup_sample_course()
@@ -109,7 +109,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         request.collaboration_context, created = \
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
+                object_pk=self.sample_course.pk)
 
         view = DiscussionView()
         view.request = request
@@ -129,7 +129,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         request.collaboration_context, created = \
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.sample_course.pk))
+                object_pk=self.sample_course.pk)
 
         view = DiscussionView()
         view.request = request

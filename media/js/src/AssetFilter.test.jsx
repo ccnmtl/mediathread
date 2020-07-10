@@ -36,7 +36,11 @@ it('renders the asset filter', async() => {
                 assets={fakeAssets}
                 tags={[]}
                 terms={[]}
-                onUpdateAssets={function() {}} />,
+                viewMode="grid"
+                hidePagination={false}
+                onUpdateAssets={function() {}}
+                setViewMode={function() {}}
+            />,
             container
         );
     });

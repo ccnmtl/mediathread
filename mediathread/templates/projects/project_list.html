@@ -16,11 +16,11 @@ Projects
         <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
             role="tablist">
             <a class="flex-sm-fill text-sm-center nav-link " role="tab"
-                title="Collection" href="{% url 'course_detail' course.pk %}">
+                title="Collection" href="{% url 'course_detail' request.course.pk %}">
                 Collection
             </a>
             <a class="flex-sm-fill text-sm-center nav-link" role="tab"
-                href="{% url 'assignment-list' course.pk %}"
+                href="{% url 'assignment-list' request.course.pk %}"
                 title="Assignments" href="assignments/">
                 Assignments
                 {% if role_in_course == 'student' and unresponded > 0 %}
@@ -28,7 +28,7 @@ Projects
                 {% endif %}
             </a>
             <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
-                href="{% url 'project-list' course.pk %}"
+                href="{% url 'project-list' request.course.pk %}"
                 title="Projects" href="projects/">Projects</a>
         </nav>
         <div class="tab-content">
@@ -40,13 +40,13 @@ Projects
                     <div class="col-md-6 text-right">
                         <div class="form-group col-md-12">
                             <div class="btn-group" role="group">
-                                <form action="{% url 'project-create' course.id %}" method="post">
+                                <form action="{% url 'project-create' request.course.id %}" method="post">
                                     <input type="hidden" name="project_type" value="composition" />
                                     <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
                                         Add Composition
                                     </button> 
                                 </form>
-                                <form action="{% url 'project-create' course.id %}" method="post">
+                                <form action="{% url 'project-create' request.course.id %}" method="post">
                                     <input type="hidden" name="project_type" value="sequence" />
                                     <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
                                         Add Sequence
@@ -62,7 +62,7 @@ Projects
                             <label for="select-owner">Owner</label>
                             <select id="select-owner" name="owner" class="form-control form-control-sm mb-3">
                                 <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
-                                {% for o in course.members %}
+                                {% for o in request.course.members %}
                                     {% if o != user %}
                                         <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
                                             {% if o.last_name %}
@@ -130,7 +130,7 @@ Projects
                                                 <td>{{object.visibility_short}}</td>
                                                 <td>
                                                     <a class="btn btn-sm btn-primary btn-block"
-                                                        href="{% url 'project-workspace' course.id object.id %}" title="{{object.title}}">
+                                                        href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
                                                         View
                                                     </a>
                                                 </td>

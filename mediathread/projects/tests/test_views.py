@@ -1184,7 +1184,6 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['owner'].username, 'student_one')
         self.assertEquals(ctx['sortby'], 'title')
         self.assertEquals(ctx['direction'], 'asc')
-        self.assertEquals(ctx['course'].title, 'Sample Course')
         self.assertEquals(ctx['unresponded'], 1)
 
     def test_get_sorted(self):

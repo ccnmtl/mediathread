@@ -761,7 +761,6 @@ class ProjectListView(LoggedInCourseMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['owner'] = self.get_project_owner()
-        ctx['course'] = self.request.course
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
 

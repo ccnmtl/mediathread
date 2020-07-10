@@ -161,12 +161,14 @@ class CollectionAddView(LoggedInCourseMixin, TemplateView):
         if (self.request.course.is_member(self.request.user) and
             (self.request.user.is_staff or
              self.request.user.has_perm('assetmgr.can_upload_for'))):
-            owners = UserResource().render_list(self.request, self.request.course.members)
+            owners = UserResource().render_list(self.request,
+                                                self.request.course.members)
 
         context.update({
             'collections': collections,
             'uploader': uploader,
-            'can_upload': False,
+            'can_upload': course_details.can_upload(self.request.user,
+                                                    self.request.course),
             'owners': owners,
         })
 

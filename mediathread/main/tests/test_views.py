@@ -1897,18 +1897,15 @@ class CollectionAddViewTest(MediathreadTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.context['request'])
         self.assertEqual(response.context['owners'], [])
-        self.assertFalse(response.context['can_upload'])
+        self.assertTrue(response.context['can_upload'])
         self.assertIsNone(response.context['uploader'])
         self.assertIsNotNone(response.context['collections'])
 
         self.enable_upload(self.sample_course)
-        self.sample_course.add_detail(UPLOAD_PERMISSION_KEY,
-                                      UPLOAD_PERMISSION_ADMINISTRATOR)
 
         self.superuser.groups.add(self.sample_course.group)
         self.client.login(
             username=self.superuser.username, password='test')
         response = self.client.get(url)
         self.assertIsNotNone(response.context['uploader'])
-        self.assertTrue(response.context['can_upload'])
         self.assertTrue(len(response.context['owners']) > 0)

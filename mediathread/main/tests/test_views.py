@@ -41,8 +41,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
     course_information_title,
-    all_items_are_visible, all_selections_are_visible, allow_item_download,
-    UPLOAD_PERMISSION_KEY, UPLOAD_PERMISSION_ADMINISTRATOR)
+    all_items_are_visible, all_selections_are_visible, allow_item_download)
 from mediathread.main.forms import (
     ContactUsForm, CourseActivateForm, AcceptInvitationForm)
 from mediathread.main.models import CourseInvitation

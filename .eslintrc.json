@@ -19,6 +19,11 @@
         "scanjs-rules",
         "no-unsafe-innerhtml"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "env": {
         "browser": true,
         "es6": true,

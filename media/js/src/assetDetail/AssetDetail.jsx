@@ -474,11 +474,12 @@ export default class AssetDetail extends React.Component {
             media = (
                 <React.Fragment>
                     {annotationTools}
-                    <div className="embed-responsive embed-responsive-4by3">
+                    <div className="embed-responsive embed-responsive-16by9">
                         <ReactPlayer
                             className="react-player embed-responsive-item"
                             width="100%"
                             height="100%"
+                            style={{backgroundColor: 'black'}}
                             onProgress={this.onPlayerProgress.bind(this)}
                             playing={this.state.playing}
                             ref={r => this.playerRef = r}

@@ -10,7 +10,7 @@ configparser==5.0.0
 importlib-metadata==1.7.0  # for flake8
 zipp==3.1.0
 flake8==3.8.3
-lxml==4.5.1
+lxml==4.5.2
 extras==1.0.0
 fixtures==3.0.0
 pbr>=0.11

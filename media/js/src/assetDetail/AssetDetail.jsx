@@ -392,78 +392,77 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (type === 'video') {
-            let annotationTools = null;
-            if (this.state.tab !== 'viewItem') {
-                annotationTools = (
-                    <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
-                        <form>
-                            <div className="form-row align-items-center">
-                                <div className="col-sm-4">
-                                    <div className="input-group">
+            const annotationTools = (
+                <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
+                    <form>
+                        <div className="form-row align-items-center">
+                            <div className="col-sm-4">
+                                <div className="input-group">
+                                    {this.state.tab === 'createSelection' && (
                                         <div className="input-group-prepend">
                                             <button
-                                                disabled={this.state.tab !== 'createSelection'}
                                                 onClick={this.onStartTimeClick}
                                                 type="button"
                                                 className="btn btn-outline-light btn-sm">
                                                 Start&nbsp;
                                             </button>
                                         </div>
-                                        <input
-                                            value={formatTimecode(this.state.selectionStartTime)}
-                                            readOnly
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            id="inlineFormInputStartTime" />
-                                    </div>
+                                    )}
+                                    <input
+                                        value={formatTimecode(this.state.selectionStartTime)}
+                                        readOnly
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        id="inlineFormInputStartTime" />
                                 </div>
-                                <div className="col-sm-4">
-                                    <div className="input-group">
+                            </div>
+                            <div className="col-sm-4">
+                                <div className="input-group">
+                                    {this.state.tab === 'createSelection' && (
                                         <div className="input-group-prepend">
                                             <button
-                                                disabled={this.state.tab !== 'createSelection'}
                                                 onClick={this.onEndTimeClick}
                                                 type="button"
                                                 className="btn btn-outline-light btn-sm">
                                                 Stop&nbsp;
                                             </button>
                                         </div>
-                                        <input
-                                            value={formatTimecode(this.state.selectionEndTime)}
-                                            readOnly
-                                            type="text"
-                                            className="form-control form-control-sm"
-                                            id="inlineFormInputEndTime" />
-                                    </div>
-                                </div>
-                                <div className="col-sm-2">
-                                    <button
-                                        onClick={this.onPlayToggle}
-                                        type="button"
-                                        className="btn btn-outline-light btn-sm">
-                                        {this.state.playing && (
-                                            <React.Fragment>
-                                                <svg className="bi bi-pause-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
-                                                </svg>
-                                                Pause
-                                            </React.Fragment>
-                                        )}
-                                        {!this.state.playing && (
-                                            <React.Fragment>
-                                                <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
-                                                </svg>
-                                                Play
-                                            </React.Fragment>
-                                        )}
-                                    </button>
+                                    )}
+                                    <input
+                                        value={formatTimecode(this.state.selectionEndTime)}
+                                        readOnly
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        id="inlineFormInputEndTime" />
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                );
-            }
+                            <div className="col-sm-2">
+                                <button
+                                    onClick={this.onPlayToggle}
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm">
+                                    {this.state.playing && (
+                                        <React.Fragment>
+                                            <svg className="bi bi-pause-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+                                            </svg>
+                                            Pause
+                                        </React.Fragment>
+                                    )}
+                                    {!this.state.playing && (
+                                        <React.Fragment>
+                                            <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
+                                            </svg>
+                                            Play
+                                        </React.Fragment>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            );
 
             const source = this.asset.extractSource();
             let vidUrl = null;

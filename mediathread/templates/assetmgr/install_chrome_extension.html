@@ -1,37 +1,21 @@
 {% load staticfiles %}
 
 <div id="chrome-install-container">
-    <h4><strong>Install Chrome extension</strong></h4>
-    <p>
-        Use Mediathread's Google Chrome extension to import media
-        from various sites. You must be using Chrome to install
-        this extension.
-    </p>
     {% if CAS_BASE == 'https://cas.columbia.edu' %}
-        <button id="chrome-install-button"
-                class="btn btn-sm btn-primary pull-left">
-            + Add to Chrome
+        <button class="btn btn-primary" id="chrome-install-button">
+            Visit Chrome Web Store
         </button>
     {% else %}
-        <a class="btn btn-sm btn-primary pull-left"
+        <a class="btn btn-primary"
            target="_blank"
            href="https://chrome.google.com/webstore/detail/mediathread/gambcgmmppeklfmbahomokogelnaffbi">
-            + Add to Chrome
+            Visit Chrome Web Store
         </a>
     {% endif %}
-    <div class="pull-left">
-        <img width="32" height="32"
-             src="{% static 'img/browser_icons/chrome/chrome-a_128.png' %}"
-             alt="Compatible with Google Chrome"
-             title="Compatible with Google Chrome">
-        <img width="32" height="32"
-             src="{% static 'img/browser_icons/chrome/chromium-128.png' %}"
-             alt="Compatible with Chromium"
-             title="Compatible with Chromium">
-    </div>
-    <div class="clearfix"></div><br />
-    <button class="btn btn-sm btn-primary update-chrome-extension-hosturl">
-        Update extension settings
+    <hr>
+    <p>Note: These extensions may need updates.</p>
+    <button class="btn btn-outline-secondary update-chrome-extension-hosturl">
+        Update Extension Settings
     </button>
     <div class="update-chrome-extension-feedback"></div>
     <div class="clearfix"></div>
@@ -64,11 +48,12 @@
                             command: 'updatesettings'
                         }, function(response) {
                             var $el = jQuery('.update-chrome-extension-feedback');
-                            var defaultResponse = 'Settings updated.';
+                            var defaultResponse = 'Settings Updated.';
                             var msg = response ? response : defaultResponse;
 
                             $el.hide();
                             $el.text(msg);
+                            $el.addClass('alert alert-info')
                             $el.fadeIn();
                         });
                 }

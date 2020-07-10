@@ -378,7 +378,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
             collabs = Collaboration.objects.get_for_object_list(projects)
             collabs = collabs.exclude(
                 policy_record__policy_name='PrivateEditorsAreOwners')
-            ids = [int(c.object_pk) for c in collabs]
+            ids = collabs.values_list('object_pk', flat=True)
             projects = projects.filter(id__in=ids)
 
         info_ctx = CourseInfoResource().render_one(request, course)

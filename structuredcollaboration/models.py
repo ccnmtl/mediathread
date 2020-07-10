@@ -38,7 +38,7 @@ class CollaborationManager(models.Manager):
             return Collaboration.objects.none()
         else:
             ctype = ContentType.objects.get_for_model(object_list[0])
-            ids = [str(o.id) for o in object_list]
+            ids = [o.id for o in object_list]
 
             prefetch = ['user', 'group', 'context', 'content_object',
                         '_parent', 'policy_record']
@@ -49,7 +49,7 @@ class CollaborationManager(models.Manager):
         ctype = ContentType.objects.get_for_model(obj)
         return self.select_related(
             'user', 'group', '_parent', 'policy_record').get(
-            content_type=ctype, object_pk=str(obj.pk))
+            content_type=ctype, object_pk=obj.pk)
 
 
 @python_2_unicode_compatible
@@ -69,8 +69,8 @@ class Collaboration(models.Model):
         ContentType, related_name="collaboration_set_for_%(class)s",
         null=True, blank=True, on_delete=models.CASCADE)
 
-    object_pk = models.CharField(_('object ID'), max_length=255,
-                                 null=True, blank=True)
+    object_pk = models.IntegerField(
+        _('object ID'), null=True, blank=True)
 
     content_object = GenericForeignKey(ct_field="content_type",
                                        fk_field="object_pk")

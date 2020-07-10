@@ -225,10 +225,10 @@ class ProjectManager(models.Manager):
         collaborations = collaborations.order_by('object_pk')
 
         # get all the content objects at once
-        ids = [int(c.object_pk) for c in collaborations if c.object_pk]
+        ids = [c.object_pk for c in collaborations if c.object_pk]
         responses = Project.objects.filter(id__in=ids)
         responses = list(responses.select_related('author'))
-        responses.sort(reverse=False, key=lambda p: str(p.id))
+        responses.sort(reverse=False, key=lambda p: p.id)
 
         visible = []
         hidden = []
@@ -259,7 +259,7 @@ class ProjectManager(models.Manager):
         lst = lst.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
 
         # get all the projects at once
-        ids = [int(c.object_pk) for c in lst]
+        ids = [c.object_pk for c in lst]
         return Project.objects.filter(id__in=ids).order_by('ordinality',
                                                            'title')
 
@@ -293,7 +293,7 @@ class ProjectManager(models.Manager):
         # filter private assignments
         lst = Collaboration.objects.get_for_object_list(qs)
         lst = lst.filter(policy_record__policy_name=PUBLISH_DRAFT[0])
-        ids = [int(c.object_pk) for c in lst]
+        ids = [c.object_pk for c in lst]
         qs = qs.exclude(id__in=ids)
 
         projects = list(qs.filter(due_date__isnull=False).

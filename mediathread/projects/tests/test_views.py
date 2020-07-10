@@ -281,7 +281,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertIsNone(Project.objects.filter(id=project_id).first())
         with self.assertRaises(Collaboration.DoesNotExist):
             Collaboration.objects.get(content_type=ctype,
-                                      object_pk=str(project_id))
+                                      object_pk=project_id)
 
         # invalid project id
         url = reverse('project-delete', args=[213456])
@@ -314,7 +314,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         with self.assertRaises(Collaboration.DoesNotExist):
             Collaboration.objects.get(content_type=ctype,
-                                      object_pk=str(project_id))
+                                      object_pk=project_id)
 
         self.assertIsNone(response1.assignment())
         self.assertIsNone(response2.assignment())

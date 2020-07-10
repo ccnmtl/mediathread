@@ -71,7 +71,7 @@ class CourseFactory(factory.DjangoModelFactory):
         if create:
             coll, created = Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(self.pk), slug=slugify(self.title))
+                object_pk=self.pk, slug=slugify(self.title))
 
             coll.slug = self.slug()
             coll.title = self.title
@@ -213,7 +213,7 @@ class MediathreadTestMixin(object):
         request.collaboration_context, created = \
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
-                object_pk=str(course.pk))
+                object_pk=course.pk)
         response = discussion_create(request)
 
         response_data = json.loads(response.content)

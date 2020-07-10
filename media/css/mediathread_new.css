@@ -4360,3 +4360,7 @@ ul.section-tabs>li>a.active {
 #selectionsAccordion .card-header {
     padding: 0;
 }
+
+.react-player>video {
+    background-color: black;
+}

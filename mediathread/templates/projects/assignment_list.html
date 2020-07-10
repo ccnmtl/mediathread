@@ -14,24 +14,9 @@ Assignments
 {% course_role for request.user in request.course as role_in_course %}
 <div>
     <div>
-        <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
-            role="tablist">
-            <a class="flex-sm-fill text-sm-center nav-link " role="tab"
-                title="Collection" href="{% url 'course_detail' request.course.pk %}">
-                Collection
-            </a>
-            <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
-                href="{% url 'assignment-list' request.course.pk %}"
-                title="Assignments" href="assignments/">
-                    Assignments
-                    {% if role_in_course == 'student' and unresponded > 0 %}
-                        <span class="badge badge-primary ml-2">{{unresponded}}</span>
-                    {% endif %}
-            </a>
-            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
-                href="{% url 'project-list' request.course.pk %}"
-                title="Projects" href="projects/">Projects</a>
-        </nav>
+        {% with active='assignments' %}
+            {% include 'main/three_section_tabs.html' %}
+        {% endwith %}
         <div class="tab-content">
             <div role="tabpanel">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">

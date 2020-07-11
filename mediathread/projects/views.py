@@ -819,7 +819,7 @@ class AssignmentListView(ProjectListView):
             qs = self.sort_queryset(qs, 'due_date', 'desc')
         else:
             # Assignments for the student are sorted by:
-            # * the student's response submitted date desc with nulls first
+            # * the student's response submitted date asc with nulls first
             # * timedelta between today and the due_date desc with nulls last
 
             # annotate with the timedelta between today and the due_date

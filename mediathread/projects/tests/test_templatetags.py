@@ -1,9 +1,15 @@
+from datetime import datetime
+
 from django.template.base import Template
 from django.template.context import Context
+from django.test import TestCase, RequestFactory
 from django.test.testcases import TestCase
 from mediathread.factories import UserFactory, MediathreadTestMixin, \
     ProjectFactory
-from mediathread.projects.templatetags.user_projects import filter_responses
+from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT
+from mediathread.projects.templatetags.user_projects import (
+    published_assignment_responses, my_assignment_responses,
+    assignment_responses)
 
 
 class TestTemplateTags(MediathreadTestMixin, TestCase):
@@ -26,17 +32,34 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         ).render(Context({'user': self.instructor_three}))
         self.assertEqual(out, "2")
 
-    def test_filter_responses(self):
-        p1 = ProjectFactory.create(
-            course=self.sample_course, author=self.student_two,
-            title='B', policy='PrivateEditorsAreOwners')
-        p2 = ProjectFactory.create(
-            course=self.sample_course, author=self.student_one,
-            title='A', policy='PrivateEditorsAreOwners')
-        self.assertEquals(p2, filter_responses(self.student_one, [p1, p2]))
+    def test_assignment_response_tags(self):
+        assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
 
-        shared = ProjectFactory.create(
+        visible_response = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            policy=PUBLISH_WHOLE_CLASS[0], parent=assignment,
+            date_submitted=datetime.today())
+
+        draft_response = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            title='B', policy='PrivateEditorsAreOwners')
-        shared.participants.add(self.student_one)
-        self.assertEquals(shared, filter_responses(self.student_one, [shared]))
+            policy=PUBLISH_DRAFT[0], parent=assignment,
+            date_submitted=datetime.today())
+
+        request = RequestFactory().get('/')
+        request.course = self.sample_course
+        request.user = self.student_one
+        responses = assignment_responses(assignment, request)
+        self.assertEqual(len(responses), 1)
+        self.assertEqual(responses[0], visible_response)
+
+        self.assertEquals(published_assignment_responses(assignment), 1)
+
+        responses = my_assignment_responses(assignment, self.student_two)
+        self.assertEqual(responses.count(), 1)
+        self.assertEqual(responses.first().content_object, draft_response)
+
+        responses = my_assignment_responses(assignment, self.student_one)
+        self.assertEqual(responses.count(), 1)
+        self.assertEqual(responses.first().content_object, visible_response)

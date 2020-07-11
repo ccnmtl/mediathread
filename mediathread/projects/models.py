@@ -45,6 +45,12 @@ PUBLISH_WHOLE_CLASS = \
 PUBLISH_WHOLE_WORLD = \
     ('PublicEditorsAreOwners', 'Whole World - a public url is provided')
 
+PUBLISHED = [
+    'InstructorShared',
+    'CourseProtected',
+    'PublicEditorsAreOwners'
+]
+
 SHORT_NAME = {
     'PrivateEditorsAreOwners': 'Draft',
     'InstructorShared': 'Shared with Instructor',
@@ -276,19 +282,21 @@ class ProjectManager(models.Manager):
             assignments. Instructors will see published assignments +
             their own draft assignments.
         """
-        qs = Project.objects.filter(
-            project_type__in=PROJECT_TYPE_ASSIGNMENTS,
-            course=course, author__in=course.faculty_group.user_set.all())
 
-        collabs = Collaboration.objects.get_for_object_list(qs)
+        # Retrieve all assignments authored by course faculty
+        qs = Collaboration.objects.filter(
+            content_type__model='project',
+            project__project_type__in=PROJECT_TYPE_ASSIGNMENTS,
+            project__course=course,
+            user__in=course.faculty_group.user_set.all())
 
-        lst = []
-        for collab in collabs:
-            project = collab.content_object
-            if project.can_read(course, viewer, collab):
-                lst.append(project.id)
+        # Get all published assignments or those authored by the viewer
+        qs = qs.filter(
+            Q(policy_record__policy_name__in=PUBLISHED) |
+            Q(project__author=viewer) | Q(project__participants=viewer))
 
-        return Project.objects.filter(id__in=lst)
+        ids = qs.values_list('object_pk', flat=True).distinct()
+        return Project.objects.filter(id__in=ids)
 
     def unresponded_assignments(self, course, user):
         '''
@@ -692,10 +700,7 @@ class Project(models.Model):
             pass
 
     def get_collaboration(self):
-        try:
-            return Collaboration.objects.get_for_object(self)
-        except Collaboration.DoesNotExist:
-            return None
+        return self.collaboration.first()
 
     def is_submitted(self):
         return self.date_submitted is not None

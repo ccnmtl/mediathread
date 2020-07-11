@@ -25,13 +25,14 @@ describe('Student Project Visibility', () => {
         cy.wait(500);
 
         cy.get('#loaded').should('exist');
-        cy.get('.panel-subcontainer-title > .form-control').clear()
+        cy.get('.page-title-form input').clear()
             .type('Composition Public: Scenario 3');
         cy.get('.project-savebutton').click();
         cy.contains('Whole Class - all class members can view').click();
-        cy.get('.btn-primary').contains('Save').click();
+        cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Shared with Class');
+        cy.get('.project-visibility-description')
+            .should('contain', 'Shared with Class');
     });
 
     // it('views composition as a Student', () => {
@@ -56,13 +57,14 @@ describe('Student Project Visibility', () => {
         });
 
         cy.get('#loaded').should('exist');
-        cy.get('.panel-subcontainer-title > .form-control').clear()
+        cy.get('.page-title-form input').clear()
             .type('Public');
         cy.get('.project-savebutton').click();
         cy.contains('Whole Class - all class members can view').click();
-        cy.get('.btn-primary').contains('Save').click();
+        cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.project-visibility-link').should('contain', 'Shared with Class');
+        cy.get('.project-visibility-description')
+            .should('contain', 'Shared with Class');
     });
 
     // it('views Student One composition as Student Two', () => {

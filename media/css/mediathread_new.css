@@ -14,6 +14,16 @@ a, a.page-link {
     background-color: #0056b3;
 }
 
+.nav-tabs .nav-link {
+    border: 1px solid #eee;
+    background-color: #f6f6f6;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #0056b3;
+    font-weight: bold;
+}
+
 .page-item.active .page-link {
     background-color: #0056b3;
     border-color: #0056b3;
@@ -39,7 +49,54 @@ h6 {
 }
 
 h1.page-title {
-    padding: .5em 0em .5em 0em;
+    padding: .25em 0em .25em 0em;
+}
+
+#project-container input[name="title"] {
+    font-size: 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+#project-container .participant-container .select2-container-multi {
+    display: block;
+    width: 100%;
+    height: min-height: 28px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 0;
+    
+    
+}
+
+#project-container .participant-container
+    .select2-container-multi.select2-container-active .select2-choices {
+    box-shadow: none;
+
+}
+
+#project-container .participant-container .select2-choices {
+    background-image: none;
+    width: 100%;
+    border: 1px solid #ced4da !important;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#project-container .participant-container .select2-search-choice {
+    background-color: rgb(230, 230, 230);
+    border: 1px solid rgb(230, 230, 230);
+    background-image: none;
+    display: flex;
+    min-width: 0px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    margin: 2px;
+    box-shadow: none;
 }
 
 h6.course-title {
@@ -1422,20 +1479,9 @@ table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-create-in
     width: 175px;
 }
 
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-previewbutton,
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton,
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton {
-    float: right;
-    margin-left: 5px;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-savebutton.saving {
-    text-align: left;
-}
-
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-revisionbutton,
-table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-responsesbutton {
-    float: right;
+.project-editbutton,
+.project-previewbutton {
+    width: 75px;
 }
 
 table.panel-subcontainer tr td div.panel-subcontainer-toolbar .project-my-responses {

@@ -166,6 +166,7 @@ class ProjectResource(ModelResource):
         project_ctx['modified'] = project.modified.strftime(self.date_fmt)
         project_ctx['current_version'] = version_number
         project_ctx['visibility'] = project.visibility_short()
+        project_ctx['visibility_long'] = project.visibility()
         project_ctx['type'] = project.project_type
 
         assets, notes = self.related_assets_notes(request, project)

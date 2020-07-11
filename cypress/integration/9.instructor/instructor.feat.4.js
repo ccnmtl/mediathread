@@ -25,7 +25,5 @@ describe('Instructor Feat: Test Assignment Responses', () => {
 
         cy.contains('Sample Assignment Response').click();
         cy.title().should('contain', 'Sample Assignment Response');
-        cy.get('td.panel-container.open.composition').should('exist');
-        cy.title().should('contain', 'Sample Assignment Response');
     });
 });

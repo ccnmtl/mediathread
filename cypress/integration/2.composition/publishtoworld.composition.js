@@ -34,7 +34,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('#loaded').should('exist');
 
         cy.log('add title and some text');
-        cy.get('.panel-subcontainer-title > .form-control').clear()
+        cy.get('.page-title-form input').clear()
             .type('Composition Public: Scenario 1A');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
@@ -48,8 +48,9 @@ describe('Publish To World Public Composition', () => {
         cy.log('save project and set project visibility to public');
         cy.get('.project-savebutton').click();
         cy.contains('Whole World - a public url is provided').click();
-        cy.get('.btn-primary').contains('Save').click();
-        cy.get('.project-visibility-link').should('contain', 'Shared with World');
+        cy.get('.btn-save-project').contains('Save').click();
+        cy.get('.project-visibility-description')
+            .should('contain', 'Shared with World');
 
         cy.log('log out and go to permalink');
         //TODO: Figure out a cleaner way to do this?
@@ -59,13 +60,12 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.sign-out').click({force: true});
                 cy.visit(href);
 
-                cy.get('td.panel-container.open.composition').should('exist');
                 cy.get('.participants_chosen').should('contain', 'Instructor One');
-                cy.get('.project-title').should('contain', 'Composition Public: Scenario 1A');
+                cy.get('.page-title').should('contain', 'Composition Public: Scenario 1A');
                 cy.get('.last-version-public').should('exist');
                 cy.get('.project-revisionbutton').should('not.exist');
-                cy.contains('Edit').should('not.exist');
-                cy.contains('Preview').should('not.exist');
+                cy.get('.project-editbutton.active').should('not.exist');
+                cy.get('.project-previewbutton.active').should('exist');
                 cy.get('.project-savebutton').should('not.exist');
                 cy.get('.participant_list').should('not.exist');
                 cy.get('.materialCitation').click();

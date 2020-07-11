@@ -27,8 +27,8 @@ describe('Instructor Edits the Item Metadata', () => {
 
         cy.log('add a title and some text');
         cy.get('#cu-privacy-notice-icon').click();
-        cy.get('.panel-subcontainer-title > .form-control').clear()
-            .type('Quick Edit Composition');
+        cy.get('.page-title-form input').clear()
+            .type('Quick Edit Composition 3');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();

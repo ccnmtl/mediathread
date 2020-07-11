@@ -24,16 +24,14 @@ describe('Instructor Feat: Test Create Composition', () => {
 
         cy.wait(500);
         cy.get('#loaded').should('exist');
-        cy.get('.panhandle-stripe.composition').should('exist');
-        cy.get('.panel-subcontainer-title').contains('Untitled')
-            .should('exist');
-        cy.get('td.panel-container.open.composition').should('exist');
-        cy.get('.panel-subcontainer-title > .form-control').clear()
-            .type('Instructor Feature 4');
+        cy.get('.page-title-form input').should('be.visible');
+        cy.get('.page-title-form input').should('have.value', 'Untitled')
+        cy.get('.page-title-form input').clear()
+            .type('Instructor Feature 3');
         cy.get('.project-savebutton').click();
         cy.get('.btn-save-project').click();
-        cy.title().should('contain', 'Instructor Feature 4');
-        cy.visit('/course/1/oldhome/');
-        cy.contains('Instructor Feature 4').should('exist');
+        cy.title().should('contain', 'Instructor Feature 3');
+        cy.visit('/course/1/projects/');
+        cy.contains('Instructor Feature 3').should('exist');
     });
 });

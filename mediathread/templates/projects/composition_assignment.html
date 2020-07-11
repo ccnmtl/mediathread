@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
@@ -54,12 +54,15 @@
 {% endblock %}
 
 {% block content %}
-    {{ block.super }}
+<div>
+    {% with active='assignments' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
 
     <table id="sliding-content-container">
         <tr id="sliding-content-row" class="sliding-content-row">
             <td id="sliding-content-last-column" class="filler"></td>
         </tr>
     </table>
-
+</div>
 {% endblock %}

@@ -55,8 +55,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('.last-version-public')
             .should('have.attr', 'href')
             .then((href) => {
-                cy.contains('Instructor One').trigger('mouseover').click();
-                cy.contains('Log Out').click({force: true});
+                cy.get('.sign-out').click({force: true});
                 cy.visit(href);
 
                 cy.get('td.panel-container.open.composition').should('exist');

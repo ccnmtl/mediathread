@@ -234,7 +234,6 @@ if 'test' in sys.argv or \
     CELERY_ALWAYS_EAGER = True
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-if 'integrationserver' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',

@@ -1,27 +1,23 @@
 {% load user_projects %}
 <div class="table-responsive">
-    <table class="table table-bordered table-striped w-100 tablesorter">
+    <table class="table table-bordered table-striped w-100">
         <thead class="thead-darkgray">
-            <th data-sort-by="due_date"
-                class="sortable {% if sortby == 'due_date' %}{{direction}}{% endif %}">
+            <th>
                 Due Date
             </th>
-            <th data-sort-by="title"
-                class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+            <th>
                 Title
             </th>
             <th>
-                Status
+                Response Status
             </th>
             <th>
                 Action
             </th>
-            <th data-sort-by="project_type"
-                class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+            <th>
                 Type
             </th>
-            <th data-sort-by="modified"
-                class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+            <th>
                 Last Updated
             </th>
         </thead>
@@ -41,6 +37,21 @@
                         <td>
                             {% if object.due_date %}
                                 {{object.due_date|date:"n/j/y"}}<br />
+                                {% if not response.is_submitted %}
+                                    {% if object.due_date < today %}
+                                        <div class="small text-danger">
+                                            Overdue {{object.due_date|timesince:today }}
+                                        </div>
+                                    {% else %}{% if object.due_date > today %}
+                                        <div class="small">
+                                            {{today|timeuntil:object.due_date }}
+                                        </div>
+                                    {% else %}
+                                        <div class="small">
+                                            Due today
+                                        </div>
+                                    {% endif %}{% endif %}
+                                {% endif %}
                             {% endif %}
                         </td>
                         <td>
@@ -91,6 +102,19 @@
                     <td>
                         {% if object.due_date %}
                             {{object.due_date|date:"n/j/y"}}<br />
+                            {% if object.due_date < today %}
+                                <div class="small text-danger">
+                                    Overdue {{object.due_date|timesince:today }}
+                                </div>
+                            {% else %}{% if object.due_date > today %}
+                                <div class="small">
+                                    {{today|timeuntil:object.due_date }}
+                                </div>
+                            {% else %}
+                                <div class="small">
+                                    Due today
+                                </div>
+                            {% endif %}{% endif %}
                         {% endif %}
                     </td>
                     <td>

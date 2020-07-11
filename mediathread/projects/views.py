@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
-from django.db.models import F, Value, CharField
+from django.db.models import (
+    F, Value, CharField, OuterRef, Subquery)
+from django.db.models import Q
 from django.db.models.functions import Concat
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
@@ -25,7 +27,7 @@ from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.main.course_details import allow_public_compositions, \
-    cached_course_is_faculty, cached_course_is_member
+    cached_course_is_faculty
 from mediathread.main.models import UserSetting
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
@@ -774,6 +776,7 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         ctx['owner'] = self.get_project_owner()
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
+        ctx['today'] = datetime.now()
         return ctx
 
     def annotate_full_name(self, qs):
@@ -811,7 +814,28 @@ class AssignmentListView(ProjectListView):
     def get_queryset(self):
         qs = Project.objects.visible_assignments_by_course(
             self.request.course, self.request.user)
-        qs = self.sort_queryset(qs, 'due_date', 'desc')
+
+        if cached_course_is_faculty(self.request.course, self.request.user):
+            qs = self.sort_queryset(qs, 'due_date', 'desc')
+        else:
+            # Assignments for the student are sorted by:
+            # * the student's response submitted date desc with nulls first
+            # * timedelta between today and the due_date desc with nulls last
+
+            # annotate with the timedelta between today and the due_date
+            qs = qs.annotate(due_delta=datetime.now() - F('due_date'))
+
+            # use a subquery to retrieve the date of the user's response
+            # and annotate the date_submitted
+            my_responses = Project.objects.filter(
+                (Q(author=self.request.user) |
+                 Q(participants=self.request.user)),
+                collaboration___parent__object_pk=OuterRef('pk')).distinct()
+            qs = qs.annotate(response_submitted=Subquery(
+                my_responses.values('date_submitted')))
+            qs = qs.order_by('-response_submitted',
+                             F('due_delta').desc(nulls_last=True))
+
         return qs.select_related('author').prefetch_related(
             'participants', 'collaboration__children',
             'collaboration__policy_record',

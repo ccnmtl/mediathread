@@ -3,7 +3,6 @@ from datetime import datetime
 from django.template.base import Template
 from django.template.context import Context
 from django.test import TestCase, RequestFactory
-from django.test.testcases import TestCase
 from mediathread.factories import UserFactory, MediathreadTestMixin, \
     ProjectFactory
 from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT

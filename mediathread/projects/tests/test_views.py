@@ -1,5 +1,5 @@
 # pylint: disable-msg=R0904
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -15,12 +15,13 @@ from mediathread.projects.models import (
     RESPONSE_VIEW_POLICY, RESPONSE_VIEW_NEVER, RESPONSE_VIEW_SUBMITTED,
     PUBLISH_WHOLE_WORLD, PUBLISH_WHOLE_CLASS,
     PROJECT_TYPE_SELECTION_ASSIGNMENT,
-    PROJECT_TYPE_SEQUENCE_ASSIGNMENT, ProjectNote, ProjectSequenceAsset)
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT, ProjectNote, ProjectSequenceAsset,
+    PUBLISH_DRAFT)
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.views import (
     SelectionAssignmentView, ProjectItemView,
     SequenceAssignmentView, ProjectListView,
-    context_processor)
+    context_processor, AssignmentListView)
 import reversion
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
@@ -1288,3 +1289,52 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['object_list'][1], a1)
         self.assertEquals(ctx['sortby'], 'full_name')
         self.assertEquals(ctx['direction'], 'desc')
+
+    def test_get_queryset(self):
+        # Instructor assignments
+        future_assignment = ProjectFactory.create(
+            title='due tomorrow',
+            course=self.sample_course, author=self.instructor_one,
+            due_date=datetime.today() + timedelta(days=1),
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
+        evergreen_assignment = ProjectFactory.create(
+            title='no due date',
+            course=self.sample_course, author=self.instructor_one,
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
+        past_assignment = ProjectFactory.create(
+            title='due yesterday',
+            course=self.sample_course, author=self.instructor_one,
+            due_date=datetime.today() - timedelta(days=1),
+            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
+
+        # Student responses
+
+        # No response to the future assignment
+
+        # Draft response for the evergreen assignment
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            date_submitted=None,
+            policy=PUBLISH_DRAFT[0], parent=evergreen_assignment)
+
+        # Submitted response for the past assignment
+        submitted = datetime.today() - timedelta(days=2)
+        ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            date_submitted=submitted,
+            policy=PUBLISH_WHOLE_CLASS[0], parent=past_assignment)
+
+        view = AssignmentListView()
+        view.request = RequestFactory().get('/')
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+
+        qs = view.get_queryset()
+        self.assertEqual(qs.count(), 3)
+        self.assertEqual(qs[0], future_assignment)
+        self.assertTrue(qs[0].due_delta.days < 0)
+        self.assertEqual(qs[1], evergreen_assignment)
+        self.assertIsNone(qs[1].due_delta)
+        self.assertEqual(qs[2], past_assignment)
+        self.assertTrue(qs[2].due_delta.days > 0)
+        self.assertEqual(qs[2].response_submitted, submitted)

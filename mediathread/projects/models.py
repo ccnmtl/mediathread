@@ -2,6 +2,7 @@ from datetime import datetime
 
 from courseaffils.models import Course
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
@@ -298,19 +299,22 @@ class ProjectManager(models.Manager):
         # Retrieve all project collaborations authored by course faculty
         qs = Collaboration.objects.filter(
             content_type__model='project',
+            project__project_type__in=PROJECT_TYPE_ASSIGNMENTS,
+            project__course=course,
             user__in=course.faculty_group.user_set.all())
 
         # Exclude draft collaborations
         qs = qs.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
 
         # Exclude project collaborations where the user is the author
-        qs = qs.exclude(Q(children__user=user) | Q(children__group__user=user))
+        qs = qs.exclude(
+            Q(children__user=user) | Q(children__group__user=user))
 
-        # Retrieve the associated assignments, filter by project_type & course
-        return Project.objects.filter(
-            id__in=qs.values_list('object_pk', flat=True),
-            project_type__in=PROJECT_TYPE_ASSIGNMENTS,
-            course=course)
+        # Retrieve the associated assignments
+        # The "new" homepage only uses this query to get a count
+        # @todo - return a simple count
+        ids = qs.values_list('object_pk', flat=True)
+        return Project.objects.filter(id__in=ids)
 
     def reset_publish_to_world(self, course):
         # Check any existing projects -- if they are
@@ -380,6 +384,11 @@ class Project(models.Model):
 
     response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
                                             default='always')
+
+    collaboration = GenericRelation(
+        Collaboration,
+        object_id_field='object_pk',
+        related_query_name='project')
 
     def get_absolute_url(self):
         return reverse('project-workspace', args=(self.pk,))
@@ -576,7 +585,8 @@ class Project(models.Model):
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
-        # First check: if this is not a composition
+        # First check: if this is not a composition, then the 'read'
+        # check is enough. and everyone can read publish_whole_world
         if (not self.is_composition() or
             collaboration.policy_record.policy_name ==
                 PUBLISH_WHOLE_WORLD[0]):

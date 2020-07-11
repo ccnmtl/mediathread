@@ -1,5 +1,5 @@
 from mediathread.main.course_details import cached_course_is_faculty, \
-    cached_course_collaboration
+    cached_course_collaboration, cached_course_is_member
 
 
 class CollaborationPolicy(object):
@@ -94,7 +94,7 @@ class CourseProtected(CollaborationPolicy):
 
         course_collaboration = cached_course_collaboration(course)
         return (coll.context == course_collaboration and
-                course.is_member(user))
+                cached_course_is_member(course, user))
 
 
 # Used for discussions

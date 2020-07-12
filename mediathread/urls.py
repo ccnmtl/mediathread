@@ -261,7 +261,7 @@ urlpatterns = [
          RedirectToUploaderView.as_view(),
          name='uploader_redirect'),
 
-    path('course/<int:course_pk>/collection/add',
+    path('course/<int:course_pk>/collection/add/',
          CollectionAddView.as_view(),
          name='collection-add-view'),
 

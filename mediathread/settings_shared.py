@@ -234,16 +234,17 @@ if 'test' in sys.argv or \
     CELERY_ALWAYS_EAGER = True
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': '',
-            'PORT': 5432,
-            'USER': '',
-            'PASSWORD': '',
-            'ATOMIC_REQUESTS': True,
+    if 'integrationserver' in sys.argv:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'HOST': '',
+                'PORT': 5432,
+                'USER': '',
+                'PASSWORD': '',
+                'ATOMIC_REQUESTS': True,
+            }
         }
-    }
 
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False

@@ -1,6 +1,7 @@
 # pylint: disable-msg=R0904
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.http.response import Http404
@@ -25,6 +26,7 @@ from mediathread.projects.views import (
 import reversion
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
+import unittest
 
 
 class ContextProcessorTest(MediathreadTestMixin, TestCase):
@@ -1290,6 +1292,10 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['sortby'], 'full_name')
         self.assertEquals(ctx['direction'], 'desc')
 
+    @unittest.skipIf(
+        settings.DATABASES['default']['ENGINE'] !=
+        'django.db.backends.postgresql_psycopg2',
+        'This test exercises advanced querying functionality')
     def test_get_queryset(self):
         # Instructor assignments
         future_assignment = ProjectFactory.create(

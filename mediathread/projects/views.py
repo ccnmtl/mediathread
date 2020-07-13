@@ -798,7 +798,8 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         qs = Project.objects.projects_visible_by_course_and_owner(
             self.request.course, self.request.user, self.get_project_owner())
         qs = self.sort_queryset(qs, 'title', 'asc')
-        return qs.select_related('author').prefetch_related('participants')
+        return qs.select_related('author').prefetch_related(
+            'participants', 'collaboration__policy_record')
 
 
 class AssignmentListView(ProjectListView):
@@ -810,7 +811,10 @@ class AssignmentListView(ProjectListView):
         qs = Project.objects.visible_assignments_by_course(
             self.request.course, self.request.user)
         qs = self.sort_queryset(qs, 'due_date', 'desc')
-        return qs.select_related('author').prefetch_related('participants')
+        return qs.select_related('author').prefetch_related(
+            'participants', 'collaboration__children',
+            'collaboration__policy_record',
+            'collaboration__children__content_object')
 
 
 class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,

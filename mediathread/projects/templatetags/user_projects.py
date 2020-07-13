@@ -1,6 +1,7 @@
 from django import template
+from django.db.models import Q
 from djangohelpers.templatetags import TemplateTagNode
-from mediathread.projects.models import Course
+from mediathread.projects.models import Course, PUBLISHED
 
 
 register = template.Library()
@@ -25,10 +26,12 @@ def assignment_responses(project, request):
 
 
 @register.simple_tag
-def filter_responses(user, responses):
-    for response in responses:
-        if user == response.author or \
-                response.participants.filter(id=user.id).exists():
-            return response
+def published_assignment_responses(project):
+    return project.collaboration.first().children.filter(
+        policy_record__policy_name__in=PUBLISHED).count()
 
-    return None
+
+@register.simple_tag
+def my_assignment_responses(project, user):
+    return project.collaboration.first().children.filter(
+        Q(project__author=user) | Q(project__participants=user)).distinct()

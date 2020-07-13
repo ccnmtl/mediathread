@@ -1,0 +1,83 @@
+{% load user_projects %}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped w-100 tablesorter">
+        <thead class="thead-darkgray">
+            <th data-sort-by="due_date"
+                class="sortable {% if sortby == 'due_date' %}{{direction}}{% endif %}">
+                Due Date
+            </th>
+            <th data-sort-by="title"
+                class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                Title
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+            <th>
+                Responses
+            </th>
+            <th data-sort-by="full_name"
+                class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
+                Authors
+            </th>
+            <th data-sort-by="project_type"
+                class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+                Type
+            </th>
+            <th data-sort-by="modified"
+                class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+                Last Updated
+            </th>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>
+                    {% if object.due_date %}
+                        {{object.due_date|date:"n/j/y"}}<br />
+                    {% endif %}
+                </td>
+                <td>
+                    <div>
+                        {{object.title}}
+                    </div>
+                </td>
+                <td>
+                    {{object.visibility_short}}
+                </td>
+                <td>
+                    {% if request.user == object.author or request.user in object.participants %}
+                        <a class="btn btn-sm btn-primary btn-block"
+                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                                Edit
+                        </a>
+                    {% else %}
+                        <a class="btn btn-sm btn-secondary btn-block"
+                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                                View
+                        </a>
+                    {% endif %}
+                    </a>
+                </td>
+                <td class="text-center">
+                    {% published_assignment_responses object as response_count %}
+                    {{response_count}} / {{request.course.students|length}}
+                </td>
+                <td>
+                    {{object.attribution}}
+                </td>
+                <td>
+                    {{object.description}}
+                </td>
+                <td>
+                    {{object.modified}}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

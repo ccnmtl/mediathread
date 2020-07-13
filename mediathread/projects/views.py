@@ -42,6 +42,16 @@ from reversion.models import Version
 from structuredcollaboration.models import Collaboration
 
 
+def context_processor(request):
+    ctx = {'assignments_todo': 0}
+    if request.course and not request.user.is_anonymous:
+        a = Project.objects.unresponded_assignments(
+            request.course, request.user)
+        ctx['assignments_todo'] = len(a)
+
+    return ctx
+
+
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
                         CreateReversionMixin, View):
 
@@ -763,11 +773,6 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         ctx['owner'] = self.get_project_owner()
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
-
-        a = Project.objects.unresponded_assignments(
-            self.request.course, self.request.user)
-        ctx['unresponded'] = len(a)
-
         return ctx
 
     def annotate_full_name(self, qs):
@@ -872,8 +877,8 @@ class ProjectCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
 
             # Show unresponded assignments if viewing self & self is a student
             if not self.is_viewer_faculty and self.viewing_own_records:
-                assignments = Project.objects.unresponded_assignments(
-                    request.course, request.user)
+                assignments = list(Project.objects.unresponded_assignments(
+                    request.course, request.user))
         else:
             projects = Project.objects.visible_by_course(request.course,
                                                          request.user)

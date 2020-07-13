@@ -2,21 +2,21 @@ from datetime import datetime
 
 from courseaffils.models import Course
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.encoding import python_2_unicode_compatible
-import reversion
-from reversion.models import Version
-from threadedcomments.models import ThreadedComment
-
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
-from mediathread.sequence.models import SequenceAsset
 from mediathread.main.course_details import cached_course_is_faculty
 from mediathread.main.util import user_display_name
+from mediathread.sequence.models import SequenceAsset
+import reversion
+from reversion.models import Version
 from structuredcollaboration.models import Collaboration
+from threadedcomments.models import ThreadedComment
 
 
 PROJECT_TYPE_ASSIGNMENT = 'assignment'
@@ -29,6 +29,13 @@ PROJECT_TYPES = (
     (PROJECT_TYPE_COMPOSITION, 'Composition'),
     (PROJECT_TYPE_SELECTION_ASSIGNMENT, 'Selection Assignment')
 )
+
+
+PROJECT_TYPE_ASSIGNMENTS = [
+    PROJECT_TYPE_ASSIGNMENT,
+    PROJECT_TYPE_SELECTION_ASSIGNMENT,
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT
+]
 
 PUBLISH_DRAFT = ('PrivateEditorsAreOwners', 'Draft - only you can view')
 PUBLISH_INSTRUCTOR_SHARED = \
@@ -269,10 +276,9 @@ class ProjectManager(models.Manager):
             assignments. Instructors will see published assignments +
             their own draft assignments.
         """
-        exclude = [PROJECT_TYPE_COMPOSITION, PROJECT_TYPE_SEQUENCE]
         qs = Project.objects.filter(
+            project_type__in=PROJECT_TYPE_ASSIGNMENTS,
             course=course, author__in=course.faculty_group.user_set.all())
-        qs = qs.exclude(project_type__in=exclude)
 
         collabs = Collaboration.objects.get_for_object_list(qs)
 
@@ -285,31 +291,30 @@ class ProjectManager(models.Manager):
         return Project.objects.filter(id__in=lst)
 
     def unresponded_assignments(self, course, user):
-        qs = Project.objects.filter(
-            course=course,
-            author__in=course.faculty_group.user_set.all())
-        qs = qs.exclude(project_type=PROJECT_TYPE_COMPOSITION)
+        '''
+            Retrieve all published assignments for this course
+            where the user does not have a response. Start by
+            querying the Collaboration set.
+        '''
+        # Retrieve all project collaborations authored by course faculty
+        qs = Collaboration.objects.filter(
+            content_type__model='project',
+            project__project_type__in=PROJECT_TYPE_ASSIGNMENTS,
+            project__course=course,
+            user__in=course.faculty_group.user_set.all())
 
-        # filter private assignments
-        lst = Collaboration.objects.get_for_object_list(qs)
-        lst = lst.filter(policy_record__policy_name=PUBLISH_DRAFT[0])
-        ids = [c.object_pk for c in lst]
-        qs = qs.exclude(id__in=ids)
+        # Exclude draft collaborations
+        qs = qs.exclude(policy_record__policy_name=PUBLISH_DRAFT[0])
 
-        projects = list(qs.filter(due_date__isnull=False).
-                        order_by("due_date", "-modified", "title"))
+        # Exclude project collaborations where the user is the author
+        qs = qs.exclude(
+            Q(children__user=user) | Q(children__group__user=user))
 
-        projects.extend(qs.filter(due_date__isnull=True).
-                        order_by("-modified", "title"))
-
-        assignments = []
-
-        for assignment in projects:
-            responses = assignment.responses(course, user, user)
-            if len(responses) < 1:
-                assignments.append(assignment)
-
-        return assignments
+        # Retrieve the associated assignments
+        # The "new" homepage only uses this query to get a count
+        # @todo - return a simple count
+        ids = qs.values_list('object_pk', flat=True)
+        return Project.objects.filter(id__in=ids)
 
     def reset_publish_to_world(self, course):
         # Check any existing projects -- if they are
@@ -379,6 +384,11 @@ class Project(models.Model):
 
     response_view_policy = models.TextField(choices=RESPONSE_VIEW_POLICY,
                                             default='always')
+
+    collaboration = GenericRelation(
+        Collaboration,
+        object_id_field='object_pk',
+        related_query_name='project')
 
     def get_absolute_url(self):
         return reverse('project-workspace', args=(self.pk,))
@@ -575,7 +585,8 @@ class Project(models.Model):
            (not collaboration.permission_to('read', course, viewer)):
             return False
 
-        # First check: if this is not a composition
+        # First check: if this is not a composition, then the 'read'
+        # check is enough. and everyone can read publish_whole_world
         if (not self.is_composition() or
             collaboration.policy_record.policy_name ==
                 PUBLISH_WHOLE_WORLD[0]):

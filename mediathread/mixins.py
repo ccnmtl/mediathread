@@ -1,7 +1,6 @@
 import unicodecsv as csv
 import json
 
-from courseaffils.lib import in_course_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -14,7 +13,7 @@ import reversion
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
-    all_selections_are_visible, all_items_are_visible
+    all_selections_are_visible, all_items_are_visible, cached_course_is_member
 from mediathread.projects.models import Project, ProjectNote
 from mediathread.util import attach_course_to_request
 
@@ -197,8 +196,9 @@ class LoggedInCourseMixin(object):
     def dispatch(self, *args, **kwargs):
         self.request = attach_course_to_request(self.request, **kwargs)
 
-        if not self.request.user.is_staff:
-            in_course_or_404(self.request.user.username, self.request.course)
+        # This handles staff & true course members
+        if not cached_course_is_member(self.request.course, self.request.user):
+            return HttpResponseForbidden("forbidden")
 
         return super(LoggedInCourseMixin, self).dispatch(*args, **kwargs)
 

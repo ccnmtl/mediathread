@@ -24,8 +24,7 @@ from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
-from mediathread.main.course_details import allow_public_compositions, \
-    cached_course_is_faculty, cached_course_is_member
+from mediathread.main.course_details import allow_public_compositions
 from mediathread.main.models import UserSetting
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,

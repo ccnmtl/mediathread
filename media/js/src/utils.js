@@ -1,5 +1,6 @@
 import isFinite from 'lodash/isFinite';
-import groupBy from 'lodash.groupby';
+import find from 'lodash/find';
+import {groupBy, sortBy} from 'lodash';
 
 import {
     Circle as CircleStyle, Fill, Stroke, Style
@@ -345,17 +346,37 @@ const getCourseUrl = function() {
  * grouped by author.
  */
 const groupByAuthor = function(selections) {
-    return groupBy(selections, function(s) {
-        return s.author.id;
-    });
+    return sortBy(
+        groupBy(selections, function(s) {
+            return s.author.id;
+        }), [
+            function(group) {
+                if (group && group.length > 0 && group[0].author) {
+                    return group[0].author.public_name;
+                }
+
+                return null;
+            }
+        ]);
 };
 
 /**
- * Given an array of selections, return an object of those selections
+ * Given an array of selections, return an array of those selections
  * grouped by tag.
+ *
+ * Structure of returned array:
+ *
+ * [
+ *   {
+ *     tagName: 'tag name'
+ *     tagId: 123
+ *     selections: [ ... ]
+ *   },
+ *   ...
+ * ]
  */
 const groupByTag = function(selections) {
-    const o = {};
+    const out = [];
 
     selections.forEach(function(s) {
         if (
@@ -363,34 +384,70 @@ const groupByTag = function(selections) {
                 s.metadata.tags.length
         ) {
             s.metadata.tags.forEach(function(tag) {
-                if (!Object.prototype.hasOwnProperty.call(o, tag.id)) {
-                    o[tag.id] = [s];
+                const foundTag = find(out, function(o) {
+                    return parseInt(o.tagId, 10) === parseInt(tag.id, 10);
+                });
+
+                if (!foundTag) {
+                    out.push({
+                        tagName: getTagName(
+                            tag.id, s, window.MediaThread.tag_cache),
+                        tagId: tag.id,
+                        selections: [s]
+                    });
                 } else {
-                    o[tag.id].push(s);
+                    foundTag.selections.push(s);
                 }
             });
         } else {
-            if (!Object.prototype.hasOwnProperty.call(o, 0)) {
-                o[0] = [s];
+            const foundTag = find(out, function(o) {
+                return parseInt(o.tagId, 10) === 0;
+            });
+            if (!foundTag) {
+                out.push({
+                    tagName: 'No Tags',
+                    tagId: 0,
+                    selections: [s]
+                });
             } else {
-                o[0].push(s);
+                foundTag.selections.push(s);
             }
         }
     });
 
-    return o;
+    const sorted = sortBy(out, [
+        function(group) {
+            // Sort the 'No Tags' group to the end.
+            if (group && group.tagId === 0) {
+                return null;
+            }
+
+            if (group && group.tagName) {
+                return group.tagName.toLowerCase();
+            }
+
+            return null;
+        }
+    ]);
+
+    return sorted;
 };
 
 /**
  * Given a tag ID and a selection, return the tag name.
  */
-const getTagName = function(tagId, selection) {
+const getTagName = function(tagId, selection, tagCache={}) {
+    if (tagCache[tagId]) {
+        return tagCache[tagId];
+    }
+
     let tagName = 'No Tags';
 
     if (selection.metadata && selection.metadata.tags) {
         selection.metadata.tags.forEach(function(tag) {
             if (parseInt(tag.id, 10) === parseInt(tagId, 10)) {
                 tagName = tag.name;
+                tagCache[tagId] = tagName;
                 return;
             }
         });

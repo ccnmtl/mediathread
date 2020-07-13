@@ -80,7 +80,7 @@ describe('pad2', () => {
 
 describe('groupByTag', () => {
     it('accepts an empty array', () => {
-        expect(groupByTag([])).toStrictEqual({});
+        expect(groupByTag([])).toStrictEqual([]);
     });
 });
 

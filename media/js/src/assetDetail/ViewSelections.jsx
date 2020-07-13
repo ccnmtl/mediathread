@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import {groupByAuthor, groupByTag, getTagName} from '../utils';
+import {groupByAuthor, groupByTag} from '../utils';
 
 export default class ViewSelections extends React.Component {
     constructor(props) {
@@ -89,7 +89,16 @@ export default class ViewSelections extends React.Component {
         const groupedSelections = [];
         let i = 0;
         for (const key in selections) {
-            const selectionGroup = selections[key];
+            let selectionGroup = selections[key];
+            let tagName = null;
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    selectionGroup, 'selections')
+            ) {
+                tagName = selectionGroup.tagName;
+                selectionGroup = selectionGroup.selections;
+            }
 
             selectionGroup.forEach(function(s, idx) {
                 const reactKey = `${key}-${s.id}`;
@@ -102,7 +111,7 @@ export default class ViewSelections extends React.Component {
                     } else {
                         groupedSelections.push(
                             <h5 key={'title-' + reactKey}>
-                                {getTagName(key, s)}
+                                {tagName}
                             </h5>);
                     }
                 }

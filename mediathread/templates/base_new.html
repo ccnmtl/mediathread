@@ -207,6 +207,8 @@ A new base.html without the course context overwritten in the template.
                 {% else %}
                 this.addressable_courses = false;
                 {% endflag %}
+
+                this.tag_cache = {};
             })();
             </script>
 

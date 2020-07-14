@@ -56,7 +56,11 @@ export default class AssetDetail extends React.Component {
         this.playerRef = null;
         this.selection = null;
 
+        this.polygonButtonRef = React.createRef();
+        this.startButtonRef = React.createRef();
+
         this.asset = new Asset(this.props.asset);
+        this.type = this.asset.getType();
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
         this.onPlayToggle = this.onPlayToggle.bind(this);
@@ -331,57 +335,54 @@ export default class AssetDetail extends React.Component {
     }
 
     render() {
-        const type = this.asset.getType();
-
         let media = null;
-        if (type === 'image') {
-            let annotationTools = null;
-            if (this.state.tab !== 'viewItem') {
-                annotationTools = (
-                    <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
-                        <form>
-                            <div className="form-row align-items-center">
-                                <div className="col-sm-4">
-                                    <div className="input-group">
-                                        <div className="form-check form-control-sm">
-                                            <input className="form-check-input" type="checkbox" id="overlayAllCheckbox" />
-                                            <label className="form-check-label" htmlFor="overlayAllCheckbox">
-                                                Overlay all selections
-                                            </label>
-                                        </div>
+        if (this.type === 'image') {
+            const annotationTools = (
+                <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
+                    <form>
+                        <div className="form-row align-items-center">
+                            <div className="col-sm-4">
+                                <div className="input-group">
+                                    <div className="form-check form-control-sm">
+                                        <input className="form-check-input" type="checkbox" id="overlayAllCheckbox" />
+                                        <label className="form-check-label" htmlFor="overlayAllCheckbox">
+                                            Overlay all selections
+                                        </label>
                                     </div>
                                 </div>
-                                <div className="col-sm-8">
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-light btn-sm mr-2"
-                                        disabled={this.state.tab !== 'createSelection'}
-                                        onClick={() => this.addInteraction('Polygon')}>
-                                        <svg className="bi bi-pentagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 0l8 6.5-3 9.5H3L0 6.5 8 0z"></path>
-                                        </svg> Polygon
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-light btn-sm mr-2">
-                                        <svg className="bi bi-plus-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4a.5.5 0 00-1 0v3.5H4a.5.5 0 000 1h3.5V12a.5.5 0 001 0V8.5H12a.5.5 0 000-1H8.5V4z" clipRule="evenodd"></path>
-                                        </svg> Zoom In
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-light btn-sm">
-                                        <svg className="bi bi-dash-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM4 7.5a.5.5 0 000 1h8a.5.5 0 000-1H4z" clipRule="evenodd"></path>
-                                        </svg> Zoom Out
-                                    </button>
-                                </div>
-
                             </div>
-                        </form>
-                    </div>
-                );
-            }
+                            <div className="col-sm-8">
+                                <button
+                                    type="button"
+                                    autoFocus={true}
+                                    ref={this.polygonButtonRef}
+                                    className="btn btn-outline-light btn-sm mr-2 polygon-button"
+                                    disabled={this.state.tab !== 'createSelection'}
+                                    onClick={() => this.addInteraction('Polygon')}>
+                                    <svg className="bi bi-pentagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 0l8 6.5-3 9.5H3L0 6.5 8 0z"></path>
+                                    </svg> Polygon
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm mr-2">
+                                    <svg className="bi bi-plus-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM8.5 4a.5.5 0 00-1 0v3.5H4a.5.5 0 000 1h3.5V12a.5.5 0 001 0V8.5H12a.5.5 0 000-1H8.5V4z" clipRule="evenodd"></path>
+                                    </svg> Zoom In
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-outline-light btn-sm">
+                                    <svg className="bi bi-dash-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fillRule="evenodd" d="M16 8A8 8 0 110 8a8 8 0 0116 0zM4 7.5a.5.5 0 000 1h8a.5.5 0 000-1H4z" clipRule="evenodd"></path>
+                                    </svg> Zoom Out
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            );
 
             media = (
                 <React.Fragment>
@@ -391,7 +392,7 @@ export default class AssetDetail extends React.Component {
                         className="ol-map"></div>
                 </React.Fragment>
             );
-        } else if (type === 'video') {
+        } else if (this.type === 'video') {
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
                     <form>
@@ -402,6 +403,7 @@ export default class AssetDetail extends React.Component {
                                         <div className="input-group-prepend">
                                             <button
                                                 onClick={this.onStartTimeClick}
+                                                ref={this.startButtonRef}
                                                 type="button"
                                                 className="btn btn-outline-light btn-sm">
                                                 Start&nbsp;
@@ -530,6 +532,9 @@ export default class AssetDetail extends React.Component {
                 <div className="row">
 
                     <div className="col-sm-6">
+                        {this.state.tab === 'createSelection' && (
+                            <h3>1. Make a Selection</h3>
+                        )}
                         {media}
                     </div>
 
@@ -578,8 +583,21 @@ export default class AssetDetail extends React.Component {
         );
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.tab !== this.state.tab &&
+                this.state.tab === 'createSelection'
+        ) {
+            if (this.type === 'image') {
+                this.polygonButtonRef.current.focus();
+            } else if (this.type === 'video') {
+                this.startButtonRef.current.focus();
+            }
+        }
+    }
+
     componentDidMount() {
-        if (this.asset.getType() === 'image') {
+        if (this.type === 'image') {
             const thumbnail = this.asset.getThumbnail();
             const img = this.asset.getImage();
 
@@ -617,7 +635,6 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
-
         }
     }
 

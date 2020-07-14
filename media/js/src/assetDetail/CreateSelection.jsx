@@ -125,7 +125,7 @@ export default class CreateSelection extends React.Component {
 
         return (
             <React.Fragment>
-                <h3>Additional Selection Details</h3>
+                <h3>2. Add Details</h3>
 
                 <Alert
                     variant="danger" show={this.props.showCreateError}

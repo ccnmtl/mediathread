@@ -1883,6 +1883,7 @@ class CollectionAddViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
+        self.superuser = UserFactory(is_staff=True, is_superuser=True)
 
     def test_get(self):
         url = reverse('collection-add-view', args=[self.sample_course.id])
@@ -1892,5 +1893,18 @@ class CollectionAddViewTest(MediathreadTestMixin, TestCase):
         self.client.login(
             username=self.instructor_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIsNotNone(response.context['request'])
+        self.assertEqual(response.context['owners'], [])
+        self.assertTrue(response.context['can_upload'])
+        self.assertIsNone(response.context['uploader'])
+        self.assertIsNotNone(response.context['collections'])
+
+        self.enable_upload(self.sample_course)
+
+        self.superuser.groups.add(self.sample_course.group)
+        self.client.login(
+            username=self.superuser.username, password='test')
+        response = self.client.get(url)
+        self.assertIsNotNone(response.context['uploader'])
+        self.assertTrue(len(response.context['owners']) > 0)

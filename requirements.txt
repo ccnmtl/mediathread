@@ -105,7 +105,7 @@ django-smtp-ssl==1.0
 djangorestframework==3.9.4  # pyup: <3.10
 
 ccnmtlsettings==1.8.3
-django-extensions==3.0.2
+django-extensions==3.0.3
 
 s3transfer==0.3.3
 jmespath==0.10.0
@@ -126,7 +126,7 @@ appdirs==1.4.4  # zeep
 attrs==19.3.0  # zeep
 zeep==3.4.0
 
-stevedore==2.0.1
+stevedore==3.1.0
 pyyaml==5.3.1
 bandit==1.6.2
 funcsigs==1.0.2 

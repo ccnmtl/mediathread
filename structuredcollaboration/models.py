@@ -37,19 +37,19 @@ class CollaborationManager(models.Manager):
         if len(object_list) < 1:
             return Collaboration.objects.none()
         else:
-            ctype = ContentType.objects.get_for_model(object_list[0])
+            model_name = object_list[0]._meta.model.__name__.lower()
             ids = [o.id for o in object_list]
 
             prefetch = ['user', 'group', 'context', 'content_object',
                         '_parent', 'policy_record']
-            return self.filter(content_type=ctype,
+            return self.filter(content_type__model=model_name,
                                object_pk__in=ids).prefetch_related(*prefetch)
 
     def get_for_object(self, obj):
-        ctype = ContentType.objects.get_for_model(obj)
+        model_name = obj._meta.model.__name__.lower()
         return self.select_related(
             'user', 'group', '_parent', 'policy_record').get(
-            content_type=ctype, object_pk=obj.pk)
+            content_type__model=model_name, object_pk=obj.pk)
 
 
 @python_2_unicode_compatible
@@ -120,8 +120,9 @@ class Collaboration(models.Model):
         return self._parent
 
     def get_children_for_object(self, obj):
+        model_name = obj._meta.model.__name__.lower()
         return self.children.filter(
-                content_type=ContentType.objects.get_for_model(obj)
+                content_type__model=model_name
             ).prefetch_related('content_object', 'policy_record', 'user')
 
     def get_top_ancestor(self):  # i.e. domain

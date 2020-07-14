@@ -788,7 +788,8 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
                                 title='Selection')
 
         url = view.get_iframe_url('secret', note)
-        prefix = 'http%3A%2F%2Ftestserver%2Fasset%2Fembed%2Fview%2F1%2F1%2F%3F'
+        x = 'http%3A%2F%2Ftestserver%2Fasset%2Fembed%2Fview%2F{}%2F{}%2F%3F'
+        prefix = x.format(self.sample_course.id, note.id)
         self.assertTrue(url.startswith(prefix))
         self.assertTrue('nonce' in url)
         self.assertTrue('hmac' in url)

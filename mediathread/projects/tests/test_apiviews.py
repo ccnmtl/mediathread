@@ -24,7 +24,7 @@ class ProjectSequenceAssetViewSetTest(LoggedInTestMixin, APITestCase):
         psa = ProjectSequenceAssetFactory()
 
         url = '{}?project={}'.format(
-            reverse('projectsequenceasset-list'), psa.id)
+            reverse('projectsequenceasset-list'), psa.project.id)
 
         # anonymous user
         r = self.client.get(url)

@@ -27,6 +27,7 @@ def assignment_responses(project, request):
 
 @register.simple_tag
 def published_assignment_responses(project):
+    # Assumes the requester is an instructor
     return project.collaboration.first().children.filter(
         policy_record__policy_name__in=PUBLISHED).count()
 

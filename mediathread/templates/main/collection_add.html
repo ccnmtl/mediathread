@@ -1,5 +1,7 @@
 {% extends "base_new.html" %}
 {% load static %}
+{% load tagging_tags user_projects helpful_tags coursetags comments %}
+{% load waffle_tags %}
 
 {% block title %}
 Add to Collection
@@ -39,14 +41,57 @@ Add to Collection
                         <p class="lead">
                             Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
                         </p>
-                        <h3>Video</h3>
 
-
-
-                        <h3>Audio</h3>
-
-
-
+                        {% if can_upload and uploader %}
+                            {% flag "uploads_offline" %}
+                                <div class="instructions">
+                                    <p>The upload feature is currently down for maintenance. We will return shortly.</p>
+                                </div>
+                            {% else %}
+                                {% ifequal role_in_course "non-member" %}
+                                    <div class="instructions">
+                                        <p>You must be a course member to upload media files.</p>
+                                    </div>
+                                {% else %}
+                                    <h3>Video</h3>
+                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                        {% if owners %}
+                                        <div class="form-row align-items-center">
+                                            <div class="col-auto my-1">
+                                                <label class="mr-sm-2 sr-only" for="video_owners"></label>
+                                                <select class="custom-select mr-sm-2" id="video_owners" name="as">
+                                                {% for owner in owners %}
+                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                {% endfor %}
+                                                </select>
+                                            </div>
+                                        {% endif %}
+                                            <div classs="col-auto my-1">
+                                                <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <h3>Audio</h3>
+                                        <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                            {% if owners %}
+                                            <div class="form-row align-items-center">
+                                                <div class="col-auto my-1">
+                                                    <label class="mr-sm-2 sr-only" for="audio_owners"></label>
+                                                    <select class="custom-select mr-sm-2" id="audio_owners" name="as">
+                                                    {% for owner in owners %}
+                                                        <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                    {% endfor %}
+                                                    </select>
+                                                </div>
+                                                {% endif %}
+                                                <div class="col-auto my-1">
+                                                    <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                {% endifequal %}
+                            {% endflag %}
+                        {% endif %}
 
                         <h3>Images</h3>
                         <p>Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
@@ -77,6 +122,14 @@ Add to Collection
 {% block js %}
     <script>
         jQuery(document).ready(function() {
+            {% ifequal msg "upload" %}
+                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+                showMessage(msg);
+            {% endifequal %}
+
+            jQuery("a.upload_button").click(function(evt) {
+                jQuery(this).parent().submit();
+            });
         });
     </script>
 {% endblock %}

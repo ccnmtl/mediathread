@@ -40,6 +40,7 @@ export default class ViewSelections extends React.Component {
                 <div
                     id={`selectionCollapse-${key}`}
                     className="collapse"
+                    data-title={s.title}
                     data-parent="#selectionsAccordion">
                     <div className="card-body">
                         {tags.length > 0 && (
@@ -243,12 +244,35 @@ export default class ViewSelections extends React.Component {
                 </Modal>
             </React.Fragment>
         );
+    }
 
+    /**
+     * Returns true if the selections according doesn't have any
+     * annotations selected.
+     */
+    isCollapsed() {
+        return jQuery('#selectionsAccordion .card .collapse.show').length ===
+            0;
+    }
+
+    componentDidMount() {
+        const me = this;
+        jQuery('#selectionsAccordion').on('shown.bs.collapse', function(e) {
+            const title = jQuery(e.target).data('title');
+            me.props.onSelectSelection(title);
+        });
+
+        jQuery('#selectionsAccordion').on('hidden.bs.collapse', function(e) {
+            if (me.isCollapsed()) {
+                me.props.onSelectSelection(null);
+            }
+        });
     }
 }
 
 ViewSelections.propTypes = {
     asset: PropTypes.object,
+    onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,

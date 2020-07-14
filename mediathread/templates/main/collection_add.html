@@ -35,83 +35,89 @@ Add to Collection
                         <h1 class="page-title">Add to Collection</h1>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 order-md-2">
-                        <h2>Upload Media</h2>
-                        <p class="lead">
-                            Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
-                        </p>
 
-                        {% if can_upload and uploader %}
-                            {% flag "uploads_offline" %}
-                                <div class="instructions">
-                                    <p>The upload feature is currently down for maintenance. We will return shortly.</p>
-                                </div>
-                            {% else %}
-                                {% ifequal role_in_course "non-member" %}
+                <div class="row">
+                    {% if can_upload and uploader %}
+                        <div class="col-md-6 order-md-2">
+
+                            <h2>Upload Media</h2>
+                                <p class="lead">
+                                    Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
+                                </p>
+
+
+                                {% flag "uploads_offline" %}
                                     <div class="instructions">
-                                        <p>You must be a course member to upload media files.</p>
+                                        <p>The upload feature is currently down for maintenance. We will return shortly.</p>
                                     </div>
                                 {% else %}
-                                    <h3>Video</h3>
-                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                        {% if owners %}
-                                        <div class="form-row align-items-center">
-                                            <div class="col-auto my-1">
-                                                <label class="mr-sm-2 sr-only" for="video_owners"></label>
-                                                <select class="custom-select mr-sm-2" id="video_owners" name="as">
-                                                {% for owner in owners %}
-                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                {% endfor %}
-                                                </select>
-                                            </div>
-                                        {% endif %}
-                                            <div classs="col-auto my-1">
-                                                <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
-                                            </div>
+                                    {% ifequal role_in_course "non-member" %}
+                                        <div class="instructions">
+                                            <p>You must be a course member to upload media files.</p>
                                         </div>
-                                    </form>
-                                    <h3>Audio</h3>
+                                    {% else %}
+                                        <h3>Video</h3>
                                         <form action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                            {% if owners %}
-                                            <div class="form-row align-items-center">
-                                                <div class="col-auto my-1">
-                                                    <label class="mr-sm-2 sr-only" for="audio_owners"></label>
-                                                    <select class="custom-select mr-sm-2" id="audio_owners" name="as">
-                                                    {% for owner in owners %}
-                                                        <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                    {% endfor %}
-                                                    </select>
+
+                                                <div class="form-row align-items-center">
+                                                    {% if owners %}
+                                                        <div class="col-auto my-1">
+                                                            <label class="mr-sm-2 sr-only" for="video_owners"></label>
+                                                            <select class="custom-select mr-sm-2" id="video_owners" name="as">
+                                                            {% for owner in owners %}
+                                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                            {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div classs="col-auto my-1">
+                                                        <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
+                                                    </div>
                                                 </div>
-                                                {% endif %}
-                                                <div class="col-auto my-1">
-                                                    <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
-                                                </div>
-                                            </div>
                                         </form>
-                                {% endifequal %}
-                            {% endflag %}
-                        {% endif %}
+                                        <h3>Audio</h3>
+                                        <form action="/upload/redirect/{{uploader.id}}/" method="POST">
 
-                        <h3>Images</h3>
-                        <p>Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
-                    </div>
+                                                <div class="form-row align-items-center">
+                                                    {% if owners %}
+                                                        <div class="col-auto my-1">
+                                                            <label class="mr-sm-2 sr-only" for="audio_owners"></label>
+                                                            <select class="custom-select mr-sm-2" id="audio_owners" name="as">
+                                                            {% for owner in owners %}
+                                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                            {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="col-auto my-1">
+                                                        <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
+                                                    </div>
+                                                </div>
+                                        </form>
+                                    {% endifequal %}
+                                {% endflag %}
 
-                    <div class="col-md-6 order-md-1">
-                        <h2>Import Media</h2>
-                        <p class="lead">
-				            Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
-			            </p>
-                        <div class="arrowContent">
-                            {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
-                            {% include "assetmgr/install_chrome_extension.html" %}
-                            {% elif request.user_agent.browser.family == 'Safari' %}
-                            {% include "assetmgr/install_safari_extension.html" %}
-                            {% elif request.user_agent.browser.family == 'Firefox' %}
-                            {% include "assetmgr/install_firefox_extension.html" %}
-                            {% endif %}
+                            <h3>Images</h3>
+                                <p>Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
                         </div>
-                    </div>
+                    {% endif %}
+
+
+                        <div class="col-md-6 order-md-1">
+                            <h2>Import Media</h2>
+                            <p class="lead">
+    				            Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
+    			            </p>
+                            <div class="arrowContent">
+                                {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
+                                {% include "assetmgr/install_chrome_extension.html" %}
+                                {% elif request.user_agent.browser.family == 'Safari' %}
+                                {% include "assetmgr/install_safari_extension.html" %}
+                                {% elif request.user_agent.browser.family == 'Firefox' %}
+                                {% include "assetmgr/install_firefox_extension.html" %}
+                                {% endif %}
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>

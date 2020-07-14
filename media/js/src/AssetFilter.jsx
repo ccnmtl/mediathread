@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {getAssets} from './utils';
+import {getAssets, tagsToReactSelect, termsToReactSelect} from './utils';
 
 export default class AssetFilter extends React.Component {
     constructor(props) {
@@ -139,15 +139,8 @@ export default class AssetFilter extends React.Component {
             });
         }
 
-        let tagsOptions = [];
-        if (this.props.tags) {
-            tagsOptions = this.props.tags.map(function(tag) {
-                return {
-                    value: tag.name,
-                    label: `${tag.name} (${tag.count})`
-                };
-            });
-        }
+        const tagsOptions = tagsToReactSelect(this.props.tags);
+        const termsOptions = termsToReactSelect(this.props.terms);
 
         const termGroupLabel = function(data) {
             return (
@@ -156,29 +149,6 @@ export default class AssetFilter extends React.Component {
                 </div>
             );
         };
-
-        let termsOptions = [];
-        if (this.props.terms) {
-            termsOptions = this.props.terms.map(function(term) {
-                let termOptions = [];
-                term.term_set.forEach(function(t) {
-                    const data = t;
-                    data.vocab_id = term.id;
-
-                    termOptions.push({
-                        label: `${t.display_name} (${t.count})`,
-                        value: t.name,
-                        data: data
-                    });
-                });
-
-                return {
-                    value: term.name,
-                    label: term.name,
-                    options: termOptions
-                };
-            });
-        }
 
         const pages = [];
         for (let i = 0; i < this.pageCount; i++) {

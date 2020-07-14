@@ -461,6 +461,92 @@ const getTagName = function(tagId, selection, tagCache={}) {
     return tagName;
 };
 
+/**
+ * Given an array of selection tags, return these in react-select's
+ * format.
+ */
+const tagsToReactSelect = function(tags, isCreating=false) {
+    if (!tags) {
+        return [];
+    }
+
+    return tags.map(function(tag) {
+        let label = `${tag.name} (${tag.count})`;
+        if (isCreating) {
+            label = tag.name;
+        }
+
+        return {
+            value: tag.name,
+            label: label
+        };
+    });
+};
+
+/**
+ * Given an array of vocabularies, return these in react-select's
+ * format.
+ */
+const termsToReactSelect = function(vocabs) {
+    if (!vocabs) {
+        return [];
+    }
+
+    return vocabs.map(function(term) {
+        const termOptions = [];
+        const termSet = term.term_set || term.terms;
+
+
+        if (termSet) {
+            termSet.forEach(function(t) {
+                const data = t;
+                data.vocab_id = term.id;
+
+                termOptions.push({
+                    label: `${t.display_name} (${t.count})`,
+                    value: t.name,
+                    data: data
+                });
+            });
+        }
+
+        return {
+            value: term.name || term.display_name,
+            label: term.name || term.display_name,
+            options: termOptions
+        };
+    });
+};
+
+/**
+ * Given an array of vocabularies, return just the terms.
+ */
+const termsToReactSelectValues = function(vocabs) {
+    if (!vocabs) {
+        return [];
+    }
+
+    const a = [];
+    vocabs.forEach(function(term) {
+        const termSet = term.term_set || term.terms;
+
+        if (termSet) {
+            termSet.forEach(function(t) {
+                const data = t;
+                data.vocab_id = term.id;
+
+                a.push({
+                    label: t.display_name || t.name,
+                    value: t.name,
+                    data: data
+                });
+            });
+        }
+    });
+
+    return a;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection, createSherdNote,
@@ -470,5 +556,6 @@ export {
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getCoordStyles, transform,
     getPlayerTime, getCourseUrl,
-    groupByAuthor, groupByTag, getTagName
+    groupByAuthor, groupByTag, getTagName,
+    tagsToReactSelect, termsToReactSelect, termsToReactSelectValues
 };

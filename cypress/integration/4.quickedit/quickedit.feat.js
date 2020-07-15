@@ -41,7 +41,7 @@ describe('Instructor Edits the Item Metadata', () => {
 
         cy.log('click edit item');
         cy.get('#asset-item-2 > .actions > .edit-asset > .edit_icon')
-            .trigger('mouseover').click({ force: true });
+            .click({force: true});
 
         cy.log('verify the create form is visible');
         cy.get('#asset-global-annotation-quick-edit').should('exist');

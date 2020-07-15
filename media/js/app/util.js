@@ -34,8 +34,11 @@ function getVisibleContentHeight() {
         viewportheight = document.getElementsByTagName('body')[0].clientHeight;
     }
 
-    return viewportheight -
-        (20 + document.getElementById('header').clientHeight);
+    var elt = document.getElementById('header');
+    if (!elt) {
+        elt = document.getElementById('three-section-tabs');
+    }
+    return viewportheight - (20 + elt.clientHeight);
 }
 
 // eslint-disable-next-line no-unused-vars

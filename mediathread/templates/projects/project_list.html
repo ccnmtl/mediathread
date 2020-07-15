@@ -12,136 +12,134 @@ Projects
 
 {% block content %}
 <div>
-    <div>
-        {% with active='projects' %}
-            {% include 'main/three_section_tabs.html' %}
-        {% endwith %}
-        <div class="tab-content">
-            <div role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="col-md-6">
-                        <h1 class="page-title">Projects</h1>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <div class="form-group col-md-12">
-                            <div class="btn-group" role="group">
-                                <form action="{% url 'project-create' request.course.id %}" method="post">
-                                    <input type="hidden" name="project_type" value="composition" />
-                                    <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
-                                        Add Composition
-                                    </button> 
-                                </form>
-                                <form action="{% url 'project-create' request.course.id %}" method="post">
-                                    <input type="hidden" name="project_type" value="sequence" />
-                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
-                                        Add Sequence
-                                    </button>
-                                </form>
-                            </div>
+    {% with active='projects' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="col-md-6">
+                    <h1 class="page-title">Projects</h1>
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="form-group col-md-12">
+                        <div class="btn-group" role="group">
+                            <form action="{% url 'project-create' request.course.id %}" method="post">
+                                <input type="hidden" name="project_type" value="composition" />
+                                <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
+                                    Add Composition
+                                </button> 
+                            </form>
+                            <form action="{% url 'project-create' request.course.id %}" method="post">
+                                <input type="hidden" name="project_type" value="sequence" />
+                                <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
+                                    Add Sequence
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div id="search-well">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label for="select-owner">Owner</label>
-                            <select id="select-owner" name="owner" class="form-control form-control-sm mb-3">
-                                <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
-                                {% for o in request.course.members %}
-                                    {% if o != user %}
-                                        <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
-                                            {% if o.last_name %}
-                                                {{o.first_name}} {{o.last_name}}
-                                                {% if o.username|length < 10 %}({{o.username}}){% else %}(...){% endif %}
-                                            {% else %}
-                                                {{o.username}}
-                                            {% endif %}
-                                        </option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                {% if paginator.num_pages > 1 %}
-                <div class="row">
-                    <div class="col-md-6 offset-md-6">
-                        <div class="text-right">
-                            {% include 'projects/pagination.html' %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                <form id="search-form" action="." method="get">
-                    <input type="hidden" name="owner" value="{{owner}}">
-                    <input type="hidden" name="sortby" value="{{sortby}}">
-                    <input type="hidden" name="direction" value="{{direction}}">
-                    <input type="hidden" name="page" value="{{page_obj.number}}">
-                    <div class="row">
-                        <div class="col-12">
-                            {% if object_list.exists %}
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped w-100 tablesorter">
-                                        <thead class="thead-darkgray">
-                                            <th data-sort-by="title"
-                                                class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
-                                                Title
-                                            </th>
-                                            <th data-sort-by="visibility">
-                                                Status
-                                            </th>
-                                            <th>
-                                                Action
-                                            </th>
-                                            <th data-sort-by="full_name"
-                                                class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
-                                                Authors
-                                            </th>
-                                            <th data-sort-by="project_type"
-                                                class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
-                                                Type
-                                            </th>
-                                            <th data-sort-by="modified"
-                                                class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
-                                                Last Updated
-                                            </th>
-                                        </thead>
-                                        <tbody>
-                                        {% for object in object_list %}
-                                            <tr>
-                                                <td>
-                                                    {{object.title}}
-                                                </td>
-                                                <td>{{object.visibility_short}}</td>
-                                                <td>
-                                                    <a class="btn btn-sm btn-primary btn-block"
-                                                        href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                                                        View
-                                                    </a>
-                                                </td>
-                                                <td>{{object.attribution}}</td>
-                                                <td>{{object.description}}</td>
-                                                <td>{{object.modified|date:"n/j/y g:iA"}}</td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% else %}
-                                <div class="text-center w-100">
-                                    {% if owner == request.user %}
-                                        <h4 class="ml-1">You have no projects yet.</h4>
-                                    {% else %}{% if owner.last_name %}
-                                        <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
-                                    {% else %}
-                                        <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
-                                    {% endif %}{% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </form>
             </div>
+            <div id="search-well">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="select-owner">Owner</label>
+                        <select id="select-owner" name="owner" class="form-control form-control-sm mb-3">
+                            <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
+                            {% for o in request.course.members %}
+                                {% if o != user %}
+                                    <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
+                                        {% if o.last_name %}
+                                            {{o.first_name}} {{o.last_name}}
+                                            {% if o.username|length < 10 %}({{o.username}}){% else %}(...){% endif %}
+                                        {% else %}
+                                            {{o.username}}
+                                        {% endif %}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {% if paginator.num_pages > 1 %}
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <div class="text-right">
+                        {% include 'projects/pagination.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <form id="search-form" action="." method="get">
+                <input type="hidden" name="owner" value="{{owner}}">
+                <input type="hidden" name="sortby" value="{{sortby}}">
+                <input type="hidden" name="direction" value="{{direction}}">
+                <input type="hidden" name="page" value="{{page_obj.number}}">
+                <div class="row">
+                    <div class="col-12">
+                        {% if object_list.exists %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped w-100 tablesorter">
+                                    <thead class="thead-darkgray">
+                                        <th data-sort-by="title"
+                                            class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                                            Title
+                                        </th>
+                                        <th data-sort-by="visibility">
+                                            Status
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                        <th data-sort-by="full_name"
+                                            class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
+                                            Authors
+                                        </th>
+                                        <th data-sort-by="project_type"
+                                            class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+                                            Type
+                                        </th>
+                                        <th data-sort-by="modified"
+                                            class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+                                            Last Updated
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                    {% for object in object_list %}
+                                        <tr>
+                                            <td>
+                                                {{object.title}}
+                                            </td>
+                                            <td>{{object.visibility_short}}</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-primary btn-block"
+                                                    href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                                                    View
+                                                </a>
+                                            </td>
+                                            <td>{{object.attribution}}</td>
+                                            <td>{{object.description}}</td>
+                                            <td>{{object.modified|date:"n/j/y g:iA"}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center w-100">
+                                {% if owner == request.user %}
+                                    <h4 class="ml-1">You have no projects yet.</h4>
+                                {% else %}{% if owner.last_name %}
+                                    <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
+                                {% else %}
+                                    <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
+                                {% endif %}{% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -27,6 +27,7 @@ describe('Student Creates Composition', () => {
         cy.wait(500);
 
         cy.get('#loaded').should('exist');
+        cy.get('#cu-privacy-notice-icon').click();
         cy.get('.panhandle-stripe.composition').should('exist');
         cy.get('.panel-subcontainer-title')
             .contains('Untitled').should('exist');
@@ -50,13 +51,12 @@ describe('Student Creates Composition', () => {
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('should toggle preview mode');
-        cy.get('#cu-privacy-notice-icon').click();
-        cy.get('.project-previewbutton').trigger('mouseover').click();
+        cy.get('.project-previewbutton').click();
         cy.get('.project-revisionbutton').should('exist');
         cy.contains('Edit').should('exist');
         cy.contains('Preview').should('not.exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant_list').should('not.be', 'visable');
+        cy.get('.participant_list').should('not.be', 'visible');
     });
     // it('should show on Home', () => {
         // TODO: adapt these for new homepage

@@ -174,13 +174,17 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         self.assertEquals(len(the_json['links']), 0)
         self.assertEquals(len(the_json['nodes']), 6)
-        self.assertEquals(the_json['nodes'][0]['nodeName'], 'Alpha')
-        self.assertEquals(the_json['nodes'][1]['nodeName'], 'Response 1')
-        self.assertEquals(the_json['nodes'][2]['nodeName'], 'Response 2')
-        self.assertEquals(the_json['nodes'][3]['nodeName'], 'Beta')
-        self.assertEquals(the_json['nodes'][4]['nodeName'], 'Gamma')
-        self.assertEquals(the_json['nodes'][5]['nodeName'],
-                          'Comment: Instructor One')
+
+        node_names = []
+        for node in the_json['nodes']:
+            node_names.append(node['nodeName'])
+
+        self.assertTrue('Alpha' in node_names)
+        self.assertTrue('Response 1' in node_names)
+        self.assertTrue('Response 2' in node_names)
+        self.assertTrue('Beta' in node_names)
+        self.assertTrue('Gamma' in node_names)
+        self.assertTrue('Comment: Instructor One' in node_names)
 
     def test_mediathread_activity_report(self):
         url = reverse('mediathread-activity-by-course')

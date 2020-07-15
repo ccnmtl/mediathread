@@ -55,31 +55,38 @@
                                         Save
                                     </button>
 
-                                    <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
-                                        <div class="modal-dialog" role="document">
+                                    <div class="save-publish-status modal" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                    <h4 class="modal-title">Save Changes</h4>
+                                                    <h5 class="modal-title">Save Changes</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="well">
-                                                        <div class="right small">required</div>
-                                                        <label for="due_date">Visibility</label><br />
-                                                        <div class="small">Select who can see your work</div><br />
+                                                    <div class="row">
+                                                        <div class="col-10">
+                                                            <h6>Visibility</h6>
+                                                            <p>Select who can see your work.</p>
+                                                        </div>
+                                                        <div class="col small text-right text-danger mr-2">
+                                                            required
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
                                                         {{{context.form.publish}}}
-                                                        <div class="small help-inline">Select who can see your work</div>
                                                     </div>
                                                     {{#context.project.is_essay_assignment}}
                                                     {{#is_faculty}}
-                                                        <div class="due-date well">
+                                                        <div class="form-group">
                                                             <div class="right small">optional</div>
                                                             <label for="due_date">Due Date</label><br />
                                                             <input class="form-control" type="text" name="due_date"
                                                                 value="{{context.project.due_date}}" id="id_due_date">
                                                             <br />
                                                         </div>
-                                                        <div class="response-visibility well">
+                                                        <div class="form-group">
                                                             <div class="right small">required</div>
                                                             <label for="response_view_policy">Responses</label>
                                                             <div class="small">Choose when students can see responses submitted by other students</div><br />

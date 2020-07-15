@@ -13,71 +13,69 @@ Assignments
 {% block content %}
 {% course_role for request.user in request.course as role_in_course %}
 <div>
-    <div>
-        {% with active='assignments' %}
-            {% include 'main/three_section_tabs.html' %}
-        {% endwith %}
-        <div class="tab-content">
-            <div role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="col-md-6">
-                        <h1 class="page-title">Assignments</h1>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        {% if role_in_course != "student" %}
-                            <div class="form-group col-md-12">
-                                <div class="btn-group" role="group">
-                                    <form action="{% url 'project-create' request.course.id %}" method="post">
-                                        <input type="hidden" name="project_type" value="assignment" />
-                                        <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
-                                            Add Composition Assignment
-                                        </button>
-                                    </form>
-                                    <a class="btn btn-sm btn-outline-secondary mr-2"
-                                        href="{% url 'selection-assignment-create' request.course.id %}">
-                                        Add Selection Assignment
-                                    </a>
-                                    <a class="btn btn-sm btn-outline-secondary"
-                                        href="{% url 'sequence-assignment-create' request.course.id %}">
-                                        Add Sequence Assignment
-                                    </a>
-                                </div>
+    {% with active='assignments' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="col-md-6">
+                    <h1 class="page-title">Assignments</h1>
+                </div>
+                <div class="col-md-6 text-right">
+                    {% if role_in_course != "student" %}
+                        <div class="form-group col-md-12">
+                            <div class="btn-group" role="group">
+                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                    <input type="hidden" name="project_type" value="assignment" />
+                                    <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
+                                        Add Composition Assignment
+                                    </button>
+                                </form>
+                                <a class="btn btn-sm btn-outline-secondary mr-2"
+                                    href="{% url 'selection-assignment-create' request.course.id %}">
+                                    Add Selection Assignment
+                                </a>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                    href="{% url 'sequence-assignment-create' request.course.id %}">
+                                    Add Sequence Assignment
+                                </a>
                             </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="search-well">
+            </div>
+            {% if paginator.num_pages > 1 %}
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <div class="text-right">
+                        {% include 'projects/pagination.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <form id="search-form" action="." method="get">
+                <input type="hidden" name="sortby" value="{{sortby}}">
+                <input type="hidden" name="direction" value="{{direction}}">
+                <input type="hidden" name="page" value="{{page_obj.number}}">
+            </form>
+            {% if object_list.exists %}
+                <div class="row">
+                    <div class="col-12">
+                        {% if role_in_course == 'student' %}
+                            {% include 'projects/assignment_table_student.html' %}
+                        {% else %}
+                            {% include 'projects/assignment_table_faculty.html' %}
                         {% endif %}
                     </div>
                 </div>
-                <div id="search-well">
+            {% else %}
+                <div class="text-center w-100">
+                    <h4>You have no assignments yet.</h4>
                 </div>
-                {% if paginator.num_pages > 1 %}
-                <div class="row">
-                    <div class="col-md-6 offset-md-6">
-                        <div class="text-right">
-                            {% include 'projects/pagination.html' %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                <form id="search-form" action="." method="get">
-                    <input type="hidden" name="sortby" value="{{sortby}}">
-                    <input type="hidden" name="direction" value="{{direction}}">
-                    <input type="hidden" name="page" value="{{page_obj.number}}">
-                </form>
-                {% if object_list.exists %}
-                    <div class="row">
-                        <div class="col-12">
-                            {% if role_in_course == 'student' %}
-                                {% include 'projects/assignment_table_student.html' %}
-                            {% else %}
-                                {% include 'projects/assignment_table_faculty.html' %}
-                            {% endif %}
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="text-center w-100">
-                        <h4>You have no assignments yet.</h4>
-                    </div>
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
     </div>
 </div>

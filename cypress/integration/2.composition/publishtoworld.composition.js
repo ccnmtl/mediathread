@@ -40,9 +40,10 @@ describe('Publish To World Public Composition', () => {
             .type('The Columbia Center for New Teaching and Learning');
 
         cy.log('insert an asset');
+        cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
         cy.get('#asset-item-1 > .citationTemplate > .materialCitation')
-            .click();
+            .click({force: true});
 
         cy.log('save project and set project visibility to public');
         cy.get('.project-savebutton').click();
@@ -55,8 +56,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('.last-version-public')
             .should('have.attr', 'href')
             .then((href) => {
-                cy.contains('Instructor One').trigger('mouseover').click();
-                cy.contains('Log Out').click({force: true});
+                cy.get('.sign-out').click({force: true});
                 cy.visit(href);
 
                 cy.get('td.panel-container.open.composition').should('exist');

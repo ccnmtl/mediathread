@@ -494,8 +494,7 @@ export {
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
-    handleBrokenImage, getCoordStyles, transform,
-    getPlayerTime, getCourseUrl,
+    handleBrokenImage, getPlayerTime, getCourseUrl,
     groupByAuthor, groupByTag, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues
 };

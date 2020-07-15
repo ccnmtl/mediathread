@@ -566,6 +566,8 @@ export default class AssetDetail extends React.Component {
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}
+                                tags={this.props.tags}
+                                terms={this.props.terms}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
                                 hideDeleteDialog={this.hideDeleteDialog}

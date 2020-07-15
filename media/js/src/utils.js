@@ -303,13 +303,18 @@ const getCoordStyles = function() {
  * height, and zoom.
  */
 const transform = function(geometry, width, height, zoom) {
+    let coordinates = [];
+    if (geometry.coordinates.length > 0) {
+        coordinates = geometry.coordinates[0];
+    }
+
     return {
         type: geometry.type,
         coordinates: [
-            geometry.coordinates[0].map(function(el) {
+            coordinates.map(function(el) {
                 return [
-                    (width / 2) + (el[0] * (zoom * 2)),
-                    (height / 2) + (el[1] * (zoom * 2))
+                    (width / 2) + (el[0] * (zoom * 4)),
+                    (height / 2) + (el[1] * (zoom * 4))
                 ];
             })
         ]

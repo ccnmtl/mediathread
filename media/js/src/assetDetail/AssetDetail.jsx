@@ -498,6 +498,16 @@ export default class AssetDetail extends React.Component {
             );
         }
 
+        let leftColumnHeader = 'Original Item';
+        if (this.state.tab === 'createSelection') {
+            leftColumnHeader = '1. Make a Selection';
+        } else if (
+            this.state.tab === 'viewSelections' &&
+                this.state.activeSelection
+        ) {
+            leftColumnHeader = this.state.activeSelection;
+        }
+
         return (
             <div className="tab-content asset-detail">
                 <Alert
@@ -539,20 +549,7 @@ export default class AssetDetail extends React.Component {
                 <div className="row">
 
                     <div className="col-sm-6">
-                        {this.state.tab === 'createSelection' && (
-                            <h3>1. Make a Selection</h3>
-                        )}
-
-                        {this.state.tab === 'viewItem' ||
-                         (this.state.tab === 'viewSelections' &&
-                          !this.state.activeSelection) && (
-                             <h3>Original Item</h3>
-                         )}
-
-                        {this.state.tab === 'viewSelections' &&
-                         this.state.activeSelection && (
-                            <h3>{this.state.activeSelection}</h3>
-                        )}
+                        <h3>{leftColumnHeader}</h3>
                         {media}
                     </div>
 

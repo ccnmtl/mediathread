@@ -70,12 +70,12 @@ Add to Collection
                                                             </select>
                                                         </div>
                                                     {% endif %}
-                                                    <div classs="col-auto my-1">
+                                                    <div class="col-auto my-1">
                                                         <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
                                                     </div>
                                                 </div>
                                         </form>
-                                        <h3>Audio</h3>
+                                        <h3 class="mt-2">Audio</h3>
                                         <form action="/upload/redirect/{{uploader.id}}/" method="POST">
 
                                                 <div class="form-row align-items-center">
@@ -97,7 +97,7 @@ Add to Collection
                                     {% endifequal %}
                                 {% endflag %}
 
-                            <h3>Images</h3>
+                            <h3 class="mt-2">Images</h3>
                                 <p>Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
                         </div>
                     {% endif %}

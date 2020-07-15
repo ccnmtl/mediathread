@@ -1,3 +1,5 @@
+/* eslint max-len: 0 */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
@@ -114,8 +116,9 @@ export default class CollectionTab extends React.Component {
             const courseUrl = window.location.href.replace(
                 /\/react\/asset\/\d+/, '');
             backButton = (
-                <div className="btn-group mb-1" role="group"
-                     aria-label="View Toggle">
+                <div
+                    className="btn-group mb-1" role="group"
+                    aria-label="View Toggle">
                     <a
                         href={courseUrl}
                         onClick={this.toggleAssetView}

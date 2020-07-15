@@ -1,0 +1,96 @@
+import GeoJSON from 'ol/format/GeoJSON';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import {
+    Circle as CircleStyle, Fill, Stroke, Style
+} from 'ol/style';
+import MultiPoint from 'ol/geom/MultiPoint';
+
+/**
+ * From Juxtapose.
+ */
+const objectProportioned = function(width, height) {
+    let dim = {w: 180, h: 90};
+    const w = width || 180;
+    const h = height || 90;
+    if (w / 2 > h) {
+        dim.h = Math.ceil(180 * h / w);
+    } else {
+        dim.w = Math.ceil(90 * w / h);
+    }
+    return [-dim.w, -dim.h, dim.w, dim.h];
+};
+
+/**
+ * Get annotation/selection display openlayers styles.
+ */
+const getCoordStyles = function() {
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: 'blue',
+                width: 3
+            }),
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            })
+        }),
+        new Style({
+            image: new CircleStyle({
+                radius: 4,
+                fill: new Fill({
+                    color: 'orange'
+                })
+            }),
+            geometry: function(feature) {
+                // return the coordinates of the first ring of
+                // the polygon
+                var coordinates =
+                    feature.getGeometry().getCoordinates()[0];
+                return new MultiPoint(coordinates);
+            }
+        })
+    ];
+};
+
+/**
+ * Display the given selection on the given OpenLayers map.
+ *
+ * Returns the new VectorLayer.
+ */
+const displaySelection = function(a, map) {
+    const styles = getCoordStyles();
+
+    const geometry = a.annotation.geometry;
+
+    const view = map.getView();
+    const projection = view.getProjection();
+    const source = new VectorSource({
+        features: [
+            new GeoJSON({
+                dataProjection: projection,
+                featureProjection: projection
+            }).readFeature({
+                type: 'Feature',
+                geometry: geometry
+            })
+        ]
+    });
+
+    const newLayer = new VectorLayer({
+        source: source,
+        style: styles
+    });
+
+    map.addLayer(newLayer);
+
+    // Fit the selection in the view
+    const feature = source.getFeatures()[0];
+    const polygon = feature.getGeometry();
+    view.fit(polygon, {padding: [20, 20, 20, 20]});
+    return newLayer;
+};
+
+export {
+    objectProportioned, getCoordStyles, displaySelection
+};

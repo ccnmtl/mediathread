@@ -40,9 +40,10 @@ describe('Publish To World Public Composition', () => {
             .type('The Columbia Center for New Teaching and Learning');
 
         cy.log('insert an asset');
+        cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
         cy.get('#asset-item-1 > .citationTemplate > .materialCitation')
-            .click();
+            .click({force: true});
 
         cy.log('save project and set project visibility to public');
         cy.get('.project-savebutton').click();

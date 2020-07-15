@@ -356,8 +356,13 @@ const groupByAuthor = function(selections) {
             return s.author.id;
         }), [
             function(group) {
-                if (group && group.length > 0 && group[0].author) {
-                    return group[0].author.public_name;
+                if (
+                    group &&
+                        group.length > 0 &&
+                        group[0].author &&
+                        group[0].author.public_name
+                ) {
+                    return group[0].author.public_name.toLowerCase();
                 }
 
                 return null;

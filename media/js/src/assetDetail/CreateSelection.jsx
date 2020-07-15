@@ -9,6 +9,8 @@ import Select from 'react-select';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
+import {tagsToReactSelect, termsToReactSelect} from '../utils';
+
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
@@ -37,6 +39,7 @@ export default class CreateSelection extends React.Component {
 
         return this.setState({validated: true});
     }
+
     onCreateSelection(e) {
         // Get the tags and terms values from the react-select
         // components.
@@ -67,39 +70,10 @@ export default class CreateSelection extends React.Component {
 
         return this.props.onCreateSelection(e, tags, terms);
     }
+
     render() {
-        let tagsOptions = [];
-        if (this.props.tags) {
-            tagsOptions = this.props.tags.map(function(tag) {
-                return {
-                    value: tag.name,
-                    label: `${tag.name} (${tag.count})`
-                };
-            });
-        }
-
-        let termsOptions = [];
-        if (this.props.terms) {
-            termsOptions = this.props.terms.map(function(term) {
-                let termOptions = [];
-                term.term_set.forEach(function(t) {
-                    const data = t;
-                    data.vocab_id = term.id;
-
-                    termOptions.push({
-                        label: `${t.display_name} (${t.count})`,
-                        value: t.name,
-                        data: data
-                    });
-                });
-
-                return {
-                    value: term.name,
-                    label: term.name,
-                    options: termOptions
-                };
-            });
-        }
+        const tagsOptions = tagsToReactSelect(this.props.tags);
+        const termsOptions = termsToReactSelect(this.props.terms);
 
         const reactSelectStyles = {
             container: (provided, state) => ({
@@ -137,65 +111,59 @@ export default class CreateSelection extends React.Component {
                 </Alert>
 
                 <div className="card w-100">
-                    <div
-                        id="collapseZero"
-                        className="collapse show"
-                        aria-labelledby="headingZero"
-                        data-parent="#selectionAccordion">
-                        <div className="card-body">
-                            <Form
-                                validated={this.state.validated}
-                                onSubmit={this.handleSubmit}>
-                                <Form.Group controlId="newSelectionTitle">
-                                    <Form.Label>
-                                        Title
-                                    </Form.Label>
-                                    <Form.Control required type="text" />
-                                </Form.Group>
+                    <div className="card-body">
+                        <Form
+                            validated={this.state.validated}
+                            onSubmit={this.handleSubmit}>
+                            <Form.Group controlId="newSelectionTitle">
+                                <Form.Label>
+                                    Title
+                                </Form.Label>
+                                <Form.Control required type="text" />
+                            </Form.Group>
 
-                                <div className="form-group">
-                                    <label htmlFor="newSelectionTags">Tags</label>
-                                    <Creatable
-                                        id="newSelectionTags"
-                                        ref={this.tagsRef}
-                                        menuPortalTarget={document.body}
-                                        styles={reactSelectStyles}
-                                        className="react-select form-control"
-                                        onChange={this.handleTagsChange}
-                                        isMulti
-                                        options={tagsOptions} />
-                                </div>
+                            <div className="form-group">
+                                <label htmlFor="newSelectionTags">Tags</label>
+                                <Creatable
+                                    id="newSelectionTags"
+                                    ref={this.tagsRef}
+                                    menuPortalTarget={document.body}
+                                    styles={reactSelectStyles}
+                                    className="react-select form-control"
+                                    onChange={this.handleTagsChange}
+                                    isMulti
+                                    options={tagsOptions} />
+                            </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="newSelectionTerms">Terms</label>
-                                    <Select
-                                        id="newSelectionTerms"
-                                        ref={this.termsRef}
-                                        menuPortalTarget={document.body}
-                                        styles={reactSelectStyles}
-                                        className="react-select form-control"
-                                        onChange={this.handleTermsChange}
-                                        isMulti
-                                        options={termsOptions} />
-                                </div>
+                            <div className="form-group">
+                                <label htmlFor="newSelectionTerms">Terms</label>
+                                <Select
+                                    id="newSelectionTerms"
+                                    ref={this.termsRef}
+                                    menuPortalTarget={document.body}
+                                    styles={reactSelectStyles}
+                                    className="react-select form-control"
+                                    onChange={this.handleTermsChange}
+                                    isMulti
+                                    options={termsOptions} />
+                            </div>
 
-                                <Form.Group>
-                                    <label
-                                        htmlFor="newSelectionNotes">
-                                        Notes
-                                    </label>
-                                    <textarea
-                                        className="form-control"
-                                        id="newSelectionNotes"
-                                        rows="3">
-                                    </textarea>
-                                </Form.Group>
+                            <Form.Group>
+                                <label
+                                    htmlFor="newSelectionNotes">
+                                    Notes
+                                </label>
+                                <textarea
+                                    className="form-control"
+                                    id="newSelectionNotes"
+                                    rows="3">
+                                </textarea>
+                            </Form.Group>
 
-                                <Form.Group>
-                                    <Button type="submit" size="sm">Save</Button>
-                                </Form.Group>
-                            </Form>
-                        </div>
+                            <Form.Group>
+                                <Button type="submit" size="sm">Save</Button>
+                            </Form.Group>
+                        </Form>
                     </div>
                 </div>
             </React.Fragment>

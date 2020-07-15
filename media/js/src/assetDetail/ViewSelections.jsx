@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+
+import EditSelectionForm from '../forms/EditSelectionForm';
 import {groupByAuthor, groupByTag} from '../utils';
 
 export default class ViewSelections extends React.Component {
@@ -13,13 +15,32 @@ export default class ViewSelections extends React.Component {
         super(props);
 
         this.state = {
-            groupBy: 'author'
+            groupBy: 'author',
+            isEditing: null
         };
+
+        this.onClickEdit = this.onClickEdit.bind(this);
+        this.onClickCopy = this.onClickCopy.bind(this);
+        this.onClickCancel = this.onClickCancel.bind(this);
     }
 
     onSelectGrouping(e, grouping) {
         e.preventDefault();
         this.setState({groupBy: grouping});
+    }
+
+    onClickEdit(e, s) {
+        e.preventDefault();
+        this.setState({isEditing: s});
+    }
+
+    onClickCopy(e) {
+        e.preventDefault();
+    }
+
+    onClickCancel(e) {
+        e.preventDefault();
+        this.setState({isEditing: null});
     }
 
     renderSelection(s, key, tags, terms) {
@@ -62,10 +83,16 @@ export default class ViewSelections extends React.Component {
                         )}
 
                         <p className="card-text">
-                            <a href="#" className="btn btn-secondary btn-sm">
+                            <a
+                                onClick={(e) => this.onClickEdit(e, s)}
+                                href="#"
+                                className="btn btn-secondary btn-sm">
                                 Edit
                             </a>&nbsp;
-                            <a href="#" className="btn btn-secondary btn-sm">
+                            <a
+                                onClick={(e) => this.onClickCopy(e, s)}
+                                href="#"
+                                className="btn btn-secondary btn-sm">
                                 Copy
                             </a>&nbsp;
                             <a
@@ -133,15 +160,16 @@ export default class ViewSelections extends React.Component {
 
                 const terms = [];
                 if (s.vocabulary) {
-                    s.vocabulary.forEach(function(term, idx) {
-                        const isNotLast = idx < s.vocabulary.length - 1;
-                        terms.push(
-                            <React.Fragment key={`termfragment-${reactKey}-${term.id}`}>
-                                <a href="#">
-                                    {term.display_name}
-                                </a>{isNotLast && ', '}
-                            </React.Fragment>
-                        );
+                    s.vocabulary.forEach(function(vocab) {
+                        vocab.terms.forEach(function(term) {
+                            terms.push(
+                                <React.Fragment key={`termfragment-${reactKey}-${term.id}`}>
+                                    <a href="#">
+                                        {term.display_name}
+                                    </a>,&nbsp;
+                                </React.Fragment>
+                            );
+                        });
                     });
                 }
 
@@ -162,7 +190,25 @@ export default class ViewSelections extends React.Component {
         return groupedSelections;
     }
 
+    renderEditForm(selection) {
+        return (
+            <React.Fragment>
+                <h3>Edit Details</h3>
+                <EditSelectionForm
+                    selection={selection}
+                    tags={this.props.tags}
+                    terms={this.props.terms}
+                    onClickCancel={this.onClickCancel}
+                />
+            </React.Fragment>
+        );
+    }
+
     render() {
+        if (this.state.isEditing) {
+            return this.renderEditForm(this.state.isEditing);
+        }
+
         const checkmark = (
             <svg
                 width="1em" height="1em" viewBox="0 0 16 16"
@@ -251,8 +297,9 @@ export default class ViewSelections extends React.Component {
      * annotations selected.
      */
     isCollapsed() {
-        return jQuery('#selectionsAccordion .card .collapse.show').length ===
-            0;
+        return jQuery(
+            '#selectionsAccordion .card .collapse.show'
+        ).length === 0;
     }
 
     componentDidMount() {
@@ -272,6 +319,8 @@ export default class ViewSelections extends React.Component {
 
 ViewSelections.propTypes = {
     asset: PropTypes.object,
+    tags: PropTypes.array,
+    terms: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,

@@ -1,3 +1,5 @@
+/* eslint max-len: 0 */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
@@ -229,9 +231,10 @@ export default class AssetFilter extends React.Component {
                             <li className={'page-item ' + (
                                 this.state.currentPage <= 0 ? 'disabled' : ''
                             )}>
-                                <a className="page-link" href="#"
-                                   aria-label="First"
-                                   onClick={this.firstPage}>
+                                <a
+                                    className="page-link" href="#"
+                                    aria-label="First"
+                                    onClick={this.firstPage}>
                                     First
                                 </a>
                             </li>

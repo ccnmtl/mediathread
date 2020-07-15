@@ -2,11 +2,6 @@ import isFinite from 'lodash/isFinite';
 import find from 'lodash/find';
 import {groupBy, sortBy} from 'lodash';
 
-import {
-    Circle as CircleStyle, Fill, Stroke, Style
-} from 'ol/style';
-import MultiPoint from 'ol/geom/MultiPoint';
-
 /**
  * A wrapper for `fetch` that passes along auth credentials.
  */
@@ -267,61 +262,6 @@ const handleBrokenImage = function(assetType) {
 };
 
 /**
- * Get annotation/selection display openlayers styles.
- */
-const getCoordStyles = function() {
-    return [
-        new Style({
-            stroke: new Stroke({
-                color: 'blue',
-                width: 3
-            }),
-            fill: new Fill({
-                color: 'rgba(0, 0, 255, 0.1)'
-            })
-        }),
-        new Style({
-            image: new CircleStyle({
-                radius: 4,
-                fill: new Fill({
-                    color: 'orange'
-                })
-            }),
-            geometry: function(feature) {
-                // return the coordinates of the first ring of
-                // the polygon
-                var coordinates =
-                    feature.getGeometry().getCoordinates()[0];
-                return new MultiPoint(coordinates);
-            }
-        })
-    ];
-};
-
-/**
- * Transform a relative geometry object to absolute, given a width,
- * height, and zoom.
- */
-const transform = function(geometry, width, height, zoom) {
-    let coordinates = [];
-    if (geometry.coordinates.length > 0) {
-        coordinates = geometry.coordinates[0];
-    }
-
-    return {
-        type: geometry.type,
-        coordinates: [
-            coordinates.map(function(el) {
-                return [
-                    (width / 2) + (el[0] * (zoom * 4)),
-                    (height / 2) + (el[1] * (zoom * 4))
-                ];
-            })
-        ]
-    };
-};
-
-/**
  * Given a react-player ref, return its current time.
  *
  * Returns a number, or a Promise on Vimeo videos.
@@ -468,7 +408,6 @@ export {
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
-    handleBrokenImage, getCoordStyles, transform,
-    getPlayerTime, getCourseUrl,
+    handleBrokenImage, getPlayerTime, getCourseUrl,
     groupByAuthor, groupByTag, getTagName
 };

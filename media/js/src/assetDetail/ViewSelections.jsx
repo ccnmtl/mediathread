@@ -7,6 +7,8 @@ import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
+import find from 'lodash/find';
+
 import EditSelectionForm from '../forms/EditSelectionForm';
 import {groupByAuthor, groupByTag} from '../utils';
 
@@ -62,6 +64,7 @@ export default class ViewSelections extends React.Component {
                     id={`selectionCollapse-${key}`}
                     className="collapse"
                     data-title={s.title}
+                    data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
                     <div className="card-body">
                         {tags.length > 0 && (
@@ -94,11 +97,6 @@ export default class ViewSelections extends React.Component {
                                 href="#"
                                 className="btn btn-secondary btn-sm">
                                 Copy
-                            </a>&nbsp;
-                            <a
-                                href="#" className="btn btn-primary btn-sm"
-                                onClick={(e) => this.props.onViewSelection(e, s)}>
-                                View
                             </a>
                         </p>
                     </div>
@@ -199,6 +197,7 @@ export default class ViewSelections extends React.Component {
                     tags={this.props.tags}
                     terms={this.props.terms}
                     onClickCancel={this.onClickCancel}
+                    onSaveSelection={function() {}}
                 />
             </React.Fragment>
         );
@@ -302,18 +301,44 @@ export default class ViewSelections extends React.Component {
         ).length === 0;
     }
 
-    componentDidMount() {
+    registerAccordionEvents() {
         const me = this;
-        jQuery('#selectionsAccordion').on('shown.bs.collapse', function(e) {
+        const $selectionsAccordion = jQuery('#selectionsAccordion');
+
+        $selectionsAccordion.on('shown.bs.collapse', function(e) {
             const title = jQuery(e.target).data('title');
             me.props.onSelectSelection(title);
         });
 
-        jQuery('#selectionsAccordion').on('hidden.bs.collapse', function(e) {
+        $selectionsAccordion.on('show.bs.collapse', function(e) {
+            const selectionId = parseInt(
+                jQuery(e.target).data('selectionid'), 10);
+            const selection = find(me.props.asset.annotations, function(s) {
+                return s.id === selectionId;
+            });
+            me.props.onViewSelection(e, selection);
+        });
+
+        $selectionsAccordion.on('hidden.bs.collapse', function(e) {
             if (me.isCollapsed()) {
                 me.props.onSelectSelection(null);
             }
         });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.isEditing !== this.state.isEditing &&
+                !this.state.isEditing
+        ) {
+            // When coming out of the isEditing state, re-register the
+            // accordion event listeners.
+            this.registerAccordionEvents();
+        }
+    }
+
+    componentDidMount() {
+        this.registerAccordionEvents();
     }
 }
 

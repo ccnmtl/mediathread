@@ -279,8 +279,6 @@ export default class AssetDetail extends React.Component {
     }
 
     onViewSelection(e, a) {
-        e.preventDefault();
-
         const type = this.asset.getType();
 
         if (type === 'image') {

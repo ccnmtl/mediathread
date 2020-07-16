@@ -7,7 +7,14 @@ import {
 import MultiPoint from 'ol/geom/MultiPoint';
 
 /**
- * From Juxtapose.
+ * objectProportioned()
+ *
+ * Return an extent appropriate for the given width and height of an
+ * image. This is used in the projections (both initial and GeoJSON
+ * annotation projections) in order for the co-ordinates to match up
+ * on the source image correctly.
+ *
+ * This was taken Juxtapose / SherdJS.
  */
 const objectProportioned = function(width, height) {
     let dim = {w: 180, h: 90};

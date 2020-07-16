@@ -20,7 +20,7 @@ import Asset from '../Asset';
 import {
     getAsset, createSherdNote, deleteSelection,
     formatTimecode, parseTimecode,
-    getPlayerTime
+    getPlayerTime, openSelectionAccordionItem
 } from '../utils';
 import {objectProportioned, displaySelection} from '../openlayersUtils';
 import CreateSelection from './CreateSelection';
@@ -40,9 +40,6 @@ export default class AssetDetail extends React.Component {
             deletingSelectionId: null,
             showDeleteDialog: false,
             showDeletedDialog: false,
-
-            createdSelectionTitle: '',
-            showCreatedDialog: false,
 
             showCreateError: false,
             createError: null,
@@ -71,7 +68,6 @@ export default class AssetDetail extends React.Component {
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
         this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
         this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
-        this.hideCreatedDialog = this.hideCreatedDialog.bind(this);
 
         this.onStartTimeUpdate = this.onStartTimeUpdate.bind(this);
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
@@ -147,21 +143,23 @@ export default class AssetDetail extends React.Component {
             });
         }
 
-        return promise.then(function() {
-            me.setState({
-                createdSelectionTitle: selectionTitle,
-                showCreatedDialog: true,
+        return promise.then(function(createdSelection) {
+            return me.setState({
+                activeSelection: createdSelection.title,
                 tab: 'viewSelections'
             }, function() {
-                const elt = document.getElementById('create-success-alert');
-                elt.scrollIntoView();
-            });
-
-            // Refresh the selections.
-            return getAsset(me.asset.asset.id).then(function(d) {
-                me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
-
-
+                // Refresh the selections.
+                return getAsset(me.asset.asset.id)
+                    .then(function(d) {
+                        return me.props.onUpdateAsset(
+                            d.assets[me.asset.asset.id]);
+                    }).then(function() {
+                        // Open this selection's accordion item.
+                        openSelectionAccordionItem(
+                            jQuery('#selectionsAccordion'),
+                            createdSelection.id
+                        );
+                    });
             });
         }, function(errorText) {
             me.setState({
@@ -268,10 +266,6 @@ export default class AssetDetail extends React.Component {
 
     hideDeletedDialog() {
         this.setState({showDeletedDialog: false});
-    }
-
-    hideCreatedDialog() {
-        this.setState({showCreatedDialog: false});
     }
 
     onSelectSelection(selectionTitle) {
@@ -514,15 +508,6 @@ export default class AssetDetail extends React.Component {
                     </div>
 
                     <div className="col-sm-6">
-                        <Alert
-                            variant="success" show={this.state.showCreatedDialog}
-                            onClose={this.hideCreatedDialog} dismissible
-                            id="create-success-alert">
-                            <Alert.Heading>
-                                Selection &quot;{this.state.createdSelectionTitle}&quot; created.
-                            </Alert.Heading>
-                        </Alert>
-
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}

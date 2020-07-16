@@ -492,6 +492,20 @@ const termsToReactSelectValues = function(vocabs) {
     return a;
 };
 
+/**
+ * Open the selectionId selection in the given accordion.
+ */
+const openSelectionAccordionItem = function($accordion, selectionId) {
+    $accordion.find('.collapse').each(function(idx, el) {
+        const $el = jQuery(el);
+        const sId = parseInt($el.data('selectionid'), 10);
+        if (selectionId === sId) {
+            $el.addClass('show');
+            return false;
+        }
+    });
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection, createSherdNote,
@@ -501,5 +515,6 @@ export {
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getPlayerTime, getCourseUrl,
     groupByAuthor, groupByTag, getTagName,
-    tagsToReactSelect, termsToReactSelect, termsToReactSelectValues
+    tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
+    openSelectionAccordionItem
 };

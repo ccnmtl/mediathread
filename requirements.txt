@@ -115,7 +115,7 @@ boto3>=1.13.0,<1.15.0
 
 entrypoints==0.3
 django-storages==1.9.1
-django-cacheds3storage==0.2.1
+django-cacheds3storage==0.2.2
 
 requests-toolbelt==0.9.1
 pytz==2020.1

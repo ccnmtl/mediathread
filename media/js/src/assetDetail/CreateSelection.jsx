@@ -11,6 +11,28 @@ import Form from 'react-bootstrap/Form';
 
 import {tagsToReactSelect, termsToReactSelect} from '../utils';
 
+const reactSelectStyles = {
+    container: (provided, state) => ({
+        ...provided,
+        padding: 0,
+        height: 'fit-content',
+    }),
+    control: (provided, state) => ({
+        ...provided,
+        borderWidth: 0,
+        minHeight: 'fit-content',
+        height: 'fit-content'
+    }),
+    singleValue: (provided, state) => ({
+        ...provided,
+        top: '45%'
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        top: '45%'
+    })
+};
+
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
@@ -21,9 +43,9 @@ export default class CreateSelection extends React.Component {
 
         this.tagsRef = React.createRef();
         this.termsRef = React.createRef();
+        this.titleFieldRef = React.createRef();
+
         this.onCreateSelection = this.onCreateSelection.bind(this);
-
-
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -75,28 +97,6 @@ export default class CreateSelection extends React.Component {
         const tagsOptions = tagsToReactSelect(this.props.tags);
         const termsOptions = termsToReactSelect(this.props.terms);
 
-        const reactSelectStyles = {
-            container: (provided, state) => ({
-                ...provided,
-                padding: 0,
-                height: 'fit-content',
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                borderWidth: 0,
-                minHeight: 'fit-content',
-                height: 'fit-content'
-            }),
-            singleValue: (provided, state) => ({
-                ...provided,
-                top: '45%'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                top: '45%'
-            })
-        };
-
         return (
             <React.Fragment>
                 <h3>2. Add Details</h3>
@@ -113,13 +113,16 @@ export default class CreateSelection extends React.Component {
                 <div className="card w-100">
                     <div className="card-body">
                         <Form
+                            noValidate
                             validated={this.state.validated}
                             onSubmit={this.handleSubmit}>
                             <Form.Group controlId="newSelectionTitle">
                                 <Form.Label>
                                     Title
                                 </Form.Label>
-                                <Form.Control required type="text" />
+                                <Form.Control
+                                    required type="text"
+                                    ref={this.titleFieldRef} />
                             </Form.Group>
 
                             <div className="form-group">
@@ -169,6 +172,16 @@ export default class CreateSelection extends React.Component {
             </React.Fragment>
         );
     }
+
+    componentDidMount() {
+        const me = this;
+
+        const titleField = this.titleFieldRef.current;
+        titleField.addEventListener('invalid', function(e) {
+            me.props.onShowValidationError(
+                'Please specify a selection title.');
+        });
+    }
 }
 
 CreateSelection.propTypes = {
@@ -182,6 +195,7 @@ CreateSelection.propTypes = {
     onStartTimeClick: PropTypes.func.isRequired,
     onEndTimeClick: PropTypes.func.isRequired,
     onCreateSelection: PropTypes.func.isRequired,
+    onShowValidationError: PropTypes.func.isRequired,
     showCreateError: PropTypes.bool.isRequired,
     createError: PropTypes.string
 };

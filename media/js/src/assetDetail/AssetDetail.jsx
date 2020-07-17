@@ -41,6 +41,8 @@ export default class AssetDetail extends React.Component {
             showDeleteDialog: false,
             showDeletedDialog: false,
 
+            validationError: null,
+
             showCreateError: false,
             createError: null,
 
@@ -65,9 +67,13 @@ export default class AssetDetail extends React.Component {
         this.onPlayToggle = this.onPlayToggle.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
+
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
         this.hideDeleteDialog = this.hideDeleteDialog.bind(this);
         this.hideDeletedDialog = this.hideDeletedDialog.bind(this);
+
+        this.onShowValidationError = this.onShowValidationError.bind(this);
+        this.hideValidationError = this.hideValidationError.bind(this);
 
         this.onStartTimeUpdate = this.onStartTimeUpdate.bind(this);
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
@@ -266,6 +272,14 @@ export default class AssetDetail extends React.Component {
 
     hideDeletedDialog() {
         this.setState({showDeletedDialog: false});
+    }
+
+    onShowValidationError(errorMsg) {
+        this.setState({validationError: errorMsg});
+    }
+
+    hideValidationError() {
+        this.setState({validationError: null});
     }
 
     onSelectSelection(selectionTitle) {
@@ -500,8 +514,17 @@ export default class AssetDetail extends React.Component {
                     </Nav.Item>
                 </Nav>
 
-                <div className="row">
+                <div className="col-md-6 offset-md-3">
+                    <Alert
+                        dismissible
+                        variant="danger"
+                        onClose={this.hideValidationError}
+                        show={!!this.state.validationError}>
+                        {this.state.validationError}
+                    </Alert>
+                </div>
 
+                <div className="row">
                     <div className="col-sm-7">
                         <h3>{leftColumnHeader}</h3>
                         {media}
@@ -532,6 +555,7 @@ export default class AssetDetail extends React.Component {
                                 onStartTimeClick={this.onStartTimeClick}
                                 onEndTimeClick={this.onEndTimeClick}
                                 onCreateSelection={this.onCreateSelection}
+                                onShowValidationError={this.onShowValidationError}
                                 showCreateError={this.state.showCreateError}
                                 createError={this.state.createError}
                             />

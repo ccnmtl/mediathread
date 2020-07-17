@@ -5,6 +5,46 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import {getAssets, tagsToReactSelect, termsToReactSelect} from './utils';
 
+// Make the react-select inputs look like Bootstrap's
+// form-control-sm.
+//
+// https://react-select.com/styles#style-object
+//
+const reactSelectStyles = {
+    container: (provided, state) => ({
+        ...provided,
+        padding: 0,
+        height: 'fit-content',
+        zIndex: 5
+    }),
+    control: (provided, state) => ({
+        ...provided,
+        borderWidth: 0,
+        minHeight: 'fit-content',
+        height: 'fit-content'
+    }),
+    singleValue: (provided, state) => ({
+        ...provided,
+        top: '45%'
+    }),
+    placeholder: (provided, state) => ({
+        ...provided,
+        top: '45%'
+    }),
+    menuPortal: (provided, state) => ({
+        ...provided,
+        zIndex: 4
+    }),
+    indicatorsContainer: (provided, state) => ({
+        ...provided,
+        height: '29px'
+    }),
+    input: (provided, state) => ({
+        ...provided,
+        height: '21px'
+    })
+};
+
 export default class AssetFilter extends React.Component {
     constructor(props) {
         super(props);
@@ -252,46 +292,6 @@ export default class AssetFilter extends React.Component {
                 </div>
             );
         }
-
-        // Make the react-select inputs look like Bootstrap's
-        // form-control-sm.
-        //
-        // https://react-select.com/styles#style-object
-        //
-        const reactSelectStyles = {
-            container: (provided, state) => ({
-                ...provided,
-                padding: 0,
-                height: 'fit-content',
-                zIndex: 5
-            }),
-            control: (provided, state) => ({
-                ...provided,
-                borderWidth: 0,
-                minHeight: 'fit-content',
-                height: 'fit-content'
-            }),
-            singleValue: (provided, state) => ({
-                ...provided,
-                top: '45%'
-            }),
-            placeholder: (provided, state) => ({
-                ...provided,
-                top: '45%'
-            }),
-            menuPortal: (provided, state) => ({
-                ...provided,
-                zIndex: 4
-            }),
-            indicatorsContainer: (provided, state) => ({
-                ...provided,
-                height: '29px'
-            }),
-            input: (provided, state) => ({
-                ...provided,
-                height: '21px'
-            })
-        };
 
         return (
             <React.Fragment>

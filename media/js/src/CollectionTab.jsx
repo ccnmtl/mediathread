@@ -135,8 +135,16 @@ export default class CollectionTab extends React.Component {
 
         return (
             <div role="tabpanel">
-                <h1 className="page-title">Collection</h1>
 
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+
+                    <h1 className="page-title">Collection</h1>
+
+                    <div className="btn btn-outline-secondary" aria-label="Add to Collection">
+                        <a href={window.location.href.concat('collection/add/')} title="add to collection">Add to Collection</a>
+                    </div>
+
+                </div>
                 {backButton}
 
                 <AssetFilter

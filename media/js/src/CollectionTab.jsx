@@ -140,11 +140,10 @@ export default class CollectionTab extends React.Component {
 
                     <h1 className="page-title">Collection</h1>
 
-                    <div className="btn btn-outline-secondary" aria-label="Add to Collection">
-                        <a href={window.location.href.concat('collection/add/')} title="add to collection">Add to Collection</a>
-                    </div>
-
+                    <a className="btn btn-outline-secondary" aria-label="Add to Collection"
+                        href={window.location.href.concat('collection/add/')} title="add to collection">Add to Collection</a>
                 </div>
+
                 {backButton}
 
                 <AssetFilter

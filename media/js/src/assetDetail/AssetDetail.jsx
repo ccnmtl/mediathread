@@ -502,12 +502,12 @@ export default class AssetDetail extends React.Component {
 
                 <div className="row">
 
-                    <div className="col-sm-6">
+                    <div className="col-sm-7">
                         <h3>{leftColumnHeader}</h3>
                         {media}
                     </div>
 
-                    <div className="col-sm-6">
+                    <div className="col-sm-5">
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
                                 asset={this.props.asset}

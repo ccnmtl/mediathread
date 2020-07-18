@@ -8,7 +8,12 @@ describe('Instructor Feat: Test Create Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a')
+            .contains('MAAP Award Reception');
+        cy.get('.card-title a')
+            .contains("The Armory - Home to CCNMTL's CUMC Office");
+        cy.get('.card-title a')
+            .contains("Mediathread: Introduction");
     });
 
     it('should create a composition as an Instructor', () => {

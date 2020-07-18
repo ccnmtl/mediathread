@@ -65,7 +65,7 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.last-version-public').should('exist');
                 cy.get('.project-revisionbutton').should('not.exist');
                 cy.get('.project-editbutton.active').should('not.exist');
-                cy.get('.project-previewbutton.active').should('exist');
+                cy.get('.project-previewbutton.active').should('not.exist');
                 cy.get('.project-savebutton').should('not.exist');
                 cy.get('.participant_list').should('not.exist');
                 cy.get('.materialCitation').click();

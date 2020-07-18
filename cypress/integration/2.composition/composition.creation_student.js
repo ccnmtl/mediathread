@@ -48,7 +48,7 @@ describe('Student Creates Composition', () => {
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
-        cy.get('.btn-primary').contains('Save').click();
+        cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('should toggle preview mode');

@@ -720,7 +720,9 @@ ProjectPanelHandler.prototype.beforeUnload = function() {
             }
         }
     }
-    return msg;
+    if (msg) {
+        return msg;
+    }
 };
 
 ProjectPanelHandler.prototype._bind = function($parent, elementSelector,

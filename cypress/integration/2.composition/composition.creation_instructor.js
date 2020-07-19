@@ -8,9 +8,10 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Instructor Creates Composition', () => {
     beforeEach(() => {
+        cy.visit('/course/1/');
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('should create a composition as an Instructor', () => {
@@ -78,12 +79,19 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
         cy.get('.participant-edit-container').should('not.be.visible');
-        cy.get('.participant-container').should('be', 'visible');
+        cy.get('.participant-container').should('be.visible');
     });
 
-    it('should show on Home', () => {
-        cy.visit('/');
-        // TODO: write this test when new Assignments tab is done.
+    it('should show on projects page', () => {
+        cy.visit('/course/1/projects/');
+        cy.contains('Composition: Scenario 1').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(0).contains('Composition: Scenario 1');
+            cy.get('td').eq(1).contains('Draft');
+            cy.get('td').eq(2).contains('a', 'View');
+            cy.get('td').eq(3).contains('Instructor One');
+            cy.get('td').eq(4).contains('Composition');
+        });
     });
 
 });

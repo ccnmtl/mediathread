@@ -29,6 +29,8 @@ describe('Student Creates Composition', () => {
         cy.get('#loaded').should('exist');
         cy.get('#cu-privacy-notice-icon').click();
 
+        cy.get('a.nav-link.active').contains('Projects');
+
         cy.get('.page-title-form input').should('be.visible');
         cy.get('.page-title-form input').should('have.value', 'Untitled')
         cy.contains('ul', 'Student One').should('exist');
@@ -60,14 +62,17 @@ describe('Student Creates Composition', () => {
         cy.get('.participant-edit-container').should('not.be', 'visible');
         cy.get('.participant-container').should('be', 'visible');
     });
-    // it('should show on Home', () => {
-        // TODO: adapt these for new homepage
 
-        // cy.visit('/');
-        // cy.get('#course_title_link').should('exist').click();
-        // cy.get('#loaded').should('exist');
-        // cy.get('li.projectlist').its('length').should('be.gt', 0);
-        // cy.get('.asset_title').should('contain', 'Composition: Scenario 2');
-        // cy.get('.metadata-value-author').should('contain', 'Student One');
-    // });
+    it('should show on projects page', () => {
+        cy.visit('/course/1/projects/');
+        cy.contains('Composition: Scenario 2').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(0).contains('Composition: Scenario 2');
+            cy.get('td').eq(1).contains('Draft');
+            cy.get('td').eq(2).contains('a', 'View');
+            cy.get('td').eq(3).contains('Student One');
+            cy.get('td').eq(4).contains('Composition');
+        });
+    });
+
 });

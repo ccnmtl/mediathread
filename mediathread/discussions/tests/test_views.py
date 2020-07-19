@@ -11,7 +11,7 @@ from django_comments.models import Comment
 
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.discussions.views import \
-    discussion_create, DiscussionView
+    DiscussionCreateView, DiscussionView
 from mediathread.factories import MediathreadTestMixin, ProjectFactory
 from structuredcollaboration.models import Collaboration
 
@@ -54,7 +54,9 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
                 object_pk=self.sample_course.pk)
-        discussion_create(request)
+        view = DiscussionCreateView()
+        view.request = request
+        view.post(request)
 
         discussion = project.feedback_discussion()
         self.assertIsNotNone(discussion)

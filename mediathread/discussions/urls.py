@@ -1,13 +1,13 @@
 from django.urls import path
 
 from mediathread.discussions.views import (
-    DiscussionView, DiscussionDeleteView, discussion_create,
+    DiscussionView, DiscussionDeleteView, DiscussionCreateView,
     comment_save
 )
 
 
 urlpatterns = [
-    path('create/', discussion_create, name='discussion-create'),
+    path('create/', DiscussionCreateView.as_view(), name='discussion-create'),
 
     path('delete/<int:discussion_id>/',
          DiscussionDeleteView.as_view(), {},

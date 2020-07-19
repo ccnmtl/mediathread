@@ -1,133 +1,135 @@
 from datetime import datetime
-import json
-from random import choice
-from string import ascii_letters
-import waffle
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.utils.encoding import smart_text
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import View
-from django.utils.encoding import smart_text
-from django.utils.decorators import method_decorator
-from django_comments.models import COMMENT_MAX_LENGTH
-
 import django_comments
+from django_comments.models import COMMENT_MAX_LENGTH
 from djangohelpers.lib import rendered_with, allow_http
-from threadedcomments.models import ThreadedComment
-from threadedcomments.util import annotate_tree_properties, fill_tree
-
+import json
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import DiscussionIndex
-from mediathread.mixins import faculty_only, LoggedInCourseMixin, \
-    LoggedInFacultyMixin
+from mediathread.main.course_details import cached_course_collaboration
+from mediathread.mixins import LoggedInCourseMixin, LoggedInFacultyMixin
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from random import choice
+from string import ascii_letters
 from structuredcollaboration.models import Collaboration
+from threadedcomments.models import ThreadedComment
+from threadedcomments.util import annotate_tree_properties, fill_tree
+import waffle
 
 
-@allow_http("POST")
-@faculty_only
-def discussion_create(request):
+class DiscussionCreateView(LoggedInFacultyMixin, View):
 
-    """Start a discussion of an arbitrary model instance."""
-    title = request.POST['comment_html']
-    comment = request.POST.get('comment', '')
+    def post(self, request, *args, **kwargs):
 
-    # Find the object we're discussing.
-    the_content_type = ContentType.objects.get(
-        app_label=request.POST['app_label'], model=request.POST['model'])
-    assert the_content_type is not None
+        """Start a discussion of an arbitrary model instance."""
+        title = request.POST['comment_html']
+        comment = request.POST.get('comment', '')
 
-    the_object = the_content_type.get_object_for_this_type(
-        pk=request.POST['obj_pk'])
-    assert the_object is not None
+        # Find the object we're discussing.
+        the_content_type = ContentType.objects.get(
+            app_label=request.POST['app_label'], model=request.POST['model'])
+        assert the_content_type is not None
 
-    try:
-        obj_sc = Collaboration.objects.get_for_object(the_object)
-    except Collaboration.DoesNotExist:
-        obj_sc = Collaboration()
-        # TODO: populate this collab with sensible auth defaults.
-        obj_sc.content_object = the_object
-        obj_sc.save()
+        the_object = the_content_type.get_object_for_this_type(
+            pk=request.POST['obj_pk'])
+        assert the_object is not None
 
-    # sky: I think what I want to do is have the ThreadedComment
-    # point to the_object
-    # and the collaboration will point to the threaded root comment
-    # that way, whereas, if we live in Collaboration-land,
-    # we can get to ThreadedComments
-    # threaded comments can also live in it's own world without 'knowing'
-    # about SC OTOH, threaded comment shouldn't be able
-    # to point to the regular object
-    # until Collaboration says it's OK (i.e. has permissions)
-    # ISSUE: how to migrate? (see models.py)
+        try:
+            obj_sc = Collaboration.objects.get_for_object(the_object)
+        except Collaboration.DoesNotExist:
+            obj_sc = Collaboration()
+            # TODO: populate this collab with sensible auth defaults.
+            obj_sc.content_object = the_object
+            obj_sc.save()
 
-    # now create the CHILD collaboration object for the discussion to point at.
-    # This represents the auth for the discussion itself.
-    disc_sc = Collaboration(_parent=obj_sc,
-                            title=title,
-                            # or we could point it at the root
-                            # threadedcomments object.
-                            # content_object=None,
-                            context=request.collaboration_context,
-                            )
-    disc_sc.set_policy(request.POST.get('publish', None))
-    disc_sc.save()
+        # sky: I think what I want to do is have the ThreadedComment
+        # point to the_object
+        # and the collaboration will point to the threaded root comment
+        # that way, whereas, if we live in Collaboration-land,
+        # we can get to ThreadedComments
+        # threaded comments can also live in it's own world without 'knowing'
+        # about SC OTOH, threaded comment shouldn't be able
+        # to point to the regular object
+        # until Collaboration says it's OK (i.e. has permissions)
+        # ISSUE: how to migrate? (see models.py)
 
-    # finally create the root discussion object, pointing it at the CHILD.
-    new_threaded_comment = ThreadedComment(parent=None,
-                                           title=title,
-                                           comment=comment,
-                                           user=request.user,
-                                           content_object=disc_sc)
+        # now create the CHILD collaboration object for the
+        # discussion to point at.
+        # This represents the auth for the discussion itself.
+        collaboration_context = cached_course_collaboration(request.course)
+        disc_sc = Collaboration(_parent=obj_sc,
+                                title=title,
+                                # or we could point it at the root
+                                # threadedcomments object.
+                                # content_object=None,
+                                context=collaboration_context,
+                                )
+        disc_sc.set_policy(request.POST.get('publish', None))
+        disc_sc.save()
 
-    # TODO: find the default site_id
-    new_threaded_comment.site_id = 1
-    new_threaded_comment.save()
+        # finally create the root discussion object, pointing it at the CHILD.
+        new_threaded_comment = ThreadedComment(parent=None,
+                                               title=title,
+                                               comment=comment,
+                                               user=request.user,
+                                               content_object=disc_sc)
 
-    disc_sc.content_object = new_threaded_comment
-    disc_sc.save()
+        # TODO: find the default site_id
+        new_threaded_comment.site_id = 1
+        new_threaded_comment.save()
 
-    DiscussionIndex.update_class_references(
-        new_threaded_comment.comment, new_threaded_comment.user,
-        new_threaded_comment, new_threaded_comment.content_object,
-        new_threaded_comment.user)
+        disc_sc.content_object = new_threaded_comment
+        disc_sc.save()
 
-    if not request.is_ajax():
-        if waffle.flag_is_active(request, 'addressable_courses') and \
-           hasattr(request, 'course'):
-            return HttpResponseRedirect(
-                reverse('discussion-view',
-                        args=(request.course.pk, new_threaded_comment.id,)))
+        DiscussionIndex.update_class_references(
+            new_threaded_comment.comment, new_threaded_comment.user,
+            new_threaded_comment, new_threaded_comment.content_object,
+            new_threaded_comment.user)
+
+        if not request.is_ajax():
+            if waffle.flag_is_active(request, 'addressable_courses') and \
+               hasattr(request, 'course'):
+                return HttpResponseRedirect(
+                    reverse('discussion-view',
+                            args=(request.course.pk,
+                                  new_threaded_comment.id,)))
+            else:
+                return HttpResponseRedirect(
+                    reverse('discussion-view',
+                            args=(request.course.pk,
+                                  new_threaded_comment.id,)))
         else:
-            return HttpResponseRedirect(
-                reverse('discussion-view',
-                        args=(new_threaded_comment.id,)))
-    else:
-        vocabulary = VocabularyResource().render_list(
-            request, Vocabulary.objects.filter(course=request.course))
+            vocabulary = VocabularyResource().render_list(
+                request, Vocabulary.objects.filter(course=request.course))
 
-        user_resource = UserResource()
-        owners = user_resource.render_list(request, request.course.members)
+            user_resource = UserResource()
+            owners = user_resource.render_list(request, request.course.members)
 
-        data = {'panel_state': 'open',
-                'panel_state_label': "Instructor Feedback",
-                'template': 'discussion',
-                'owners': owners,
-                'vocabulary': vocabulary,
-                'context': threaded_comment_json(request,
-                                                 new_threaded_comment)}
+            data = {'panel_state': 'open',
+                    'panel_state_label': "Instructor Feedback",
+                    'template': 'discussion',
+                    'owners': owners,
+                    'vocabulary': vocabulary,
+                    'context': threaded_comment_json(request,
+                                                     new_threaded_comment)}
 
-        return HttpResponse(json.dumps(data, indent=2),
-                            content_type='application/json')
+            return HttpResponse(json.dumps(data, indent=2),
+                                content_type='application/json')
 
 
 class DiscussionDeleteView(LoggedInFacultyMixin, View):

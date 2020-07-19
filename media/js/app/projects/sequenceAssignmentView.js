@@ -1,6 +1,6 @@
 /* global AssignmentView: true, updateUserSetting: true */
 /* global MediaThread: true, tinymceSettings:true, tinymce: true */
-/* global showMessage: true, confirmAction: true */
+/* global showMessage: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -201,7 +201,7 @@
             return true;
         },
         onConfirmUnsubmitResponse: function() {
-            confirmAction(
+            showMessage(
                 'Are you sure? Once you unsubmit, you will no ' +
                 'longer have access to this student\'s response. And, you ' +
                 'will be taken to the main assignment page to choose ' +

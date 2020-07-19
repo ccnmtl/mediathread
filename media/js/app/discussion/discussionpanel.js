@@ -21,10 +21,6 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     });
 
     // hook up behaviors
-    self._bind(self.$el, 'td.panel-container', 'panel_state_change',
-        function() {
-            self.onClosePanel(jQuery(this).hasClass('subpanel'));
-        });
 
     // Setup the media display window.
     self.citationView = new CitationView();

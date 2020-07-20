@@ -19,10 +19,10 @@ Assignments
     <div class="tab-content">
         <div role="tabpanel">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <h1 class="page-title">Assignments</h1>
                 </div>
-                <div class="col-md-6 text-right">
+                <div class="col-md-7 text-right">
                     {% if role_in_course != "student" %}
                         <div class="form-group col-md-12">
                             <div class="btn-group" role="group">
@@ -40,6 +40,13 @@ Assignments
                                     href="{% url 'sequence-assignment-create' request.course.id %}">
                                     Add Sequence Assignment
                                 </a>
+                                <form action="{% url 'discussion-create' request.course.id %}" method="post">
+                                    <input type="hidden" name="comment_html" value="Discussion Title" />
+                                    <input type="hidden" name="app_label" value="courseaffils" />
+                                    <input type="hidden" name="model" value="course" />
+                                    <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add Discussion</button>
+                                </form>
                             </div>
                         </div>
                     {% endif %}

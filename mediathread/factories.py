@@ -1,28 +1,27 @@
 from datetime import datetime, timedelta
-import json
 
 from courseaffils.models import Course
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-from django.urls import reverse
 from django.test.client import RequestFactory
+from django.urls import reverse
 from django.utils.text import slugify
 import factory
-from registration.models import RegistrationProfile
-from threadedcomments.models import ThreadedComment
-
+import json
 from mediathread.assetmgr.models import (
     Asset, Source, ExternalCollection,
     SuggestedExternalCollection,
 )
-from mediathread.discussions.views import discussion_create
 from mediathread.djangosherd.models import SherdNote
+from mediathread.discussions.views import DiscussionCreateView
 from mediathread.main.models import UserProfile, CourseInvitation
 from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
+from registration.models import RegistrationProfile
 from structuredcollaboration.models import Collaboration, \
     CollaborationPolicyRecord
+from threadedcomments.models import ThreadedComment
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -214,7 +213,9 @@ class MediathreadTestMixin(object):
             Collaboration.objects.get_or_create(
                 content_type=ContentType.objects.get_for_model(Course),
                 object_pk=course.pk)
-        response = discussion_create(request)
+        view = DiscussionCreateView()
+        view.request = request
+        response = view.post(request)
 
         response_data = json.loads(response.content)
         thread_id = response_data.get('context').get('discussion').get('id')

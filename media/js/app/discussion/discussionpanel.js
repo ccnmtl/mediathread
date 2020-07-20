@@ -82,12 +82,6 @@ DiscussionPanelHandler.prototype.isEditing = function() {
     return jQuery(self.form).css('display') === 'block';
 };
 
-DiscussionPanelHandler.prototype.isSubpanelOpen = function() {
-    var self = this;
-    return self.$el.find('td.panel-container.collection')
-        .hasClass('open');
-};
-
 DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     var self = this;
 
@@ -136,9 +130,6 @@ DiscussionPanelHandler.prototype.resize = function() {
     var self = this;
     var visible = getVisibleContentHeight();
 
-    self.$el.find('tr td.panel-container div.panel')
-        .css('height', (visible) + 'px');
-
     visible -= self.$el.find('.discussion-toolbar-row').height();
     visible -= self.$el.find('.discussion-participant-row').height();
     visible -= 80; // padding
@@ -169,14 +160,6 @@ DiscussionPanelHandler.prototype.resize = function() {
     // Resize the media display window
     self.$el.find('div.asset-view-published')
         .css('height', (visible + 30) + 'px');
-
-    // For IE
-    self.$el.find('tr.discussion-content-row')
-        .css('height', (visible) + 'px');
-    self.$el.find('tr.discussion-content-row')
-        .children('td.panhandle-stripe')
-        .css('height', (visible - 10) + 'px');
-
 };
 
 DiscussionPanelHandler.prototype.onClosePanel = function() {
@@ -185,28 +168,6 @@ DiscussionPanelHandler.prototype.onClosePanel = function() {
     if (self.tinymce) {
         self.tinymce.plugins.editorwindow._closeWindow();
     }
-    self.render();
-};
-
-DiscussionPanelHandler.prototype.render = function() {
-    var self = this;
-
-    // Give precedence to media view IF the subpanel is open
-    // and we're in readonly mode
-
-    if (!self.isEditing() && self.isSubpanelOpen()) {
-        self.$el.find('.panel-content')
-            .removeClass('fluid').addClass('fixed');
-        self.$el.find('td.panel-container.collection')
-            .removeClass('fixed').addClass('fluid');
-    } else {
-        self.$el.find('.panel-content')
-            .removeClass('fixed').addClass('fluid');
-        self.$el.find('td.panel-container.collection')
-            .removeClass('fluid').addClass('fixed');
-    }
-
-    jQuery(window).trigger('resize');
 };
 
 DiscussionPanelHandler.prototype.onPrepareCitation = function(target) {
@@ -336,10 +297,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
     // Unload any citations
     self.citationView.unload();
     self.$el.find('div.asset-view-published').hide();
-    self.$el.find('td.panhandle-stripe div.label')
-        .html('Insert Selections');
     self.$el.find('div.collection-materials').show();
-    self.render();
 };
 
 DiscussionPanelHandler.prototype.hide_comment_form = function() {
@@ -363,11 +321,7 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
         // Switch to a readonly view
         self.$el.find('div.collection-materials').hide();
 
-        self.$el.find('td.panhandle-stripe div.label')
-            .html('View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
-
-        self.render();
     });
 };
 
@@ -663,8 +617,6 @@ DiscussionPanelHandler.prototype.readonly = function() {
 
     if (!jQuery(self.form).is(':visible')) {
         // Switch to Edit View
-        self.$el.find('td.panhandle-stripe div.label').html(
-            'Insert Selections');
         self.$el.find('div.asset-view-published').hide();
 
         // Kill the asset view
@@ -679,15 +631,8 @@ DiscussionPanelHandler.prototype.readonly = function() {
         // Switch to a readonly view
         self.$el.find('div.collection-materials').hide();
 
-        self.$el.find('td.panhandle-stripe div.label').html(
-            'View Inserted Selections');
         self.$el.find('div.asset-view-published').show();
     }
-
-    self.$el.find('td.panel-container').toggleClass('media collection');
-    self.$el.find('td.panhandle-stripe')
-        .toggleClass('media collection');
-    self.$el.find('div.pantab').toggleClass('media collection');
 
     jQuery(window).trigger('resize');
 

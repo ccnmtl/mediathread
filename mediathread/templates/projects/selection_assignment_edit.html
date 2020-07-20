@@ -40,7 +40,6 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
-                'container': 'sliding-content-container',
                 'url': MediaThread.urls['asset-workspace']()
             });
 
@@ -208,11 +207,10 @@
             </div>
         </div>
         <div class="col-md-9">
-            <table id="sliding-content-container" class="hidden">
-                <tr id="sliding-content-row" class="sliding-content-row">
-                    <td id="sliding-content-last-column" class="filler"></td>
-                </tr>
-            </table>
+            <div class="row">
+                <div id="asset-container" class="col-md-12 hidden">
+                </div>
+            </div>
 
             <div class="row hidden asset-view-publish-container">
                 <div class="col-md-7 col-md-offset-1">

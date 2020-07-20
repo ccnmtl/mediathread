@@ -8,7 +8,7 @@ describe('Assignment Feature: Student Response', () => {
 
     beforeEach(() => {
         cy.login('student_one', 'test');
-        cy.visit('/project/view/1');
+        cy.visit('/project/view/1/');
         cy.wait(500);
         //TODO: Test navigation to sample project from new Assignments tab
     });
@@ -17,11 +17,10 @@ describe('Assignment Feature: Student Response', () => {
         cy.log('respond as a student');
         cy.get('#cu-privacy-notice-icon').click();
         cy.title().should('eq', 'Mediathread Sample Assignment');
-        cy.get('.project-title').should('contain', 'Sample Assignment');
-        cy.get('.panel-container.open.assignment').should('exist');
+        cy.get('.page-title').should('contain', 'Sample Assignment');
         cy.get('.project-revisionbutton').should('not.exist');
-        cy.contains('Edit').should('not.exist');
-        cy.contains('Preview').should('not.exist');
+        cy.get('.project-editbutton.active').should('not.exist');
+        cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('not.exist');
         cy.get('.participant_list').should('not.be', 'visible');
         cy.get('.project-visibility').should('not.have.attr', 'href');
@@ -30,29 +29,29 @@ describe('Assignment Feature: Student Response', () => {
         cy.log('create the response');
         cy.contains('Respond to Assignment').trigger('mouseover')
             .click({ force: true });
-        cy.get('.pantab.composition').should('exist');
-        cy.get('.panel-container.open.assignment').should('exist');
-        cy.get('.panel-container.open.composition').should('exist');
-        cy.get('.project-revisionbutton').should('exist');
-        cy.contains('Edit').should('not.exist');
-        cy.contains('Preview').should('exist');
-        cy.get('.project-savebutton').should('exist');
-        cy.get('.participant_list').should('not.be', 'visible');
+        cy.get('.composition .project-revisionbutton').should('exist');
+        cy.get('.composition .project-editbutton.active').should('exist');
+        cy.get('.composition .project-previewbutton.active').should('not.exist');
+        cy.get('.composition .project-savebutton').should('exist');
+        cy.get('.composition .participant-edit-container')
+            .should('be', 'visible');
+        cy.get('.composition .participant-container')
+            .should('not.be', 'visible');
 
         cy.log('Add a title and some text');
-        cy.get('.panel-subcontainer-title input[type=text]').clear()
+        cy.get('.composition .page-title-form input').clear()
             .type('Sample Assignment Response');
-        cy.getIframeBody().find('p').click()
+        cy.get('.composition').getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
-        cy.get('.project-savebutton').click();
+        cy.get('.composition .project-savebutton').click();
 
         cy.log('Save as submitted to the instructor');
         cy.get('.project-savebutton').click({ force: true });
         cy.contains('Instructor - only author(s) and instructor can view')
             .click();
-        cy.get('.btn-primary').contains('Save');
-        cy.get('.btn-primary').click();
-        cy.get('.project-visibility-link')
+        cy.get('.btn-save-project').contains('Save');
+        cy.get('.btn-save-project').click();
+        cy.get('.project-visibility-description')
             .should('contain', 'Shared with Instructor');
 
         cy.log('Verify home display');

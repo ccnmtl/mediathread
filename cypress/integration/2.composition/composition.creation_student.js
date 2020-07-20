@@ -28,44 +28,51 @@ describe('Student Creates Composition', () => {
 
         cy.get('#loaded').should('exist');
         cy.get('#cu-privacy-notice-icon').click();
-        cy.get('.panhandle-stripe.composition').should('exist');
-        cy.get('.panel-subcontainer-title')
-            .contains('Untitled').should('exist');
+
+        cy.get('a.nav-link.active').contains('Projects');
+
+        cy.get('.page-title-form input').should('be.visible');
+        cy.get('.page-title-form input').should('have.value', 'Untitled')
         cy.contains('ul', 'Student One').should('exist');
         cy.get('.project-visibility-description')
             .contains('Draft').should('exist');
-        cy.get('td.panel-container.open.composition').should('exist');
         cy.get('.project-revisionbutton').should('exist');
-        cy.get('.project-previewbutton').should('exist');
-        cy.contains('Edit').should('not.exist');
+        cy.get('.project-editbutton.active').should('exist');
+        cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
-        cy.get('.participant_list').contains('Authors').should('exist');
+        cy.get('.participant-edit-container').contains('Authors')
+            .should('exist');
+        cy.get('.participant-container').should('not.be.visible');
 
         cy.log('should save a composition');
-        cy.get('.panel-subcontainer-title > .form-control').clear()
+        cy.get('.page-title-form input').clear()
             .type('Composition: Scenario 2');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
-        cy.get('.btn-primary').contains('Save').click();
+        cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('should toggle preview mode');
         cy.get('.project-previewbutton').click();
         cy.get('.project-revisionbutton').should('exist');
-        cy.contains('Edit').should('exist');
-        cy.contains('Preview').should('not.exist');
+        cy.get('.project-editbutton.active').should('not.exist');
+        cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant_list').should('not.be', 'visible');
+        cy.get('.participant-edit-container').should('not.be', 'visible');
+        cy.get('.participant-container').should('be', 'visible');
     });
-    // it('should show on Home', () => {
-        // TODO: adapt these for new homepage
 
-        // cy.visit('/');
-        // cy.get('#course_title_link').should('exist').click();
-        // cy.get('#loaded').should('exist');
-        // cy.get('li.projectlist').its('length').should('be.gt', 0);
-        // cy.get('.asset_title').should('contain', 'Composition: Scenario 2');
-        // cy.get('.metadata-value-author').should('contain', 'Student One');
-    // });
+    it('should show on projects page', () => {
+        cy.visit('/course/1/projects/');
+        cy.contains('Composition: Scenario 2').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(0).contains('Composition: Scenario 2');
+            cy.get('td').eq(1).contains('Draft');
+            cy.get('td').eq(2).contains('a', 'View');
+            cy.get('td').eq(3).contains('Student One');
+            cy.get('td').eq(4).contains('Composition');
+        });
+    });
+
 });

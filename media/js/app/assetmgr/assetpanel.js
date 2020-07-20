@@ -206,7 +206,6 @@ AssetPanelHandler.prototype.showAsset = function(asset_id, annotation_id) {
         'vocabulary': self.panel.vocabulary,
         'view_callback': function() {
             self.$el.find('div.tabs').fadeIn('fast', function() {
-                window.panelManager.verifyLayout(self.$el);
                 jQuery(window).trigger('resize');
             });
             jQuery('html').removeClass('busy');
@@ -241,9 +240,6 @@ AssetPanelHandler.prototype.resize = function() {
     q = 'div.mediathread-panel.asset-workspace div.pantab.collection:visible';
     var pantab = self.$el.find(q);
     if (pantab.length > 0) {
-        // shrink the collections window if necessary
-        window.panelManager.verifyLayout(self.$el);
-
         q = 'div.mediathread-panel.asset-workspace ' +
             'td.panhandle-stripe.collection';
         jQuery(q).show();

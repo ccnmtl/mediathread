@@ -13,6 +13,8 @@ describe('Discussion View: Create Discussion', () => {
     });
 
     it('Instructor Creates Discussion', () => {
+
+        //TODO: test discussion creation from homepage
         cy.request({
             method: 'POST',
             url: '/discussion/create/',
@@ -27,13 +29,16 @@ describe('Discussion View: Create Discussion', () => {
             cy.visit(resp.redirects[0].substring(5));
         });
 
-        cy.log('create assignment');
+        cy.log('create discussion');
         cy.get('#cu-privacy-notice-icon').click();
         //TODO: test discussion creation from homepage
         cy.title().should('contain', 'Discussion');
+        cy.getIframeBody().find('p').click()
+            .type('Adding a comment');
         cy.get('#comment-form-submit').click();
-        cy.contains('Respond').should('exist');
-        cy.contains('Edit').should('exist');
+        cy.get('.respond_prompt').should('be.visible');
+        cy.get('.edit_prompt').contains('Edit').should('be.visible');
+
         cy.visit('/course/1/oldhome/');
         cy.get('#loaded').should('exist');
         cy.contains('Discussion Title').should('have.attr', 'href');

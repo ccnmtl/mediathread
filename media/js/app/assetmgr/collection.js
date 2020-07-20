@@ -482,35 +482,39 @@ CollectionList.prototype.createThumbs = function(assets) {
         djangosherd_adaptAsset(asset); //in-place
         if (asset.thumbable && asset.annotations.length > 0) {
             for (var j = 0; j < asset.annotations.length; j++) {
-                var ann = asset.annotations[j];
+                try {
+                    var ann = asset.annotations[j];
 
-                var view;
-                switch (asset.type) {
-                case 'image':
-                    view = new Sherd.Image.OpenLayers();
-                    break;
-                case 'fsiviewer':
-                    view = new Sherd.Image.FSIViewer();
-                    break;
+                    var view;
+                    switch (asset.type) {
+                    case 'image':
+                        view = new Sherd.Image.OpenLayers();
+                        break;
+                    case 'fsiviewer':
+                        view = new Sherd.Image.FSIViewer();
+                        break;
+                    }
+                    djangosherd.thumbs.push(view);
+                    var objDiv = document.createElement('div');
+                    objDiv.setAttribute('class', 'annotation-thumb');
+
+                    var t = self.$el.find('.annotation-thumb-' + ann.id);
+                    if (t.length > 0) {
+                        t[0].appendChild(objDiv);
+                    } else {
+                        // eslint-disable-next-line no-console
+                        console.error('CollectionList error!');
+                    }
+
+                    // should probably be in .view
+                    asset.presentation = 'thumb';
+
+                    ann.asset = asset;
+                    view.html.push(objDiv, ann);
+                    view.setState(ann.annotation);
+                } catch (err) {
+                    console.log(err);
                 }
-                djangosherd.thumbs.push(view);
-                var objDiv = document.createElement('div');
-                objDiv.setAttribute('class', 'annotation-thumb');
-
-                var t = self.$el.find('.annotation-thumb-' + ann.id);
-                if (t.length > 0) {
-                    t[0].appendChild(objDiv);
-                } else {
-                    // eslint-disable-next-line no-console
-                    console.error('CollectionList error!');
-                }
-
-                // should probably be in .view
-                asset.presentation = 'thumb';
-
-                ann.asset = asset;
-                view.html.push(objDiv, ann);
-                view.setState(ann.annotation);
             }
         }
     }

@@ -92,7 +92,7 @@ A new base.html without the course context overwritten in the template.
                     {% if not read_only_view %}
                         <h6 id="course-title" class="course-title">
                             {% block coursetitle %}
-                                {{course.title}}
+                                {{request.course.title}}
                             {% endblock %}
                         </h6>
                     {% endif %}

@@ -26,12 +26,11 @@ describe('Assignment Feature: Instructor Creation', () => {
 
         //cy.get('#loaded').should('exist'); Change in code?
         cy.title().should('eq', 'Mediathread Untitled');
-        cy.get('.panel-container.open.assignment').should('exist');
         cy.get('.project-savebutton').should('exist');
         cy.get('.project-visibility-description').contains('Draft');
 
         cy.log('Add a title and some text');
-        cy.get('.panel-subcontainer-title input[type=text]').clear()
+        cy.get('.page-title-form input').clear()
             .type('Assignment: Scenario 1');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
@@ -39,21 +38,20 @@ describe('Assignment Feature: Instructor Creation', () => {
 
         cy.log('Save as an Assignment');
         cy.contains('Whole Class - all class members can view').click();
-        cy.get('.btn-primary').contains('Save');
-        cy.get('.btn-primary').click();
-        cy.get('.project-visibility-link')
+        cy.get('.btn-save-project').contains('Save');
+        cy.get('.btn-save-project').click();
+        cy.get('.project-visibility-description')
             .should('contain', 'Shared with Class');
-        cy.get('.panel-container.open.assignment').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('Toggle to preview');
-        cy.get('.project-previewbutton').trigger('mouseover')
-            .click({ force: true });
+        cy.get('.project-previewbutton').click();
         cy.get('.project-revisionbutton').should('exist');
-        cy.contains('Edit').should('exist');
-        cy.contains('Preview').should('not.exist');
+        cy.get('.project-editbutton.active').should('not.exist');
+        cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant_list').should('not.be', 'visible');
+        cy.get('.participant-edit-container').should('not.be.visible');
+        cy.get('.participant-container').should('be', 'visible');
 
         //TODO: Test when the project shows up in new Assignments tab.
 
@@ -63,13 +61,10 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
 
         cy.log('Preview view elements');
-        cy.get('.participants_chosen').should('contain', 'Instructor One');
-        cy.get('.project-visibility-link').should('have.attr', 'href');
+        cy.get('.participant-container').should('contain', 'Instructor One');
         cy.get('.project-visibility-description')
             .should('contain', 'Shared with Class');
-        cy.get('td.panel-container.open.assignment').should('exist');
         cy.get('.project-revisionbutton').should('exist');
-        cy.get('.participant_list').should('not.be', 'visible');
         cy.get('.project-savebutton').should('contain', 'Saved');
         cy.contains('Respond To Assignment').should('not.exist');
         cy.contains('Responses (1)').should('not.exist');

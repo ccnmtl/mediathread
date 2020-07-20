@@ -39,14 +39,14 @@
         },
         showPage: function(pageContent) {
             if (pageContent === 'instructions') {
-                jQuery('#sliding-content-container').addClass('hidden');
+                jQuery('#asset-container').addClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
             } else if (pageContent === 'choose-item') {
-                jQuery('#sliding-content-container').removeClass('hidden');
+                jQuery('#asset-container').removeClass('hidden');
                 jQuery('.asset-view-publish-container').addClass('hidden');
                 jQuery(window).trigger('resize');
             } else {
-                jQuery('#sliding-content-container').addClass('hidden');
+                jQuery('#asset-container').addClass('hidden');
                 jQuery('.asset-view-publish-container').removeClass('hidden');
                 var itemId = jQuery('input[name="item"]').val();
                 this.citationView.openCitationById(null, itemId, null);

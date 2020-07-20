@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 
 {% block title %}
     {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
@@ -33,7 +33,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
-                'container': 'sliding-content-container',
+                'container': 'discussion-workspace',
                 'url': MediaThread.urls['discussion-view']({{discussion.id}})
             });
         });
@@ -41,12 +41,17 @@
 {% endblock %}
 
 {% block content %}
-    {{ block.super }}
-
-    <table id="sliding-content-container">
-        <tr id="sliding-content-row" class="sliding-content-row">
-            <td id="sliding-content-last-column" class="filler"></td>
-        </tr>
-    </table>
-
+    {% with active='assignments' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div id="discussion-workspace" class="row">
+                <div id="discussion-container" class="col-md-12">
+                </div>
+            </div>
+            <div id="asset-container" class="col-md-12">
+            </div>
+        </div>
+    </div>
 {% endblock %}

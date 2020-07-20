@@ -21,10 +21,6 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     });
 
     // hook up behaviors
-    self._bind(self.$el, 'td.panel-container', 'panel_state_change',
-        function() {
-            self.onClosePanel(jQuery(this).hasClass('subpanel'));
-        });
 
     // Setup the media display window.
     self.citationView = new CitationView();
@@ -509,7 +505,9 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             jQuery('div.respond_to_comment_form_div').show();
 
             // eslint-disable-next-line scanjs-rules/assign_to_location
-            document.location = '#comment-' + res.comment_id;
+            // document.location = '#comment-' + res.comment_id;
+            // This assign to location is creating an error in the Cypress
+            // tests. Explore alternate solutions during the redesign
         }
     } else {
         self.onfail(xhr, textStatus, res.error);

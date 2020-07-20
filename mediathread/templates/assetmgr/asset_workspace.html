@@ -29,7 +29,6 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
-                'container': 'sliding-content-container',
                 'url': MediaThread.urls['asset-workspace'](
                      {% if asset_id %}{{asset_id}}{% endif %}
                      {% if asset_id and annotation_id %}, {{annotation_id}}{% endif %})
@@ -41,9 +40,8 @@
 {% block content %}
     {{ block.super }}
 
-    <table id="sliding-content-container">
-        <tr id="sliding-content-row" class="sliding-content-row">
-            <td id="sliding-content-last-column" class="filler"></td>
-        </tr>
-    </table>
+    <div id="asset-workspace" class="row">
+        <div id="asset-container" class="col-md-12">
+        </div>
+    </div>
 {% endblock %}

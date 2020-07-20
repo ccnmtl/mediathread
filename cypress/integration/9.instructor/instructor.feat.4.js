@@ -8,6 +8,12 @@ describe('Instructor Feat: Test Assignment Responses', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+        cy.get('.card-title a')
+            .contains('MAAP Award Reception');
+        cy.get('.card-title a')
+            .contains("The Armory - Home to CCNMTL's CUMC Office");
+        cy.get('.card-title a')
+            .contains("Mediathread: Introduction");
     });
 
     it('should test assignment response as an instructor', () => {
@@ -24,8 +30,6 @@ describe('Instructor Feat: Test Assignment Responses', () => {
         cy.contains('No').should('exist');
 
         cy.contains('Sample Assignment Response').click();
-        cy.title().should('contain', 'Sample Assignment Response');
-        cy.get('td.panel-container.open.composition').should('exist');
         cy.title().should('contain', 'Sample Assignment Response');
     });
 });

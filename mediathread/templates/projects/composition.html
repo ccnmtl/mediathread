@@ -38,7 +38,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
-                'container': 'sliding-content-container',
+                'container': 'project-workspace',
                 {% if public_url %}
                     'url': '{{ public_url }}'
                 {% else %}{% if show_feedback %}
@@ -54,15 +54,17 @@
 {% endblock %}
 
 {% block content %}
-<div>
     {% with active='projects' %}
         {% include 'main/three_section_tabs.html' %}
     {% endwith %}
-
-    <table id="sliding-content-container">
-        <tr id="sliding-content-row" class="sliding-content-row">
-            <td id="sliding-content-last-column" class="filler"></td>
-        </tr>
-    </table>
-</div>
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div id="project-workspace" class="row">
+                <div id="project-container" class="col-md-12">
+                </div>
+            </div>
+            <div id="asset-container" class="col-md-12">
+            </div>
+        </div>
+    </div>
 {% endblock %}

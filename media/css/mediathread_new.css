@@ -4297,7 +4297,7 @@ ul.section-tabs>li>a.active {
     height: 48em;
 }
 
-.card-title, .card-text {
+.course-collection .card-title, .course-collection .card-text {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

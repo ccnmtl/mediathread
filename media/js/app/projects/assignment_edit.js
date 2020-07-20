@@ -78,20 +78,20 @@
                 return false;
             }
 
-            $current.removeClass('has-error').addClass('d-none');
+            $current.removeClass('has-error').addClass('hidden');
 
             this.currentPage = Math.min(this.currentPage + 1, this.totalPages);
             $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            $current.removeClass('d-none');
+            $current.removeClass('hidden');
             this.showPage($current.data('page-content'));
         },
         onPrev: function(evt) {
             evt.preventDefault();
-            jQuery('.page').addClass('d-none');
+            jQuery('.page').addClass('hidden');
 
             this.currentPage = Math.max(this.currentPage - 1, 1);
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            $current.removeClass('d-none');
+            $current.removeClass('hidden');
             this.showPage($current.data('page-content'));
         },
         onSave: function(evt) {

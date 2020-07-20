@@ -1,7 +1,7 @@
 /* global MediaThread: true */
 /* exported _propertyCount, getVisibleContentHeight */
 /* exported switcher, toggleHelp, toggleHelpOverlay, storeData */
-/* exported retrieveData, showMessage, confirmAction */
+/* exported retrieveData, showMessage */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 // eslint-disable-next-line no-unused-vars

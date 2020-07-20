@@ -69,6 +69,8 @@
             }
         },
         onNext: function(evt) {
+            evt.preventDefault();
+
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             var content = $current.data('page-content');
             if (!this.validate(content)) {
@@ -76,22 +78,25 @@
                 return false;
             }
 
-            $current.removeClass('has-error').addClass('hidden');
+            $current.removeClass('has-error').addClass('d-none');
 
             this.currentPage = Math.min(this.currentPage + 1, this.totalPages);
             $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            $current.removeClass('hidden');
+            $current.removeClass('d-none');
             this.showPage($current.data('page-content'));
         },
-        onPrev: function() {
-            jQuery('.page').addClass('hidden');
+        onPrev: function(evt) {
+            evt.preventDefault();
+            jQuery('.page').addClass('d-none');
 
             this.currentPage = Math.max(this.currentPage - 1, 1);
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
-            $current.removeClass('hidden');
+            $current.removeClass('d-none');
             this.showPage($current.data('page-content'));
         },
         onSave: function(evt) {
+            evt.preventDefault();
+
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             var content = $current.data('page-content');
             if (!this.validate(content)) {

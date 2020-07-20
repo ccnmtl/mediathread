@@ -29,6 +29,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
+                'container': 'asset-workspace',
                 'url': MediaThread.urls['asset-workspace'](
                      {% if asset_id %}{{asset_id}}{% endif %}
                      {% if asset_id and annotation_id %}, {{annotation_id}}{% endif %})

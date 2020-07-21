@@ -724,6 +724,11 @@ div.button-form form, div.button-form.inline form {
     border-left: solid 10px #1e77bd;
 }
 
+#id_response_view_policy,
+#id_publish {
+    list-style-type: none;
+}
+
 
 /* LOGIN PAGE */
 .login-wrap {

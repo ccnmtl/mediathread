@@ -23,6 +23,8 @@ export default class ViewSelections extends React.Component {
 
         this.onClickEdit = this.onClickEdit.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
+        this.onClickDelete = this.onClickDelete.bind(this);
+        this.onDeleteSelection = this.onDeleteSelection.bind(this);
     }
 
     onSelectGrouping(e, grouping) {
@@ -38,6 +40,15 @@ export default class ViewSelections extends React.Component {
     onClickCancel(e) {
         e.preventDefault();
         this.setState({isEditing: null});
+    }
+
+    onClickDelete(selectionId) {
+        this.props.showDeleteDialog(selectionId);
+    }
+
+    onDeleteSelection(e) {
+        this.setState({isEditing: false});
+        return this.props.onDeleteSelection(e);
     }
 
     renderSelection(s, key, tags, terms) {
@@ -193,7 +204,27 @@ export default class ViewSelections extends React.Component {
                     terms={this.props.terms}
                     onClickCancel={this.onClickCancel}
                     onSaveSelection={function() {}}
+                    onClickDelete={this.onClickDelete}
                 />
+
+                <Modal
+                    show={this.props.showDeleteDialogBool}
+                    onHide={this.props.hideDeleteDialog}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete Selection</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Delete this selection?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.props.hideDeleteDialog}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={this.onDeleteSelection}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </React.Fragment>
         );
     }
@@ -265,23 +296,6 @@ export default class ViewSelections extends React.Component {
                 <div className="accordion" id="selectionsAccordion">
                     {groupedSelections}
                 </div>
-
-                <Modal
-                    show={this.props.showDeleteDialogBool}
-                    onHide={this.props.hideDeleteDialog}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Delete annotation</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Delete this annotation?</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.hideDeleteDialog}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={this.onDeleteSelection}>
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </React.Fragment>
         );
     }
@@ -343,6 +357,7 @@ ViewSelections.propTypes = {
     terms: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
+    onDeleteSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialogBool: PropTypes.bool.isRequired

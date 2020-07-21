@@ -155,13 +155,22 @@ export default class EditSelectionForm extends React.Component {
                 </Form.Group>
 
                 <Button
-                    variant="secondary" size="sm"
-                    onClick={this.props.onClickCancel}>
-                    Cancel
-                </Button>&nbsp;
-                <Button type="submit" size="sm">
-                    Save
+                    variant="danger" size="sm"
+                    onClick={() => this.props.onClickDelete(
+                        this.props.selection.id)}>
+                    Delete
                 </Button>
+
+                <div className="float-right">
+                    <Button
+                        variant="secondary" size="sm"
+                        onClick={this.props.onClickCancel}>
+                        Cancel
+                    </Button>&nbsp;
+                    <Button type="submit" size="sm">
+                        Save
+                    </Button>
+                </div>
             </Form>
         );
     }
@@ -172,5 +181,6 @@ EditSelectionForm.propTypes = {
     tags: PropTypes.array,
     terms: PropTypes.array,
     onClickCancel: PropTypes.func.isRequired,
-    onSaveSelection: PropTypes.func.isRequired
+    onSaveSelection: PropTypes.func.isRequired,
+    onClickDelete: PropTypes.func.isRequired
 };

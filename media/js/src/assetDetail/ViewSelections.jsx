@@ -46,6 +46,10 @@ export default class ViewSelections extends React.Component {
     }
 
     renderSelection(s, key, tags, terms) {
+        const isAuthor = parseInt(
+            window.MediaThread.current_user, 10
+        ) === parseInt(s.author.id, 10);
+
         return (
             <div key={key} className="card">
                 <div className="card-header">
@@ -85,20 +89,22 @@ export default class ViewSelections extends React.Component {
                             </p>
                         )}
 
-                        <p className="card-text">
-                            <a
-                                onClick={(e) => this.onClickEdit(e, s)}
-                                href="#"
-                                className="btn btn-secondary btn-sm">
-                                Edit
-                            </a>&nbsp;
-                            <a
-                                onClick={(e) => this.onClickCopy(e, s)}
-                                href="#"
-                                className="btn btn-secondary btn-sm">
-                                Copy
-                            </a>
-                        </p>
+                        {isAuthor && (
+                            <p className="card-text">
+                                <a
+                                    onClick={(e) => this.onClickEdit(e, s)}
+                                    href="#"
+                                    className="btn btn-secondary btn-sm">
+                                    Edit
+                                </a>&nbsp;
+                                <a
+                                    onClick={(e) => this.onClickCopy(e, s)}
+                                    href="#"
+                                    className="btn btn-secondary btn-sm">
+                                    Copy
+                                </a>
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

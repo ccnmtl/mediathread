@@ -1259,6 +1259,8 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
                           password='test')
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context_data['status'], 'all')
+        self.assertEquals(response.context_data['title'], '')
 
     def test_sort_by_full_name(self):
         self.client.login(username=self.instructor_one.username,
@@ -1344,3 +1346,31 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         self.assertEqual(qs[2], past_assignment)
         self.assertTrue(qs[2].due_delta.days > 0)
         self.assertEqual(qs[2].response_submitted, submitted)
+
+        view.request = RequestFactory().get('/', {'status': 'draft'})
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+        qs = view.get_queryset()
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0], evergreen_assignment)
+
+        view.request = RequestFactory().get('/', {'status': 'submitted'})
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+        qs = view.get_queryset()
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0], past_assignment)
+
+        view.request = RequestFactory().get('/', {'status': 'no-response'})
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+        qs = view.get_queryset()
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0], future_assignment)
+
+        view.request = RequestFactory().get('/', {'title': 'tomorrow'})
+        view.request.course = self.sample_course
+        view.request.user = self.student_one
+        qs = view.get_queryset()
+        self.assertEqual(qs.count(), 1)
+        self.assertEqual(qs[0], future_assignment)

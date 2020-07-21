@@ -38,7 +38,8 @@ from mediathread.projects.forms import ProjectForm
 from mediathread.projects.generic.views import AssignmentView, \
     AssignmentEditView
 from mediathread.projects.models import (
-    Project, ProjectNote, PUBLISH_DRAFT, PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
+    Project, ProjectNote, PUBLISH_DRAFT, PROJECT_TYPE_SEQUENCE_ASSIGNMENT,
+    PUBLISHED)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from reversion.models import Version
@@ -811,9 +812,35 @@ class AssignmentListView(ProjectListView):
     model = Project
     paginate_by = 10
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['status'] = self.request.GET.get('status', 'all')
+        ctx['title'] = self.request.GET.get('title', '')
+        return ctx
+
+    def filter_by_status(self, qs):
+        status = self.request.GET.get('status', 'all')
+
+        if status == 'draft':
+            return qs.filter(response_policy=PUBLISH_DRAFT[0])
+        elif status == 'no-response':
+            return qs.filter(response_policy=None)
+        elif status == 'submitted':
+            return qs.filter(response_policy__in=PUBLISHED)
+        else:
+            return qs
+
+    def filter_by_title(self, qs):
+        title = self.request.GET.get('title', '')
+        if title:
+            qs = qs.filter(title__icontains=title)
+        return qs
+
     def get_queryset(self):
         qs = Project.objects.visible_assignments_by_course(
             self.request.course, self.request.user)
+
+        qs = self.filter_by_title(qs)
 
         if cached_course_is_faculty(self.request.course, self.request.user):
             qs = self.sort_queryset(qs, 'due_date', 'desc')
@@ -833,8 +860,14 @@ class AssignmentListView(ProjectListView):
                 collaboration___parent__object_pk=OuterRef('pk')).distinct()
             qs = qs.annotate(response_submitted=Subquery(
                 my_responses.values('date_submitted')))
+            qs = qs.annotate(response_policy=Subquery(
+                my_responses.values(
+                    'collaboration__policy_record__policy_name')))
             qs = qs.order_by('-response_submitted',
                              F('due_delta').desc(nulls_last=True))
+
+            # Assignments for students can be filtered based on status
+            qs = self.filter_by_status(qs)
 
         return qs.select_related('author').prefetch_related(
             'participants', 'collaboration__children',

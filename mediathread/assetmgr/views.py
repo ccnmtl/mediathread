@@ -28,7 +28,6 @@ from django.views.generic import DetailView
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
 from sentry_sdk import capture_exception
-from waffle.mixins import WaffleFlagMixin
 
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
@@ -1078,9 +1077,8 @@ class AssetDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         return self.render_to_json_response(ctx)
 
 
-class ReactAssetDetailView(WaffleFlagMixin, LoggedInCourseMixin, DetailView):
+class ReactAssetDetailView(LoggedInCourseMixin, DetailView):
     model = Asset
-    waffle_flag = 'new_course_view'
     template_name = 'courseaffils/course_detail.html'
 
     def get_context_data(self, **kwargs):

@@ -294,8 +294,11 @@ A new base.html without the course context overwritten in the template.
     {% block uncompressable_js %}{% endblock %}
 
     {% if STAGING_ENV %}
-        <div class="alert alert-error" style="position: fixed; bottom: 0px; background-color: #fee; border: #f00 solid 1px; width: 100%;">
-            <h4>&nbsp;Warning: You are viewing a staging version of this site, not the production site.&nbsp;&nbsp;&nbsp;Last Updated: <strong>{{STAGING_DEPLOY_TIME}}</strong></h4>
+        <div class="alert alert-danger alert-dismissible" role="alert" style="position: fixed; bottom: 0px;">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h4 class="alert-heading">Warning: Staging Site</h4>
+            <p>You are viewing a staging version of this site, not the production site.</p>
+            <p>This site was last updated on: <strong>{{STAGING_DEPLOY_TIME}}</strong></p>
         </div>
     {% endif %}
 

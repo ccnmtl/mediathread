@@ -36,16 +36,16 @@ Assignments
                                         Add Composition Assignment
                                     </button>
                                 </form>
-                                <a class="btn btn-sm btn-outline-secondary"
+                                <a class="btn btn-sm btn-outline-secondary mr-2"
                                     href="{% url 'sequence-assignment-create' request.course.id %}">
                                     Add Sequence Assignment
                                 </a>
-                                <form action="{% url 'discussion-create' request.course.id %}" method="post">
+                                <form action="{% url 'discussion-create' request.course.id %}" method="post"> 
                                     <input type="hidden" name="comment_html" value="Discussion Title" />
                                     <input type="hidden" name="app_label" value="courseaffils" />
                                     <input type="hidden" name="model" value="course" />
                                     <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add Discussion</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Add Discussion Assignment</button>
                                 </form>
                             </div>
                         </div>
@@ -92,7 +92,7 @@ Assignments
                                                 <div class="col text-right">
                                                     <a class="btn btn-sm btn-outline-secondary mr-2"
                                                         href="{% url 'selection-assignment-create' request.course.id %}">
-                                                        Add Selection Assignment
+                                                        Add
                                                     </a>
                                                 </div>
                                             </div>
@@ -119,7 +119,7 @@ Assignments
                                                     <form action="{% url 'project-create' request.course.id %}" method="post">
                                                         <input type="hidden" name="project_type" value="assignment" />
                                                         <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
-                                                            Add Composition Assignment
+                                                            Add
                                                         </button>
                                                     </form>
                                                 </div>
@@ -146,12 +146,42 @@ Assignments
                                                 <div class="col text-right">
                                                     <a class="btn btn-sm btn-outline-secondary"
                                                         href="{% url 'sequence-assignment-create' request.course.id %}">
-                                                        Add Sequence Assignment
+                                                        Add
                                                     </a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="card mx-1">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Discussion Assignment
+                                            </h5>
+                                            <p class="card-text">
+                                                A discussion assignment allows students to respond to an instructor's prompt with text and embedded media.
+                                            </p>
+                                        </div>
+                                        <div class="card-footer border-0 bg-white">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <a href="#"
+                                                        class="btn btn-link p-0" target="_blank" rel="noreferrer">
+                                                        Learn More
+                                                    </a>
+                                                </div>
+                                                <div class="col text-right">
+                                                    <form action="{% url 'discussion-create' request.course.id %}" method="post"> 
+                                                        <input type="hidden" name="comment_html" value="Discussion Title" />
+                                                        <input type="hidden" name="app_label" value="courseaffils" />
+                                                        <input type="hidden" name="model" value="course" />
+                                                        <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Add</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

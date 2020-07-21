@@ -180,12 +180,6 @@ export default class ViewSelections extends React.Component {
                 groupedSelections.push(me.renderSelection(
                     s, reactKey, tags, terms));
 
-                if (
-                    idx >= selectionGroup.length - 1 &&
-                        i < Object.keys(selections).length - 1
-                ) {
-                    groupedSelections.push(<hr key={'hr-' + reactKey} />);
-                }
             });
 
             i++;
@@ -314,6 +308,7 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('shown.bs.collapse', function(e) {
             const title = jQuery(e.target).data('title');
             me.props.onSelectSelection(title);
+            jQuery(e.target).parent().addClass('active');
         });
 
         $selectionsAccordion.on('show.bs.collapse', function(e) {
@@ -328,6 +323,7 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('hidden.bs.collapse', function(e) {
             if (me.isCollapsed()) {
                 me.props.onSelectSelection(null);
+                jQuery(e.target).parent().removeClass('active');
             }
         });
     }

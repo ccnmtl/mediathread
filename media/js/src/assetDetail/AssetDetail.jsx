@@ -53,7 +53,6 @@ export default class AssetDetail extends React.Component {
 
         this.draw = null;
 
-
         this.playerRef = null;
         this.selection = null;
 
@@ -74,6 +73,8 @@ export default class AssetDetail extends React.Component {
 
         this.onShowValidationError = this.onShowValidationError.bind(this);
         this.hideValidationError = this.hideValidationError.bind(this);
+
+        this.onClearActiveSelection = this.onClearActiveSelection.bind(this);
 
         this.onStartTimeUpdate = this.onStartTimeUpdate.bind(this);
         this.onEndTimeUpdate = this.onEndTimeUpdate.bind(this);
@@ -286,16 +287,44 @@ export default class AssetDetail extends React.Component {
         this.setState({activeSelection: selectionTitle});
     }
 
-    onViewSelection(e, a) {
-        const type = this.asset.getType();
+    onClearActiveSelection() {
+        if (!this.state.activeSelection) {
+            return;
+        }
 
-        if (type === 'image') {
+        if (this.type === 'image') {
+            if (this.draw) {
+                this.map.removeInteraction(this.draw);
+            }
+
+            if (this.selectionLayer) {
+                this.map.removeLayer(this.selectionLayer);
+            }
+
+            const img = this.asset.getImage();
+            const extent = objectProportioned(img.width, img.height);
+            const view = this.map.getView();
+            view.fit(extent);
+        } else if (this.type === 'video') {
+            const player = this.playerRef;
+            player.seekTo(0, 'seconds');
+            this.setState({
+                selectionStartTime: null,
+                selectionEndTime: null
+            });
+        }
+
+        this.setState({activeSelection: null});
+    }
+
+    onViewSelection(e, a) {
+        if (this.type === 'image') {
             if (this.selectionLayer) {
                 this.map.removeLayer(this.selectionLayer);
             }
             const newLayer = displaySelection(a, this.map);
             this.selectionLayer = newLayer;
-        } else if (type === 'video') {
+        } else if (this.type === 'video') {
             const player = this.playerRef;
             player.seekTo(a.range1, 'seconds');
             this.setState({
@@ -556,6 +585,7 @@ export default class AssetDetail extends React.Component {
                                 onEndTimeClick={this.onEndTimeClick}
                                 onCreateSelection={this.onCreateSelection}
                                 onShowValidationError={this.onShowValidationError}
+                                onClearActiveSelection={this.onClearActiveSelection}
                                 showCreateError={this.state.showCreateError}
                                 createError={this.state.createError}
                             />

@@ -19,7 +19,7 @@ from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
 
-PROJECT_TYPE_ASSIGNMENT = 'assignment'
+PROJECT_TYPE_ASSIGNMENT = 'assignment'  # composition assignment
 PROJECT_TYPE_COMPOSITION = 'composition'
 PROJECT_TYPE_SEQUENCE = 'sequence'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'

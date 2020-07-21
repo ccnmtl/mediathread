@@ -427,6 +427,10 @@ class SequenceAssignmentEditView(AssignmentEditView):
     template_name = 'projects/sequence_assignment_edit.html'
 
 
+class CompositionAssignmentEditView(AssignmentEditView):
+    template_name = 'projects/composition_assignment_edit.html'
+
+
 class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
                        TemplateView):
 

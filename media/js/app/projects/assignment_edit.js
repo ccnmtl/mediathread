@@ -69,6 +69,8 @@
             }
         },
         onNext: function(evt) {
+            evt.preventDefault();
+
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             var content = $current.data('page-content');
             if (!this.validate(content)) {
@@ -83,7 +85,8 @@
             $current.removeClass('hidden');
             this.showPage($current.data('page-content'));
         },
-        onPrev: function() {
+        onPrev: function(evt) {
+            evt.preventDefault();
             jQuery('.page').addClass('hidden');
 
             this.currentPage = Math.max(this.currentPage - 1, 1);
@@ -92,6 +95,8 @@
             this.showPage($current.data('page-content'));
         },
         onSave: function(evt) {
+            evt.preventDefault();
+
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             var content = $current.data('page-content');
             if (!this.validate(content)) {

@@ -119,7 +119,6 @@ export default class ViewSelections extends React.Component {
     renderSelectionGroup(selections) {
         const me = this;
         const groupedSelections = [];
-        let i = 0;
         for (const key in selections) {
             let selectionGroup = selections[key];
             let tagName = null;
@@ -181,8 +180,6 @@ export default class ViewSelections extends React.Component {
                     s, reactKey, tags, terms));
 
             });
-
-            i++;
         }
 
         return groupedSelections;

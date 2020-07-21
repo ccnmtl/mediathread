@@ -69,6 +69,7 @@ const displaySelection = function(a, map) {
     const styles = getCoordStyles();
 
     const geometry = a.annotation.geometry;
+    console.log('displaying', geometry);
 
     const view = map.getView();
     const projection = view.getProjection();
@@ -98,6 +99,36 @@ const displaySelection = function(a, map) {
     return newLayer;
 };
 
+const clearVectorLayer = function(map) {
+    // Remove all features from the vector layer.
+    const layers = map.getLayers().getArray();
+
+    // There should always be at least two layers, with the vector
+    // layer as the second one.
+    if (layers.length > 1) {
+        const vectorLayer = layers[1];
+        const source = vectorLayer.getSource();
+
+        source.getFeatures().forEach(function(feature) {
+            source.removeFeature(feature);
+        });
+    }
+};
+
+/**
+ * Given an openlayers map and image, reset its view to that image.
+ *
+ * Remove all polygon vectors and fit the view appropriately.
+ */
+const resetMap = function(map, img) {
+    clearVectorLayer(map);
+
+    const extent = objectProportioned(img.width, img.height);
+    const view = map.getView();
+    view.fit(extent);
+};
+
 export {
-    objectProportioned, getCoordStyles, displaySelection
+    objectProportioned, getCoordStyles, displaySelection,
+    clearVectorLayer, resetMap
 };

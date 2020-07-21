@@ -4436,14 +4436,12 @@ ul.section-tabs>li>a.active {
     background-color: black;
 }
 
-.toolbar-annotations .input-group:focus-within,
-.toolbar-annotations button.polygon-button:focus-within {
+.toolbar-annotations .input-group:focus-within {
     background-color: #ffc107;
     border: 6px solid #ffc107;
 }
 
-.toolbar-annotations .input-group:focus-within button,
-.toolbar-annotations button.polygon-button:focus-within {
+.toolbar-annotations .input-group:focus-within button {
     color: #212529;
     border-color: #212529;
 }

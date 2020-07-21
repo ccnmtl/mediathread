@@ -176,9 +176,6 @@ export default class CreateSelection extends React.Component {
     componentDidMount() {
         const me = this;
 
-        // Clear active selection
-        this.props.onClearActiveSelection();
-
         const titleField = this.titleFieldRef.current;
         titleField.addEventListener('invalid', function(e) {
             me.props.onShowValidationError(
@@ -199,7 +196,6 @@ CreateSelection.propTypes = {
     onEndTimeClick: PropTypes.func.isRequired,
     onCreateSelection: PropTypes.func.isRequired,
     onShowValidationError: PropTypes.func.isRequired,
-    onClearActiveSelection: PropTypes.func.isRequired,
     showCreateError: PropTypes.bool.isRequired,
     createError: PropTypes.string
 };

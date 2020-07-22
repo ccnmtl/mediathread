@@ -4,7 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
-import AssetFilter from './AssetFilter';
+import AssetFilter from './filters/AssetFilter';
+import SelectionFilter from './filters/SelectionFilter';
 import AssetDetail from './assetDetail/AssetDetail';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
@@ -14,18 +15,22 @@ export default class CollectionTab extends React.Component {
         super(props);
         this.state = {
             viewMode: 'grid',
-            selectedAsset: null
+            selectedAsset: null,
+            filteredSelections: []
         };
 
         this.setViewMode = this.setViewMode.bind(this);
         this.enterAssetDetailView = this.enterAssetDetailView.bind(this);
         this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
+        this.onFilterSelections = this.onFilterSelections.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.asset !== this.props.asset) {
-            this.setState({selectedAsset: this.props.asset});
+            this.setState({
+                selectedAsset: this.props.asset
+            });
         }
     }
 
@@ -44,7 +49,10 @@ export default class CollectionTab extends React.Component {
     enterAssetDetailView(e, asset) {
         this.followLink(e);
 
-        this.setState({selectedAsset: asset}, function() {
+        this.setState({
+            selectedAsset: asset,
+            filteredSelections: asset.annotations
+        }, function() {
             // Scroll to top when entering asset detail view.
             window.scrollTo(0, 0);
         });
@@ -53,11 +61,17 @@ export default class CollectionTab extends React.Component {
     leaveAssetDetailView(e) {
         this.followLink(e);
 
-        this.setState({selectedAsset: null});
+        this.setState({
+            selectedAsset: null,
+            filteredSelections: []
+        });
     }
 
     onUpdateAsset(asset) {
         this.setState({selectedAsset: asset});
+    }
+    onFilterSelections(selections) {
+        this.setState({filteredSelections: selections});
     }
     render() {
         let assets = [];
@@ -72,6 +86,7 @@ export default class CollectionTab extends React.Component {
                     asset={this.state.selectedAsset}
                     tags={this.props.tags}
                     terms={this.props.terms}
+                    filteredSelections={this.state.filteredSelections}
                     onUpdateAsset={this.onUpdateAsset} />
             );
         } else if (this.props.assetError) {
@@ -153,16 +168,31 @@ export default class CollectionTab extends React.Component {
 
                 {backButton}
 
-                <AssetFilter
-                    assets={this.props.assets}
-                    assetCount={this.props.assetCount}
-                    hidePagination={!!this.state.selectedAsset}
-                    owners={this.props.owners}
-                    tags={this.props.tags}
-                    terms={this.props.terms}
-                    viewMode={this.state.viewMode}
-                    onUpdateAssets={this.props.onUpdateAssets}
-                    setViewMode={this.setViewMode} />
+                {!this.state.selectedAsset && (
+                    <AssetFilter
+                        items={this.props.assets}
+                        itemCount={this.props.assetCount}
+                        hidePagination={false}
+                        owners={this.props.owners}
+                        tags={this.props.tags}
+                        terms={this.props.terms}
+                        viewMode={this.state.viewMode}
+                        onUpdateItems={this.props.onUpdateAssets}
+                        setViewMode={this.setViewMode}
+                    />
+                )}
+
+                {this.state.selectedAsset && (
+                    <SelectionFilter
+                        asset={this.state.selectedAsset}
+                        hidePagination={true}
+                        defaultOwner={window.MediaThread.current_user}
+                        owners={this.props.owners}
+                        tags={this.props.tags}
+                        terms={this.props.terms}
+                        onUpdateItems={this.onFilterSelections}
+                    />
+                )}
 
                 <div className="assets">
                     {assetsDom}

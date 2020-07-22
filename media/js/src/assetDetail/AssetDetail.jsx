@@ -560,9 +560,9 @@ export default class AssetDetail extends React.Component {
                     <div className="col-sm-5">
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
-                                asset={this.props.asset}
                                 tags={this.props.tags}
                                 terms={this.props.terms}
+                                filteredSelections={this.props.filteredSelections}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
                                 onDeleteSelection={this.onDeleteSelection}
@@ -710,5 +710,6 @@ AssetDetail.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    filteredSelections: PropTypes.array,
     onUpdateAsset: PropTypes.func.isRequired
 };

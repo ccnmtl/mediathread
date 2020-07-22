@@ -225,30 +225,19 @@ export default class ViewSelections extends React.Component {
             return this.renderEditForm(this.state.isEditing);
         }
 
-        const checkmark = (
-            <svg
-                width="1em" height="1em" viewBox="0 0 16 16"
-                className="bi bi-caret-right-fill mr-1"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-            </svg>
-        );
-
         let selections = {};
         if (this.state.groupBy === 'author') {
-            selections = groupByAuthor(this.props.asset.annotations);
+            selections = groupByAuthor(this.props.filteredSelections);
         } else {
-            selections = groupByTag(this.props.asset.annotations);
+            selections = groupByTag(this.props.filteredSelections);
         }
 
         const groupedSelections = this.renderSelectionGroup(selections);
 
         let noSelections = true;
         if (
-            this.props.asset &&
-                this.props.asset.annotations &&
-                this.props.asset.annotations.length
+            this.props.filteredSelections &&
+                this.props.filteredSelections.length
         ) {
             noSelections = false;
         }
@@ -258,8 +247,9 @@ export default class ViewSelections extends React.Component {
                 <h3>
                     Selections
                 </h3>
-                <div className="btn-group mb-2" role="group"
-                     aria-label="View Toggle">
+                <div
+                    className="btn-group mb-2" role="group"
+                    aria-label="View Toggle">
                     <button
                         type="button"
                         className={'btn btn-outline-secondary btn-sm ' + (
@@ -313,7 +303,7 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('show.bs.collapse', function(e) {
             const selectionId = parseInt(
                 jQuery(e.target).data('selectionid'), 10);
-            const selection = find(me.props.asset.annotations, function(s) {
+            const selection = find(me.props.filteredSelections, function(s) {
                 return s.id === selectionId;
             });
             me.props.onViewSelection(e, selection);
@@ -344,9 +334,9 @@ export default class ViewSelections extends React.Component {
 }
 
 ViewSelections.propTypes = {
-    asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    filteredSelections: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
     onDeleteSelection: PropTypes.func.isRequired,

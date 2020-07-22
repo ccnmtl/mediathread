@@ -4356,6 +4356,24 @@ ul.section-tabs>li>a.active {
     text-overflow: ellipsis;
 }
 
+.course-collection .accordion>.card:not(:last-of-type) {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.course-collection .card {
+    margin-bottom: .25em;
+}
+
+.course-collection .card.active {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+#selectionsAccordion h5 {
+    margin-top: 1em;
+}
+
 .media-type {
     position: absolute;
     left: .8em;

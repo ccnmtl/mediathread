@@ -23,7 +23,7 @@ defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2 # pyup: < 0.14.3
 coverage==5.2
 logilab-common==1.7.2
-lazy-object-proxy==1.5.0
+lazy-object-proxy==1.5.1
 wrapt==1.12.1
 unicodecsv==0.14.1
 

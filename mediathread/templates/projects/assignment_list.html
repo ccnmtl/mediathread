@@ -52,7 +52,32 @@ Assignments
                     {% endif %}
                 </div>
             </div>
-            {% if role_in_course != "student" %}
+            {% if role_in_course == "student" %}
+                <div id="search-well">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="filter-search">Assignment Title</label>
+                            <div class="input-group mb-3">
+                                <input id="title-search" type="text"
+                                    class="form-control form-control-sm"
+                                    placeholder="Search for..." value={{title}}>
+                                <div class="input-group-append">
+                                    <a href="#" class="btn btn-secondary btn-sm btn-title-search" type="button">Search</a>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="form-group col-md-2">
+                            <label for="select-status">Response Status</label>
+                            <select id="select-status" name="status" class="form-control form-control-sm mb-3">
+                                <option {% if status == "all" %}selected{% endif %} value="all">All</option>
+                                <option {% if status == "draft" %}selected{% endif %} value="draft">Draft</option>
+                                <option {% if status == "no-response" %}selected{% endif %} value="no-response">No Response Yet</option>
+                                <option {% if status == "submitted" %}selected{% endif %} value="submitted">Submitted</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
                 <div class="accordion mb-3" id="assignment-accordion">
                     <div class="card border-0">
                         <div class="card-header" id="headingOne">
@@ -201,6 +226,8 @@ Assignments
                 <input type="hidden" name="sortby" value="{{sortby}}">
                 <input type="hidden" name="direction" value="{{direction}}">
                 <input type="hidden" name="page" value="{{page_obj.number}}">
+                <input type="hidden" name="status" value="{{status}}">
+                <input type="hidden" name="title" value="{{title}}">
             </form>
             {% if object_list.exists %}
                 <div class="row">
@@ -225,6 +252,20 @@ Assignments
 {% block js %}
     <script>
         jQuery(document).ready(function() {
+            jQuery('#select-status').on('change', (evt) => {
+                const $frm = jQuery('#search-form');
+                const status = jQuery(evt.currentTarget).val();
+                $frm.find('[name="status"]').val(status);
+                $frm.find('[name="page"]').val(1);
+                jQuery('#search-form').submit();
+            });
+            jQuery('.btn-title-search').on('click', (evt) => {
+                const $frm = jQuery('#search-form');
+                const title = jQuery('#title-search').val();
+                $frm.find('[name="title"]').val(title);
+                $frm.find('[name="page"]').val(1);
+                jQuery('#search-form').submit();
+            });
             jQuery('.sortable').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
 

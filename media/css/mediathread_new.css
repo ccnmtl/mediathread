@@ -4361,9 +4361,8 @@ ul.section-tabs>li>a.active {
 }
 
 .course-collection .card.active {
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
-    border-radius: .25rem!important;
-    /*margin-bottom: 3rem!important;*/
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    border-radius: .25rem;
 }
 
 #selectionsAccordion h5 {

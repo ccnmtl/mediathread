@@ -22,7 +22,6 @@ export default class ViewSelections extends React.Component {
         };
 
         this.onClickEdit = this.onClickEdit.bind(this);
-        this.onClickCopy = this.onClickCopy.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
     }
 
@@ -34,10 +33,6 @@ export default class ViewSelections extends React.Component {
     onClickEdit(e, s) {
         e.preventDefault();
         this.setState({isEditing: s});
-    }
-
-    onClickCopy(e) {
-        e.preventDefault();
     }
 
     onClickCancel(e) {
@@ -96,12 +91,6 @@ export default class ViewSelections extends React.Component {
                                     href="#"
                                     className="btn btn-secondary btn-sm">
                                     Edit
-                                </a>&nbsp;
-                                <a
-                                    onClick={(e) => this.onClickCopy(e, s)}
-                                    href="#"
-                                    className="btn btn-secondary btn-sm">
-                                    Copy
                                 </a>
                             </p>
                         )}

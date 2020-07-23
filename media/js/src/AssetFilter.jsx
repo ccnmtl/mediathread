@@ -214,24 +214,24 @@ export default class AssetFilter extends React.Component {
                         <div
                             id="view-toggle" className="btn-group"
                             role="group" aria-label="View Toggle">
-                            <a
-                                href="#"
+                            <button
+                                type="button"
                                 data-testid="viewtoggle-grid"
                                 onClick={() => this.props.setViewMode('grid')}
                                 className={'btn btn-outline-primary btn-sm ' + (
                                     this.props.viewMode === 'grid' ? 'active' : ''
                                 )}>
                                 Grid
-                            </a>
-                            <a
-                                href="#"
+                            </button>
+                            <button
+                                type="button"
                                 data-testid="viewtoggle-list"
                                 onClick={() => this.props.setViewMode('list')}
                                 className={'btn btn-outline-primary btn-sm ' + (
                                     this.props.viewMode === 'list' ? 'active' : ''
                                 )}>
                                 List
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div className="col-md-6">

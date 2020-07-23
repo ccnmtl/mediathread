@@ -261,25 +261,24 @@ export default class ViewSelections extends React.Component {
                 <h3>
                     Selections
                 </h3>
-                <div className="btn-group mb-2">
-                    <a
-                        className="btn btn-light dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Group </a>
-                    <div className="dropdown-menu">
-                        <a
-                            className="dropdown-item"
-                            onClick={(e) => this.onSelectGrouping(e, 'author')}>
-                            {this.state.groupBy === 'author' && checkmark}
-                            by author
-                        </a>
-                        <a
-                            className="dropdown-item"
-                            onClick={(e) => this.onSelectGrouping(e, 'tag')}>
-                            {this.state.groupBy === 'tag' && checkmark}
-                            by tag
-                        </a>
-                    </div>
+                <div className="btn-group mb-2" role="group"
+                     aria-label="View Toggle">
+                    <button
+                        type="button"
+                        className={'btn btn-outline-secondary btn-sm ' + (
+                            this.state.groupBy === 'author' ? 'active' : ''
+                        )}
+                        onClick={(e) => this.onSelectGrouping(e, 'author')}>
+                        Group by author
+                    </button>
+                    <button
+                        type="button"
+                        className={'btn btn-outline-secondary btn-sm ' + (
+                            this.state.groupBy === 'tag' ? 'active' : ''
+                        )}
+                        onClick={(e) => this.onSelectGrouping(e, 'tag')}>
+                        Group by tag
+                    </button>
                 </div>
 
                 <Alert variant="warning" show={noSelections}>

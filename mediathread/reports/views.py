@@ -87,16 +87,22 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
         # domains --> assets
         for ann_asset in Asset.objects.filter(course=course):
             try:
-                domain = re.search('://([^/]+)/',
-                                   ann_asset.primary.url).groups()[0]
+                match = re.search('://([^/]+)/', ann_asset.primary.url)
             except Source.DoesNotExist:
                 continue
+
+            domain = None
+            if match:
+                groups = match.groups()
+                if len(groups) > 0:
+                    domain = groups[0]
 
             self.nodes.append({
                 'nodeName': "%s (%s)" % (ann_asset.title, domain),
                 'group': 2,
                 'href': ann_asset.get_absolute_url(),
-                'domain': domain, })
+                'domain': domain,
+            })
             self.assets[ann_asset.id] = len(self.nodes) - 1
 
     def initialize_discussions(self, course, collaboration_context):

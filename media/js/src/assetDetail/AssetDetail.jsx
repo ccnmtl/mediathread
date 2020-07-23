@@ -612,11 +612,8 @@ export default class AssetDetail extends React.Component {
             }
         }
 
-        if (
-            prevState.tab !== this.state.tab &&
-                (this.state.tab === 'createSelection' ||
-                 this.state.tab === 'viewItem')
-        ) {
+        // Clear active selection when switching to any tab.
+        if (prevState.tab !== this.state.tab) {
             this.onClearActiveSelection();
         }
 

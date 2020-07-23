@@ -10,6 +10,8 @@ import AssetDetail from './assetDetail/AssetDetail';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
+import {getAssets} from './utils';
+
 export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
@@ -66,6 +68,19 @@ export default class CollectionTab extends React.Component {
             selectedAsset: null,
             filteredSelections: []
         });
+
+        if (!this.props.assets || !this.props.assets.length) {
+            const me = this;
+            getAssets().then(function(d) {
+                me.props.onUpdateAssets(
+                    d.assets,
+                    d.asset_count,
+                    d.active_tags,
+                    d.active_vocabulary,
+                    d.space_viewer.id
+                );
+            });
+        }
     }
 
     onUpdateAsset(asset) {

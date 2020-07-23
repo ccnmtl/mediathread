@@ -29,7 +29,8 @@ export default class CollectionTab extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.asset !== this.props.asset) {
             this.setState({
-                selectedAsset: this.props.asset
+                selectedAsset: this.props.asset,
+                filteredSelections: this.props.asset.annotations
             });
         }
     }

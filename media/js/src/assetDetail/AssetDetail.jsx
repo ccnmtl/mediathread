@@ -503,12 +503,6 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="tab-content asset-detail">
-                <Alert
-                    variant="danger" show={this.state.showDeletedDialog}
-                    onClose={this.hideDeletedDialog} dismissible>
-                    <Alert.Heading>Selection deleted.</Alert.Heading>
-                </Alert>
-
                 <h2 className="text-center">
                     {this.props.asset.title}
                 </h2>
@@ -547,6 +541,14 @@ export default class AssetDetail extends React.Component {
                         show={!!this.state.validationError}>
                         {this.state.validationError}
                     </Alert>
+
+                    <Alert
+                        dismissible
+                        variant="primary"
+                        show={this.state.showDeletedDialog}
+                        onClose={this.hideDeletedDialog}>
+                        <Alert.Heading>Selection deleted.</Alert.Heading>
+                    </Alert>
                 </div>
 
                 <div className="row">
@@ -563,6 +565,7 @@ export default class AssetDetail extends React.Component {
                                 terms={this.props.terms}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
+                                onDeleteSelection={this.onDeleteSelection}
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}
                                 showDeleteDialogBool={this.state.showDeleteDialog}

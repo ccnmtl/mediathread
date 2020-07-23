@@ -23,7 +23,7 @@ defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2 # pyup: < 0.14.3
 coverage==5.2
 logilab-common==1.7.2
-lazy-object-proxy==1.5.0
+lazy-object-proxy==1.5.1
 wrapt==1.12.1
 unicodecsv==0.14.1
 
@@ -40,7 +40,7 @@ chardet==3.0.4
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==2.10
-urllib3==1.25.9  # sentry-sdk
+urllib3==1.25.10  # sentry-sdk
 certifi==2020.6.20  # sentry-sdk
 cryptography==3.0
 pyOpenSSL==19.1.0
@@ -61,7 +61,7 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.16.1
+sentry-sdk==0.16.2
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0

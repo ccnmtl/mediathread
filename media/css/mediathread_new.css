@@ -724,6 +724,11 @@ div.button-form form, div.button-form.inline form {
     border-left: solid 10px #1e77bd;
 }
 
+#id_response_view_policy,
+#id_publish {
+    list-style-type: none;
+}
+
 
 /* LOGIN PAGE */
 .login-wrap {
@@ -4248,6 +4253,24 @@ ul.section-tabs>li>a.active {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.course-collection .accordion>.card:not(:last-of-type) {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.course-collection .card {
+    margin-bottom: .25em;
+}
+
+.course-collection .card.active {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    border-radius: .25rem;
+}
+
+#selectionsAccordion h5 {
+    margin-top: 1em;
 }
 
 .media-type {

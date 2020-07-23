@@ -24,12 +24,12 @@
         <tbody>
         {% for object in object_list %}
             {% my_assignment_responses object request.user as responses %}
-            
+
             {% comment %}
                 Users can potentially have multiple responses to an assignment
                 by collaborating with fellow students.
             {% endcomment %}
-            
+
             {% if responses.exists %}
                 {% for response_collaboration in responses %}
                     {% with response=response_collaboration.content_object %}
@@ -121,7 +121,7 @@
                         {{object.title}}
                     </td>
                     <td>
-                        No Response
+                        No Response Yet
                     </td>
                     <td>
                         <form action="{% url 'project-create' request.course.id %}" method="post">

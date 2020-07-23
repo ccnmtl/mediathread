@@ -22,8 +22,9 @@ export default class ViewSelections extends React.Component {
         };
 
         this.onClickEdit = this.onClickEdit.bind(this);
-        this.onClickCopy = this.onClickCopy.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
+        this.onClickDelete = this.onClickDelete.bind(this);
+        this.onDeleteSelection = this.onDeleteSelection.bind(this);
     }
 
     onSelectGrouping(e, grouping) {
@@ -36,13 +37,18 @@ export default class ViewSelections extends React.Component {
         this.setState({isEditing: s});
     }
 
-    onClickCopy(e) {
-        e.preventDefault();
-    }
-
     onClickCancel(e) {
         e.preventDefault();
         this.setState({isEditing: null});
+    }
+
+    onClickDelete(selectionId) {
+        this.props.showDeleteDialog(selectionId);
+    }
+
+    onDeleteSelection(e) {
+        this.setState({isEditing: false});
+        return this.props.onDeleteSelection(e);
     }
 
     renderSelection(s, key, tags, terms) {
@@ -96,12 +102,6 @@ export default class ViewSelections extends React.Component {
                                     href="#"
                                     className="btn btn-secondary btn-sm">
                                     Edit
-                                </a>&nbsp;
-                                <a
-                                    onClick={(e) => this.onClickCopy(e, s)}
-                                    href="#"
-                                    className="btn btn-secondary btn-sm">
-                                    Copy
                                 </a>
                             </p>
                         )}
@@ -180,12 +180,6 @@ export default class ViewSelections extends React.Component {
                 groupedSelections.push(me.renderSelection(
                     s, reactKey, tags, terms));
 
-                if (
-                    idx >= selectionGroup.length - 1 &&
-                        i < Object.keys(selections).length - 1
-                ) {
-                    groupedSelections.push(<hr key={'hr-' + reactKey} />);
-                }
             });
 
             i++;
@@ -204,7 +198,27 @@ export default class ViewSelections extends React.Component {
                     terms={this.props.terms}
                     onClickCancel={this.onClickCancel}
                     onSaveSelection={function() {}}
+                    onClickDelete={this.onClickDelete}
                 />
+
+                <Modal
+                    show={this.props.showDeleteDialogBool}
+                    onHide={this.props.hideDeleteDialog}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete Selection</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Delete this selection?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.props.hideDeleteDialog}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={this.onDeleteSelection}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </React.Fragment>
         );
     }
@@ -276,23 +290,6 @@ export default class ViewSelections extends React.Component {
                 <div className="accordion" id="selectionsAccordion">
                     {groupedSelections}
                 </div>
-
-                <Modal
-                    show={this.props.showDeleteDialogBool}
-                    onHide={this.props.hideDeleteDialog}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Delete annotation</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Delete this annotation?</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.hideDeleteDialog}>
-                            Cancel
-                        </Button>
-                        <Button variant="danger" onClick={this.onDeleteSelection}>
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </React.Fragment>
         );
     }
@@ -314,6 +311,7 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('shown.bs.collapse', function(e) {
             const title = jQuery(e.target).data('title');
             me.props.onSelectSelection(title);
+            jQuery(e.target).parent().addClass('active');
         });
 
         $selectionsAccordion.on('show.bs.collapse', function(e) {
@@ -328,6 +326,7 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('hidden.bs.collapse', function(e) {
             if (me.isCollapsed()) {
                 me.props.onSelectSelection(null);
+                jQuery(e.target).parent().removeClass('active');
             }
         });
     }
@@ -354,6 +353,7 @@ ViewSelections.propTypes = {
     terms: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
+    onDeleteSelection: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialogBool: PropTypes.bool.isRequired

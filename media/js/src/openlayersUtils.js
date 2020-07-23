@@ -69,7 +69,6 @@ const displaySelection = function(a, map) {
     const styles = getCoordStyles();
 
     const geometry = a.annotation.geometry;
-    console.log('displaying', geometry);
 
     const view = map.getView();
     const projection = view.getProjection();

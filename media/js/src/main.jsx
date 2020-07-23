@@ -68,14 +68,39 @@ class Main extends React.Component {
         this.onUpdateAssets = this.onUpdateAssets.bind(this);
     }
 
-    onUpdateAssets(assets, assetCount=null) {
+    /**
+     * Update the current state of the assets array with the given
+     * assets.
+     *
+     * Optionally, you can also update tags, terms, and current user
+     * with this method, too.
+     */
+    onUpdateAssets(
+        assets, assetCount=null,
+        tags=null, terms=null, currentUser=null
+    ) {
         if (assetCount === null) {
             assetCount = this.state.assetCount;
         }
-        this.setState({
+
+        let newState = {
             assets: assets,
             assetCount: assetCount
-        });
+        };
+
+        if (tags) {
+            newState.tags = tags;
+        }
+
+        if (terms) {
+            newState.terms = terms;
+        }
+
+        if (currentUser) {
+            newState.currentUser = currentUser;
+        }
+
+        this.setState(newState);
     }
 
     render() {

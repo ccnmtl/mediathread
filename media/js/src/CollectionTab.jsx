@@ -145,6 +145,7 @@ export default class CollectionTab extends React.Component {
             assetsDom = (
                 <CollectionListView
                     assets={assetList}
+                    enterAssetDetailView={this.enterAssetDetailView}
                     onUpdateAssets={this.props.onUpdateAssets} />
             );
         }

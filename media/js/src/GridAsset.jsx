@@ -15,7 +15,7 @@ import VectorSource from 'ol/source/Vector';
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
 import {
-    capitalizeFirstLetter, handleBrokenImage, getCourseUrl
+    capitalizeFirstLetter, handleBrokenImage, getAssetUrl
 } from './utils';
 import {objectProportioned, displaySelection} from './openlayersUtils';
 
@@ -96,8 +96,7 @@ export default class GridAsset extends React.Component {
             );
         }
 
-        const courseUrl = getCourseUrl();
-        const assetLink = `${courseUrl}react/asset/${this.props.asset.id}/`;
+        const assetUrl = getAssetUrl(this.props.asset.id);
 
         return (
             <div className="col-sm-4">
@@ -110,7 +109,7 @@ export default class GridAsset extends React.Component {
                         </div>
                         <div className="image-overlay">
                             <a
-                                href={assetLink}
+                                href={assetUrl}
                                 title={this.props.asset.title}>
                                 {type === 'image' && (
                                     <div
@@ -137,7 +136,7 @@ export default class GridAsset extends React.Component {
                         <h5 className="card-title">
                             <a
                                 onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
-                                href={assetLink}
+                                href={assetUrl}
                                 title={this.props.asset.title}
                                 dangerouslySetInnerHTML={{
                                     __html: this.props.asset.title

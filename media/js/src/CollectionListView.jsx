@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DataTable, { createTheme } from 'react-data-table-component';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
-import {formatDay, getAssets, getAssetType} from './utils';
+import {formatDay, getAssets, getAssetType, getAssetUrl} from './utils';
 
 export default class CollectionListView extends React.Component {
     constructor(props) {
@@ -41,12 +41,25 @@ export default class CollectionListView extends React.Component {
             return <NoAssetsFound />;
         }
 
+        const me = this;
+
         const columns = [
             {
                 name: 'Title',
                 selector: 'title',
                 sortable: true,
-                wrap: true
+                wrap: true,
+                format: function(row) {
+                    return (
+                        <a
+                            href={getAssetUrl(row.id)}
+                            onClick={
+                                (e) => me.props.enterAssetDetailView(e, row)
+                            }>
+                            {row.title}
+                        </a>
+                    );
+                }
             },
             {
                 name: 'Selections',
@@ -155,5 +168,6 @@ export default class CollectionListView extends React.Component {
 
 CollectionListView.propTypes = {
     assets: PropTypes.array,
-    onUpdateAssets: PropTypes.func.isRequired,
+    enterAssetDetailView: PropTypes.func.isRequired,
+    onUpdateAssets: PropTypes.func.isRequired
 };

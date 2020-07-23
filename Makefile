@@ -10,11 +10,5 @@ all: jenkins
 
 include *.mk
 
-harvest1: $(PY_SENTINAL)
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 3 -a mediathread.main,mediathread.assetmgr,mediathread.taxonomy,mediathread.discussions
-
-harvest2: $(PY_SENTINAL)
-	$(MANAGE) harvest --settings=$(APP).settings_test --failfast -v 3 -a mediathread.projects
-
 integrationserver: $(PY_SENTINAL)
 	$(MANAGE) integrationserver

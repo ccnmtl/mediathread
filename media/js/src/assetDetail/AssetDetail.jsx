@@ -25,7 +25,7 @@ import {
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
 import {
-    objectProportioned, displaySelection, clearVectorLayer, resetMap
+    objectProportioned, displaySelection, clearSource, resetMap
 } from '../openlayersUtils';
 import CreateSelection from './CreateSelection';
 import ViewSelections from './ViewSelections';
@@ -300,7 +300,7 @@ export default class AssetDetail extends React.Component {
                 this.map.removeLayer(this.selectionLayer);
             }
 
-            resetMap(this.map, this.asset.getImage());
+            resetMap(this.map, this.selectionSource, this.asset.getImage());
         } else if (this.type === 'video') {
             const player = this.playerRef;
             player.seekTo(0, 'seconds');
@@ -335,7 +335,9 @@ export default class AssetDetail extends React.Component {
     }
 
     onClearVectorLayer() {
-        clearVectorLayer(this.map);
+        if (this.selectionSource) {
+            clearSource(this.selectionSource);
+        }
     }
 
     render() {
@@ -573,9 +575,10 @@ export default class AssetDetail extends React.Component {
                         )}
                         {this.state.tab === 'createSelection' && (
                             <CreateSelection
-                                asset={this.props.asset}
+                                type={this.type}
                                 tags={this.props.tags}
                                 terms={this.props.terms}
+                                selectionSource={this.selectionSource}
                                 selectionStartTime={this.state.selectionStartTime}
                                 selectionEndTime={this.state.selectionEndTime}
                                 onStartTimeUpdate={this.onStartTimeUpdate}

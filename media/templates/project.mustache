@@ -179,23 +179,6 @@
                     </div>
                     {{/context.can_edit}}
                 </div>
-                <div class="col text-center">
-                    {{#context.can_edit}}
-                        <div class="participant-edit-container"
-                            {{^context.editing}}style="display: none"{{/context.editing}}>
-                            Authors:
-                            {{{context.form.participants}}}
-                        </div>
-                    {{/context.can_edit}}
-                    <div class="participant-container"
-                        {{#context.editing}}style="display: none"{{/context.editing}}>
-                        by <span class="participants_chosen">
-                            {{#context.project.participants}}
-                                {{public_name}}{{^last}}, {{/last}}
-                            {{/context.project.participants}}
-                            </span>
-                    </div>
-                </div>
                 <div class="col text-right text-secondary pr-3">
                     {{#context.project.visibility_long}}
                         <span class="project-visibility-description">
@@ -219,6 +202,21 @@
 
     <div class="row no-gutters mt-4">
         <div class="col-md-6">
+            {{#context.can_edit}}
+                <div class="participant-edit-container"
+                    {{^context.editing}}style="display: none"{{/context.editing}}>
+                    Authors:
+                    {{{context.form.participants}}}
+                </div>
+            {{/context.can_edit}}
+            <div class="participant-container"
+                {{#context.editing}}style="display: none"{{/context.editing}}>
+                <h3>by <span class="participants_chosen">
+                    {{#context.project.participants}}
+                        {{public_name}}{{^last}}, {{/last}}
+                    {{/context.project.participants}}
+                    </span></h3>
+            </div>
             <div class="essay-space-container">
                 {{#context.can_edit}}
                     <textarea id="{{context.project.id}}-project-content"
@@ -236,9 +234,9 @@
         </div>
         {{! Media Display Window and or a Collections box }}
         <div class="col-md-6">
-            <div class="p-2 text-center bg-light collection-materials"
+            <h3 class="text-center">Selections</h3>
+            <div class="collection-materials"
                 style="display:{{^context.editing}}none{{/context.editing}}">
-                <h2>Collection</h2>
                 <div class="ajaxloader">
                     <div class="message">
                     <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
@@ -250,14 +248,12 @@
             </div>
             <div class="asset-view-published" 
                 style="display: {{#context.editing}}none{{/context.editing}}">
-
                 <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                    <div class="asset-display"></div>
+                    <div class="clipstrip-display"></div>
                     <div class="annotation-title publishedCitation" style="margin-left: 5px; margin-top: 5px;"></div>
                     <div class="asset-title" style="margin-left: 5px; margin-bottom: 5px; margin-top: 5px; font-size: 80%;"></div>
-                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-                        <div class="asset-display"></div>
-                        <div class="clipstrip-display"></div>
-                    </div>
                 </div>
             </div>
         </div>

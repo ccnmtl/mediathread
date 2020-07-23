@@ -208,6 +208,13 @@ var CollectionList = function(config) {
         jQuery(q).hide();
         return false;
     });
+
+    self.$el.on('click', 'a.page-link', function(evt) {
+        const page = jQuery(evt.target).data('page-number');
+        const offset = (page - 1) * self.limits.limit;
+        self.refresh(null, offset, true);
+        return false;
+    });
 };
 
 CollectionList.prototype.getLoading = function() {
@@ -255,11 +262,11 @@ CollectionList.prototype.constructUrl = function(config, updating) {
     return url;
 };
 
-CollectionList.prototype.refresh = function(config) {
+CollectionList.prototype.refresh = function(config, offset, updating) {
     var self = this;
     self.setLoading(true);
-    self.limits.offset = 0;
-    var url = self.constructUrl(config, false);
+    self.limits.offset = offset || 0;
+    var url = self.constructUrl(config, updating || false);
 
     djangosherd.storage.get(
         {
@@ -557,8 +564,7 @@ CollectionList.prototype.updateSwitcher = function() {
 
             self.$el.find('select.course-tags')
                 .select2({
-                    placeholder: 'Select tag',
-                    width: '70%'
+                    placeholder: 'Select tag'
                 });
             if ('tag' in self.current_records.active_filters &&
                 self.current_records.active_filters.tag.length > 0) {
@@ -569,7 +575,7 @@ CollectionList.prototype.updateSwitcher = function() {
 
             var vocabulary = self.$el.find('select.vocabulary')[0];
             jQuery(vocabulary).select2({
-                width: '70%'
+                placeholder: 'Select terms'
             });
 
             var values = [];

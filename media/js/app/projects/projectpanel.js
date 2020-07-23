@@ -117,7 +117,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.citationView = new CitationView();
     self.citationView.init({
         'default_target': panel.context.project.id + '-videoclipbox',
-        'onPrepareCitation': self.onPrepareCitation,
         'presentation': 'medium',
         'clipform': true,
         'winHeight': function() {
@@ -195,16 +194,6 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
     }
 };
 
-
-
-ProjectPanelHandler.prototype.onPrepareCitation = function(target) {
-    jQuery(target).parent().css('background', 'none');
-
-    var a = jQuery(target).parents('td.panel-container.collection');
-    if (a && a.length) {
-        window.panelManager.openSubPanel(a[0]);
-    }
-};
 
 ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     var self = this;

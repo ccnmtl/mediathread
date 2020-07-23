@@ -1,71 +1,31 @@
 a.materialCitation {
-    background-color: #fff;
-    background-image: url('./meth_video.png');
+    color: black;
+    background-color: #ffc107;
+    background-color: #fff463;
+    background-image: url('data:image/svg+xml;utf8,<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-film" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm4 0h8v6H4V1zm8 8H4v6h8V9zM1 1h2v2H1V1zm2 3H1v2h2V4zM1 7h2v2H1V7zm2 3H1v2h2v-2zm-2 3h2v2H1v-2zM15 1h-2v2h2V1zm-2 3h2v2h-2V4zm2 3h-2v2h2V7zm-2 3h2v2h-2v-2zm2 3h-2v2h2v-2z"/></svg>');
     background-repeat: no-repeat;
-    background-position-y: -4px;
     padding-left: 23px;
+    padding-right: 5px;
     width: auto;
-    height: 20px;
-    text-decoration: underline;
     display: inline-block;
+    cursor: pointer;
+    background-position: 4px;
 }
 
 a.materialCitation:after {
     content: attr(title);
 }
 
-a.asset_title.asset-whole {
-    background-image: url('./meth_video.png');
-    background-repeat: no-repeat;
-}
-
-a.materialCitation,
-a.asset-mp3,
-a.asset-mp4_audio,
-a.asset-whole.asset-mp3,
-a.asset-whole.asset-mp4_audio,
-a.asset-image,
-a.asset-image_fpx,
-a.asset-whole.asset-image,
-a.asset-whole.asset-image_fpx,
-a.asset-youtube,
-a.asset-youtube_fpx {
-    color: #660000 !important;
-    cursor: pointer;
-    margin: 0 5px 0 5px;
-}
-
-a.asset-mp3,
-a.asset-mp4_audio,
-a.asset-whole.asset-mp3,
-a.asset-whole.asset-mp4_audio,
-a.asset-image,
-a.asset-image_fpx,
-a.asset-whole.asset-image,
-a.asset-whole.asset-image_fpx,
-a.asset-youtube,
-a.asset-youtube_fpx {
-    padding-left: 27px;
-    background-repeat: no-repeat;
-}
-
 a.asset-mp3,
 a.asset-mp4_audio,
 a.asset-whole.asset-mp3,
 a.asset-whole.asset-mp4_audio {
-    background-image: url('./meth_audio.png');
-    background-position: left -3px;
+    background-image: url('data:image/svg+xml;utf8,<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-mic text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path fill-rule="evenodd" d="M10 8V3a2 2 0 1 0-4 0v5a2 2 0 1 0 4 0zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/></svg>');
 }
 
 a.asset-image,
 a.asset-image_fpx,
 a.asset-whole.asset-image,
 a.asset-whole.asset-image_fpx {
-    background-image: url('./meth_image.png');
-    background-position: left -3px;
-}
-
-a.asset-youtube,
-a.asset-youtube_fpx {
-    background-image: url('./meth_video.png');
+    background-image: url('data:image/svg+xml;utf8,<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-image-fill text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M.002 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2V3zm1 9l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094L15.002 9.5V13a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1v-1zm5-6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>');
 }

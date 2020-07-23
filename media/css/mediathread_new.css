@@ -1325,27 +1325,6 @@ td.panhandle-stripe.discussion {
     background-color: #000 !important;
 }
 
-div#collection-materials h2,
-div.collection-materials h2 {
-    border-radius: 0;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-}
-
-.collection-materials h2 {
-    background-color: #a88448;
-    text-transform: capitalize;
-    font-size: 98%;
-    padding: 5px 12px;
-    text-transform: capitalize;
-    font-size: 98%;
-    font-weight: normal;
-    -moz-border-radius: 10px 10px 0 0;
-    border-radius: 10px 10px 0 0;
-    margin: 0;
-    color: white
-}
-
 div#collection-overlay {
     z-index:  10001;
 }
@@ -1827,27 +1806,6 @@ div.homepage-column-info {
 
 /** Switcher CSS **/
 
-/* full collection gallery */
-.filter-widget {
-    width: 100%;
-}
-
-.filter-widget .collection-col-3,
-.filter-widget .collection-col-2 {
-    float: left;
-    margin: 0 13px 10px 0;
-}
-
-.filter-widget .collection-col-3 {
-    width: 20%;
-    min-width: 199px;
-}
-
-.filter-widget .collection-col-2 {
-    width: 13%;
-    min-width: 100px;
-}
-
 /* homepage */
 #classwork_table .filter-widget {
     width: 50%;
@@ -1889,6 +1847,12 @@ div.homepage-column-info {
     width: 100%;
 }
 
+.media-column label,
+.switcher-tool {
+    font-size: .875rem;
+    margin-bottom: 0;
+}
+
 .switcher.disabled a.switcher-top {
     background-color: #EFEFEF;
 }
@@ -1902,31 +1866,13 @@ div.collection-chooser a.switcher-top {
     background-color: white;
 }
 
-div a.switcher-top {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-}
-
 span.author-prefix,
 span.course-tags-prefix,
 span.concept-prefix,
 span.switcher-prefix {
-    text-transform: uppercase;
-    font-weight: bold;
-    float: left;
-    color: #777;
     border-right: 1px solid #CCCCCC;
     background-color: #EFEFEF;
-    height: 32px;
-    padding: 8px 7px 0 7px;
-    font-size: .85em;
-    -webkit-border-top-left-radius: 4px;
-    -moz-border-radius-topleft: 4px;
-    border-top-left-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    border-bottom-left-radius: 4px;
+    padding: 5px 7px;
 }
 
 span.author-prefix,
@@ -1934,22 +1880,8 @@ span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
-    height: 32px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow: ellipsis;
-    padding: 8px 7px 0 7px;
+    height: 31px;
 }
-
-div.media-column .select2-container-multi .select2-choices {
-    -webkit-border-top-right-radius: 4px;
-    -moz-border-radius-topright: 4px;
-    border-top-right-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -moz-border-radius-bottomright: 4px;
-    border-bottom-right-radius: 4px;
-}
-
 
 .switcher .switcher-options h3 {
    font-size: 90%;
@@ -1969,12 +1901,6 @@ div.media-column .select2-container-multi .select2-choices {
     margin: -1px 0 0 0;
     max-height: 300px;
     overflow-y: auto;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    border-bottom-left-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -moz-border-radius-bottomright: 4px;
-    border-bottom-right-radius: 4px;
 }
 
 .switcher .switcher-options li {
@@ -2048,24 +1974,15 @@ div.media-column .select2-container-multi .select2-choices {
     user-select: none;
 
     border: 1px solid #CCCCCC;
-    padding: 0 3px 0 0;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    padding: 4px 0px;
     text-decoration: none;
     background-color: white;
 
     color: #383838;
     width: inherit;
     display: block;
-    height: 34px;
+    height: 31px;
     cursor: pointer;
-}
-
-.switcher a.menuopen {
-    -webkit-border-bottom-right-radius: 0;
-    -moz-border-radius-bottomright: 0;
-    border-bottom-right-radius: 0;
 }
 
 div.switcher-active-filters {
@@ -2085,16 +2002,11 @@ div.switcher-active-filter {
 }
 
 div.switcher-active-filter span {
-    float: right;
     text-align: left;
     overflow:hidden;
     border: 1px solid #CCCCCC;
     padding: 2px 3px 3px 8px;
-    font-size: 11px;
     color: #666666;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
     text-decoration: none;
     height: 14px;
     outline-color: -moz-use-text-color;
@@ -2122,18 +2034,12 @@ div.switcher-active-filter span a.remove:hover {
 }
 
 a.switcher-top.menuopen span.title {
-    float: left;
-    margin-top: 9px;
     padding: 0 0 0 7px;
-    font-size: 1em;
     display: inline-block;
 }
 
 a.switcher-top.menuclosed span.title {
-    margin-top: 9px;
     padding: 0 0 0 7px;
-    font-size: 1em;
-    display: inline-block;
 }
 
 span.down-arrow {
@@ -2149,7 +2055,7 @@ span.down-arrow {
     outline: 0;
     float: right;
     background-color: white;
-    margin-top: 7px;
+    margin: 3px;
 }
 
 a.switcher-top.menuopen span.down-arrow {
@@ -2823,9 +2729,6 @@ input[type="checkbox"] {
     line-height: 18px;
     font-weight: normal;
     margin: .75em 0 0 0;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
 }
 
 .response .metadata-label {
@@ -2893,9 +2796,6 @@ li.annotation-group {
     box-shadow: none;
     border: none;
     background-color: #fff;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
     border: solid 1px #ccc;
 }
 
@@ -3172,7 +3072,6 @@ div.collection_table {
 .asset-view-published {
     height: 100%;
     min-height: 300px;
-    border: 1px solid #efefef;
 }
 
 .asset-title {

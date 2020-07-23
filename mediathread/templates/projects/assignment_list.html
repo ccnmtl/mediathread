@@ -30,12 +30,10 @@ Assignments
                                     href="{% url 'selection-assignment-create' request.course.id %}">
                                     Add Selection Assignment
                                 </a>
-                                <form action="{% url 'project-create' request.course.id %}" method="post">
-                                    <input type="hidden" name="project_type" value="assignment" />
-                                    <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
-                                        Add Composition Assignment
-                                    </button>
-                                </form>
+                                <a class="btn btn-sm btn-outline-secondary mr-2"
+                                    href="{% url 'composition-assignment-create' request.course.id %}">
+                                    Add Composition Assignment
+                                </a>
                                 <a class="btn btn-sm btn-outline-secondary mr-2"
                                     href="{% url 'sequence-assignment-create' request.course.id %}">
                                     Add Sequence Assignment

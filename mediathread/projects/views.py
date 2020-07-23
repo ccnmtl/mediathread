@@ -462,7 +462,7 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
             view = SequenceAssignmentView.as_view()
         elif project.is_sequence():
             view = SequenceEditView.as_view()
-        elif parent:
+        elif project.is_essay_assignment() or parent:
             view = CompositionAssignmentView.as_view()
         else:
             view = CompositionView.as_view()

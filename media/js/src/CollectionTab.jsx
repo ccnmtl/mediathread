@@ -18,7 +18,8 @@ export default class CollectionTab extends React.Component {
         };
 
         this.setViewMode = this.setViewMode.bind(this);
-        this.toggleAssetView = this.toggleAssetView.bind(this);
+        this.enterAssetDetailView = this.enterAssetDetailView.bind(this);
+        this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
     }
 
@@ -32,22 +33,29 @@ export default class CollectionTab extends React.Component {
         this.setState({viewMode: mode});
     }
 
-    toggleAssetView(asset, e) {
+    followLink(e) {
         // If this was an <a> link, prevent default behavior.
         if (e) {
             e.preventDefault();
             window.history.pushState(null, null, e.target.href);
         }
+    }
 
-        if (!this.state.selectedAsset && asset) {
-            this.setState({selectedAsset: asset});
+    enterAssetDetailView(e, asset) {
+        this.followLink(e);
 
+        this.setState({selectedAsset: asset}, function() {
             // Scroll to top when entering asset detail view.
             window.scrollTo(0, 0);
-        } else {
-            this.setState({selectedAsset: null});
-        }
+        });
     }
+
+    leaveAssetDetailView(e) {
+        this.followLink(e);
+
+        this.setState({selectedAsset: null});
+    }
+
     onUpdateAsset(asset) {
         this.setState({selectedAsset: asset});
     }
@@ -64,7 +72,6 @@ export default class CollectionTab extends React.Component {
                     asset={this.state.selectedAsset}
                     tags={this.props.tags}
                     terms={this.props.terms}
-                    toggleAssetView={this.toggleAssetView}
                     onUpdateAsset={this.onUpdateAsset} />
             );
         } else if (this.props.assetError) {
@@ -86,7 +93,7 @@ export default class CollectionTab extends React.Component {
                 assetGroup.push(
                     <GridAsset
                         key={asset.id} asset={asset}
-                        toggleAssetView={me.toggleAssetView}
+                        enterAssetDetailView={me.enterAssetDetailView}
                         currentUser={me.props.currentUser} />);
             });
 
@@ -121,7 +128,7 @@ export default class CollectionTab extends React.Component {
                     aria-label="View Toggle">
                     <a
                         href={courseUrl}
-                        onClick={this.toggleAssetView}
+                        onClick={this.leaveAssetDetailView}
                         title="Back"
                         className="btn btn-outline-secondary btn-sm">
                         <svg className="bi bi-caret-left-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

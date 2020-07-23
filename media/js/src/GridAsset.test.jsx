@@ -39,7 +39,7 @@ it('renders the asset', async() => {
             <GridAsset
                 currentUser={fakeUser.id}
                 asset={fakeAsset}
-                toggleAssetView={function() {}}/>,
+                enterAssetDetailView={function() {}} />,
             container
         );
     });

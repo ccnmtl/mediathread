@@ -83,12 +83,24 @@ export default class CollectionTab extends React.Component {
         }
     }
 
+    /**
+     * onUpdateAsset()
+     *
+     * This is used to update the asset's selections when a new
+     * selection is created by the user.
+     */
     onUpdateAsset(asset) {
-        this.setState({selectedAsset: asset});
+        // TODO: Reset SelectionFilter to default
+        this.setState({
+            selectedAsset: asset,
+            filteredSelections: asset.annotations
+        });
     }
+
     onFilterSelections(selections) {
         this.setState({filteredSelections: selections});
     }
+
     render() {
         let assets = [];
         let assetsDom = <LoadingAssets />;

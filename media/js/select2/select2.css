@@ -480,7 +480,7 @@ disabled look for disabled choices in the results dropdown
     padding: 0 5px 0 0;
     position: relative;
 
-    border: 1px solid #aaa;
+    border: 1px solid #ccc;
     cursor: text;
     overflow: hidden;
 
@@ -535,7 +535,6 @@ html[dir="rtl"] .select2-container-multi .select2-choices li
     border: 0;
     -webkit-box-shadow: none;
             box-shadow: none;
-    background: transparent !important;
 }
 
 .select2-container-multi .select2-choices .select2-search-field input.select2-active {

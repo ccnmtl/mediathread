@@ -1,9 +1,6 @@
 # pylint: disable-msg=C0302
 import datetime
 import hashlib
-import hmac
-import json
-import re
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
 from courseaffils.models import CourseAccess
@@ -11,8 +8,8 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.db.models.functions import Lower
-from django.urls import reverse
 from django.db.models.query_utils import Q
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseForbidden,
@@ -21,14 +18,15 @@ from django.http import (
 from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from django.template import loader
-from django.utils.encoding import smart_bytes
+from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.utils.encoding import smart_bytes
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView
 from django.views.generic.base import View, TemplateView
 from djangohelpers.lib import allow_http
-from sentry_sdk import capture_exception
-
+import hmac
+import json
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
@@ -46,6 +44,8 @@ from mediathread.mixins import (
 )
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+import re
+from sentry_sdk import capture_exception
 
 
 try:
@@ -1159,6 +1159,26 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         ids = [a.pk for a in assets]
         return (assets, notes.filter(asset__id__in=ids))
 
+    def add_pagination_metadata(self, assets, offset, limit):
+        paginator = Paginator(assets, limit)
+        current_page = (offset // limit) + 1
+
+        ctx = {
+            'paginator': {
+                'numPages': paginator.num_pages,
+                'currentPage': current_page,
+            }
+        }
+        page_obj = paginator.get_page(current_page)
+        if page_obj.has_previous():
+            ctx['hasPrev'] = True
+            ctx['prevPage'] = page_obj.previous_page_number()
+        if page_obj.has_next():
+            ctx['hasNext'] = True
+            ctx['nextPage'] = page_obj.next_page_number()
+
+        return ctx
+
     def get(self, request):
         if (self.record_owner):
             assets = Asset.objects.by_course_and_user(
@@ -1201,6 +1221,7 @@ class AssetCollectionView(LoggedInCourseMixin, RestrictedMaterialsMixin,
         # pagination.
         ctx['asset_count'] = assets.count()
 
+        ctx.update(self.add_pagination_metadata(assets, offset, limit))
         (assets, notes) = self.apply_pagination(assets, notes, offset, limit)
 
         # assemble the context

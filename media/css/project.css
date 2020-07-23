@@ -1,5 +1,5 @@
 a.active-annotation.materialCitation {
-    background-color:#fff100;
+    background-color: #ffc107;
 }
 
 .active-annotation {
@@ -31,7 +31,6 @@ h1.project-title {
   position:relative;/*important companion to overflow:auto for IE7*/
   padding: 0 10px 10px 10px;
   background-color:white;
-  border: 1px solid #ccc;
 }
 
 img.materialCitation {
@@ -52,7 +51,9 @@ body.mce-content-body {
       to styled as published (and 10px is too small for the image-annotation
       icon)
     **/
-    font: 0.8em/120% 'lucida grande',arial,verdana,sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 div.mce_editorwindow {

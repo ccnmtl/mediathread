@@ -288,6 +288,12 @@ export default class AssetDetail extends React.Component {
 
     onSelectSelection(selectionTitle) {
         this.setState({activeSelection: selectionTitle});
+
+        // If there's no selectionTitle, that mean's we're unselecting
+        // a selection.
+        if (!selectionTitle) {
+            this.onClearActiveSelection();
+        }
     }
 
     onClearActiveSelection() {

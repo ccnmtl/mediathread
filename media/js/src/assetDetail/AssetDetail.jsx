@@ -15,6 +15,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
+import {defaults as defaultControls} from 'ol/control';
+import {defaults as defaultInteractions} from 'ol/interaction';
 
 import Asset from '../Asset';
 import {
@@ -22,7 +24,9 @@ import {
     formatTimecode, parseTimecode,
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
-import {objectProportioned, displaySelection} from '../openlayersUtils';
+import {
+    objectProportioned, displaySelection, clearVectorLayer, resetMap
+} from '../openlayersUtils';
 import CreateSelection from './CreateSelection';
 import ViewSelections from './ViewSelections';
 import ViewItem from './ViewItem';
@@ -48,7 +52,9 @@ export default class AssetDetail extends React.Component {
 
             activeSelection: null,
 
-            tab: 'viewSelections'
+            tab: 'viewSelections',
+
+            isDrawing: false
         };
 
         this.draw = null;
@@ -84,6 +90,10 @@ export default class AssetDetail extends React.Component {
 
         this.onSelectTab = this.onSelectTab.bind(this);
 
+        this.onDrawEnd = this.onDrawEnd.bind(this);
+
+        this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
+
         this.addInteraction = this.addInteraction.bind(this);
     }
 
@@ -97,19 +107,12 @@ export default class AssetDetail extends React.Component {
         let promise = null;
 
         if (type === 'image') {
-            const features = this.selectionSource.getFeatures();
-            const coords = [];
-            let extent = null;
-            features.forEach(function(feature) {
-                const geometry = feature.getGeometry();
-                coords.push(geometry.getCoordinates());
+            // Only allow one feature per selection
+            const feature = this.selectionSource.getFeatures()[0];
 
-                if (extent) {
-                    extent = geometry.getExtent().extend(extent);
-                } else {
-                    extent = geometry.getExtent();
-                }
-            });
+            const geometry = feature.getGeometry();
+            const coords = geometry.getCoordinates();
+            const extent = geometry.getExtent();
 
             promise = createSherdNote(this.asset.asset.id, {
                 title: selectionTitle,
@@ -288,10 +291,6 @@ export default class AssetDetail extends React.Component {
     }
 
     onClearActiveSelection() {
-        if (!this.state.activeSelection) {
-            return;
-        }
-
         if (this.type === 'image') {
             if (this.draw) {
                 this.map.removeInteraction(this.draw);
@@ -301,10 +300,7 @@ export default class AssetDetail extends React.Component {
                 this.map.removeLayer(this.selectionLayer);
             }
 
-            const img = this.asset.getImage();
-            const extent = objectProportioned(img.width, img.height);
-            const view = this.map.getView();
-            view.fit(extent);
+            resetMap(this.map, this.asset.getImage());
         } else if (this.type === 'video') {
             const player = this.playerRef;
             player.seekTo(0, 'seconds');
@@ -338,6 +334,10 @@ export default class AssetDetail extends React.Component {
         this.setState({tab: tabName});
     }
 
+    onClearVectorLayer() {
+        clearVectorLayer(this.map);
+    }
+
     render() {
         let media = null;
         if (this.type === 'image') {
@@ -362,7 +362,7 @@ export default class AssetDetail extends React.Component {
                                         autoFocus={true}
                                         ref={this.polygonButtonRef}
                                         className="btn btn-outline-light btn-sm mr-2 polygon-button"
-                                        onClick={() => this.addInteraction('Polygon')}>
+                                        onClick={this.addInteraction}>
                                         <svg className="bi bi-pentagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8 0l8 6.5-3 9.5H3L0 6.5 8 0z"></path>
                                         </svg> Shape
@@ -370,8 +370,8 @@ export default class AssetDetail extends React.Component {
 
                                     <button
                                         type="button"
-                                        disabled
-                                        className="btn btn-outline-light btn-sm mr-2 polygon-button">
+                                        className="btn btn-outline-light btn-sm"
+                                        onClick={this.onClearVectorLayer}>
                                         Clear
                                     </button>
                                 </React.Fragment>
@@ -584,7 +584,6 @@ export default class AssetDetail extends React.Component {
                                 onEndTimeClick={this.onEndTimeClick}
                                 onCreateSelection={this.onCreateSelection}
                                 onShowValidationError={this.onShowValidationError}
-                                onClearActiveSelection={this.onClearActiveSelection}
                                 showCreateError={this.state.showCreateError}
                                 createError={this.state.createError}
                             />
@@ -600,6 +599,8 @@ export default class AssetDetail extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        const me = this;
+
         if (
             prevState.tab !== this.state.tab &&
                 this.state.tab === 'createSelection'
@@ -608,6 +609,34 @@ export default class AssetDetail extends React.Component {
                 this.polygonButtonRef.current.focus();
             } else if (this.type === 'video') {
                 this.startButtonRef.current.focus();
+            }
+        }
+
+        if (
+            prevState.tab !== this.state.tab &&
+                (this.state.tab === 'createSelection' ||
+                 this.state.tab === 'viewItem')
+        ) {
+            this.onClearActiveSelection();
+        }
+
+        if (prevState.isDrawing !== this.state.isDrawing) {
+            // Turn off the openlayers map controls when isDrawing
+            // changes from false to true.
+            if (this.state.isDrawing) {
+                this.map.getControls().forEach(function(control) {
+                    me.map.removeControl(control);
+                });
+                this.map.getInteractions().forEach(function(interaction) {
+                    me.map.removeInteraction(interaction);
+                });
+            } else {
+                defaultControls().forEach(function(control) {
+                    me.map.addControl(control);
+                });
+                defaultInteractions().forEach(function(interaction) {
+                    me.map.addInteraction(interaction);
+                });
             }
         }
     }
@@ -651,15 +680,27 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    addInteraction(drawType) {
+    onDrawEnd() {
+        this.setState({isDrawing: false});
+    }
+
+    addInteraction() {
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
+
+        this.setState({isDrawing: true});
 
         this.draw = new Draw({
             source: this.selectionSource,
             type: 'Polygon'
         });
+
+        // Every time a drawing is started, clear the vector
+        // layer. Each selection only has a single shape, for now.
+        this.draw.on('drawstart', this.onClearVectorLayer);
+        this.draw.on('drawend', this.onDrawEnd);
+        this.draw.on('drawabort', this.onDrawEnd);
 
         this.map.addInteraction(this.draw);
     }

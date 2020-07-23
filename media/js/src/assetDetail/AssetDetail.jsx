@@ -710,6 +710,5 @@ AssetDetail.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
-    toggleAssetView: PropTypes.func.isRequired,
     onUpdateAsset: PropTypes.func.isRequired
 };

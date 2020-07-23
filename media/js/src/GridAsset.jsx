@@ -136,9 +136,7 @@ export default class GridAsset extends React.Component {
                     <div className="card-body">
                         <h5 className="card-title">
                             <a
-                                onClick={
-                                    this.props.toggleAssetView.bind(
-                                        this, this.props.asset)}
+                                onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
                                 href={assetLink}
                                 title={this.props.asset.title}
                                 dangerouslySetInnerHTML={{
@@ -204,5 +202,5 @@ export default class GridAsset extends React.Component {
 GridAsset.propTypes = {
     asset: PropTypes.object.isRequired,
     currentUser: PropTypes.number.isRequired,
-    toggleAssetView: PropTypes.func.isRequired
+    enterAssetDetailView: PropTypes.func.isRequired
 };

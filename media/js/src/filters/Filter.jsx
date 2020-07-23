@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {getAssets, tagsToReactSelect, termsToReactSelect} from './utils';
+import {tagsToReactSelect, termsToReactSelect} from '../utils';
 
 // Make the react-select inputs look like Bootstrap's
 // form-control-sm.
@@ -45,7 +45,13 @@ const reactSelectStyles = {
     })
 };
 
-export default class AssetFilter extends React.Component {
+/**
+ * General search filter components with title, owner, tags, etc.
+ *
+ * This class can be used to filter assets or selections by extending
+ * it.
+ */
+export default class Filter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -60,7 +66,6 @@ export default class AssetFilter extends React.Component {
         };
 
         this.offset = 20;
-        this.updatePageCount();
 
         this.handleOwnerChange = this.handleOwnerChange.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
@@ -80,13 +85,13 @@ export default class AssetFilter extends React.Component {
         };
     }
     setPageAndUpdateAssets(pageNumber) {
-        this.props.onUpdateAssets(null);
+        this.props.onUpdateItems(null);
 
         const me = this;
         this.setState({
             currentPage: pageNumber
         }, function() {
-            me.filterAssets(me.filters);
+            me.filterItems(me.filters);
         });
     }
     lastPage() {
@@ -104,22 +109,22 @@ export default class AssetFilter extends React.Component {
         this.setPageAndUpdateAssets(page);
     }
     onPageClick(page) {
-        this.props.onUpdateAssets(null);
+        this.props.onUpdateItems(null);
 
         const me = this;
         this.setState({
             currentPage: page
         }, function() {
-            me.filterAssets(me.filters);
+            me.filterItems(me.filters);
         });
     }
     handleTagsChange(e) {
         this.filters.tags = e;
-        this.filterAssets(this.filters);
+        this.filterItems(this.filters);
     }
     handleTermsChange(e) {
         this.filters.terms = e;
-        this.filterAssets(this.filters);
+        this.filterItems(this.filters);
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
@@ -127,7 +132,7 @@ export default class AssetFilter extends React.Component {
         }
     }
     handleTitleFilterSearch() {
-        this.filterAssets(this.filters);
+        this.filterItems(this.filters);
     }
     handleTitleChange(e) {
         const query = e.target.value.trim().toLowerCase();
@@ -135,49 +140,48 @@ export default class AssetFilter extends React.Component {
     }
     handleOwnerChange(e) {
         this.filters.owner = e.value;
-        this.filterAssets(this.filters);
+        this.filterItems(this.filters);
     }
     handleDateChange(e) {
         this.filters.date = e.value;
-        this.filterAssets(this.filters);
+        this.filterItems(this.filters);
     }
-    /**
-     * Filter this.props.assets into this.state.filteredAssets, based
-     * on the current state of this component's search filters.
-     */
-    filterAssets(filters) {
-        this.props.onUpdateAssets(null);
 
-        const me = this;
-        getAssets(
-            filters.title, filters.owner, filters.tags,
-            filters.terms, filters.date,
-            this.state.currentPage * this.offset
-        ).then(function(d) {
-            me.props.onUpdateAssets(d.assets, d.asset_count);
-        }, function(e) {
-            console.error('asset get error!', e);
-        });
+    /**
+     * Filter this.props.items into this.state.filteredItems, based
+     * on the current state of this component's search filters.
+     *
+     * This must be implemented in the subclass.
+     */
+    filterItems(filters) {
     }
-    updatePageCount() {
-        this.pageCount = Math.ceil(this.props.assetCount / this.offset);
-    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.assets !== this.props.assets) {
-            this.setState({filteredAssets: this.props.assets});
-        }
-        if (prevProps.assetCount !== this.props.assetCount) {
-            this.updatePageCount();
+        if (prevProps.items !== this.props.items) {
+            this.setState({filteredItems: this.props.items});
         }
     }
+
     render() {
+        const me = this;
+
+        let defaultOwnerOption = this.allOption;
         let ownersOptions = [this.allOption];
         if (this.props.owners) {
             this.props.owners.forEach(function(owner) {
-                ownersOptions.push({
+                const option = {
                     label: owner.public_name,
                     value: owner.username
-                });
+                };
+
+                if (
+                    me.props.defaultOwner &&
+                        me.props.defaultOwner === owner.id
+                ) {
+                    defaultOwnerOption = option;
+                }
+
+                ownersOptions.push(option);
             });
         }
 
@@ -329,7 +333,7 @@ export default class AssetFilter extends React.Component {
                                     'react-select form-control form-control-sm'
                                 }
                                 onChange={this.handleOwnerChange}
-                                defaultValue={this.allOption}
+                                defaultValue={defaultOwnerOption}
                                 options={ownersOptions} />
                         </div>
                         <div className="form-group col-md-2">
@@ -390,14 +394,15 @@ export default class AssetFilter extends React.Component {
     }
 }
 
-AssetFilter.propTypes = {
-    assets: PropTypes.array,
-    assetCount: PropTypes.number,
+Filter.propTypes = {
+    items: PropTypes.array,
+    itemCount: PropTypes.number,
     hidePagination: PropTypes.bool.isRequired,
     owners: PropTypes.array,
     tags: PropTypes.array,
     terms: PropTypes.array,
     viewMode: PropTypes.string.isRequired,
-    onUpdateAssets: PropTypes.func.isRequired,
-    setViewMode: PropTypes.func.isRequired
+    onUpdateItems: PropTypes.func.isRequired,
+    setViewMode: PropTypes.func.isRequired,
+    defaultOwner: PropTypes.number
 };

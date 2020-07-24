@@ -304,7 +304,7 @@ ProjectPanelHandler.prototype.saveAuthors = function(evt) {
     // Make sure there's at least one author
     var options = $select.find('option:selected');
     if (options.length > 0) {
-        for (option of options) {
+        for (let option of options) {
             var uid = parseInt(jQuery(option).val(), 10);
             if (uid === MediaThread.current_user) {
                 // Must include logged in user

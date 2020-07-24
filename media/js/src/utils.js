@@ -286,6 +286,11 @@ const getCourseUrl = function() {
     return courseUrl;
 };
 
+const getAssetUrl = function(assetId) {
+    const courseUrl = getCourseUrl();
+    return `${courseUrl}react/asset/${assetId}/`;
+};
+
 /**
  * Given an array of selections, return an object of those selections
  * grouped by author.
@@ -514,6 +519,7 @@ export {
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getPlayerTime, getCourseUrl,
+    getAssetUrl,
     groupByAuthor, groupByTag, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem

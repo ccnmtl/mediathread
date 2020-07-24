@@ -4,7 +4,10 @@ import {getAssets} from '../utils';
 export default class AssetFilter extends Filter {
     constructor(props) {
         super(props);
-        this.updatePageCount();
+        this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
+        this.lastPage = this.lastPage.bind(this);
+        this.firstPage = this.firstPage.bind(this);
     }
     setPageAndUpdateAssets(pageNumber) {
         this.props.onUpdateItems(null);
@@ -17,13 +20,15 @@ export default class AssetFilter extends Filter {
         });
     }
     lastPage() {
-        this.setPageAndUpdateAssets(this.pageCount - 1);
+        this.setPageAndUpdateAssets(this.state.pageCount - 1);
     }
     firstPage() {
         this.setPageAndUpdateAssets(0);
     }
     nextPage() {
-        const page = Math.min(this.state.currentPage + 1, this.pageCount - 1);
+        const page = Math.min(
+            this.state.currentPage + 1,
+            this.state.pageCount - 1);
         this.setPageAndUpdateAssets(page);
     }
     prevPage() {
@@ -59,7 +64,9 @@ export default class AssetFilter extends Filter {
         });
     }
     updatePageCount() {
-        this.pageCount = Math.ceil(this.props.itemCount / this.offset);
+        this.setState({
+            pageCount: Math.ceil(this.props.itemCount / this.offset)
+        });
     }
     componentDidUpdate(prevProps) {
         if (prevProps.assets !== this.props.assets) {

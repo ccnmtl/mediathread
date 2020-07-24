@@ -55,7 +55,8 @@ export default class Filter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPage: 0
+            currentPage: 0,
+            pageCount: 1
         };
         this.filters = {
             owner: this.props.defaultOwner ? null : 'all',
@@ -74,10 +75,6 @@ export default class Filter extends React.Component {
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
         this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.prevPage = this.prevPage.bind(this);
-        this.lastPage = this.lastPage.bind(this);
-        this.firstPage = this.firstPage.bind(this);
 
         this.allOption = {
             value: 'all',
@@ -93,20 +90,6 @@ export default class Filter extends React.Component {
         }, function() {
             me.filterItems(me.filters);
         });
-    }
-    lastPage() {
-        this.setPageAndUpdateAssets(this.pageCount - 1);
-    }
-    firstPage() {
-        this.setPageAndUpdateAssets(0);
-    }
-    nextPage() {
-        const page = Math.min(this.state.currentPage + 1, this.pageCount - 1);
-        this.setPageAndUpdateAssets(page);
-    }
-    prevPage() {
-        const page = Math.max(this.state.currentPage - 1, 0);
-        this.setPageAndUpdateAssets(page);
     }
     onPageClick(page) {
         this.props.onUpdateItems(null);
@@ -197,7 +180,7 @@ export default class Filter extends React.Component {
         };
 
         const pages = [];
-        for (let i = 0; i < this.pageCount; i++) {
+        for (let i = 0; i < this.state.pageCount; i++) {
             const disabled = this.state.currentPage === i ? 'disabled' : '';
             pages.push(
                 <li key={i} className={`page-item ${disabled}`}>
@@ -265,12 +248,12 @@ export default class Filter extends React.Component {
                             <li className="page-item active">
                                 <div className="page-link">
                                     {this.state.currentPage + 1} of {
-                                        Math.max(this.pageCount, 1)}
+                                        Math.max(this.state.pageCount, 1)}
                                     <span className="sr-only">(current)</span>
                                 </div>
                             </li>
                             <li className={'page-item ' + (
-                                this.state.currentPage >= this.pageCount - 1 ?
+                                this.state.currentPage >= this.state.pageCount - 1 ?
                                     'disabled' : ''
                             )}>
                                 <a
@@ -281,7 +264,7 @@ export default class Filter extends React.Component {
                                 </a>
                             </li>
                             <li className={'page-item ' + (
-                                this.state.currentPage >= this.pageCount - 1 ?
+                                this.state.currentPage >= this.state.pageCount - 1 ?
                                     'disabled' : ''
                             )}>
                                 <a

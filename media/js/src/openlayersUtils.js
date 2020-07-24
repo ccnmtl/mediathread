@@ -98,16 +98,11 @@ const displaySelection = function(a, map) {
     return newLayer;
 };
 
-const clearVectorLayer = function(map) {
-    // Remove all features from the vector layer.
-    const layers = map.getLayers().getArray();
-
-    // There should always be at least two layers, with the vector
-    // layer as the second one.
-    if (layers.length > 1) {
-        const vectorLayer = layers[1];
-        const source = vectorLayer.getSource();
-
+/**
+ * Given an openlayers Source object, clear all features from it.
+ */
+const clearSource = function(source) {
+    if (source) {
         source.getFeatures().forEach(function(feature) {
             source.removeFeature(feature);
         });
@@ -115,12 +110,26 @@ const clearVectorLayer = function(map) {
 };
 
 /**
- * Given an openlayers map and image, reset its view to that image.
+ * Given a selection source, return true if it has a feature (vector
+ * shape) on it.
+ */
+const hasSelection = function(source) {
+    if (source) {
+        const features = source.getFeatures();
+        return features && features.length > 0;
+    }
+
+    return false;
+};
+
+/**
+ * Given an openlayers map, its selection source, and the source
+ * image, reset its view to that image.
  *
  * Remove all polygon vectors and fit the view appropriately.
  */
-const resetMap = function(map, img) {
-    clearVectorLayer(map);
+const resetMap = function(map, source, img) {
+    clearSource(source);
 
     const extent = objectProportioned(img.width, img.height);
     const view = map.getView();
@@ -129,5 +138,5 @@ const resetMap = function(map, img) {
 
 export {
     objectProportioned, getCoordStyles, displaySelection,
-    clearVectorLayer, resetMap
+    clearSource, hasSelection, resetMap
 };

@@ -10,6 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import {tagsToReactSelect, termsToReactSelect} from '../utils';
+import {hasSelection} from '../openlayersUtils';
 
 const reactSelectStyles = {
     container: (provided, state) => ({
@@ -33,6 +34,9 @@ const reactSelectStyles = {
     })
 };
 
+const noSelectionError =
+      'Please select a portion of the media using the selections tools.';
+
 export default class CreateSelection extends React.Component {
     constructor(props) {
         super(props);
@@ -50,8 +54,20 @@ export default class CreateSelection extends React.Component {
     }
 
     handleSubmit(e) {
-        const form = e.currentTarget;
+        // Before checking the HTML5 form's validity, do a custom
+        // validation check to make sure the user has made a
+        // selection.
+        if (
+            this.props.type === 'image' &&
+                !hasSelection(this.props.selectionSource)
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.props.onShowValidationError(noSelectionError);
+            return this.setState({validated: true});
+        }
 
+        const form = e.currentTarget;
         if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
@@ -185,9 +201,10 @@ export default class CreateSelection extends React.Component {
 }
 
 CreateSelection.propTypes = {
-    asset: PropTypes.object,
+    type: PropTypes.string.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    selectionSource: PropTypes.object,
     selectionStartTime: PropTypes.number,
     selectionEndTime: PropTypes.number,
     onStartTimeUpdate: PropTypes.func.isRequired,

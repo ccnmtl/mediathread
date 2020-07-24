@@ -29,9 +29,9 @@ describe('Instructor Feat: Test Create Composition', () => {
 
         cy.wait(500);
         cy.get('#loaded').should('exist');
-        cy.get('.page-title-form input').should('be.visible');
-        cy.get('.page-title-form input').should('have.value', 'Untitled')
-        cy.get('.page-title-form input').clear()
+        cy.get('.page-title').should('be.visible');
+        cy.get('.page-title').contains('Untitled')
+        cy.get('.page-title').click().clear()
             .type('Instructor Feature 3');
         cy.get('.project-savebutton').click();
         cy.get('.btn-save-project').click();

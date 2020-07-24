@@ -27,7 +27,7 @@ describe('Instructor creates a selection', () => {
 
         cy.log('add a title and some text');
         cy.get('#cu-privacy-notice-icon').click();
-        cy.get('.page-title-form input').clear()
+        cy.get('.page-title').click().clear()
             .type('Quick Edit Composition 2');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');

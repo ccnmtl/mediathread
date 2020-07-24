@@ -66,6 +66,11 @@
 
             <div class="px-3">
                 <h5 id="asset-item-{{id}}" class="asset_title mt-3">
+                    <div class="actions">
+                        <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                        </a>
+                    </div>
                     <a class="asset-title-link insert"
                         {{#title}}
                             title="{{title}}"

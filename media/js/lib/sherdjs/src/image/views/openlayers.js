@@ -59,7 +59,6 @@ if (!Sherd.Image.OpenLayers) {
             }
         });
 
-
         this.openlayers = {
             'features': [],
             'feature2json': function (feature) {
@@ -229,7 +228,9 @@ if (!Sherd.Image.OpenLayers) {
                 this.v.sherd_layerapi = this;
 
                 self.openlayers.map.addLayer(this.v);
-                this._adoptIntoRootContainer(this, opts);
+                if (opts.controls) {
+                    this._adoptIntoRootContainer(this, opts);
+                }
 
                 return this;
             },
@@ -327,11 +328,20 @@ if (!Sherd.Image.OpenLayers) {
                 initialize: function (obj, presenter) {
                     ///remove controls
                     var m = presenter.openlayers.map;
+                    var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].disableZoomWheel();
+                        if (controls[i].dragPan) {
+                            controls[i].dragPan.deactivate();
+                         }
+                    }
+
                     while (m.controls.length) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {}
+                resize: function () {},
+                controls: false
             },
             'gallery': {
                 height: function (obj, presenter) {
@@ -347,23 +357,42 @@ if (!Sherd.Image.OpenLayers) {
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
                     for (var i = 0; i < controls.length; i++) {
                         controls[i].disableZoomWheel();
+                        if (controls[i].dragPan) {
+                            controls[i].dragPan.deactivate();
+                         }
                     }
 
                     while (m.controls.length) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {}
+                resize: function () {},
+                controls: false
             },
             'default': {
                 height: function (obj, presenter) {
                     return Sherd.winHeight() + 'px';
                 },
                 width: function (obj, presenter) { return '100%'; },
-                initialize: function (obj, presenter) {},
+                initialize: function (obj, presenter) {
+                    //remove controls
+                    var m = presenter.openlayers.map;
+                    var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].disableZoomWheel();
+                        if (controls[i].dragPan) {
+                            controls[i].dragPan.deactivate();
+                        }
+                    }
+
+                    while (m.controls.length) {
+                        m.removeControl(m.controls[0]);
+                    }
+                },
                 resize: function () {
                     self.components.top.style.height = Sherd.winHeight() + 'px';
-                }
+                },
+                controls: false
             },
             'medium': {
                 height: function (obj, presenter) {
@@ -375,13 +404,29 @@ if (!Sherd.Image.OpenLayers) {
                 resize: function () {
                     var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
                     self.components.top.style.height = height + 'px';
-                }
+                },
+                controls: true
             },
             'small': {
                 height: function () { return '390px'; },
                 width: function () { return '320px'; },
-                initialize: function () {/*noop*/},
-                resize: function () {}
+                initialize: function (obj, presenter) {
+                    ///remove controls
+                    var m = presenter.openlayers.map;
+                    var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].disableZoomWheel();
+                        if (controls[i].dragPan) {
+                            controls[i].dragPan.deactivate();
+                         }
+                    }
+
+                    while (m.controls.length) {
+                        m.removeControl(m.controls[0]);
+                    }
+                },
+                resize: function () {},
+                controls: false
             }
         };
 
@@ -448,6 +493,7 @@ if (!Sherd.Image.OpenLayers) {
                     if (obj.zoom &&
                         obj.zoom < self.openlayers.map.getZoomForExtent(bounds)) {
                         self.openlayers.map.setCenter(bounds.getCenterLonLat(), obj.zoom);
+                        self.openlayers.map.zoomToExtent(bounds);
                     } else {
                         self.openlayers.map.zoomToExtent(bounds);
                     }
@@ -461,8 +507,6 @@ if (!Sherd.Image.OpenLayers) {
                     self.openlayers.map.zoomToMaxExtent();
                 }
             }
-
-
         };
         this.microformat = {};
         this.microformat.create = function (obj, doc, options) {
@@ -688,7 +732,7 @@ if (!Sherd.Image.OpenLayers) {
             self.openlayers.map.addControl(new OpenLayers.Control.MousePosition());
             self.openlayers.map.addLayers([self.openlayers.graphic]);
             self.openlayers.vectorLayer = new self.Layer().create('annotating', {
-                zIndex: 1000
+                zIndex: 1000, controls: presentation.controls
             });
 
             self.openlayers.GeoJSON = new OpenLayers.Format.GeoJSON({

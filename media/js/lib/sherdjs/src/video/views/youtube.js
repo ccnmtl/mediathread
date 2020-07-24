@@ -19,7 +19,7 @@ if (!Sherd.Video.YouTube) {
         var self = this;
 
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
-        
+
         this.state = {
             starttime: 0,
             endtime: 0
@@ -86,7 +86,8 @@ if (!Sherd.Video.YouTube) {
                 playerID: self.playerID, // Used by microformat.components initialization
                 autoplay: autoplay, // Used later by _seek seeking behavior
                 mediaUrl: url, // Used by _seek seeking behavior
-                text: '<div id="' + wrapperID + '" class="sherd-youtube-wrapper">' +
+                text: '<div id="' + wrapperID + '" class="sherd-youtube-wrapper ' +
+                    'embed-responsive embed-responsive-16by9">' +
                     '<iframe type="text/html" ' +
                     'src="' + url + '?' + urlParams + '" ' +
                     'width="' + obj.options.width + '" ' +

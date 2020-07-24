@@ -13,7 +13,7 @@ describe('Instructor creates a selection', () => {
         cy.wait(500);
     });
 
-    it('should create a project as an Instructor', () => {
+    it('should create a project, insert and edit selection', () => {
         cy.log('should create a composition');
         //TODO: Create composition from homepage
         cy.visit('/course/1/project/create/', {
@@ -35,6 +35,7 @@ describe('Instructor creates a selection', () => {
         cy.get('.btn-save-project').click();
 
         cy.log('verify asset exists');
+        cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-2').should('contain', 'Mediathread: Introduction');
 
         cy.log('click the +/create button next to the asset');
@@ -53,10 +54,31 @@ describe('Instructor creates a selection', () => {
             .type('abc{enter}');
         cy.get('#annotation-body > #id_annotation-body')
             .type('Here are my new notes');
-        cy.get('[name="Save"]').click({ force: true });
-        cy.get('#annotation-current').should('not.be', 'visible');
-        cy.contains('Test Selection').should('have.attr', 'href');
-        cy.contains('Here are my new notes').should('exist');
-        cy.get('[href="abc"]').should('exist');
+        cy.get('#annotation-body input[name="Save"]').click({ force: true });
+        cy.get('#annotation-current').should('not.be.visible');
+
+        cy.log('verify new selection is visible');
+        cy.get('div.ajaxloader').should('not.be.visible');
+        cy.get('button.btn-link').contains('Test Selection').first().click();
+        cy.get('.collapse.show').within(() => {
+            cy.get('button.materialCitation').contains('Insert in Text');
+            cy.get('.metadata-value').contains('One, Instructor');
+
+            cy.log('edit the new selection is visible');
+            cy.get('button').contains('Edit').click();
+        });
+        cy.get('#edit-annotation-form').should('be.visible');
+        cy.get('#edit-annotation-form [name="annotation-title"]')
+            .should('be.enabled');
+        cy.wait(100);  // wait for the image to load
+        cy.get('#edit-annotation-form [name="annotation-title"]')
+            .clear().click().type('Rename Selection');
+        cy.get('#edit-annotation-form input[name="Save"]')
+            .click({ force: true });
+        cy.get('#edit-annotation-form').should('not.be.visible');
+
+        cy.log('verify new selection is visible');
+        cy.get('div.ajaxloader').should('not.be.visible');
+        cy.get('button.btn-link').contains('Rename Selection');
     });
 });

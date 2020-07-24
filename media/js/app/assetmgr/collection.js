@@ -186,10 +186,9 @@ var CollectionList = function(config) {
         });
 
     self.$el.on(
-        'click', 'a.collection-choice.edit-annotation', function(evt) {
+        'click', '.collection-choice.edit-annotation', function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
-            var bits = src.parentNode.href.split('/');
-            var annotation_id = bits[bits.length - 1];
+            var annotation_id = jQuery(src).data('id');
             var asset_id = jQuery('#annotation-' + annotation_id)
                 .parents('div.record')
                 .children('input.record').attr('value');

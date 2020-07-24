@@ -80,6 +80,9 @@ div.mce_editorwindow {
     top: 5px;
 }
 
+#project-workspace .asset-view-published {
+    margin-top: 83px;
+}
 #project-workspace .collection-materials {
     margin-top: 62px;
 }

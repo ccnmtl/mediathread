@@ -30,8 +30,8 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.project-visibility-description').contains('Draft');
 
         cy.log('Add a title and some text');
-        cy.get('.page-title-form input').clear()
-            .type('Assignment: Scenario 1');
+        cy.get('.page-title').click().clear()
+            .type('Mediathread Assignment: Scenario 1');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
@@ -50,17 +50,11 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant-edit-container').should('not.be.visible');
         cy.get('.participant-container').should('be', 'visible');
 
         //TODO: Test when the project shows up in new Assignments tab.
 
         cy.log('view the project in preview mode');
-        cy.contains('Assignment: Scenario 1').click();
-        //cy.get('#loaded').should('exist'); Change in code?
-        cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
-
-        cy.log('Preview view elements');
         cy.get('.participant-container').should('contain', 'Instructor One');
         cy.get('.project-visibility-description')
             .should('contain', 'Shared with Class');

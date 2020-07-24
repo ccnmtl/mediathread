@@ -29,8 +29,8 @@ describe('Instructor Creates Composition', () => {
         cy.get('#loaded').should('exist');
         cy.get('#cu-privacy-notice-icon').click();
 
-        cy.get('.page-title-form input').should('be.visible');
-        cy.get('.page-title-form input').should('have.value', 'Untitled')
+        cy.get('.page-title').should('be.visible');
+        cy.get('.page-title').contains('Untitled')
         cy.contains('ul', 'Instructor One').should('exist');
         cy.get('.project-visibility-description').contains('Draft')
             .should('exist');
@@ -38,10 +38,12 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-editbutton.active').should('exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
-        cy.get('.participant-edit-container').contains('Authors').should('exist');
+        cy.get('select[name="participants"]').should('exist');
+        cy.get('select[name="participants"]').should('not.be.visible');
+        cy.get('.participant-container').should('be.visible');
 
         cy.log('write title and text and save composition');
-        cy.get('.page-title-form input').clear()
+        cy.get('.page-title').click().clear()
             .type('Composition: Scenario 1');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
@@ -78,7 +80,6 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant-edit-container').should('not.be.visible');
         cy.get('.participant-container').should('be.visible');
     });
 

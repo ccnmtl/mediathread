@@ -1,15 +1,40 @@
 <div class="panel-subcontainer {{context.project.type}}">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div class="col-md-6 pl-0">
-            <div class="form-group page-title-form" {{^context.editing}}style="display: none"{{/context.editing}}>
-                <input class="form-control w-100 mt-2 page-title" name="title" value="{{context.project.title}}" />
-            </div>
-            <h1 class="page-title" {{#context.editing}}style="display: none"{{/context.editing}}>
+            <h1 class="page-title" {{#context.editing}}contenteditable="true"{{/context.editing}}>
                 {{context.project.title}}
             </h1>
+            <input name="title" value="{{context.project.title}}" type="hidden" />
         </div>
         <div class="col-md-6 text-right">
             <div class="mt-1">
+                {{#context.can_edit}}
+                    <button class="project-authorsbutton btn btn-outline-secondary btn-sm"
+                        data-toggle="modal" data-target="#authors-modal" data-keyboard="false">
+                        Authors
+                    </button>
+                    <div id="authors-modal" class="add-authors modal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Authors</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-left">Select additional authors</p>
+                                    {{{context.form.participants}}}
+                                    <div class="invalid-feedback">
+                                        Please specify one or more authors, including yourself.
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary btn-save-authors">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/context.can_edit}}
+
                 {{#context.can_edit}}
                     <button class="project-revisionbutton btn btn-outline-secondary btn-sm">
                         Revisions
@@ -168,16 +193,14 @@
         <div class="col-md-12">
             <div class="row no-gutters">
                 <div class="col">
-                    {{#context.can_edit}}
-                    <div id="view-toggle" class="btn-group" role="group" aria-label="View Toggle">
-                        <a href="#" class="btn btn-outline-primary btn-sm project-editbutton {{#context.editing}}active{{/context.editing}}">
-                            Edit
-                        </a>
-                        <a href="#" class="btn btn-outline-primary btn-sm project-previewbutton {{^context.editing}}active{{/context.editing}}">
-                            Preview
-                        </a>
+                    <div class="participant-container">
+                        <h5>by <span class="participants_chosen">
+                            {{#context.project.participants}}
+                                {{public_name}}{{^last}}, {{/last}}
+                            {{/context.project.participants}}
+                            </span>
+                        </h5>
                     </div>
-                    {{/context.can_edit}}
                 </div>
                 <div class="col text-right text-secondary pr-3">
                     {{#context.project.visibility_long}}
@@ -200,24 +223,24 @@
         </div>
     </div>
 
-    <div class="row no-gutters mt-4">
+    <div class="row no-gutters">
         <div class="col-md-6">
-            {{#context.can_edit}}
-                <div class="participant-edit-container"
-                    {{^context.editing}}style="display: none"{{/context.editing}}>
-                    Authors:
-                    {{{context.form.participants}}}
-                </div>
-            {{/context.can_edit}}
-            <div class="participant-container"
-                {{#context.editing}}style="display: none"{{/context.editing}}>
-                <h3>by <span class="participants_chosen">
-                    {{#context.project.participants}}
-                        {{public_name}}{{^last}}, {{/last}}
-                    {{/context.project.participants}}
-                    </span></h3>
-            </div>
             <div class="essay-space-container">
+                <div class="row mt-4 mb-2 write-preview">
+                    <div class="col">
+                        {{#context.can_edit}}
+                        <div id="view-toggle" class="btn-group" role="group" aria-label="View Toggle">
+                            <a href="#" class="btn btn-outline-primary btn-sm project-editbutton {{#context.editing}}active{{/context.editing}}">
+                                Write
+                            </a>
+                            <a href="#" class="btn btn-outline-primary btn-sm project-previewbutton {{^context.editing}}active{{/context.editing}}">
+                                Preview
+                            </a>
+                        </div>
+                        {{/context.can_edit}}
+                    </div>
+                </div>
+
                 {{#context.can_edit}}
                     <textarea id="{{context.project.id}}-project-content"
                         tabindex="0" name="body"
@@ -226,7 +249,7 @@
                         {{{context.project.body}}}
                     </textarea>
                 {{/context.can_edit}}
-                <div id="{{context.project.id}}-essay-space" class="essay-space" 
+                <div id="{{context.project.id}}-essay-space" class="essay-space mt-4" 
                     style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
                     {{{context.project.body}}}
                 </div>
@@ -234,7 +257,6 @@
         </div>
         {{! Media Display Window and or a Collections box }}
         <div class="col-md-6">
-            <h3 class="text-center">Selections</h3>
             <div class="collection-materials"
                 style="display:{{^context.editing}}none{{/context.editing}}">
                 <div class="ajaxloader">
@@ -246,7 +268,7 @@
                 </div>
                 <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
             </div>
-            <div class="asset-view-published" 
+            <div class="asset-view-published"
                 style="display: {{#context.editing}}none{{/context.editing}}">
                 <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                     <div class="asset-object" style="border: none; background-color: #ededed;"></div>

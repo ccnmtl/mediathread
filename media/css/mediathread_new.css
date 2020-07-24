@@ -2782,7 +2782,6 @@ div.materials {
     overflow-x: hidden;
     box-shadow: none;
     border: none;
-    background-color: #EDEDED;
 }
 
 .asset-embed-view .materials {
@@ -2817,10 +2816,6 @@ div.gallery-item h4 {
     text-align: left;
 }
 
-a.asset-title-link {
-    overflow-x:hidden;
-}
-
 div.gallery-item h4 {
     margin: .5em 0 0.25em;
 }
@@ -2831,26 +2826,6 @@ div.materials.column-contents {
 
 div.mediathread-panel.asset-workspace div.materials h4 a {
     margin-left: 0px;
-}
-
-div.materials h4 a,
-div.gallery-item h4 a {
-    display: block;
-    font-weight: bold;
-    margin-left: 28px;
-    max-width: 225px;
-    overflow: hidden;
-    padding-right: 4px;
-    padding-top: 2px;
-}
-
-div.gallery-item h4 {
-    margin-bottom: 5px;
-    text-align: left;
-    width: 190px;
-    overflow: hidden;
-    max-height: 48px;
-    min-height: 20px;
 }
 
 ul.instructor-list {
@@ -3103,11 +3078,9 @@ div.collection_table {
 .gallery-item-project {
     margin-top: 10px;
     margin-left: 5px;
-    padding: 0 10px 10px 10px;
     width: 98%;
-    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.125);
     background: white;
-    text-align: center;
 }
 
 .gallery-item {

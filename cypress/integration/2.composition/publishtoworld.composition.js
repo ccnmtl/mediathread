@@ -34,7 +34,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('#loaded').should('exist');
 
         cy.log('add title and some text');
-        cy.get('.page-title-form input').clear()
+        cy.get('.page-title').click().clear()
             .type('Composition Public: Scenario 1A');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
@@ -42,7 +42,7 @@ describe('Publish To World Public Composition', () => {
         cy.log('insert an asset');
         cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
-        cy.get('#asset-item-1 > .citationTemplate > .materialCitation')
+        cy.get('.citationTemplate > .materialCitation').first()
             .click({force: true});
 
         cy.log('save project and set project visibility to public');

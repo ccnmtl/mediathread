@@ -80,6 +80,10 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         }
     });
 
+    self._bind(self.$el, '.btn-save-authors', 'click',
+        function(evt) {
+            self.saveAuthors(evt);
+        });
     self._bind(self.$el, '.project-revisionbutton', 'click',
         function(evt) {
             self.showRevisions(evt);
@@ -104,7 +108,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
             self.createInstructorFeedback(evt);
         });
 
-    self._bind(self.$el, 'input[name="title"]', 'keypress', function(evt) {
+    self._bind(self.$el, '.page-title', 'keypress', function(evt) {
         self.setDirty(true);
     });
 
@@ -138,6 +142,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
                     self.setDirty(true);
                 });
             },
+            height: 500,
             selector: '#' + panel.context.project.id + '-project-content'
         });
         tinymce.init(settings);
@@ -188,8 +193,7 @@ ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
 
         if (self.panel.context.editing) {
             self.tinymce.show();
-            var title = self.$el.find('input[name="title"]');
-            title.focus();
+            jQuery('.page-title').focus();
         }
     }
 };
@@ -291,6 +295,28 @@ ProjectPanelHandler.prototype.showRevisions = function(evt) {
     });
     return false;
 };
+
+ProjectPanelHandler.prototype.saveAuthors = function(evt) {
+    var self = this;
+
+    var $modal = jQuery(evt.currentTarget).parents('.modal');
+    var $select = self.$el.find('select[name="participants"]');
+    // Make sure there's at least one author
+    var options = $select.find('option:selected');
+    if (options.length > 0) {
+        for (let option of options) {
+            var uid = parseInt(jQuery(option).val(), 10);
+            if (uid === MediaThread.current_user) {
+                // Must include logged in user
+                jQuery($modal).find('.invalid-feedback').hide();
+                jQuery($modal).modal('hide');
+            }
+        }
+    }
+    jQuery($modal).find('.invalid-feedback').show();
+    return false;
+};
+
 
 ProjectPanelHandler.prototype.showResponses = function(evt) {
     var self = this;
@@ -456,20 +482,12 @@ ProjectPanelHandler.prototype.preview = function(showPreview) {
             self.tinymce.plugins.editorwindow._closeWindow();
         }
 
-        var val = self.$el.find('input[name="title"]').val();
-        self.$el.find('.page-title-form').hide();
-        self.$el.find('h1.page-title').html(val);
-        self.$el.find('h1.page-title').show();
-
         self.$el.find('.project-editbutton').removeClass('active');
         self.$el.find('.project-previewbutton').addClass('active');
 
         self.$el.find('textarea.mceEditor').hide();
         self.$el.find('div.collection-materials').hide();
         self.$el.find('span.project-current-version').hide();
-
-        self.$el.find('.participant-edit-container').hide();
-        self.$el.find('.participant-container').show();
 
         // Get updated text into the preview space - decorate any new links
         jQuery(self.essaySpace).html(tinymce.activeEditor.getContent());
@@ -481,9 +499,6 @@ ProjectPanelHandler.prototype.preview = function(showPreview) {
         // Switch to Edit View
         jQuery(self.essaySpace).hide();
 
-        self.$el.find('.page-title-form').show();
-        self.$el.find('h1.page-title').hide();
-
         self.$el.find('div.asset-view-published').hide();
         self.$el.find('.project-editbutton').addClass('active');
         self.$el.find('.project-previewbutton').removeClass('active');
@@ -493,9 +508,6 @@ ProjectPanelHandler.prototype.preview = function(showPreview) {
 
         self.$el.find('div.collection-materials').show();
         self.$el.find('span.project-current-version').show();
-
-        self.$el.find('.participant-edit-container').show();
-        self.$el.find('.participant-container').hide();
 
         if (self.tinymce) {
             self.tinymce.show();
@@ -746,8 +758,9 @@ ProjectPanelHandler.prototype._validAuthors = function(interactive) {
 ProjectPanelHandler.prototype._validTitle = function(interactive) {
     var self = this;
 
-    var $title = self.$el.find('input[name="title"]');
-    var value = $title.val();
+    var $title = self.$el.find('.page-title');
+    var value = $title.html();
+    value = jQuery.trim(value);
     if (!value || value.length < 1) {
         if (interactive) {
             showMessage('Please specify a project title.', null, 'Error');
@@ -762,6 +775,7 @@ ProjectPanelHandler.prototype._validTitle = function(interactive) {
         $title.focus();
         return false;
     } else {
+        jQuery('input[name="title"]').val(value);
         return true;
     }
 };

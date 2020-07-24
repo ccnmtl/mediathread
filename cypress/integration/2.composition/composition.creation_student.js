@@ -31,8 +31,8 @@ describe('Student Creates Composition', () => {
 
         cy.get('a.nav-link.active').contains('Projects');
 
-        cy.get('.page-title-form input').should('be.visible');
-        cy.get('.page-title-form input').should('have.value', 'Untitled')
+        cy.get('.page-title').should('be.visible');
+        cy.get('.page-title').contains('Untitled')
         cy.contains('ul', 'Student One').should('exist');
         cy.get('.project-visibility-description')
             .contains('Draft').should('exist');
@@ -40,12 +40,12 @@ describe('Student Creates Composition', () => {
         cy.get('.project-editbutton.active').should('exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
-        cy.get('.participant-edit-container').contains('Authors')
-            .should('exist');
-        cy.get('.participant-container').should('not.be.visible');
+        cy.get('.participant-container').should('be', 'visible');
+        cy.get('select[name="participants"]').should('exist');
+        cy.get('select[name="participants"]').should('not.be.visible');
 
         cy.log('should save a composition');
-        cy.get('.page-title-form input').clear()
+        cy.get('.page-title').click().clear()
             .type('Composition: Scenario 2');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
@@ -59,7 +59,6 @@ describe('Student Creates Composition', () => {
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant-edit-container').should('not.be', 'visible');
         cy.get('.participant-container').should('be', 'visible');
     });
 

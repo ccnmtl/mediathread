@@ -13,7 +13,7 @@ a.active-annotation.materialCitation {
 
 
 .editing {
-    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.1);
     padding: 20px;
 }
 
@@ -56,6 +56,15 @@ body.mce-content-body {
     line-height: 1.5;
 }
 
+.mce-btn {
+    background-color: #f8f9fa!important;
+}
+
+.mce-panel {
+    background-color: #f8f9fa!important;
+    border-color: rgba(0,0,0,.125)!important;
+}
+
 div.mce_editorwindow {
     min-width: 324px;
 }
@@ -63,6 +72,16 @@ div.mce_editorwindow {
 .defaultSkin table.mceLayout {
     border-top: 1px solid #CCC !important;
     border-bottom: 1px solid #CCC !important;
+}
+
+.essay-space-container {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 5px;
+}
+
+#project-workspace .collection-materials {
+    margin-top: 62px;
 }
 
 .essay-space-container .mceLayout {

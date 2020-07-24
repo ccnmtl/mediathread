@@ -39,7 +39,7 @@ describe('Assignment Feature: Student Response', () => {
             .should('not.be', 'visible');
 
         cy.log('Add a title and some text');
-        cy.get('.composition .page-title-form input').clear()
+        cy.get('.composition .page-title').click().clear()
             .type('Sample Assignment Response');
         cy.get('.composition').getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');

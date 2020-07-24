@@ -1,5 +1,5 @@
 {% extends 'dashboard/base_course_dashboard.html' %}
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 
 {% block title %}{{block.super}}&mdash; Course Settings{% endblock %}
 
@@ -15,20 +15,20 @@
         <div class="card bg-light mb-3">
             <div class="card-body">
                 <h3 class="card-title">Homepage</h3>
-                {% bootstrap_field form.homepage_title form_group_class='card-text' label_class='card-subtitle font-weight-bold mb-2' form_check_class='card-subtitle mt-2 small' %}
+                {% bootstrap_field form.homepage_title form_group_class='font-weight-bold mb-2' %}
             </div>
         </div>
         <div class="card bg-light mb-3">
             <div class="card-body">
                 <h3 class="card-title">Composition Visibility</h3>
-                {% bootstrap_field form.publish_to_world form_group_class='card-text' label_class='card-subtitle font-weight-bold mb-2' %}
+                {% bootstrap_field form.publish_to_world form_group_class='font-weight-bold mb-2' %}
             </div>
         </div>
         <div class="card bg-light mb-3">
             <div class="card-body">
                 <h3 class="card-title">Item &amp; Selection Visibility</h3>
-                {% bootstrap_field form.see_eachothers_items label_class='card-subtitle font-weight-bold mb-2' %}
-                {% bootstrap_field form.see_eachothers_selections label_class='card-subtitle font-weight-bold mb-2' %}
+                {% bootstrap_field form.see_eachothers_items form_group_class='font-weight-bold mb-2' %}
+                {% bootstrap_field form.see_eachothers_selections form_group_class='font-weight-bold mb-2' %}
                 <p class="card-text small">
                     Turning off item or selection visibility hides
                     individual items or selections from all collections
@@ -43,19 +43,19 @@
             <div class="card bg-light mb-3">
                 <div class="card-body">
                     <h3 class="card-title">Item Download</h3>
-                    {% bootstrap_field form.allow_item_download label_class='card-subtitle font-weight-bold mb-2' %}
+                    {% bootstrap_field form.allow_item_download form_group_class='font-weight-bold mb-2' %}
                 </div>
             </div>
             <div class="card bg-light mb-3">
                 <div class="card-body">
                     <h3 class="card-title">Allow Roster Management</h3>
-                    {% bootstrap_field form.allow_roster_changes label_class='card-subtitle font-weight-bold mb-2' %}
+                    {% bootstrap_field form.allow_roster_changes form_group_class='font-weight-bold mb-2' %}
                 </div>
             </div>
         {% endif %}
-        <div class="form-group">
-            <button class="btn btn-primary" type="submit">Save</button>
-            <a href="." class="btn btn-default" role="button">Cancel</a>
+        <div class="form-group float-right">
+            <button class="btn btn-outline-primary" type="submit">Save</button>
+            <a href="." class="btn btn-outline-dark" role="button">Cancel</a>
             {% if not has_student_activity %}
                 <button class="btn" type="submit" name="reset" value="true">
                     Reset to default

@@ -58,7 +58,7 @@ export default class Filter extends React.Component {
             currentPage: 0
         };
         this.filters = {
-            owner: 'all',
+            owner: this.props.defaultOwner ? null : 'all',
             title: null,
             tags: [],
             terms: [],
@@ -310,7 +310,8 @@ export default class Filter extends React.Component {
                                     className="form-control form-control-sm"
                                     placeholder="Search for..."
                                     onChange={this.handleTitleChange}
-                                    onKeyDown={this.handleTitleSearch} />
+                                    onKeyDown={this.handleTitleSearch}
+                                />
                                 <div className="input-group-append">
                                     <a
                                         href="#"

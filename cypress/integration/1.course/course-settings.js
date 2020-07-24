@@ -6,7 +6,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false;
 });
 
-describe('Course Settings', function() {
+describe('Manage Course', function() {
 
     beforeEach(function() {
         cy.login('instructor_one', 'test');
@@ -17,7 +17,7 @@ describe('Course Settings', function() {
         cy.clearCookies();
     });
 
-    it('navigates to the Course Settings page', function() {
+    it('navigates to the Manage Course page', function() {
         cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
     });
 
@@ -27,7 +27,7 @@ describe('Course Settings', function() {
 
     it('has publish options set to yes', function() {
         cy.get('input#id_publish_to_world').click();
-        cy.get('.btn-primary').click();
+        cy.get('.btn-outline-primary').click();
         cy.wait(500);
         cy.get('input#id_publish_to_world').should('be.checked');
     });
@@ -42,7 +42,7 @@ describe('Course Settings', function() {
         cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
         cy.get('input#id_see_eachothers_items').click();
         cy.get('input#id_see_eachothers_selections').click();
-        cy.get('.btn-primary').click();
+        cy.get('.btn-outline-primary').click();
         cy.get('input#id_see_eachothers_selections').should('not.be.checked');
         cy.get('input#id_see_eachothers_items').should('not.be.checked');
     });

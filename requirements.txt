@@ -80,7 +80,7 @@ django-registration-redux==2.8
 django-waffle==1.0.0
 django-cors-headers==3.4.0
 
-# Django >= 3.1 has full support for samesite cookies. 
+# Django >= 3.1 has full support for samesite cookies.
 # Until then, we'll need to use this.
 django-cookies-samesite==0.6.6
 
@@ -91,6 +91,8 @@ oauthlib==3.1.0
 pylti==0.7.0
 nameparser==1.0.6
 django-bootstrap3==14.1.0
+django-bootstrap4==2.2.0
+beautifulsoup4==4.9.1
 ua_parser==0.10.0
 user_agents==2.1
 django_user_agents==0.4.0
@@ -129,7 +131,7 @@ zeep==3.4.0
 stevedore==3.2.0
 pyyaml==5.3.1
 bandit==1.6.2
-funcsigs==1.0.2 
+funcsigs==1.0.2
 pypanopto==0.2.0
 entrypoints==0.3
 

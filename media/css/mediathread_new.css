@@ -3,6 +3,7 @@
 }
 
 /* accessible blue */
+.btn-link,
 a, a.page-link {
     color: #0056b3;
     cursor: pointer;

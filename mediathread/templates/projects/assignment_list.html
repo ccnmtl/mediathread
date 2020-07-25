@@ -49,132 +49,33 @@ Assignments
                     </div>
                 </div>
             {% else %}
-                <div class="accordion mb-3" id="assignment-accordion">
-                    <div class="card border-0">
-                        <div class="card-header" id="headingOne">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link btn-block btn-show-assignments text-left"
-                                    type="button" data-toggle="collapse"
-                                    data-target="#collapseOne" aria-expanded="true"
-                                    aria-controls="collapseOne">
-                                    Hide
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="collapseOne" class="collapse show bg-light"
-                            aria-labelledby="headingOne"
-                            data-parent="#assignment-accordion">
-                            <div class="card-body pt-0">
-                                <div class="card-group">
-                                    <div class="card mx-1">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                Selection Assignment
-                                            </h5>
-                                            <p class="card-text">
-                                                A selection assignment allows an instructor to select one video, photo or audio clip from the course collection.
-                                            </p>
-                                            <a href="http://support.ctl.columbia.edu/knowledgebase/articles/720141-instructors-selection-assignment"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More
-                                            </a>
-                                        </div>
-                                        <div class="card-footer border-0 bg-white">
-                                            <div class="row">
-                                                <div class="col text-center">
-                                                    <a class="btn btn-sm btn-outline-secondary mr-2"
-                                                        href="{% url 'selection-assignment-create' request.course.id %}">
-                                                        Add Selection Assignment
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mx-1">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                Composition Assignment
-                                            </h5>
-                                            <p class="card-text">
-                                                A composition assignment allows students to write essays with embedded media selections.
-                                            </p>
-                                            <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More
-                                            </a>
-                                        </div>
-                                        <div class="card-footer border-0 bg-white">
-                                            <div class="row">
-                                                <div class="col text-center">
-                                                    <form action="{% url 'project-create' request.course.id %}" method="post">
-                                                        <input type="hidden" name="project_type" value="assignment" />
-                                                        <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
-                                                            Add Composition Assignment
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mx-1">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                Sequence Assignment
-                                            </h5>
-                                            <p class="card-text">A sequence
-                                            assignment allows students to line
-                                            up a “primary” selection of video or
-                                            audio against multiple “secondary”
-                                            selections and/or annotations.</p>
-                                            <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More
-                                            </a>
-                                        </div>
-                                        <div class="card-footer border-0 bg-white">
-                                            <div class="row">
-                                                <div class="col text-center">
-                                                    <a class="btn btn-sm btn-outline-secondary"
-                                                        href="{% url 'sequence-assignment-create' request.course.id %}">
-                                                        Add Sequence Assignment
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card mx-1">
-                                        <div class="card-body">
-                                            <h5 class="card-title">
-                                                Discussion Assignment
-                                            </h5>
-                                            <p class="card-text">
-                                                A discussion assignment allows students to respond to an instructor's prompt with text and embedded media.
-                                            </p>
-                                            <a href="#"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More
-                                            </a>
-                                        </div>
-                                        <div class="card-footer border-0 bg-white">
-                                            <div class="row">
-                                                <div class="col text-center">
-                                                    <form action="{% url 'discussion-create' request.course.id %}" method="post"> 
-                                                        <input type="hidden" name="comment_html" value="Discussion Title" />
-                                                        <input type="hidden" name="app_label" value="courseaffils" />
-                                                        <input type="hidden" name="model" value="course" />
-                                                        <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Add Discussion Assignment</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                {% if object_list.exists %}
+                    <div class="accordion mb-3" id="assignment-accordion">
+                        <div class="card border-0">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block btn-show-assignments text-left"
+                                        type="button" data-toggle="collapse"
+                                        data-target="#collapseOne" aria-expanded="true"
+                                        aria-controls="collapseOne">
+                                        Add an assignment
+                                    </button>
+                                </h2>
                             </div>
+                            <div id="collapseOne" class="collapse hide bg-light"
+                                aria-labelledby="headingOne"
+                                data-parent="#assignment-accordion">
+                {% else %}
+                    <div class="text-center w-100">
+                        <h4>Add an assignment</h4>
+                    </div>
+                {% endif %}
+                {% include "projects/assignment_list_cards.html" %}
+                {% if object_list.exists %}
                         </div>
                     </div>
                 </div>
+                {% endif %}
             {% endif %}
             {% if paginator.num_pages > 1 %}
             <div class="row">
@@ -202,11 +103,11 @@ Assignments
                         {% endif %}
                     </div>
                 </div>
-            {% else %}
+            {% else %}{% if role_in_course == 'student' %}
                 <div class="text-center w-100">
                     <h4>You have no assignments yet.</h4>
                 </div>
-            {% endif %}
+            {% endif %}{% endif %}
         </div>
     </div>
 </div>

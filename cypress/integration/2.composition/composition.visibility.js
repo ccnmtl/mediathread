@@ -43,8 +43,9 @@ describe('Student Project Visibility', () => {
              // all searches are automatically rooted to the found tr element
              cy.get('td').eq(0).contains('Composition Public: Scenario 3');
              cy.get('td').eq(1).contains('Shared with Class');
-             cy.get('td').eq(2).contains('Instructor One');
-             cy.get('td').eq(3).contains('Composition');
+             cy.get('td').eq(2).contains('a', 'View');
+             cy.get('td').eq(3).contains('Instructor One');
+             cy.get('td').eq(4).contains('Composition');
          });
      });
 
@@ -77,8 +78,9 @@ describe('Student Project Visibility', () => {
              // all searches are automatically rooted to the found tr element
              cy.get('td').eq(0).contains('Student One Public Essay');
              cy.get('td').eq(1).contains('Shared with Class');
-             cy.get('td').eq(2).contains('Student One');
-             cy.get('td').eq(3).contains('Composition');
+             cy.get('td').eq(2).contains('a', 'View');
+             cy.get('td').eq(3).contains('Student One');
+             cy.get('td').eq(4).contains('Composition');
          });
      })
 });

@@ -205,7 +205,8 @@ class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
         collaboration.remove_children()
         self.project.delete()
         collaboration.delete()
-        return HttpResponseRedirect('/')
+        url = reverse('project-list', args=(request.course.pk))
+        return HttpResponseRedirect(url)
 
 
 class UnsubmitResponseView(LoggedInFacultyMixin, CreateReversionMixin, View):

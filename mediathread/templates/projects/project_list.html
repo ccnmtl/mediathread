@@ -18,28 +18,85 @@ Projects
     <div class="tab-content">
         <div role="tabpanel">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <h1 class="page-title">Projects</h1>
                 </div>
-                <div class="col-md-6 text-right">
-                    <div class="form-group col-md-12">
-                        <div class="btn-group" role="group">
-                            <form action="{% url 'project-create' request.course.id %}" method="post">
-                                <input type="hidden" name="project_type" value="composition" />
-                                <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
-                                    Add Composition
-                                </button> 
-                            </form>
-                            <form action="{% url 'project-create' request.course.id %}" method="post">
-                                <input type="hidden" name="project_type" value="sequence" />
-                                <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
-                                    Add Sequence
-                                </button>
-                            </form>
+            </div>
+            <div class="accordion mb-3" id="assignment-accordion">
+                <div class="card border-0">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0 text-right">
+                            <button class="btn btn-link btn-block text-left btn-show-assignments"
+                                type="button" data-toggle="collapse"
+                                data-target="#collapseOne" aria-expanded="true"
+                                aria-controls="collapseOne">
+                                Close
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseOne" class="collapse show bg-light"
+                        aria-labelledby="headingOne"
+                        data-parent="#assignment-accordion">
+                        <div class="card-body">
+                            <div class="card-group">
+                                <div class="card mx-2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Composition
+                                        </h5>
+                                        <p class="card-text">
+                                            A composition is an essay with embedded media selections.
+                                            <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
+                                                class="card-link" target="_blank" rel="noreferrer">
+                                                Learn More...
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer border-0 bg-white">
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    <input type="hidden" name="project_type" value="composition" />
+                                                    <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
+                                                        Add Composition
+                                                    </button> 
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mx-2">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Sequence Assignment
+                                        </h5>
+                                        <p class="card-text">
+                                            A sequence lines up a “primary” selection of video or audio against multiple “secondary” selections and/or annotations.
+                                            <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
+                                                class="card-link" target="_blank" rel="noreferrer">
+                                                Learn More...
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="card-footer border-0 bg-white">
+                                        <div class="row">
+                                            <div class="col text-center">
+                                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    <input type="hidden" name="project_type" value="sequence" />
+                                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
+                                                        Add Sequence
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div id="search-well">
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -121,6 +178,35 @@ Projects
                                             <td>{{object.attribution}}</td>
                                             <td>{{object.description}}</td>
                                             <td>{{object.modified|date:"n/j/y g:iA"}}</td>
+                                            <td>
+                                                <button class="btn btn-outline-secondary" title="Delete {{object.title}}">
+                                                    Delete
+                                                </button>
+                                                <div class="modal" tabindex="-1" role="dialog">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Delete {{object.title}}</h5>
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Are you sure you want to delete {{object.title}}?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button"
+                                                                    class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                                                    <button type="submit" data-project-id="{{object.id}}"
+                                                                        class="btn btn-primary btn-delete-project">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -176,6 +262,13 @@ Projects
                 const pageNo = jQuery(evt.currentTarget).data('page-number');
                 $frm.find('[name="page"]').val(pageNo);
                 $frm.submit();
+            });
+
+            jQuery('#collapseOne').on('hidden.bs.collapse', function(evt) {
+                jQuery('.btn-show-assignments').html('Add a project');
+            });
+            jQuery('#collapseOne').on('shown.bs.collapse', function(evt) {
+                jQuery('.btn-show-assignments').html('Hide');
             });
         });
     </script>

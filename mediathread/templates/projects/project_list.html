@@ -146,9 +146,6 @@ Projects
                                         <th data-sort-by="visibility">
                                             Status
                                         </th>
-                                        <th>
-                                            Action
-                                        </th>
                                         <th data-sort-by="full_name"
                                             class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
                                             Authors
@@ -166,15 +163,12 @@ Projects
                                     {% for object in object_list %}
                                         <tr>
                                             <td>
-                                                {{object.title}}
-                                            </td>
-                                            <td>{{object.visibility_short}}</td>
-                                            <td>
-                                                <a class="btn btn-sm btn-primary btn-block"
-                                                    href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                                                    View
+                                                <a href="{% url 'project-workspace' request.course.id object.id %}"
+                                                    title="{{object.title}}">
+                                                    {{object.title}}
                                                 </a>
                                             </td>
+                                            <td>{{object.visibility_short}}</td>
                                             <td>{{object.attribution}}</td>
                                             <td>{{object.description}}</td>
                                             <td>{{object.modified|date:"n/j/y g:iA"}}</td>

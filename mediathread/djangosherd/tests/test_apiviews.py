@@ -51,13 +51,40 @@ class SherdNoteTestsAsStudent(
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(SherdNote.objects.count(), 1)
-        note = SherdNote.objects.get()
-        self.assertEqual(note.title, 'note title')
+        self.assertEqual(SherdNote.objects.count(), 2)
+        note = SherdNote.objects.get(title='note title')
         self.assertEqual(note.body, 'note body')
         self.assertEqual(note.range1, 23)
         self.assertEqual(note.range2, 27.565)
         self.assertEqual(note.author, self.u)
+
+        self.assertTrue(
+            note.asset.global_annotation(self.u, False) is not None)
+
+    def test_create_sherdnote_on_classmates_asset(self):
+        """
+        Ensure we can create a new SherdNote (annotation) object on a
+        classmate's asset.
+        """
+        asset = AssetFactory(
+            primary_source='image', author=self.student_one,
+            course=self.sample_course)
+        url = reverse('sherdnote-create', kwargs={'asset_id': asset.pk})
+
+        data = {
+            'title': 'note title',
+            'body': 'note body',
+            'range1': 23,
+            'range2': 27.565,
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SherdNote.objects.count(), 2)
+        note = SherdNote.objects.get(title='note title')
+        self.assertEqual(note.author, self.u)
+        self.assertTrue(
+            note.asset.global_annotation(self.u, False) is not None)
 
     def test_create_sherdnote_on_own_image_asset(self):
         """
@@ -105,9 +132,8 @@ class SherdNoteTestsAsStudent(
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(SherdNote.objects.count(), 1)
-        note = SherdNote.objects.get()
-        self.assertEqual(note.title, 'Image annotation')
+        self.assertEqual(SherdNote.objects.count(), 2)
+        note = SherdNote.objects.get(title='Image annotation')
         self.assertEqual(note.body, 'Image annotation body')
         self.assertEqual(note.range1, -2)
         self.assertEqual(note.range2, -1)
@@ -190,9 +216,8 @@ class SherdNoteTestsAsStudent(
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(SherdNote.objects.count(), 1)
-        note = SherdNote.objects.get()
-        self.assertEqual(note.title, 'Image annotation')
+        self.assertEqual(SherdNote.objects.count(), 2)
+        note = SherdNote.objects.get(title='Image annotation')
         self.assertEqual(note.body, 'Image annotation body')
         self.assertEqual(note.range1, -2)
         self.assertEqual(note.range2, -1)

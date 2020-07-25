@@ -101,6 +101,12 @@ class SherdNoteSerializer(serializers.ModelSerializer):
         terms = validated_data.pop('terms')
         note = SherdNote.objects.create(**validated_data)
 
+        # Create a global annotation for the author if it doesn't exist
+        # The global annotation is an "empty" annotation and signals this
+        # asset is part of the user's collection
+        note.asset.global_annotation(
+            validated_data['author'], auto_create=True)
+
         # Make a TermRelationship object for each related term.
         if terms:
             for term_id in terms:

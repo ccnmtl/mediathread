@@ -39,12 +39,13 @@ describe('Student Project Visibility', () => {
          cy.visit('/course/1/projects/');
          cy.get('#cu-privacy-notice-icon').click();
          cy.get('#select-owner').select('instructor_one');
-         cy.contains('Composition Public: Scenario 3').parent('td').parent('tr').within(() => {
+         cy.contains('Composition Public: Scenario 3').parent('tr').within(() => {
              // all searches are automatically rooted to the found tr element
              cy.get('td').eq(0).contains('Composition Public: Scenario 3');
              cy.get('td').eq(1).contains('Shared with Class');
-             cy.get('td').eq(2).contains('Instructor One');
-             cy.get('td').eq(3).contains('Composition');
+             cy.get('td').eq(2).contains('a', 'View');
+             cy.get('td').eq(3).contains('Instructor One');
+             cy.get('td').eq(4).contains('Composition');
          });
      });
 
@@ -73,12 +74,13 @@ describe('Student Project Visibility', () => {
          cy.get('#cu-privacy-notice-icon').click();
          cy.get('#select-owner').select('student_one');
 
-         cy.contains('Student One Public Essay').parent('td').parent('tr').within(() => {
+         cy.contains('Student One Public Essay').parent('tr').within(() => {
              // all searches are automatically rooted to the found tr element
              cy.get('td').eq(0).contains('Student One Public Essay');
              cy.get('td').eq(1).contains('Shared with Class');
-             cy.get('td').eq(2).contains('Student One');
-             cy.get('td').eq(3).contains('Composition');
+             cy.get('td').eq(2).contains('a', 'View');
+             cy.get('td').eq(3).contains('Student One');
+             cy.get('td').eq(4).contains('Composition');
          });
      })
 });

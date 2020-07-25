@@ -79,13 +79,6 @@
 
                                 <p>{% lorem %}</p>
 
-                                <p>Visibility of student responses can be set at one of the following levels:</p>
-                                <ul>
-                                <li>Student responses are visible only to instructors</li>
-                                <li>Students can see other responses only after submitting their own</li>
-                                <li>Students can see other responses at any time</li>
-                                </ul>
-                                <br />
                                 <div class="row mb-5">
                                     <div class="col">
                                         <a href="#" class="btn btn-primary next">Get Started</a>
@@ -128,7 +121,7 @@
                                 </div>
                             </div>
                             <div data-page="3" data-page-content="due-date" class="hidden page">
-                                <h4>Step 3. Set response due date &amp; visibility</h4><br />
+                                <h4>Step 3. Set response due date</h4><br />
                                 <div class="form-group">
                                     <label for="due_date"><strong>Due Date</strong></label>
                                     <input class="form-control" type="text"
@@ -136,14 +129,6 @@
                                 </div>
                                 <div class="help-inline">Please choose a due date.</div>
                                 <br />
-                                <label for="response_view_policy"><strong>Visibility</strong></label>
-                                <p>Choose when students can see responses submitted by other students:</p>
-                                <div class="form-group">
-                                    {{form.response_view_policy}}
-                                </div>
-                                <div class="help-inline">Please choose how responses will be viewed.</div>
-                                <div><i>Note: After students respond to an assignment, they cannot edit their 
-                                response unless an instructor "unsubmits" it for further editing.</i></div><br />
 
                                 <div class="row mb-5">
                                     <div class="col">

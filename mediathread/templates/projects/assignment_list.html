@@ -49,33 +49,32 @@ Assignments
                     </div>
                 </div>
             {% else %}
-                {% if object_list.exists %}
-                    <div class="accordion mb-3" id="assignment-accordion">
-                        <div class="card border-0">
-                            <div class="card-header" id="headingOne">
-                                <h2 class="mb-0">
-                                    <button class="btn btn-link btn-block btn-show-assignments text-left"
-                                        type="button" data-toggle="collapse"
-                                        data-target="#collapseOne" aria-expanded="true"
-                                        aria-controls="collapseOne">
+                <div class="accordion mb-3" id="assignment-accordion">
+                    <div class="card border-0">
+                        <div class="card-header pb-0" id="headingOne">
+                            <h2>
+                                <button class="btn btn-link btn-block btn-show-assignments text-left"
+                                    type="button" data-toggle="collapse"
+                                    data-target="#collapseOne" aria-expanded="true"
+                                    aria-controls="collapseOne">
+                                    {% if object_list.exists %}
                                         Add an assignment
-                                    </button>
-                                </h2>
-                            </div>
-                            <div id="collapseOne" class="collapse hide bg-light"
-                                aria-labelledby="headingOne"
-                                data-parent="#assignment-accordion">
-                {% else %}
-                    <div class="text-center w-100">
-                        <h4>Add an assignment</h4>
-                    </div>
-                {% endif %}
-                {% include "projects/assignment_list_cards.html" %}
-                {% if object_list.exists %}
+                                    {% else %}
+                                        Hide
+                                    {% endif %}
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseOne" class="collapse {% if object_list.exists %}hide{% else %}show{% endif %} bg-light"
+                            aria-labelledby="headingOne"
+                            data-parent="#assignment-accordion">
+                            {% if not object_list.exists %}
+                                <h4 class="text-center mb-4">Add an assignment</h4>
+                            {% endif %}
+                            {% include "projects/assignment_list_cards.html" %}
                         </div>
                     </div>
                 </div>
-                {% endif %}
             {% endif %}
             {% if paginator.num_pages > 1 %}
             <div class="row">

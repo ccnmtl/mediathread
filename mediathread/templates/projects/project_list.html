@@ -30,31 +30,40 @@ Projects
                                 type="button" data-toggle="collapse"
                                 data-target="#collapseOne" aria-expanded="true"
                                 aria-controls="collapseOne">
-                                Close
+                                {% if user_has_projects or not owner == request.user %}
+                                    Add a project
+                                {% else %}
+                                    Hide
+                                {% endif %}
                             </button>
                         </h2>
                     </div>
-                    <div id="collapseOne" class="collapse show bg-light"
+                    <div id="collapseOne" class="collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
                         aria-labelledby="headingOne"
                         data-parent="#assignment-accordion">
+
+                        <h4 class="text-center">Add a project</h4>
+
                         <div class="card-body">
-                            <div class="card-group">
-                                <div class="card mx-2">
+                            <div class="card-deck">
+                                <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
                                             Composition
                                         </h5>
                                         <p class="card-text">
                                             A composition is an essay with embedded media selections.
-                                            <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More...
-                                            </a>
                                         </p>
                                     </div>
                                     <div class="card-footer border-0 bg-white">
                                         <div class="row">
-                                            <div class="col text-center">
+                                            <div class="col-lg-auto">
+                                                <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
+                                                    class="card-link" target="_blank" rel="noreferrer">
+                                                    Learn More...
+                                                </a>
+                                            </div>
+                                            <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
                                                     <input type="hidden" name="project_type" value="composition" />
                                                     <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
@@ -65,22 +74,24 @@ Projects
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card mx-2">
+                                <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
                                             Sequence Assignment
                                         </h5>
                                         <p class="card-text">
                                             A sequence lines up a “primary” selection of video or audio against multiple “secondary” selections and/or annotations.
-                                            <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
-                                                class="card-link" target="_blank" rel="noreferrer">
-                                                Learn More...
-                                            </a>
                                         </p>
                                     </div>
                                     <div class="card-footer border-0 bg-white">
                                         <div class="row">
-                                            <div class="col text-center">
+                                            <div class="col-lg-auto">
+                                                <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
+                                                    class="card-link" target="_blank" rel="noreferrer">
+                                                    Learn More...
+                                                </a>
+                                            </div>
+                                            <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
                                                     <input type="hidden" name="project_type" value="sequence" />
                                                     <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
@@ -100,15 +111,14 @@ Projects
             <div id="search-well">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="select-owner">Owner</label>
+                        <label for="select-owner">Filter by author</label>
                         <select id="select-owner" name="owner" class="form-control form-control-sm mb-3">
                             <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
-                            {% for o in request.course.members %}
+                            {% for o in course_members %}
                                 {% if o != user %}
                                     <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
                                         {% if o.last_name %}
-                                            {{o.first_name}} {{o.last_name}}
-                                            {% if o.username|length < 10 %}({{o.username}}){% else %}(...){% endif %}
+                                            {{o.last_name}}, {{o.first_name}}
                                         {% else %}
                                             {{o.username}}
                                         {% endif %}
@@ -133,6 +143,7 @@ Projects
                 <input type="hidden" name="sortby" value="{{sortby}}">
                 <input type="hidden" name="direction" value="{{direction}}">
                 <input type="hidden" name="page" value="{{page_obj.number}}">
+            </form>
                 <div class="row">
                     <div class="col-12">
                         {% if object_list.exists %}
@@ -158,6 +169,9 @@ Projects
                                             class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
                                             Last Updated
                                         </th>
+                                        <th>
+                                            Action
+                                        </th>
                                     </thead>
                                     <tbody>
                                     {% for object in object_list %}
@@ -173,10 +187,11 @@ Projects
                                             <td>{{object.description}}</td>
                                             <td>{{object.modified|date:"n/j/y g:iA"}}</td>
                                             <td>
-                                                <button class="btn btn-outline-secondary" title="Delete {{object.title}}">
+                                                <button class="btn btn-outline-secondary" title="Delete {{object.title}}"
+                                                    data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                                     Delete
                                                 </button>
-                                                <div class="modal" tabindex="-1" role="dialog">
+                                                <div id="delete-project-{{object.id}}" class="modal" tabindex="-1" role="dialog">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -208,18 +223,17 @@ Projects
                             </div>
                         {% else %}
                             <div class="text-center w-100">
-                                {% if owner == request.user %}
-                                    <h4 class="ml-1">You have no projects yet.</h4>
-                                {% else %}{% if owner.last_name %}
-                                    <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
-                                {% else %}
-                                    <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
-                                {% endif %}{% endif %}
+                                {% if owner != request.user %}
+                                    {% if owner.last_name %}
+                                        <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
+                                    {% else %}
+                                        <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
                 </div>
-            </form>
         </div>
     </div>
 </div>
@@ -235,7 +249,7 @@ Projects
                 $frm.find('[name="page"]').val(1);
                 jQuery('#search-form').submit();
             });
-            jQuery('#search-form .sortable').on('click', (evt) => {
+            jQuery('.sortable').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
 
                 let direction = 'asc';
@@ -251,7 +265,7 @@ Projects
                 $frm.find('[name="sortby"]').val(sortBy);
                 $frm.submit();
             });
-            jQuery('#search-form a.page-link').on('click', (evt) => {
+            jQuery('a.page-link').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
                 const pageNo = jQuery(evt.currentTarget).data('page-number');
                 $frm.find('[name="page"]').val(pageNo);

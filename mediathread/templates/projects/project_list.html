@@ -187,7 +187,8 @@ Projects
                                             <td>{{object.description}}</td>
                                             <td>{{object.modified|date:"n/j/y g:iA"}}</td>
                                             <td>
-                                                <button class="btn btn-outline-secondary" title="Delete {{object.title}}"
+                                                {% if request.user == object.author or request.user in object.participants %}
+                                                <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
                                                     data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                                     Delete
                                                 </button>
@@ -215,6 +216,7 @@ Projects
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}

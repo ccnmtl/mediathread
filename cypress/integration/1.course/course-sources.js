@@ -34,7 +34,7 @@ describe('Removing Course Source', () => {
     });
 
     it('should remove YouTube as a source to the class', function() {
-        cy.get('input#youtube.btn.btn-default')
+        cy.get('input#youtube')
             .should('have.value', 'Remove')
             .click();
         cy.contains('Remove').should('not.exist');

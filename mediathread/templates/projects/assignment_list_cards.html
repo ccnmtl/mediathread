@@ -20,7 +20,7 @@
                     <div class="col text-right">
                         <a class="btn btn-sm btn-outline-secondary mr-2"
                             href="{% url 'selection-assignment-create' request.course.id %}">
-                            Add Selection Assignment
+                            Add Assignment
                         </a>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                         <form action="{% url 'project-create' request.course.id %}" method="post">
                             <input type="hidden" name="project_type" value="assignment" />
                             <button id="add-sequence-button" type="submit" class="btn btn-sm btn-outline-secondary mr-2">
-                                Add Composition Assignment
+                                Add Assignment
                             </button>
                         </form>
                     </div>
@@ -76,7 +76,7 @@
                     <div class="col-md text-right align-center">
                         <a class="btn btn-sm btn-outline-secondary"
                             href="{% url 'sequence-assignment-create' request.course.id %}">
-                            Add Sequence Assignment
+                            Add Assignment
                         </a>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                             <input type="hidden" name="app_label" value="courseaffils" />
                             <input type="hidden" name="model" value="course" />
                             <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">Add Discussion Assignment</button>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Add Assignment</button>
                         </form>
                     </div>
                 </div>

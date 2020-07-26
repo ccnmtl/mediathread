@@ -88,6 +88,12 @@
                     My Courses
                 </a>
 
+                {% if user.has_usable_password %}
+                    <a class="dropdown-item" href="/accounts/password_change/" title="Change Password">
+                        Change Password
+                    </a>
+                {% endif %}
+
                 {% if user.is_staff %}
                     <a class="dropdown-item" href="/admin/" title="Administer">Administer</a>
                 {% endif %}

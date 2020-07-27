@@ -64,13 +64,13 @@ describe('Student Creates Composition', () => {
 
     it('should show on projects page', () => {
         cy.visit('/course/1/projects/');
-        cy.contains('Composition: Scenario 2').parent('tr').within(() => {
+        cy.contains('Composition: Scenario 2').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(0).contains('Composition: Scenario 2');
             cy.get('td').eq(1).contains('Draft');
-            cy.get('td').eq(2).contains('a', 'View');
-            cy.get('td').eq(3).contains('Student One');
-            cy.get('td').eq(4).contains('Composition');
+            cy.get('td').eq(2).contains('Student One');
+            cy.get('td').eq(3).contains('Composition');
+            cy.get('td').eq(5).contains('Delete');
         });
     });
 

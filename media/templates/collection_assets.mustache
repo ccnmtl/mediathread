@@ -52,10 +52,12 @@
     <div class="materials column-contents">
         <div id="record-{{id}}" class="record record-{{primary_type}} gallery-item-project">
             <input type="hidden" class="record" value="{{id}}" name="record-id" />
-
-
             <div class="card-thumbnail">
-                <div class="media-type"><span class="badge {{#thumb}}badge-light{{/thumb}}{{^thumb}}badge-secondary{{/thumb}}">{{media_type_label}}</span></div>
+                <div class="media-type">
+                    <span class="badge badge-secondary">
+                        {{media_type_label}}
+                    </span>
+                </div>
                 {{#thumb}}
                 <div class="image-overlay">
                     <a href="{{local_url}}" title="{{title}}">
@@ -63,9 +65,18 @@
                     </a>
                 </div>
                 {{/thumb}}
+                {{^thumb}}
+                    {{#image}}
+                        <div class="image-overlay">
+                            <a href="{{local_url}}" title="{{title}}">
+                                <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
+                            </a>
+                        </div>
+                    {{/image}}
+                {{/thumb}}
             </div>
 
-            <div class="px-3  {{^thumb}}pt-5{{/thumb}}">
+            <div class="px-3 {{^thumb}}{{^image}}pt-5{{/image}}{{/thumb}}">
                 <h5 id="asset-item-{{id}}" class="asset_title mt-3">
                     <div class="actions">
                         <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">

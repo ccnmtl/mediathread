@@ -18,40 +18,107 @@ Projects
     <div class="tab-content">
         <div role="tabpanel">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <h1 class="page-title">Projects</h1>
                 </div>
-                <div class="col-md-6 text-right">
-                    <div class="form-group col-md-12">
-                        <div class="btn-group" role="group">
-                            <form action="{% url 'project-create' request.course.id %}" method="post">
-                                <input type="hidden" name="project_type" value="composition" />
-                                <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
-                                    Add Composition
-                                </button> 
-                            </form>
-                            <form action="{% url 'project-create' request.course.id %}" method="post">
-                                <input type="hidden" name="project_type" value="sequence" />
-                                <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
-                                    Add Sequence
-                                </button>
-                            </form>
+            </div>
+            <div class="accordion mb-3" id="assignment-accordion">
+                <div class="card border-0">
+                    <div class="card-header pb-0" id="headingOne">
+                        <h2>
+                            <button class="btn btn-link btn-block text-left btn-show-assignments"
+                                type="button" data-toggle="collapse"
+                                data-target="#collapseOne" aria-expanded="true"
+                                aria-controls="collapseOne">
+                                {% if user_has_projects or not owner == request.user %}
+                                    Add a project
+                                {% else %}
+                                    Hide
+                                {% endif %}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapseOne" class="collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
+                        aria-labelledby="headingOne"
+                        data-parent="#assignment-accordion">
+
+                        <h4 class="text-center">Add a project</h4>
+
+                        <div class="card-body">
+                            <div class="card-deck">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Composition
+                                        </h5>
+                                        <p class="card-text">
+                                            A composition is an essay with embedded media selections.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer border-0 bg-white">
+                                        <div class="row">
+                                            <div class="col-lg-auto">
+                                                <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
+                                                    class="card-link" target="_blank" rel="noreferrer">
+                                                    Learn More...
+                                                </a>
+                                            </div>
+                                            <div class="col text-right">
+                                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    <input type="hidden" name="project_type" value="composition" />
+                                                    <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
+                                                        Add Composition
+                                                    </button> 
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Sequence Assignment
+                                        </h5>
+                                        <p class="card-text">
+                                            A sequence lines up a “primary” selection of video or audio against multiple “secondary” selections and/or annotations.
+                                        </p>
+                                    </div>
+                                    <div class="card-footer border-0 bg-white">
+                                        <div class="row">
+                                            <div class="col-lg-auto">
+                                                <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
+                                                    class="card-link" target="_blank" rel="noreferrer">
+                                                    Learn More...
+                                                </a>
+                                            </div>
+                                            <div class="col text-right">
+                                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    <input type="hidden" name="project_type" value="sequence" />
+                                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
+                                                        Add Sequence
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div id="search-well">
                 <div class="form-row">
                     <div class="form-group col-md-4">
-                        <label for="select-owner">Owner</label>
+                        <label for="select-owner">Filter by author</label>
                         <select id="select-owner" name="owner" class="form-control form-control-sm mb-3">
                             <option {% if not owner or owner == user %}selected{% endif %} value="{{user.username}}">Me</option>
-                            {% for o in request.course.members %}
+                            {% for o in course_members %}
                                 {% if o != user %}
                                     <option {% if o == owner %}selected{% endif %} value="{{o.username}}">
                                         {% if o.last_name %}
-                                            {{o.first_name}} {{o.last_name}}
-                                            {% if o.username|length < 10 %}({{o.username}}){% else %}(...){% endif %}
+                                            {{o.last_name}}, {{o.first_name}}
                                         {% else %}
                                             {{o.username}}
                                         {% endif %}
@@ -76,6 +143,7 @@ Projects
                 <input type="hidden" name="sortby" value="{{sortby}}">
                 <input type="hidden" name="direction" value="{{direction}}">
                 <input type="hidden" name="page" value="{{page_obj.number}}">
+            </form>
                 <div class="row">
                     <div class="col-12">
                         {% if object_list.exists %}
@@ -89,9 +157,6 @@ Projects
                                         <th data-sort-by="visibility">
                                             Status
                                         </th>
-                                        <th>
-                                            Action
-                                        </th>
                                         <th data-sort-by="full_name"
                                             class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
                                             Authors
@@ -104,23 +169,55 @@ Projects
                                             class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
                                             Last Updated
                                         </th>
+                                        <th>
+                                            Action
+                                        </th>
                                     </thead>
                                     <tbody>
                                     {% for object in object_list %}
                                         <tr>
                                             <td>
-                                                {{object.title}}
-                                            </td>
-                                            <td>{{object.visibility_short}}</td>
-                                            <td>
-                                                <a class="btn btn-sm btn-primary btn-block"
-                                                    href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                                                    View
+                                                <a href="{% url 'project-workspace' request.course.id object.id %}"
+                                                    title="{{object.title}}">
+                                                    {{object.title}}
                                                 </a>
                                             </td>
+                                            <td>{{object.visibility_short}}</td>
                                             <td>{{object.attribution}}</td>
                                             <td>{{object.description}}</td>
                                             <td>{{object.modified|date:"n/j/y g:iA"}}</td>
+                                            <td>
+                                                {% if request.user == object.author or request.user in object.participants %}
+                                                <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
+                                                    data-toggle="modal" data-target="#delete-project-{{object.id}}">
+                                                    Delete
+                                                </button>
+                                                <div id="delete-project-{{object.id}}" class="modal" tabindex="-1" role="dialog">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Delete {{object.title}}</h5>
+                                                                <button type="button" class="close"
+                                                                    data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Are you sure you want to delete {{object.title}}?</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button"
+                                                                    class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                                                    <button type="submit" data-project-id="{{object.id}}"
+                                                                        class="btn btn-primary btn-delete-project">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -128,18 +225,17 @@ Projects
                             </div>
                         {% else %}
                             <div class="text-center w-100">
-                                {% if owner == request.user %}
-                                    <h4 class="ml-1">You have no projects yet.</h4>
-                                {% else %}{% if owner.last_name %}
-                                    <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
-                                {% else %}
-                                    <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
-                                {% endif %}{% endif %}
+                                {% if owner != request.user %}
+                                    {% if owner.last_name %}
+                                        <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
+                                    {% else %}
+                                        <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
+                                    {% endif %}
+                                {% endif %}
                             </div>
                         {% endif %}
                     </div>
                 </div>
-            </form>
         </div>
     </div>
 </div>
@@ -155,7 +251,7 @@ Projects
                 $frm.find('[name="page"]').val(1);
                 jQuery('#search-form').submit();
             });
-            jQuery('#search-form .sortable').on('click', (evt) => {
+            jQuery('.sortable').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
 
                 let direction = 'asc';
@@ -171,11 +267,18 @@ Projects
                 $frm.find('[name="sortby"]').val(sortBy);
                 $frm.submit();
             });
-            jQuery('#search-form a.page-link').on('click', (evt) => {
+            jQuery('a.page-link').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
                 const pageNo = jQuery(evt.currentTarget).data('page-number');
                 $frm.find('[name="page"]').val(pageNo);
                 $frm.submit();
+            });
+
+            jQuery('#collapseOne').on('hidden.bs.collapse', function(evt) {
+                jQuery('.btn-show-assignments').html('Add a project');
+            });
+            jQuery('#collapseOne').on('shown.bs.collapse', function(evt) {
+                jQuery('.btn-show-assignments').html('Hide');
             });
         });
     </script>

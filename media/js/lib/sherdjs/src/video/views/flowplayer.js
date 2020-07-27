@@ -30,10 +30,10 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 height: function () { return 466; }
             }
         };
-        
+
         ////////////////////////////////////////////////////////////////////////
         // Microformat
-        
+
         // create == asset->{html+information to make it}
         // setup the flowplayer div. will be replaced on write using the flowplayer API
         this.microformat.create = function (obj, doc) {
@@ -60,14 +60,14 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     height: presentation.height()
                 };
             }
-            
+
             var posterUrl = "";
             if (obj.poster) {
                 posterUrl = obj.poster;
             } else if (params.provider === "audio") {
                 posterUrl = STATIC_URL + "img/poster_audio.png";
             }
-            
+
             var create_obj = {
                 object: obj,
                 htmlID: wrapperID,
@@ -79,14 +79,13 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' +
                       '<span id="currtime' + playerID + '">00:00:00</span>/<span id="totalcliplength' + playerID + '">00:00:00</span></div>' + 
                       '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
-                    '<div class="fp-full fp-outlined no-brand sherd-flowplayer no-hover fixed-controls" data-aspect-ratio="12:5"' +
+                    '<div class="fp-full fp-outlined no-brand sherd-flowplayer no-hover fixed-controls"' +
                           'poster="' + posterUrl + '"' +
-                           'style="display:block; width:' + obj.options.width + 'px;' +
-                           'height:' + obj.options.height + 'px;" id="' + playerID + '">' +
+                           'style="display:block;" id="' + playerID + '">' +
                     '</div>' +
                     '</div>'
             };
-            
+
             if (obj.metadata) {
                 for (var i = 0; i < obj.metadata.length; i++) {
                     if (obj.metadata[i].key === 'duration') {

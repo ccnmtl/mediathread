@@ -43,9 +43,15 @@
                 return title.length > 0 && body.length > 0;
             } else if (pageContent === 'due-date') {
                 var q1 = 'input[name="due_date"]';
-                var q2 = 'input[name="response_view_policy"]:checked';
-                return jQuery(q1).val() !== undefined &&
-                    jQuery(q1).val() !== '' && jQuery(q2).val() !== undefined;
+                if (jQuery(q1).val() === undefined || jQuery(q1).val() === '')
+                    return false;
+
+                var q2 = 'input[name="response_view_policy"]';
+                if (jQuery(q2).length &&
+                        jQuery(q2 + ':checked').val() === undefined) {
+                    return false;
+                }
+                return true;
             } else if (pageContent === 'publish') {
                 var q = 'input[name="publish"]:checked';
                 return jQuery(q).val() !== undefined;

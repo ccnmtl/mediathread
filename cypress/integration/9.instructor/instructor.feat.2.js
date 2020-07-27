@@ -3,12 +3,7 @@ describe('Instructor Feat: Course Activity', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a')
-            .contains('MAAP Award Reception');
-        cy.get('.card-title a')
-            .contains("The Armory - Home to CCNMTL's CUMC Office");
-        cy.get('.card-title a')
-            .contains("Mediathread: Introduction");
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('should go to course Activity', () => {

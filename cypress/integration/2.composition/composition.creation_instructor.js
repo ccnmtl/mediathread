@@ -55,15 +55,16 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-savebutton').contains('Save').should('be.visible');
         cy.get('.project-savebutton').click();
 
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal').should('be.visible');
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('contain', 'Draft - only you can view')
             .should('be.visible');
-        cy.get('input[name=publish]:checked').should('exist')
-            .should('be.visible');
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal input[name=publish]:checked')
+            .should('exist').should('be.visible');
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('contain', 'Whole Class - all class members can view')
             .should('be.visible');
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('not.contain', 'Whole World - a public url is provided')
             .should('be.visible');
         cy.get('.btn-save-project').should('be.visible');
@@ -85,13 +86,13 @@ describe('Instructor Creates Composition', () => {
 
     it('should show on projects page', () => {
         cy.visit('/course/1/projects/');
-        cy.contains('Composition: Scenario 1').parent('tr').within(() => {
+        cy.contains('Composition: Scenario 1').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(0).contains('Composition: Scenario 1');
             cy.get('td').eq(1).contains('Draft');
-            cy.get('td').eq(2).contains('a', 'View');
-            cy.get('td').eq(3).contains('Instructor One');
-            cy.get('td').eq(4).contains('Composition');
+            cy.get('td').eq(2).contains('Instructor One');
+            cy.get('td').eq(3).contains('Composition');
+            cy.get('td').eq(5).contains('Delete');
         });
     });
 

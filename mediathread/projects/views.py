@@ -205,7 +205,8 @@ class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
         collaboration.remove_children()
         self.project.delete()
         collaboration.delete()
-        return HttpResponseRedirect('/')
+        url = reverse('project-list', args=[request.course.pk])
+        return HttpResponseRedirect(url)
 
 
 class UnsubmitResponseView(LoggedInFacultyMixin, CreateReversionMixin, View):
@@ -782,6 +783,12 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
         ctx['today'] = datetime.now()
+        ctx['course_members'] = self.request.course.members.order_by(
+            'last_name', 'first_name', 'username')
+
+        qs = Project.objects.projects_visible_by_course_and_owner(
+            self.request.course, self.request.user, self.request.user)
+        ctx['user_has_projects'] = qs.exists()
         return ctx
 
     def annotate_full_name(self, qs):

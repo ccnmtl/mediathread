@@ -15,9 +15,6 @@
                 Status
             </th>
             <th>
-                Action
-            </th>
-            <th>
                 Responses
             </th>
             <th data-sort-by="full_name"
@@ -32,9 +29,11 @@
                 class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
                 Last Updated
             </th>
+            <th>Action</th>
         </thead>
         <tbody>
         {% for object in object_list %}
+            {% published_assignment_responses object as response_count %}
             <tr>
                 <td>
                     {% if object.due_date %}
@@ -43,28 +42,15 @@
                 </td>
                 <td>
                     <div>
-                        {{object.title}}
+                        <a href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                            {{object.title}}
+                        </a>
                     </div>
                 </td>
                 <td>
                     {{object.visibility_short}}
                 </td>
-                <td>
-                    {% if request.user == object.author or request.user in object.participants %}
-                        <a class="btn btn-sm btn-primary btn-block"
-                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                                Edit
-                        </a>
-                    {% else %}
-                        <a class="btn btn-sm btn-secondary btn-block"
-                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                                View
-                        </a>
-                    {% endif %}
-                    </a>
-                </td>
                 <td class="text-center">
-                    {% published_assignment_responses object as response_count %}
                     {{response_count}} / {{request.course.students|length}}
                 </td>
                 <td>
@@ -75,6 +61,39 @@
                 </td>
                 <td>
                     {{object.modified}}
+                </td>
+                <td>
+                    {% if response_count < 1 %}
+                    {% if request.user == object.author or request.user in object.participants %}
+                    <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
+                        data-toggle="modal" data-target="#delete-project-{{object.id}}">
+                        Delete
+                    </button>
+                    <div id="delete-project-{{object.id}}" class="modal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete {{object.title}}</h5>
+                                    <button type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete {{object.title}}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button"
+                                        class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                        <button type="submit" data-project-id="{{object.id}}"
+                                            class="btn btn-primary btn-delete-project">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}{% endif %}
                 </td>
             </tr>
         {% endfor %}

@@ -98,6 +98,10 @@ export default class AssetDetail extends React.Component {
     }
 
     onCreateSelection(e, tags, terms) {
+        // Clear the validation errors here since apparently the form
+        // passed validation.
+        this.setState({validationError: null});
+
         e.preventDefault();
         const me = this;
         const type = this.asset.getType();
@@ -332,6 +336,9 @@ export default class AssetDetail extends React.Component {
 
     onSelectTab(tabName) {
         this.setState({tab: tabName});
+
+        // Clear active selection when switching to any tab.
+        this.onClearActiveSelection();
     }
 
     onClearVectorLayer() {
@@ -613,11 +620,6 @@ export default class AssetDetail extends React.Component {
             } else if (this.type === 'video') {
                 this.startButtonRef.current.focus();
             }
-        }
-
-        // Clear active selection when switching to any tab.
-        if (prevState.tab !== this.state.tab) {
-            this.onClearActiveSelection();
         }
 
         if (prevState.isDrawing !== this.state.isDrawing) {

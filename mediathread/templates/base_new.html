@@ -17,7 +17,7 @@ A new base.html without the course context overwritten in the template.
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-        <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat:bold|Open+Sans|Open+Sans:bold" rel="stylesheet">
 
         <script src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
         <script src='{% static "jquery/js/jquery.mousewheel.min.js" %}'></script>
@@ -87,7 +87,7 @@ A new base.html without the course context overwritten in the template.
         {% endblock %}
 
         {% block container %}
-            <div class="container-fluid">
+            <main class="container-fluid">
                 {% block courseinformation %}
                     {% if not read_only_view %}
                         <h6 id="course-title" class="course-title">
@@ -127,27 +127,32 @@ A new base.html without the course context overwritten in the template.
                         <div id="clearfooter"></div>
                     </div>
                 </div><!-- id="pagebody" -->
+            </main><!-- class="container" -->
         {% endblock %}
-        </div><!-- class="container" -->
 
-            {% block footer %}
-                <!-- ###### Footer ###### -->
-                <div id="footer">
+        {% block footer %}
+            <footer class="text-muted bg-light mt-5">
 
-                    <!-- CTL title/logo -->
-                    <a id="logo_ctl" href="https://ctl.columbia.edu" target="_blank" title="Columbia Center for Teaching and Learning">
-                        <img width="160" height="29.6"
-                             src="{% static 'img/logo_ctl.png' %}" alt="CTL Logo">
-                        <span class="sr-only">Visit ctl.columbia.edu</span>
-                    </a>
+                <ul class="footer-navigation d-print-none">
+                    <li><a title="About page" href="/about/">About</a></li>
+                    <li><a title="Contact page" href="/contact/">Contact</a></li>
+                    <li><a title="Help page" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></li>
+                    <li><a title="Github Repository" href="https://github.com/ccnmtl/mediathread">Github</a></li>
+                </ul>
 
-                    <ol id="footernav">
-                        <li><a href="https://mediathread.info" title="About" target="_blank">About</a></li>
-                        <li><a href="/contact/" title="Contact Us">Contact Us</a></li>
-                        <li><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread" title="Help">Help</a></li>
-                    </ol>
-                </div><!-- id="footer" -->
-            {% endblock %}
+                <ul class="footer-logo row container mx-auto pt-4 pt-md-4 pt-lg-5">
+                    <li class="col-md pb-4 px-0 py-md-0">
+                        <a href="https://ctl.columbia.edu" target="_blank">
+                            <img src="{{STATIC_URL}}img/logo/logo-footer-ctl-print.svg"
+                                class="d-none d-print-block">
+                            <img src="{{STATIC_URL}}img/logo/logo-ctl-color.png"
+                                alt="Center for Teaching & Learning Logo"
+                                class="d-print-none">
+                        </a>
+                    </li>
+                </ul>
+            </footer>
+        {% endblock %}
 
             {% block collection-modal %}
                 {% if request.user.is_authenticated %}
@@ -156,7 +161,9 @@ A new base.html without the course context overwritten in the template.
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                     <h4 class="modal-title">Course Collection</h4>
                                 </div>
                                 <div class="modal-body collection-body">

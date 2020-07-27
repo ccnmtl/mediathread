@@ -28,8 +28,13 @@ describe('Manage Course', function() {
     it('has publish options set to yes', function() {
         cy.get('input#id_publish_to_world').click();
         cy.get('.btn-primary').click();
-        cy.wait(500);
         cy.get('input#id_publish_to_world').should('be.checked');
+    });
+
+    it('has publish options set to no', function() {
+        cy.get('input#id_publish_to_world').click();
+        cy.get('.btn-primary').click();
+        cy.get('input#id_publish_to_world').should('not.be.checked');
     });
 
     it('has item and selection visibility "on" by default', function() {

@@ -79,14 +79,11 @@ class Main extends React.Component {
         assets, assetCount=null,
         tags=null, terms=null, currentUser=null
     ) {
-        if (assetCount === null) {
-            assetCount = this.state.assetCount;
-        }
+        let newState = {assets: assets};
 
-        let newState = {
-            assets: assets,
-            assetCount: assetCount
-        };
+        if (assetCount) {
+            newState.assetCount = assetCount;
+        }
 
         if (tags) {
             newState.tags = tags;

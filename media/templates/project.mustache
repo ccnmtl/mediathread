@@ -1,7 +1,7 @@
 <div class="panel-subcontainer {{context.project.type}}">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div class="col-md-6 pl-0">
-            <h1 class="page-title" {{#context.editing}}contenteditable="true"{{/context.editing}}>
+            <h1 class="page-title" {{#context.can_edit}}contenteditable="true"{{/context.can_edit}}>
                 {{context.project.title}}
             </h1>
             <input name="title" value="{{context.project.title}}" type="hidden" />
@@ -224,18 +224,44 @@
     </div>
 
     <div class="row no-gutters">
-        <div class="col-md-6">
+        {{! Media Display Window and or a Collections box }}
+        <div class="col-md-6 order-md-2">
+            <div class="collection-materials"
+                style="display:{{^context.editing}}none{{/context.editing}}">
+                <div class="ajaxloader">
+                    <div class="message">
+                    <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
+                    <br /><br />
+                    <div>Refreshing the collection</div>
+                    </div>
+                </div>
+                <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
+            </div>
+            <div class="asset-view-published"
+                style="{{#context.editing}}display: none{{/context.editing}}">
+                <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                    <div class="asset-display"></div>
+                    <div class="clipstrip-display"></div>
+                    <blockquote class="blockquote text-center mt-2">
+                        <div class="annotation-title publishedCitation text-center"></div>
+                        <div class="asset-title text-center"></div>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 order-md-1">
             <div class="essay-space-container">
                 <div class="row mt-4 mb-2 write-preview">
                     <div class="col">
                         {{#context.can_edit}}
                         <div id="view-toggle" class="btn-group" role="group" aria-label="View Toggle">
-                            <a href="#" class="btn btn-outline-primary btn-sm project-editbutton {{#context.editing}}active{{/context.editing}}">
+                            <button class="btn btn-outline-primary btn-sm project-editbutton {{#context.editing}}active{{/context.editing}}">
                                 Write
-                            </a>
-                            <a href="#" class="btn btn-outline-primary btn-sm project-previewbutton {{^context.editing}}active{{/context.editing}}">
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm project-previewbutton {{^context.editing}}active{{/context.editing}}">
                                 Preview
-                            </a>
+                            </button>
                         </div>
                         {{/context.can_edit}}
                     </div>
@@ -252,30 +278,6 @@
                 <div id="{{context.project.id}}-essay-space" class="essay-space mt-4" 
                     style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
                     {{{context.project.body}}}
-                </div>
-            </div>
-        </div>
-        {{! Media Display Window and or a Collections box }}
-        <div class="col-md-6">
-            <div class="collection-materials"
-                style="display:{{^context.editing}}none{{/context.editing}}">
-                <div class="ajaxloader">
-                    <div class="message">
-                    <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
-                    <br /><br />
-                    <div>Refreshing the collection</div>
-                    </div>
-                </div>
-                <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
-            </div>
-            <div class="asset-view-published"
-                style="display: {{#context.editing}}none{{/context.editing}}">
-                <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
-                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-                    <div class="asset-display"></div>
-                    <div class="clipstrip-display"></div>
-                    <div class="annotation-title publishedCitation" style="margin-left: 5px; margin-top: 5px;"></div>
-                    <div class="asset-title" style="margin-left: 5px; margin-bottom: 5px; margin-top: 5px; font-size: 80%;"></div>
                 </div>
             </div>
         </div>

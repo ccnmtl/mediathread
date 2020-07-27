@@ -2,7 +2,12 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+main {
+    min-height: 38rem;
+}
+
 /* accessible blue */
+.btn-link,
 a, a.page-link {
     color: #0056b3;
     cursor: pointer;
@@ -516,65 +521,67 @@ ul#standardnav {
 }
 
 /* ---- Footer block elements ---------- */
-#footer
-{
-    width: 50%;
-    height: 60px;
-    padding: 6px 0 0 0;
-    border: 0;
+/* Footer */
+footer {
+    height: 100%;
+    min-height: 13rem;
+    border: 1px solid #E9ECEF;
 }
 
-#clearfooter {
-    height: 10px;
-    clear: both;
+footer p {
+    margin-bottom: 0;
 }
 
-#footer #logo_ctl
-{
-    display: block;
-    clear: right;
-    float: left;
-    width: 160px;
-    height: 29.6px;
-    overflow: hidden;
-    margin: 1px 10px 0 10px;
-    padding: 0;
-    border: 0;
+footer a, footer a:visited {
+    color: #212529;
 }
 
-#footer #logo_ctl a
-{
-    display: block;
-    width: 160px;
-    height: 29.6px;
+footer a:hover {
+    color: #212529;
+    text-decoration: underline;
+}
+
+footer .footer-logo {
+    padding-left: 0;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem !important;
+}
+
+footer .footer-logo li {
+    display: inline-block;
     margin: 0;
-    padding: 0;
-    border: 0;
 }
 
-#footernav
-{
+footer .footer-logo li+li {
+    margin-left: 1rem;
+}
+
+footer .footer-logo img {
+    height: 45px;
     display: block;
-    float: left;
-    margin: 3px 10px 0 0;
-    padding: 0;
-    border: 0;
-    list-style: none;
+    margin: auto;
 }
 
-#footernav li {
-    display: block;
-    float: left;
-    margin: 0.2em 0.5em 0 0.9em;
-    padding:  0 0 0 0.5em;
-    border: 0;
-    font-size: 0.9em;
+footer .footer-navigation {
+  margin: 30px 0;
+  padding: 0;
+  color: #212529;
+  text-align: center;
+  list-style: none;
 }
 
-#footernav a
-{
-    text-decoration: none;
-    color: #383838;
+footer .footer-navigation li {
+    display: inline-block;
+    padding: 0 10px;
+}
+
+footer .footer-navigation li a {
+    color: #212529;
+}
+
+footer .footer-navigation li a:hover {
+    color: #212529;
+    text-decoration: underline;
 }
 
 /* Home Page Columns */
@@ -3045,8 +3052,9 @@ div.collection_table {
 /* Asset View Published */
 
 .asset-view-published {
-    height: 100%;
     min-height: 300px;
+    position: sticky;
+    top: 5px;
 }
 
 .asset-title {

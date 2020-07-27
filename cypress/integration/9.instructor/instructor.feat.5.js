@@ -13,7 +13,7 @@ describe('Instructor Feat: Student Contributions', () => {
 
     it('should test assignment response as an instructor', () => {
         cy.get('a[href="/course/1/dashboard/settings/"]').click();
-        cy.title().should('contain', 'Course Settings');
+        cy.title().should('contain', 'Manage Course');
         cy.get('a[href="/reports/class_summary/"]').click();
         cy.contains('Report: Course Member Contributions');
     });

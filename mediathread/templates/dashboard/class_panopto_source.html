@@ -17,18 +17,20 @@
 
 
 {% block dashboard_module_header %}
-    <h2>Panopto Source Folder</div></h2>
+    <h2>Panopto Source Folder</h2>
 {% endblock %}
 
 {% block dashboard_content %}
-    <h3>Panopto Source Folder</h3>
+<div class="card bg-light mb-3">
+    <div class="card-body">
+    <h3 class="card-title">Panopto Source Folder</h3>
     <p>Import materials from a Panopto folder</p>
     <form action="." method="POST" class="{% if form.errors %}has-error{% endif %}">
-        <label for="panopto-folder-name">Panopto Folder UUID: </label>
+        <label class="font-weight-bold" for="panopto-folder-name">Panopto Folder UUID: </label>
         <input class="form-control" name="folder_name" id="panopto-folder-name" />
 
         <br /><br />
-        <input class="btn btn-info" type="submit" name="clear-course" value="Submit"></input>
+        <input class="btn btn-primary" type="submit" name="clear-course" value="Submit"></input>
     </form>
 
     {% if messages %}
@@ -41,6 +43,6 @@
         </ul>
     </div>
     {% endif %}
-
-
+    </div>
+</div>
 {% endblock %}

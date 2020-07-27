@@ -80,6 +80,7 @@ INSTALLED_APPS += [  # noqa
     'reversion',
     'lti_auth',
     'bootstrap3',
+    'bootstrap4',
     'django_extensions',
     'rest_framework',
     'debug_toolbar',

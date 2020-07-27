@@ -14,7 +14,7 @@ describe('Instructor Feat: Test Assignment Responses', () => {
     it('should test assignment response as an instructor', () => {
 
         cy.get('a[href="/course/1/dashboard/settings/"]').click();
-        cy.title().should('contain', 'Course Settings');
+        cy.title().should('contain', 'Manage Course');
         cy.get('a[href="/reports/class_assignments/"]').click();
         cy.contains('1 / 3').should('have.attr', 'href');
         cy.contains('1 / 3').click();

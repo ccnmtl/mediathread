@@ -8,7 +8,7 @@ describe('Instructor Feat: Course Activity', () => {
 
     it('should go to course Activity', () => {
         cy.get('a[href="/course/1/dashboard/settings/"]').click();
-        cy.title().should('contain', 'Course Settings');
+        cy.title().should('contain', 'Manage Course');
         cy.get('a[href="/reports/class_activity/"]').should('exist');
         cy.get('a[href="/reports/class_activity/"]').click();
         cy.contains('Report: Course Activity').should('exist');

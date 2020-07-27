@@ -37,9 +37,10 @@
 
         <% if (projects && projects.length > 0) { %>
             <h5><%= projects.length %> Compositions &amp; Assignments</h5>
-            <div><input id="import-projects" type="button" class="btn btn-primary" value="Select Compositions &amp; Assignments"></div>
-            <div id="import-projects-dialog" class="import-dialog" style="display: none" title="Select Compositions & Assignments To Migrate">
-                <div class="right"><a href="#" id="select-all-projects">Select All</a> | <a href="#" id="clear-all-projects">Clear All</a></div>
+            <div><input id="import-projects" type="button" class="btn btn-primary btn-sm" style="font-size: .75rem" value="Select Compositions &amp; Assignments" /></div>
+            <div id="import-projects-dialog" class="import-dialog font-weight-bold" style="display: none" title="Select Compositions & Assignments To Migrate">
+                <div class="float-right"><a href="#" id="select-all-projects" class="text-primary">Select All</a> | <a href="#" id="clear-all-projects" class="text-primary">Clear All</a></div>
+                <br />
                 <div class="visualclear"/>
                 <div class="import-stuff">
                 <table>
@@ -73,10 +74,10 @@
 
         <% if (assets && assets.length > 0) { %>
             <h5><%= assets.length %> Items with <%= assets.total_sherdnotes() %> selection(s)</h5>
-            <div><input id="import-items" type="button" class="btn btn-primary" value="Select Items"/></div>
+            <div><input id="import-items" type="button" class="btn btn-primary btn-sm" style="font-size: .75rem" value="Select Items"/></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
-                <div class="right"><a href="#" id="select-all-items">Select All</a> | <a href="#" id="clear-all-items">Clear All</a></div>
+                <div class="float-right"><a href="#" id="select-all-items" class="text-primary">Select All</a> | <a href="#" id="clear-all-items" class="text-primary">Clear All</a></div>
                 <div class="visualclear"/>
                 <div class="import-stuff">
                     <table>
@@ -112,9 +113,9 @@
         <% } %>
 
         <br /><br />
-        <input id="import-all" class="btn btn-success" type="button" value="Select Everything" />
+        <input id="import-all" class="btn btn-success btn-sm" type="button" style="font-size: .75rem" value="Select Everything" />
         <div id="import-all-dialog" style="display: none" title="Import">
-            <h3><%= course.title %></h3>
+            <h5><%= course.title %></h5>
             <% if (projects && projects.length > 0) { %>
                 <div><%= projects.length %> Compositions & Assignments</div>
             <% } else { %>
@@ -132,7 +133,10 @@
 
     <script type="text/template" id="selected-template">
         <form class="import-dialog">
-            <div><div class="left">Selected Materials</div><div class="right">Remove</div></div>
+            <div>
+                <div class="text-left">Selected Materials<span class="float-right">Remove</span></div>
+
+            </div>
             <div class="visualclear"/>
             <div id="to_import" class="import-stuff scroll">
                 <% if (projects.length) { %>
@@ -190,8 +194,8 @@
                     </table>
                 <% } %>
             </div>
-            <input id="import-selected" type="button" value="Migrate Selected" class="right btn btn-primary" />
-            <input id="clear-selected" type="button" value="Clear Selected" class="right btn btn-default" />
+            <input id="import-selected" type="button" value="Migrate Selected" class="float-right btn btn-primary btn-sm" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="float-right btn btn-secondary btn-sm" />
         </form>
     </script>
 {% endblock %}
@@ -228,67 +232,73 @@
 {% block dashboard_content %}
     {% with "help_migrate_materials" as help_id %}
     {% with help_migrate_materials as default_help_state %}
+            <h3>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h3>
 
-    <h3>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h3>
+            {% endwith %}{% endwith %}
+            {% with "help_migrate_materials" as help_id %}
+            {% with help_migrate_materials as default_help_state %}
 
-    {% endwith %}{% endwith %}
-    {% with "help_migrate_materials" as help_id %}
-    {% with help_migrate_materials as default_help_state %}
+            {% include "help/help_contentarea.html" %}
 
-    {% include "help/help_contentarea.html" %}
+            <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+            <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
 
-    <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
-    <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
+            <div id="available-courses-selector" class="card bg-light mb-3" style="display: none">
+                <div class="card-body">
+                <input type="text" class="form-control autocomplete" id="available-courses" placeholder="Type course name here">
+                <input type="submit" id="view-materials" value="View materials" class="btn btn-outline-primary float-right mt-3"/>
+                </div>
+            </div>
 
-    <div id="available-courses-selector" class="well" style="display: none">
-        <input type="text" class="form-control autocomplete" id="available-courses" placeholder="Type course name here">
-        <input type="submit" id="view-materials" value="View materials" class="btn btn-primary"/>
-    </div>
 
     <div id="course-materials-container" style="display: none">
         <div>
             <div class="course-information-container">
                 {% if user.is_staff %}
-                    <div class="on-behalf-of-container well">
-                        <div class="helptext right" style="margin-top: -4px;">CTL staff only</div>
-                        <h4>Migrate As</h4>
-                        <select id="on_behalf_of" class="form-control">
-                            {% for faculty in current_course_faculty %}
-                                {% ifequal user.id faculty.id %}
-                                    <option value="{{faculty.id}}" selected="selected">
-                                        {% public_name for faculty %} (Me)
-                                    </option>
-                                {% else %}
-                                    <option value="{{faculty.id}}">
-                                        {% public_name for faculty %}
-                                    </option>
-                                {% endifequal %}
-                            {% endfor %}
-                        </select>
+                    <div class="on-behalf-of-container card bg-light mb-3">
+                        <div class="card-body">
+                            <div class="helptext float-right text-dark mb-2" style="margin-top: -4px;">CTL staff only</div>
+                            <h5>Migrate As</h5>
+                            <select id="on_behalf_of" class="form-control">
+                                {% for faculty in current_course_faculty %}
+                                    {% ifequal user.id faculty.id %}
+                                        <option value="{{faculty.id}}" selected="selected">
+                                            {% public_name for faculty %} (Me)
+                                        </option>
+                                    {% else %}
+                                        <option value="{{faculty.id}}">
+                                            {% public_name for faculty %}
+                                        </option>
+                                    {% endifequal %}
+                                {% endfor %}
+                            </select>
 
-                        {% ifequal role_in_course "non-member" %}
-                            <div class="helptext">
-                                You are not a member of this course.<br />
-                                You must migrate on behalf of an instructor.
-                            </div>
-                        {% endifequal %}
+                            {% ifequal role_in_course "non-member" %}
+                                <div class="helptext">
+                                    You are not a member of this course.<br />
+                                    You must migrate on behalf of an instructor.
+                                </div>
+                            {% endifequal %}
 
-                        <br />
-                        <h4>Include</h4>
-                        <div><input type="checkbox" name="include_tags" checked="checked" /> Tags</div>
-                        <div><input type="checkbox" name="include_notes" checked="checked" /> Notes</div>
+                            <br />
+                            <h5>Include</h5>
+                            <div><input type="checkbox" name="include_tags" checked="checked" /> Tags</div>
+                            <div><input type="checkbox" name="include_notes" checked="checked" /> Notes</div>
+                        </div>
                     </div>
                     <br />
                 {% endif %}
-                <div class="course-information well">
-                    {% if available_courses|length > 2 %}
-                        <div class="right">
-                            <a id="switch-course" href="#" class="metadata-value">switch course</a>
-                        </div>
-                    {% endif %}
-                    <div class="visualclear"></div>
-                    <h3><span id="course-title"></span></h3>
-                    <div id="course"></div>
+                <div class="course-information card bg-light mb-3">
+                    <div class="card-body">
+                        {% if available_courses|length > 2 %}
+                            <div class="float-right">
+                                <a id="switch-course" href="#" class="metadata-value float-right">switch course</a>
+                            </div>
+                        {% endif %}
+                        <div class="visualclear"></div>
+                        <h3><span id="course-title"></span></h3>
+                        <div id="course"></div>
+                    </div>
                 </div>
             </div>
             <div id="selected-for-import" class="selected-for-import" style="display: none"></div>

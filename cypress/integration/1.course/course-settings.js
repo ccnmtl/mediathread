@@ -6,7 +6,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false;
 });
 
-describe('Course Settings', function() {
+describe('Manage Course', function() {
 
     beforeEach(function() {
         cy.login('instructor_one', 'test');
@@ -17,7 +17,7 @@ describe('Course Settings', function() {
         cy.clearCookies();
     });
 
-    it('navigates to the Course Settings page', function() {
+    it('navigates to the Manage Course page', function() {
         cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
     });
 

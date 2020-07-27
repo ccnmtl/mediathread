@@ -45,6 +45,29 @@ const reactSelectStyles = {
     })
 };
 
+const meOption = {
+    value: 'me',
+    label: 'Me'
+};
+
+const allOption = {
+    value: 'all',
+    label: 'All Class Members'
+};
+
+/**
+ * Given a state object, return only the filters.
+ */
+const getFilters = function(state) {
+    return {
+        owner: state.owner,
+        title: state.title,
+        tags: state.tags,
+        terms: state.terms,
+        date: state.date
+    };
+};
+
 /**
  * General search filter components with title, owner, tags, etc.
  *
@@ -56,9 +79,9 @@ export default class Filter extends React.Component {
         super(props);
         this.state = {
             currentPage: 0,
-            pageCount: 1
-        };
-        this.filters = {
+            pageCount: 1,
+
+            // Filters
             owner: this.props.defaultOwner ? null : 'all',
             title: null,
             tags: [],
@@ -75,12 +98,8 @@ export default class Filter extends React.Component {
         this.handleTitleSearch = this.handleTitleSearch.bind(this);
         this.handleTitleFilterSearch = this.handleTitleFilterSearch.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
-
-        this.allOption = {
-            value: 'all',
-            label: 'All Class Members'
-        };
     }
+
     setPageAndUpdateAssets(pageNumber) {
         this.props.onUpdateItems(null);
 
@@ -88,7 +107,7 @@ export default class Filter extends React.Component {
         this.setState({
             currentPage: pageNumber
         }, function() {
-            me.filterItems(me.filters);
+            me.filterItems(getFilters(me.state));
         });
     }
     onPageClick(page) {
@@ -98,16 +117,28 @@ export default class Filter extends React.Component {
         this.setState({
             currentPage: page
         }, function() {
-            me.filterItems(me.filters);
+            me.filterItems(getFilters(me.state));
         });
     }
     handleTagsChange(e) {
-        this.filters.tags = e;
-        this.filterItems(this.filters);
+        const me = this;
+        this.setState({
+            currentPage: 0,
+            tags: e
+        }, function() {
+            me.filterItems(getFilters(me.state));
+        });
+
     }
     handleTermsChange(e) {
-        this.filters.terms = e;
-        this.filterItems(this.filters);
+        const me = this;
+        this.setState({
+            currentPage: 0,
+            terms: e
+        }, function() {
+            me.filterItems(getFilters(me.state));
+        });
+
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
@@ -115,19 +146,39 @@ export default class Filter extends React.Component {
         }
     }
     handleTitleFilterSearch() {
-        this.filterItems(this.filters);
+        this.filterItems(getFilters(this.state));
     }
     handleTitleChange(e) {
         const query = e.target.value.trim().toLowerCase();
-        this.filters.title = query;
+        this.setState({
+            currentPage: 0,
+            title: query
+        });
     }
     handleOwnerChange(e) {
-        this.filters.owner = e.value;
-        this.filterItems(this.filters);
+        const me = this;
+
+        let newOwner = e.value;
+        if (newOwner === 'me') {
+            newOwner = window.MediaThread.current_username;
+        }
+
+        this.setState({
+            currentPage: 0,
+            owner: newOwner
+        }, function() {
+            me.filterItems(getFilters(me.state));
+        });
+
     }
     handleDateChange(e) {
-        this.filters.date = e.value;
-        this.filterItems(this.filters);
+        const me = this;
+        this.setState({
+            currentPage: 0,
+            date: e.value
+        }, function() {
+            me.filterItems(getFilters(me.state));
+        });
     }
 
     /**
@@ -145,29 +196,28 @@ export default class Filter extends React.Component {
         }
     }
 
-    render() {
-        const me = this;
+    getOwnersOptions() {
+        let ownersOptions = [meOption, allOption];
 
-        let defaultOwnerOption = this.allOption;
-        let ownersOptions = [this.allOption];
         if (this.props.owners) {
             this.props.owners.forEach(function(owner) {
+                if (owner.id === window.MediaThread.current_user) {
+                    return false;
+                }
+
                 const option = {
                     label: owner.public_name,
                     value: owner.username
                 };
 
-                if (
-                    me.props.defaultOwner &&
-                        me.props.defaultOwner === owner.id
-                ) {
-                    defaultOwnerOption = option;
-                }
-
                 ownersOptions.push(option);
             });
         }
 
+        return ownersOptions;
+    }
+
+    render() {
         const tagsOptions = tagsToReactSelect(this.props.tags);
         const termsOptions = termsToReactSelect(this.props.terms);
 
@@ -317,8 +367,8 @@ export default class Filter extends React.Component {
                                     'react-select form-control form-control-sm'
                                 }
                                 onChange={this.handleOwnerChange}
-                                defaultValue={defaultOwnerOption}
-                                options={ownersOptions} />
+                                defaultValue={meOption}
+                                options={this.getOwnersOptions()} />
                         </div>
                         <div className="form-group col-md-2">
                             <label htmlFor="tag-filter">Tag</label>

@@ -49,7 +49,7 @@ export default class AssetFilter extends Filter {
      * Filter this.props.assets into this.state.filteredAssets, based
      * on the current state of this component's search filters.
      */
-    filterItems(filters) {
+    filterItems(filters={}) {
         this.props.onUpdateItems(null);
 
         const me = this;
@@ -59,13 +59,17 @@ export default class AssetFilter extends Filter {
             this.state.currentPage * this.offset
         ).then(function(d) {
             me.props.onUpdateItems(d.assets, d.asset_count);
+            me.updatePageCount(d.asset_count);
         }, function(e) {
             console.error('asset get error!', e);
         });
     }
-    updatePageCount() {
+    updatePageCount(itemCount=null) {
+        if (itemCount === null) {
+            itemCount = this.props.itemCount;
+        }
         this.setState({
-            pageCount: Math.ceil(this.props.itemCount / this.offset)
+            pageCount: Math.ceil(itemCount / this.offset)
         });
     }
     componentDidUpdate(prevProps) {

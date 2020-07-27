@@ -40,7 +40,10 @@ class Main extends React.Component {
                 });
             });
         } else {
-            getAssets().then(function(d) {
+            getAssets(
+                '',
+                window.MediaThread.current_username
+            ).then(function(d) {
                 me.setState({
                     assets: d.assets,
                     assetCount: d.asset_count,

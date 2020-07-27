@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {getAsset, getAssets, getCourseUrl} from './utils';
 import CollectionTab from './CollectionTab';
+import {defineTimecodeSpinner} from './timecodeSpinner.js';
 
 
 class Main extends React.Component {
@@ -69,6 +70,8 @@ class Main extends React.Component {
         });
 
         this.onUpdateAssets = this.onUpdateAssets.bind(this);
+
+        defineTimecodeSpinner();
     }
 
     /**

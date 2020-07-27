@@ -4316,12 +4316,10 @@ ul.section-tabs>li>a.active {
     background-color: black;
 }
 
-.toolbar-annotations .input-group:focus-within {
-    background-color: #ffc107;
-    border: 6px solid #ffc107;
+.toolbar-annotations .jux-timecode-editor .ui-spinner {
+    width: 100px;
 }
 
-.toolbar-annotations .input-group:focus-within button {
-    color: #212529;
-    border-color: #212529;
+.toolbar-annotations .jux-timecode-editor .ui-spinner>input {
+    padding: inherit;
 }

@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Alert from 'react-bootstrap/Alert';
 import Creatable from 'react-select/creatable';
 import Select from 'react-select';
 import Button from 'react-bootstrap/Button';
@@ -58,12 +57,31 @@ export default class CreateSelection extends React.Component {
         // validation check to make sure the user has made a
         // selection.
         if (
-            this.props.type === 'image' &&
-                !hasSelection(this.props.selectionSource)
+            (
+                this.props.type === 'image' &&
+                    !hasSelection(this.props.selectionSource)
+            ) || (
+                this.props.type === 'video' &&
+                    !this.props.selectionStartTime &&
+                    !this.props.selectionEndTime
+            )
         ) {
             e.preventDefault();
             e.stopPropagation();
             this.props.onShowValidationError(noSelectionError);
+            return this.setState({validated: true});
+        } else if (
+            this.props.type === 'video' &&
+                (
+                    this.props.selectionStartTime >
+                        this.props.selectionEndTime
+                )
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.props.onShowValidationError(
+                'The start time is greater than the end ' +
+                    'time. Please specify a valid time range');
             return this.setState({validated: true});
         }
 
@@ -116,15 +134,6 @@ export default class CreateSelection extends React.Component {
         return (
             <React.Fragment>
                 <h3>2. Add Details</h3>
-
-                <Alert
-                    variant="danger" show={this.props.showCreateError}
-                    id="create-error-alert">
-                    <Alert.Heading>Error creating selection.</Alert.Heading>
-                    <p>
-                        {this.props.createError}
-                    </p>
-                </Alert>
 
                 <div className="card w-100">
                     <div className="card-body">
@@ -207,12 +216,8 @@ CreateSelection.propTypes = {
     selectionSource: PropTypes.object,
     selectionStartTime: PropTypes.number,
     selectionEndTime: PropTypes.number,
-    onStartTimeUpdate: PropTypes.func.isRequired,
-    onEndTimeUpdate: PropTypes.func.isRequired,
     onStartTimeClick: PropTypes.func.isRequired,
     onEndTimeClick: PropTypes.func.isRequired,
     onCreateSelection: PropTypes.func.isRequired,
-    onShowValidationError: PropTypes.func.isRequired,
-    showCreateError: PropTypes.bool.isRequired,
-    createError: PropTypes.string
+    onShowValidationError: PropTypes.func.isRequired
 };

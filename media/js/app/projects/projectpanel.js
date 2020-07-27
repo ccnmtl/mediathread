@@ -121,7 +121,7 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.citationView = new CitationView();
     self.citationView.init({
         'default_target': panel.context.project.id + '-videoclipbox',
-        'presentation': 'medium',
+        'presentation': 'default',
         'clipform': true,
         'winHeight': function() {
             var elt = self.$el.find('div.asset-view-published')[0];

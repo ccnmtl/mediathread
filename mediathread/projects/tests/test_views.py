@@ -1212,6 +1212,7 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['owner'].username, 'student_one')
         self.assertEquals(ctx['sortby'], 'title')
         self.assertEquals(ctx['direction'], 'asc')
+        self.assertEquals(ctx['user_has_projects'], False)
 
     def test_get_sorted(self):
         self.client.login(username=self.student_one.username,
@@ -1232,6 +1233,7 @@ class ProjectListViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(ctx['object_list'][1], p2)
         self.assertEquals(ctx['sortby'], 'title')
         self.assertEquals(ctx['direction'], 'asc')
+        self.assertEquals(ctx['user_has_projects'], True)
 
         url = '{}?direction=desc'.format(url)
         response = self.client.get(url)

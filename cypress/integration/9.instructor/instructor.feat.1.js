@@ -4,8 +4,6 @@ describe('Instructor Feat: Students are forbidden', () => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
         cy.get('.card-title a').contains('MAAP Award Reception');
-        cy.get('.card-title a').contains("The Armory - Home to CCNMTL's CUMC Office");
-        cy.get('.card-title a').contains("Mediathread: Introduction");
     });
 
     it('Manage sources should be forbidden', () => {

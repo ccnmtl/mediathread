@@ -42,8 +42,11 @@ describe('Publish To World Public Composition', () => {
         cy.log('insert an asset');
         cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
-        cy.get('.citationTemplate > .materialCitation').first()
-            .click({force: true});
+        cy.get('button.btn-link').contains('Our esteemed leaders').click();
+        cy.getIframeBody().find('p').click()
+        cy.get('button.materialCitation').contains('Insert in Text').click();
+        cy.getIframeBody().find('a.materialCitation.asset-image')
+            .contains('Our esteemed leaders');
 
         cy.log('save project and set project visibility to public');
         cy.get('.project-savebutton').click();

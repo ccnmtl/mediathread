@@ -1,7 +1,7 @@
 <div class="panel-subcontainer {{context.project.type}}">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div class="col-md-6 pl-0">
-            <h1 class="page-title" {{#context.editing}}contenteditable="true"{{/context.editing}}>
+            <h1 class="page-title" {{#context.can_edit}}contenteditable="true"{{/context.can_edit}}>
                 {{context.project.title}}
             </h1>
             <input name="title" value="{{context.project.title}}" type="hidden" />

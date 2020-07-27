@@ -76,5 +76,5 @@ always necessary to create a new github issue or sign a contributor agreement.
 ## <a name="info"></a> Further Information
 For more information, see:
 * [Mediathread's Web Site](https://mediathread.info)
-* [Github Wiki](https://github.com/ccnmtl/mediathread/wiki)
+* [GitHub Wiki](https://github.com/ccnmtl/mediathread/wiki)
 * [CTL's User Voice Knowledge Base](http://support.ccnmtl.columbia.edu/knowledgebase/topics/6593-mediathread)

@@ -6,7 +6,7 @@
     </a>
     <a class="flex-sm-fill text-sm-center nav-link {% if active == 'assignments' %}active{% endif %}" role="tab"
         href="{% url 'assignment-list' request.course.pk %}"
-        title="Assignments"">
+        title="Assignments">
             Assignments
             {% if role_in_course == 'student' and assignments_todo > 0 %}
                 <span class="badge badge-primary ml-2">{{assignments_todo}}</span>

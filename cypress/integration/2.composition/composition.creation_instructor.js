@@ -55,15 +55,16 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-savebutton').contains('Save').should('be.visible');
         cy.get('.project-savebutton').click();
 
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal').should('be.visible');
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('contain', 'Draft - only you can view')
             .should('be.visible');
-        cy.get('input[name=publish]:checked').should('exist')
-            .should('be.visible');
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal input[name=publish]:checked')
+            .should('exist').should('be.visible');
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('contain', 'Whole Class - all class members can view')
             .should('be.visible');
-        cy.get('#id_publish').find('li')
+        cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('not.contain', 'Whole World - a public url is provided')
             .should('be.visible');
         cy.get('.btn-save-project').should('be.visible');

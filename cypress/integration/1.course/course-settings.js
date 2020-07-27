@@ -27,7 +27,7 @@ describe('Manage Course', function() {
 
     it('has publish options set to yes', function() {
         cy.get('input#id_publish_to_world').click();
-        cy.get('.btn-outline-primary').click();
+        cy.get('.btn-primary').click();
         cy.wait(500);
         cy.get('input#id_publish_to_world').should('be.checked');
     });
@@ -42,7 +42,7 @@ describe('Manage Course', function() {
         cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
         cy.get('input#id_see_eachothers_items').click();
         cy.get('input#id_see_eachothers_selections').click();
-        cy.get('.btn-outline-primary').click();
+        cy.get('.btn-primary').click();
         cy.get('input#id_see_eachothers_selections').should('not.be.checked');
         cy.get('input#id_see_eachothers_items').should('not.be.checked');
     });

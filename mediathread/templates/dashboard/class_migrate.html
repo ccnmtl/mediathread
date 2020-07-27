@@ -37,7 +37,7 @@
 
         <% if (projects && projects.length > 0) { %>
             <h5><%= projects.length %> Compositions &amp; Assignments</h5>
-            <div><input id="import-projects" type="button" class="btn btn-outline-primary btn-sm" style="font-size: .75rem" value="Select Compositions &amp; Assignments" /></div>
+            <div><input id="import-projects" type="button" class="btn btn-primary btn-sm" style="font-size: .75rem" value="Select Compositions &amp; Assignments" /></div>
             <div id="import-projects-dialog" class="import-dialog font-weight-bold" style="display: none" title="Select Compositions & Assignments To Migrate">
                 <div class="float-right"><a href="#" id="select-all-projects" class="text-primary">Select All</a> | <a href="#" id="clear-all-projects" class="text-primary">Clear All</a></div>
                 <br />
@@ -74,7 +74,7 @@
 
         <% if (assets && assets.length > 0) { %>
             <h5><%= assets.length %> Items with <%= assets.total_sherdnotes() %> selection(s)</h5>
-            <div><input id="import-items" type="button" class="btn btn-outline-primary" value="Select Items"/></div>
+            <div><input id="import-items" type="button" class="btn btn-primary btn-sm" style="font-size: .75rem" value="Select Items"/></div>
 
             <div id="import-items-dialog" class="import-dialog import-items-dialog" style="display: none" title="Select Items To Migrate">
                 <div class="float-right"><a href="#" id="select-all-items" class="text-primary">Select All</a> | <a href="#" id="clear-all-items" class="text-primary">Clear All</a></div>
@@ -113,9 +113,9 @@
         <% } %>
 
         <br /><br />
-        <input id="import-all" class="btn btn-outline-success" type="button" value="Select Everything" />
+        <input id="import-all" class="btn btn-success btn-sm" type="button" style="font-size: .75rem" value="Select Everything" />
         <div id="import-all-dialog" style="display: none" title="Import">
-            <h3><%= course.title %></h3>
+            <h5><%= course.title %></h5>
             <% if (projects && projects.length > 0) { %>
                 <div><%= projects.length %> Compositions & Assignments</div>
             <% } else { %>
@@ -133,7 +133,10 @@
 
     <script type="text/template" id="selected-template">
         <form class="import-dialog">
-            <div><div class="left">Selected Materials</div><div class="float-right">Remove</div></div>
+            <div>
+                <div class="text-left">Selected Materials<span class="float-right">Remove</span></div>
+
+            </div>
             <div class="visualclear"/>
             <div id="to_import" class="import-stuff scroll">
                 <% if (projects.length) { %>
@@ -191,8 +194,8 @@
                     </table>
                 <% } %>
             </div>
-            <input id="import-selected" type="button" value="Migrate Selected" class="float-right btn btn-outline-primary" />
-            <input id="clear-selected" type="button" value="Clear Selected" class="float-right btn btn-default" />
+            <input id="import-selected" type="button" value="Migrate Selected" class="float-right btn btn-primary btn-sm" />
+            <input id="clear-selected" type="button" value="Clear Selected" class="float-right btn btn-secondary btn-sm" />
         </form>
     </script>
 {% endblock %}
@@ -255,7 +258,7 @@
                     <div class="on-behalf-of-container card bg-light mb-3">
                         <div class="card-body">
                             <div class="helptext float-right text-dark mb-2" style="margin-top: -4px;">CTL staff only</div>
-                            <h4>Migrate As</h4>
+                            <h5>Migrate As</h5>
                             <select id="on_behalf_of" class="form-control">
                                 {% for faculty in current_course_faculty %}
                                     {% ifequal user.id faculty.id %}
@@ -278,7 +281,7 @@
                             {% endifequal %}
 
                             <br />
-                            <h4>Include</h4>
+                            <h5>Include</h5>
                             <div><input type="checkbox" name="include_tags" checked="checked" /> Tags</div>
                             <div><input type="checkbox" name="include_notes" checked="checked" /> Notes</div>
                         </div>

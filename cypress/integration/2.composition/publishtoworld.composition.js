@@ -19,7 +19,7 @@ describe('Publish To World Public Composition', () => {
         if (cy.get('input#id_publish_to_world').should('not.be.checked')) {
             cy.get('input#id_publish_to_world').click();
         }
-        cy.get('.btn-outline-primary').contains('Save').click();
+        cy.get('.btn-primary').contains('Save').click();
         cy.get('input#id_publish_to_world').should('be.checked');
 
         cy.log('create a project from the home page');

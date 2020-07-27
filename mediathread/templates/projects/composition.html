@@ -59,6 +59,19 @@
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="{% url 'project-list' request.course.pk %}">
+                                Back to projects
+                            </a>
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
             <div id="project-workspace" class="row">
                 <div id="project-container" class="col-md-12">
                 </div>

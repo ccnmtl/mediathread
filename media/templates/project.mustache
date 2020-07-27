@@ -44,19 +44,6 @@
                     </div>
                 {{/context.can_edit}}
 
-                {{#context.project.is_essay_assignment}}
-                    {{^is_faculty}}
-                        {{^context.my_responses.length}}
-                            {{^context.my_response}}
-                                <button class="{{context.project.type}} project project-create-assignment-response btn btn-outline-secondary btn-sm"
-                                    type="button">
-                                    Respond to Assignment
-                                </button>
-                            {{/context.my_response}}
-                        {{/context.my_responses.length}}
-                    {{/is_faculty}}
-                {{/context.project.is_essay_assignment}}
-
                 {{#context.my_response}}
                     {{^context.viewing_my_response}}
                         <button class="project project-my-response btn btn-outline-secondary btn-sm"
@@ -106,13 +93,6 @@
                     </div>
                 {{/context.responses.length}}
 
-                {{#context.create_instructor_feedback}}
-                    <button class="{{context.project.type}} project project-create-instructor-feedback btn btn-default btn-xs"
-                        type="button">
-                        Create Instructor Feedback
-                    </button>
-                {{/context.create_instructor_feedback}}
-
                 <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
                     Export to Word
                 </a>
@@ -147,26 +127,6 @@
                                     <div class="form-group">
                                         {{{context.form.publish}}}
                                     </div>
-                                    {{#context.project.is_essay_assignment}}
-                                    {{#is_faculty}}
-                                        <div class="form-group">
-                                            <div class="right small">optional</div>
-                                            <label for="due_date">Due Date</label><br />
-                                            <input class="form-control" type="text" name="due_date"
-                                                value="{{context.project.due_date}}" id="id_due_date">
-                                            <br />
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="right small">required</div>
-                                            <label for="response_view_policy">Responses</label>
-                                            <div class="small">Choose when students can see responses submitted by other students</div><br />
-                                            <div class="form-group">
-                                                {{{context.form.response_view_policy}}}
-                                                <div class="small help-inline">Select a response visibility level</div> 
-                                            </div>
-                                        </div>
-                                    {{/is_faculty}}
-                                    {{/context.project.is_essay_assignment}}
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -179,16 +139,6 @@
             </div>
         </div>
     </div>
-    {{#context.responses.length}}
-        <div class="row">
-            <div class="col-md-12">
-                <div id="search-well">
-                    @todo - For the Composition Assignment -
-                    show or toggle on an interface to navigate through responses.
-                </div>
-            </div>
-        </div>
-    {{/context.responses.length}}
     <div class="row">
         <div class="col-md-12">
             <div class="row no-gutters">

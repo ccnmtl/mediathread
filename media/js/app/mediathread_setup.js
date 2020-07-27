@@ -101,6 +101,10 @@
         'project-revisions': function(projectId) {
             return '/project/revisions/' + projectId + '/';
         },
+        'project-response': function(courseId, projectId) {
+            return '/course/' + courseId + '/project/response/'
+                + projectId + '/';
+        },
         'discussion-view': function(discussionId) {
             return '/discussion/' + discussionId + '/';
         },

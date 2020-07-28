@@ -143,6 +143,14 @@ const createSherdNote = function(assetId, data) {
     });
 };
 
+const updateSherdNote = function(assetId, selectionId, data) {
+    return authedFetch(
+        `/asset/save/${assetId}/annotations/${selectionId}/`,
+        'post',
+        JSON.stringify(data)
+    );
+};
+
 const deleteSelection = function(assetId, selectionId) {
     return authedFetch(
         `/asset/delete/${assetId}/annotations/${selectionId}/`,
@@ -515,7 +523,8 @@ const openSelectionAccordionItem = function($accordion, selectionId) {
 
 export {
     getAssets, getAsset, getAssetReferences,
-    createSelection, createSherdNote,
+    createSelection,
+    createSherdNote, updateSherdNote,
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,

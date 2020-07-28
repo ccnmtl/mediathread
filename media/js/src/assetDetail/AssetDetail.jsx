@@ -20,7 +20,8 @@ import {defaults as defaultInteractions} from 'ol/interaction';
 
 import Asset from '../Asset';
 import {
-    getAsset, createSherdNote, deleteSelection,
+    getAsset, createSherdNote, updateSherdNote,
+    deleteSelection,
     formatTimecode, parseTimecode,
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
@@ -71,6 +72,7 @@ export default class AssetDetail extends React.Component {
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
         this.onPlayToggle = this.onPlayToggle.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
+        this.onSaveSelection = this.onSaveSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
 
         this.showDeleteDialog = this.showDeleteDialog.bind(this);
@@ -104,13 +106,11 @@ export default class AssetDetail extends React.Component {
 
         e.preventDefault();
         const me = this;
-        const type = this.asset.getType();
-
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
         let promise = null;
 
-        if (type === 'image') {
+        if (this.type === 'image') {
             // Only allow one feature per selection
             const feature = this.selectionSource.getFeatures()[0];
 
@@ -137,7 +137,7 @@ export default class AssetDetail extends React.Component {
                     extent: extent
                 }
             });
-        } else if (type === 'video') {
+        } else if (this.type === 'video') {
             promise = createSherdNote(this.asset.asset.id, {
                 title: selectionTitle,
                 tags: tags,
@@ -184,6 +184,49 @@ export default class AssetDetail extends React.Component {
                 elt.scrollIntoView();
             });
         });
+    }
+
+    onSaveSelection(e, selectionId, tags, terms) {
+        // Clear the validation errors here since apparently the form
+        // passed validation.
+        this.setState({validationError: null});
+
+        e.preventDefault();
+        const me = this;
+
+        const selectionTitle = document.getElementById('newSelectionTitle').value;
+
+        return updateSherdNote(
+            this.asset.asset.id,
+            selectionId,
+            {
+                title: selectionTitle,
+                tags: tags,
+                terms: terms,
+                body: document.getElementById('newSelectionNotes').value
+            })
+            .then(function(data) {
+                // Refresh the selections.
+                return getAsset(me.asset.asset.id)
+                    .then(function(d) {
+                        return me.props.onUpdateAsset(
+                            d.assets[me.asset.asset.id]);
+                    }).then(function() {
+                        // Open this selection's accordion item.
+                        openSelectionAccordionItem(
+                            jQuery('#selectionsAccordion'),
+                            selectionId
+                        );
+                    });
+            }, function(errorText) {
+                me.setState({
+                    showCreateError: true,
+                    createError: errorText
+                }, function() {
+                    const elt = document.getElementById('create-error-alert');
+                    elt.scrollIntoView();
+                });
+            });
     }
 
     onDeleteSelection(e) {
@@ -571,11 +614,14 @@ export default class AssetDetail extends React.Component {
                     <div className="col-sm-5">
                         {this.state.tab === 'viewSelections' && (
                             <ViewSelections
+                                type={this.type}
                                 tags={this.props.tags}
                                 terms={this.props.terms}
                                 filteredSelections={this.props.filteredSelections}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
+                                onSaveSelection={this.onSaveSelection}
+                                onShowValidationError={this.onShowValidationError}
                                 onDeleteSelection={this.onDeleteSelection}
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}

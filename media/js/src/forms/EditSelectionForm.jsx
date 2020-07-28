@@ -36,13 +36,25 @@ export default class EditSelectionForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            validated: false
+            validated: false,
+
+            title: this.props.selection.title,
+            tags: this.props.selection.tags,
+            terms: this.props.selection.terms,
+            notes: this.props.selection.body
         };
+
+        this.tagsRef = React.createRef();
+        this.termsRef = React.createRef();
+        this.titleFieldRef = React.createRef();
+
+        this.handleTitleChange = this.handleTitleChange.bind(this);
+        this.onSaveSelection = this.onSaveSelection.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(e) {
         const form = e.currentTarget;
-
         if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
@@ -51,6 +63,14 @@ export default class EditSelectionForm extends React.Component {
         }
 
         return this.setState({validated: true});
+    }
+
+    handleTitleChange(e) {
+        if (!e) {
+            return;
+        }
+
+        this.setState({title: e.target.value});
     }
 
     onSaveSelection(e) {
@@ -81,7 +101,8 @@ export default class EditSelectionForm extends React.Component {
             });
         }
 
-        return this.props.onSaveSelection(e, tags, terms);
+        return this.props.onSaveSelection(
+            e, this.props.selection.id, tags, terms);
     }
 
     render() {
@@ -99,6 +120,7 @@ export default class EditSelectionForm extends React.Component {
 
         return (
             <Form
+                noValidate
                 validated={this.state.validated}
                 onSubmit={this.handleSubmit}>
                 <Form.Group controlId="newSelectionTitle">
@@ -108,8 +130,9 @@ export default class EditSelectionForm extends React.Component {
                     <Form.Control
                         required
                         type="text"
-                        value={this.props.selection.title}
-                        onChange={function() {}}
+                        value={this.state.title}
+                        onChange={this.handleTitleChange}
+                        ref={this.titleFieldRef}
                     />
                 </Form.Group>
 
@@ -149,8 +172,9 @@ export default class EditSelectionForm extends React.Component {
                     <textarea
                         className="form-control"
                         id="newSelectionNotes"
-                        rows="3">
-                        {this.props.selection.body}
+                        defaultValue={this.props.selection.metadata.body}
+                        rows="3"
+                    >
                     </textarea>
                 </Form.Group>
 
@@ -174,13 +198,25 @@ export default class EditSelectionForm extends React.Component {
             </Form>
         );
     }
+
+    componentDidMount() {
+        const me = this;
+
+        const titleField = this.titleFieldRef.current;
+        titleField.addEventListener('invalid', function(e) {
+            me.props.onShowValidationError(
+                'Please specify a selection title.');
+        });
+    }
 }
 
 EditSelectionForm.propTypes = {
-    selection: PropTypes.object,
+    type: PropTypes.string.isRequired,
+    selection: PropTypes.object.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array,
     onClickCancel: PropTypes.func.isRequired,
     onSaveSelection: PropTypes.func.isRequired,
-    onClickDelete: PropTypes.func.isRequired
+    onClickDelete: PropTypes.func.isRequired,
+    onShowValidationError: PropTypes.func.isRequired
 };

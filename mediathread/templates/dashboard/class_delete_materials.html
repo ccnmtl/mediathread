@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block dashboard_module_header %}
-    <h2>Delete Course Materials</div></h2>
+    <h2>Delete Course Materials</h2>
 {% endblock %}
 
 {% block uncompressable_js %}
@@ -39,7 +39,6 @@
      class="{% if form.errors %}has-error{% endif %}">
         <div class="alert alert-danger">
             <h3 style="margin: 0;">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 DANGER
             </h3>
             <p>
@@ -60,7 +59,7 @@
                     {{asset.primary.url}} {{references}}
                 </li>
                 {% endif %}
-            {% endfor %} 
+            {% endfor %}
         </ul>
 
             <br />
@@ -91,6 +90,5 @@
             <input class="btn btn-danger" type="submit" name="delete-course"
                 value="Permanently Delete Course"></input>
             <div class="visualclear"></div>
-        </div>
     </form>
 {% endblock %}

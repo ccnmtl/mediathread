@@ -34,23 +34,33 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('a.nav-link.active').contains('Assignments');
         cy.get('.breadcrumb-item').contains('Back to assignments');
         cy.get('.page-title').contains('Create Composition Assignment');
+        cy.get('h4:visible').contains('Step 1');
         cy.get('#page2').contains('Get Started');
-        cy.get('#page2').click({'force': true});
+        cy.get('#page2').click();
 
         cy.log('Add a title and some text');
+        cy.get('h4:visible').contains('Step 2');
+        cy.get('input[name="title"]').should('be.visible');
         cy.get('input[name="title"]').click().clear()
             .type('Assignment: Scenario 1');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for Teaching and Learning');
-        cy.get('#page3').click();
+        cy.get('#page3').should('be.visible').contains('Next');
+        cy.get('#page3:visible').click();
 
         cy.log('Add a due date');
-        cy.get('input[name="due_date"]').click()
+        cy.get('h4:visible').contains('Step 3');
+        cy.get('input[name="due_date"]').should('be.visible');
+        cy.get('input[name="due_date"]:visible').click()
         cy.get('.ui-state-default.ui-state-highlight').click();
-        cy.get('input[name="due_date"]').invoke('val').should('not.be.empty')
+        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty')
+        cy.get('#ui-datepicker-div').should('not.be.visible');
+        cy.get('#id_response_view_policy_1').should('be.visible');
+        cy.get('#id_response_view_policy_1').click();
         cy.get('#page4').focus().click();
 
         cy.log('add publish options & save');
+        cy.get('h4:visible').contains('Step 4');
         cy.get('#id_publish_1').should('be.visible');
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();
@@ -65,22 +75,19 @@ describe('Assignment Feature: Instructor Creation', () => {
             .contains('The Columbia Center for Teaching and Learning');
         cy.get('.project-revisionbutton').should('not.be.visible');
         cy.contains('Respond To Assignment').should('not.exist');
+    });
 
-        it('should show on projects page', () => {
-            cy.visit('/course/1/assignments');
-            cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
-                // all searches are automatically rooted to the found tr element
-                cy.get('td').eq(1).contains('Assignment: Scenario 1');
-                cy.get('td').eq(2).contains('Shared with Class');
-                cy.get('td').eq(3).contains('0 / 3');
-                cy.get('td').eq(4).contains('Instructor One');
-                cy.get('td').eq(5).contains('Composition Assignment');
-                cy.get('td').eq(7).contains('Delete');
-            });
+    it('should show on assignments page', () => {
+        cy.visit('/course/1/assignments');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(1).contains('Assignment: Scenario 1');
+            cy.get('td').eq(2).contains('Shared with Class');
+            cy.get('td').eq(3).contains('0 / 3');
+            cy.get('td').eq(4).contains('Instructor One');
+            cy.get('td').eq(5).contains('Composition Assignment');
+            cy.get('td').eq(7).contains('Delete');
         });
-
-
-        //TODO: Test when the project shows up in new Assignments tab.
-
     });
 });

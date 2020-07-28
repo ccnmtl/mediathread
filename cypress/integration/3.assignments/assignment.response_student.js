@@ -53,12 +53,19 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.btn-save-project').click();
         cy.get('.project-visibility-description')
             .should('contain', 'Shared with Instructor');
-
-        cy.log('Verify home display');
-        cy.visit('/course/1/oldhome/');
-        cy.get('#loaded').should('exist');
-        cy.contains('Shared with Instructor').should('exist');
-        cy.contains('Sample Assignment Response').should('exist');
-        cy.contains('by Student One').should('exist');
     });
+
+    it('should show on assignments page', () => {
+        cy.visit('/course/1/assignments/');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.contains('Sample Assignment').parent('td').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(1).contains('Sample Assignment');
+            cy.get('td').eq(2).contains('Shared with Instructor');
+            cy.get('td').eq(3).contains('0 / 3');
+            cy.get('td').eq(4).contains('View Response');
+            cy.get('td').eq(5).contains('Composition Assignment');
+        });
+    });
+
 });

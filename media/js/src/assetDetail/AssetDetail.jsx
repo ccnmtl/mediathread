@@ -200,6 +200,8 @@ export default class AssetDetail extends React.Component {
             // Refresh the selections.
             getAsset(me.asset.asset.id).then(function(d) {
                 me.props.onUpdateAsset(d.assets[me.asset.asset.id]);
+
+                me.onClearActiveSelection();
             });
         });
     }

@@ -498,7 +498,8 @@ const termsToReactSelectValues = function(vocabs) {
 };
 
 /**
- * Open the selectionId selection in the given accordion.
+ * Open the selectionId selection in the given accordion, and make it
+ * active.
  */
 const openSelectionAccordionItem = function($accordion, selectionId) {
     $accordion.find('.collapse').each(function(idx, el) {
@@ -506,6 +507,7 @@ const openSelectionAccordionItem = function($accordion, selectionId) {
         const sId = parseInt($el.data('selectionid'), 10);
         if (selectionId === sId) {
             $el.addClass('show');
+            $el.closest('.card').addClass('active');
             return false;
         }
     });

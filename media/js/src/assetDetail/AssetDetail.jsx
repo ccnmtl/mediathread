@@ -51,7 +51,6 @@ export default class AssetDetail extends React.Component {
 
             tab: 'viewSelections',
 
-            isPlaying: false,
             isDrawing: false
         };
 
@@ -67,7 +66,6 @@ export default class AssetDetail extends React.Component {
         this.type = this.asset.getType();
         this.onStartTimeClick = this.onStartTimeClick.bind(this);
         this.onEndTimeClick = this.onEndTimeClick.bind(this);
-        this.onPlayToggle = this.onPlayToggle.bind(this);
         this.onCreateSelection = this.onCreateSelection.bind(this);
         this.onSaveSelection = this.onSaveSelection.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
@@ -245,10 +243,6 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onPlayToggle() {
-        this.setState({isPlaying: !this.state.isPlaying});
-    }
-
     onPlayerProgress(d) {
         if (!this.selection) {
             return;
@@ -258,14 +252,6 @@ export default class AssetDetail extends React.Component {
         if (d.playedSeconds > this.selection.range2) {
             this.pause();
         }
-    }
-
-    onPlayerPlay() {
-        this.setState({isPlaying: true});
-    }
-
-    onPlayerPause() {
-        this.setState({isPlaying: false});
     }
 
     onStartTimeUpdate(e) {
@@ -446,63 +432,44 @@ export default class AssetDetail extends React.Component {
                     {this.state.tab === 'createSelection' && (
                         <form>
                             <div className="form-row align-items-center">
-                                <div className="col-sm-2">
-                                    <button
-                                        onClick={this.onPlayToggle}
-                                        type="button"
-                                        className="btn btn-outline-light btn-sm">
-                                        {this.state.isPlaying && (
-                                            <React.Fragment>
-                                                <svg className="bi bi-pause-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
-                                                </svg>
-                                                Pause
-                                            </React.Fragment>
+                                <div className="col-md-10">
+                                    <div className="input-group">
+                                        {this.state.tab === 'createSelection' && (
+                                            <button
+                                                onClick={this.onStartTimeClick}
+                                                ref={this.startButtonRef}
+                                                type="button"
+                                                className="btn btn-outline-light btn-sm">
+                                                Selection Start
+                                            </button>
                                         )}
-                                        {!this.state.isPlaying && (
-                                            <React.Fragment>
-                                                <svg className="bi bi-play-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 010 1.393z"></path>
-                                                </svg>
-                                                Play
-                                            </React.Fragment>
+                                        <TimecodeEditor
+                                            min={0}
+                                            onChange={this.onStartTimeUpdate}
+                                            timecode={this.state.selectionStartTime}
+                                        />
+
+                                        {String.fromCharCode(160)}
+                                        {String.fromCharCode(8212)}
+                                        {String.fromCharCode(160)}
+
+                                        {this.state.tab === 'createSelection' && (
+                                            <button
+                                                onClick={this.onEndTimeClick}
+                                                type="button"
+                                                className="btn btn-outline-light btn-sm">
+                                                Selection Stop
+                                            </button>
                                         )}
-                                    </button>
-                                </div>
-
-                                <div className="col-sm-10">
-                                    <div className="row">
-                                        <div className="input-group">
-                                            {this.state.tab === 'createSelection' && (
-                                                <button
-                                                    onClick={this.onStartTimeClick}
-                                                    ref={this.startButtonRef}
-                                                    type="button"
-                                                    className="btn btn-outline-light btn-sm">
-                                                    Selection Start
-                                                </button>
-                                            )}
-                                            <TimecodeEditor
-                                                min={0}
-                                                onChange={this.onStartTimeUpdate}
-                                                timecode={this.state.selectionStartTime}
-                                            />
-
-                                            {this.state.tab === 'createSelection' && (
-                                                <button
-                                                    onClick={this.onEndTimeClick}
-                                                    type="button"
-                                                    className="btn btn-outline-light btn-sm">
-                                                    Selection Stop
-                                                </button>
-                                            )}
-                                            <TimecodeEditor
-                                                min={0}
-                                                onChange={this.onEndTimeUpdate}
-                                                timecode={this.state.selectionEndTime}
-                                            />
-                                        </div>
+                                        <TimecodeEditor
+                                            min={0}
+                                            onChange={this.onEndTimeUpdate}
+                                            timecode={this.state.selectionEndTime}
+                                        />
                                     </div>
+                                </div>
+                                <div className="col-md-2">
+                                    Duration
                                 </div>
                             </div>
                         </form>
@@ -526,9 +493,6 @@ export default class AssetDetail extends React.Component {
                             height="100%"
                             style={{backgroundColor: 'black'}}
                             onProgress={this.onPlayerProgress.bind(this)}
-                            onPlay={this.onPlayerPlay.bind(this)}
-                            onPause={this.onPlayerPause.bind(this)}
-                            playing={this.state.isPlaying}
                             ref={r => this.playerRef = r}
                             url={vidUrl}
                             controls={true} />

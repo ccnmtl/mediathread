@@ -65,7 +65,6 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();
 
-        //cy.get('#loaded').should('exist'); Change in code?
         cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description').contains('Shared with Class');

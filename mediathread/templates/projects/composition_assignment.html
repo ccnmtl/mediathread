@@ -24,7 +24,7 @@
 
     <script>
         jQuery(document).ready(function() {
-            jQuery('#student-response').on('change', (evt) => {
+            jQuery('#student-responses').on('change', (evt) => {
                 const url = jQuery(evt.currentTarget).val();
                 if (url) {
                     window.location = url;
@@ -125,11 +125,11 @@
                     {% if is_faculty and responses|length > 0 %}
                     <div class="input-group mb-3">
                           <div class="input-group-prepend">
-                            <span class="input-group-text" id="student-response-addon">
+                            <span class="input-group-text" id="student-responses-addon">
                                 Select Student Response
                             </span>
                           </div>
-                          <select id="student-response"  placeholder="-----"
+                          <select id="student-responses"  placeholder="-----"
                                 class="form-control" aria-label="Student Responses"
                                 aria-describedby="student-response-addon">
                                 <option value=''>-----</option>

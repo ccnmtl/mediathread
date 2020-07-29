@@ -103,11 +103,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         function(evt) {
             self.createAssignmentResponse(evt);
         });
-    self._bind(self.$el, '.project-create-instructor-feedback', 'click',
-        function(evt) {
-            self.createInstructorFeedback(evt);
-        });
-
     self._bind(self.$el, '.page-title', 'keypress', function(evt) {
         self.setDirty(true);
     });
@@ -214,29 +209,6 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     };
 
     window.panelManager.newPanel(context);
-};
-
-ProjectPanelHandler.prototype.createInstructorFeedback = function(evt) {
-    var self = this;
-
-    window.panelManager.closeSubPanel(self);
-
-    window.panelManager.newPanel({
-        'url': MediaThread.urls['discussion-create'](),
-        'params': {
-            'publish': 'PrivateStudentAndFaculty',
-            'inherit': 'true',
-            'app_label': 'projects',
-            'model': 'project',
-            'obj_pk': self.panel.context.project.id,
-            'comment_html': self.$el.find('h1.page-title')
-                .html()
-                .trim() + ': Instructor Feedback'
-        }
-    });
-
-    var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    jQuery(srcElement).remove();
 };
 
 ProjectPanelHandler.prototype.showRevisions = function(evt) {

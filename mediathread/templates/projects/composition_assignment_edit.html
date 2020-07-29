@@ -42,13 +42,42 @@
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            {% if form.instance %}
+                                <a href="{% url 'project-workspace' request.course.pk form.instance.id %}">
+                                    Back to {{form.instance.title}}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'assignment-list' request.course.pk %}">
+                                    Back to assignments
+                                </a>
+                            {% endif %}
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="col-md-6">
                     {% if form.instance %}
-                        <h1 class="page-title">Edit Composition Assignment</h1>
+                        <h1 class="page-title">Edit {{form.instance.title}}</h1>
                     {% else %}
                         <h1 class="page-title">Create Composition Assignment</h1>
                     {% endif %}
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="mt-1">
+                        {% if form.instance.id %}
+                            <a class="btn btn-outline-secondary btn-sm" href="{% url 'project-workspace' request.course.pk form.instance.id %}">
+                                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
@@ -66,12 +95,6 @@
                             {% csrf_token %}
                             <input type="hidden" name="project_type" value="assignment" />
 
-                            {% if form.instance.id %}
-                                <a class="right small" href="{% url 'project-workspace' course.pk form.instance.id %}">
-                                    <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment
-                                </a>
-                            {% endif %}
-
                             <div data-page="1" data-page-content="instructions" class="page">
                                 <h4>Step 1: Introduction</h4><br />
 
@@ -88,7 +111,9 @@
                                 <br />
                                 <div class="row mb-5">
                                     <div class="col">
-                                        <a href="#" class="btn btn-primary next">Get Started</a>
+                                        <button id="page2" class="btn btn-primary next">
+                                            Get Started
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +148,7 @@
                                         <button class="btn btn-secondary prev">Previous</button>
                                     </div>
                                     <div class="col text-right">
-                                        <button class="btn btn-primary next">Next</button>
+                                        <button id="page3" class="btn btn-primary next">Next</button>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +175,7 @@
                                         <button class="btn btn-secondary prev">Previous</button>
                                     </div>
                                     <div class="col text-right">
-                                        <button class="btn btn-primary next">Next</button>
+                                        <button id="page4" class="btn btn-primary next">Next</button>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +195,7 @@
                                         <button class="btn btn-secondary prev">Previous</button>
                                     </div>
                                     <div class="col text-right">
-                                        <button class="btn btn-primary save">Save</button>
+                                        <button id="save-assignment" class="btn btn-primary save">Save</button>
                                     </div>
                                 </div>
                             </div>

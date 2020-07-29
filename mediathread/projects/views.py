@@ -201,11 +201,14 @@ class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
         the project, an HttpResponseForbidden
         will be returned
         """
+        if self.project.is_assignment_type():
+            url = reverse('project-list', args=[request.course.pk])
+        else:
+            url = reverse('project-list', args=[request.course.pk])
         collaboration = self.project.get_collaboration()
         collaboration.remove_children()
         self.project.delete()
         collaboration.delete()
-        url = reverse('project-list', args=[request.course.pk])
         return HttpResponseRedirect(url)
 
 
@@ -500,141 +503,85 @@ class SequenceAssignmentView(AssignmentView):
         }
 
 
-class CompositionAssignmentView(LoggedInCourseMixin, ProjectReadableMixin,
-                                JSONResponseMixin, TemplateView):
-    """Displays the Composition assignment view."""
+class CompositionAssignmentView(AssignmentView):
+    template_name = 'projects/composition_assignment.html'
+
+
+class CompositionAssignmentResponseView(
+        LoggedInCourseMixin, ProjectReadableMixin,
+        JSONResponseMixin, AjaxRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        """
-        A multi-panel editable view for the specified project
-        Legacy note: Ideally, this function would be named project_view but
-        StructuredCollaboration requires the view name
-        to be  <class>-view to do a reverse lookup
-
-        Panel 1: Parent Assignment (if applicable)
-        Panel 2: Project
-        Panel 3: Instructor Feedback (if applicable & exists)
-
-        Keyword arguments:
-        project_id -- the model id
-        """
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        show_feedback = kwargs.get('feedback', None) == "feedback"
+        assignment = project.assignment()
+        if not assignment or not assignment.is_essay_assignment():
+            return HttpResponseForbidden('')
+
+        panels = []
+
+        lst = Vocabulary.objects.filter(course=request.course)
+        lst = lst.prefetch_related('term_set')
+        vocabulary = VocabularyResource().render_list(request, lst)
+
+        owners = UserResource().render_list(request,
+                                            request.course.members)
+
+        is_faculty = request.course.is_faculty(request.user)
+        can_edit = project.can_edit(request.course, request.user)
+        feedback_discussion = project.feedback_discussion() \
+            if is_faculty or can_edit else None
+
+        parent = project.assignment()
+
+        # Requested project, can be either an assignment or composition
+        resource = ProjectResource(record_viewer=request.user,
+                                   is_viewer_faculty=is_faculty,
+                                   editable=can_edit)
+        project_context = resource.render_one(request, project)
+
+        # only editing if it's new
+        project_context['editing'] = \
+            True if can_edit and len(project.body) < 1 else False
+
+        project_context['create_instructor_feedback'] = \
+            is_faculty and parent and not feedback_discussion
+
+        panel = {'is_faculty': is_faculty,
+                 'show_feedback': feedback_discussion is not None,
+                 'create_feedback_url': reverse('discussion-create',
+                                                args=[request.course.pk]),
+                 'context': project_context,
+                 'template': 'project_response',
+                 'owners': owners,
+                 'vocabulary': vocabulary}
+        panels.append(panel)
+
+        # If feedback exists for the requested project
+        if feedback_discussion:
+            # 3rd pane is the instructor feedback, if it exists
+            panel = {
+                'template': 'project_feedback',
+                'owners': owners,
+                'vocabulary': vocabulary,
+                'context': threaded_comment_json(request,
+                                                 feedback_discussion)}
+            panels.append(panel)
+
+        # Create a place for asset editing
+        panel = {
+            'template': 'asset_quick_edit',
+            'update_history': False,
+            'owners': owners,
+            'vocabulary': vocabulary,
+            'context': {'type': 'asset'}}
+        panels.append(panel)
+
         data = {
             'space_owner': request.user.username,
-            'show_feedback': show_feedback,
+            'panels': panels
         }
 
-        if not request.is_ajax():
-            self.template_name = 'projects/composition_assignment.html'
-            data['project'] = project
-            return self.render_to_response(data)
-        else:
-            panels = []
-
-            lst = Vocabulary.objects.filter(course=request.course)
-            lst = lst.prefetch_related('term_set')
-            vocabulary = VocabularyResource().render_list(request, lst)
-
-            owners = UserResource().render_list(request,
-                                                request.course.members)
-
-            is_faculty = request.course.is_faculty(request.user)
-            can_edit = project.can_edit(request.course, request.user)
-            feedback_discussion = project.feedback_discussion() \
-                if is_faculty or can_edit else None
-
-            # Project Parent (assignment) if exists
-            parent = project.assignment()
-            if parent:
-                pedit = parent.can_edit(request.course, request.user)
-                resource = ProjectResource(
-                    record_viewer=request.user, is_viewer_faculty=is_faculty,
-                    editable=pedit)
-                ctx = resource.render_one(request, parent)
-                state = "open" if (project.is_empty()) else "closed"
-
-                panel = {'is_faculty': is_faculty,
-                         'panel_state': state,
-                         'subpanel_state': 'closed',
-                         'context': ctx,
-                         'owners': owners,
-                         'vocabulary': vocabulary,
-                         'template': 'project'}
-                panels.append(panel)
-
-            # Requested project, can be either an assignment or composition
-            resource = ProjectResource(record_viewer=request.user,
-                                       is_viewer_faculty=is_faculty,
-                                       editable=can_edit)
-            project_context = resource.render_one(request, project)
-
-            # only editing if it's new
-            project_context['editing'] = \
-                True if can_edit and len(project.body) < 1 else False
-
-            project_context['create_instructor_feedback'] = \
-                is_faculty and parent and not feedback_discussion
-
-            panel = {'is_faculty': is_faculty,
-                     'panel_state': 'closed' if show_feedback else 'open',
-                     'context': project_context,
-                     'template': 'project',
-                     'owners': owners,
-                     'vocabulary': vocabulary}
-            panels.append(panel)
-
-            # Project Response -- if the requested project is an assignment
-            # This is primarily a student view. The student's response should
-            # pop up automatically when the parent assignment is viewed.
-            if project.is_essay_assignment():
-                responses = project.responses(request.course,
-                                              request.user, request.user)
-                if len(responses) > 0:
-                    response = responses[0]
-                    response_can_edit = response.can_edit(request.course,
-                                                          request.user)
-                    resource = ProjectResource(record_viewer=request.user,
-                                               is_viewer_faculty=is_faculty,
-                                               editable=response_can_edit)
-                    response_context = resource.render_one(request, response)
-
-                    panel = {'is_faculty': is_faculty,
-                             'panel_state': 'closed',
-                             'context': response_context,
-                             'template': 'project',
-                             'owners': owners,
-                             'vocabulary': vocabulary}
-                    panels.append(panel)
-
-                    if not feedback_discussion and response_can_edit:
-                        feedback_discussion = response.feedback_discussion()
-
-            data['panels'] = panels
-
-            # If feedback exists for the requested project
-            if feedback_discussion:
-                # 3rd pane is the instructor feedback, if it exists
-                panel = {'panel_state': 'open' if show_feedback else 'closed',
-                         'panel_state_label': "Instructor Feedback",
-                         'template': 'discussion',
-                         'owners': owners,
-                         'vocabulary': vocabulary,
-                         'context': threaded_comment_json(request,
-                                                          feedback_discussion)}
-                panels.append(panel)
-
-            # Create a place for asset editing
-            panel = {'panel_state': 'closed',
-                     'panel_state_label': "Item Details",
-                     'template': 'asset_quick_edit',
-                     'update_history': False,
-                     'owners': owners,
-                     'vocabulary': vocabulary,
-                     'context': {'type': 'asset'}}
-            panels.append(panel)
-
-            return self.render_to_json_response(data)
+        return self.render_to_json_response(data)
 
 
 class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,

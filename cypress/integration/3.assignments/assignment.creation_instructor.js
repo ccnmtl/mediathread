@@ -15,52 +15,79 @@ describe('Assignment Feature: Instructor Creation', () => {
     it('Instructor Creates Assignment', () => {
         cy.log('create assignment');
         cy.get('#cu-privacy-notice-icon').click();
-        cy.visit('/course/1/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'assignment'
-            }
-        });
 
+        cy.log('Navigate to the assignments page');
+        cy.visit('/course/1/assignments/');
+        cy.get('.btn-show-assignments').click();
+        cy.get('#selection-assignment-card').should('be.visible');
+        cy.get('#composition-assignment-card').should('be.visible');
+        cy.get('#sequence-assignment-card').should('be.visible');
+        cy.get('#discussion-assignment-card').should('be.visible');
+
+        cy.log('Create a composition assignment');
+        cy.get('#composition-assignment-card a')
+            .contains('Add Assignment').click()
+
+        cy.log('Go through the wizard');
+        cy.title().should('eq', 'Mediathread Create Assignment');
         cy.wait(500);
-
-        //cy.get('#loaded').should('exist'); Change in code?
-        cy.title().should('eq', 'Mediathread Untitled');
-        cy.get('.project-savebutton').should('exist');
-        cy.get('.project-visibility-description').contains('Draft');
+        cy.get('a.nav-link.active').contains('Assignments');
+        cy.get('.breadcrumb-item').contains('Back to assignments');
+        cy.get('.page-title').contains('Create Composition Assignment');
+        cy.get('h4:visible').contains('Step 1');
+        cy.get('#page2').contains('Get Started');
+        cy.get('#page2').click();
 
         cy.log('Add a title and some text');
-        cy.get('.page-title').click().clear()
-            .type('Mediathread Assignment: Scenario 1');
+        cy.get('h4:visible').contains('Step 2');
+        cy.get('input[name="title"]').should('be.visible');
+        cy.get('input[name="title"]').click().clear()
+            .type('Assignment: Scenario 1');
         cy.getIframeBody().find('p').click()
-            .type('The Columbia Center for New Teaching and Learning');
-        cy.get('.project-savebutton').click();
+            .type('The Columbia Center for Teaching and Learning');
+        cy.get('#page3').should('be.visible').contains('Next');
+        cy.get('#page3:visible').click();
 
-        cy.log('Save as an Assignment');
-        cy.contains('Whole Class - all class members can view').click();
-        cy.get('.btn-save-project').contains('Save');
-        cy.get('.btn-save-project').click();
-        cy.get('.project-visibility-description')
-            .should('contain', 'Shared with Class');
-        cy.get('.project-savebutton').should('contain', 'Saved');
+        cy.log('Add a due date');
+        cy.get('h4:visible').contains('Step 3');
+        cy.get('input[name="due_date"]').should('be.visible');
+        cy.get('input[name="due_date"]:visible').click()
+        cy.get('.ui-state-default.ui-state-highlight').click();
+        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty')
+        cy.get('#ui-datepicker-div').should('not.be.visible');
+        cy.get('#id_response_view_policy_0').should('be.visible');
+        cy.get('#id_response_view_policy_0').click();
+        cy.get('#page4').focus().click();
 
-        cy.log('Toggle to preview');
-        cy.get('.project-previewbutton').click();
-        cy.get('.project-revisionbutton').should('exist');
-        cy.get('.project-editbutton.active').should('not.exist');
-        cy.get('.project-previewbutton.active').should('exist');
-        cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant-container').should('be', 'visible');
+        cy.log('add publish options & save');
+        cy.get('h4:visible').contains('Step 4');
+        cy.get('#id_publish_1').should('be.visible');
+        cy.get('#id_publish_1').click();
+        cy.get('#save-assignment').click();
 
-        //TODO: Test when the project shows up in new Assignments tab.
-
-        cy.log('view the project in preview mode');
-        cy.get('.participant-container').should('contain', 'Instructor One');
-        cy.get('.project-visibility-description')
-            .should('contain', 'Shared with Class');
-        cy.get('.project-revisionbutton').should('exist');
-        cy.get('.project-savebutton').should('contain', 'Saved');
+        //cy.get('#loaded').should('exist'); Change in code?
+        cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
+        cy.get('.btn-edit-assignment').should('exist');
+        cy.get('.project-visibility-description').contains('Shared with Class');
+        cy.get('#assignment-responses').should('not.be.visible');
+        cy.get('#instructions-heading-one').contains('Instructions');
+        cy.get('#instructions')
+            .contains('The Columbia Center for Teaching and Learning');
+        cy.get('.project-revisionbutton').should('not.be.visible');
         cy.contains('Respond To Assignment').should('not.exist');
-        cy.contains('Responses (1)').should('not.exist');
+    });
+
+    it('should show on assignments page', () => {
+        cy.visit('/course/1/assignments');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(1).contains('Assignment: Scenario 1');
+            cy.get('td').eq(2).contains('Shared with Class');
+            cy.get('td').eq(3).contains('0 / 3');
+            cy.get('td').eq(4).contains('Instructor One');
+            cy.get('td').eq(5).contains('Composition Assignment');
+            cy.get('td').eq(7).contains('Delete');
+        });
     });
 });

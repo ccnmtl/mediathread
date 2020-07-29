@@ -127,20 +127,6 @@ div.save-publish-status li {
 
 /* ---- Threaded comments ---------- */
 
-div.threadedcomments-container {
-    overflow-x: hidden;
-    overflow-y: auto;
-    border: 1px solid #bbb;
-    position: relative;
-    background-color: white;
-}
-
-form.threaded_comments_form {
-    margin: 10px 10px 30px 10px;
-    background-color: #ccc;
-    padding: 10px;
-}
-
 form.threaded_comments_form h3 {
     margin-top: 5px;
 }
@@ -189,6 +175,7 @@ form.threaded_comments_form table tr td input[name="title"] {
 
 ul.comment-thread {
     margin: 0px; /*no left indent on first comment*/
+    padding-left: 0;
 }
 
 
@@ -215,13 +202,6 @@ li > ul.comment-thread div.comment {
 li.comment-thread {
     list-style:none;
     padding-bottom: 4px;
-}
-
-.threaded_comment_header {
-    background-color:#CCCCCC;
-    padding: 2px 0px 4px 0px;
-    width: 100%;
-    height: 45px;
 }
 
 .threaded_comment_text {

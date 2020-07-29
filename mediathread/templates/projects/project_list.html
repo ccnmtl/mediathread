@@ -41,9 +41,6 @@ Projects
                     <div id="collapseOne" class="collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
                         aria-labelledby="headingOne"
                         data-parent="#assignment-accordion">
-
-                        <h4 class="text-center">Add a project</h4>
-
                         <div class="card-body">
                             <div class="card-deck">
                                 <div class="card">
@@ -55,18 +52,18 @@ Projects
                                             A composition is an essay with embedded media selections.
                                         </p>
                                     </div>
-                                    <div class="card-footer border-0 bg-white">
-                                        <div class="row">
-                                            <div class="col-lg-auto">
+                                    <div class="card-footer border-0 bg-white px-0">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <div class="col-md-auto">
                                                 <a href="http://support.ctl.columbia.edu/knowledgebase/topics/141337-mediathread-instructor"
                                                     class="card-link" target="_blank" rel="noreferrer">
-                                                    Learn More...
+                                                    Learn More
                                                 </a>
                                             </div>
                                             <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
                                                     <input type="hidden" name="project_type" value="composition" />
-                                                    <button id="add-composition-button" type="submit" class="btn btn-outline-secondary btn-sm mr-2">
+                                                    <button id="add-composition-button" type="submit" class="btn btn-outline-primary btn-sm mr-2">
                                                         Add Composition
                                                     </button> 
                                                 </form>
@@ -83,18 +80,18 @@ Projects
                                             A sequence lines up a “primary” selection of video or audio against multiple “secondary” selections and/or annotations.
                                         </p>
                                     </div>
-                                    <div class="card-footer border-0 bg-white">
-                                        <div class="row">
+                                    <div class="card-footer border-0 bg-white px-0">
+                                        <div class="d-flex align-items-center flex-wrap">
                                             <div class="col-lg-auto">
                                                 <a href="http://support.ctl.columbia.edu/knowledgebase/articles/1110706-what-is-a-sequence-assignment"
                                                     class="card-link" target="_blank" rel="noreferrer">
-                                                    Learn More...
+                                                    Learn More
                                                 </a>
                                             </div>
                                             <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
                                                     <input type="hidden" name="project_type" value="sequence" />
-                                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-secondary btn-sm">
+                                                    <button id="add-sequence-button" type="submit" class="btn btn-outline-primary btn-sm">
                                                         Add Sequence
                                                     </button>
                                                 </form>

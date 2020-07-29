@@ -36,7 +36,15 @@ a, a.page-link {
 
 .btn-outline-primary {
     color: #0056b3;
+    border-color: #0056b3;
 }
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+    background-color: #0056b3;
+}
+
 
 .badge-primary,
 .btn-primary,

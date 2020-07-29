@@ -6,7 +6,7 @@ from mediathread.projects.views import (
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
     project_export_html, project_revisions,
     SequenceAssignmentEditView, CompositionAssignmentEditView,
-    UpdateVisibilityView
+    CompositionAssignmentResponseView, UpdateVisibilityView
 )
 from rest_framework import routers
 
@@ -46,6 +46,10 @@ urlpatterns = [
 
     path('view/<int:project_id>/<slug:feedback>/',
          ProjectDispatchView.as_view(), {}, name='project-workspace-feedback'),
+
+    path('response/<int:project_id>/',
+         CompositionAssignmentResponseView.as_view(), {},
+         name='assignment-response-view'),
 
     path('save/<int:project_id>/',
          ProjectSaveView.as_view(), {},

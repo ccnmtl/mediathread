@@ -29,7 +29,6 @@ from string import ascii_letters
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree
-import waffle
 
 
 class DiscussionCreateView(LoggedInFacultyMixin, View):
@@ -41,8 +40,9 @@ class DiscussionCreateView(LoggedInFacultyMixin, View):
         comment = request.POST.get('comment', '')
 
         # Find the object we're discussing.
+        model = request.POST['model']
         the_content_type = ContentType.objects.get(
-            app_label=request.POST['app_label'], model=request.POST['model'])
+            app_label=request.POST['app_label'], model=model)
         assert the_content_type is not None
 
         the_object = the_content_type.get_object_for_this_type(
@@ -102,17 +102,16 @@ class DiscussionCreateView(LoggedInFacultyMixin, View):
             new_threaded_comment.user)
 
         if not request.is_ajax():
-            if waffle.flag_is_active(request, 'addressable_courses') and \
-               hasattr(request, 'course'):
-                return HttpResponseRedirect(
-                    reverse('discussion-view',
-                            args=(request.course.pk,
-                                  new_threaded_comment.id,)))
+            if model == 'project':
+                discussion_url = reverse(
+                    'project-workspace',
+                    args=(request.course.pk, the_object.pk))
             else:
-                return HttpResponseRedirect(
-                    reverse('discussion-view',
-                            args=(request.course.pk,
-                                  new_threaded_comment.id,)))
+                discussion_url = reverse(
+                    'discussion-view',
+                    args=(request.course.pk, new_threaded_comment.id))
+
+            return HttpResponseRedirect(discussion_url)
         else:
             vocabulary = VocabularyResource().render_list(
                 request, Vocabulary.objects.filter(course=request.course))

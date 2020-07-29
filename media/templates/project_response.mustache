@@ -1,0 +1,247 @@
+<div class="row">
+    <div class="col">
+        <div class="accordion mb-3" id="response-accordion">
+            <div class="card border-0">
+                <div class="card-header pb-0" id="response-heading-one">
+                    <h2>
+                        <button class="btn btn-link btn-block text-left"
+                            type="button" data-toggle="collapse"
+                            data-target="#response"
+                            aria-expanded="{{#show_feedback}}false{{/show_feedback}}{{^show_feedback}}true{{/show_feedback}}"
+                            aria-controls="response">
+                                Response
+                        </button>
+                    </h2>
+                </div>
+                <div id="response"
+                    class="collapse bg-light {{#show_feedback}}hide{{/show_feedback}}{{^show_feedback}}show{{/show_feedback}}"
+                    aria-labelledby="response-heading-one"
+                    data-parent="#response-accordion">
+                    <div class="m-2">
+                        <div class="panel-subcontainer {{context.project.type}} bg-white p-4">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div class="col-md-6 pl-0">
+                                    <h2 class="page-title response-title" {{#context.can_edit}}contenteditable="true"{{/context.can_edit}}>
+                                        {{context.project.title}}
+                                    </h2>
+                                    <input name="title" value="{{context.project.title}}" type="hidden" />
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="mt-1">
+                                        {{#context.can_edit}}
+                                            <button class="project-authorsbutton btn btn-outline-secondary btn-sm"
+                                                data-toggle="modal" data-target="#authors-modal" data-keyboard="false">
+                                                Authors
+                                            </button>
+                                            <div id="authors-modal" class="add-authors modal" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Authors</h5>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p class="text-left">Select additional authors</p>
+                                                            {{{context.form.participants}}}
+                                                            <div class="invalid-feedback">
+                                                                Please specify one or more authors, including yourself.
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary btn-save-authors">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/context.can_edit}}
+
+                                        {{#context.can_edit}}
+                                            <button class="project-revisionbutton btn btn-outline-secondary btn-sm">
+                                                Revisions
+                                            </button>
+
+                                            <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
+                                            </div>
+                                        {{/context.can_edit}}
+
+                                        {{#context.responses.length}}
+                                            <button class="project project-responsesbutton btn btn-outline-secondary btn-sm"
+                                                type="button">
+                                                Class Responses ({{context.response_count}})
+                                            </button>
+                                            <div class="response-list" style="display: none" title="Responses">
+                                                <div>Select an assignment response, then click "View"</div>
+                                                <select name="responses" multiple="multiple">
+                                                  {{#context.responses}}
+                                                    <option value="{{url}}">
+                                                      {{#attribution_list}}
+                                                        {{ name }}{{^last}}, {{/last}} 
+                                                      {{/attribution_list}}
+                                                       &mdash; {{ submitted }}
+                                                    </option>
+                                                  {{/context.responses}}
+                                                </select>
+                                            </div>
+                                        {{/context.responses.length}}
+
+                                        <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
+                                            Export to Word
+                                        </a>
+
+                                        <a class="project-print btn btn-outline-secondary btn-sm" href="/project/export/html/{{context.project.id}}/" target="_blank">
+                                            Print
+                                        </a>
+
+                                        {{#context.can_edit}}
+                                            <button class="project-savebutton btn btn-primary btn-sm" type="button">
+                                                Save
+                                            </button>
+                                            <div class="save-publish-status modal" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Save Changes</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-9">
+                                                                    <h6>Visibility</h6>
+                                                                    <p>Select who can see your work.</p>
+                                                                </div>
+                                                                <div class="col small text-right text-danger mr-2">
+                                                                    required
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                {{{context.form.publish}}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {{/context.can_edit}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row no-gutters">
+                                        <div class="col">
+                                            <div class="participant-container">
+                                                <h5>by <span class="participants_chosen">
+                                                    {{#context.project.participants}}
+                                                        {{public_name}}{{^last}}, {{/last}}
+                                                    {{/context.project.participants}}
+                                                    </span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="col text-right text-secondary pr-3">
+                                            {{#context.project.visibility_long}}
+                                                <span class="project-visibility-description">
+                                                    {{context.project.visibility_long}}
+                                                </span>
+                                                <span class="project-due-date">
+                                                    {{#context.project.due_date}}Due {{context.project.due_date}}{{/context.project.due_date}}
+                                                </span>
+                                                <a class="last-version-public"
+                                                    style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
+                                                {{#context.project.current_version}}
+                                                    <span class="project-current-version" style="display: inline">
+                                                        | Version {{context.project.modified}}
+                                                    </span>
+                                                {{/context.project.current_version}}
+                                            {{/context.project.visibility_long}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row no-gutters">
+                                {{! Media Display Window and or a Collections box }}
+                                <div class="col-md-6 order-md-2">
+                                    <div class="collection-materials"
+                                        style="display:{{^context.editing}}none{{/context.editing}}">
+                                        <div class="ajaxloader">
+                                            <div class="message">
+                                            <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
+                                            <br /><br />
+                                            <div>Refreshing the collection</div>
+                                            </div>
+                                        </div>
+                                        <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
+                                    </div>
+                                    <div class="asset-view-published"
+                                        style="{{#context.editing}}display: none{{/context.editing}}">
+                                        <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                                            <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                            <div class="asset-display"></div>
+                                            <div class="clipstrip-display"></div>
+                                            <blockquote class="blockquote text-center mt-2">
+                                                <div class="annotation-title publishedCitation text-center"></div>
+                                                <div class="asset-title text-center"></div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 order-md-1">
+                                    <div class="essay-space-container">
+                                        <div class="row mt-4 mb-2 write-preview">
+                                            <div class="col">
+                                                {{#context.can_edit}}
+                                                <div id="view-toggle" class="btn-group" role="group" aria-label="View Toggle">
+                                                    <button class="btn btn-outline-primary btn-sm project-editbutton {{#context.editing}}active{{/context.editing}}">
+                                                        Write
+                                                    </button>
+                                                    <button class="btn btn-outline-primary btn-sm project-previewbutton {{^context.editing}}active{{/context.editing}}">
+                                                        Preview
+                                                    </button>
+                                                </div>
+                                                {{/context.can_edit}}
+                                            </div>
+                                        </div>
+
+                                        {{#context.can_edit}}
+                                            <textarea id="{{context.project.id}}-project-content"
+                                                tabindex="0" name="body"
+                                                class="mceEditor project-content"
+                                                style="display: none;">
+                                                {{{context.project.body}}}
+                                            </textarea>
+                                        {{/context.can_edit}}
+                                        <div id="{{context.project.id}}-essay-space" class="essay-space mt-4" 
+                                            style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
+                                            {{{context.project.body}}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="loaded"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                {{#context.create_instructor_feedback}}
+                                    <form action="{{create_feedback_url}}" method="post"> 
+                                        <input type="hidden" name="comment_html" value="Instructor Feedback" />
+                                        <input type="hidden" name="app_label" value="projects" />
+                                        <input type="hidden" name="model" value="project" />
+                                        <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                        <input type="hidden" name="inherit" value="true" />
+                                        <input type="hidden" name="obj_pk" value="{{context.project.id}}" />
+                                        <button type="submit" class="mt-2 btn btn-primary">Add Feedback</button>
+                                    </form>
+                                {{/context.create_instructor_feedback}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

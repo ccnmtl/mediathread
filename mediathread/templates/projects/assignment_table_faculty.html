@@ -41,11 +41,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    <div>
-                        <a href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                            {{object.title}}
-                        </a>
-                    </div>
+                    <a href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                        {{object.title}}
+                    </a>
                 </td>
                 <td>
                     {{object.visibility_short}}

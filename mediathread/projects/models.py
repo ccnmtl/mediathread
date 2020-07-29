@@ -11,7 +11,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty
-from mediathread.main.util import user_display_name
+from mediathread.main.util import user_display_name_last_first, \
+    user_display_name
 from mediathread.sequence.models import SequenceAsset
 import reversion
 from reversion.models import Version
@@ -446,6 +447,8 @@ class Project(models.Model):
             if (response and
                     response.can_read(course, viewer, child, viewer_response)):
                 visible.append(response)
+
+        visible.sort(key=lambda p: p.attribution_last_first())
         return visible
 
     def description(self):
@@ -573,8 +576,12 @@ class Project(models.Model):
         return participants
 
     def attribution(self, participants=None):
-        participants = self.attribution_list()
-        return ', '.join([user_display_name(p) for p in participants])
+        lst = self.attribution_list()
+        return ', '.join([user_display_name(p) for p in lst])
+
+    def attribution_last_first(self, participants=None):
+        lst = self.attribution_list()
+        return ', '.join([user_display_name_last_first(p) for p in lst])
 
     def __str__(self):
         return u'%s <%r> by %s' % (self.title, self.pk, self.attribution())

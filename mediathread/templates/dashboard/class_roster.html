@@ -200,7 +200,7 @@
                                 {% if not invite.accepted_at %}
                                     <form class="inline" action="{% url 'course-roster-resend-email' %}" method="post">
                                         {% csrf_token %}
-                                        <input type="hidden" name="invite-id" value="{{invite.id}}" />                                    
+                                        <input type="hidden" name="invite-id" value="{{invite.id}}" />
                                         <button class="btn btn-default btn-sm"
                                             type="submit"
                                             data-invite-id="{{invite.id}}">

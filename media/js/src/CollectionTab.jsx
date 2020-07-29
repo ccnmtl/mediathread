@@ -10,7 +10,7 @@ import AssetDetail from './assetDetail/AssetDetail';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
-import {getAssets} from './utils';
+import {getAssets, getCourseUrl} from './utils';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -164,8 +164,7 @@ export default class CollectionTab extends React.Component {
 
         let backButton = null;
         if (this.state.selectedAsset) {
-            const courseUrl = window.location.href.replace(
-                /\/react\/asset\/\d+/, '');
+            const courseUrl = getCourseUrl();
             backButton = (
                 <div
                     className="btn-group mb-1" role="group"

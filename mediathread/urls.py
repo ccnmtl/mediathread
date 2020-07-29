@@ -175,6 +175,10 @@ urlpatterns = [
     path('course/<int:course_pk>/react/asset/<int:pk>/',
          ReactAssetDetailView.as_view(),
          name='react_asset_detail'),
+    path('course/<int:course_pk>/react/asset/<int:pk>/'
+         'annotations/<int:annotation_pk>/',
+         ReactAssetDetailView.as_view(),
+         name='react_asset_detail'),
     path('course/<int:pk>/', CourseDetailView.as_view(),
          name='course_detail'),
     path('course/<int:course_pk>/asset/',

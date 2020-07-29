@@ -55,8 +55,8 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.ui-state-default.ui-state-highlight').click();
         cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty')
         cy.get('#ui-datepicker-div').should('not.be.visible');
-        cy.get('#id_response_view_policy_1').should('be.visible');
-        cy.get('#id_response_view_policy_1').click();
+        cy.get('#id_response_view_policy_0').should('be.visible');
+        cy.get('#id_response_view_policy_0').click();
         cy.get('#page4').focus().click();
 
         cy.log('add publish options & save');

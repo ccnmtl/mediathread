@@ -146,7 +146,8 @@ export default class CreateSelection extends React.Component {
                                     Title
                                 </Form.Label>
                                 <Form.Control
-                                    required type="text"
+                                    required
+                                    type="text"
                                     ref={this.titleFieldRef} />
                             </Form.Group>
 

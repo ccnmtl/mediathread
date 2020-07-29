@@ -25,6 +25,7 @@ export default class ViewSelections extends React.Component {
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickDelete = this.onClickDelete.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
+        this.onSaveSelection = this.onSaveSelection.bind(this);
     }
 
     onSelectGrouping(e, grouping) {
@@ -49,6 +50,12 @@ export default class ViewSelections extends React.Component {
     onDeleteSelection(e) {
         this.setState({isEditing: false});
         return this.props.onDeleteSelection(e);
+    }
+
+    onSaveSelection(e, selectionId, tags, terms) {
+        this.setState({isEditing: false});
+        return this.props.onSaveSelection(
+            e, selectionId, tags, terms);
     }
 
     renderSelection(s, key, tags, terms) {
@@ -185,17 +192,20 @@ export default class ViewSelections extends React.Component {
         return groupedSelections;
     }
 
+
     renderEditForm(selection) {
         return (
             <React.Fragment>
                 <h3>Edit Details</h3>
                 <EditSelectionForm
+                    type={this.props.type}
                     selection={selection}
                     tags={this.props.tags}
                     terms={this.props.terms}
                     onClickCancel={this.onClickCancel}
-                    onSaveSelection={function() {}}
+                    onSaveSelection={this.onSaveSelection}
                     onClickDelete={this.onClickDelete}
+                    onShowValidationError={this.props.onShowValidationError}
                 />
 
                 <Modal
@@ -334,12 +344,15 @@ export default class ViewSelections extends React.Component {
 }
 
 ViewSelections.propTypes = {
+    type: PropTypes.string.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array,
     filteredSelections: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
+    onSaveSelection: PropTypes.func.isRequired,
     onDeleteSelection: PropTypes.func.isRequired,
+    onShowValidationError: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialogBool: PropTypes.bool.isRequired

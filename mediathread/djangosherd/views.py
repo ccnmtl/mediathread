@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, \
@@ -113,18 +114,22 @@ def edit_annotation(request, annot_id):
 
 @login_required
 def update_annotation(request, annotation):
+    if len(request.POST.keys()) > 0:
+        form = dict(
+            (key[len('annotation-'):], val)
+            for key, val in request.POST.items()
+            if key.startswith('annotation-')
+        )
+    else:
+        # Try to load the data from the body as JSON, if it's not
+        # included as form data.
+        try:
+            form = json.loads(request.body)
+        except JSONDecodeError:
+            form = {}
 
-    form = dict((key[len('annotation-'):], val)
-                for key, val in request.POST.items()
-                if key.startswith('annotation-'))
-
-    # @todo -- figure out how the clipform gets into the
-    # annotations.mustache form
-    # don't let a global annotation turn into a clip, or v.v.
     if form.get('range1') or form.get('range2'):
         assert not annotation.is_null()
-    else:
-        assert annotation.is_null()
 
     for field in formfields:
         if field not in form:
@@ -132,8 +137,10 @@ def update_annotation(request, annotation):
         default = None
         if field == 'tags':
             default = ''
-        setattr(annotation, field,
-                form[field] or default)
+
+        setattr(
+            annotation, field,
+            form[field] or default)
 
     annotation.save()
 

@@ -22,7 +22,16 @@
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
 
-    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('#student-response').on('change', (evt) => {
+                const url = jQuery(evt.currentTarget).val();
+                if (url) {
+                    window.location = url;
+                }
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block uncompressable_js %}
@@ -83,7 +92,7 @@
                             {% for response in responses %}
                                 {% if response != my_response %}
                                     <a class="dropdown-item" href="{% url 'project-workspace' request.course.id response.id %}">
-                                        {{response.attribution}}
+                                        {{response.attribution_last_first}}
                                     </a>
                                 {% endif %}
                             {% endfor %}
@@ -103,28 +112,44 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <h5>Due {{assignment.due_date|date:'m/d/y'}}</h5>
-                {% if is_faculty and responses|length > 0 %}
-                    <button id="assignment-responses" type="button"
-                        class="btn btn-outline-secondary dropdown-toggle mb-3"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Select Student Response
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="assignment-responses">
-                        {% for response in responses %}
-                            {% if response != my_response %}
-                                <a class="dropdown-item" href="{% url 'project-workspace' request.course.id response.id %}">
-                                    {{response.attribution}}
-                                </a>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% if assignment_can_edit %}
-                    <h5 class="pr-3 text-right project-visibility-description">
-                        {{assignment.visibility_short}}
-                   </h5>
-                {% endif %}
+                <div>
+                    <h5>
+                        {% if assignment.due_date %}
+                            Due {{assignment.due_date|date:'m/d/y'}}
+                        {% else %}
+                            No due date
+                        {% endif %}
+                    </h5>
+                </div>
+                <div>
+                    {% if is_faculty and responses|length > 0 %}
+                    <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="student-response-addon">
+                                Select Student Response
+                            </span>
+                          </div>
+                          <select id="student-response"  placeholder="-----"
+                                class="form-control" aria-label="Student Responses"
+                                aria-describedby="student-response-addon">
+                                <option value=''>-----</option>
+                              {% for response in responses %}
+                                    <option {% if response.id == the_response.id %}selected="selected"{% endif %}
+                                        value="{% url 'project-workspace' request.course.id response.id %}">
+                                        {{response.attribution}}
+                                    </option>
+                                {% endfor %}
+                          </select>
+                        </div>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if is_faculty %}
+                        <h5 class="pr-3 text-right project-visibility-description">
+                            {{assignment.visibility_short}}
+                        </h5>
+                    {% endif %}
+                </div>
             </div>
             <div class="row">
                 <div class="col">

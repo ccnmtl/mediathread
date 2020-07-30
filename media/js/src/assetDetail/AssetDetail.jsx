@@ -581,7 +581,9 @@ export default class AssetDetail extends React.Component {
                 <div className="row">
                     <div className="col-sm-7">
                         <h3>{leftColumnHeader}</h3>
-                        {media}
+                        <div className="sticky-top">
+                            {media}
+                        </div>
                     </div>
 
                     <div className="col-sm-5">

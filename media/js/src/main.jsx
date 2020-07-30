@@ -19,7 +19,7 @@ class Main extends React.Component {
         };
 
         let assetId = null;
-        const re = /\/asset\/(\d+)\/$/;
+        const re = /\/asset\/(\d+)\//;
         const match = window.location.pathname.match(re);
         if (match && match.length >= 2) {
             assetId = parseInt(match[1], 10);

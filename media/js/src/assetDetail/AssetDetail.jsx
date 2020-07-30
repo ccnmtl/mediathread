@@ -33,6 +33,21 @@ import ViewSelections from './ViewSelections';
 import ViewItem from './ViewItem';
 import TimecodeEditor from '../TimecodeEditor';
 
+/**
+ * Update the path to the given selection, using pushState.
+ */
+const updateSelectionUrl = function(selectionId) {
+    const basePath = window.location.pathname.replace(
+        /annotations\/\d+\//, '');
+
+    let newPath = basePath;
+    if (selectionId) {
+        newPath = basePath + `annotations/${selectionId}/`;
+    }
+
+    window.history.pushState(null, null, newPath);
+};
+
 export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -318,8 +333,9 @@ export default class AssetDetail extends React.Component {
         this.setState({validationError: null});
     }
 
-    onSelectSelection(selectionTitle) {
+    onSelectSelection(selectionTitle, selectionId=null) {
         this.setState({activeSelection: selectionTitle});
+        updateSelectionUrl(selectionId);
     }
 
     onClearActiveSelection() {
@@ -367,6 +383,7 @@ export default class AssetDetail extends React.Component {
 
         // Clear active selection when switching to any tab.
         this.onClearActiveSelection();
+        updateSelectionUrl(null);
     }
 
     onClearVectorLayer() {
@@ -644,6 +661,14 @@ export default class AssetDetail extends React.Component {
     }
 
     componentDidMount() {
+        // If the path contains a selection ID, open the appropriate
+        // selection accordion item.
+        const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        if (match && match.length > 1) {
+            const sId = parseInt(match[1], 10);
+            openSelectionAccordionItem(jQuery('#selectionsAccordion'), sId);
+        }
+
         if (this.type === 'image') {
             const thumbnail = this.asset.getThumbnail();
             const img = this.asset.getImage();

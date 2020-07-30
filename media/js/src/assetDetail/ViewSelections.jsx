@@ -305,8 +305,13 @@ export default class ViewSelections extends React.Component {
         const $selectionsAccordion = jQuery('#selectionsAccordion');
 
         $selectionsAccordion.on('shown.bs.collapse', function(e) {
-            const title = jQuery(e.target).data('title');
-            me.props.onSelectSelection(title);
+            const $target = jQuery(e.target);
+            const title = $target.data('title');
+            let sId = $target.data('selectionid');
+            if (sId) {
+                sId = parseInt(sId, 10);
+            }
+            me.props.onSelectSelection(title, sId);
             jQuery(e.target).parent().addClass('active');
         });
 

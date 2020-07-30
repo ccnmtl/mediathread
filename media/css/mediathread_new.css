@@ -4331,3 +4331,7 @@ ul.section-tabs>li>a.active {
 .toolbar-annotations .jux-timecode-editor .ui-spinner>input {
     padding: inherit;
 }
+
+input#annotationFilter {
+    max-width: 140px;
+}

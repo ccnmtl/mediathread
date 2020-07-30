@@ -17,7 +17,7 @@
                     aria-labelledby="feedback-heading-one"
                     data-parent="#feedback-accordion">
                     <div class="m-2">
-                        <div class="panel-subcontainer {{context.project.type}} bg-white p-4">
+                        <div class="panel-subcontainer discussion bg-white p-4">
                             <div class="row no-gutters">
                                 <div class="col-md-6 order-md-2">
                                     {{! Media Display Window and or a Collections box }}
@@ -30,11 +30,11 @@
                                             <div>Refreshing the collection</div>
                                             </div>
                                         </div>
-                                        <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
+                                        <div id="{{context.discussion.id}}-collection_table" class="collection_table"></div>
                                     </div>
                                     <div class="asset-view-published"
                                         style="{{#context.editing}}display: none{{/context.editing}}">
-                                        <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                                        <div id="{{context.discussion.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                                             <div class="asset-display"></div>
                                             <div class="clipstrip-display"></div>
@@ -98,11 +98,11 @@
                                                 {{{context.form}}}
                                             </table>
                                             <div class="text-right">
-                                                <button class="project cancel btn btn-secondary btn-sm"
+                                                <button class="discussion cancel btn btn-secondary btn-sm"
                                                     style="display: none" type="button">
                                                     Cancel
                                                 </button>
-                                                <button class="project btn btn-primary btn-sm"
+                                                <button class="discussion btn btn-primary btn-sm"
                                                     id="comment-form-submit" type="submit">
                                                     Save
                                                 </button>

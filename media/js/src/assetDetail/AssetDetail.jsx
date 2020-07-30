@@ -668,7 +668,8 @@ export default class AssetDetail extends React.Component {
         const match = window.location.pathname.match(/annotations\/(\d+)\//);
         if (match && match.length > 1) {
             const sId = parseInt(match[1], 10);
-            openSelectionAccordionItem(jQuery('#selectionsAccordion'), sId);
+            openSelectionAccordionItem(
+                jQuery('#selectionsAccordion'), sId, true);
         }
 
         if (this.type === 'image') {

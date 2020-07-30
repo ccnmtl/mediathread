@@ -509,13 +509,20 @@ const termsToReactSelectValues = function(vocabs) {
  * Open the selectionId selection in the given accordion, and make it
  * active.
  */
-const openSelectionAccordionItem = function($accordion, selectionId) {
+const openSelectionAccordionItem = function(
+    $accordion, selectionId,
+    scrollIntoView=false
+) {
     $accordion.find('.collapse').each(function(idx, el) {
         const $el = jQuery(el);
         const sId = parseInt($el.data('selectionid'), 10);
         if (selectionId === sId) {
             $el.addClass('show');
-            $el.closest('.card').addClass('active');
+            const $card = $el.closest('.card');
+            $card.addClass('active');
+            if (scrollIntoView) {
+                $card[0].scrollIntoView();
+            }
             return false;
         }
     });

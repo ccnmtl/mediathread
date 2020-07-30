@@ -530,35 +530,37 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="tab-content asset-detail">
-                <h2 className="text-center">
-                    {this.props.asset.title}
-                </h2>
+                <div className="d-flex">
+                    <h2 className="justify-content-start mr-auto">
+                        {this.props.asset.title}
+                    </h2>
 
-                <Nav
-                    className="justify-content-center mb-4"
-                    variant="pills" defaultActiveKey="/">
-                    <Nav.Item>
-                        <Nav.Link
-                            onClick={() => this.onSelectTab('viewSelections')}
-                            active={this.state.tab === 'viewSelections'}>
-                            View Selections from Search
-                        </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link
-                            onClick={() => this.onSelectTab('createSelection')}
-                            active={this.state.tab === 'createSelection'}>
-                            Create Selection
-                        </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link
-                            onClick={() => this.onSelectTab('viewItem')}
-                            active={this.state.tab === 'viewItem'}>
-                            View the Original Item
-                        </Nav.Link>
-                    </Nav.Item>
-                </Nav>
+                    <Nav
+                        className="justify-content-end mb-2"
+                        variant="pills" defaultActiveKey="/">
+                        <Nav.Item>
+                            <Nav.Link
+                                onClick={() => this.onSelectTab('viewSelections')}
+                                active={this.state.tab === 'viewSelections'}>
+                                View Selections
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link
+                                onClick={() => this.onSelectTab('createSelection')}
+                                active={this.state.tab === 'createSelection'}>
+                                Create Selection
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link
+                                onClick={() => this.onSelectTab('viewItem')}
+                                active={this.state.tab === 'viewItem'}>
+                                View the Original Item
+                            </Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </div>
 
                 <div className="col-md-6 offset-md-3">
                     <Alert
@@ -580,7 +582,7 @@ export default class AssetDetail extends React.Component {
 
                 <div className="row">
                     <div className="col-sm-7">
-                        <h3>{leftColumnHeader}</h3>
+                        <h4>{leftColumnHeader}</h4>
                         <div className="sticky-top">
                             {media}
                         </div>
@@ -592,7 +594,7 @@ export default class AssetDetail extends React.Component {
                                 type={this.type}
                                 tags={this.props.tags}
                                 terms={this.props.terms}
-                                filteredSelections={this.props.filteredSelections}
+                                filteredSelections={this.props.asset.annotations}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
                                 onSaveSelection={this.onSaveSelection}
@@ -739,6 +741,5 @@ AssetDetail.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
-    filteredSelections: PropTypes.array,
     onUpdateAsset: PropTypes.func.isRequired
 };

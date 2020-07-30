@@ -44,7 +44,6 @@ it('renders the collection tab grid layout', async() => {
         );
     });
 
-    expect(container.textContent).toContain('Collection');
     expect(container.textContent).toContain(fakeAsset.title);
     expect(container.textContent).toContain('Previous');
     expect(container.textContent).toContain('Next');
@@ -78,7 +77,6 @@ it('renders the collection tab list layout', async() => {
         button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     });
 
-    expect(container.textContent).toContain('Collection');
     expect(container.textContent).toContain(fakeAsset.title);
 
     // remove the mock to ensure tests are completely isolated

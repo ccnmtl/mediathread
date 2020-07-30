@@ -254,28 +254,44 @@ export default class ViewSelections extends React.Component {
 
         return (
             <React.Fragment>
-                <h3>
+                <h4>
                     Selections
-                </h3>
-                <div
-                    className="btn-group mb-2" role="group"
-                    aria-label="View Toggle">
-                    <button
-                        type="button"
-                        className={'btn btn-outline-secondary btn-sm ' + (
-                            this.state.groupBy === 'author' ? 'active' : ''
-                        )}
-                        onClick={(e) => this.onSelectGrouping(e, 'author')}>
-                        Group by author
-                    </button>
-                    <button
-                        type="button"
-                        className={'btn btn-outline-secondary btn-sm ' + (
-                            this.state.groupBy === 'tag' ? 'active' : ''
-                        )}
-                        onClick={(e) => this.onSelectGrouping(e, 'tag')}>
-                        Group by tag
-                    </button>
+                </h4>
+
+                <div className="d-flex">
+                    <div
+                        className="btn-group mb-2" role="group"
+                        aria-label="View Toggle">
+                        <button
+                            type="button"
+                            className={'btn btn-outline-secondary btn-sm ' + (
+                                this.state.groupBy === 'author' ? 'active' : ''
+                            )}
+                            onClick={(e) => this.onSelectGrouping(e, 'author')}>
+                            Group by author
+                        </button>
+                        <button
+                            type="button"
+                            className={'btn btn-outline-secondary btn-sm ' + (
+                                this.state.groupBy === 'tag' ? 'active' : ''
+                            )}
+                            onClick={(e) => this.onSelectGrouping(e, 'tag')}>
+                            Group by tag
+                        </button>
+                    </div>
+
+                    <form className="form-inline">
+                        <div className="form-group">
+                            <label htmlFor="annotationFilter" className="ml-2">
+                                Filter by:
+                            </label>
+                            <input
+                                id="annotationFilter"
+                                className="form-control form-control-sm ml-1"
+                                type="search"
+                            />
+                        </div>
+                    </form>
                 </div>
 
                 <Alert variant="warning" show={noSelections}>

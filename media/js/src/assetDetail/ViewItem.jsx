@@ -96,9 +96,9 @@ export default class ViewItem extends React.Component {
                     Remove from my Collection
                 </button>
 
-                <h3>
+                <h4>
                     Item References within Course
-                </h3>
+                </h4>
 
                 <div className="btn-group">
                     <a

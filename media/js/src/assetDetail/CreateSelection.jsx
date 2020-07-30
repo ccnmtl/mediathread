@@ -133,7 +133,7 @@ export default class CreateSelection extends React.Component {
 
         return (
             <React.Fragment>
-                <h3>2. Add Details</h3>
+                <h4>2. Add Details</h4>
 
                 <div className="card w-100">
                     <div className="card-body">

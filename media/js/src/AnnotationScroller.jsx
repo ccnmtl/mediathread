@@ -45,13 +45,16 @@ export default class AnnotationScroller extends React.Component {
 
         // TODO: link to annotation, not just asset.
         const courseUrl = getCourseUrl();
-        const assetLink = `${courseUrl}react/asset/` +
-              selectedAnnotation.asset_id + '/';
+        const annotationLink = `${courseUrl}react/asset/` +
+              selectedAnnotation.asset_id +
+              '/annotations/' + selectedAnnotation.id + '/';
 
         return (
             <div>
                 <p className="card-text">
-                    <a href={assetLink} title={selectedAnnotation.title}>
+                    <a
+                        href={annotationLink}
+                        title={selectedAnnotation.title}>
                         {selectedAnnotation.title}
                     </a>
                 </p>

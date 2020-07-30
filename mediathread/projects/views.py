@@ -355,7 +355,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
     template_name = 'projects/composition.html'
 
-    def get(self, request, project_id, version_number=1):
+    def get(self, request, project_id, version_number=None):
         """
         A single panel read-only view of the specified project/version combo.
         No assignment, response or feedback access/links.
@@ -377,15 +377,15 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
         if not request.is_ajax():
             course = request.course
-            if not course:
-                public_url = project.public_url()
-                request.course = project.course
-                course = request.course
-            else:
+            if version_number:
                 # versioned view
                 public_url = reverse('project-view-readonly',
                                      kwargs={'project_id': project.id,
                                              'version_number': version_number})
+            else:
+                public_url = project.public_url()
+                request.course = project.course
+                course = request.course
 
             data['project'] = project
             data['version'] = version_number

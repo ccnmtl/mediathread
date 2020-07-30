@@ -71,11 +71,11 @@
 
 <form id="edit-global-annotation-form" method="post"
   {{#asset-current.global_annotation.id}}
-    action="/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
+    action="/course/{{getCourseId}}/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
   {{/asset-current.global_annotation.id}}
 
   {{^asset-current.global_annotation.id}}
-    action="/asset/create/{{asset-current.id}}/global/"
+    action="/course/{{getCourseId}}/asset/create/{{asset-current.id}}/global/"
   {{/asset-current.global_annotation.id}}
   style="display: none">
 

@@ -1,4 +1,7 @@
 from datetime import datetime
+import json
+from random import choice
+from string import ascii_letters
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -14,18 +17,17 @@ from django.views.generic.base import View
 import django_comments
 from django_comments.models import COMMENT_MAX_LENGTH
 from djangohelpers.lib import rendered_with, allow_http
-import json
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.discussions.utils import pretty_date
 from mediathread.djangosherd.api import SherdNoteResource
 from mediathread.djangosherd.models import DiscussionIndex
 from mediathread.main.course_details import cached_course_collaboration
-from mediathread.mixins import LoggedInCourseMixin, LoggedInFacultyMixin
+from mediathread.mixins import (
+    LoggedInCourseMixin, LoggedInFacultyMixin
+)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from random import choice
-from string import ascii_letters
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 from threadedcomments.util import annotate_tree_properties, fill_tree

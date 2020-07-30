@@ -1,7 +1,7 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global DjangoSherd_Colors: true, MediaThread: true, Mustache: true */
 /* global retrieveData: true, showMessage: true, storeData: true */
-/* global updateUserSetting: true */
+/* global updateUserSetting: true, urlWithCourse: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -642,7 +642,7 @@
 
             jQuery.ajax({
                 type: 'POST',
-                url: frm.action,
+                url: urlWithCourse(frm.action),
                 data: jQuery(frm).serializeArray(),
                 dataType: 'json',
                 error: function() {
@@ -973,7 +973,7 @@
 
             jQuery.ajax({
                 type: 'POST',
-                url: url,
+                url: urlWithCourse(url),
                 data: jQuery(frm).serialize(),
                 dataType: 'json',
                 cache: false, // Chrome && IE have aggressive caching policies.

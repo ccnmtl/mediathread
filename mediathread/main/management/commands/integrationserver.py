@@ -14,7 +14,6 @@ test data dynamically using factories
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connection
-from waffle.models import Flag
 from mediathread.factories import (
     MediathreadTestMixin
 )
@@ -55,8 +54,6 @@ class Command(BaseCommand):
         m.setup_sample_assignment()
         m.setup_sample_selection_assignment()
         m.setup_sample_assignment_and_response()
-
-        Flag(name='addressable_courses', everyone=True)
 
         shutdown_message = (
             '\nServer stopped.' +

@@ -1,6 +1,6 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, MediaThread: true */
-/* global Mustache: true, Sherd: true */
+/* global Mustache: true, Sherd: true, urlWithCourse: true */
 /* global CitationView: true, showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -250,7 +250,7 @@ CollectionWidget.prototype.mapEvents = function() {
             // edit the annotation's start & end times if neeed.
             jQuery.ajax({
                 type: 'POST',
-                url: url,
+                url: urlWithCourse(url),
                 dataType: 'json',
                 error: function() {
                     showMessage('There was an error adding your item');

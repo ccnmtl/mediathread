@@ -13,7 +13,6 @@ def attach_course_to_request(request, **kwargs):
 
     Returns the updated request object.
     """
-
     if not request.course:
         # Get the course from the URL if it exists.
         course_pk = kwargs.get('course_pk')

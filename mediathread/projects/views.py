@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
@@ -19,7 +20,6 @@ from django.urls import reverse
 from django.views.generic.base import View, TemplateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import allow_http
-import json
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
@@ -290,6 +290,7 @@ class ProjectPublicView(View):
 
         project_id = int(collab.object_pk)
         project = Project.objects.get(id=project_id)
+        request.course = project.course
         parent = project.assignment()
         if (project.is_selection_assignment() or
                 (parent and parent.is_selection_assignment())):
@@ -376,15 +377,15 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
         if not request.is_ajax():
             course = request.course
-            if not course:
-                public_url = project.public_url()
-                request.course = project.course
-                course = request.course
-            else:
+            if version_number:
                 # versioned view
                 public_url = reverse('project-view-readonly',
                                      kwargs={'project_id': project.id,
                                              'version_number': version_number})
+            else:
+                public_url = project.public_url()
+                request.course = project.course
+                course = request.course
 
             data['project'] = project
             data['version'] = version_number

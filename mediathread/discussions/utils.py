@@ -52,8 +52,8 @@ def pretty_date_same_day(second_diff, timestamp):
     elif second_diff < 120:
         ago = "a minute ago"
     elif second_diff < 3600:
-        ago = str(second_diff / 60) + " minutes ago"
+        ago = str(int(second_diff / 60)) + " minutes ago"
     elif second_diff < 86400:
-        ago = str(second_diff / 3600) + " hour(s) ago"
+        ago = str(int(second_diff / 3600)) + " hour(s) ago"
 
     return "%s (%s)" % (timestamp.strftime("%I:%M %p"), ago)

@@ -3,10 +3,6 @@
     overflow: unset;
 }
 
-.threaded_comments_form {
-    position: sticky;
-}
-
 a.active-annotation.materialCitation {
     background-color: #ffc107;
 }
@@ -96,6 +92,26 @@ div.mce_editorwindow {
     margin-top: 62px;
 }
 
+#feedback-accordion .collection-materials,
+#discussion-workspace .collection-materials {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 5px;
+    overscroll-behavior: contain;
+    height: 100vh;
+    overflow: hidden;
+    transform: translateZ(0);
+    vertical-align: top;
+    white-space: normal;
+}
+
+#feedback-accordion .collection_table,
+#discussion-workspace .collection_table {
+    box-sizing: border-box;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
 .essay-space-container .mceLayout {
     width: 100% !important;
 }
@@ -136,6 +152,10 @@ div.save-publish-status li {
 
 /* ---- Threaded comments ---------- */
 
+.threaded_comment_author {
+    font-size: 1.5rem;
+}
+
 form.threaded_comments_form h3 {
     margin-top: 5px;
 }
@@ -173,53 +193,35 @@ form.threaded_comments_form table tr td input[name="title"] {
     padding: 2px;
 }
 
-.threaded_comment_title {
-    display:none;
-}
-
 ul.comment-thread {
     margin: 0px; /*no left indent on first comment*/
     padding-left: 0;
 }
 
-
 li > ul.comment-thread {
-    margin:0px 0px 0 1.5em; /*indent each subsequent thread level*/
+    margin:0px 0px 0 2em; /*indent each subsequent thread level*/
     padding: 0px;
+    border-left: 1px solid #dee2e6;
+    padding-left: 1.25rem!important;
 }
 
-li > ul.comment-thread.last {
-    background-color: none;
-    padding: 0px;
-    border-bottom: 1px solid #ccc;
+.edit_prompt,
+.respond_prompt {
+    padding-top: .15rem;
 }
 
-li > ul.comment-thread div.comment {
-    background-color: #fff;
+.text-separator {
+    display: inline-block;
+    margin: -2px .67375em 0;
+    width: 1px;
+    background-color: #ddd;
+    line-height: 0;
+    height: 14px;
+    vertical-align: middle;
 }
 
 li.comment-thread {
-    list-style:none;
-    padding-bottom: 4px;
-}
-
-.threaded_comment_text {
-    padding: 1px 2px 1px 5px;
-    margin-right: 5px;
-    width: 99%;
-}
-
-.threaded_comment_author {
-    padding-top: 4px;
-    padding-left: 5px;
-    font-weight: bold;
-}
-
-div.comment-date {
-    clear: both;
-    font-size: 80%;
-    margin-left: 5px;
-    margin-top: 6px;
+    list-style: none;
 }
 
 /* ---- End threaded comments ---------- */

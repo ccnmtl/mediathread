@@ -12,7 +12,7 @@
     </div>
     <div class="row no-gutters">
         <div class="col-md-6">
-            <div class="threadedcomments-container">
+            <div class="threadedcomments-container pr-2">
                 {{#context.discussion.thread.length}}
                     {{#context.discussion.thread}}
                         {{^open}}
@@ -21,29 +21,30 @@
                             {{/close}}
                         {{/open}}
                         {{#open}}
-                            <ul class="comment-thread">
+                            <ul class="comment-thread border-left pl-4">
                         {{/open}}
-                        <li id="comment-{{id}}" class="comment-thread mt-3">
-                            <div class="comment">
+                        <li id="comment-{{id}}" class="comment-thread ">
+                            <div class="comment mb-5">
                                 <div class="threaded_comment_header">
-                                    <div>
-                                        <span class="threaded_comment_author">{{author}}</span>
-                                    </div>
-                                    <div class="comment-date">
-                                        <span>{{submit_date}}</span>
+                                    <div class="threaded_comment_author">
+                                        {{author}}
                                     </div>
                                 </div>
-                                <div class="threaded_comment_title">{{title}}</div>
-                                <div class="threaded_comment_text">{{{content}}}</div>
+                                <div class="threaded_comment_text mt-3">
+                                    {{{content}}}
+                                </div>
                                 <div class="respond_to_comment_form_div">
+                                    <span class="comment-date text-muted">{{submit_date}}</span>
+                                    <span class="text-separator"></span>
                                     {{#can_edit}}
-                                        <button class="edit_prompt comment_action btn btn-link pt-0"
+                                        <button class="edit_prompt comment_action btn btn-link pl-0"
                                             data-comment="{{id}}"
                                             title="Click to edit this comment">
                                             Edit
                                         </button>
+                                        <span class="text-separator"></span>
                                     {{/can_edit}}
-                                    <button class="respond_prompt comment_action btn btn-link pt-0"
+                                    <button class="respond_prompt comment_action btn btn-link pl-0"
                                         data-comment="{{id}}" title="Click to respond to this comment">
                                         Reply
                                     </button>
@@ -55,10 +56,10 @@
                             {{/close}}
                     {{/context.discussion.thread}}
                 {{/context.discussion.thread.length}}
-                <form novalidate style="display: none" method="POST" action="/comments/post/" class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
+                <form novalidate style="display: none" method="POST" action="/comments/post/"
+                    class="threaded_comments_form" data-maxlength="{{context.discussion.max_length}}">
                     <h3 style="display: none">Respond</h3>
                     <input type="hidden" id="comment-edit-id" name="edit-id" />
-                    <script type="text/javascript" src="{{#staticUrl}}{{/staticUrl}}js/app/tinymce_init.js"></script>
                     <table class="threaded_comments_form_table">
                         {{{context.form}}}
                     </table>
@@ -77,7 +78,7 @@
         </div>
         <div class="col-md-6">
             {{! Media Display Window and or a Collections box }}
-            <div class="collection-materials"
+            <div class="collection-materials bg-light"
                 style="display:{{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
                 <div class="ajaxloader">
                     <div class="message">

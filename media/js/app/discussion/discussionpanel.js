@@ -84,11 +84,7 @@ DiscussionPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
         // if this isn't completed AFTER instantiation
         jQuery('#id_comment_tbl').css('width', '100%');
 
-        if (jQuery('#id_title').is(':visible')) {
-            jQuery('#id_title').focus();
-        } else {
-            self.tinymce.focus();
-        }
+        self.tinymce.focus();
 
         self.collectionList = new CollectionList({
             '$parent': self.$el,
@@ -129,7 +125,6 @@ DiscussionPanelHandler.prototype.set_comment_content = function(content) {
         comment: '<p></p>'
     };
     self.form.elements.comment.value = content.comment;
-    self.form.elements.title.value = content.title || '';
 
     try {
         if (self.tinymce) {
@@ -190,25 +185,12 @@ DiscussionPanelHandler.prototype.open_edit = function(evt, focus) {
         jQuery(self.form).find('.btn.cancel').show();
 
         self.open_comment_form(elt);
-
-        if (self.panel.can_edit_title &&
-            self.panel.root_comment_id.toString() ===
-                self.form.elements['edit-id'].value) {
-            jQuery(self.form.elements.title).show();
-        }
     }
 };
 
 DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
     scroll) {
     var self = this;
-
-    self.$el.find('div.threaded_comment_header')
-        .addClass('opacity_fiftypercent');
-    self.$el.find('div.threaded_comment_text')
-        .addClass('opacity_fiftypercent');
-    self.$el.find('div.threaded_comment_text')
-        .find('a.materialCitation').addClass('disabled');
 
     if (insertAfter) {
         self.tinymce = null;
@@ -218,22 +200,16 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
         tinymce.settings = jQuery.extend(tinymceSettings, {
             init_instance_callback: function(editor) {
                 self.onTinyMCEInitialize(editor);
-            }
+            },
+            height: 400
         });
 
         tinymce.execCommand('mceAddEditor', true, 'id_comment');
     }
-    jQuery(self.form).show('fast', function() {
-        if (scroll) {
-            var q = 'div.threadedcomments-container';
-            var elt = self.$el.find(q)[0];
-            var top = jQuery(self.form).offset().top -
-                          jQuery(self.form).height();
 
-            jQuery(elt).animate({
-                scrollTop: jQuery(elt).scrollTop() + top
-            }, 100);
-        }
+    jQuery(self.form).show('fast', function() {
+        var top = jQuery('.threaded_comments_form').position().top - 20;
+        jQuery('html, body').animate({scrollTop: top}, 200);
     });
 
     // Switch to an Edit View
@@ -259,8 +235,6 @@ DiscussionPanelHandler.prototype.hide_comment_form = function() {
     }
 
     jQuery(self.form).hide('fast', function() {
-        jQuery(self.form.elements.title).hide();
-
         // Switch to a readonly view
         self.$el.find('div.collection-materials').hide();
 
@@ -303,8 +277,8 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
         return;
     }
 
-    var frm = jQuery(self.form);
-    var form_val_array = frm.serializeArray();
+    var serializedForm = jQuery(self.form).serializeArray();
+
     var info = {
         'edit-id': self.form.elements['edit-id'].value
     };
@@ -321,13 +295,13 @@ DiscussionPanelHandler.prototype.submit = function(evt) {
     jQuery.ajax({
         type: 'POST',
         url: info.url,
-        data: form_val_array, // default will serialize?
+        data: serializedForm,
         dataType: 'html',
         success: self.oncomplete,
         error: self.onfail,
         context: {
             'self': self,
-            'form_val_array': form_val_array,
+            'form_val_array': serializedForm,
             'info': info
         }
     });
@@ -350,7 +324,7 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
                 'id': res.comment_id,
                 'comment': res.comment || form_vals.comment,
                 'name': self.space_owner,
-                'title': res.title || ''
+                'timestamp': new Date().toLocaleString()
             };
 
             switch (this.info.mode) {
@@ -401,10 +375,11 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
             jQuery('div.threaded_comment_text').show();
             jQuery('div.respond_to_comment_form_div').show();
 
-            // eslint-disable-next-line scanjs-rules/assign_to_location
-            // document.location = '#comment-' + res.comment_id;
-            // This assign to location is creating an error in the Cypress
-            // tests. Explore alternate solutions during the redesign
+            // 6. scroll to the updated or new element
+            var top = jQuery('li#comment-' + res.comment_id).position().top;
+            jQuery('html, body').animate({
+                scrollTop: top
+            }, 200);
         }
     } else {
         self.onfail(xhr, textStatus, res.error);
@@ -446,11 +421,6 @@ DiscussionPanelHandler.prototype.parseResponse = function(xhr) {
     if (comment_text !== null) {
         rv.comment = comment_text[1];
     }
-    var comment_title = String(xhr.responseText).match(
-        /id="commenttitle">(.+)<\/h2>/);
-    if (comment_title !== null) {
-        rv.title = comment_title[1];
-    }
 
     return rv;
 };
@@ -463,7 +433,6 @@ DiscussionPanelHandler.prototype.read = function(found_obj) {
     return {
         'name': c.author.firstChild.nodeValue,
         'comment': comment.innerHTML,
-        'title': (c.title) ? c.title.innerHTML : '',
         'id': String(c.top.id).substr(8), // comment- chopped
         'editable': Boolean(c.edit_button),
         'base_comment': !c.parent
@@ -471,19 +440,11 @@ DiscussionPanelHandler.prototype.read = function(found_obj) {
 };
 
 DiscussionPanelHandler.prototype.update = function(obj, html_dom, components) {
-    var self = this;
     var success = 0;
     components = components || this.components(html_dom);
 
     if (obj.comment) {
         success += jQuery(components.comment).html(obj.comment).length;
-    }
-    if (obj.title) {
-        success += jQuery(components.title).html(obj.title).length;
-        if (!components.parent) { // if base_comment
-            document.title = obj.title;
-            self.$el.find('h1.discussion-title').html(obj.title);
-        }
     }
     return success;
 };
@@ -491,54 +452,51 @@ DiscussionPanelHandler.prototype.update = function(obj, html_dom, components) {
 DiscussionPanelHandler.prototype.components = function(html_dom, create_obj) {
     return {
         'top': html_dom,
-        'comment': jQuery('div.threaded_comment_text:first', html_dom).get(0),
-        'title': jQuery('div.threaded_comment_title', html_dom).get(0),
-        'author': jQuery('span.threaded_comment_author:first', html_dom)
+        'comment': jQuery('.threaded_comment_text:first', html_dom).get(0),
+        'author': jQuery('.threaded_comment_author:first', html_dom)
             .get(0),
         'edit_button': jQuery(
-            'div.respond_to_comment_form_div:first .edit_prompt',
+            '.respond_to_comment_form_div:first .edit_prompt',
             html_dom).get(0),
         'parent': jQuery(html_dom).parents('li.comment-thread').get(0)
     };
 };
 
 DiscussionPanelHandler.prototype.create = function(obj, doc) {
-    // microformat for a comment. SYNC with
-    // templates/discussion/show_discussion.html
-    // '<ul class='comment-thread'>';
-    // {{current_comment.id}}
-    // {{current_comment.name}}
-    // {{current_comment.comment|safe}}
-    var html = '<li id="comment-{{current_comment.id}}"' +
-        'class="comment-thread">' +
-        '<div class="comment new-comment">' +
-        ' <div class="threaded_comment_header">' +
-        '<span class="threaded_comment_author">' +
-        '{{current_comment.name}}</span>&nbsp;' +
-        'said:' +
-        '<div class="respond_to_comment_form_div" ' +
-        'id="respond_to_comment_form_div_id_{{current_comment.id}}">' +
-        '<button class="respond_prompt comment_action ' +
-        'btn btn-default btn-xs" ' +
-        'data-comment="{{current_comment.id}}" title="Click to show or ' +
-        'hide the comment form">' +
-        'Respond<!-- to comment {{current_comment.id}}: --></button>' +
-        ' <button class="edit_prompt comment_action ' +
-        'btn btn-default btn-xs" ' +
-        'data-comment="{{current_comment.id}}" title="Click to show or ' +
-        'hide the edit comment form">Edit</button>' +
-        '<div class="comment_form_space"></div>' +
+    var html =
+        '<li id="comment-{{current_comment.id}}" class="comment-thread">' +
+        '<div class="comment new-comment mb-5">' +
+        '<div class="threaded_comment_header">' +
+        '    <div class="threaded_comment_author">' +
+        '        {{current_comment.name}}' +
+        '    </div>' +
         '</div>' +
-        ' </div>' +
-        '<div class="threaded_comment_title">{{current_comment.title}}</div>' +
-        '<div class="threaded_comment_text">' +
-        '{{current_comment.comment|safe}}' + '</div>' + '</div>' +
+        '<div class="threaded_comment_text mt-3">' +
+        '    {{current_comment.comment|safe}}' +
+        '</div>' +
+        '<div class="respond_to_comment_form_div">' +
+        '    <span class="comment-date text-muted">' +
+        '        {{current_comment.timestamp}}' +
+        '    </span>' +
+        '    <span class="text-separator"></span>' +
+        '    <button class="edit_prompt comment_action btn btn-link pl-0"' +
+        '        data-comment="{{current_comment.id}}"' +
+        '        title="Click to edit this comment">' +
+        '        Edit' +
+        '    </button>' +
+        '    <span class="text-separator"></span>' +
+        '    <button class="respond_prompt comment_action btn btn-link pl-0"' +
+        '        data-comment="{{current_comment.id}}"' +
+        '        title="Click to respond to this comment">' +
+        '        Reply' +
+        '    </button>' +
+        '</div>' +
         '</li>';
-    //'</ul>';
 
     var text = html.replace(/\{\{current_comment\.id\}\}/g, obj.id).replace(
         /\{\{current_comment.name\}\}/g, obj.name).replace(
         /\{\{current_comment.title\}\}/g, obj.title || '').replace(
+        /\{\{current_comment.timestamp\}\}/g, obj.timestamp || '').replace(
         /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);
     return {
         htmlID: 'comment-' + obj.id,
@@ -566,7 +524,6 @@ DiscussionPanelHandler.prototype.readonly = function() {
         self.citationView.unload();
 
         self.$el.find('div.collection-materials').show();
-        self.$el.find('input.project-title').show();
         self.$el.find('.participants_toggle').show();
 
         self.tinymce.show();

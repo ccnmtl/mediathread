@@ -424,7 +424,8 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             return self.render_to_json_response(data)
 
 
-class SelectionAssignmentEditView(RestrictedMaterialsMixin, AssignmentEditView):
+class SelectionAssignmentEditView(
+        RestrictedMaterialsMixin, AssignmentEditView):
     template_name = 'projects/selection_assignment_edit.html'
 
     def get_extra_context(self):

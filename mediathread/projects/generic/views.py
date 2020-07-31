@@ -98,6 +98,9 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
 
 class AssignmentEditView(LoggedInFacultyMixin, TemplateView):
 
+    def get_extra_context(self):
+        return dict()
+
     def get_context_data(self, **kwargs):
         try:
             project = Project.objects.get(id=kwargs.get('project_id', None))

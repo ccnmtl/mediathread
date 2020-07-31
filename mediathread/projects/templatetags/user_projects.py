@@ -1,7 +1,9 @@
 from django import template
+from django.conf import settings
 from django.db.models import Q
 from djangohelpers.templatetags import TemplateTagNode
 from mediathread.projects.models import Course, PUBLISHED
+from threadedcomments.models import ThreadedComment
 
 
 register = template.Library()
@@ -26,13 +28,38 @@ def assignment_responses(project, request):
 
 
 @register.simple_tag
-def published_assignment_responses(project):
-    # Assumes the requester is an instructor
-    return project.collaboration.first().children.filter(
-        policy_record__policy_name__in=PUBLISHED).count()
+def published_assignment_responses(assignment):
+    if assignment.is_discussion_assignment():
+        discussion = assignment.course_discussion()
+        qs = ThreadedComment.objects.filter(
+            content_type__model='collaboration',
+            object_pk=discussion.content_object.pk,
+            site__pk=settings.SITE_ID)
+        qs = qs.exclude(user__groups=assignment.course.faculty_group)
+        return qs.values('user').distinct().count()
+    else:
+        # Assumes the requester is an instructor
+        return assignment.collaboration.first().children.filter(
+            policy_record__policy_name__in=PUBLISHED).count()
 
 
 @register.simple_tag
 def my_assignment_responses(project, user):
     return project.collaboration.first().children.filter(
         Q(project__author=user) | Q(project__participants=user)).distinct()
+
+
+@register.simple_tag
+def my_comment_count(project, user):
+    if not project.is_discussion_assignment():
+        return (0, None)
+
+    try:
+        discussion = project.course_discussion()
+        qs = ThreadedComment.objects.filter(
+            content_type__model='collaboration',
+            object_pk=discussion.content_object.pk,
+            site__pk=settings.SITE_ID, user=user)
+        return (qs.count(), qs.order_by('-submit_date').first().submit_date)
+    except AttributeError:
+        return (0, None)

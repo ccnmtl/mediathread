@@ -281,7 +281,8 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
 
         rows = []
         # Hard-coding date until we have time to code a proper ui
-        qs = Course.objects.filter(created_at__year__gte='2018')
+        qs = Course.objects.filter(
+            created_at__year__gte='2019', created_at__month__gte='6')
         for the_course in qs.order_by('-id'):
             row = []
             row.append(the_course.id)

@@ -7,7 +7,8 @@ from mediathread.projects.views import (
     project_export_html, project_revisions,
     SequenceAssignmentEditView, CompositionAssignmentEditView,
     CompositionAssignmentResponseView, UpdateVisibilityView,
-    DiscussionAssignmentWizardView, DiscussionAssignmentCreateView
+    DiscussionAssignmentWizardView, DiscussionAssignmentCreateView,
+    DiscussionAssignmentSaveView
 )
 from rest_framework import routers
 
@@ -36,6 +37,10 @@ urlpatterns = [
     path('create/da/',
          DiscussionAssignmentCreateView.as_view(), {},
          "discussion-assignment-create"),
+
+    path('save/da/<int:project_id>',
+         DiscussionAssignmentSaveView.as_view(), {},
+         "discussion-assignment-save"),
 
     path('create/ja/', SequenceAssignmentEditView.as_view(), {},
          name='sequence-assignment-create'),

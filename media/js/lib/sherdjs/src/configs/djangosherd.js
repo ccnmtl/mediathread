@@ -508,8 +508,10 @@ function DjangoSherd_Storage() {
             if (id in _cache[obj_type] && !list_callback) {
                 ann_obj = _cache[obj_type][id];
             } else {
+                var url =
+                    subject.url || MediaThread.urls['asset-json'](id, true);
                 jQuery.ajax({
-                    url: (subject.url || '/api/' + obj_type + '/' + id + '/'),
+                    url: url,
                     dataType: 'json',
                     cache: false, // Internet Explorer has aggressive caching policies.
                     success: function (json) {

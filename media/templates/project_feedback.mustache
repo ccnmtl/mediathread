@@ -60,19 +60,6 @@
                                                 <li id="comment-{{id}}" class="comment-thread">
                                                     <div class="comment">
                                                         <div class="threaded_comment_header">
-                                                            <div class="respond_to_comment_form_div">
-                                                                <button class="respond_prompt comment_action btn btn-secondary btn-sm"
-                                                                    data-comment="{{id}}" title="Click to respond to this comment">
-                                                                    Respond
-                                                                </button>
-                                                                {{#can_edit}}
-                                                                    <button class="edit_prompt comment_action btn btn-secondary btn-sm"
-                                                                        data-comment="{{id}}"
-                                                                        title="Click to edit this comment">
-                                                                        Edit
-                                                                    </button>
-                                                                {{/can_edit}}
-                                                            </div>
                                                             <div>
                                                                 <span class="threaded_comment_author">{{author}}</span>
                                                             </div>
@@ -82,6 +69,19 @@
                                                         </div>
                                                         <div class="threaded_comment_title">{{title}}</div>
                                                         <div class="threaded_comment_text">{{{content}}}</div>
+                                                        <div class="respond_to_comment_form_div">
+                                                            {{#can_edit}}
+                                                                <button class="edit_prompt comment_action btn btn-link pt-0"
+                                                                    data-comment="{{id}}"
+                                                                    title="Click to edit this comment">
+                                                                    Edit
+                                                                </button>
+                                                            {{/can_edit}}
+                                                            <button class="respond_prompt comment_action btn btn-link pt-0"
+                                                                data-comment="{{id}}" title="Click to respond to this comment">
+                                                                Reply
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     {{#close}}
                                                             </li>

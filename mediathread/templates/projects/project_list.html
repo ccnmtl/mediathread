@@ -17,6 +17,11 @@ Projects
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">Projects</h1>
+                </div>
+            </div>
             <div class="accordion mb-3 mt-3" id="assignment-accordion">
                 <div class="card border-0">
                     <div class="card-header pb-0" id="headingOne">
@@ -25,11 +30,7 @@ Projects
                                 type="button" data-toggle="collapse"
                                 data-target="#collapseOne" aria-expanded="true"
                                 aria-controls="collapseOne">
-                                {% if user_has_projects or not owner == request.user %}
                                     Add a project
-                                {% else %}
-                                    Hide
-                                {% endif %}
                             </button>
                         </h2>
                     </div>
@@ -264,13 +265,6 @@ Projects
                 const pageNo = jQuery(evt.currentTarget).data('page-number');
                 $frm.find('[name="page"]').val(pageNo);
                 $frm.submit();
-            });
-
-            jQuery('#collapseOne').on('hidden.bs.collapse', function(evt) {
-                jQuery('.btn-show-assignments').html('Add a project');
-            });
-            jQuery('#collapseOne').on('shown.bs.collapse', function(evt) {
-                jQuery('.btn-show-assignments').html('Hide');
             });
         });
     </script>

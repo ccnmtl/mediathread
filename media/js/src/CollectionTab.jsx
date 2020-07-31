@@ -153,29 +153,30 @@ export default class CollectionTab extends React.Component {
         if (this.state.selectedAsset) {
             const courseUrl = getCourseUrl();
             backButton = (
-                <div
-                    className="btn-group mb-1" role="group"
-                    aria-label="View Toggle">
-                    <a
-                        href={courseUrl}
-                        onClick={this.leaveAssetDetailView}
-                        title="Back"
-                        className="btn btn-outline-secondary btn-sm">
-                        <svg className="bi bi-caret-left-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 00-1.659-.753l-5.48 4.796a1 1 0 000 1.506z"></path>
-                        </svg>
-                        Back to Full Collection View
-                    </a>
+                <div className="row mt-2">
+                    <div className="col-md-auto">
+                        <nav aria-label="breadcrumb">
+                          <ol className="breadcrumb bg-light mb-0">
+                            <li className="breadcrumb-item" aria-current="page">
+                                <a
+                                    href={courseUrl}
+                                    onClick={this.leaveAssetDetailView}
+                                    title="Back to Collection">
+                                    Back to the collection
+                                </a>
+                            </li>
+                          </ol>
+                        </nav>
+                    </div>
                 </div>
             );
         }
 
         return (
             <div role="tabpanel">
-
                 {!this.state.selectedAsset && (
                     <div className="d-flex justify-content-between align-items-center flex-wrap">
-
+                        <h1 className="page-title">Collection</h1>
                         <a
                             className="btn btn-outline-secondary" aria-label="Add to Collection"
                             href={window.location.href.concat('collection/add/')}

@@ -53,7 +53,7 @@
                                 </a>
                             {% else %}
                                 <a href="{% url 'assignment-list' request.course.pk %}">
-                                    Back to assignments
+                                    Back to all assignments
                                 </a>
                             {% endif %}
                         </li>
@@ -86,9 +86,9 @@
                     <div class="col-md-8">
                         <form name="composition-assignment-edit"
                             {% if form.instance %}
-                                action="{% url 'project-save' form.instance.id %}"
+                                action="{% url 'project-save' request.course.pk form.instance.id %}"
                             {% else %}
-                                action="{% url 'project-create' %}"
+                                action="{% url 'project-create' request.course.pk %}"
                             {% endif %}
                             method="post">
 

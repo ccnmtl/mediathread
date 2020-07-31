@@ -1,15 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 
 {% block title %}
     {% if form.instance %}{{form.instance.title}}{% else %}Create Assignment{% endif %}
-{% endblock %}
-
-{% block css %}
-    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
-    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
-
-    <!--All the annotation css -->
-    {% include "djangosherd/annotator_resources_css.html" %}
 {% endblock %}
 
 {% block uncompressable_css %}
@@ -34,15 +26,8 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
 
-    <!--  Generic Functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
-
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            panelManager.init({
-                'url': MediaThread.urls['asset-workspace']()
-            });
-
             var view = new SelectionAssignmentEditView({
                 el: jQuery('.selection-assignment').first()
             });
@@ -51,180 +36,182 @@
 {% endblock %}
 
 {% block content %}
-{% with item=form.instance.assignmentitem_set.first.asset %}
-<div class="selection-assignment">
-    <div class="row">
-        <div class="col-md-3 column-container">
-            <div>
-                <form name="selection-assignment-edit"
-                    {% if form.instance %}
-                        action="{% url 'project-save' form.instance.id %}"
-                    {% else %}
-                        action="{% url 'project-create' %}"
-                    {% endif %}
-                    method="post">
-
-                    {% csrf_token %}
-                    <input type="hidden" name="project_type" value="selection-assignment" />
-
-                    <h2>
-                        Edit Selection Assignment
-                        {% if form.instance.id %}
-                        <a class="right" href="{% url 'project-workspace' form.instance.id %}">
-                            <img alt="Edit" src="{{STATIC_URL}}img/icons/meth_view.png"></span>
-                        </a>
+{% with the_item=form.instance.assignmentitem_set.first.asset %}
+{% with active='assignments' %}
+    {% include 'main/three_section_tabs.html' %}
+{% endwith %}
+<div class="tab-content">
+    <div role="tabpanel">
+        <div class="row mt-2">
+            <div class="col-md-auto">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb bg-light mb-0">
+                    <li class="breadcrumb-item" aria-current="page">
+                        {% if form.instance %}
+                            <a href="{% url 'project-workspace' request.course.pk form.instance.id %}">
+                                Back to {{form.instance.title}}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'assignment-list' request.course.pk %}">
+                                Back to all assignments
+                            </a>
                         {% endif %}
-                    </h2>
-                    <div data-page="1" data-page-content="instructions" class="page">
+                    </li>
+                  </ol>
+                </nav>
+            </div>
+        </div>
 
-                        <p>A selection assignment allows students to make
-                        annotations on a video, image, or audio file that
-                        an instructor designates.</p>
+        <div class="row">
+            <div class="col-md-12">
+                {% if form.instance %}
+                    <h1 class="page-title">Edit Selection Assignment</h1>
+                {% else %}
+                    <h1 class="page-title">Create Selection Assignment</h1>
+                {% endif %}
+            </div>
+        </div>
 
-                        <p>Instructions to students could include:</p>
-                        <ul>
-                        <li>How many selections to create</li>
-                        <li>How to title selections</li>
-                        <li>How to annotate selections in the notes field</li>
-                        <li>Guidance on tagging selections</li>
-                        </ul>
-
-                        <p>Visibility of student responses must be set at one of the following levels:</p>
-                        <ul>
-                        <li>Student responses are visible only to instructors</li>
-                        <li>Students can see other responses only after submitting their own</li>
-                        <li>Students can see other responses at any time</li>
-                        </ul>
-
-                        <div class="text-center">
-                        <a href="#" class="btn btn-primary next right">Get Started</a>
-                        </div>
-                    </div>
-                    <div data-page="2" data-page-content="choose-item" class="page hidden">
-                        <h3>1. Choose an item from the course collection</h3>
-                        <div class="selected-item">
-                        <center>
-                            {% if item %}
-                                <div class="gallery-item static-height rounded" data-id="{{item.id}}">
-                                    <h4 class="asset_title asset-{{item.primary.label}}">
-                                    <a class="asset-title-link" title="{{item.title}}"
-                                     href="/asset/{{item.id}}/">
-                                        {{item.title|truncatechars:35}}
-                                    </a>
-                                    </h4>
-                                    <div class="asset-thumb">
-                                        {% if item.thumb_url %}
-                                            <img class="gallery-item-thumb"
-                                             src="{{item.thumb_url}}"
-                                             alt="Item Thumbnail">
-                                        {% else %}{% ifequal item.media_type "image" %}
-                                            <img class="gallery-item-thumb"
-                                             src="{{item.primary.url}}"
-                                             alt="Item Thumbnail">
-                                        {% endifequal %}{% endif %}
-                                    </div>
-                                </div>
-                                <input type="hidden" name="item" value="{{item.id}}" />
+        <div class="selection-assignment">
+            <div class="row">
+                <div class="col-md-8 column-container">
+                    <div>
+                        <form name="selection-assignment-edit"
+                            {% if form.instance %}
+                                action="{% url 'project-save' request.course.id form.instance.id %}"
                             {% else %}
-                                <!--  this will be replaced by selected item -->
-                                <div></div>
-                                <input type="hidden" name="item" value="" />
-                            {% endif %}
-                        </center></div>
-                        <div class="help-inline">An item must be selected.</div>
-                        <div class="clearfix"></div>
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right next">Next</a></li>
-                        </ul>
-                    </div>
-                    <div data-page="3" data-page-content="title" class="hidden page">
-                        <h3>2. Write title &amp; instructions</h3>
-                        <div class="form-group">
-                            <label>Assignment Title</label>
-                            <input type="text" name="title" class="form-control"
-                                placholder="Assignment Title"
-                                value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
-                            <div class="help-inline">Title is a required field</div>
-                        </div>
-                        <div class="form-group">
-                            <label>Assignment Instructions</label>
-                            <div>Instructions to students could include:</div>
-                            <ul>
+                                action="{% url 'project-create' request.course.id %}"
+                            {% endif %} method="post">
+
+                            {% csrf_token %}
+                            <input type="hidden" name="project_type" value="selection-assignment" />
+
+                            <div data-page="1" data-page-content="instructions" class="page">
+
+                                <p>A selection assignment allows students to make
+                                annotations on a video, image, or audio file that
+                                an instructor designates.</p>
+
+                                <p>Instructions to students could include:</p>
+                                <ul>
                                 <li>How many selections to create</li>
                                 <li>How to title selections</li>
                                 <li>How to annotate selections in the notes field</li>
-                                <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
-                            </ul>
-                            <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
-                                {{form.instance.body}}
-                            </textarea>
-                            <div class="help-inline">Instructions is a required field</div>
-                        </div>
-                        <nav>
-                            <ul class="pager">
-                                <li><a href="#" class="left prev">Previous</a></li>
-                                <li><a href="#" class="right next">Next</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div data-page="4" data-page-content="due-date" class="hidden page">
-                        <h3>3. Set response due date &amp; visibility</h3>
-                        <p></p>
-                        <div class="form-group">
-                            <label for="due_date">Due Date</label>
-                            <input class="form-control" type="text"
-                                name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
-                        </div>
-                        <div class="help-inline">Please choose a due date.</div>
-                        <br />
-                        <label for="response_view_policy">Visibility</label>
-                        <p>Choose when students can see responses submitted by other students:</p>
-                        <div class="form-group">
-                            {{form.response_view_policy}}
-                        </div>
-                        <div class="help-inline">Please choose how responses will be viewed.</div>
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right next">Next</a></li>
-                        </ul>
-                    </div>
-                    <div data-page="5" data-page-content="publish" class="hidden page">
-                        <h3>4. Publish assignment to students</h3>
-                        <p></p>
-                        <div class="form-group">
-                            <div class="radio">
-                                {{form.publish}}
-                            </div>
-                        </div>
-                        <div class="help-inline">Please select who can see your work.</div>
-                        <ul class="pager">
-                            <li><a href="#" class="left prev">Previous</a></li>
-                            <li><a href="#" class="right save">Save</a></li>
-                        </ul>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="row">
-                <div id="asset-container" class="col-md-12 hidden">
-                </div>
-            </div>
+                                <li>Guidance on tagging selections</li>
+                                </ul>
 
-            <div class="row hidden asset-view-publish-container">
-                <div class="col-md-7 col-md-offset-1">
-                    <div class="asset-view-header column-container">
-                        <h2>Item
-                            <span class="asset-view-title"></span>
-                        </h2>
-                    </div>
-                    <div class="asset-view-published">
-                        <div id="asset-workspace-videoclipbox" class="videoclipbox" style="display: none;">
-                            <div class="asset-object" style="border: none; background-color: #ededed;"></div>
-                            <div class="asset-display"></div>
-                            <div class="clipstrip-display"></div>
-                        </div>
+                                <p>Visibility of student responses must be set at one of the following levels:</p>
+                                <ul>
+                                <li>Student responses are visible only to instructors</li>
+                                <li>Students can see other responses only after submitting their own</li>
+                                <li>Students can see other responses at any time</li>
+                                </ul>
+
+                                <div class="row mb-5">
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary next">Get Started</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div data-page="2" data-page-content="choose-item" class="page hidden">
+                                <h4>1. Choose an item from the course collection</h4>
+
+                                <select class="form-control my-4 select-asset" name="item">
+                                    <option value="" disabled selected hidden>Choose an item</option>
+                                    {% for item in items %}
+                                        <option value="{{item.id}}" {% if item == the_item %}selected="selected"{% endif %}>
+                                            {{item.title}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <div class="help-inline">An item must be selected.</div>
+                                <div class="clearfix"></div>
+                                <div class="row mb-5">
+                                    <div class="col">
+                                        <button class="btn btn-secondary prev">Previous</button>
+                                    </div>
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary next">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-page="3" data-page-content="title" class="hidden page">
+                                <h4>2. Write title &amp; instructions</h4>
+                                <div class="form-group">
+                                    <label><strong>Assignment Title</strong></label>
+                                    <input type="text" name="title" class="form-control"
+                                        placholder="Assignment Title"
+                                        value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
+                                    <div class="help-inline">Title is a required field</div>
+                                </div>
+                                <div class="form-group">
+                                    <label><strong>Assignment Instructions</strong></label>
+                                    <div>Instructions to students could include:</div>
+                                    <ul>
+                                        <li>How many selections to create</li>
+                                        <li>How to title selections</li>
+                                        <li>How to annotate selections in the notes field</li>
+                                        <li>Guidance on tagging selections with free form tags or course vocabulary terms</li>
+                                    </ul>
+                                    <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
+                                        {{form.instance.body}}
+                                    </textarea>
+                                    <div class="help-inline">Instructions is a required field</div>
+                                </div>
+                                <div class="row mb-5">
+                                    <div class="col">
+                                        <button class="btn btn-secondary prev">Previous</button>
+                                    </div>
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary next">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-page="4" data-page-content="due-date" class="hidden page">
+                                <h4>3. Set response due date &amp; visibility</h4>
+                                <p></p>
+                                <div class="form-group">
+                                    <label for="due_date"><strong>Due Date</strong></label>
+                                    <input class="form-control" type="text"
+                                        name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
+                                </div>
+                                <div class="help-inline">Please choose a due date.</div>
+                                <br />
+                                <label for="response_view_policy"><strong>Visibility</strong></label>
+                                <p>Choose when students can see responses submitted by other students:</p>
+                                <div class="form-group">
+                                    {{form.response_view_policy}}
+                                </div>
+                                <div class="help-inline">Please choose how responses will be viewed.</div>
+                                <div class="row mb-5">
+                                    <div class="col">
+                                        <button class="btn btn-secondary prev">Previous</button>
+                                    </div>
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary next">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-page="5" data-page-content="publish" class="hidden page">
+                                <h4>4. Publish assignment to students</h4>
+                                <p></p>
+                                <div class="form-group">
+                                    <div class="radio">
+                                        {{form.publish}}
+                                    </div>
+                                </div>
+                                <div class="help-inline">Please select who can see your work.</div>
+                                <div class="row mb-5">
+                                    <div class="col">
+                                        <button class="btn btn-secondary prev">Previous</button>
+                                    </div>
+                                    <div class="col text-right">
+                                        <button class="btn btn-primary save">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

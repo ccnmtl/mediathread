@@ -98,7 +98,7 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
 
 class AssignmentEditView(LoggedInFacultyMixin, TemplateView):
 
-    def get(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         try:
             project = Project.objects.get(id=kwargs.get('project_id', None))
             if (not project.can_edit(self.request.course, self.request.user)):
@@ -107,6 +107,6 @@ class AssignmentEditView(LoggedInFacultyMixin, TemplateView):
         except Project.DoesNotExist:
             form = ProjectForm(self.request, instance=None)
 
-        return self.render_to_response({
-            'form': form
-        })
+        ctx = {'form': form}
+        ctx.update(self.get_extra_context())
+        return ctx

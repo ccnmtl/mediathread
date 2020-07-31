@@ -38,7 +38,7 @@
                 (mediaType ? '&media_type=' + mediaType : '');
         },
         'asset-workspace': function(assetId, annotationId) {
-            var base = '/asset/';
+            var base = '/course/' + MediaThread.current_course + '/asset/';
             if (assetId) {
                 base += assetId + '/';
                 if (annotationId) {

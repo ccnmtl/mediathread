@@ -424,8 +424,13 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
             return self.render_to_json_response(data)
 
 
-class SelectionAssignmentEditView(AssignmentEditView):
+class SelectionAssignmentEditView(RestrictedMaterialsMixin, AssignmentEditView):
     template_name = 'projects/selection_assignment_edit.html'
+
+    def get_extra_context(self):
+        assets = Asset.objects.by_course(self.request.course)
+        items, notes = self.visible_assets_and_notes(self.request, assets)
+        return {'items': items.order_by('title')}
 
 
 class SequenceAssignmentEditView(AssignmentEditView):

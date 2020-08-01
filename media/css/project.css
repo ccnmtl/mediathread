@@ -140,11 +140,6 @@ form.threaded_comments_form h3 {
     margin-top: 5px;
 }
 
-form.threaded_comments_form div.save_and_cancel {
-    width: 100%;
-    background-color: #ccc;
-}
-
 form.threaded_comments_form table.threaded_comments_form_table {
     width: 100%;
 }
@@ -188,11 +183,6 @@ ul.comment-thread {
 }
 
 
-ul.comment-thread > li.comment-thread > ul.comment-thread > li.comment-thread {
-    border-left:1px solid #CCCCCC;
-    margin-top: 3px;
-}
-
 li > ul.comment-thread {
     margin:0px 0px 0 1.5em; /*indent each subsequent thread level*/
     padding: 0px;
@@ -231,12 +221,6 @@ div.comment-date {
     margin-left: 5px;
     margin-top: 6px;
 }
-
-.respond_to_comment_form_div {
-    float: right;
-    margin-right: 2px;
-}
-
 
 /* ---- End threaded comments ---------- */
 

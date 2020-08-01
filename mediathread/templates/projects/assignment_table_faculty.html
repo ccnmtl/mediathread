@@ -84,6 +84,7 @@
                                     <button type="button"
                                         class="btn btn-secondary" data-dismiss="modal">Close</button>
                                     <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                        {% csrf_token %}
                                         <button type="submit" data-project-id="{{object.id}}"
                                             class="btn btn-primary btn-delete-project">Delete</button>
                                     </form>

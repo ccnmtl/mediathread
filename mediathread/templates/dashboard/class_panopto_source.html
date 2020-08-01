@@ -26,6 +26,7 @@
     <h3 class="card-title">Panopto Source Folder</h3>
     <p>Import materials from a Panopto folder</p>
     <form action="." method="POST" class="{% if form.errors %}has-error{% endif %}">
+        {% csrf_token %}
         <label class="font-weight-bold" for="panopto-folder-name">Panopto Folder UUID: </label>
         <input class="form-control" name="folder_name" id="panopto-folder-name" />
 

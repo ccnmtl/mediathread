@@ -82,6 +82,7 @@ Assignments
             </div>
             {% endif %}
             <form id="search-form" action="." method="get">
+                {% csrf_token %}
                 <input type="hidden" name="sortby" value="{{sortby}}">
                 <input type="hidden" name="direction" value="{{direction}}">
                 <input type="hidden" name="page" value="{{page_obj.number}}">

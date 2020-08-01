@@ -123,6 +123,7 @@
                     </td>
                     <td>
                         <form action="{% url 'project-create' request.course.id %}" method="post">
+                            {% csrf_token %}
                             <input type="hidden" name="parent" value="{{object.id}}">
                             <input type="hidden" name="project_type" value="composition">
                             <input type="hidden" name="title" value="My Response">

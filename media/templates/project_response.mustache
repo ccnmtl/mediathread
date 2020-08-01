@@ -227,7 +227,8 @@
                         <div class="row">
                             <div class="col text-center">
                                 {{#context.create_instructor_feedback}}
-                                    <form action="{{create_feedback_url}}" method="post"> 
+                                    <form action="{{create_feedback_url}}" method="post">
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="" />
                                         <input type="hidden" name="comment_html" value="Instructor Feedback" />
                                         <input type="hidden" name="app_label" value="projects" />
                                         <input type="hidden" name="model" value="project" />

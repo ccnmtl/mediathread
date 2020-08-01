@@ -56,6 +56,9 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
     self.project_type = panel.context.project.project_type;
     self.essaySpace = self.$el.find('.essay-space')[0];
 
+    const token = jQuery('[name="csrf-token"]')[0].content;
+    self.$el.find('input[name="csrfmiddlewaretoken"]').val(token);
+
     // hook up behaviors
     self._bind(self.$el, '.project-savebutton', 'click', function(evt) {
         self.showSaveOptions(evt);

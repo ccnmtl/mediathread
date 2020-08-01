@@ -17,19 +17,13 @@ describe('Student Creates Composition', () => {
     it('should create a Composition as a Student', () => {
         cy.log('should check composition panel edit features');
 
-        cy.visit('/course/1/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'composition'
-            }
-        });
-
-        cy.wait(500);
-
-        cy.get('#loaded').should('exist');
+        cy.visit('/course/1/projects');
+        cy.get('.page-title').contains('Projects');
         cy.get('#cu-privacy-notice-icon').click();
+        cy.get('button#add-composition-button').click();
 
         cy.get('a.nav-link.active').contains('Projects');
+        cy.get('.breadcrumb-item').contains('Back to all projects');
 
         cy.get('.page-title').should('be.visible');
         cy.get('.page-title').contains('Untitled')

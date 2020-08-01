@@ -12,17 +12,16 @@ describe('Instructor Feat: Test Create Composition', () => {
     });
 
     it('should create a composition as an Instructor', () => {
+        cy.log('creates a project');
+        cy.visit('/course/1/projects');
+        cy.get('.page-title').contains('Projects');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('button').contains('Add a project').should('be.visible');
+        cy.get('button').contains('Add a project').click()
+        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button#add-composition-button').click();
+
         cy.log('should check composition panel features');
-
-        //TODO: Test create composition from homepage
-        cy.visit('/course/1/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'composition'
-            }
-        });
-
-        cy.wait(500);
         cy.get('#loaded').should('exist');
         cy.get('.page-title').should('be.visible');
         cy.get('.page-title').contains('Untitled')

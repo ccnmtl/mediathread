@@ -9,7 +9,7 @@ describe('Assignment Feature: Instructor Creation', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('Instructor Creates Assignment', () => {

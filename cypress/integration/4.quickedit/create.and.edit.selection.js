@@ -10,23 +10,24 @@ describe('Instructor creates a selection', () => {
     before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('should create a project, insert and edit selection', () => {
         cy.log('should create a composition');
-        //TODO: Create composition from homepage
-        cy.visit('/course/1/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'composition'
-            }
-        });
-        cy.wait(500);
-        cy.get('#loaded').should('exist');
+        cy.visit('/course/1/projects');
+        cy.get('.page-title').contains('Projects');
+        cy.get('#cu-privacy-notice-icon').click();
+
+        cy.get('button').contains('Add a project').should('be.visible');
+        cy.get('button').contains('Add a project').click()
+        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button#add-composition-button').click();
 
         cy.log('add a title and some text');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('a.nav-link.active').contains('Projects');
+        cy.get('.breadcrumb-item').contains('Back to all projects');
+        cy.get('#loaded').should('exist');
         cy.get('.page-title').click().clear()
             .type('Quick Edit Composition');
         cy.getIframeBody().find('p').click()

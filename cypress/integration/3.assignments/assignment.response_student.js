@@ -9,8 +9,7 @@ describe('Assignment Feature: Student Response', () => {
     beforeEach(() => {
         cy.login('student_one', 'test');
         cy.visit('/project/view/1/');
-        cy.wait(500);
-        //TODO: Test navigation to sample project from new Assignments tab
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('creates a response as a Student', () => {

@@ -18,6 +18,11 @@ Assignments
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">Assignments</h1>
+                </div>
+            </div>
             {% if role_in_course == "student" %}
                 <div id="search-well" class="mt-3">
                     <div class="form-row">
@@ -52,11 +57,7 @@ Assignments
                                     type="button" data-toggle="collapse"
                                     data-target="#collapseOne" aria-expanded="true"
                                     aria-controls="collapseOne">
-                                    {% if object_list.exists %}
                                         Add an assignment
-                                    {% else %}
-                                        Hide
-                                    {% endif %}
                                 </button>
                             </h2>
                         </div>
@@ -146,14 +147,6 @@ Assignments
                 $frm.find('[name="page"]').val(pageNo);
                 $frm.submit();
             });
-
-            jQuery('#collapseOne').on('hidden.bs.collapse', function(evt) {
-                jQuery('.btn-show-assignments').html('Add an assignment');
-            });
-            jQuery('#collapseOne').on('shown.bs.collapse', function(evt) {
-                jQuery('.btn-show-assignments').html('Hide');
-            });
-
         });
     </script>
 {% endblock %}

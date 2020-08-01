@@ -41,6 +41,26 @@
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            {% if form.instance %}
+                                <a href="{% url 'project-workspace' request.course.pk form.instance.id %}">
+                                    Back to {{form.instance.title}}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'assignment-list' request.course.pk %}">
+                                    Back to all assignments
+                                </a>
+                            {% endif %}
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-12">
                     {% if form.instance %}
@@ -58,9 +78,9 @@
                         <div class="centered-div column-container">
                             <form name="sequence-assignment-edit"
                                 {% if form.instance %}
-                                    action="{% url 'project-save' form.instance.id %}"
+                                    action="{% url 'project-save' request.course.pk form.instance.id %}"
                                 {% else %}
-                                    action="{% url 'project-create' %}"
+                                    action="{% url 'project-create' request.course.pk %}"
                                 {% endif %}
                                 method="post">
 
@@ -68,7 +88,7 @@
                                 <input type="hidden" name="project_type" value="sequence-assignment" />
 
                                 {% if form.instance.id %}
-                                    <a class="right small" href="{% url 'project-workspace' course.pk form.instance.id %}">
+                                    <a class="right small" href="{% url 'project-workspace' request.course.pk form.instance.id %}">
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment
                                     </a>
                                 {% endif %}
@@ -110,8 +130,8 @@
                                     </ul>
                                     <br />
                                     <div class="row mb-5">
-                                        <div class="col">
-                                            <a href="#" class="btn btn-primary next">Get Started</a>
+                                        <div class="col text-right">
+                                            <button class="btn btn-primary next">Get Started</button>
                                         </div>
                                     </div>
                                 </div>

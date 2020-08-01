@@ -32,7 +32,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.title().should('eq', 'Mediathread Create Assignment');
         cy.wait(500);
         cy.get('a.nav-link.active').contains('Assignments');
-        cy.get('.breadcrumb-item').contains('Back to assignments');
+        cy.get('.breadcrumb-item').contains('Back to all assignments');
         cy.get('.page-title').contains('Create Composition Assignment');
         cy.get('h4:visible').contains('Step 1');
         cy.get('#page2').contains('Get Started');

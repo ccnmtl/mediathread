@@ -26,7 +26,6 @@ a, a.page-link {
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
     color: #0056b3;
-    font-weight: bold;
 }
 
 .page-item.active .page-link {
@@ -57,12 +56,16 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Montserrat', sans-serif;
 }
 
+h1 {
+    font-size: 2.25rem;
+}
+
 h6 {
     text-transform: uppercase;
 }
 
 h1.page-title {
-    padding: .25em 0em .25em 0em;
+    padding: .5em 0em .25em 0em;
 }
 
 .hidden {

@@ -9,7 +9,6 @@ describe('Assignment Feature: Student Response', () => {
     beforeEach(() => {
         cy.login('student_one', 'test');
         cy.visit('/project/view/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('creates a response as a Student', () => {

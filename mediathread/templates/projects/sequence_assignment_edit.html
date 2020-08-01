@@ -58,9 +58,9 @@
                         <div class="centered-div column-container">
                             <form name="sequence-assignment-edit"
                                 {% if form.instance %}
-                                    action="{% url 'project-save' form.instance.id %}"
+                                    action="{% url 'project-save' request.course.pk form.instance.id %}"
                                 {% else %}
-                                    action="{% url 'project-create' %}"
+                                    action="{% url 'project-create' request.course.pk %}"
                                 {% endif %}
                                 method="post">
 
@@ -68,7 +68,7 @@
                                 <input type="hidden" name="project_type" value="sequence-assignment" />
 
                                 {% if form.instance.id %}
-                                    <a class="right small" href="{% url 'project-workspace' course.pk form.instance.id %}">
+                                    <a class="right small" href="{% url 'project-workspace' request.course.pk form.instance.id %}">
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span> View Assignment
                                     </a>
                                 {% endif %}

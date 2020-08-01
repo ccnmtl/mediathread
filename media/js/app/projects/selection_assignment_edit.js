@@ -1,4 +1,3 @@
-/* global CitationView: true */
 /* global AssignmentEditView: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

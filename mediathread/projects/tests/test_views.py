@@ -1000,7 +1000,7 @@ class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
 
     def test_get_edit(self):
         url = reverse('sequence-assignment-edit',
-                      args=[self.project.id])
+                      args=[self.sample_course.id, self.project.id])
 
         # anonymous
         response = self.client.get(url, {})
@@ -1026,7 +1026,8 @@ class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
 
     def test_get_create(self):
-        url = reverse('sequence-assignment-create')
+        url = reverse('sequence-assignment-create',
+                      args=[self.sample_course.id])
 
         # faculty
         self.client.login(username=self.instructor_one.username,

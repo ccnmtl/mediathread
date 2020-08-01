@@ -22,9 +22,7 @@ describe('Selection Assignment Feat: Instructor Creation', () => {
             .should('exist');
         cy.contains('Next').click({force: true});
         cy.get('.help-inline').should('contain', 'An item must be selected');
-        cy.get('#record-1').should('exist');
-        cy.get('.gallery-item').find('#asset-item-1').click();
-        cy.get('.selected-item > :nth-child(1) > #record-1').should('exist');
+        cy.get('.select-asset').select('1');
         cy.contains('Next').click({force: true});
         cy.contains('Write title').should('exist');
         cy.contains('Next').click({force: true});

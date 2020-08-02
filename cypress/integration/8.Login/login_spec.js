@@ -8,7 +8,7 @@ describe('Log In Feature: Test Instructor Login', () => {
         cy.get('#id_username').type('instructor_one').blur();
         cy.get('#id_password').type('test').blur();
         cy.get('#login-local input[type="submit"]').click();
-        cy.get('#course_information').contains('My Courses');
+        cy.get('#course-title').contains('My Courses');
         cy.get('#sandboxes_link').click();
         cy.get('.choose-course').should('contain', 'Sample Course');
         cy.get('.choose-course').click();

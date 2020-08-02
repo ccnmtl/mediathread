@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_new.html' %}
 {% load coursetags %}
 {% load static %}
 
@@ -35,46 +35,6 @@
 {% endblock %}
 
 {% block content %}
-    <div id="course-list">
-        <ul class="nav nav-tabs" aria-label="select timeframe">
-            <li class="{% if semester_view == 'past' %}active{% endif %}">
-                <a id="pastsemesters"
-                   href="?semester_view=past"
-                >Past</a>
-            </li>
-            <li class="{% if semester_view == 'current' %}active{% endif %}">
-                <a id="currentsemester"
-                   href="?semester_view=current"
-                >Current</a>
-            </li>
-            <li class="{% if semester_view == 'future' %}active{% endif %}">
-                <a id="future_semesters" href="?semester_view=future">Future</a>
-            </li>
-            {% if add_privilege %}
-            <li class="navbar-right">
-                <a id="create-course" class="create-course"
-                   href="{%url 'admin:courseaffils_course_add' %}"
-                >Create new course</a>
-            </li>
-            {% endif %}
-            <li class="{% if semester_view == 'sandbox' %}active{% endif %} navbar-right">
-                <a id="sandboxes_link"
-                   href="?semester_view=sandbox">Sandboxes</a>
-            </li>
-        </ul>
-    </div>
-
-    {% if courses|length > 5 %}
-    <form class="form-inline" role="search">
-        <div class="form-group">
-            <label for="course-title-filter">Filter: </label>
-            <input id="course-title-filter" class="course-search form-control"
-                   type="search"
-                   data-column="all"
-                   autofocus>
-        </div>
-    </form>
-    {% endif %}
 
     {% if semester_view == 'past' %}
         <h2>Past Courses</h2>
@@ -86,48 +46,104 @@
         <h2>Sandbox Courses</h2>
     {% endif %}
 
-    {% if courses|length > 0 %}
-        <table class="table course-choices tablesorter">
-            <thead>
-                <tr>
-                    <th>Course Title</th>
-                    <th>Term</th>
-                    <th>Instructor</th>
-                    <th>Role</th>
-                    {% if add_privilege %}
-                        <th class="nosort">Actions</th>
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in courses %}
-                    {% include 'courseaffils/course_row.html' %}
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        No courses match this criteria.
-    {% endif %}
+    <div id="course-list">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="btn-group mb-3" role="group" aria-label="Select timeframe">
+                    <a id="pastsemesters"
+                        class="btn btn-outline-primary {% if semester_view == 'past' %}active{% endif %}"
+                           href="?semester_view=past">
+                           Past
+                    </a>
+                    <a id="currentsemester"
+                        class="btn btn-outline-primary {% if semester_view == 'current' %}active{% endif %}"
+                           href="?semester_view=current">
+                           Current
+                    </a>
+                    <a id="future_semesters"
+                        class="btn btn-outline-primary {% if semester_view == 'future' %}active{% endif %}"
+                        href="?semester_view=future">
+                        Future
+                    </a>
+                    <a id="sandboxes_link"
+                        class="btn btn-outline-primary {% if semester_view == 'sandbox' %}active{% endif %}"
+                       href="?semester_view=sandbox">Sandboxes</a>
+                </div>
+            </div>
+            <div class="col-md-5 text-right">
+                {% if courses|length > 10 %}
+                <form class="form-inline" role="search">
+                    <div class="form-group w-100">
+                        <div class="input-group mb-3 w-100">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="filter-addon">Filter</span>
+                          </div>
+                          <input id="course-title-filter" class="course-search form-control"
+                               type="search" placeholder="by course title or instructor"
+                               aria-label="Filter courses" aria-describedby="filter-addon"
+                               data-column="all" />
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col">
+            {% if courses|length > 0 %}
+                <table class="table table-bordered table-striped tablesorter course-choices">
+                    <thead>
+                        <tr>
+                            <th class="w-25">Course Title</th>
+                            <th>Your Role</th>
+                            {% if semester_view != 'sandbox' %}
+                                <th>Term</th>
+                            {% endif %}
+                            <th class="w-50">Instructor</th>
+                            {% if add_privilege %}
+                                <th class="nosort">Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                            {% include 'courseaffils/course_row.html' %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h6>No courses match this criteria.</h6>
+            {% endif %}
+        </div>
     </div>
 
     {% if user.is_staff %}
-        <h3>Mediathread Demo (Staff only)</h3>
-        <p>To demo a class you can (mostly) anonymize the class, by setting this cookie:</p>
-        <ul>
-            <li>
-                <span id="anonymize_status"></span>
-                <a href="#anonymize" onclick="document.cookie='ANONYMIZE=on; path=/';anonymizeStatus();">Enable</a>
-                <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
-            </li>
-        </ul>
-        <script>
-        function anonymizeStatus() {
-            document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: ' +
-                ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
-        }
-        anonymizeStatus();
-        </script>
+    <div class="row mt-5">
+        <div class="col">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h3>Mediathread Demo (Staff only)</h3>
+                    <p>To demo a class you can (mostly) anonymize the class, by setting this cookie:</p>
+                    <ul>
+                        <li>
+                            <span id="anonymize_status"></span>
+                            <a href="#anonymize" onclick="document.cookie='ANONYMIZE=on; path=/';anonymizeStatus();">Enable</a>
+                            <a href="#anonymize" onclick="document.cookie='ANONYMIZE=OFF; expires='+new Date().toGMTString()+'; path=/';anonymizeStatus();">Disable</a>
+                        </li>
+                    </ul>
+                    <script>
+                    function anonymizeStatus() {
+                        document.getElementById('anonymize_status').innerHTML = 'Anonymizing Status: ' +
+                            ((document.cookie.match(/ANONYMIZE/)) ? 'ON' : 'OFF');
+                    }
+                    anonymizeStatus();
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
     {% endif %}
 
 {% endblock %}

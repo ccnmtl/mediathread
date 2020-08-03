@@ -29,7 +29,7 @@ describe('Taxonomy Feature: Create Term, Edit Taxonomy', () => {
         cy.contains('Colors').should('exist');
 
         cy.log('create term');
-        cy.get('.terms > .form-control').type('Red');
+        cy.get('.col-md-10 > .form-control').type('Red');
         cy.get('.create-term-submit').click({force: true});
         cy.get('div.term-display h5').should('contain', 'Red');
 

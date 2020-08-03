@@ -35,7 +35,7 @@ describe('Taxonomy Feature', () => {
             .and('contain', 'Create Concept');
         cy.contains('Colors Concept').should('exist');
         cy.contains('Terms').should('exist');
-        cy.get('.terms > .form-control')
+        cy.get('.col-md-10 > .form-control')
             .should('have.attr', 'placeholder', 'Type new term name here');
 
         cy.log('duplicate taxonomy');

@@ -44,7 +44,7 @@ describe('Taxonomy Feature: Refresh', () => {
         cy.contains('Colors').click();
         cy.get('.import-vocabulary-open > span').click({force: true});
         cy.get('#onomy_url').type(',/media/onomy/reimport_test.json');
-        cy.get('#vocabulary-9 > .vocabulary-import > .import-vocabulary-submit')
+        cy.get('#import-vocabulary-btn')
             .click();
         cy.get('[data-id="Black"]').should('exist');
         cy.get('[data-id="Blue"]').should('exist');

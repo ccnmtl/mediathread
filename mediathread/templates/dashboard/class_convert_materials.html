@@ -25,6 +25,7 @@
         <form action="{% url 'course-convert-materials' request.course.pk %}"
          name="course-clear-form" method="POST"
          class="{% if form.errors %}has-error{% endif %}">
+            {% csrf_token %}
             <p>The following media will be converted</p>
             <ul class="list-group">
                 {% for asset in assets %}

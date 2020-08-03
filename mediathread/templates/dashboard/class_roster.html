@@ -54,6 +54,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="{% url 'course-roster-invite-email' %}" method="POST">
+                            {% csrf_token %}
                             <p>
                             <b>About Inviting Students</b><br />
                             An instructor can invite a student into the course by providing an email address.

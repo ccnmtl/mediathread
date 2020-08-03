@@ -19,6 +19,7 @@
         {% map_course_collection request.course suggested as course_collection %}
         <div class="suggested-collection">
             <form action="{% url 'collection-add-or-remove' %}" method="POST">
+                {% csrf_token %}
                 <table>
                     <tr>
                         <td class="thumb">

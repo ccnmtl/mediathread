@@ -9,25 +9,18 @@ describe('Discussion View: Create Discussion', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('Instructor Creates Discussion', () => {
+        cy.visit('/course/1/assignments/');
 
-        //TODO: test discussion creation from homepage
-        cy.request({
-            method: 'POST',
-            url: '/discussion/create/',
-            form: true,
-            body: {
-                comment_html: 'Discussion Title',
-                app_label: 'courseaffils',
-                model: 'course',
-                obj_pk: '1'
-            }
-        }).then((resp) => {
-            cy.visit(resp.redirects[0].substring(5));
-        });
+        cy.log('Create a discussion');
+        cy.get('button').contains('Add an assignment').should('be.visible');
+        cy.get('button').contains('Add an assignment').click()
+        cy.get('#discussion-assignment-card').should('be.visible');
+        cy.get('#discussion-assignment-card button')
+            .contains('Add Assignment').click()
 
         cy.log('create discussion');
         cy.get('#cu-privacy-notice-icon').click();

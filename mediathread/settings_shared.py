@@ -49,6 +49,7 @@ MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
     MIDDLEWARE  # noqa
 
 MIDDLEWARE += [  # noqa
+    'django.middleware.csrf.CsrfViewMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',

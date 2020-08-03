@@ -22,7 +22,7 @@ describe('Assignment Feature: Instructor View', () => {
             cy.get('a').contains('Sample Assignment').click();
         });
 
-        cy.title().should('eq', 'Mediathread Sample Assignment');
+        cy.title().should('include', 'Mediathread Sample Assignment');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description').contains('Shared with Class');
         cy.get('#assignment-responses').should('not.be.visible');
@@ -36,7 +36,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.get('#student-responses').select('Student One');
 
         cy.log('View the response');
-        cy.title().should('eq', 'Mediathread Sample Assignment Response');
+        cy.title().should('include', 'Mediathread Sample Assignment Response');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description').contains('Shared with Class');
         cy.get('#assignment-responses').should('not.be.visible');
@@ -45,10 +45,12 @@ describe('Assignment Feature: Instructor View', () => {
             .contains('Instructions').should('be.visible');
         cy.get('#response-heading-one').should('be.visible');
         cy.get('#feedback-heading-one').should('not.exist');
+        cy.wait(500);
 
         cy.log('Add feedback');
         cy.get('button').contains('Add Feedback').click();
-        cy.title().should('eq', 'Mediathread Sample Assignment Response');
+        cy.title().should('include', 'Mediathread Sample Assignment Response');
+        cy.get('#loaded').should('exist');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description').contains('Shared with Class');
         cy.get('#assignment-responses').should('not.be.visible');
@@ -66,7 +68,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.visit('/course/1/assignments/');
         cy.get('a').contains('View Feedback').click();
 
-        cy.title().should('eq', 'Mediathread Sample Assignment Response');
+        cy.title().should('include', 'Mediathread Sample Assignment Response');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('.project-visibility-description').should('not.exist');
         cy.get('#assignment-responses').should('not.be.visible');

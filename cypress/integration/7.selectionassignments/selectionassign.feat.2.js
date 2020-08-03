@@ -9,22 +9,23 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
     before(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
-        cy.wait(500);
+        cy.get('.card-title a').contains('MAAP Award Reception');
     });
 
     it('should create student response', () => {
+        cy.visit('/course/1/assignments/');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.contains('Sample Selection Assignment').parent('tr').within(() => {
+            // all searches are automatically rooted to the found tr element
+            cy.get('td').eq(1).contains('Sample Selection Assignment');
+            cy.get('td').eq(2).contains('No Response Yet');
+            cy.get('td').eq(3).contains('Add Response');
+            cy.get('td').eq(4).contains('Selection Assignment');
 
-        //TODO: use the UI to navigate to the Sample Selection Assignment
-        cy.visit('/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'composition',
-                parent: '2',
-                title: 'My Response'
-            }
+            cy.get('td').eq(3).contains('Add Response').click();
         });
+
         cy.title().should('contain', 'Sample Selection Assignment');
-        cy.get('#cu-privacy-notice-icon').click({force: true});
         cy.contains('Create a selection').click({force: true});
         cy.get('[name="Save"]').should('exist');
         cy.get('[name="Save"]').click({force: true});

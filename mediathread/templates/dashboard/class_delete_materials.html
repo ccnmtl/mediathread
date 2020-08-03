@@ -37,6 +37,7 @@
     <form action="{% url 'course-delete-materials' request.course.pk %}"
      name="course-clear-form" method="POST"
      class="{% if form.errors %}has-error{% endif %}">
+        {% csrf_token %}
         <div class="alert alert-danger">
             <h3 style="margin: 0;">
                 DANGER

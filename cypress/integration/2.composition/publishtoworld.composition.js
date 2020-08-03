@@ -23,14 +23,15 @@ describe('Publish To World Public Composition', () => {
         cy.get('input#id_publish_to_world').should('be.checked');
 
         cy.log('create a project from the home page');
+        cy.visit('/course/1/projects');
+        cy.get('.page-title').contains('Projects');
+        cy.get('button').contains('Add a project').should('be.visible');
+        cy.get('button').contains('Add a project').click()
+        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button#add-composition-button').click();
 
-        cy.visit('/course/1/project/create/', {
-            method: 'POST',
-            body: {
-                project_type: 'composition'
-            }
-        });
-
+        cy.get('a.nav-link.active').contains('Projects');
+        cy.get('.breadcrumb-item').contains('Back to all projects');
         cy.get('#loaded').should('exist');
 
         cy.log('add title and some text');

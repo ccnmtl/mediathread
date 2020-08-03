@@ -172,11 +172,11 @@
                                 <div class="p-4">
                                     {{assignment.body|safe}}
                                 </div>
-
                                 {% if not is_faculty and not my_response and not the_response %}
                                 <div class="row">
                                     <div class="col text-center">
                                         <form action="/project/create/" method="post">
+                                            {% csrf_token %}
                                             <input type="hidden" name="parent" value="{{assignment.id}}" />
                                             <input type="hidden" name="project_type" value="composition" />
                                             <input type="hidden" name="title" value="My Response" />

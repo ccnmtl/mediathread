@@ -58,6 +58,7 @@ Projects
                                             </div>
                                             <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    {% csrf_token %}
                                                     <input type="hidden" name="project_type" value="composition" />
                                                     <button id="add-composition-button" type="submit" class="btn btn-outline-primary btn-sm mr-2">
                                                         Add Composition
@@ -86,6 +87,7 @@ Projects
                                             </div>
                                             <div class="col text-right">
                                                 <form action="{% url 'project-create' request.course.id %}" method="post">
+                                                    {% csrf_token %}
                                                     <input type="hidden" name="project_type" value="sequence" />
                                                     <button id="add-sequence-button" type="submit" class="btn btn-outline-primary btn-sm">
                                                         Add Sequence
@@ -132,6 +134,7 @@ Projects
             </div>
             {% endif %}
             <form id="search-form" action="." method="get">
+                {% csrf_token %}
                 <input type="hidden" name="owner" value="{{owner}}">
                 <input type="hidden" name="sortby" value="{{sortby}}">
                 <input type="hidden" name="direction" value="{{direction}}">
@@ -202,6 +205,7 @@ Projects
                                                                 <button type="button"
                                                                     class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                                 <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                                                    {% csrf_token %}
                                                                     <button type="submit" data-project-id="{{object.id}}"
                                                                         class="btn btn-primary btn-delete-project">Delete</button>
                                                                 </form>

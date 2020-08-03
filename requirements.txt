@@ -61,7 +61,7 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.16.2
+sentry-sdk==0.16.3
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0

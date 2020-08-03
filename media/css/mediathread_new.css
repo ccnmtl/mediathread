@@ -696,25 +696,8 @@ div.column-contents {
 }
 
 table.course-choices {
-    padding:5px;
-    margin-left: 10px;
-    max-width: 960px;
-    border-top: 1px solid #ddd;
+    font-size: 1rem!important;
 }
-
-table.course-choices th {
-    padding: 6px;
-}
-
-td.course-choice {
-    list-style-type:none;
-    padding:6px;
-}
-
-td.manage-course {
-    text-align:center;
-}
-
 
 div.button-form {
     display: block;
@@ -2583,10 +2566,6 @@ a.hs-control.hs-control-show.plist.float
 
 #staff-switchcourse {
     margin: 10px 10px;
-}
-
-#course-list {
-    margin-bottom: 25px;
 }
 
 .collection_button {

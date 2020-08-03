@@ -8,6 +8,6 @@ describe('Log In', function() {
         cy.get('#id_username').type('instructor_one').blur();
         cy.get('#id_password').type('test').blur();
         cy.get('#login-local input[type="submit"]').click();
-        cy.get('#course_information').contains('My Courses');
+        cy.get('#course-title').contains('My Courses');
     });
 });

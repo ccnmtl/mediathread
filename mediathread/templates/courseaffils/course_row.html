@@ -14,23 +14,6 @@
         {% endif %}
     </td>
     <td>
-        {% if course.info.termyear %}
-            {{course.info.termyear}}
-        {% elif course.to_dict %}
-            {{course.to_dict.term|int_to_term}} {{course.to_dict.year}}
-        {% endif %}
-    </td>
-    <td>
-        {% for user in course.faculty_group.user_set.all %}
-        {% firstof user.get_full_name user.username %},
-            {% with exceptions='swav,swinstructor' %}
-                {% if not user.is_staff and not user.username in exceptions %}
-                    {% firstof user.get_full_name user.username %},
-                {% endif %}
-            {% endwith %}
-        {% endfor %}
-    </td>
-    <td>
         {% if course in as_instructor %}
             Instructor
         {% elif course in as_student %}
@@ -40,6 +23,25 @@
         {% else %}
             Non-member
         {% endif %}
+    </td>
+    {% if semester_view != 'sandbox' %}
+        <td>
+            {% if course.info.termyear %}
+                {{course.info.termyear}}
+            {% elif course.to_dict %}
+                {{course.to_dict.term|int_to_term}} {{course.to_dict.year}}
+            {% endif %}
+        </td>
+    {% endif %}
+    <td>
+        {% for user in course.faculty_group.user_set.all %}
+        {% firstof user.get_full_name user.username %},
+            {% with exceptions='swav,swinstructor' %}
+                {% if not user.is_staff and not user.username in exceptions %}
+                    {% firstof user.get_full_name user.username %},
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
     </td>
     {% if add_privilege %}
         <td class="manage-course">

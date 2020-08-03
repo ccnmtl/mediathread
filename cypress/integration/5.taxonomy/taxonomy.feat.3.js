@@ -29,12 +29,12 @@ describe('Taxonomy Feature: Create, Duplicate, Delete Term', () => {
         cy.contains('Colors').should('exist');
 
         cy.log('create a term');
-        cy.get('.terms > .form-control').type('Red');
+        cy.get('.col-md-10 > .form-control').type('Red');
         cy.get('.create-term-submit').click({force: true});
         cy.get('div.term-display h5').should('contain', 'Red');
 
         cy.log('duplicate term');
-        cy.get('.terms > .form-control').type('Red');
+        cy.get('.col-md-10 > .form-control').type('Red');
         cy.get('.create-term-submit').click({force: true});
         cy.get('#dialog-confirm').should('contain',
             'Red term already exists. Please choose a new name');

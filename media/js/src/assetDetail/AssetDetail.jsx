@@ -51,6 +51,15 @@ const updateSelectionUrl = function(selectionId) {
 export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
+
+        // If there's a selection in the URL, start at the
+        // viewSelections tab.
+        let hasSelection = false;
+        if (window && window.location && window.location.pathname) {
+            hasSelection =
+                !!window.location.pathname.match(/annotations\/(\d+)\//);
+        }
+
         this.state = {
             // For creating a new selection
             selectionStartTime: 0,
@@ -64,7 +73,7 @@ export default class AssetDetail extends React.Component {
 
             activeSelection: null,
 
-            tab: 'viewSelections',
+            tab: hasSelection ? 'viewSelections' : 'viewItem',
 
             isDrawing: false
         };
@@ -530,14 +539,21 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="tab-content asset-detail">
-                <div className="d-flex">
-                    <h2 className="justify-content-start mr-auto">
+                <div className="row">
+                    <h2 className="col-md-7">
                         {this.props.asset.title}
                     </h2>
 
                     <Nav
-                        className="justify-content-end mb-2"
+                        className="col-md-5 justify-content-end mb-2"
                         variant="pills" defaultActiveKey="/">
+                        <Nav.Item>
+                            <Nav.Link
+                                onClick={() => this.onSelectTab('viewItem')}
+                                active={this.state.tab === 'viewItem'}>
+                                View Item
+                            </Nav.Link>
+                        </Nav.Item>
                         <Nav.Item>
                             <Nav.Link
                                 onClick={() => this.onSelectTab('viewSelections')}
@@ -550,13 +566,6 @@ export default class AssetDetail extends React.Component {
                                 onClick={() => this.onSelectTab('createSelection')}
                                 active={this.state.tab === 'createSelection'}>
                                 Create Selection
-                            </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link
-                                onClick={() => this.onSelectTab('viewItem')}
-                                active={this.state.tab === 'viewItem'}>
-                                View the Original Item
                             </Nav.Link>
                         </Nav.Item>
                     </Nav>

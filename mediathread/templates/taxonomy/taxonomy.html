@@ -32,14 +32,14 @@
                             </div>
                         </div>
                         <div class="vocabulary-edit" style="display: none">
-                            <input class="form-control left" id="id_display_name" type="text" name="display_name"
+                            <input class="form-control float-left" id="id_display_name" type="text" name="display_name"
                                 maxlength="50" value="<%=vocabularies[i].display_name%>"></input>
                             <input type="hidden" name="vocabulary_id" value="<%=vocabularies[i].id%>"/>
-                            <a class="btn btn-default btn-sm edit-vocabulary-close right" href="#">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            <a class="btn btn-light btn-sm edit-vocabulary-close float-right" href="#">
+                                <span aria-hidden="true">x</span>
                             </a>
-                            <a class="btn btn-default btn-sm edit-vocabulary-submit right" href="#">
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <a class="btn btn-light btn-sm edit-vocabulary-submit float-right" href="#">
+                                <span aria-hidden="true">ok</span>
                             </a>
                         </div>
                     </li>
@@ -50,19 +50,19 @@
                         <div class="vocabulary-display">
                             <a href="#new-vocabulary" class="icon-link create-vocabulary-open">
                                 Create Concept
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
                             </a>
                         </div>
                         <div class="vocabulary-create" style="display: none">
-                            <input class="create-vocabulary-name form-control left"
+                            <input class="create-vocabulary-name form-control float-left"
                                 id="id_display_name" type="text" name="display_name"
                                 maxlength="50" placeholder="Concept name">
                             <input type="hidden" name="object_id" value="<%=course_id%>"/>
-                            <a class="btn btn-default btn-sm right create-vocabulary-close" href="#">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            <a class="btn btn-light btn-sm float-right create-vocabulary-close" href="#">
+                                <span aria-hidden="true">x</span>
                             </a>
-                            <a class="btn btn-default btn-sm right create-vocabulary-submit" href="#">
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <a class="btn btn-light btn-sm float-right create-vocabulary-submit" href="#">
+                                <span aria-hidden="true">ok</span>
                             </a>
                         </div>
                     </li>
@@ -70,48 +70,54 @@
             </ul>
             <% for (var i=0; i < vocabularies.length; i++) { %>
                 <div class="vocabulary-container" id="vocabulary-<%=vocabularies[i].id%>" data-id="<%=vocabularies[i].id%>">
-                    <h2>
+                    <h2 class="card bg-light mb-3">
+                        <div class="card-body">
                         <%=vocabularies[i].display_name%> Concept
                         <% if (!vocabularies[i].onomy_url || vocabularies[i].onomy_url.length < 1) { %>
-                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
+                            <a href="#" class="btn btn-light btn-sm onomy import-vocabulary-open float-right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Import</span>
                             </a>
                         <% } else if (vocabularies[i].onomy_url && vocabularies[i].onomy_url.length > 0 && vocabularies[i].onomy_url !== 'child') { %>
-                            <a href="#" class="btn btn-default btn-sm onomy import-vocabulary-open right">
+                            <a href="#" class="btn btn-light btn-sm onomy import-vocabulary-open float-right">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Edit</span>
                             </a>
-                            <a class="btn btn-default btn-sm onomy refresh-onomy right" href="#">
+                            <a class="btn btn-light btn-sm onomy refresh-onomy float-right" href="#">
                                 <img src="{{STATIC_URL}}img/onomy_logo.png" />&nbsp;<span>Refresh</span>
                             </a>
 
                         <% } %>
+                        </div>
                     </h2>
                     <div class="visualclear"></div>
-                    <div class="vocabulary-import" style="display: none">
+                    <div class="vocabulary-import card bg-light mb-3" style="display: none">
+                        <div class="card-body">
                         <p>
                             <a href="http://onomy.org">onomy.org</a> is a site where you can create and share taxonomies,
                             folksonomies, and other forms of controlled vocabularies for use on the semantic web. Visit
                             <a href="http://onomy.org">onomy.org</a> now to build your own taxonomies.
                         </p>
                         <label><b>Published Onomy Urls</b> <i>JSON format, separated by commas</i></label>
-                        <input class="form-control left" type="text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
+                        <input class="form-control float-left" type="text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
                         <input type="hidden" name="object_id" value="<%=course_id%>"/>
-                        <a class="btn btn-default btn-sm right import-vocabulary-close" href="#">
-                           <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        <a class="btn btn-light btn-sm float-right import-vocabulary-close" href="#">
+                           <span aria-hidden="true">x</span>
                         </a>
-                        <a class="btn btn-default btn-sm right import-vocabulary-submit" href="#">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        <a class="btn btn-light btn-sm float-right import-vocabulary-submit" href="#">
+                            <span aria-hidden="true">ok</span>
                         </a>
                         <div class="visualclear"></div>
+                        </div>
                     </div>
                     <div class="visualclear"></div>
-                    <div class="terms">
+                    <div class="terms card bg-light mb-3">
+                        <div class="card-body">
                         <h3>Terms</h3>
-                            <input type="text" name="term_name" class="form-control left" placeholder="Type new term name here"/>
-                            <a class="btn btn-default create-term-submit left" href="#">
+                            <div class="row">
+                            <div class="col-md-10"><input type="text" name="term_name" class="form-control float-left" placeholder="Type new term name here"/></div>
+                            <div class="col"><a class="btn btn-light create-term-submit float-left" href="#">
                                 <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
-                            </a>
-
+                            </a></div>
+                            </div>
 
                         <div class="visualclear"></div>
                         <% if (vocabularies[i].term_set.length > 0) { %>
@@ -134,13 +140,13 @@
                                         </div>
                                     </div>
                                     <div class="term-edit" style="display: none">
-                                        <input class="form-control left" id="id_display_name" type="text" name="term_name"
+                                        <input class="form-control float-left" id="id_display_name" type="text" name="term_name"
                                             maxlength="50" value="<%=vocabularies[i].term_set[j].display_name%>">
-                                        <a class="btn btn-default btn-sm right edit-term-close" href="#">
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        <a class="btn btn-light btn-sm float-right edit-term-close" href="#">
+                                            <span aria-hidden="true">x</span>
                                         </a>
-                                        <a class="btn btn-default btn-sm right edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
-                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                        <a class="btn btn-light btn-sm float-right edit-term-submit" href="#" data-id="<%=vocabularies[i].term_set[j].id%>">
+                                            <span aria-hidden="true">ok</span>
                                         </a>
                                     </div>
                                 </div>
@@ -148,6 +154,7 @@
                             <% } %>
                             </div>
                         <% } %>
+                        </div>
                     </div>
                 </div>
             <% } %>

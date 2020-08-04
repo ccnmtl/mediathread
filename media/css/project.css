@@ -34,7 +34,6 @@ h1.project-title {
   min-height: 300px;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
-  padding: 0 10px 10px 10px;
   background-color:white;
 }
 

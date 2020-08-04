@@ -403,11 +403,24 @@ export default class AssetDetail extends React.Component {
 
     render() {
         let media = null;
+
+        let invisibleEl = null;
+        if (this.state.tab === 'viewItem') {
+            invisibleEl = (
+                <div className="input-group">
+                    <div className="form-check form-control-sm invisible">
+                        <input className="form-check-input" type="checkbox" />
+                    </div>
+                </div>
+            );
+        }
+
         if (this.type === 'image') {
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
                     <form>
                         <div className="form-row align-items-center">
+                            {invisibleEl}
                             {this.state.tab === 'viewSelections' && (
                                 <div className="input-group">
                                     <div className="form-check form-control-sm">
@@ -455,51 +468,56 @@ export default class AssetDetail extends React.Component {
         } else if (this.type === 'video') {
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
-                    {this.state.tab === 'createSelection' && (
-                        <form>
-                            <div className="form-row align-items-center">
-                                <div className="col-md-10">
-                                    <div className="input-group">
-                                        {this.state.tab === 'createSelection' && (
-                                            <button
-                                                onClick={this.onStartTimeClick}
-                                                ref={this.startButtonRef}
-                                                type="button"
-                                                className="btn btn-outline-light btn-sm">
-                                                Selection Start
-                                            </button>
-                                        )}
-                                        <TimecodeEditor
-                                            min={0}
-                                            onChange={this.onStartTimeUpdate}
-                                            timecode={this.state.selectionStartTime}
-                                        />
+                    <form>
+                        <div className="form-row align-items-center">
+                            {invisibleEl}
 
-                                        {String.fromCharCode(160)}
-                                        {String.fromCharCode(8212)}
-                                        {String.fromCharCode(160)}
+                            {(this.state.tab === 'createSelection' || this.state.tab === 'viewSelections') && (
+                                <>
+                                    <div className="col-md-10">
+                                        <div className="input-group">
 
-                                        {this.state.tab === 'createSelection' && (
-                                            <button
-                                                onClick={this.onEndTimeClick}
-                                                type="button"
-                                                className="btn btn-outline-light btn-sm">
-                                                Selection Stop
-                                            </button>
-                                        )}
-                                        <TimecodeEditor
-                                            min={0}
-                                            onChange={this.onEndTimeUpdate}
-                                            timecode={this.state.selectionEndTime}
-                                        />
+                                            {this.state.tab === 'createSelection' && (
+                                                <button
+                                                    onClick={this.onStartTimeClick}
+                                                    ref={this.startButtonRef}
+                                                    type="button"
+                                                    className="btn btn-outline-light btn-sm">
+                                                    Selection Start
+                                                </button>
+                                            )}
+                                            <TimecodeEditor
+                                                min={0}
+                                                onChange={this.onStartTimeUpdate}
+                                                timecode={this.state.selectionStartTime}
+                                            />
+
+                                            {String.fromCharCode(160)}
+                                            {String.fromCharCode(8212)}
+                                            {String.fromCharCode(160)}
+
+                                            {this.state.tab === 'createSelection' && (
+                                                <button
+                                                    onClick={this.onEndTimeClick}
+                                                    type="button"
+                                                    className="btn btn-outline-light btn-sm">
+                                                    Selection Stop
+                                                </button>
+                                            )}
+                                            <TimecodeEditor
+                                                min={0}
+                                                onChange={this.onEndTimeUpdate}
+                                                timecode={this.state.selectionEndTime}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="col-md-2">
-                                    Duration
-                                </div>
-                            </div>
-                        </form>
-                    )}
+                                    <div className="col-md-2">
+                                        Duration
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </form>
                 </div>
             );
 

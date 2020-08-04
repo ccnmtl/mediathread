@@ -443,7 +443,7 @@ class DiscussionAssignmentCreateView(LoggedInFacultyMixin, ProjectCreateView):
         # create a project
         project = self.create_project()
 
-        # get the project's collaboration object 
+        # get the project's collaboration object
         project_collab = project.get_collaboration()
 
         # construct a collaboration for this discussion

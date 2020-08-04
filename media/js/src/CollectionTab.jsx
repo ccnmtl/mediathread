@@ -156,16 +156,16 @@ export default class CollectionTab extends React.Component {
                 <div className="row mt-2">
                     <div className="col-md-auto">
                         <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb bg-light mb-0">
-                            <li className="breadcrumb-item" aria-current="page">
-                                <a
-                                    href={courseUrl}
-                                    onClick={this.leaveAssetDetailView}
-                                    title="Back to Collection">
-                                    Back to the collection
-                                </a>
-                            </li>
-                          </ol>
+                            <ol className="breadcrumb bg-light mb-0">
+                                <li className="breadcrumb-item" aria-current="page">
+                                    <a
+                                        href={courseUrl}
+                                        onClick={this.leaveAssetDetailView}
+                                        title="Back to Collection">
+                                        Back to the collection
+                                    </a>
+                                </li>
+                            </ol>
                         </nav>
                     </div>
                 </div>

@@ -28,24 +28,24 @@ describe('formatTimecode', () => {
 describe('parseTimecode', () => {
     it('parses timecodes correctly', () => {
         expect(parseTimecode('00:00:00')).toBe(0);
-        expect(parseTimecode('00:55:00')).toBe(55);
-        expect(parseTimecode('01:00:00')).toBe(60);
-        expect(parseTimecode('01:21:00')).toBe(81);
-        expect(parseTimecode('166:39:00')).toBe(9999);
-        expect(parseTimecode('00:00:23')).toBe(0.23);
-        expect(parseTimecode('00:55:18')).toBe(55.18);
-        expect(parseTimecode('01:00:12')).toBe(60.12);
-        expect(parseTimecode('01:21:32')).toBe(81.32);
-        expect(parseTimecode('166:39:11')).toBe(9999.11);
-        expect(parseTimecode('00:01:99')).toBe(1.99);
+        expect(parseTimecode('00:55:00')).toBe(3300);
+        expect(parseTimecode('01:00:00')).toBe(3600);
+        expect(parseTimecode('01:21:00')).toBe(4860);
+        expect(parseTimecode('166:39:00')).toBe(599940);
+        expect(parseTimecode('00:00:23')).toBe(23);
+        expect(parseTimecode('00:55:18')).toBe(3318);
+        expect(parseTimecode('01:00:12')).toBe(3612);
+        expect(parseTimecode('01:21:32')).toBe(4892);
+        expect(parseTimecode('166:39:11')).toBe(599951);
+        expect(parseTimecode('00:01:99')).toBe(159);
     });
     it('is flexible about zeroes', () => {
         expect(parseTimecode('00:00:0')).toBe(0);
         expect(parseTimecode('0:0:0')).toBe(0);
         expect(parseTimecode('0:00:0')).toBe(0);
         expect(parseTimecode('0:00:00')).toBe(0);
-        expect(parseTimecode('0:55:00')).toBe(55);
-        expect(parseTimecode('00:0:12')).toBe(0.12);
+        expect(parseTimecode('0:55:00')).toBe(3300);
+        expect(parseTimecode('00:0:12')).toBe(12);
     });
     it('returns null on invalid input', () => {
         expect(parseTimecode('00:aa:0')).toBeNull();

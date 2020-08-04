@@ -21,14 +21,14 @@ export default class TimecodeEditor extends React.Component {
         return (
             <div className="jux-timecode-editor">
                 <input
+                    required
                     ref={this.spinnerRef}
                     min={this.props.min}
-                    required
                     defaultValue={timecode} />
             </div>
         );
     }
-    componentDidUpdate(props) {
+    componentDidUpdate(prevProps) {
         // Because this is an uncontrolled input, we need to manually
         // update the value of the input when the active element is
         // updated.
@@ -36,9 +36,9 @@ export default class TimecodeEditor extends React.Component {
             return;
         }
 
-        const spinner = this.spinnerRef.current;
-        if (parseTimecode(spinner.value) !== props.timecode) {
-            spinner.value = formatTimecode(props.timecode);
+        if (prevProps.timecode !== this.props.timecode) {
+            const spinner = this.spinnerRef.current;
+            spinner.value = formatTimecode(this.props.timecode);
         }
     }
     componentDidMount() {

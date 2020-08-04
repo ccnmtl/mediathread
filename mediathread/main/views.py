@@ -72,16 +72,17 @@ from structuredcollaboration.models import Collaboration
 
 # returns important setting information for all web pages.
 def django_settings(request):
-    whitelist = ['FLOWPLAYER_SWF_LOCATION',
-                 'FLOWPLAYER_HTML5_SWF_LOCATION',
-                 'FLOWPLAYER_AUDIO_PLUGIN',
-                 'FLOWPLAYER_PSEUDOSTREAMING_PLUGIN',
-                 'FLOWPLAYER_RTMP_PLUGIN',
-                 'DEBUG',
-                 'REVISION',
-                 'DATABASES',
-                 'GOOGLE_ANALYTICS_ID',
-                 'CAS_BASE']
+    whitelist = [
+        'CAS_BASE',
+        'FLOWPLAYER_SWF_LOCATION',
+        'FLOWPLAYER_HTML5_SWF_LOCATION',
+        'FLOWPLAYER_AUDIO_PLUGIN',
+        'FLOWPLAYER_PSEUDOSTREAMING_PLUGIN',
+        'FLOWPLAYER_RTMP_PLUGIN',
+        'GOOGLE_ANALYTICS_ID',
+        'JIRA_CONFIGURATION',
+        'REVISION'
+    ]
 
     return {'settings': dict([(k, getattr(settings, k, None))
                               for k in whitelist]),

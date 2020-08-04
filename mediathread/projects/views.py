@@ -47,16 +47,6 @@ from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
 
 
-def context_processor(request):
-    ctx = {'assignments_todo': 0}
-    if request.course and not request.user.is_anonymous:
-        a = Project.objects.unresponded_assignments(
-            request.course, request.user)
-        ctx['assignments_todo'] = len(a)
-
-    return ctx
-
-
 class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
                         CreateReversionMixin, View):
 

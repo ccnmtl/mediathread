@@ -22,7 +22,7 @@ from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
 from mediathread.projects.views import (
     SelectionAssignmentView, ProjectItemView,
     SequenceAssignmentView, ProjectListView,
-    context_processor, AssignmentListView)
+    AssignmentListView)
 import reversion
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
@@ -33,24 +33,6 @@ class ContextProcessorTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
-
-    def test_context_processor(self):
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-        request.user = self.student_one
-        ctx = context_processor(request)
-        self.assertEquals(ctx['assignments_todo'], 0)
-
-    def test_assignment_and_response(self):
-        self.assignment = ProjectFactory.create(
-            course=self.sample_course, author=self.instructor_one,
-            policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
-
-        request = RequestFactory().get('/')
-        request.course = self.sample_course
-        request.user = self.student_one
-        ctx = context_processor(request)
-        self.assertEquals(ctx['assignments_todo'], 1)
 
 
 class ProjectViewTest(MediathreadTestMixin, TestCase):

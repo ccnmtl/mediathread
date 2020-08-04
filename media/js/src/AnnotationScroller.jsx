@@ -34,16 +34,10 @@ export default class AnnotationScroller extends React.Component {
             this.props.onSelectedAnnotationUpdate(newAnnotation);
         }
     }
-    showAnnotation() {
-        /*const selectedAnnotation =
-              this.props.annotations[this.state.currentAnnotation];
-        const annotationData = JSON.parse(selectedAnnotation.annotation_data);*/
-    }
     render() {
         const selectedAnnotation =
               this.props.annotations[this.state.currentAnnotation];
 
-        // TODO: link to annotation, not just asset.
         const courseUrl = getCourseUrl();
         const annotationLink = `${courseUrl}react/asset/` +
               selectedAnnotation.asset_id +
@@ -99,9 +93,6 @@ export default class AnnotationScroller extends React.Component {
                 </nav>
             </div>
         );
-    }
-    componentDidMount() {
-        this.showAnnotation();
     }
 }
 

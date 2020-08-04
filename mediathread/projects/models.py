@@ -25,6 +25,7 @@ PROJECT_TYPE_COMPOSITION = 'composition'
 PROJECT_TYPE_SEQUENCE = 'sequence'
 PROJECT_TYPE_SELECTION_ASSIGNMENT = 'selection-assignment'
 PROJECT_TYPE_SEQUENCE_ASSIGNMENT = 'sequence-assignment'
+PROJECT_TYPE_DISCUSSION_ASSIGNMENT = 'discussion-assignment'
 PROJECT_TYPES = (
     (PROJECT_TYPE_ASSIGNMENT, 'Composition Assignment'),
     (PROJECT_TYPE_COMPOSITION, 'Composition'),
@@ -35,7 +36,8 @@ PROJECT_TYPES = (
 PROJECT_TYPE_ASSIGNMENTS = [
     PROJECT_TYPE_ASSIGNMENT,
     PROJECT_TYPE_SELECTION_ASSIGNMENT,
-    PROJECT_TYPE_SEQUENCE_ASSIGNMENT
+    PROJECT_TYPE_SEQUENCE_ASSIGNMENT,
+    PROJECT_TYPE_DISCUSSION_ASSIGNMENT
 ]
 
 PUBLISH_DRAFT = ('PrivateEditorsAreOwners', 'Draft - only you can view')
@@ -458,6 +460,8 @@ class Project(models.Model):
             return 'Selection Assignment'
         if self.is_sequence_assignment():
             return 'Sequence Assignment'
+        if self.is_discussion_assignment():
+            return 'Discussion Assignment'
 
         assignment = self.assignment()
         if not assignment:
@@ -474,8 +478,7 @@ class Project(models.Model):
         return 'Composition Assignment Response'
 
     def is_assignment_type(self):
-        return (self.is_essay_assignment() or self.is_selection_assignment() or
-                self.is_sequence_assignment())
+        return self.project_type in PROJECT_TYPE_ASSIGNMENTS
 
     def is_essay_assignment(self):
         return self.project_type == PROJECT_TYPE_ASSIGNMENT
@@ -485,6 +488,9 @@ class Project(models.Model):
 
     def is_sequence_assignment(self):
         return self.project_type == PROJECT_TYPE_SEQUENCE_ASSIGNMENT
+
+    def is_discussion_assignment(self):
+        return self.project_type == PROJECT_TYPE_DISCUSSION_ASSIGNMENT
 
     def is_composition(self):
         return self.project_type == PROJECT_TYPE_COMPOSITION
@@ -513,7 +519,24 @@ class Project(models.Model):
         if col:
             comm_type = ContentType.objects.get_for_model(ThreadedComment)
 
-            feedback = col.children.filter(content_type=comm_type)
+            feedback = col.children.filter(
+                policy_record__policy_name='PrivateStudentAndFaculty',
+                content_type=comm_type)
+            if feedback:
+                thread = feedback[0].content_object
+
+        return thread
+
+    def course_discussion(self):
+        '''returns the course-level discussion'''
+        thread = None
+        col = self.get_collaboration()
+        if col:
+            comm_type = ContentType.objects.get_for_model(ThreadedComment)
+
+            feedback = col.children.filter(
+                policy_record__policy_name='CourseProtected',
+                content_type=comm_type)
             if feedback:
                 thread = feedback[0].content_object
 

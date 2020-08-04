@@ -21,8 +21,6 @@
 {% endblock %}
 
 {% block uncompressable_js %}
-    {% include "djangosherd/player_resources.html" %}
-
     <!-- required project functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
@@ -30,7 +28,7 @@
     <script type="text/javascript">
         jQuery(document).ready(function () {
             var view = new AssignmentEditView({
-                el: jQuery('.composition-assignment').first()
+                el: jQuery('.discussion-assignment').first()
             });
         });
     </script>
@@ -67,41 +65,35 @@
                     {% if form.instance %}
                         <h1 class="page-title pl-0">Edit {{form.instance.title}}</h1>
                     {% else %}
-                        <h1 class="page-title pl-0">Create Composition Assignment</h1>
+                        <h1 class="page-title pl-0">Create Discussion Assignment</h1>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="composition-assignment">
+
+            <div class="discussion-assignment">
                 <div class="row">
                     <div class="col-md-8">
-                        <form name="composition-assignment-edit"
+                        <form name="discussion-assignment-edit"
                             {% if form.instance %}
                                 action="{% url 'project-save' request.course.pk form.instance.id %}"
                             {% else %}
-                                action="{% url 'project-create' request.course.pk %}"
+                                action="{% url 'discussion-assignment-create' request.course.pk %}"
                             {% endif %}
                             method="post">
 
                             {% csrf_token %}
-                            <input type="hidden" name="project_type" value="assignment" />
+                            <input type="hidden" name="project_type" value="discussion-assignment" />
 
                             <div data-page="1" data-page-content="instructions" class="page">
                                 <h4>Step 1: Introduction</h4><br />
 
-                                <p>A composition assignment is....</p>
+                                <p>A discussion assignment is....</p>
 
                                 <p>{% lorem %}</p>
 
-                                <p>Visibility of student responses can be set at one of the following levels:</p>
-                                <ul>
-                                <li>Student responses are visible only to instructors</li>
-                                <li>Students can see other responses only after submitting their own</li>
-                                <li>Students can see other responses at any time</li>
-                                </ul>
-                                <br />
                                 <div class="row mb-5">
-                                    <div class="col">
+                                    <div class="col text-right">
                                         <button id="page2" class="btn btn-primary next">
                                             Get Started
                                         </button>
@@ -112,9 +104,8 @@
                                 <h4>Step 2. Write title &amp; instructions</h4><br />
                                 <div class="form-group">
                                     <label><strong>Assignment Title</strong></label><br />
-                                    {% if form.instance %}{{form.instance.title}}{% endif %}
                                     <input type="text" name="title" class="form-control"
-                                        value="{% if form.instance.title != form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endif %}"/>
+                                        value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                                     <div class="help-inline">Title is a required field</div>
                                 </div>
                                 <div class="form-group">
@@ -152,13 +143,6 @@
                                         name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                                 </div>
                                 <div class="help-inline">Please choose a due date.</div>
-                                <br />
-                                <label for="response_view_policy"><strong>Visibility</strong></label>
-                                <p>Choose when students can see responses submitted by other students:</p>
-                                <div class="form-group">
-                                    {{form.response_view_policy}}
-                                </div>
-                                <div class="help-inline">Please choose how responses will be viewed.</div>
 
                                 <div class="row mb-5">
                                     <div class="col">
@@ -185,9 +169,7 @@
                                         <button class="btn btn-secondary prev">Previous</button>
                                     </div>
                                     <div class="col text-right">
-                                        <button id="save-assignment" class="btn btn-primary save" type="submit">
-                                            Save
-                                        </button>
+                                        <button id="save-assignment" class="btn btn-primary save" type="submit">Save</button>
                                     </div>
                                 </div>
                             </div>

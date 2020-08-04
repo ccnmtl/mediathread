@@ -146,9 +146,14 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.student_one.username,
                               password='test'))
 
+        data = {u'body': [u'<p>no ajax here</p>'],
+                u'participants': [self.student_one.id],
+                u'publish': [u'PrivateEditorsAreOwners'],
+                u'title': [u'Private Student Essay']}
+
         url = '/project/save/%s/' % self.project_private.id
-        response = self.client.post(url)
-        self.assertEquals(response.status_code, 405)
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
 
     def test_project_save_valid(self):
         versions = Version.objects.get_for_object(
@@ -279,12 +284,8 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
                 u'publish': [u'PrivateEditorsAreOwners'],
                 u'parent': self.assignment.pk}
 
-        response = self.client.post('/project/create/', data,
-                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
-        the_json = json.loads(response.content)
-        project = the_json['context']['project']
-        self.assertTrue(project['is_response'])
+        response = self.client.post('/project/create/', data)
+        self.assertEquals(response.status_code, 302)
 
     def test_project_delete(self):
         ctype = ContentType.objects.get(model='project', app_label='projects')

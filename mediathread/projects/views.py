@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
@@ -20,6 +19,7 @@ from django.urls import reverse
 from django.views.generic.base import View, TemplateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import allow_http
+import json
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
@@ -27,7 +27,7 @@ from mediathread.assetmgr.models import Asset
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.main.course_details import allow_public_compositions, \
-    cached_course_is_faculty
+    cached_course_is_faculty, cached_course_collaboration
 from mediathread.main.models import UserSetting
 from mediathread.mixins import (
     LoggedInCourseMixin, RestrictedMaterialsMixin, AjaxRequiredMixin,
@@ -44,6 +44,7 @@ from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
+from threadedcomments.models import ThreadedComment
 
 
 def context_processor(request):
@@ -80,7 +81,8 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
             return ('<strong>Complete</strong>! Your assignment has been '
                     '<strong>published to the course</strong>.')
 
-    def post(self, request):
+    def create_project(self):
+        request = self.request
         project_type = request.POST.get('project_type', 'composition')
         body = request.POST.get('body', '')
         response_policy = request.POST.get('response_view_policy', 'always')
@@ -112,30 +114,17 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
             messages.add_message(request, messages.SUCCESS,
                                  self.get_confirmation_message(policy))
 
-        if not request.is_ajax():
-            return HttpResponseRedirect(
-                reverse('project-workspace',
-                        args=(request.course.pk, project.pk)))
-        else:
-            is_faculty = request.course.is_faculty(request.user)
-            can_edit = project.can_edit(request.course, request.user)
+        return project
 
-            resource = ProjectResource(record_viewer=request.user,
-                                       is_viewer_faculty=is_faculty,
-                                       editable=can_edit)
-            project_context = resource.render_one(request, project)
-            project_context['editing'] = True
-
-            data = {'panel_state': 'open',
-                    'template': 'project',
-                    'context': project_context}
-
-            return self.render_to_json_response(data)
+    def post(self, request):
+        project = self.create_project()
+        return HttpResponseRedirect(
+            reverse('project-workspace',
+                    args=(request.course.pk, project.pk)))
 
 
-class ProjectSaveView(LoggedInCourseMixin, AjaxRequiredMixin,
-                      JSONResponseMixin, ProjectEditableMixin,
-                      CreateReversionMixin, View):
+class ProjectSaveView(LoggedInCourseMixin, JSONResponseMixin,
+                      ProjectEditableMixin, CreateReversionMixin, View):
 
     def post(self, request, *args, **kwargs):
         frm = ProjectForm(request, instance=self.project, data=request.POST)
@@ -190,10 +179,16 @@ class ProjectSaveView(LoggedInCourseMixin, AjaxRequiredMixin,
                          frm.fields[key].label,
                          value[0].lower())
 
-        return self.render_to_json_response(ctx)
+        if request.is_ajax():
+            return self.render_to_json_response(ctx)
+        else:
+            return HttpResponseRedirect(
+                reverse('project-workspace',
+                        args=(request.course.pk, project.pk)))
 
 
 class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
+
     def post(self, request, *args, **kwargs):
         """
         Delete the requested project. Regular access conventions apply.
@@ -202,7 +197,7 @@ class ProjectDeleteView(LoggedInCourseMixin, ProjectEditableMixin, View):
         will be returned
         """
         if self.project.is_assignment_type():
-            url = reverse('project-list', args=[request.course.pk])
+            url = reverse('assignment-list', args=[request.course.pk])
         else:
             url = reverse('project-list', args=[request.course.pk])
         collaboration = self.project.get_collaboration()
@@ -442,6 +437,44 @@ class CompositionAssignmentEditView(AssignmentEditView):
     template_name = 'projects/composition_assignment_edit.html'
 
 
+class DiscussionAssignmentCreateView(ProjectCreateView):
+
+    def post(self, request):
+        # create a project
+        project = self.create_project()
+
+        # create a discussion that points to the project
+        project_collab = project.get_collaboration()
+
+        course_collab = cached_course_collaboration(request.course)
+        disc_collab = Collaboration(_parent=project_collab,
+                                    title=project.title,
+                                    context=course_collab)
+        disc_collab.set_policy('Course Protected')
+        disc_collab.save()
+
+        # finally create the root discussion object, pointing it at the CHILD.
+        new_threaded_comment = ThreadedComment.objects.create(
+            parent=None, title=project.title, comment=project.body,
+            user=request.user, site_id=1, content_object=disc_collab)
+
+        disc_collab.content_object = new_threaded_comment
+        disc_collab.save()
+
+        DiscussionIndex.update_class_references(
+            new_threaded_comment.comment, new_threaded_comment.user,
+            new_threaded_comment, new_threaded_comment.content_object,
+            new_threaded_comment.user)
+
+        return HttpResponseRedirect(
+                reverse('project-workspace',
+                        args=(request.course.pk, project.pk)))
+
+
+class DiscussionAssignmentWizardView(AssignmentEditView):
+    template_name = 'projects/discussion_assignment_edit.html'
+
+
 class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
                        TemplateView):
 
@@ -473,12 +506,18 @@ class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
             view = SequenceAssignmentView.as_view()
         elif project.is_sequence():
             view = SequenceEditView.as_view()
+        elif project.is_discussion_assignment():
+            view = DiscussionAssignmentView.as_view()
         elif project.is_essay_assignment() or parent:
             view = CompositionAssignmentView.as_view()
         else:
             view = CompositionView.as_view()
 
         return view(request, *args, **kwargs)
+
+
+class DiscussionAssignmentView(AssignmentView):
+    template_name = 'projects/discussion_assignment.html'
 
 
 class SelectionAssignmentView(AssignmentView):

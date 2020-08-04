@@ -43,9 +43,15 @@
                 return title.length > 0 && body.length > 0;
             } else if (pageContent === 'due-date') {
                 var q1 = 'input[name="due_date"]';
-                var q2 = 'input[name="response_view_policy"]:checked';
-                return jQuery(q1).val() !== undefined &&
-                    jQuery(q1).val() !== '' && jQuery(q2).val() !== undefined;
+                if (jQuery(q1).val() === undefined || jQuery(q1).val() === '')
+                    return false;
+
+                var q2 = 'input[name="response_view_policy"]';
+                if (jQuery(q2).length &&
+                        jQuery(q2 + ':checked').val() === undefined) {
+                    return false;
+                }
+                return true;
             } else if (pageContent === 'publish') {
                 var q = 'input[name="publish"]:checked';
                 return jQuery(q).val() !== undefined;
@@ -95,8 +101,6 @@
             this.showPage($current.data('page-content'));
         },
         onSave: function(evt) {
-            evt.preventDefault();
-
             var $current = jQuery('div[data-page="' + this.currentPage + '"]');
             var content = $current.data('page-content');
             if (!this.validate(content)) {
@@ -106,20 +110,7 @@
 
             jQuery(window).unbind('beforeunload');
             tinymce.activeEditor.save();
-            var frm = jQuery(evt.currentTarget).parents('form')[0];
-            jQuery.ajax({
-                type: 'POST',
-                url: frm.action,
-                dataType: 'json',
-                data: jQuery(frm).serializeArray(),
-                success: function(json) {
-                    // eslint-disable-next-line scanjs-rules/assign_to_location
-                    window.location = json.context.project.url;
-                },
-                error: function() {
-                    // do something useful here
-                }
-            });
+            return true;
         },
         onFormKeyPress: function(evt) {
             if (evt.keyCode === 13) {

@@ -98,14 +98,10 @@
                         </a>
                     </div>
                     <div class="col text-right">
-                        <form action="{% url 'discussion-create' request.course.id %}" method="post">
-                            {% csrf_token %} 
-                            <input type="hidden" name="comment_html" value="Discussion Title" />
-                            <input type="hidden" name="app_label" value="courseaffils" />
-                            <input type="hidden" name="model" value="course" />
-                            <input type="hidden" name="obj_pk" value="{{request.course.id}}" />
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Add Assignment</button>
-                        </form>
+                        <a class="btn btn-sm btn-outline-primary" title="Add Discussion Assignment"
+                            href="{% url 'discussion-assignment-create-wizard' request.course.pk%}">
+                            Add Assignment
+                        </a>
                     </div>
                 </div>
             </div>

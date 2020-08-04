@@ -18,7 +18,7 @@
                     data-parent="#feedback-accordion">
                     <div class="m-2">
                         <div class="panel-subcontainer discussion bg-white p-4">
-                            <div class="row">
+                            <div class="row no-gutters">
                                 <div class="col-md-6 order-md-2">
                                     {{! Media Display Window and or a Collections box }}
                                     <div class="collection-materials"
@@ -58,9 +58,9 @@
                                                     <ul class="comment-thread">
                                                 {{/open}}
                                                 <li id="comment-{{id}}" class="comment-thread">
-                                                    <div class="comment mb-5">
+                                                    <div class="comment">
                                                         <div class="threaded_comment_header">
-                                                            <div class="threaded_comment_author">
+                                                            <div class="threaded_comment_author font-weight-bold">
                                                                 {{author}}
                                                             </div>
                                                         </div>
@@ -94,7 +94,7 @@
                                             class="threaded_comments_form">
                                             <h3 style="display: none">Respond</h3>
                                             <input type="hidden" id="comment-edit-id" name="edit-id" />
-                                            <input type="hidden" id="comment-csrf" name="csrfmiddlewaretoken" />
+                                            <script type="text/javascript" src="{{#staticUrl}}{{/staticUrl}}js/app/tinymce_init.js"></script>
                                             <table class="threaded_comments_form_table">
                                                 {{{context.form}}}
                                             </table>

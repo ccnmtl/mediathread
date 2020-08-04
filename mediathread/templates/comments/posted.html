@@ -1,23 +1,16 @@
-{% extends "base.html" %}
-{% load i18n %}
 {% load threadedcomments_tags %}
-
-{% block title %}{% trans "Thanks for commenting" %}.{% endblock %}
-
-{% block content %}
-  <h1>{% trans "Thank you for your comment" %}.</h1>
+<html>
+<body>
   <a href="/discussion/{{comment.root_path.0.id}}#comment-{{comment.id}}">Back</a>
-
 
   {% get_comment_form for comment.content_object as current_comment_form with comment.id %}
   <form id="comment-form" method="POST" action="/comments/post/" class="threaded_comments_form">
     <ul>
-      {{ current_comment_form.as_ul }}
-
-      <li><input class="project" id="comment-form-submit" type="submit" value="Submit Comment" /></li>
+        {{ current_comment_form.as_ul }}
     </ul>
   </form>
 
   <h2 id="commenttitle">{{comment.title|safe}}</h2>
   <div id="commentposted">{{comment.comment|safe}}<!--endposted--></div>
-{% endblock %}
+</body>
+</html>

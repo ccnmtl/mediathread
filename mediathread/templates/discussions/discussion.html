@@ -46,6 +46,19 @@
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="{% url 'assignment-list' request.course.pk %}">
+                                Back to assignments
+                            </a>
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
             <div id="discussion-workspace" class="row">
                 <div id="discussion-container" class="col-md-12">
                 </div>

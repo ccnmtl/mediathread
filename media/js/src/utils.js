@@ -200,13 +200,17 @@ const getSeparatedTimeUnits = function(totalSeconds) {
     ];
 };
 
+/**
+ * Parse a timecode string from HH:MM:SS string format into a
+ * number. Unit is in seconds.
+ */
 const parseTimecode = function(str) {
     const parts = str.split(':');
     const col1 = Number(parts[0]);
     const col2 = Number(parts[1]);
     const col3 = Number(parts[2]);
     if (isFinite(col1) && isFinite(col2) && isFinite(col3)) {
-        return (col1 * 60) + col2 + (col3 / 100);
+        return (col1 * 3600) + (col2 * 60) + col3;
     } else {
         return null;
     }
@@ -219,6 +223,13 @@ const pad2 = function(number) {
 const formatTimecode = function(totalSeconds) {
     const units = getSeparatedTimeUnits(totalSeconds);
     return pad2(units[0]) + ':' + pad2(units[1]) + ':' + pad2(units[2]);
+};
+
+/**
+ * Return a duration, given a selection's start and end time.
+ */
+const getDuration = function(start, end) {
+    return Math.max(end - start, 0);
 };
 
 const capitalizeFirstLetter = function(str) {
@@ -541,6 +552,7 @@ export {
     deleteSelection,
     getHours, getMinutes, getSeconds,
     pad2, getSeparatedTimeUnits, formatTimecode, parseTimecode,
+    getDuration,
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getPlayerTime, getCourseUrl,
     getAssetUrl,

@@ -22,7 +22,7 @@ import Asset from '../Asset';
 import {
     getAsset, createSherdNote, updateSherdNote,
     deleteSelection,
-    formatTimecode, parseTimecode,
+    formatTimecode, parseTimecode, getDuration,
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
 import {
@@ -274,18 +274,28 @@ export default class AssetDetail extends React.Component {
 
         // Compare progress to the currently playing selection
         if (d.playedSeconds > this.selection.range2) {
-            this.pause();
+            //this.pause();
         }
     }
 
     onStartTimeUpdate(e) {
-        const str = e.target.value;
-        this.setState({selectionStartTime: parseTimecode(str)});
+        let n = e;
+
+        if (e.target) {
+            n = parseTimecode(e.target.value);
+        }
+
+        this.setState({selectionStartTime: n});
     }
 
     onEndTimeUpdate(e) {
-        const str = e.target.value;
-        this.setState({selectionEndTime: parseTimecode(str)});
+        let n = e;
+
+        if (e.target) {
+            n = parseTimecode(e.target.value);
+        }
+
+        this.setState({selectionEndTime: n});
     }
 
     onStartTimeClick(e) {
@@ -314,6 +324,8 @@ export default class AssetDetail extends React.Component {
                 me.setState({selectionEndTime: t});
             });
         }
+
+        this.pause();
     }
 
     showDeleteDialog(selectionId) {
@@ -348,6 +360,10 @@ export default class AssetDetail extends React.Component {
     }
 
     onClearActiveSelection() {
+        let newState = {
+            activeSelection: null
+        };
+
         if (this.type === 'image') {
             if (this.draw) {
                 this.map.removeInteraction(this.draw);
@@ -359,15 +375,11 @@ export default class AssetDetail extends React.Component {
 
             resetMap(this.map, this.selectionSource, this.asset.getImage());
         } else if (this.type === 'video') {
-            const player = this.playerRef;
-            player.seekTo(0, 'seconds');
-            this.setState({
-                selectionStartTime: null,
-                selectionEndTime: null
-            });
+            newState.selectionStartTime = null;
+            newState.selectionEndTime = null;
         }
 
-        this.setState({activeSelection: null});
+        this.setState(newState);
     }
 
     onViewSelection(e, a) {
@@ -469,50 +481,73 @@ export default class AssetDetail extends React.Component {
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
                     <form>
-                        <div className="form-row align-items-center">
+                        <div className="form-row">
                             {invisibleEl}
 
                             {(this.state.tab === 'createSelection' || this.state.tab === 'viewSelections') && (
                                 <>
-                                    <div className="col-md-10">
+                                    <div className="col-md-9">
                                         <div className="input-group">
 
                                             {this.state.tab === 'createSelection' && (
-                                                <button
-                                                    onClick={this.onStartTimeClick}
-                                                    ref={this.startButtonRef}
-                                                    type="button"
-                                                    className="btn btn-outline-light btn-sm">
-                                                    Selection Start
-                                                </button>
+                                                <>
+                                                    <button
+                                                        onClick={this.onStartTimeClick}
+                                                        ref={this.startButtonRef}
+                                                        type="button"
+                                                        className="btn btn-outline-light btn-sm">
+                                                        Selection Start
+                                                    </button>
+                                                    <TimecodeEditor
+                                                        min={0}
+                                                        onChange={this.onStartTimeUpdate}
+                                                        timecode={this.state.selectionStartTime}
+                                                    />
+                                                </>
                                             )}
-                                            <TimecodeEditor
-                                                min={0}
-                                                onChange={this.onStartTimeUpdate}
-                                                timecode={this.state.selectionStartTime}
-                                            />
+                                            {this.state.activeSelection && this.state.tab === 'viewSelections' && (
+                                                formatTimecode(this.state.selectionStartTime)
+                                            )}
 
-                                            {String.fromCharCode(160)}
-                                            {String.fromCharCode(8212)}
-                                            {String.fromCharCode(160)}
+                                            {
+                                                (this.state.tab === 'createSelection' ||
+                                                 (this.state.activeSelection && this.state.tab === 'viewSelections')
+                                                ) && (
+                                                    <>
+                                                        {String.fromCharCode(160)}
+                                                        {String.fromCharCode(8212)}
+                                                        {String.fromCharCode(160)}
+                                                    </>
+                                                )}
 
                                             {this.state.tab === 'createSelection' && (
-                                                <button
-                                                    onClick={this.onEndTimeClick}
-                                                    type="button"
-                                                    className="btn btn-outline-light btn-sm">
-                                                    Selection Stop
-                                                </button>
+                                                <>
+                                                    <button
+                                                        onClick={this.onEndTimeClick}
+                                                        type="button"
+                                                        className="btn btn-outline-light btn-sm">
+                                                        Selection Stop
+                                                    </button>
+                                                    <TimecodeEditor
+                                                        min={0}
+                                                        onChange={this.onEndTimeUpdate}
+                                                        timecode={this.state.selectionEndTime}
+                                                    />
+                                                </>
                                             )}
-                                            <TimecodeEditor
-                                                min={0}
-                                                onChange={this.onEndTimeUpdate}
-                                                timecode={this.state.selectionEndTime}
-                                            />
+                                            {this.state.activeSelection && this.state.tab === 'viewSelections' && (
+                                                formatTimecode(this.state.selectionEndTime)
+                                            )}
+
                                         </div>
                                     </div>
-                                    <div className="col-md-2">
-                                        Duration
+
+                                    <div className="col-md-3">
+                                        Duration:{String.fromCharCode(160)}
+                                        <strong>{formatTimecode(getDuration(
+                                            this.state.selectionStartTime,
+                                            this.state.selectionEndTime))}
+                                        </strong>
                                     </div>
                                 </>
                             )}

@@ -1378,3 +1378,88 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         qs = view.get_queryset()
         self.assertEqual(qs.count(), 1)
         self.assertEqual(qs[0], future_assignment)
+
+
+class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.discussion = ProjectFactory.create(
+            title='keep talking', course=self.sample_course,
+            author=self.instructor_one, due_date=datetime.today(),
+            policy=PUBLISH_WHOLE_CLASS[0],
+            project_type='discussion-assignment')
+
+    def test_create_wizard(self):
+        url = reverse('discussion-assignment-create-wizard')
+
+        # anonymous
+        self.assertEqual(self.client.get(url).status_code, 302)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 403)
+
+        # faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_edit_wizard(self):
+        url = reverse('discussion-assignment-edit-wizard',
+                      args=[self.sample_course.id, self.discussion.id])
+
+        # anonymous
+        self.assertEqual(self.client.get(url).status_code, 302)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 403)
+
+        # faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_view(self):
+        url = reverse('project-workspace',
+                      args=[self.sample_course.id, self.discussion.id])
+
+        # anonymous
+        self.assertEqual(self.client.get(url).status_code, 302)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+        # faculty
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_create(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        data = {
+            u'body': [u'<p>Talk</p>'],
+            u'project_type': [u'discussion-assignment'],
+            u'publish': [u'CourseProtected'],
+            u'title': [u'Important Discussion']}
+        url = reverse('discussion-assignment-create',
+                      args=[self.sample_course.id])
+        response = self.client.post(url, data, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(response.redirect_chain[0][0].startswith(
+            '/course/{}/project/view/'.format(self.sample_course.id)))
+
+        project = Project.objects.get(title='Important Discussion')
+        discussion = project.course_discussion()
+        self.assertEqual(discussion.comment, '<p>Talk</p>')
+        self.assertEqual(discussion.title, 'Important Discussion')
+
+    def test_save(self):
+        pass

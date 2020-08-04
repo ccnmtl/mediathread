@@ -528,17 +528,19 @@ class Project(models.Model):
         return thread
 
     def course_discussion(self):
-        '''returns the course-level discussion'''
+        '''returns the ThreadedComment object for a
+        course discussion. This is distinguished from instructor feedback
+        by the access policy.'''
         thread = None
         col = self.get_collaboration()
         if col:
             comm_type = ContentType.objects.get_for_model(ThreadedComment)
 
-            feedback = col.children.filter(
+            discussion = col.children.filter(
                 policy_record__policy_name='CourseProtected',
                 content_type=comm_type)
-            if feedback:
-                thread = feedback[0].content_object
+            if discussion:
+                thread = discussion[0].content_object
 
         return thread
 

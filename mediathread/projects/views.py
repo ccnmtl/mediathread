@@ -437,27 +437,36 @@ class CompositionAssignmentEditView(AssignmentEditView):
     template_name = 'projects/composition_assignment_edit.html'
 
 
-class DiscussionAssignmentCreateView(ProjectCreateView):
+class DiscussionAssignmentCreateView(LoggedInFacultyMixin, ProjectCreateView):
 
     def post(self, request):
         # create a project
         project = self.create_project()
 
-        # create a discussion that points to the project
+        # get the project's collaboration object 
         project_collab = project.get_collaboration()
 
+        # construct a collaboration for this discussion
+        # the parent will be this project within the course context
+        # all course members can participate in the discussion
         course_collab = cached_course_collaboration(request.course)
         disc_collab = Collaboration(_parent=project_collab,
                                     title=project.title,
                                     context=course_collab)
-        disc_collab.set_policy('Course Protected')
+        disc_collab.set_policy('CourseProtected')
         disc_collab.save()
 
-        # finally create the root discussion object, pointing it at the CHILD.
+        # Create a ThreadedComment that will act as the discussion root
+        # It will be tied to the project via the collaboration object
+        # as a generic foreign key
         new_threaded_comment = ThreadedComment.objects.create(
             parent=None, title=project.title, comment=project.body,
             user=request.user, site_id=1, content_object=disc_collab)
 
+        # Conversely, the discussion collaboration will hold the
+        # discussion root in its generic foreign key
+        # this thread can now be accessed via the "course_discussion"
+        # model attribute
         disc_collab.content_object = new_threaded_comment
         disc_collab.save()
 

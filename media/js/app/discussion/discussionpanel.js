@@ -1,3 +1,4 @@
+
 /* global CitationView: true, djangosherd: true, CollectionList: true */
 /* global MediaThread: true */
 /* global tinymce: true, tinymceSettings: true, showMessage: true */

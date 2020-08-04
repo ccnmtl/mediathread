@@ -1,0 +1,70 @@
+{% extends "base_new.html" %}
+
+{% block title %}
+    {% if discussion.title %}{{discussion.title}}{% else %}New Discussion{% endif %}
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
+    <link rel="stylesheet" href="{{STATIC_URL}}css/project.css" />
+    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
+
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
+{% endblock %}
+
+{% block uncompressable_css %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+{% endblock %}
+
+{% block uncompressable_js %}
+    {% include "djangosherd/player_resources.html" %}
+    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+
+    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            panelManager.init({
+                'container': 'discussion-workspace',
+                'url': MediaThread.urls['discussion-view']({{assignment.course_discussion.id}})
+            });
+        });
+  </script>
+{% endblock %}
+
+{% block content %}
+    {% with active='assignments' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="{% url 'assignment-list' request.course.pk %}">
+                                Back to assignments
+                            </a>
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
+            <div id="discussion-workspace" class="row">
+                <div id="discussion-container" class="col-md-12">
+                </div>
+            </div>
+            <div id="asset-container" class="col-md-12">
+            </div>
+        </div>
+    </div>
+{% endblock %}

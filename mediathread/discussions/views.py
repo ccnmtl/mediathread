@@ -77,9 +77,6 @@ class DiscussionCreateView(LoggedInFacultyMixin, View):
         collaboration_context = cached_course_collaboration(request.course)
         disc_sc = Collaboration(_parent=obj_sc,
                                 title=title,
-                                # or we could point it at the root
-                                # threadedcomments object.
-                                # content_object=None,
                                 context=collaboration_context,
                                 )
         disc_sc.set_policy(request.POST.get('publish', None))

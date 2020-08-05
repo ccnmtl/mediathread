@@ -70,6 +70,9 @@ class ProjectResource(ModelResource):
         bundle.data['editable'] = self.editable
         bundle.data['is_faculty'] = self.is_viewer_faculty
         bundle.data['submitted'] = bundle.obj.is_submitted()
+        if bundle.obj.is_submitted():
+            bundle.data['submitted_on'] = \
+                bundle.obj.date_submitted.strftime(self.date_fmt)
 
         participants = bundle.obj.attribution_list()
         bundle.data['participants'] = [{

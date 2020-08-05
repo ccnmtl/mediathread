@@ -132,12 +132,12 @@ A new base.html without the course context overwritten in the template.
 
         {% block footer %}
             <footer class="text-muted bg-light mt-5">
-
                 <ul class="footer-navigation d-print-none">
                     <li><a title="About page" href="/about/">About</a></li>
                     <li><a title="Contact page" href="/contact/">Contact</a></li>
                     <li><a title="Help page" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></li>
                     <li><a title="GitHub Repository" href="https://github.com/ccnmtl/mediathread">GitHub</a></li>
+                    <li><a id="report-a-bug" title="Report a bug" href="#">Report a bug</a></li>
                 </ul>
 
                 <ul class="footer-logo row container mx-auto pt-4 pt-md-4 pt-lg-5">
@@ -291,6 +291,22 @@ A new base.html without the course context overwritten in the template.
         {% endif %}
         </script>
     {% endif %}
+
+    {% if settings.JIRA_CONFIGURATION %}
+        <script type="text/javascript" src="{{settings.JIRA_CONFIGURATION}}"></script>
+        <script>
+        window.ATL_JQ_PAGE_PROPS = {
+            "triggerFunction": function(showCollectorDialog) {
+                jQuery("#report-a-bug").click(function(e) {
+                    e.preventDefault();
+                    showCollectorDialog();
+                });
+            }
+         };
+        </script>
+    {% endif %}
+
+
 
     {% block uncompressable_js %}{% endblock %}
 

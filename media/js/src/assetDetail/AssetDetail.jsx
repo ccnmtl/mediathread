@@ -162,15 +162,15 @@ export default class AssetDetail extends React.Component {
                 tags: tags,
                 terms: terms,
                 body: document.getElementById('newSelectionNotes').value,
-                range1: this.state.selectionStartTime,
+                range1: this.state.selectionStartTime || 0,
                 range2: this.state.selectionEndTime,
                 annotation_data: {
-                    startCode: formatTimecode(this.state.selectionStartTime),
+                    startCode: formatTimecode(this.state.selectionStartTime || 0),
                     endCode: formatTimecode(this.state.selectionEndTime),
                     duration: this.state.selectionEndTime -
-                        this.state.selectionStartTime,
+                        (this.state.selectionStartTime || 0),
                     timeScale: 1,
-                    start: this.state.selectionStartTime,
+                    start: this.state.selectionStartTime || 0,
                     end: this.state.selectionEndTime
                 }
             });

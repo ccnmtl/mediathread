@@ -68,12 +68,12 @@ class SherdNoteSerializer(serializers.ModelSerializer):
                 'author': 'This field is required.'
             })
 
-        if not range1:
+        if range1 is None:
             raise serializers.ValidationError({
                 'range1': 'This field is required.'
             })
 
-        if not range2:
+        if range2 is None:
             raise serializers.ValidationError({
                 'range2': 'This field is required.'
             })

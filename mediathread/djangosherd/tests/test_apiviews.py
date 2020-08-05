@@ -61,6 +61,33 @@ class SherdNoteTestsAsStudent(
         self.assertTrue(
             note.asset.global_annotation(self.u, False) is not None)
 
+    def test_create_sherdnote_that_starts_at_0(self):
+        """
+        Ensure we can create a new SherdNote (annotation) object.
+        """
+        asset = AssetFactory(
+            primary_source='image', author=self.u, course=self.sample_course)
+        url = reverse('sherdnote-create', kwargs={'asset_id': asset.pk})
+
+        data = {
+            'title': 'note title',
+            'body': 'note body',
+            'range1': 0,
+            'range2': 17.565,
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SherdNote.objects.count(), 2)
+        note = SherdNote.objects.get(title='note title')
+        self.assertEqual(note.body, 'note body')
+        self.assertEqual(note.range1, 0)
+        self.assertEqual(note.range2, 17.565)
+        self.assertEqual(note.author, self.u)
+
+        self.assertTrue(
+            note.asset.global_annotation(self.u, False) is not None)
+
     def test_create_sherdnote_on_classmates_asset(self):
         """
         Ensure we can create a new SherdNote (annotation) object on a

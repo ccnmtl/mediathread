@@ -494,8 +494,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         self.assertTrue('panels' in the_json)
-        self.assertEquals(the_json['panels'][0]['panel_state_label'],
-                          'Version View')
 
     def test_project_public_view(self):
         url = self.project_private.get_collaboration().get_absolute_url()
@@ -543,7 +541,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['project'], self.project_private)
         self.assertEquals(response.context['space_owner'], 'student_one')
-        self.assertFalse(response.context['show_feedback'])
 
     def test_project_workspace_ajax(self):
         project_id = self.project_private.id
@@ -557,7 +554,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
 
         self.assertEquals(the_json['space_owner'], 'student_one')
-        self.assertFalse(the_json['show_feedback'])
 
         self.assertEquals(len(the_json['panels']), 2)
 
@@ -565,7 +561,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertFalse(panel['is_faculty'])
         self.assertEquals(len(panel['owners']), 6)
         self.assertEquals(panel['vocabulary'], [])
-        self.assertEquals(panel['panel_state'], 'open')
         self.assertEquals(panel['template'], 'project')
         self.assertEquals(len(panel['context']['annotations']), 2)
         self.assertEquals(len(panel['context']['assets']), 1)
@@ -590,7 +585,6 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['project'], self.project_private)
         self.assertEquals(response.context['space_owner'], 'student_two')
-        self.assertFalse(response.context['show_feedback'])
 
 
 class TestProjectSortView(MediathreadTestMixin, TestCase):

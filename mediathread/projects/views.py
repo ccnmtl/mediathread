@@ -342,7 +342,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
     """
 
-    template_name = 'projects/composition.html'
+    template_name = 'projects/project_readonly.html'
 
     def get(self, *args, **kwargs):
         """
@@ -361,55 +361,42 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
         """
 
         data = {'space_owner': self.request.user.username}
-
         version_number = self.kwargs.get('version_number', None)
 
         if not self.request.is_ajax():
-            course = self.project.course
             if version_number:
                 # versioned view
-                public_url = reverse('project-view-readonly',
-                                     kwargs={'course_pk': course.pk,
-                                             'project_id': self.project.id,
-                                             'version_number': version_number})
+                ctx = {'course_pk': self.project.course.pk,
+                       'project_id': self.project.id,
+                       'version_number': version_number}
+                project_url = reverse('project-view-readonly', kwargs=ctx)
             else:
-                public_url = self.project.public_url()
+                project_url = self.project.public_url()
 
             data['project'] = self.project
             data['version'] = version_number
-            data['public_url'] = public_url
+            data['public_url'] = project_url
             data['readonly'] = True
             return self.render_to_response(data)
+
+        # ajax view
+        resource = ProjectResource(record_viewer=self.request.user,
+                                   is_viewer_faculty=False,
+                                   editable=False)
+
+        if version_number:
+            version = get_object_or_404(
+                Version, object_id=str(self.project.id),
+                revision_id=version_number)
+            project_context = resource.render_one(
+                self.request, version._object_version.object, version_number)
         else:
-            if version_number:
-                version = get_object_or_404(Version,
-                                            object_id=str(self.project.id),
-                                            revision_id=version_number)
-                project = version._object_version.object
+            project_context = resource.render_one(self.request, self.project)
 
-            panels = []
+        data['panels'] = [{
+            'context': project_context, 'template': 'project_readonly'}]
 
-            is_faculty = (self.request.course and
-                          self.request.course.is_faculty(self.request.user))
-
-            # Requested project, either assignment or composition
-            self.request.public = True
-
-            resource = ProjectResource(record_viewer=self.request.user,
-                                       is_viewer_faculty=False,
-                                       editable=False)
-            project_context = resource.render_one(self.request, self.project,
-                                                  version_number)
-            panel = {'panel_state': 'open',
-                     'panel_state_label': "Version View",
-                     'context': project_context,
-                     'is_faculty': is_faculty,
-                     'template': 'project'}
-            panels.append(panel)
-
-            data['panels'] = panels
-
-            return self.render_to_json_response(data)
+        return self.render_to_json_response(data)
 
 
 class SelectionAssignmentEditView(
@@ -651,10 +638,8 @@ class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
 
     def get(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_id', None))
-        show_feedback = kwargs.get('feedback', None) == "feedback"
         data = {
-            'space_owner': request.user.username,
-            'show_feedback': show_feedback,
+            'space_owner': request.user.username
         }
 
         if not request.is_ajax():
@@ -686,20 +671,21 @@ class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
 
             project_context['create_instructor_feedback'] = False
 
+            project_revisions_url = reverse(
+                'project-revisions', args=[request.course.pk, project.id])
+
             panel = {'is_faculty': is_faculty,
-                     'panel_state': 'closed' if show_feedback else 'open',
                      'context': project_context,
                      'template': 'project',
                      'owners': owners,
+                     'project_revisions_url': project_revisions_url,
                      'vocabulary': vocabulary}
             panels.append(panel)
 
             data['panels'] = panels
 
             # Create a place for asset editing
-            panel = {'panel_state': 'closed',
-                     'panel_state_label': "Item Details",
-                     'template': 'asset_quick_edit',
+            panel = {'template': 'asset_quick_edit',
                      'update_history': False,
                      'owners': owners,
                      'vocabulary': vocabulary,

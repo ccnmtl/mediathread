@@ -29,7 +29,7 @@ Projects
                       <ol class="breadcrumb bg-light mb-0">
                         <li class="breadcrumb-item" aria-current="page">
                             <a href="{% url 'project-workspace' request.course.pk project.id %}">
-                                Back to {{project.title}}
+                                Back to {{project.title}} view
                             </a>
                         </li>
                       </ol>
@@ -38,7 +38,7 @@ Projects
             </div>
             <div class="row">
                 <div class="col">
-                    <h1 class="page-title">Revisions</h1>
+                    <h1 class="page-title">Revisions for {{project.title}}</h1>
                 </div>
             </div>
             <div class="row">

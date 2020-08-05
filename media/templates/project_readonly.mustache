@@ -144,6 +144,9 @@
                 </span>
             </h5>
         </div>
+        {{#context.project.current_version}}
+            <h5>Viewing version from {{context.project.modified}}</h5>
+        {{/context.project.current_version}}
         <div>
             <h5 class="project-visibility-description d-inline">
                 {{context.project.visibility}}

@@ -9,7 +9,7 @@ from courseaffils.columbia import CanvasTemplate, WindTemplate
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
-from courseaffils.views import get_courses_for_user, CourseListView
+from courseaffils.views import CourseListView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group, User
@@ -288,27 +288,23 @@ class MigrateCourseView(LoggedInFacultyMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         # Only show courses for which the user is an instructor
-        available_courses = get_courses_for_user(self.request.user)
-        courses = []
         if self.request.user.is_superuser:
-            courses = available_courses
+            courses = Course.objects.all()
         else:
-            for course in available_courses:
-                if cached_course_is_faculty(course, self.request.user):
-                    courses.append(course)
+            courses = Course.objects.filter(
+                faculty_group__user=self.request.user)
 
-        # Only send down the real faculty. Not all us staff members
-        faculty = []
-        for user in self.request.course.faculty.all().order_by('last_name',
-                                                               'username'):
-            faculty.append(user)
+        courses = courses.order_by('title').select_related('info')
+
+        faculty = self.request.course.faculty.all().order_by(
+            'last_name', 'username')
 
         return {
-            "current_course_faculty": faculty,
-            "available_courses": courses
+            "available_courses": courses,
+            'current_course_faculty': faculty
         }
 
-    def post(self, request):
+    def post(self, request, course_pk):
         from_course_id = request.POST.get('fromCourse', None)
         from_course = get_object_or_404(Course, id=from_course_id)
         faculty = [user.id for user in from_course.faculty.all()]

@@ -175,7 +175,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         view = MigrateCourseView()
         view.request = request
 
-        self.assertRaises(Http404, view.post, request)
+        self.assertRaises(Http404, view.post, request, self.sample_course.pk)
 
     def test_post_on_behalf_of_student(self):
         data = {
@@ -191,7 +191,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        response = view.post(request)
+        response = view.post(request, self.sample_course.pk)
 
         the_json = json.loads(response.content)
         self.assertFalse(the_json['success'])
@@ -210,7 +210,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        response = view.post(request)
+        response = view.post(request, self.sample_course.pk)
 
         the_json = json.loads(response.content)
         self.assertFalse(the_json['success'])
@@ -230,7 +230,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        response = view.post(request)
+        response = view.post(request, self.sample_course.pk)
 
         the_json = json.loads(response.content)
         self.assertTrue(the_json['success'])
@@ -273,7 +273,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        view.post(request)
+        view.post(request, self.sample_course.pk)
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
@@ -308,7 +308,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        view.post(request)
+        view.post(request, self.sample_course.pk)
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
@@ -343,7 +343,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        view.post(request)
+        view.post(request, self.sample_course.pk)
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
@@ -386,7 +386,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         view = MigrateCourseView()
         view.request = request
-        response = view.post(request)
+        response = view.post(request, self.sample_course.pk)
 
         the_json = json.loads(response.content)
         self.assertTrue(the_json['success'])

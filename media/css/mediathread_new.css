@@ -3446,11 +3446,6 @@ div#course-materials-container {
     padding-left: 20px;
 }
 
-div.course-information-container {
-    float: left;
-    width: 25%;
-}
-
 div#course div.meta {
     float: none;
     margin-bottom: 20px;
@@ -3458,13 +3453,6 @@ div#course div.meta {
 
 div.course-information input.rounded-button {
     width: 225px;
-}
-
-
-div.selected-for-import {
-    float: right;
-    margin-left: 50px;
-    width: 70%;
 }
 
 #import-selected {
@@ -3476,62 +3464,11 @@ div.selected-for-import div.results {
     height: 400px;
 }
 
-.import-dialog div.import-stuff {
-    height: 310px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border: 1px solid #CCC;
-    margin-top: 4px;
-    margin-bottom: 5px;
-}
-
-.import-dialog div.import-stuff table {
-    border: none;
-    width: 100%;
-}
-
-.import-dialog div.import-stuff table tr {
-    border-bottom: 1px solid #CCC;
-    width: 100%;
-}
-
-.import-dialog div.import-stuff table tr td {
-    border: none;
-    padding: 5px;
-}
-
-.import-dialog div.import-stuff table tr td.spacer {
-    height: 2px;
-    padding: 0;
-}
-
-.import-dialog div.import-stuff table tr.spacer-row {
-    border: none !important;
-}
-
 .import-dialog div.import-stuff table tr td.title div {
     width: 90%;
     text-overflow: ellipsis;
 }
 
-.import-dialog div.import-stuff table tr td.composition {
-    width: 10px;
-    background-color: #1E77BD;
-}
-
-.import-dialog div.import-stuff table tr td.assignment {
-    width: 10px;
-    background-color: #39B54A;
-}
-
-.import-dialog div.import-stuff table tr td.asset {
-    width: 10px;
-    background-color: #A88448;
-}
-
-.import-dialog div.import-stuff table tr.odd {
-    background-color: #EEE;
-}
 
 .import-dialog div.import-stuff table tr td.record {
     margin: 0 8px 0 0;

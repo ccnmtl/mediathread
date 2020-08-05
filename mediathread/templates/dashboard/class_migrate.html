@@ -230,25 +230,25 @@
 {% endblock %}
 
 {% block dashboard_content %}
-    {% with "help_migrate_materials" as help_id %}
-    {% with help_migrate_materials as default_help_state %}
-            <h3>Migrate Course Materials <div class="actions">{% include "help/help_button.html" %}</div></h3>
+    <div class="row">
+        <div class="col">
 
-            {% endwith %}{% endwith %}
-            {% with "help_migrate_materials" as help_id %}
-            {% with help_migrate_materials as default_help_state %}
-
-            {% include "help/help_contentarea.html" %}
-
-            <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
-            <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
-
-            <div id="available-courses-selector" class="card bg-light mb-3" style="display: none">
-                <div class="card-body">
-                <input type="text" class="form-control autocomplete" id="available-courses" placeholder="Type course name here">
-                <input type="submit" id="view-materials" value="View materials" class="btn btn-primary float-right mt-3"/>
-                </div>
+            <h4>Migrate Course Materials</h4>
+            <div class="float-right">
+                {% include "help/help_migrate.html" %}
             </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
+    <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
+
+    <div id="available-courses-selector" class="card bg-light mb-3" style="display: none">
+        <div class="card-body">
+        <input type="text" class="form-control autocomplete" id="available-courses" placeholder="Type course name here">
+        <input type="submit" id="view-materials" value="View materials" class="btn btn-primary float-right mt-3"/>
+        </div>
+    </div>
 
 
     <div id="course-materials-container" style="display: none">
@@ -310,5 +310,4 @@
         if you need to migrate course materials from a colleague's class.
     </div>
 
-{% endwith %}{% endwith %}
 {% endblock %}

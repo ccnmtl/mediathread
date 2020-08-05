@@ -23,84 +23,14 @@
         </thead>
         <tbody>
         {% for object in object_list %}
-            {% my_assignment_responses object request.user as responses %}
-
-            {% comment %}
-                Users can potentially have multiple responses to an assignment
-                by collaborating with fellow students.
-            {% endcomment %}
-
-            {% if responses.exists %}
-                {% for response_collaboration in responses %}
-                    {% with response=response_collaboration.content_object %}
-                    <tr>
-                        <td>
-                            {% if object.due_date %}
-                                {{object.due_date|date:"n/j/y"}}<br />
-                                {% if not response.is_submitted %}
-                                    {% if object.due_date < today %}
-                                        <div class="small text-danger">
-                                            Overdue {{object.due_date|timesince:today }}
-                                        </div>
-                                    {% else %}{% if object.due_date > today %}
-                                        <div class="small">
-                                            {{today|timeuntil:object.due_date }}
-                                        </div>
-                                    {% else %}
-                                        <div class="small">
-                                            Due today
-                                        </div>
-                                    {% endif %}{% endif %}
-                                {% endif %}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {{object.title}}
-                        </td>
-                        <td>
-                            {% if response.is_submitted %}
-                                <div>Submitted {{response.date_submitted|date:"n/j/y g:iA"}}</div>
-                                <div>{{response.visibility_short}}</div>
-                            {% else %}
-                                {{response.visibility_short}}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if response.feedback_discussion %}
-                                <a class="btn btn-sm btn-primary btn-block"
-                                    href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
-                                    View Feedback
-                                </a>
-                            {% else %}{% if response.is_submitted %}
-                                <a class="btn btn-sm btn-secondary btn-block"
-                                    href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
-                                    View Response
-                                </a>
-                            {% else %}
-                                <a class="btn btn-sm btn-primary btn-block"
-                                    href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
-                                    Edit Response
-                                </a>
-                            {% endif %}{% endif %}
-                        </td>
-                        <td>
-                            {{object.description}}
-                        </td>
-                        <td>
-                            {{response.modified|date:"n/j/y g:iA"}}
-                        </td>
-                    </tr>
-                    {% endwith %}
-                {% endfor %}
-            {% else %}
-                {% comment %}
-                    Student has not yet created a response
-                {% endcomment %}
-                <tr>
+            {% if object.is_discussion_assignment %}
+                {% my_comment_count object request.user as comments %}
+                 <tr>
                     <td>
                         {% if object.due_date %}
-                            {{object.due_date|date:"n/j/y"}}<br />
-                            {% if object.due_date < today %}
+                            {% if comments.0 > 0 %}
+                                {{object.due_date|date:"n/j/y"}}
+                            {% else %}{% if object.due_date < today %}
                                 <div class="small text-danger">
                                     Overdue {{object.due_date|timesince:today }}
                                 </div>
@@ -112,30 +42,157 @@
                                 <div class="small">
                                     Due today
                                 </div>
-                            {% endif %}{% endif %}
+                            {% endif %}{% endif %}{% endif %}
                         {% endif %}
                     </td>
                     <td>
                         {{object.title}}
                     </td>
                     <td>
-                        No Response Yet
+                        {% if comments.0 == 0 %}
+                            No comments yet
+                        {% else %}{% if comments.0 == 1 %}
+                            Shared {{comments.0}} comment
+                        {% else %}
+                            Shared {{comments.0}} comments
+                        {% endif %}{% endif %}
                     </td>
                     <td>
-                        <form action="{% url 'project-create' request.course.id %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="parent" value="{{object.id}}">
-                            <input type="hidden" name="project_type" value="composition">
-                            <input type="hidden" name="title" value="My Response">
-                            <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
-                        </form>
+                        <a class="btn btn-sm btn-primary btn-block"
+                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                            Add Comments
+                        </a>
                     </td>
                     <td>
                         {{object.description}}
                     </td>
                     <td>
+                        {% if comments.0 %}
+                            {{comments.1}}
+                        {% endif %}
                     </td>
                 </tr>
+            {% else %}
+                {% my_assignment_responses object request.user as responses %}
+    
+                {% comment %}
+                    Users can potentially have multiple responses to an assignment
+                    by collaborating with fellow students.
+                {% endcomment %}
+    
+                {% if responses.exists %}
+                    {% for response_collaboration in responses %}
+                        {% with response=response_collaboration.content_object %}
+                        <tr>
+                            <td>
+                                {% if object.due_date %}
+                                    {{object.due_date|date:"n/j/y"}}<br />
+                                    {% if not response.is_submitted %}
+                                        {% if object.due_date < today %}
+                                            <div class="small text-danger">
+                                                Overdue {{object.due_date|timesince:today }}
+                                            </div>
+                                        {% else %}{% if object.due_date > today %}
+                                            <div class="small">
+                                                {{today|timeuntil:object.due_date }}
+                                            </div>
+                                        {% else %}
+                                            <div class="small">
+                                                Due today
+                                            </div>
+                                        {% endif %}{% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{object.title}}
+                            </td>
+                            <td>
+                                {% if response.is_submitted %}
+                                    <div>Submitted {{response.date_submitted|date:"n/j/y g:iA"}}</div>
+                                    <div>{{response.visibility_short}}</div>
+                                {% else %}
+                                    {{response.visibility_short}}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if response.feedback_discussion %}
+                                    <a class="btn btn-sm btn-primary btn-block"
+                                        href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
+                                        View Feedback
+                                    </a>
+                                {% else %}{% if response.is_submitted %}
+                                    <a class="btn btn-sm btn-secondary btn-block"
+                                        href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
+                                        View Response
+                                    </a>
+                                {% else %}
+                                    <a class="btn btn-sm btn-primary btn-block"
+                                        href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
+                                        Edit Response
+                                    </a>
+                                {% endif %}{% endif %}
+                            </td>
+                            <td>
+                                {{object.description}}
+                            </td>
+                            <td>
+                                {{response.modified|date:"n/j/y g:iA"}}
+                            </td>
+                        </tr>
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    {% comment %}
+                        Student has not yet created a response or is discussing
+                    {% endcomment %}
+                    <tr>
+                        <td>
+                            {% if object.due_date %}
+                                {{object.due_date|date:"n/j/y"}}<br />
+                                {% if object.due_date < today %}
+                                    <div class="small text-danger">
+                                        Overdue {{object.due_date|timesince:today }}
+                                    </div>
+                                {% else %}{% if object.due_date > today %}
+                                    <div class="small">
+                                        {{today|timeuntil:object.due_date }}
+                                    </div>
+                                {% else %}
+                                    <div class="small">
+                                        Due today
+                                    </div>
+                                {% endif %}{% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{object.title}}
+                        </td>
+                        <td>
+                            No Response Yet
+                        </td>
+                        <td>
+                            {% if object.is_discussion_assignment %}
+                                <a href="{% url 'project-workspace' request.course.id object.id %}">
+                                    Add Comment
+                                </a>
+                            {% else %}
+                                <form action="{% url 'project-create' request.course.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="parent" value="{{object.id}}">
+                                    <input type="hidden" name="project_type" value="composition">
+                                    <input type="hidden" name="title" value="My Response">
+                                    <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{object.description}}
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endif %}
         {% endfor %}
         </tbody>

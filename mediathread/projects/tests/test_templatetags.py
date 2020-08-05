@@ -3,11 +3,14 @@ from datetime import datetime
 from django.template.base import Template
 from django.template.context import Context
 from django.test import TestCase, RequestFactory
+from django.urls import reverse
+from django_comments.forms import CommentSecurityForm
 from mediathread.factories import UserFactory, MediathreadTestMixin, \
     ProjectFactory
-from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT
+from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT, \
+    Project
 from mediathread.projects.templatetags.user_projects import (
-    published_assignment_responses, my_assignment_responses,
+    published_assignment_responses, my_comment_count, my_assignment_responses,
     assignment_responses)
 
 
@@ -62,3 +65,54 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         responses = my_assignment_responses(assignment, self.student_one)
         self.assertEqual(responses.count(), 1)
         self.assertEqual(responses.first().content_object, visible_response)
+
+    def _add_comment(self, discussion, author):
+        url = reverse('comments-post-comment')
+        data = {
+            u'comment': [u'posted'],
+            u'parent': [discussion.id],  # threadedcomment
+            u'name': [],
+            u'title': [u''],
+            u'url': [u'']
+        }
+
+        frm = CommentSecurityForm(target_object=discussion.content_object)
+        data.update(frm.generate_security_data())
+
+        self.client.login(username=author.username, password='test')
+        self.switch_course(self.client, self.sample_course)
+        response = self.client.post(url, data)
+        self.assertEquals(response.status_code, 302)
+
+    def test_discussion_assignment_response_tags(self):
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        data = {
+            u'body': [u'<p>Talk</p>'],
+            u'project_type': [u'discussion-assignment'],
+            u'publish': [u'CourseProtected'],
+            u'title': [u'Important Discussion']}
+        url = reverse('discussion-assignment-create',
+                      args=[self.sample_course.id])
+        response = self.client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        assignment = Project.objects.get(title='Important Discussion')
+        self.assertEquals(published_assignment_responses(assignment), 0)
+        self.assertEqual(
+            my_comment_count(assignment, self.instructor_one)[0], 1)
+        self.assertEqual(
+            my_comment_count(assignment, self.instructor_two)[0], 0)
+        self.assertEqual(
+            my_comment_count(assignment, self.student_one)[0], 0)
+
+        # add a comment
+        discussion = assignment.course_discussion()
+        self._add_comment(discussion, self.instructor_two)
+        self.assertEquals(published_assignment_responses(assignment), 0)
+        self._add_comment(discussion, self.student_one)
+        self.assertEquals(published_assignment_responses(assignment), 1)
+
+        self.assertEqual(
+            my_comment_count(assignment, self.instructor_two)[0], 1)
+        self.assertEqual(
+            my_comment_count(assignment, self.student_one)[0], 1)

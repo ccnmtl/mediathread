@@ -69,14 +69,12 @@
                     {% endif %}
                 </div>
             </div>
-
-
             <div class="discussion-assignment">
                 <div class="row">
                     <div class="col-md-8">
                         <form name="discussion-assignment-edit"
                             {% if form.instance %}
-                                action="{% url 'project-save' request.course.pk form.instance.id %}"
+                                action="{% url 'discussion-assignment-save' request.course.pk form.instance.id %}"
                             {% else %}
                                 action="{% url 'discussion-assignment-create' request.course.pk %}"
                             {% endif %}

@@ -126,6 +126,9 @@ class ProjectCreateView(LoggedInCourseMixin, JSONResponseMixin,
 class ProjectSaveView(LoggedInCourseMixin, JSONResponseMixin,
                       ProjectEditableMixin, CreateReversionMixin, View):
 
+    def post_save(self, project):
+        return
+
     def post(self, request, *args, **kwargs):
         frm = ProjectForm(request, instance=self.project, data=request.POST)
         if frm.is_valid():
@@ -150,6 +153,8 @@ class ProjectSaveView(LoggedInCourseMixin, JSONResponseMixin,
 
             parent_id = request.POST.get('parent', None)
             project.set_parent(parent_id)
+
+            self.post_save(project)
 
             ctx = {
                 'status': 'success',
@@ -478,6 +483,15 @@ class DiscussionAssignmentCreateView(LoggedInFacultyMixin, ProjectCreateView):
         return HttpResponseRedirect(
                 reverse('project-workspace',
                         args=(request.course.pk, project.pk)))
+
+
+class DiscussionAssignmentSaveView(ProjectSaveView):
+
+    def post_save(self, project):
+        discussion = project.course_discussion()
+        discussion.content_object.title = project.title
+        discussion.content_object.comment = project.body
+        discussion.content_object.save()
 
 
 class DiscussionAssignmentWizardView(AssignmentEditView):

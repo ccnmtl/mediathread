@@ -6,13 +6,11 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Discussion View: Create Discussion', () => {
 
-    beforeEach(() => {
+    it('Instructor Creates Discussion', () => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.get('.card-title a').contains('MAAP Award Reception');
-    });
 
-    it('Instructor Creates Discussion', () => {
         cy.visit('/course/1/assignments/');
         cy.get('#cu-privacy-notice-icon').click();
 
@@ -48,28 +46,103 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('input[name="due_date"]').should('be.visible');
         cy.get('input[name="due_date"]:visible').click()
         cy.get('.ui-state-default.ui-state-highlight').click();
-        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty')
+        cy.get('input[name="due_date"]:visible').invoke('val')
+            .should('not.be.empty')
         cy.get('#ui-datepicker-div').should('not.be.visible');
         cy.get('#page4').focus().click();
 
-        cy.log('add publish options & save');
+        cy.log('Add publish options & save');
         cy.get('h4:visible').contains('Step 4');
         cy.get('#id_publish_1').should('be.visible');
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();
 
-        cy.title().should('eq', 'Mediathread New Discussion');
-    });
+        cy.log('View discussion as an instructor');
+        cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
+        cy.get('.btn-edit-assignment').should('exist');
+        cy.get('.project-visibility-description')
+            .contains('Shared with Class');
+        cy.get('h5').contains('Due').should('be.visible');
+        cy.get('.threadedcomments-container').should('be.visible');
 
-    it('should show on assignments page', () => {
+        cy.get('li.comment-thread').within(() => {
+            cy.get('.threaded_comment_author').contains('Instructor One');
+            cy.get('.threaded_comment_text')
+                .contains('A suitable discussion prompt');
+            cy.get('.edit_prompt').should('be.visible');
+            cy.get('.respond_prompt').should('be.visible');
+        });
+
         cy.visit('/course/1/assignments');
-        cy.get('#cu-privacy-notice-icon').click();
-        cy.contains('Discussion: Scenario 1').parent('td').parent('tr').within(() => {
+        cy.contains('Discussion: Scenario 1')
+            .parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(1).contains('Discussion: Scenario 1');
             cy.get('td').eq(2).contains('Shared with Class');
+            cy.get('td').eq(3).contains('0 / 3');
             cy.get('td').eq(4).contains('Instructor One');
             cy.get('td').eq(5).contains('Discussion Assignment');
+            cy.get('td').eq(7).contains('Delete');
+        });
+    });
+
+    it('Student responds to the Discussion', () => {
+        cy.login('student_one', 'test');
+        cy.visit('/course/1/');
+        cy.get('.card-title a').contains('MAAP Award Reception');
+
+        cy.visit('/course/1/assignments/');
+        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('a').contains('Add Comments').click();
+
+        cy.log('View discussion as a student');
+        cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
+        cy.get('.btn-edit-assignment').should('not.exist');
+        cy.get('.project-visibility-description').should('not.be.visible');
+        cy.get('h5').contains('Due').should('be.visible');
+        cy.get('.threadedcomments-container').should('be.visible');
+
+        cy.get('li.comment-thread').within(() => {
+            cy.get('.threaded_comment_author').contains('Instructor One');
+            cy.get('.threaded_comment_text')
+                .contains('A suitable discussion prompt');
+            cy.get('.edit_prompt').should('not.be.visible');
+            cy.get('.respond_prompt').should('be.visible');
+            cy.get('.respond_prompt').click();
+        });
+
+        cy.log('Add a reply');
+        cy.get('button.project.cancel').should('be.visible');
+        cy.get('button#comment-form-submit').should('be.visible');
+        cy.getIframeBody().find('p').click()
+            .type('A pithy response');
+        cy.get('button#comment-form-submit').click();
+
+        cy.log('View the reply');
+        cy.get('.new-comment').within(() => {
+            cy.get('.threaded_comment_author').contains('student_one');
+            cy.get('.threaded_comment_text')
+                .contains('A pithy response');
+            cy.get('.edit_prompt').should('be.visible');
+            cy.get('.respond_prompt').should('be.visible');
+        });
+
+        cy.log('View status on the assignments page');
+        cy.visit('/course/1/assignments');
+        cy.contains('Discussion: Scenario 1').parent('tr').within(() => {
+            cy.get('td').eq(1).contains('Discussion: Scenario 1');
+            cy.get('td').eq(2).contains('Shared 1 comment');
+            cy.get('td').eq(3).contains('Add Comments');
+        });
+    });
+
+    it('Instructor sees the response', () => {
+        cy.login('instructor_one', 'test');
+        cy.visit('/course/1/assignments');
+        cy.contains('Discussion: Scenario 1')
+            .parent('td').parent('tr').within(() => {
+            cy.get('td').eq(3).contains('1 / 3');
+            cy.get('td').eq(7).should('not.contain', 'Delete');
         });
     });
 });

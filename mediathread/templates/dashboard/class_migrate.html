@@ -221,16 +221,15 @@
 {% endblock %}
 
 {% block dashboard_content %}
-    {% with "help_migrate_materials" as help_id %}
-    {% with help_migrate_materials as default_help_state %}
+    <div class="row">
+        <div class="col">
 
-    <h3>Migrate Course Materials </h3>
-    <div class="actions">{% include "help/help_button.html" %}</div>
-    {% endwith %}{% endwith %}
-    {% with "help_migrate_materials" as help_id %}
-    {% with help_migrate_materials as default_help_state %}
-
-    {% include "help/help_contentarea.html" %}
+            <h4>Migrate Course Materials</h4>
+            <div class="float-right">
+                {% include "help/help_migrate.html" %}
+            </div>
+        </div>
+    </div>
 
     <input type="hidden" id="role-in-course" value="{{role_in_course}}"/>
     <input type="hidden" id="is-staff" value="{{user.is_staff}}" />
@@ -304,5 +303,4 @@
         if you need to migrate course materials from a colleague's class.
     </div>
 
-{% endwith %}{% endwith %}
 {% endblock %}

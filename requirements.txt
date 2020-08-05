@@ -104,7 +104,7 @@ pathlib2==2.3.5
 
 freezegun==0.3.15
 django-smtp-ssl==1.0
-djangorestframework==3.9.4
+djangorestframework==3.11.1
 
 ccnmtlsettings==1.8.4
 django-extensions==3.0.4

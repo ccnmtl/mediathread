@@ -1,6 +1,5 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
-/* global MediaThread: true, Mustache: true */
-/* global showMessage: true */
+/* global MediaThread: true, showMessage: true */
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -22,16 +21,6 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
     self.$el.find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
-    MediaThread.loadTemplate('project_revisions')
-        .then(function() {
-            self.initAfterTemplateLoad(el, $parent, panel, space_owner);
-        });
-};
-
-ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
-    el, $parent, panel, space_owner
-) {
-    var self = this;
 
     if (panel.context.can_edit) {
         self.$el.find('select[name="participants"]').select2({
@@ -87,10 +76,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         function(evt) {
             self.saveAuthors(evt);
         });
-    self._bind(self.$el, '.project-revisionbutton', 'click',
-        function(evt) {
-            self.showRevisions(evt);
-        });
     self._bind(self.$el, '.project-responsesbutton', 'click',
         function(evt) {
             self.showResponses(evt);
@@ -145,8 +130,6 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
         });
         tinymce.init(settings);
     }
-
-    self.updateRevisions();
 };
 
 ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {
@@ -212,63 +195,6 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
     };
 
     window.panelManager.newPanel(context);
-};
-
-ProjectPanelHandler.prototype.showRevisions = function(evt) {
-    var self = this;
-
-    // close any outstanding citation windows
-    if (self.tinymce) {
-        self.tinymce.plugins.editorwindow._closeWindow();
-    }
-
-    var element = self.$el.find('.revision-list')[0];
-    jQuery(element).dialog({
-        buttons: [
-            {
-                text: 'Cancel',
-                click: function() {
-                    jQuery(this).dialog('close');
-                }
-            },
-            {
-                text: 'View',
-                click: function() {
-                    self._save = true; jQuery(this).dialog('close');
-                }
-            }
-        ],
-        beforeClose: function(event, ui) {
-            if (self._save) {
-                self._save = false;
-                var q = 'select[name="revisions"] option:selected';
-                var opts = jQuery(event.target).find(q);
-                if (opts.length < 1) {
-                    showMessage('Please select a revision', null, 'Error');
-                    return false;
-                } else {
-                    var val = jQuery(opts[0]).val();
-                    var params = 'mediathread_project' +
-                        self.panel.context.project.id;
-                    /*eslint-disable security/detect-non-literal-fs-filename*/
-                    window.open(val, params);
-                    /*eslint-enable security/detect-non-literal-fs-filename*/
-                }
-            }
-            return true;
-        },
-        modal: true,
-        width: 425,
-        height: 245,
-        position: {
-            my: 'center top',
-            at: 'center top',
-            of: window,
-            collision: 'none'
-        },
-        zIndex: 10000
-    });
-    return false;
 };
 
 ProjectPanelHandler.prototype.saveAuthors = function(evt) {
@@ -562,42 +488,6 @@ ProjectPanelHandler.prototype.saveProject = function() {
                     jQuery(lastVersionPublic).hide();
                 }
 
-                if (json.is_essay_assignment) {
-                    self.$el.removeClass('composition')
-                        .addClass('assignment');
-                    self.$el.find('.composition')
-                        .removeClass('composition').addClass('assignment');
-                    self.$el.next('.pantab-container')
-                        .find('.composition').removeClass('composition')
-                        .addClass('assignment');
-                    self.$el.prev().removeClass('composition')
-                        .addClass('assignment');
-                    self.$el.prev().find('div.label')
-                        .html('assignment');
-                    self.$el.prev().prev().find('.composition')
-                        .removeClass('composition').addClass('assignment');
-
-                    self.$el.find('a.project-export').hide();
-                    self.$el.find('a.project-print').hide();
-                } else {
-                    self.$el.removeClass('assignment')
-                        .addClass('composition');
-                    self.$el.find('.assignment')
-                        .removeClass('assignment').addClass('composition');
-                    self.$el.next('.pantab-container')
-                        .find('.assignment').removeClass('assignment')
-                        .addClass('composition');
-                    self.$el.prev().removeClass('assignment')
-                        .addClass('composition');
-                    self.$el.prev().find('div.label')
-                        .html('composition');
-                    self.$el.prev().prev().find('.assignment')
-                        .removeClass('assignment').addClass('composition');
-
-                    self.$el.find('a.project-export').show();
-                    self.$el.find('a.project-print').show();
-                }
-
                 self.$el.find('.project-visibility-description')
                     .html(json.revision.visibility);
 
@@ -613,7 +503,6 @@ ProjectPanelHandler.prototype.saveProject = function() {
                     document.title = 'Mediathread ' + json.title;
                 }
                 self.setDirty(false);
-                self.updateRevisions();
             }
             jQuery(saveButton).removeAttr('disabled')
                 .removeClass('saving', 1200, function() {
@@ -655,26 +544,6 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
 
 ProjectPanelHandler.prototype.isDirty = function() {
     return tinymce.activeEditor.isDirty();
-};
-
-ProjectPanelHandler.prototype.updateRevisions = function() {
-    var self =  this;
-    var $elt = jQuery('#project-revisions');
-
-    if ($elt.length > 0) {
-        jQuery.ajax({
-            type: 'GET',
-            url: MediaThread.urls['project-revisions'](
-                self.panel.context.project.id),
-            dataType: 'json',
-            error: function() {},
-            success: function(json, textStatus, xhr) {
-                var rendered = Mustache.render(
-                    MediaThread.templates.project_revisions, json);
-                $elt.html(rendered);
-            }
-        });
-    }
 };
 
 ProjectPanelHandler.prototype.beforeUnload = function() {

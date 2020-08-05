@@ -6,174 +6,159 @@
             </h1>
             <input name="title" value="{{context.project.title}}" type="hidden" />
         </div>
-        <div class="col-md-6 text-right">
-            <div class="mt-1">
-                {{#context.can_edit}}
-                    <button class="project-authorsbutton btn btn-outline-secondary btn-sm"
-                        data-toggle="modal" data-target="#authors-modal" data-keyboard="false">
-                        Authors
-                    </button>
-                    <div id="authors-modal" class="add-authors modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Authors</h5>
+        <div class="col-md-6 text-right pr-0">
+            {{#context.can_edit}}
+                <button class="project-authorsbutton btn btn-outline-secondary btn-sm"
+                    data-toggle="modal" data-target="#authors-modal" data-keyboard="false">
+                    Authors
+                </button>
+                <div id="authors-modal" class="add-authors modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Authors</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-left">Select additional authors</p>
+                                {{{context.form.participants}}}
+                                <div class="invalid-feedback">
+                                    Please specify one or more authors, including yourself.
                                 </div>
-                                <div class="modal-body">
-                                    <p class="text-left">Select additional authors</p>
-                                    {{{context.form.participants}}}
-                                    <div class="invalid-feedback">
-                                        Please specify one or more authors, including yourself.
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary btn-save-authors">Save</button>
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-save-authors">Save</button>
                             </div>
                         </div>
                     </div>
-                {{/context.can_edit}}
+                </div>
+            {{/context.can_edit}}
 
-                {{#context.can_edit}}
-                    <button class="project-revisionbutton btn btn-outline-secondary btn-sm">
-                        Revisions
+            {{#context.can_edit}}
+                <a class="project-revisionbutton btn btn-outline-secondary btn-sm"
+                    href="{{project_revisions_url}}" title="View project revisions" />
+                    Revisions
+                </a>
+            {{/context.can_edit}}
+
+            {{#context.my_response}}
+                {{^context.viewing_my_response}}
+                    <button class="project project-my-response btn btn-outline-secondary btn-sm"
+                        type="button" data-url="{{context.my_response.url}}">
+                        My Response
                     </button>
+                {{/context.viewing_my_response}}
+            {{/context.my_response}}
 
-                    <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
-                    </div>
-                {{/context.can_edit}}
-
-                {{#context.my_response}}
-                    {{^context.viewing_my_response}}
-                        <button class="project project-my-response btn btn-outline-secondary btn-sm"
-                            type="button" data-url="{{context.my_response.url}}">
-                            My Response
-                        </button>
-                    {{/context.viewing_my_response}}
-                {{/context.my_response}}
-
-                {{#context.my_responses.length}}
-                    <button class="project project-my-responses btn btn-outline-secondary btn-sm"
-                        type="button">
-                        My Responses ({{context.my_responses_count}})
-                    </button>
-                    <div class="my-response-list" style="display: none" title="My Responses">
-                        <div>Select an assignment response, then click "View"</div>
-                        <select name="my-responses" multiple="multiple">
-                            {{#context.my_responses}}
-                                <option value="{{url}}">
-                                    {{ modified }} &mdash;
-                                    {{#attribution_list}}
-                                        {{ name }}{{^last}}, {{/last}} 
-                                    {{/attribution_list}}
-                                </option>
-                            {{/context.my_responses}}
-                        </select> 
-                    </div>
-                {{/context.my_responses.length}}
-
-                {{#context.responses.length}}
-                    <button class="project project-responsesbutton btn btn-outline-secondary btn-sm"
-                        type="button">
-                        Class Responses ({{context.response_count}})
-                    </button>
-                    <div class="response-list" style="display: none" title="Responses">
-                        <div>Select an assignment response, then click "View"</div>
-                        <select name="responses" multiple="multiple">
-                          {{#context.responses}}
+            {{#context.my_responses.length}}
+                <button class="project project-my-responses btn btn-outline-secondary btn-sm"
+                    type="button">
+                    My Responses ({{context.my_responses_count}})
+                </button>
+                <div class="my-response-list" style="display: none" title="My Responses">
+                    <div>Select an assignment response, then click "View"</div>
+                    <select name="my-responses" multiple="multiple">
+                        {{#context.my_responses}}
                             <option value="{{url}}">
-                              {{#attribution_list}}
-                                {{ name }}{{^last}}, {{/last}} 
-                              {{/attribution_list}}
-                               &mdash; {{ submitted }}
+                                {{ modified }} &mdash;
+                                {{#attribution_list}}
+                                    {{ name }}{{^last}}, {{/last}} 
+                                {{/attribution_list}}
                             </option>
-                          {{/context.responses}}
-                        </select>
-                    </div>
-                {{/context.responses.length}}
+                        {{/context.my_responses}}
+                    </select> 
+                </div>
+            {{/context.my_responses.length}}
 
-                <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
-                    Export to Word
-                </a>
+            {{#context.responses.length}}
+                <button class="project project-responsesbutton btn btn-outline-secondary btn-sm"
+                    type="button">
+                    Class Responses ({{context.response_count}})
+                </button>
+                <div class="response-list" style="display: none" title="Responses">
+                    <div>Select an assignment response, then click "View"</div>
+                    <select name="responses" multiple="multiple">
+                      {{#context.responses}}
+                        <option value="{{url}}">
+                          {{#attribution_list}}
+                            {{ name }}{{^last}}, {{/last}} 
+                          {{/attribution_list}}
+                           &mdash; {{ submitted }}
+                        </option>
+                      {{/context.responses}}
+                    </select>
+                </div>
+            {{/context.responses.length}}
 
-                <a class="project-print btn btn-outline-secondary btn-sm" href="/project/export/html/{{context.project.id}}/" target="_blank">
-                    Print
-                </a>
+            <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
+                Export to Word
+            </a>
 
-                {{#context.can_edit}}
-                    <button class="project-savebutton btn btn-primary btn-sm" type="button">
-                        Save
-                    </button>
-                    <div class="save-publish-status modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Save Changes</h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            <h6>Visibility</h6>
-                                            <p>Select who can see your work.</p>
-                                        </div>
-                                        <div class="col small text-right text-danger mr-2">
-                                            required
-                                        </div>
+            <a class="project-print btn btn-outline-secondary btn-sm" href="/project/export/html/{{context.project.id}}/" target="_blank">
+                Print
+            </a>
+
+            {{#context.can_edit}}
+                <button class="project-savebutton btn btn-primary btn-sm" type="button">
+                    Save
+                </button>
+                <div class="save-publish-status modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Save Changes</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <h6>Visibility</h6>
+                                        <p>Select who can see your work.</p>
                                     </div>
-                                    <div class="form-group">
-                                        {{{context.form.publish}}}
+                                    <div class="col small text-right text-danger mr-2">
+                                        required
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                                <div class="form-group">
+                                    {{{context.form.publish}}}
                                 </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-save-project">Save</button>
                             </div>
                         </div>
                     </div>
-                {{/context.can_edit}}
-            </div>
+                </div>
+            {{/context.can_edit}}
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="participant-container">
+            <h5>by <span class="participants_chosen">
+                {{#context.project.participants}}
+                    {{public_name}}{{^last}}, {{/last}}
+                {{/context.project.participants}}
+                </span>
+            </h5>
+        </div>
+        {{#context.project.current_version}}
+            <h5>Viewing version from {{context.project.modified}}</h5>
+        {{/context.project.current_version}}
+        <div>
+            <h5 class="project-visibility-description d-inline">
+                {{context.project.visibility}}
+            </h5>
+            <h5 class="d-inline">
+                <a class="last-version-public"
+                    style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}"
+                    href="{{context.project.public_url}}">(permalink)</a>
+            </h5>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <div class="row no-gutters">
-                <div class="col">
-                    <div class="participant-container">
-                        <h5>by <span class="participants_chosen">
-                            {{#context.project.participants}}
-                                {{public_name}}{{^last}}, {{/last}}
-                            {{/context.project.participants}}
-                            </span>
-                        </h5>
-                    </div>
-                </div>
-                <div class="col text-right text-secondary pr-3">
-                    {{#context.project.visibility_long}}
-                        <span class="project-visibility-description">
-                            {{context.project.visibility_long}}
-                        </span>
-                        <span class="project-due-date">
-                            {{#context.project.due_date}}Due {{context.project.due_date}}{{/context.project.due_date}}
-                        </span>
-                        <a class="last-version-public"
-                            style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
-                        {{#context.project.current_version}}
-                            <span class="project-current-version" style="display: inline">
-                                | Version {{context.project.modified}}
-                            </span>
-                        {{/context.project.current_version}}
-                    {{/context.project.visibility_long}}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row no-gutters">
         {{! Media Display Window and or a Collections box }}
         <div class="col-md-6 order-md-2">
             <div class="collection-materials"

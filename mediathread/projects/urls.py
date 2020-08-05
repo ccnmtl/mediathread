@@ -4,11 +4,11 @@ from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
     UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
-    project_export_html, project_revisions,
+    project_export_html,
     SequenceAssignmentEditView, CompositionAssignmentEditView,
     CompositionAssignmentResponseView, UpdateVisibilityView,
     DiscussionAssignmentWizardView, DiscussionAssignmentCreateView,
-    DiscussionAssignmentSaveView
+    DiscussionAssignmentSaveView, ProjectVersionListView
 )
 from rest_framework import routers
 
@@ -89,14 +89,14 @@ urlpatterns = [
     path('visibility/<int:project_id>/',
          UpdateVisibilityView.as_view(), {}, 'project-visibility'),
 
-    path('revisions/<int:project_id>/',
-         project_revisions,
-         name='project-revisions'),
-
     # view versioned read only
-    path('view/<int:project_id>/version/<int:version_number>/',
+    path('<int:project_id>/version/<int:version_number>/',
          ProjectReadOnlyView.as_view(),
          name='project-view-readonly'),
+
+    path('<int:project_id>/version/',
+         ProjectVersionListView.as_view(),
+         name='project-revisions'),
 
     # instructor information reorder
     path('sort/', ProjectSortView.as_view(), name='project-sort'),

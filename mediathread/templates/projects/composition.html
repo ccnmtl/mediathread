@@ -54,9 +54,17 @@
 {% endblock %}
 
 {% block content %}
-    {% with active='projects' %}
-        {% include 'main/three_section_tabs.html' %}
-    {% endwith %}
+    {% if not readonly or version %}
+        {% if project.is_assignment or project.assignment %}
+            {% with active='assignments' %}
+                {% include 'main/three_section_tabs.html' %}
+            {% endwith %}
+        {% else %}
+            {% with active='projects' %}
+                {% include 'main/three_section_tabs.html' %}
+            {% endwith %}
+        {% endif %}
+    {% endif %}
     <div class="tab-content">
         <div role="tabpanel">
             <div class="row mt-2">
@@ -64,9 +72,15 @@
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb bg-light mb-0">
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="{% url 'project-list' request.course.pk %}">
-                                Back to all projects
-                            </a>
+                            {% if version %}
+                                <a href="{% url 'project-revisions' request.course.pk project.id %}">
+                                    Back to {{project.title}} revisions
+                                </a>
+                            {% else %}{% if not readonly %}
+                                <a href="{% url 'project-list' request.course.pk %}">
+                                    Back to all projects
+                                </a>
+                            {% endif %}{% endif %}
                         </li>
                       </ol>
                     </nav>

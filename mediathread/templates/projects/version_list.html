@@ -1,0 +1,58 @@
+{% extends "base_new.html" %}
+{% load static %}
+
+{% block title %}
+Projects
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'js/lib/tablesorter/theme.default.custom.css' %}">
+{% endblock %}
+
+{% block content %}
+<div>
+    {% if project.is_assignment or project.assignment %}
+        {% with active='assignments' %}
+            {% include 'main/three_section_tabs.html' %}
+        {% endwith %}
+    {% else %}
+        {% with active='projects' %}
+            {% include 'main/three_section_tabs.html' %}
+        {% endwith %}
+    {% endif %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="{% url 'project-workspace' request.course.pk project.id %}">
+                                Back to {{project.title}}
+                            </a>
+                        </li>
+                      </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h1 class="page-title">Revisions</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-auto">
+                    <ul class="list-group">
+                        {% for v in versions %}
+                        <li class="list-group-item">
+                            <a href="{% url 'project-view-readonly' project.id v.version_number %}">{{v.modified}}</strong> by {{v.author}}</a> 
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

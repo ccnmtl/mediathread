@@ -55,12 +55,10 @@
                                     {{/context.can_edit}}
 
                                     {{#context.can_edit}}
-                                        <button class="project-revisionbutton btn btn-outline-secondary btn-sm">
+                                        <a class="project-revisionbutton btn btn-outline-secondary btn-sm"
+                                            href="{{project_revisions_url}}" title="View project revisions" />
                                             Revisions
-                                        </button>
-
-                                        <div id="project-revisions" class="revision-list" style="display: none" title="Revisions">
-                                        </div>
+                                        </a>
                                     {{/context.can_edit}}
 
                                     {{#context.responses.length}}
@@ -141,21 +139,22 @@
                                     {{#context.project.submitted_on}}
                                         <h5>Submitted {{context.project.submitted_on}}</h5>
                                     {{/context.project.submitted_on}}
-                                {{/is_faculty}} 
-                                {{#context.project.visibility}}
-                                    <h5 class="project-visibility-description">
+                                {{/is_faculty}}
+                                {{#context.project.current_version}}
+                                    <h5>Viewing version from {{context.project.modified}}</h5>
+                                {{/context.project.current_version}}
+                                <div>
+                                    <h5 class="project-visibility-description d-inline">
                                         {{context.project.visibility}}
                                     </h5>
-                                {{/context.project.visibility}}
-                                <a class="last-version-public"
-                                    style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}" href="{{context.project.public_url}}">(permalink)</a>
-                                {{#context.project.current_version}}
-                                    <span class="project-current-version" style="display: inline">
-                                        | Version {{context.project.modified}}
-                                    </span>
-                                {{/context.project.current_version}}
+                                    <h5 class="d-inline">
+                                        <a class="last-version-public"
+                                            style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}"
+                                            href="{{context.project.public_url}}">(permalink)</a>
+                                    </h5>
+                                </div>
                             </div>
-                            <div class="row no-gutters">
+                            <div class="row">
                                 {{! Media Display Window and or a Collections box }}
                                 <div class="col-md-6 order-md-2">
                                     <div class="collection-materials"

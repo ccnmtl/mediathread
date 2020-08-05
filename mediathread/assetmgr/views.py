@@ -21,6 +21,7 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import DetailView
 from django.views.generic.base import View, TemplateView
@@ -160,6 +161,9 @@ def most_recent(request):
     return HttpResponseRedirect('/asset/' + asset_id + '/')
 
 
+# This view is used by Mediathread's browser extension, so disable CSRF
+# until we implement this in the extension.
+@method_decorator(csrf_exempt, name='dispatch')
 class AssetCreateView(View):
     OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
                       'as', 'set_course', 'secret')

@@ -16,7 +16,7 @@ export default class TimecodeEditor extends React.Component {
     render() {
         let timecode = 0;
         if (this.props.timecode) {
-            timecode = formatTimecode(this.props.timecode);
+            timecode = formatTimecode(this.props.timecode, true);
         }
         return (
             <div className="jux-timecode-editor">
@@ -38,7 +38,7 @@ export default class TimecodeEditor extends React.Component {
 
         if (prevProps.timecode !== this.props.timecode) {
             const spinner = this.spinnerRef.current;
-            spinner.value = formatTimecode(this.props.timecode);
+            spinner.value = formatTimecode(this.props.timecode, true);
         }
     }
     componentDidMount() {
@@ -59,7 +59,7 @@ export default class TimecodeEditor extends React.Component {
                     // Update the input value from the application state
                     // when the user puts it in an invalid state.
                     spinner.value = formatTimecode(
-                        me.props.timecode);
+                        me.props.timecode, true);
                 }
             },
             spin: function(e, ui) {
@@ -70,7 +70,7 @@ export default class TimecodeEditor extends React.Component {
                 if (me.props.timecode !== spinner.value) {
                     // Lock down the value on spin as well.
                     spinner.value = formatTimecode(
-                        me.props.timecode);
+                        me.props.timecode, true);
                     return false;
                 }
             }

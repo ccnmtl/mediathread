@@ -10,7 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import find from 'lodash/find';
 
 import EditSelectionForm from '../forms/EditSelectionForm';
-import {groupByAuthor, groupByTag} from '../utils';
+import {groupByAuthor, groupByTag, formatTimecode, getDuration} from '../utils';
 
 export default class ViewSelections extends React.Component {
     constructor(props) {
@@ -84,6 +84,21 @@ export default class ViewSelections extends React.Component {
                     data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
                     <div className="card-body">
+                        {this.props.type === 'video' && (
+                            <>
+                                <p className="card-text">
+                                    {formatTimecode(s.range1)}
+                                    {String.fromCharCode(160)}
+                                    {String.fromCharCode(8212)}
+                                    {String.fromCharCode(160)}
+                                    {formatTimecode(s.range2)}
+                                </p>
+                                <p className="card-text">
+                                    Duration: <strong>{formatTimecode(getDuration(s.range1, s.range2))}</strong>
+                                </p>
+                            </>
+                        )}
+
                         {tags.length > 0 && (
                             <p className="card-text">
                                 Tags: {tags}
@@ -102,16 +117,29 @@ export default class ViewSelections extends React.Component {
                             </p>
                         )}
 
-                        {isAuthor && (
-                            <p className="card-text">
+                        <p className="card-text">
+                            {isAuthor && (
                                 <a
                                     onClick={(e) => this.onClickEdit(e, s)}
                                     href="#"
-                                    className="btn btn-secondary btn-sm">
+                                    className="btn btn-secondary btn-sm mr-2">
                                     Edit
                                 </a>
-                            </p>
-                        )}
+                            )}
+
+                            {this.props.type === 'video' && (
+                                <a
+                                    href="#"
+                                    className="btn btn-primary btn-sm">
+                                    Play
+                                    <svg
+                                        width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-play-fill ml-1"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                    </svg>
+                                </a>
+                            )}
+                        </p>
                     </div>
                 </div>
             </div>

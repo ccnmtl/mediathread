@@ -201,16 +201,29 @@ const getSeparatedTimeUnits = function(totalSeconds) {
 };
 
 /**
- * Parse a timecode string from HH:MM:SS string format into a
+ * Parse a timecode string from HH:MM:SS or MM:SS string format into a
  * number. Unit is in seconds.
  */
 const parseTimecode = function(str) {
     const parts = str.split(':');
-    const col1 = Number(parts[0]);
-    const col2 = Number(parts[1]);
-    const col3 = Number(parts[2]);
+
+    let col1 = null;
+    let col2 = null;
+    let col3 = null;
+
+    if (parts.length > 2) {
+        col1 = Number(parts[0]);
+        col2 = Number(parts[1]);
+        col3 = Number(parts[2]);
+    } else {
+        col2 = Number(parts[0]);
+        col3 = Number(parts[1]);
+    }
+
     if (isFinite(col1) && isFinite(col2) && isFinite(col3)) {
         return (col1 * 3600) + (col2 * 60) + col3;
+    } else if (isFinite(col2) && isFinite(col3)) {
+        return (col2 * 60) + col3;
     } else {
         return null;
     }
@@ -220,8 +233,14 @@ const pad2 = function(number) {
     return (number < 10 ? '0' : '') + number;
 };
 
-const formatTimecode = function(totalSeconds) {
+const formatTimecode = function(totalSeconds, requireHours=false) {
     const units = getSeparatedTimeUnits(totalSeconds);
+
+    // Don't include hours if it's not necessary.
+    if (!units[0] && !requireHours) {
+        return pad2(units[1]) + ':' + pad2(units[2]);
+    }
+
     return pad2(units[0]) + ':' + pad2(units[1]) + ':' + pad2(units[2]);
 };
 

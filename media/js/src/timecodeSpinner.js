@@ -25,7 +25,7 @@ export function defineTimecodeSpinner() {
             return value;
         },
         _format: function(value) {
-            const formatted = formatTimecode(value / 100);
+            const formatted = formatTimecode(value / 100, true);
             return formatted;
         }
     });

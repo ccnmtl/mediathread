@@ -20,7 +20,7 @@ Assignments
         <div role="tabpanel">
             <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
                 <h1 class="page-title">Assignments</h1>
-                {% if is_faculty %}
+                {% if role_in_course == 'instructor' %}
                 <div class="bg-light" id="headingOne">
                     <button class="btn btn-primary btn-block btn-show-assignments text-right"
                         type="button" data-toggle="collapse"
@@ -31,7 +31,7 @@ Assignments
                 </div>
                 {% endif %}
             </div>
-            {% if is_faculty %}
+            {% if role_in_course == 'instructor' %}
             <div class="accordion" id="assignment-accordion">
                 <div class="card border-0">
                     <div id="collapseOne" class="mb-3 collapse {% if object_list.exists %}hide{% else %}show{% endif %} bg-light"

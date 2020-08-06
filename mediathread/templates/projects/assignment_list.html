@@ -18,9 +18,25 @@ Assignments
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-title">Assignments</h1>
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h1 class="page-title">Assignments</h1>
+                <div class="bg-light" id="headingOne">
+                    <button class="btn btn-primary btn-block btn-show-assignments text-right"
+                        type="button" data-toggle="collapse"
+                        data-target="#collapseOne" aria-expanded="true"
+                        aria-controls="collapseOne">
+                            Add an assignment
+                    </button>
+                </div>
+            </div>
+            <div class="accordion mb-3 mt-3" id="assignment-accordion">
+                <div class="card border-0">
+                    <div id="collapseOne" class="collapse {% if object_list.exists %}hide{% else %}show{% endif %} bg-light"
+                        aria-labelledby="headingOne"
+                        data-parent="#assignment-accordion">
+                        <h4 class="text-center pt-3">Add an assignment</h4>
+                        {% include "projects/assignment_list_cards.html" %}
+                    </div>
                 </div>
             </div>
             {% if role_in_course == "student" %}
@@ -48,38 +64,6 @@ Assignments
                         </div>
                     </div>
                 </div>
-            {% else %}
-                <div class="accordion mb-3 mt-3" id="assignment-accordion">
-                    <div class="card border-0">
-                        <div class="card-header pb-0" id="headingOne">
-                            <h2>
-                                <button class="btn btn-link btn-block btn-show-assignments text-left"
-                                    type="button" data-toggle="collapse"
-                                    data-target="#collapseOne" aria-expanded="true"
-                                    aria-controls="collapseOne">
-                                        Add an assignment
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="collapseOne" class="collapse {% if object_list.exists %}hide{% else %}show{% endif %} bg-light"
-                            aria-labelledby="headingOne"
-                            data-parent="#assignment-accordion">
-                            {% if not object_list.exists %}
-                                <h4 class="text-center">Add an assignment</h4>
-                            {% endif %}
-                            {% include "projects/assignment_list_cards.html" %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if paginator.num_pages > 1 %}
-            <div class="row">
-                <div class="col-md-6 offset-md-6">
-                    <div class="text-right">
-                        {% include 'projects/pagination.html' %}
-                    </div>
-                </div>
-            </div>
             {% endif %}
             <form id="search-form" action="." method="get">
                 {% csrf_token %}
@@ -104,6 +88,15 @@ Assignments
                     <h4>You have no assignments yet.</h4>
                 </div>
             {% endif %}{% endif %}
+            {% if paginator.num_pages > 1 %}
+            <div class="row">
+                <div class="col-md-6 offset-md-6">
+                    <div class="text-right">
+                        {% include 'projects/pagination.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

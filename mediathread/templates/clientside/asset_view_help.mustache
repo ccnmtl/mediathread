@@ -1,0 +1,56 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_view_help-template">
+
+<div id="asset-view-overlay"
+  class="ui-widget-overlay ui-widget-overlay-dark"
+  {{^show_help}}style="display: none"{{/show_help}}>
+</div>
+
+<div id="asset-view-help-tab"
+  class="ui-widget-content asset-view-help-tab" {{^show_help}}style="display: none"{{/show_help}}>
+    <input class="dismiss-help" type="image"
+    title="Dismiss help"
+    onclick="return annotationList.dismissHelp(this);"
+    alt="Dismiss Help" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_help.png" />
+</div>
+
+<div id="asset-view-help"
+  class="ui-widget-content asset-view-help" {{^show_help}}style="display: none"{{/show_help}}>
+    <h3>
+      How to analyze this item
+    </h3>
+    <div class="asset-view-help-instructions">
+      Click the [<img alt="Pencil Icon" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" />] icon to add tags and notes to whole items.
+    </div>
+    <h3>
+      How to work with item selections
+    </h3>
+    <div class="asset-view-help-instructions">
+      <div>
+        Click the [<img alt="Create Selection" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" />] icon to add a selection.
+      </div>
+      <div>Click the [<img alt="Pencil Icon" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" />] icon to edit a selection.</div>
+      <div>Click the View button to group selections by author or tag.</div>
+    </div>
+
+    <br />
+
+    <div style="float: right">
+      <label>
+        <input id="asset-view-show-help"
+        type="checkbox"
+        {{#show_help_checked}}checked="checked"{{/show_help_checked}} />
+          Do not show this message again.
+      </label>
+    </div>
+    <div class="visualclear"></div>
+    <div style="float: right">
+      <input id="dismiss-asset-workspace-help"
+      class="btn btn-primary float-right" type="button"
+      onclick="javascript:annotationList.dismissHelp(this)"
+      value="Dismiss Help">
+    </div>
+
+</div>
+</script>
+{% endverbatim %}

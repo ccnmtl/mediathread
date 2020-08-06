@@ -1254,7 +1254,7 @@
                             'tool_play': jQuery(
                                 '#annotation-body-' +
                                     self.active_annotation.id +
-                                    ' input.videoplay')[0]
+                                    ' .videoplay')[0]
                         });
                 } else if (self.xywh) {
                     if (djangosherd.assetview.clipform) {

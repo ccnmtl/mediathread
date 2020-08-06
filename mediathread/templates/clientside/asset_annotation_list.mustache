@@ -1,0 +1,99 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_annotation_list-template">
+
+{{#annotation_list}}
+  <li class="annotation-group">
+    {{#category}}
+      <div class="group-header">
+        <div class="group-title">{{title}}</div>
+      </div>
+      <div class="accordion">
+        {{#annotations}}
+          <h3 class="annotation-header" id="accordion-{{id}}"
+            data-id="{{id}}" data-username="{{author.username}}">
+            <a href="#">
+                {{^metadata.title}}
+                    -Untitled-
+                {{/metadata.title}}
+                {{#metadata.title}}
+                    <strong>{{metadata.title}}</strong>
+                    {{#annotation.startCode}}
+                        <div style="margin-left: 21px;">
+                            {{annotation.startCode}} - {{annotation.endCode}}
+                        </div>
+                    {{/annotation.startCode}}
+                {{/metadata.title}}
+            </a>
+          </h3>
+          <div>
+            <div id="annotation-body-{{id}}">
+              <div class="meta mt-0">
+                <div class="mb-1">
+                    <strong>Author</strong>:
+                    {{author.public_name}}
+                </div>
+                {{#metadata.tags.length}}
+                  <div class="mb-1">
+                    <strong>Tags</strong>:
+                    {{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}</div>
+                {{/metadata.tags.length}}
+
+                {{#vocabulary}}
+                  <div class="mb-1">
+                    <strong>{{display_name}}</strong>:
+                    {{#terms}}
+                      {{display_name}}
+                    {{/terms}}
+                  </div>
+                {{/vocabulary}}
+                {{#metadata.body}}
+                    <div class="mb-1">
+                        <strong>Notes</strong>
+                        <div>{{metadata.body}}</div>
+                    </div>
+                {{/metadata.body}}
+
+                <div class="row no-gutters mt-3">
+                    <div class="col-md-3">
+                        {{#annotation.startCode}}
+                            <button title="Play Clip"
+                                class="btn btn-sm btn-primary videoplay">
+                                Play<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-play-fill ml-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
+                                    </svg>
+                            </button>
+                        {{/annotation.startCode}}
+                    </div>
+                    <div class="col-md-9 text-right">
+                        {{#editable}}
+                        <button class="btn btn-sm btn-outline-secondary delete"
+                            onclick="return annotationList.deleteAnnotation(event, this, {{id}});"
+                            aria-label="Delete Selection" title="Delete Selection" aria-hidden="true">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg> Delete
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary edit"
+                                onclick="return annotationList.editAnnotation(this);"
+                                aria-label="Edit Selection" title="Edit Selection" aria-hidden="true">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                  <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z"/>
+                                  <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z"/>
+                                </svg> Edit
+                            </button>
+                        {{/editable}}
+                    </div>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+        {{/annotations}}
+      </div>
+    {{/category}}
+  </li>
+{{/annotation_list}}
+</script>
+{% endverbatim %}

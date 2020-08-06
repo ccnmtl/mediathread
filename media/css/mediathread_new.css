@@ -3267,7 +3267,6 @@ div.asset-view-container div.asset-view-tabs .ui-tabs-panel {
 ul#asset-details-annotations-list h3.ui-accordion-header-active {
     border-bottom: 0;
     outline: 0;
-    padding-bottom: 1em;
     background-color: white;
     border: 1px solid #aaa;
     border-bottom: 0;
@@ -3322,11 +3321,6 @@ div#asset-view-details div#asset-global-annotation {
 }
 
 div#asset-view-details  a.edit-item {
-    padding: 3px 8px 2px 4px;
-}
-
-div#asset-view-details a.create-selection {
-    margin: -8px 8px 0px 8px;
     padding: 3px 8px 2px 4px;
 }
 
@@ -3417,23 +3411,6 @@ div#annotation-filter-menu {
     width: 200px;
     padding: 10px;
     line-height: 1.5em;
-}
-
-.annotation-listitem-icon {
-    float: right;
-    margin-left: 8px;
-    margin-right: 8px;
-    margin-top: 0px;
-    border: none;
-    color: #333;
-}
-
-.annotation-listitem-icon.delete {
-    margin-right: 0px;
-}
-
-input[name="copy-selection-icon"] {
-    margin-top: -5px;
 }
 
 /** Migrate Course Materials **/

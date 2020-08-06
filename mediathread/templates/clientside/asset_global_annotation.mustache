@@ -1,0 +1,148 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_global_annotation-template">
+
+{{#asset-current}}
+  <h2>Item
+    <div class="actions">
+      {{#global_annotation.id}}
+        <input type="image" title="Remove item from collection"
+         class="remove-item-icon"
+         onclick="return annotationList.deleteItem(event, this, {{id}});"
+         alt="Delete" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png" />
+      {{/global_annotation.id}}
+
+      <input type="image" title="Edit item"
+       class="edit-item-icon"
+       onclick="return annotationList.editItem(this);"
+       alt="Edit" src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" />
+    </div>
+  </h2>
+
+  <div id="asset-header">
+    <table>
+      <tr>
+        {{#thumb_url}}
+          <td class="thumbnail">
+            <img src="{{thumb_url}}" alt="Item Thumbnail" />
+          </td>
+        {{/thumb_url}}
+        <td>
+          <div class="global-annotation-analysis">
+            {{^global_annotation_analysis}}
+              <center>
+                <div>This item has no notes or tags.</div>
+                <br />
+                <a class="btn btn-default btn-sm edit-item"
+                  onclick="return annotationList.editItem(this);">
+                  <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png"
+                  alt="Edit this item"></img>
+                  Edit this item
+                </a>
+              </center>
+            {{/global_annotation_analysis}}
+
+            {{#global_annotation.metadata.body}}
+              <div class="meta">
+                <label>Notes</label>
+                <div class="global-annotation-notes">
+                  {{global_annotation.metadata.body}}
+                </div>
+              </div>
+            {{/global_annotation.metadata.body}}
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    {{#global_annotation.metadata.tags.length}}
+      <div class="meta global-annotation-tags">
+        <label>Tags: </label>
+        {{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}
+      </div>
+    {{/global_annotation.metadata.tags.length}}
+
+    {{#global_annotation.vocabulary}}
+      <div class="meta">
+        <label>{{display_name}}: </label>
+        {{#terms}}
+          {{display_name}}
+        {{/terms}}
+      </div>
+    {{/global_annotation.vocabulary}}
+  </div>
+{{/asset-current}}
+
+<form id="edit-global-annotation-form" method="post"
+  {{#asset-current.global_annotation.id}}
+    action="/course/{{getCourseId}}/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
+  {{/asset-current.global_annotation.id}}
+
+  {{^asset-current.global_annotation.id}}
+    action="/course/{{getCourseId}}/asset/create/{{asset-current.id}}/global/"
+  {{/asset-current.global_annotation.id}}
+  style="display: none">
+
+  {{#asset-current.editable_title}}
+    <div>
+      <label>Title</label>
+      <div>
+        <input data-label="Title" type="text" name="asset-title"
+        value="{{asset-current.title}}"/>
+      </div>
+    </div>
+  {{/asset-current.editable_title}}
+
+  {{#vocabulary.length}}
+    <div class="vocabulary">
+      <label>Terms</label>
+      <select class="vocabulary"
+        data-placeholder="select {{display_name?lower()}}"
+        name="vocabulary"
+        multiple="multiple">
+        
+        {{#vocabulary}}
+            <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
+            {{#term_set}}
+              <option value="{{id}}">{{display_name}}</option>
+            {{/term_set}}
+            </optgroup>
+        {{/vocabulary}}
+      </select>
+    </div>
+  {{/vocabulary.length}}
+  <br />
+  {{#asset-current}}
+    <div>
+      <label>Tags</label>
+      <div>
+        <input data-label="Tags" class="global-annotation-tags"
+        type="text"
+        name="annotation-tags"
+        data-placeholder="select or create tags"
+        value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
+          id="id_annotation-tags" />
+          <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
+      </div>
+    </div>
+    <br />
+    <div>
+      <label>Notes</label>
+      <div>
+        <textarea data-label="Notes"
+          id="id_annotation-body" rows="7" cols="51"
+          name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
+      </div>
+    </div>
+  {{/asset-current}}
+
+  <input class="btn btn-primary float-right"
+  type="submit" name="submit_notes" value="Save Item"
+  onclick="return annotationList.saveItem(this)" />
+
+  <input class="btn btn-primary float-right"
+  type="submit" name="submit_notes_cancel" value="Cancel"
+  onclick="return annotationList.cancelItem(this)" />
+  <div class="visualclear"></div>
+</form>
+</script>
+{% endverbatim %}

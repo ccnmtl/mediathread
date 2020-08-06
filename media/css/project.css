@@ -149,6 +149,212 @@ div.save-publish-status li {
     margin: -10px -5px 0 0;
 }
 
+/* ---- Selection & Sequence Assignments ------- */
+/* Selection Assignment */
+.selection-assignment .annotation-ajaxloader {
+    margin-top: 25px;
+    height: 150px;    
+    width: 90%;
+}
+
+.selection-assignment #sliding-content-container {
+    margin-top: 20px;
+}
+
+.project-response-form ul,
+.selection-assignment .page ul,
+.sequence-assignment .page ul {
+    margin:  .4em 0em 0.7em 2em;
+}
+
+.selection-assignment input[name='copy-selection-icon'],
+.selection-assignment #asset-global-annotation {
+    display: none !important;
+}
+
+.sequence-assignment .radio {
+    margin-top: 0;
+}
+
+.sequence-assignment #id_publish,
+.selection-assignment #id_response_view_policy,
+.selection-assignment #id_publish {
+    margin: 0 4em 0.7em .7em;
+    list-style-type: none;
+    width: 100%;
+}
+
+.selection-assignment #id_response_view_policy li,
+.sequence-assignment #id_response_view_policy li {
+    list-style-type: none;
+}
+
+.sequence-assignment #id_response_view_policy label,
+.sequence-assignment #id_publish label,
+.selection-assignment #id_response_view_policy label,
+.selection-assignment #id_publish label {
+    font-weight: normal;
+}
+
+.selection-assignment .asset-view-tabs {
+    padding-left: 15px !important;
+    width: 32% !important;
+}
+
+.selection-assignment .asset-view-published {
+    border: 0;
+}
+
+.selection-assignment h3.annotation-header a {
+    font-size: .9em;
+}
+
+.selection-assignment .annotation-header:not(.ui-state-active) .annotation-listitem-icon {
+    display: none;
+}
+
+.sequence,
+.sequence-assignment {
+    min-width: 970px;
+    width: 100%;
+}
+
+.sequence .col-half,
+.sequence-assignment .col-half {
+    width: 49%;
+}
+
+.sequence .title-container,
+.sequence-assignment .title-container {
+    width: 40%;
+}
+
+.sequence .tabs-container,
+.sequence-assignment .tabs-container {
+    width: 59%;
+}
+
+.sequence-assignment .assignment-response-title {
+    margin-top: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.sequence-assignment .assignment-response-author {
+    margin-top: 10px;
+    font-size: 110%;
+}
+.sequence-assignment input[name='title'] {
+    display: inline;
+    width: 72%;
+}
+
+.sequence-assignment .panel-title a {
+    color: #383838;
+    font-size: 14px;
+}
+
+.sequence .btn-tab,
+.sequence-assignment .btn-tab {
+    line-height: 1;
+    border-radius: 3px;
+    margin-left: 5px;
+    padding: 7px 9px;
+    margin-top: 5px;
+}
+
+.sequence-assignment .btn-primary:hover,
+.sequence-assignment .btn-primary:active,
+.sequence-assignment .btn-primary:focus {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.sequence-assignment .tab-content {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: -1px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.sequence-assignment textarea[name='comment'] {
+    height: 200px;
+}
+.sequence-assignment textarea[name='body'] {
+    height: 200px;
+}
+
+.sequence-assignment .alert-success {
+    padding: 5px;
+    margin-right: 10px;
+}
+
+form[name="sequence-assignment-edit"] p {
+    margin-top: 0;
+}
+
+form[name="sequence-assignment-edit"] input[type=checkbox], 
+form[name="sequence-assignment-edit"] input[type=radio] {
+    margin: 0 0 0 -20px;
+}
+
+.selection-assignment h1 {
+    font-size: 2rem;
+}
+
+.selection-assignment h2 {
+    font-size: 1.5rem;
+}
+
+.selection-assignment .mceLayout,
+.selection-assignment textarea {
+    width: 100% !important;
+    height: 100%;
+}
+
+.selection-assignment .gallery-item-overlay {
+    position: absolute;
+    background: rgba(119,119,119,.70);
+    text-align: center;
+    vertical-align: middle;
+    opacity:0.70;
+    -moz-opacity:0.70;
+    filter:alpha(opacity=70);
+    font-weight: 900;
+    color: white;
+    font-size: 48px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.selection-assignment .gallery-item-overlay div {
+    margin-top: 40%;
+    outline: 0;
+    -moz-user-select: none; 
+    -khtml-user-select: none; 
+    user-select: none;
+}
+
+.selection-assignment .selected-item .meta {
+    display: none;
+}
+
+.selection-assignment .filter-selections {
+    display: none;
+}
+
+.selection-assignment .selected-item .gallery-item {
+    margin-top: 30px;
+    float: none;
+}
+
+.selection-assignment .clipstrip-display {
+    display: none;
+}
+
 /* ---- Threaded comments ---------- */
 
 .threaded_comment_author {

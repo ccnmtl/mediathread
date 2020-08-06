@@ -1,0 +1,75 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_view_details-template">
+
+<div id="asset-global-annotation"
+  {{#annotation.editing}}
+    style="display: none"
+  {{/annotation.editing}}>
+</div>
+
+<div id="annotation-current"></div>
+
+<div id="annotations-organized-container">
+  <div id="annotations-organized"
+    {{#annotation.editing}}
+      style="display: none"
+    {{/annotation.editing}}>
+
+    {{#asset-current}}
+        <div class="btn-group float-right">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle filter-selections"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_view.png" /> View <span class="caret"></span>
+            </button>
+            <div id="annotation-filter-menu" class="dropdown-menu dropdown-menu-right">
+                <form name="annotation-list-filter">
+                    <div class="annotation-filter-groupby">
+                        <div><b>Group selections by</b></div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="groupby" value="author" />author
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="groupby" value="tag" />tag
+                            </label>
+                        </div>
+                        <hr />
+                    </div>
+                    <label>
+                        <input type="checkbox" name="showall" />
+                            Display all selections
+                    </label>
+                    <div class="helptext">This option shows all selections graphically on the {{media_type_label}} to the left.</div>
+                </form>
+            </div>
+        </div>
+
+        <h2>
+            {{^readOnly}}Selections{{/readOnly}}
+            {{#readOnly}}Responses{{/readOnly}}
+        </h2>
+        {{^annotations}}
+            {{^readOnly}}
+                <div class="text-center py-3">You have no selections on this item.</div>
+            {{/readOnly}}
+        {{/annotations}}
+        {{^readOnly}}
+            <div class="text-center mt-2">
+            <button class="btn btn-link create-selection text-center"
+              onclick="return annotationList.newAnnotation();">
+<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4a.5.5 0 0 0-1 0v3.5H4a.5.5 0 0 0 0 1h3.5V12a.5.5 0 0 0 1 0V8.5H12a.5.5 0 0 0 0-1H8.5V4z"/>
+</svg>
+              Create Selection
+            </button>
+            </div>
+        {{/readOnly}}
+    {{/asset-current}}
+
+    <ul id="asset-details-annotations-list" class="pl-0"></ul>
+  </div>
+</div>
+</script>
+{% endverbatim %}

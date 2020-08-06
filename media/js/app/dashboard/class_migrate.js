@@ -1,4 +1,3 @@
-/* global getVisibleContentHeight: true */
 /* global showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 

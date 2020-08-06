@@ -153,7 +153,17 @@
      * Returns a promise.
      */
     MediaThread.loadTemplate = function(templateName) {
-        if (typeof MediaThread.templates[templateName] === 'undefined') {
+        if (typeof MediaThread.templates[templateName] !== 'undefined') {
+            // The template was already loaded, so just resolve this
+            // promise.
+            var dfd = jQuery.Deferred();
+            return dfd.resolve(MediaThread.templates[templateName]);
+        } else if (jQuery('#' + templateName + '-template').length) {
+            var dfd2 = jQuery.Deferred();
+            var $elt = jQuery('#' + templateName + '-template');
+            MediaThread.templates[templateName] = $elt.html();
+            return dfd2.resolve(MediaThread.templates[templateName]);
+        } else {
             return jQuery.ajax({
                 url: STATIC_URL + 'templates/' +
                     templateName + '.mustache?nocache=v2',
@@ -163,11 +173,6 @@
                     MediaThread.templates[templateName] = text;
                 }
             });
-        } else {
-            // The template was already loaded, so just resolve this
-            // promise.
-            var dfd = jQuery.Deferred();
-            return dfd.resolve(MediaThread.templates[templateName]);
         }
     };
 

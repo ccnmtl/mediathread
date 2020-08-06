@@ -19,6 +19,14 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
 {% endblock %}
 
+{% block clientside_templates %}
+    {% include "clientside/asset_quick_edit.mustache" %}
+    {% include "clientside/collection.mustache" %}
+    {% include "clientside/collection_assets.mustache" %}
+    {% include "clientside/collection_chooser.mustache" %}
+    {% include "clientside/discussion.mustache" %}
+{% endblock %}
+
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}

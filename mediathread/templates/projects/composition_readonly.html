@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="{{STATIC_URL}}admin/css/widgets.css" media="screen" />
 {% endblock %}
 
+{% block clientside_templates %}
+    {% include "clientside/project_readonly.mustache" %}
+{% endblock %}
+
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}

@@ -33,6 +33,8 @@ ProjectPanelHandler.prototype.initAfterTemplateLoad = function(
 ) {
     var self = this;
 
+    jQuery('#loading-project').hide();
+
     if (panel.context.can_edit) {
         self.$el.find('select[name="participants"]').select2({
             width: '100%',

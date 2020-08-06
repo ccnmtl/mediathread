@@ -129,6 +129,7 @@ export default class ViewSelections extends React.Component {
 
                             {this.props.type === 'video' && (
                                 <button
+                                    type="button"
                                     onClick={this.props.onPlaySelection}
                                     className="btn btn-primary btn-sm">
                                     Play

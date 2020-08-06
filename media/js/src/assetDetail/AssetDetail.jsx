@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import find from 'lodash/find';
 import ReactPlayer from 'react-player';
 import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
@@ -54,16 +55,29 @@ export default class AssetDetail extends React.Component {
 
         // If there's a selection in the URL, start at the
         // viewSelections tab.
+        let activeSelectionId = null;
         let hasSelection = false;
         if (window && window.location && window.location.pathname) {
-            hasSelection =
-                !!window.location.pathname.match(/annotations\/(\d+)\//);
+            activeSelectionId =
+                window.location.pathname.match(/annotations\/(\d+)\//);
+            hasSelection = !!activeSelectionId;
+            if (hasSelection) {
+                activeSelectionId = window.parseInt(activeSelectionId[1], 10);
+            }
+        }
+
+        // Set the activeSelection based on the url.
+        let activeSelection = null;
+        if (hasSelection) {
+            // Find the active selection in the annotations array.
+            activeSelection =
+                find(this.props.asset.annotations, {id: activeSelectionId});
         }
 
         this.state = {
             // For creating a new selection
-            selectionStartTime: 0,
-            selectionEndTime: 0,
+            selectionStartTime: activeSelection ? activeSelection.range1 : 0,
+            selectionEndTime: activeSelection ? activeSelection.range2 : 0,
 
             deletingSelectionId: null,
             showDeleteDialog: false,
@@ -71,7 +85,7 @@ export default class AssetDetail extends React.Component {
 
             validationError: null,
 
-            activeSelection: null,
+            activeSelection: activeSelection ? activeSelection.title : null,
 
             tab: hasSelection ? 'viewSelections' : 'viewItem',
 
@@ -80,9 +94,7 @@ export default class AssetDetail extends React.Component {
 
         this.draw = null;
 
-        this.playerRef = null;
-        this.selection = null;
-
+        this.playerRef = React.createRef();
         this.polygonButtonRef = React.createRef();
         this.startButtonRef = React.createRef();
 
@@ -108,6 +120,7 @@ export default class AssetDetail extends React.Component {
 
         this.onSelectSelection = this.onSelectSelection.bind(this);
         this.onViewSelection = this.onViewSelection.bind(this);
+        this.onPlaySelection = this.onPlaySelection.bind(this);
 
         this.onSelectTab = this.onSelectTab.bind(this);
 
@@ -261,20 +274,22 @@ export default class AssetDetail extends React.Component {
     }
 
     pause() {
-        const player = this.playerRef.getInternalPlayer();
+        const player = this.playerRef.current.getInternalPlayer();
         if (player && player.pauseVideo) {
             player.pauseVideo();
+        } else if (player && player.pause) {
+            player.pause();
         }
     }
 
     onPlayerProgress(d) {
-        if (!this.selection) {
+        if (!this.state.selectionEndTime) {
             return;
         }
 
         // Compare progress to the currently playing selection
-        if (d.playedSeconds > this.selection.range2) {
-            //this.pause();
+        if (d.playedSeconds > this.state.selectionEndTime) {
+            this.pause();
         }
     }
 
@@ -300,7 +315,7 @@ export default class AssetDetail extends React.Component {
 
     onStartTimeClick(e) {
         e.preventDefault();
-        const time = getPlayerTime(this.playerRef);
+        const time = getPlayerTime(this.playerRef.current.getInternalPlayer());
 
         if (typeof time === 'number') {
             this.setState({selectionStartTime: time});
@@ -314,7 +329,7 @@ export default class AssetDetail extends React.Component {
 
     onEndTimeClick(e) {
         e.preventDefault();
-        const time = getPlayerTime(this.playerRef);
+        const time = getPlayerTime(this.playerRef.current.getInternalPlayer());
 
         if (typeof time === 'number') {
             this.setState({selectionEndTime: time});
@@ -390,7 +405,7 @@ export default class AssetDetail extends React.Component {
             const newLayer = displaySelection(a, this.map);
             this.selectionLayer = newLayer;
         } else if (this.type === 'video') {
-            const player = this.playerRef;
+            const player = this.playerRef.current;
             player.seekTo(a.range1, 'seconds');
             this.setState({
                 selectionStartTime: a.range1,
@@ -410,6 +425,24 @@ export default class AssetDetail extends React.Component {
     onClearVectorLayer() {
         if (this.selectionSource) {
             clearSource(this.selectionSource);
+        }
+    }
+
+    onPlaySelection(e) {
+        e.preventDefault();
+        // Queue the selection, if it's not queued already.
+        const internalPlayer = this.playerRef.current.getInternalPlayer();
+        const currentTime = getPlayerTime(internalPlayer);
+        if (Math.round(currentTime) !== Math.round(this.state.selectionStartTime)) {
+            this.playerRef.current.seekTo(this.state.selectionStartTime, 'seconds');
+        }
+
+        if (internalPlayer && internalPlayer.playVideo) {
+            // YouTube
+            internalPlayer.playVideo();
+        } else if (internalPlayer && internalPlayer.play) {
+            // Vimeo and <video> element
+            internalPlayer.play();
         }
     }
 
@@ -539,6 +572,26 @@ export default class AssetDetail extends React.Component {
                                                 formatTimecode(this.state.selectionEndTime)
                                             )}
 
+                                            {
+                                                (this.state.tab === 'createSelection' ||
+                                                 (this.state.activeSelection && this.state.tab === 'viewSelections')
+                                                ) && (
+                                                    <button
+                                                        onClick={this.onPlaySelection}
+                                                        type="button"
+                                                        disabled={
+                                                            this.state.selectionStartTime >=
+                                                                this.state.selectionEndTime
+                                                        }
+                                                        className="btn btn-primary btn-sm ml-2">
+                                                        Play
+                                                        <svg
+                                                            width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-play-fill ml-1"
+                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                                        </svg>
+                                                    </button>
+                                                )}
                                         </div>
                                     </div>
 
@@ -572,7 +625,7 @@ export default class AssetDetail extends React.Component {
                             height="100%"
                             style={{backgroundColor: 'black'}}
                             onProgress={this.onPlayerProgress.bind(this)}
-                            ref={r => this.playerRef = r}
+                            ref={this.playerRef}
                             url={vidUrl}
                             controls={true} />
                     </div>
@@ -659,6 +712,7 @@ export default class AssetDetail extends React.Component {
                                 filteredSelections={this.props.asset.annotations}
                                 onSelectSelection={this.onSelectSelection}
                                 onViewSelection={this.onViewSelection}
+                                onPlaySelection={this.onPlaySelection}
                                 onSaveSelection={this.onSaveSelection}
                                 onShowValidationError={this.onShowValidationError}
                                 onDeleteSelection={this.onDeleteSelection}

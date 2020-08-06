@@ -310,8 +310,8 @@ const handleBrokenImage = function(assetType) {
  *
  * Returns a number, or a Promise on Vimeo videos.
  */
-const getPlayerTime = function(playerRef) {
-    const player = playerRef.getInternalPlayer();
+const getPlayerTime = function(internalPlayer) {
+    const player = internalPlayer;
     if (player.getCurrentTime && typeof player.getCurrentTime === 'function') {
         return player.getCurrentTime();
     } else if (!isNaN(player.currentTime)) {

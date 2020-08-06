@@ -20,6 +20,16 @@
 {% endblock %}
 
 {% block clientside_templates %}
+    {% include "clientside/asset_view_help.mustache" %}
+    {% include "clientside/asset_view_details.mustache" %}
+    {% include "clientside/asset_view_details_quick_edit.mustache" %}
+    {% include "clientside/asset_references.mustache" %}
+    {% include "clientside/asset_annotation_list.mustache" %}
+    {% include "clientside/asset_annotation_current.mustache" %}
+    {% include "clientside/asset_global_annotation.mustache" %}
+    {% include "clientside/asset_global_annotation_quick_edit.mustache" %}
+    {% include "clientside/asset_sources.mustache" %}
+    {% include "clientside/asset_feedback.mustache" %}
     {% include "clientside/asset_quick_edit.mustache" %}
     {% include "clientside/collection.mustache" %}
     {% include "clientside/collection_assets.mustache" %}
@@ -39,9 +49,6 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
-
-    <!--  Generic Functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script type="text/javascript">
         {% if public_url or my_response or the_response or version %}

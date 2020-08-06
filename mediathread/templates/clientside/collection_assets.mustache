@@ -81,8 +81,9 @@
             <div class="px-3 {{^thumb}}{{^image}}pt-5{{/image}}{{/thumb}}">
                 <h5 id="asset-item-{{id}}" class="asset_title mt-3">
                     <div class="actions">
-                        <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
-                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                        <a class="btn btn-sm btn-info collection-choice create-annotation" href="{{id}}"
+                            title="Create selection on this item" class="create_annotation_icon">
+                            Create Selection
                         </a>
                     </div>
                     <a class="asset-title-link insert"
@@ -153,16 +154,16 @@
 
                                                     <div>
                                                         {{#citable}}
-                                                            <button class="btn btn-warning materialCitation clickableCitation d-inline"
+                                                            <button class="btn btn-sm btn-warning materialCitation clickableCitation d-inline"
                                                                 title="{{#metadata.title}}{{{metadata.title}}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
                                                                 name="{{url}}" data-type="{{metadata.primary_type}}" data-range="{{range1}}">
                                                                 Insert in Text
                                                             </button>
                                                         {{/citable}}
                                                         {{#editable}}
-                                                            <button class="collection-choice edit-annotation btn btn-info d-inline"
+                                                            <button class="collection-choice edit-annotation btn btn-sm btn-info d-inline"
                                                                 data-id="{{id}}" title="Quick edit selection attributes">
-                                                                Edit
+                                                                Edit Selection
                                                             </button>
                                                         {{/editable}}
                                                     </div>

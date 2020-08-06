@@ -1203,16 +1203,13 @@ div.mediathread-panel.asset-workspace-dialog div.asset-view-tabs {
     color: #333333;
 }
 
-form#edit-global-annotation-form input[name="asset-title"],
-#id_annotation-title {
-    height: 24px;
-    width: 98%;
+form#edit-global-annotation-form input[name="asset-title"] {
+    width: 100%;
     margin-bottom: 10px;
 }
 
-#id_annotation-body {
-    height: 100px;
-    width: 98%;
+#edit-annotation-form label {
+    font-weight: bold;
 }
 
 #asset-global-annotation input[name='submit_notes'],
@@ -3198,10 +3195,6 @@ div.asset-view-help-tab {
 input[type=image].dismiss-help {
      border: none;
      outline: 0;
-}
-
-div.asset-view-container {
-    font-size: .875em;
 }
 
 div.asset-view-container div.asset-view-published {

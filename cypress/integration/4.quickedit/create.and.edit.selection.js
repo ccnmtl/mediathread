@@ -40,7 +40,7 @@ describe('Instructor creates a selection', () => {
         cy.get('#asset-item-2').should('contain', 'Mediathread: Introduction');
 
         cy.log('click the +/create button next to the asset');
-        cy.get('#asset-item-2').find('.create_annotation_icon')
+        cy.get('#asset-item-2').find('.create-annotation')
             .click({ force: true });
 
         cy.log('verify the create form is visible');
@@ -50,16 +50,20 @@ describe('Instructor creates a selection', () => {
         cy.contains('Notes').should('exist');
         cy.get('[name="Cancel"]').should('exist');
         cy.get('[name="Save"]').should('exist');
-        cy.get('#id_annotation-title').type('Test Selection');
-        cy.get('#edit-annotation-form #s2id_id_annotation-tags .select2-input')
+        cy.get('input[name="annotation-title"]').type('Test Selection');
+        cy.get('#edit-annotation-form .select2-input')
             .type('abc{enter}');
-        cy.get('#annotation-body > #id_annotation-body')
+        cy.get('#edit-annotation-form textarea[name="annotation-body"]')
             .type('Here are my new notes');
         cy.get('#annotation-body input[name="Save"]').click({ force: true });
         cy.get('#annotation-current').should('not.be.visible');
 
         cy.log('verify new selection is visible');
         cy.get('div.ajaxloader').should('not.be.visible');
+        cy.get('.quick-edit').should('not.be.visible');
+        cy.get('.collection-materials').should('be.visible');
+        cy.get('button.btn-link').contains('Test Selection')
+            .should('be.visible');
         cy.get('button.btn-link').contains('Test Selection').first().click();
         cy.get('.collapse.show').within(() => {
             cy.get('button.materialCitation').contains('Insert in Text');

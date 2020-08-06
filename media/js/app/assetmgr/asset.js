@@ -1061,7 +1061,7 @@
 
         this._initConcepts = function() {
             self.$parent.find('select.vocabulary').select2({
-                width: '70%'
+                width: '100%'
             });
 
             var elt;
@@ -1119,7 +1119,7 @@
                         tags: tags,
                         tokenSeparators: [','],
                         maximumInputLength: 50,
-                        width: '70%'
+                        width: '100%'
                     });
                 }
             });

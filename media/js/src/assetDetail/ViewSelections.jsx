@@ -128,8 +128,8 @@ export default class ViewSelections extends React.Component {
                             )}
 
                             {this.props.type === 'video' && (
-                                <a
-                                    href="#"
+                                <button
+                                    onClick={this.props.onPlaySelection}
                                     className="btn btn-primary btn-sm">
                                     Play
                                     <svg
@@ -137,7 +137,7 @@ export default class ViewSelections extends React.Component {
                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
                                     </svg>
-                                </a>
+                                </button>
                             )}
                         </p>
                     </div>
@@ -399,6 +399,7 @@ ViewSelections.propTypes = {
     filteredSelections: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
+    onPlaySelection: PropTypes.func.isRequired,
     onSaveSelection: PropTypes.func.isRequired,
     onDeleteSelection: PropTypes.func.isRequired,
     onShowValidationError: PropTypes.func.isRequired,

@@ -71,6 +71,29 @@ body.mce-content-body {
 
 div.mce_editorwindow {
     min-width: 324px;
+    margin-top: 5px;
+}
+
+div.mce_editorwindow .asset-object {
+    background-color: white;
+    border: 0;
+}
+
+div.mce_editorwindow .mce_top {
+    background-color: #343a40;
+}
+
+div.mce_editorwindow .mce_editorwindow_closebtn {
+    float: right;
+    margin: 5px;
+}
+
+div.mce_editorwindow .mce_content {
+    clear: both;
+}
+
+div.mce_editorwindow .mce_editorwindow_closebtn:hover {
+  background-image: none;
 }
 
 .defaultSkin table.mceLayout {
@@ -87,6 +110,11 @@ div.mce_editorwindow {
 .main-view.asset-view-published {
     margin-top: 83px;
 }
+
+.main-view.asset-view-published .videoclipbox {
+    border-top: 40px solid #343a40;
+}
+
 .main-view.collection-materials {
     margin-top: 62px;
 }
@@ -188,7 +216,6 @@ div.save-publish-status li {
     font-size: 1.5rem;
     margin-bottom: 1rem;
 }
-
 
 /* ---- Selection & Sequence Assignments ------- */
 /* Selection Assignment */

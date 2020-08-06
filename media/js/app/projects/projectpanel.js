@@ -403,6 +403,7 @@ ProjectPanelHandler.prototype.preview = function(showPreview) {
         jQuery(self.essaySpace).hide();
 
         self.$el.find('div.asset-view-published').hide();
+        self.$el.find('.videoclipbox').hide();
         self.$el.find('.project-editbutton').addClass('active');
         self.$el.find('.project-previewbutton').removeClass('active');
 

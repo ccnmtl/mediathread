@@ -17,7 +17,7 @@ Projects
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
-            <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
                 <h1 class="page-title">Projects</h1>
                 <div class="bg-light" id="headingOne">
                     <button class="btn btn-primary btn-block btn-show-projects text-right"
@@ -28,9 +28,9 @@ Projects
                     </button>
                 </div>
             </div>
-            <div class="accordion mb-3 mt-3" id="project-accordion">
+            <div class="accordion" id="project-accordion">
                 <div class="card border-0">
-                    <div id="collapseOne" class="collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
+                    <div id="collapseOne" class="mb-3 collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
                         aria-labelledby="headingOne"
                         data-parent="#project-accordion">
                         <h4 class="text-center pt-3">Add a project</h4>

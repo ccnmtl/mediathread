@@ -193,6 +193,14 @@
             <div id="project-workspace">
                 <div class="row">
                     <div id="project-container" class="col-md-12">
+                        {% if my_response or the_response %}
+                        <div id="loading-project" class="alert alert-info" role="alert">
+                            <span class="spinner-border spinner-border-sm text-dark"
+                                role="status" aria-hidden="true"></span>&nbsp;
+                            <strong>Just a moment.</strong>&nbsp;
+                            Mediathread is loading the assignment response.
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="row">

@@ -22,6 +22,8 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
 
     djangosherd.storage.json_update(panel.context);
 
+    jQuery('#loading-project').hide();
+
     if (panel.context.can_edit) {
         self.$el.find('select[name="participants"]').select2({
             width: '100%',

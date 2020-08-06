@@ -1,13 +1,13 @@
 # pylint: disable-msg=R0904
 from django.db.models.query_utils import Q
-from tastypie import fields
-from tastypie.resources import ModelResource
-
+from django.urls import reverse
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.sequence.models import SequenceAsset
 from mediathread.taxonomy.api import TermResource
+from tastypie import fields
+from tastypie.resources import ModelResource
 
 
 class SherdNoteResource(ModelResource):
@@ -44,6 +44,12 @@ class SherdNoteResource(ModelResource):
             bundle.data['is_null'] = bundle.obj.is_null()
             bundle.data['annotation'] = bundle.obj.annotation()
             bundle.data['url'] = bundle.obj.get_absolute_url()
+            bundle.data['local_url'] = reverse(
+                'react_annotation_detail', kwargs={
+                    'course_pk': bundle.obj.asset.course.pk,
+                    'pk': bundle.obj.asset.pk,
+                    'annotation_pk': bundle.obj.id
+                })
 
             modified = bundle.obj.modified.strftime("%m/%d/%y %I:%M %p") \
                 if bundle.obj.modified else ''

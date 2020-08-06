@@ -59,14 +59,11 @@ class AssetResource(ModelResource):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
 
-        if hasattr(self, 'request') and hasattr(self.request, 'course'):
-            bundle.data['local_url'] = reverse(
-                'react_asset_detail', kwargs={
-                    'course_pk': bundle.obj.course.pk,
-                    'pk': bundle.obj.pk,
-                })
-        else:
-            bundle.data['local_url'] = bundle.obj.get_absolute_url()
+        bundle.data['local_url'] = reverse(
+            'react_asset_detail', kwargs={
+                'course_pk': bundle.obj.course.pk,
+                'pk': bundle.obj.pk,
+            })
 
         bundle.data['media_type_label'] = bundle.obj.media_type()
         bundle.data['editable_title'] = (

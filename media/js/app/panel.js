@@ -1,7 +1,6 @@
 /* global AssetPanelHandler: true */
 /* global DiscussionPanelHandler: true, MediaThread: true */
 /* global Mustache: true, panelFactory: true, ProjectPanelHandler: true */
-/* global urlWithCourse */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function() {
@@ -34,7 +33,7 @@
             self.$el = jQuery('#' + options.container);
 
             jQuery.ajax({
-                url: urlWithCourse(options.url),
+                url: options.url,
                 method: 'GET',
                 dataType: 'json',
                 cache: false, // Chrome & IE cache aggressively

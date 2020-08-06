@@ -62,7 +62,7 @@ class AssetResource(ModelResource):
         if hasattr(self, 'request') and hasattr(self.request, 'course'):
             bundle.data['local_url'] = reverse(
                 'asset-view', kwargs={
-                    'course_pk': self.request.course.pk,
+                    'course_pk': bundle.obj.course.pk,
                     'asset_id': bundle.obj.pk,
                 })
         else:

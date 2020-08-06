@@ -1,14 +1,12 @@
 {% extends "base_new.html" %}
 
 {% block title %}
-    {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
+    {{project.title}}
 {% endblock %}
 
 {% block css %}
-    <link rel="stylesheet" href="{{STATIC_URL}}js/select2/select2.css" media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.css"  media="screen" />
     <link rel="stylesheet" href="{{STATIC_URL}}css/project.print.css"  media="print" />
-    <link rel="stylesheet" href="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/plugins/citation/css/citation.css" />
 
     <!--All the annotation css -->
     {% include "djangosherd/annotator_resources_css.html" %}
@@ -21,28 +19,21 @@
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
-
-    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
     {% include "djangosherd/player_resources.html" %}
     <!-- required project functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
-
-    <!--  Generic Functionality -->
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
 
     <script type="text/javascript">
         jQuery(document).ready(function () {
             panelManager.init({
                 'container': 'project-workspace',
-                {% if show_feedback %}
-                    'url': MediaThread.urls['project-feedback']({{project.id}})
+                {% if public_url %}
+                    'url': '{{ public_url }}'
                 {% else %}
-                    'url': MediaThread.urls['project-view']({{project.id}})
+                    'url': MediaThread.urls['project-readonly']({{project.id}}, {{version}})
                 {% endif %}
             });
         });
@@ -50,24 +41,34 @@
 {% endblock %}
 
 {% block content %}
-    {% with active='projects' %}
-        {% include 'main/three_section_tabs.html' %}
-    {% endwith %}
+    {% if version %}
+        {% if project.is_assignment or project.assignment %}
+            {% with active='assignments' %}
+                {% include 'main/three_section_tabs.html' %}
+            {% endwith %}
+        {% else %}
+            {% with active='projects' %}
+                {% include 'main/three_section_tabs.html' %}
+            {% endwith %}
+        {% endif %}
+    {% endif %}
     <div class="tab-content">
         <div role="tabpanel">
+            {% if version %}
             <div class="row mt-2">
                 <div class="col-md-auto">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb bg-light mb-0">
                         <li class="breadcrumb-item" aria-current="page">
-                            <a href="{% url 'project-list' request.course.pk %}">
-                                Back to all projects
+                            <a href="{% url 'project-revisions' request.course.pk project.id %}">
+                                Back to {{project.title}} revisions
                             </a>
                         </li>
                       </ol>
                     </nav>
                 </div>
             </div>
+            {% endif %}
             <div id="project-workspace" class="row">
                 <div id="project-container" class="col-md-12">
                 </div>

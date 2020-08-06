@@ -32,6 +32,11 @@
     {% include "djangosherd/annotator_resources.html" %}
 {% endblock %}
 
+{% block js %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+{% endblock %}
+
 {% block uncompressable_js %}
     {% include "djangosherd/player_resources.html" %}
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>

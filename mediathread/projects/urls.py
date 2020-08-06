@@ -3,8 +3,8 @@ from mediathread.projects.apiviews import ProjectSequenceAssetViewSet
 from mediathread.projects.views import (
     ProjectCreateView, ProjectDeleteView, ProjectSortView,
     SelectionAssignmentEditView, ProjectSaveView, ProjectDispatchView,
-    UnsubmitResponseView, ProjectReadOnlyView, project_export_msword,
-    project_export_html,
+    UnsubmitResponseView, ProjectReadOnlyView,
+    ProjectExportWord, ProjectPrintView,
     SequenceAssignmentEditView, CompositionAssignmentEditView,
     CompositionAssignmentResponseView, UpdateVisibilityView,
     DiscussionAssignmentWizardView, DiscussionAssignmentCreateView,
@@ -73,12 +73,12 @@ urlpatterns = [
          name='project-save'),
 
     path('export/msword/<int:project_id>/',
-         project_export_msword,
+         ProjectExportWord.as_view(),
          name='project-export-msword'),
 
-    path('export/html/<int:project_id>/',
-         project_export_html,
-         name='project-export-html'),
+    path('print/<int:project_id>/',
+         ProjectPrintView.as_view(),
+         name='project-print-html'),
 
     path('delete/<int:project_id>/',
          ProjectDeleteView.as_view(), {}, 'project-delete'),

@@ -1,5 +1,3 @@
-{% load coursetags %}
-
 <html>
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
@@ -40,8 +38,7 @@ div.Section2 {
 
 <h3>{{project.title}}</h3>
 <br />
-<div>by {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-            {%public_name for part %}{%endfor%}
+<div>by {{project.attribution}}
 <hr />
 <br />
 <div>{{body|safe}}</div>

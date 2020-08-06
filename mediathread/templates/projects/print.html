@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 {% load coursetags %}
 
 {% block title %}
@@ -12,14 +12,11 @@
 {% endblock %}
 
 {% block content %}
-    {{ block.super }}
+    <h1 class="page-title">{{project.title}}</h1>
 
-    <h1 class="project-title">{{project.title}}</h1>
-
-    <h5>by {%for part in project.participants.all %}{%if not forloop.first%},{%endif%}
-            {%public_name for part %}{%endfor%}</h5>
-    <h5> for {{request.course.title}}</h5>
+    <h5>by {{project.attribution}}</h5>
     <hr />
-    <div class="essay-space-container">{{body|safe}}</div>
-
+    <div class="essay-space-container">
+        {{project.body|safe}}
+    </div>
 {% endblock %}

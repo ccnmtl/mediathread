@@ -67,6 +67,22 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     } else {
         self.hide_comment_form(false);
     }
+
+    jQuery('#student-responses a').on('click', (evt) => {
+        evt.preventDefault();
+        const authorId = jQuery(evt.currentTarget).attr('href');
+        const $elts = jQuery('[data-author-id="' + authorId + '"]');
+
+        jQuery('.comment').css('background-color', 'white');
+        $elts.css('background-color', '#fff7df');
+
+        const $elt = $elts.first();
+        jQuery('html, body').animate({scrollTop: $elt.position().top}, 200);
+
+        $(evt.currentTarget).parent().dropdown('toggle');
+        return false;
+    });
+
 };
 
 DiscussionPanelHandler.prototype.isEditing = function() {

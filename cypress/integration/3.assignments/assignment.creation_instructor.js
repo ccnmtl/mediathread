@@ -67,7 +67,8 @@ describe('Assignment Feature: Instructor Creation', () => {
 
         cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
         cy.get('.btn-edit-assignment').should('exist');
-        cy.get('.project-visibility-description').contains('Shared with Class');
+        cy.get('#student-response-dropdown')
+            .contains('0 of 3 students responded').should('be.visible');
         cy.get('#assignment-responses').should('not.be.visible');
         cy.get('#instructions-heading-one').contains('Instructions');
         cy.get('#instructions')

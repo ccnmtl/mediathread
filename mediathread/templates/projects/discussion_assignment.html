@@ -1,4 +1,5 @@
 {% extends "base_new.html" %}
+{% load user_projects coursetags %}
 
 {% block title %}
     {{assignment.title}}
@@ -48,7 +49,7 @@
         <div role="tabpanel">
             <div class="row mt-2">
                 <div class="col-md-auto">
-                    <nav aria-label="breadcrumb">
+                    <nav aria-label="breadcrumb" class="d-none d-md-block">
                       <ol class="breadcrumb bg-light mb-0">
                         <li class="breadcrumb-item" aria-current="page">
                             <a href="{% url 'assignment-list' request.course.pk %}">
@@ -60,33 +61,43 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center flex-wrap">
-                <div class="col-md-6 text-right order-md-2">
-                    {% if not is_faculty and responses|length > 1 %}
-                        <button id="assignment-responses" type="button" class="btn btn-outline-secondary dropdown-toggle"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Class Responses
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="assignment-responses">
-                            {% for response in responses %}
-                                {% if response != my_response %}
-                                    <a class="dropdown-item" href="{% url 'project-workspace' request.course.id response.id %}">
-                                        {{response.attribution_last_first}}
-                                    </a>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                <div class="col-md-6 pl-0">
+                    <h1 class="page-title">
+                        {{assignment.title}}
+                    </h1>
+                </div>
+                <div class="col-md-6 text-right">
                     {% if assignment_can_edit %}
-                        <a class="btn btn-outline-secondary btn-sm btn-edit-assignment"
+                        <a class="btn btn-outline-secondary btn-edit-assignment"
                             href="{% url 'discussion-assignment-edit-wizard' request.course.pk assignment.id %}">
                             Edit Assignment
                         </a>
                     {% endif %}
-                </div>
-                <div class="col-md-6 pl-0 order-md-1">
-                    <h1 class="page-title">
-                        {{assignment.title}}
-                    </h1>
+                    {% if is_faculty %}
+                        {% published_assignment_responses assignment as response_count %}
+                        <div class="dropdown d-inline ml-1">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="student-response-dropdown"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{response_count}} of {{students|length}} students responded
+                            </button>
+                            <div id="student-responses" class="dropdown-menu dropdown-menu-right"
+                                aria-labelledby="student-response-dropdown">
+                                {% for student in students %}
+                                    {% comment_count assignment student as comments %}
+                                    {% if comments.0 > 0 %}
+                                        <a class="dropdown-item" href="{{student.username}}">
+                                            {% public_name for student %} ({{comments.0}} comment{{comments.0|pluralize}})
+                                        </a>
+                                    {% else %}
+                                        <a class="dropdown-item disabled" href="#">
+                                            {% public_name for student %}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    {% endif %}
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -98,28 +109,6 @@
                             No due date
                         {% endif %}
                     </h5>
-                </div>
-                <div>
-                    {% if is_faculty and responses|length > 0 %}
-                    <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text" id="student-responses-addon">
-                                Select Student Response
-                            </span>
-                          </div>
-                          <select id="student-responses"  placeholder="-----"
-                                class="form-control" aria-label="Student Responses"
-                                aria-describedby="student-response-addon">
-                                <option value=''>-----</option>
-                              {% for response in responses %}
-                                    <option {% if response.id == the_response.id %}selected="selected"{% endif %}
-                                        value="{% url 'project-workspace' request.course.id response.id %}">
-                                        {{response.attribution}}
-                                    </option>
-                                {% endfor %}
-                          </select>
-                        </div>
-                    {% endif %}
                 </div>
                 <div>
                     {% if is_faculty %}

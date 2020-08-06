@@ -24,7 +24,7 @@
         <tbody>
         {% for object in object_list %}
             {% if object.is_discussion_assignment %}
-                {% my_comment_count object request.user as comments %}
+                {% comment_count object request.user as comments %}
                  <tr>
                     <td>
                         {% if object.due_date %}

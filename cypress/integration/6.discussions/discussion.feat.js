@@ -64,6 +64,8 @@ describe('Discussion View: Create Discussion', () => {
             .contains('Shared with Class');
         cy.get('h5').contains('Due').should('be.visible');
         cy.get('.threadedcomments-container').should('be.visible');
+        cy.get('#student-response-dropdown')
+            .contains('0 of 3 students responded');
 
         cy.get('li.comment-thread').within(() => {
             cy.get('.threaded_comment_author').contains('Instructor One');
@@ -144,5 +146,11 @@ describe('Discussion View: Create Discussion', () => {
             cy.get('td').eq(3).contains('1 / 3');
             cy.get('td').eq(7).should('not.contain', 'Delete');
         });
+        cy.get('a').contains('Discussion: Scenario 1').click();
+        cy.get('#student-response-dropdown')
+            .contains('1 of 3 students responded');
+        cy.get('#student-response-dropdown').click()
+        cy.get('a.dropdown-item')
+            .contains('Student One (1 comment)').should('be.visible');
     });
 });

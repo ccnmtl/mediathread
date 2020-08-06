@@ -1413,16 +1413,6 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
         # anonymous
         self.assertEqual(self.client.get(url).status_code, 302)
 
-        # student
-        self.client.login(username=self.student_one.username,
-                          password='test')
-        self.assertEqual(self.client.get(url).status_code, 200)
-
-        # faculty
-        self.client.login(username=self.instructor_one.username,
-                          password='test')
-        self.assertEqual(self.client.get(url).status_code, 200)
-
     def test_create(self):
         self.client.login(username=self.instructor_one.username,
                           password='test')
@@ -1442,6 +1432,16 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
         discussion = project.course_discussion()
         self.assertEqual(discussion.comment, '<p>Talk</p>')
         self.assertEqual(discussion.title, 'Important Discussion')
+
+        # faculty
+        url = reverse('project-workspace',
+                      args=[self.sample_course.id, project.id])
+        self.assertEqual(self.client.get(url).status_code, 200)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        self.assertEqual(self.client.get(url).status_code, 200)
 
     def test_save(self):
         pass

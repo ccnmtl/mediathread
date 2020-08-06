@@ -10,7 +10,7 @@ from mediathread.factories import UserFactory, MediathreadTestMixin, \
 from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT, \
     Project
 from mediathread.projects.templatetags.user_projects import (
-    published_assignment_responses, my_comment_count, my_assignment_responses,
+    published_assignment_responses, comment_count, my_assignment_responses,
     assignment_responses)
 
 
@@ -99,11 +99,11 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         assignment = Project.objects.get(title='Important Discussion')
         self.assertEquals(published_assignment_responses(assignment), 0)
         self.assertEqual(
-            my_comment_count(assignment, self.instructor_one)[0], 1)
+            comment_count(assignment, self.instructor_one)[0], 1)
         self.assertEqual(
-            my_comment_count(assignment, self.instructor_two)[0], 0)
+            comment_count(assignment, self.instructor_two)[0], 0)
         self.assertEqual(
-            my_comment_count(assignment, self.student_one)[0], 0)
+            comment_count(assignment, self.student_one)[0], 0)
 
         # add a comment
         discussion = assignment.course_discussion()
@@ -113,6 +113,6 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         self.assertEquals(published_assignment_responses(assignment), 1)
 
         self.assertEqual(
-            my_comment_count(assignment, self.instructor_two)[0], 1)
+            comment_count(assignment, self.instructor_two)[0], 1)
         self.assertEqual(
-            my_comment_count(assignment, self.student_one)[0], 1)
+            comment_count(assignment, self.student_one)[0], 1)

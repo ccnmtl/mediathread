@@ -102,17 +102,14 @@
             return '/project/view/' + projectId + '/feedback/';
         },
         'project-readonly': function(projectId, version) {
-            return '/project/view/' + projectId +
-                '/version/' + version + '/';
+            return '/course/' + MediaThread.current_course +
+                '/project/' + projectId + '/version/' + version + '/';
         },
         'project-create': function() {
             return '/project/create/';
         },
         'project-save': function(projectId) {
             return '/project/save/' + projectId + '/';
-        },
-        'project-revisions': function(projectId) {
-            return '/project/revisions/' + projectId + '/';
         },
         'project-response': function(courseId, projectId) {
             return '/course/' + courseId + '/project/response/'

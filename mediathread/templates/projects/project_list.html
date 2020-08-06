@@ -17,26 +17,23 @@ Projects
     {% endwith %}
     <div class="tab-content">
         <div role="tabpanel">
-            <div class="row">
-                <div class="col">
-                    <h1 class="page-title">Projects</h1>
+            <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
+                <h1 class="page-title">Projects</h1>
+                <div class="bg-light" id="headingOne">
+                    <button class="btn btn-primary btn-block btn-show-projects text-right"
+                        type="button" data-toggle="collapse"
+                        data-target="#collapseOne" aria-expanded="true"
+                        aria-controls="collapseOne">
+                            Add a project
+                    </button>
                 </div>
             </div>
-            <div class="accordion mb-3 mt-3" id="assignment-accordion">
+            <div class="accordion" id="project-accordion">
                 <div class="card border-0">
-                    <div class="card-header pb-0" id="headingOne">
-                        <h2>
-                            <button class="btn btn-link btn-block text-left btn-show-assignments"
-                                type="button" data-toggle="collapse"
-                                data-target="#collapseOne" aria-expanded="true"
-                                aria-controls="collapseOne">
-                                    Add a project
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapseOne" class="collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
+                    <div id="collapseOne" class="mb-3 collapse {% if user_has_projects or not owner == request.user%}hide{% else %}show{% endif %} bg-light"
                         aria-labelledby="headingOne"
-                        data-parent="#assignment-accordion">
+                        data-parent="#project-accordion">
+                        <h4 class="text-center pt-3">Add a project</h4>
                         <div class="card-body">
                             <div class="card-deck">
                                 <div class="card">
@@ -124,6 +121,106 @@ Projects
                     </div>
                 </div>
             </div>
+            <form id="search-form" action="." method="get">
+                {% csrf_token %}
+                <input type="hidden" name="owner" value="{{owner}}">
+                <input type="hidden" name="sortby" value="{{sortby}}">
+                <input type="hidden" name="direction" value="{{direction}}">
+                <input type="hidden" name="page" value="{{page_obj.number}}">
+            </form>
+            <div class="row">
+                <div class="col-12">
+                    {% if object_list.exists %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped w-100 tablesorter">
+                                <thead class="thead-darkgray">
+                                    <th data-sort-by="title"
+                                        class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                                        Title
+                                    </th>
+                                    <th data-sort-by="visibility">
+                                        Status
+                                    </th>
+                                    <th data-sort-by="full_name"
+                                        class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
+                                        Authors
+                                    </th>
+                                    <th data-sort-by="project_type"
+                                        class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
+                                        Type
+                                    </th>
+                                    <th data-sort-by="modified"
+                                        class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
+                                        Last Updated
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </thead>
+                                <tbody>
+                                {% for object in object_list %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'project-workspace' request.course.id object.id %}"
+                                                title="{{object.title}}">
+                                                {{object.title}}
+                                            </a>
+                                        </td>
+                                        <td>{{object.visibility_short}}</td>
+                                        <td>{{object.attribution}}</td>
+                                        <td>{{object.description}}</td>
+                                        <td>{{object.modified|date:"n/j/y g:iA"}}</td>
+                                        <td>
+                                            {% if request.user == object.author or request.user in object.participants %}
+                                            <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
+                                                data-toggle="modal" data-target="#delete-project-{{object.id}}">
+                                                Delete
+                                            </button>
+                                            <div id="delete-project-{{object.id}}" class="modal" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Delete {{object.title}}</h5>
+                                                            <button type="button" class="close"
+                                                                data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete {{object.title}}?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button"
+                                                                class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
+                                                                {% csrf_token %}
+                                                                <button type="submit" data-project-id="{{object.id}}"
+                                                                    class="btn btn-primary btn-delete-project">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center w-100">
+                            {% if owner != request.user %}
+                                {% if owner.last_name %}
+                                    <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
+                                {% else %}
+                                    <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
             {% if paginator.num_pages > 1 %}
             <div class="row">
                 <div class="col-md-6 offset-md-6">
@@ -133,106 +230,6 @@ Projects
                 </div>
             </div>
             {% endif %}
-            <form id="search-form" action="." method="get">
-                {% csrf_token %}
-                <input type="hidden" name="owner" value="{{owner}}">
-                <input type="hidden" name="sortby" value="{{sortby}}">
-                <input type="hidden" name="direction" value="{{direction}}">
-                <input type="hidden" name="page" value="{{page_obj.number}}">
-            </form>
-                <div class="row">
-                    <div class="col-12">
-                        {% if object_list.exists %}
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped w-100 tablesorter">
-                                    <thead class="thead-darkgray">
-                                        <th data-sort-by="title"
-                                            class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
-                                            Title
-                                        </th>
-                                        <th data-sort-by="visibility">
-                                            Status
-                                        </th>
-                                        <th data-sort-by="full_name"
-                                            class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
-                                            Authors
-                                        </th>
-                                        <th data-sort-by="project_type"
-                                            class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
-                                            Type
-                                        </th>
-                                        <th data-sort-by="modified"
-                                            class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
-                                            Last Updated
-                                        </th>
-                                        <th>
-                                            Action
-                                        </th>
-                                    </thead>
-                                    <tbody>
-                                    {% for object in object_list %}
-                                        <tr>
-                                            <td>
-                                                <a href="{% url 'project-workspace' request.course.id object.id %}"
-                                                    title="{{object.title}}">
-                                                    {{object.title}}
-                                                </a>
-                                            </td>
-                                            <td>{{object.visibility_short}}</td>
-                                            <td>{{object.attribution}}</td>
-                                            <td>{{object.description}}</td>
-                                            <td>{{object.modified|date:"n/j/y g:iA"}}</td>
-                                            <td>
-                                                {% if request.user == object.author or request.user in object.participants %}
-                                                <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
-                                                    data-toggle="modal" data-target="#delete-project-{{object.id}}">
-                                                    Delete
-                                                </button>
-                                                <div id="delete-project-{{object.id}}" class="modal" tabindex="-1" role="dialog">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Delete {{object.title}}</h5>
-                                                                <button type="button" class="close"
-                                                                    data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p>Are you sure you want to delete {{object.title}}?</p>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button"
-                                                                    class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
-                                                                    {% csrf_token %}
-                                                                    <button type="submit" data-project-id="{{object.id}}"
-                                                                        class="btn btn-primary btn-delete-project">Delete</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <div class="text-center w-100">
-                                {% if owner != request.user %}
-                                    {% if owner.last_name %}
-                                        <h4 class="ml-1">{{owner.first_name}} {{owner.last_name}} has not shared any projects.</h4>
-                                    {% else %}
-                                        <h4 class="ml-1">{{owner.username}} has not shared any projects.</h4>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
         </div>
     </div>
 </div>

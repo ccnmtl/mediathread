@@ -63,26 +63,6 @@
                                         </a>
                                     {{/context.can_edit}}
 
-                                    {{#context.responses.length}}
-                                        <button class="project project-responsesbutton btn btn-outline-secondary btn-sm"
-                                            type="button">
-                                            Class Responses ({{context.response_count}})
-                                        </button>
-                                        <div class="response-list" style="display: none" title="Responses">
-                                            <div>Select an assignment response, then click "View"</div>
-                                            <select name="responses" multiple="multiple">
-                                              {{#context.responses}}
-                                                <option value="{{url}}">
-                                                  {{#attribution_list}}
-                                                    {{ name }}{{^last}}, {{/last}} 
-                                                  {{/attribution_list}}
-                                                   &mdash; {{ submitted }}
-                                                </option>
-                                              {{/context.responses}}
-                                            </select>
-                                        </div>
-                                    {{/context.responses.length}}
-
                                     <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
                                         Export to Word
                                     </a>

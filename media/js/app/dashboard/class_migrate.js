@@ -1,4 +1,3 @@
-/* global getVisibleContentHeight: true */
 /* global showMessage: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -96,10 +95,6 @@
 
             var self = this;
 
-            jQuery(window).resize(function() {
-                self.resize();
-            });
-
             // Setup initial state based on user's available courses
             // availableCourses are setup in the Django template
             if (this.availableCourses.length < 1) {
@@ -141,7 +136,7 @@
             var markup = this.courseTemplate(json);
             jQuery('#course').html(markup);
 
-            jQuery('#course-title').html(this.model.get('course').title);
+            jQuery('#card-course-title').html(this.model.get('course').title);
 
             jQuery('#available-courses-selector').fadeOut(function() {
                 jQuery('#course-materials-container').fadeIn();
@@ -158,18 +153,9 @@
             if (this.selectedProjects.length > 0 ||
                 this.selectedAssets.length > 0) {
                 jQuery('#selected-for-import').show();
-                jQuery(window).trigger('resize');
             } else {
                 jQuery('#selected-for-import').hide();
             }
-        },
-
-        resize: function() {
-            var visible = getVisibleContentHeight();
-            visible -= jQuery('div.dashboard-module-header').height();
-            visible -= jQuery('#course-title').height();
-            visible -= jQuery('#footer').height();
-            jQuery('#to_import').css('height', (visible - 20) + 'px');
         },
 
         setCourse: function(courseId) {
@@ -196,7 +182,7 @@
             jQuery('#selected-for-import').html('');
             jQuery('#available-courses-selector').fadeIn();
             jQuery('#available-courses').val('');
-            jQuery('#course-title').html('');
+            jQuery('#card-course-title').html('');
         },
 
         migrateCourseMaterials: function(evt) {

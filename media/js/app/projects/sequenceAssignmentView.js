@@ -177,9 +177,12 @@
                 .text('Saving...')
                 .addClass('saving');
 
+            let saveUrl = '/course/' + MediaThread.current_course +
+                '/project/save/' + this.responseId + '/';
+
             jQuery.ajax({
                 type: 'POST',
-                url: '/project/save/' + this.responseId + '/',
+                url: saveUrl,
                 data: this.serializeData(),
                 dataType: 'json',
                 error: function() {
@@ -225,9 +228,12 @@
                     '#submit-project input[name="publish"]').val()
             });
 
+            var saveUrl = '/course/' + MediaThread.current_course +
+                '/project/save/' + this.responseId + '/';
+
             jQuery.ajax({
                 type: 'POST',
-                url: '/project/save/' + this.responseId + '/',
+                url: saveUrl,
                 data: data,
                 dataType: 'json',
                 success: function(json) {

@@ -155,6 +155,10 @@ div.save-publish-status li {
     font-size: 1.5rem;
 }
 
+.comment-highlight {
+    background-color: #fff7df;
+}
+
 form.threaded_comments_form h3 {
     margin-top: 5px;
 }

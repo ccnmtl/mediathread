@@ -78,6 +78,9 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
         is_faculty = self.request.course.is_faculty(self.request.user)
         feedback, feedback_count = self.get_feedback(responses, is_faculty)
 
+        students = self.request.course.students.order_by(
+            'last_name', 'first_name', 'username')
+
         ctx = {
             'is_faculty': is_faculty,
             'assignment': parent,
@@ -90,7 +93,8 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'vocabulary': json.dumps(vocabulary_json),
             'responses': responses,
             'feedback': json.dumps(feedback),
-            'feedback_count': feedback_count
+            'feedback_count': feedback_count,
+            'students': students
         }
         ctx.update(self.get_extra_context())
         return ctx

@@ -67,6 +67,22 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     } else {
         self.hide_comment_form(false);
     }
+
+    jQuery('#student-responses a').on('click', (evt) => {
+        evt.preventDefault();
+        const authorId = jQuery(evt.currentTarget).attr('href');
+        const $elts = jQuery('[data-author-id="' + authorId + '"]');
+
+        jQuery('.comment').removeClass('comment-highlight');
+        $elts.addClass('comment-highlight');
+
+        const $elt = $elts.first();
+        jQuery('html, body').animate({scrollTop: $elt.position().top}, 200);
+
+        $(evt.currentTarget).parent().dropdown('toggle');
+        return false;
+    });
+
 };
 
 DiscussionPanelHandler.prototype.isEditing = function() {
@@ -202,7 +218,7 @@ DiscussionPanelHandler.prototype.open_comment_form = function(insertAfter,
             init_instance_callback: function(editor) {
                 self.onTinyMCEInitialize(editor);
             },
-            height: 400
+            height: 200
         });
 
         tinymce.execCommand('mceAddEditor', true, 'id_comment');
@@ -325,8 +341,11 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
                 'id': res.comment_id,
                 'comment': res.comment || form_vals.comment,
                 'name': self.space_owner,
+                'username': self.space_owner,
                 'timestamp': new Date().toLocaleString()
             };
+
+            jQuery('.comment').removeClass('comment-highlight');
 
             switch (this.info.mode) {
             case 'post':
@@ -466,7 +485,8 @@ DiscussionPanelHandler.prototype.components = function(html_dom, create_obj) {
 DiscussionPanelHandler.prototype.create = function(obj, doc) {
     var html =
         '<li id="comment-{{current_comment.id}}" class="comment-thread">' +
-        '<div class="comment new-comment mb-5">' +
+        '<div class="comment new-comment comment-highlight mb-5 pl-2" ' +
+        '    data-author-id="{{current_comment.username">' +
         '<div class="threaded_comment_header">' +
         '    <div class="threaded_comment_author">' +
         '        {{current_comment.name}}' +
@@ -496,6 +516,7 @@ DiscussionPanelHandler.prototype.create = function(obj, doc) {
 
     var text = html.replace(/\{\{current_comment\.id\}\}/g, obj.id).replace(
         /\{\{current_comment.name\}\}/g, obj.name).replace(
+        /\{\{current_comment.username\}\}/g, obj.username).replace(
         /\{\{current_comment.title\}\}/g, obj.title || '').replace(
         /\{\{current_comment.timestamp\}\}/g, obj.timestamp || '').replace(
         /\{\{current_comment\.comment\|safe\}\}/g, obj.comment);

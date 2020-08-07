@@ -50,7 +50,7 @@ def my_assignment_responses(project, user):
 
 
 @register.simple_tag
-def my_comment_count(project, user):
+def comment_count(project, user):
     if not project.is_discussion_assignment():
         return (0, None)
 
@@ -63,3 +63,11 @@ def my_comment_count(project, user):
         return (qs.count(), qs.order_by('-submit_date').first().submit_date)
     except AttributeError:
         return (0, None)
+
+
+@register.simple_tag
+def student_response(responses, user):
+    for response in responses:
+        if user in response.attribution_list():
+            return response
+    return None

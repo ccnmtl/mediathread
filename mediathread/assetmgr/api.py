@@ -61,9 +61,9 @@ class AssetResource(ModelResource):
 
         if hasattr(self, 'request') and hasattr(self.request, 'course'):
             bundle.data['local_url'] = reverse(
-                'asset-view', kwargs={
+                'react_asset_detail', kwargs={
                     'course_pk': bundle.obj.course.pk,
-                    'asset_id': bundle.obj.pk,
+                    'pk': bundle.obj.pk,
                 })
         else:
             bundle.data['local_url'] = bundle.obj.get_absolute_url()

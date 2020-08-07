@@ -132,7 +132,7 @@ if (!Sherd.Video.Vimeo) {
                 'width="' + obj.options.width + '" ' +
                 'height="' + obj.options.height + '" ' +
                 'autoplay="' + autoplay + '" ' +
-                '></iframe>' +
+                'allow="autoplay"></iframe>' +
                 '</div>';
 
             return {

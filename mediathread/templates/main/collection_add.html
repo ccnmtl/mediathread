@@ -1,113 +1,94 @@
-{% extends "base_new.html" %}
+
 {% load static %}
-{% load tagging_tags user_projects helpful_tags coursetags comments %}
 {% load waffle_tags %}
 
-{% block title %}
-Add to Collection
-{% endblock %}
+<div class="accordion bg-light" id="upload-import-accordion">
+   <div class="card border-0 bg-light">
+       <div class="card-header bg-light" id="headingOne">
+           <h2 class="mb-0">
+               <button class="btn btn-primary float-right"
+                   type="button" data-toggle="collapse"
+                   data-target="#collapseOne" aria-expanded="true"
+                   aria-controls="collapseOne">
+                       Add To Collection
+               </button>
+           </h2>
+       </div>
+       <div id="collapseOne" class="collapse bg-light"
+           aria-labelledby="headingOne"
+           data-parent="#upload-import-accordion">
 
-{% block content %}
-<div>
-    <div>
-        <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
-            role="tablist">
-            <a class="flex-sm-fill text-sm-center nav-link active" role="tab"
-                title="Collection" href="{% url 'course_detail' request.course.pk %}">
-                Collection
-            </a>
-            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
-                href="{% url 'assignment-list' request.course.pk %}"
-                title="Assignments" href="assignments/">
-                Assignments
-                {% if role_in_course == 'student' and unresponded > 0 %}
-                    <span class="badge badge-primary ml-2">{{unresponded}}</span>
-                {% endif %}
-            </a>
-            <a class="flex-sm-fill text-sm-center nav-link" role="tab"
-                href="{% url 'project-list' request.course.pk %}"
-                title="Projects" href="projects/">Projects</a>
-        </nav>
-        <div class="tab-content">
-            <div role="tabpanel">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="page-title">Add to Collection</h1>
-                    </div>
-                </div>
+           <h4 class="text-center">Add To Collection</h4>
+           <div class="card-body">
+               <div class="card-deck">
+                       {% if can_upload and uploader %}
+                           <div class="card">
+                               <div class="card-body">
 
-                <div class="row">
-                    {% if can_upload and uploader %}
-                        <div class="col-md-6 order-md-2">
-
-                            <h2>Upload Media</h2>
-                                <p class="lead">
-                                    Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
-                                </p>
+                                   <h4 class="card-title text-center">Upload Media</h4>
+                                       <p class="card-text">
+                                           Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
+                                       </p>
 
 
-                                {% flag "uploads_offline" %}
-                                    <div class="instructions">
-                                        <p>The upload feature is currently down for maintenance. We will return shortly.</p>
-                                    </div>
-                                {% else %}
-                                    {% ifequal role_in_course "non-member" %}
-                                        <div class="instructions">
-                                            <p>You must be a course member to upload media files.</p>
-                                        </div>
-                                    {% else %}
-                                        <h3>Video</h3>
-                                        <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                       {% flag "uploads_offline" %}
+                                            <p class="card-text">The upload feature is currently down for maintenance. We will return shortly.</p>
+                                       {% else %}
+                                           {% ifequal role_in_course "non-member" %}
+                                                <p class="card-text">You must be a course member to upload media files.</p>
+                                           {% else %}
+                                               <h5 class="card-title">Video</h5>
+                                               <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
 
-                                                <div class="form-row align-items-center">
-                                                    {% if owners %}
-                                                        <div class="col-auto my-1">
-                                                            <label class="mr-sm-2 sr-only" for="video_owners"></label>
-                                                            <select class="custom-select mr-sm-2" id="video_owners" name="as">
-                                                            {% for owner in owners %}
-                                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                            {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                    {% endif %}
-                                                    <div class="col-auto my-1">
-                                                        <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
-                                                    </div>
-                                                </div>
-                                        </form>
-                                        <h3 class="mt-2">Audio</h3>
-                                        <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                                       <div class="form-row align-items-center">
+                                                           {% if owners %}
+                                                               <div class="col-auto my-1">
+                                                                   <label class="mr-sm-2 sr-only" for="video_owners"></label>
+                                                                   <select class="custom-select mr-sm-2" id="video_owners" name="as">
+                                                                   {% for owner in owners %}
+                                                                       <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                                   {% endfor %}
+                                                                   </select>
+                                                               </div>
+                                                           {% endif %}
+                                                           <div class="col-auto my-1">
+                                                               <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
+                                                           </div>
+                                                       </div>
+                                               </form>
+                                               <h5 class="card-title mt-2">Audio</h5>
+                                               <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
 
-                                                <div class="form-row align-items-center">
-                                                    {% if owners %}
-                                                        <div class="col-auto my-1">
-                                                            <label class="mr-sm-2 sr-only" for="audio_owners"></label>
-                                                            <select class="custom-select mr-sm-2" id="audio_owners" name="as">
-                                                            {% for owner in owners %}
-                                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                            {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                    {% endif %}
-                                                    <div class="col-auto my-1">
-                                                        <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
-                                                    </div>
-                                                </div>
-                                        </form>
-                                    {% endifequal %}
-                                {% endflag %}
+                                                       <div class="form-row align-items-center">
+                                                           {% if owners %}
+                                                               <div class="col-auto my-1">
+                                                                   <label class="mr-sm-2 sr-only" for="audio_owners"></label>
+                                                                   <select class="custom-select mr-sm-2" id="audio_owners" name="as">
+                                                                   {% for owner in owners %}
+                                                                       <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                                   {% endfor %}
+                                                                   </select>
+                                                               </div>
+                                                           {% endif %}
+                                                           <div class="col-auto my-1">
+                                                               <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
+                                                           </div>
+                                                       </div>
+                                               </form>
+                                           {% endifequal %}
+                                       {% endflag %}
 
-                            <h3 class="mt-2">Images</h3>
-                                <p>Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
-                        </div>
-                    {% endif %}
-
-
-                        <div class="col-md-6 order-md-1">
-                            <h2>Import Media</h2>
-                            <p class="lead">
-    				            Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
-    			            </p>
+                                   <h5 class="card-title mt-2">Images</h5>
+                                       <p class="card-text">Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
+                                </div>
+                           </div>
+                       {% endif %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">Import Media</h4>
+                            <p class="card-text">
+                                Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
+                            </p>
                             <div class="arrowContent">
                                 {% if request.user_agent.browser.family == 'Chrome' or request.user_agent.browser.family == 'Chromium' %}
                                 {% include "assetmgr/install_chrome_extension.html" %}
@@ -118,12 +99,12 @@ Add to Collection
                                 {% endif %}
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+       </div>
+   </div>
 </div>
-{% endblock %}
 
 {% block js %}
     <script>

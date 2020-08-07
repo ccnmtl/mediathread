@@ -177,12 +177,6 @@ export default class CollectionTab extends React.Component {
                 {!this.state.selectedAsset && (
                     <div className="d-flex justify-content-between align-items-center flex-wrap">
                         <h1 className="page-title">Collection</h1>
-                        <a
-                            className="btn btn-outline-secondary" aria-label="Add to Collection"
-                            href={window.location.href.concat('collection/add/')}
-                            title="Add to Collection">
-                            Add to Collection
-                        </a>
                     </div>
                 )}
 

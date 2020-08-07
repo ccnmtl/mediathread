@@ -421,6 +421,14 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
                 ((ann_obj.metadata && ann_obj.metadata.title) ?
                         '' + ann_obj.metadata.title + ''
                         : '');
+            if (ann_obj.annotation.startCode) {
+                var duration = new Date(ann_obj.annotation.duration * 1000)
+                    .toISOString().substr(11, 8);
+                targets.annotation_title.innerHTML += 
+                    '<br />' + ann_obj.annotation.startCode + ' - ' +
+                     ann_obj.annotation.endCode +
+                    ' (' + duration + ')';
+            }
         }
     }
 

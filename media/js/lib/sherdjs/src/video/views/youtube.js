@@ -93,6 +93,7 @@ if (!Sherd.Video.YouTube) {
                     'width="' + obj.options.width + '" ' +
                     'height="' + obj.options.height + '" ' +
                     'allowfullscreen="true" ' +
+                    'allow="autoplay" ' +
                     'frameborder="0" ' +
                     'id="' + self.playerID + '" />' +
                     '</div>'

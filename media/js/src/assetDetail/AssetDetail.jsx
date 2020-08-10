@@ -511,6 +511,9 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (this.type === 'video') {
+            const showDuration = this.state.tab === 'createSelection' ||
+                  (this.state.activeSelection &&
+                   this.state.tab === 'viewSelections');
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
                     <form>
@@ -595,7 +598,8 @@ export default class AssetDetail extends React.Component {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-3">
+
+                                    <div className={'col-md-3 ' + (showDuration ? '' : 'invisible')}>
                                         Duration:{String.fromCharCode(160)}
                                         <strong>{formatTimecode(getDuration(
                                             this.state.selectionStartTime,

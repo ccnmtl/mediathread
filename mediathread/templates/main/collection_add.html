@@ -1,18 +1,15 @@
-
 {% load static %}
 {% load waffle_tags %}
 
 <div class="accordion bg-light" id="upload-import-accordion">
    <div class="card border-0 bg-light">
        <div class="card-header bg-light" id="headingOne">
-           <h2 class="mb-0">
                <button class="btn btn-primary float-right"
                    type="button" data-toggle="collapse"
                    data-target="#collapseOne" aria-expanded="true"
                    aria-controls="collapseOne">
-                       Add To Collection
+                       Add to collection
                </button>
-           </h2>
        </div>
        <div id="collapseOne" class="collapse bg-light"
            aria-labelledby="headingOne"
@@ -25,7 +22,7 @@
                            <div class="card">
                                <div class="card-body">
 
-                                   <h4 class="card-title text-center">Upload Media</h4>
+                                   <h5 class="card-title text-center">Upload Media</h5>
                                        <p class="card-text">
                                            Contribute video and audio to this course directly from your desktop into Mediathread with Wardenclyffe.
                                        </p>
@@ -37,7 +34,7 @@
                                            {% ifequal role_in_course "non-member" %}
                                                 <p class="card-text">You must be a course member to upload media files.</p>
                                            {% else %}
-                                               <h5 class="card-title">Video</h5>
+                                               <h6 class="card-title">Video</h6>
                                                <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
 
                                                        <div class="form-row align-items-center">
@@ -56,7 +53,7 @@
                                                            </div>
                                                        </div>
                                                </form>
-                                               <h5 class="card-title mt-2">Audio</h5>
+                                               <h6 class="card-title mt-2">Audio</h6>
                                                <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
 
                                                        <div class="form-row align-items-center">
@@ -78,14 +75,14 @@
                                            {% endifequal %}
                                        {% endflag %}
 
-                                   <h5 class="card-title mt-2">Images</h5>
+                                   <h6 class="card-title mt-2">Images</h6>
                                        <p class="card-text">Images can be imported into this course using the Chrome extension. See “Import Media.”</p>
                                 </div>
                            </div>
                        {% endif %}
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title text-center">Import Media</h4>
+                            <h5 class="card-title text-center">Import Media</h5>
                             <p class="card-text">
                                 Install Mediathread’s Google Chrome extension to import video, audio, and images into this course from various sites across the web. You must be using Chrome to install this extension.
                             </p>
@@ -100,6 +97,7 @@
                             </div>
                         </div>
                     </div>
+                    {% include 'main/rec_sources.html' %}
                 </div>
             </div>
        </div>

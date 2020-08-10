@@ -21,6 +21,18 @@
 
 {% block content %}
     {{ block.super }}
-    {% include 'main/collection_add.html' %}
+
+    {% with active='collection' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
+                <h1 class="page-title">Collection</h1>
+                {% include 'main/collection_add.html' %}
+            </div>
+        </div>
+    </div>
+
     <div class="course-collection" id="react-container"></div>
 {% endblock %}

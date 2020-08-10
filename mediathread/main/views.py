@@ -147,35 +147,6 @@ def deprecated_course_detail_view(request, course_pk):
 
     return context
 
-
-class CollectionAddView(LoggedInCourseMixin, TemplateView):
-    template_name = 'main/collection_add.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(CollectionAddView, self).get_context_data(**kwargs)
-
-        qs = ExternalCollection.objects.filter(course=self.request.course)
-        collections = qs.filter(uploader=False).order_by('title')
-        uploader = qs.filter(uploader=True).first()
-
-        owners = []
-        if (self.request.course.is_member(self.request.user) and
-            (self.request.user.is_staff or
-             self.request.user.has_perm('assetmgr.can_upload_for'))):
-            owners = UserResource().render_list(self.request,
-                                                self.request.course.members)
-
-        context.update({
-            'collections': collections,
-            'uploader': uploader,
-            'can_upload': course_details.can_upload(self.request.user,
-                                                    self.request.course),
-            'owners': owners,
-        })
-
-        return context
-
-
 class CourseDetailView(LoggedInMixin, DetailView):
     model = Course
 
@@ -196,8 +167,12 @@ class CourseDetailView(LoggedInMixin, DetailView):
         context = super(CourseDetailView, self).get_context_data(**kwargs)
         course = context.get('object')
 
+        qs = ExternalCollection.objects.filter(course=self.request.course)
+        collections = qs.filter(uploader=False).order_by('title')
+        uploader = qs.filter(uploader=True).first()
+
         owners = []
-        if (course.is_member(self.request.user) and
+        if (self.request.course.is_member(self.request.user) and
             (self.request.user.is_staff or
              self.request.user.has_perm('assetmgr.can_upload_for'))):
             owners = UserResource().render_list(self.request, course.members)
@@ -210,6 +185,10 @@ class CourseDetailView(LoggedInMixin, DetailView):
                 course, self.request.user),
             'is_faculty': cached_course_is_faculty(course, self.request.user),
             'owners': owners,
+            'collections': collections,
+            'uploader': uploader,
+            'can_upload': course_details.can_upload(self.request.user,
+                                                    self.request.course),
         })
         return context
 

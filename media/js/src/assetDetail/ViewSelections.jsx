@@ -309,7 +309,7 @@ export default class ViewSelections extends React.Component {
                         </button>
                     </div>
 
-                    <form className="form-inline">
+                    <form hidden className="form-inline">
                         <div className="form-group">
                             <label htmlFor="annotationFilter" className="ml-2">
                                 Filter by:

@@ -325,7 +325,7 @@ export default class ViewSelections extends React.Component {
 
                 <Alert variant="warning" show={noSelections}>
                     There are no selections of this item.&nbsp;
-                    <Alert.Link href="#">Create a selection</Alert.Link> now to begin.
+                    <Alert.Link href="#" onClick={() => this.props.onSelectTab('createSelection')}>Create a selection</Alert.Link> now to begin.
                 </Alert>
 
                 <div className="accordion" id="selectionsAccordion">
@@ -399,6 +399,7 @@ ViewSelections.propTypes = {
     terms: PropTypes.array,
     filteredSelections: PropTypes.array,
     onSelectSelection: PropTypes.func.isRequired,
+    onSelectTab: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,
     onPlaySelection: PropTypes.func.isRequired,
     onSaveSelection: PropTypes.func.isRequired,

@@ -711,6 +711,7 @@ export default class AssetDetail extends React.Component {
                                 terms={this.props.terms}
                                 filteredSelections={this.props.asset.annotations}
                                 onSelectSelection={this.onSelectSelection}
+                                onSelectTab={this.onSelectTab}
                                 onViewSelection={this.onViewSelection}
                                 onPlaySelection={this.onPlaySelection}
                                 onSaveSelection={this.onSaveSelection}

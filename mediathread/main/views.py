@@ -63,7 +63,7 @@ from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
     LoggedInMixin, LoggedInFacultyMixin,
-    LoggedInSuperuserMixin, LoggedInCourseMixin
+    LoggedInSuperuserMixin
 )
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
@@ -146,6 +146,7 @@ def deprecated_course_detail_view(request, course_pk):
     }
 
     return context
+
 
 class CourseDetailView(LoggedInMixin, DetailView):
     model = Course

@@ -45,6 +45,7 @@ class ProjectResource(ModelResource):
         ordering = ['id', 'title']
 
     def dehydrate(self, bundle):
+        bundle.data['course_id'] = bundle.obj.course.id
         bundle.data['is_essay_assignment'] = bundle.obj.is_essay_assignment()
         bundle.data['is_selection_assignment'] = \
             bundle.obj.is_selection_assignment()

@@ -2,7 +2,6 @@ from datetime import datetime
 
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
@@ -18,7 +17,6 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.views.generic.base import View, TemplateView
 from django.views.generic.list import ListView
-from djangohelpers.lib import allow_http
 import json
 from mediathread.api import CourseResource
 from mediathread.api import UserResource
@@ -695,49 +693,33 @@ class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
             return self.render_to_json_response(data)
 
 
-@login_required
-@allow_http("GET")
-def project_export_html(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    if not project.can_read(request.course, request.user):
-        return HttpResponseForbidden("forbidden")
+class ProjectPrintView(LoggedInCourseMixin, ProjectReadableMixin,
+                       TemplateView):
 
-    template = loader.get_template("projects/export.html")
+    template_name = 'projects/print.html'
 
-    context = {
-        'request': request,
-        'user': request.user,
-        'space_owner': request.user.username,
-        'project': project,
-        'body': project.body}
-
-    return HttpResponse(template.render(context))
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['project'] = self.project
+        return ctx
 
 
-@login_required
-@allow_http("GET")
-def project_export_msword(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-    if not project.can_read(request.course, request.user):
-        return HttpResponseForbidden("forbidden")
+class ProjectExportWord(LoggedInCourseMixin, ProjectReadableMixin,
+                        View):
 
-    template = loader.get_template("projects/msword.html")
+    def get(self, request, course_pk, project_id):
+        body = SherdNote.objects.fully_qualify_references(
+            self.project.body, self.request.get_host())
+        body = body.replace('padding-left', 'margin-left')
 
-    body = SherdNote.objects.fully_qualify_references(project.body,
-                                                      request.get_host())
-    body = body.replace("padding-left", "margin-left")
+        ctx = {'project': self.project, 'body': body}
 
-    context = {
-        'request': request,
-        'space_owner': request.user.username,
-        'project': project,
-        'body': body}
-
-    response = HttpResponse(template.render(context),
-                            content_type='application/vnd.ms-word')
-    response['Content-Disposition'] = \
-        'attachment; filename=%s.doc' % (slugify(project.title))
-    return response
+        template = loader.get_template('projects/msword.html')
+        response = HttpResponse(template.render(ctx),
+                                content_type='application/vnd.ms-word')
+        response['Content-Disposition'] = \
+            'attachment; filename=%s.doc' % (slugify(self.project.title))
+        return response
 
 
 class ProjectDetailView(LoggedInCourseMixin, RestrictedMaterialsMixin,

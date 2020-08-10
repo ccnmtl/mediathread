@@ -92,11 +92,13 @@
                 </div>
             {{/context.responses.length}}
 
-            <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
+            <a class="project-export btn btn-outline-secondary btn-sm"
+                href="/course/{{context.project.course_id}}/project/export/msword/{{context.project.id}}/">
                 Export to Word
             </a>
 
-            <a class="project-print btn btn-outline-secondary btn-sm" href="/project/export/html/{{context.project.id}}/" target="_blank">
+            <a class="project-print btn btn-outline-secondary btn-sm"
+                href="/course/{{context.project.course_id}}/project/print/{{context.project.id}}/" target="_blank">
                 Print
             </a>
 

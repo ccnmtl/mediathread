@@ -1,0 +1,184 @@
+{% verbatim %}
+<script type="text/x-template" id="collection_assets-template">
+{{^assets}}
+    <div class="default-content intro-text feature-help">
+        {{^active_filter_count}}
+            {{#showing_my_items}}
+                You have not collected any materials.<br /><br />
+                <strong>What is a collection?</strong>
+                <div class="feature-help-instructions">
+                    A collection is a set of images, video and/or audio brought into Mediathread that
+                    can be annotated, organized, and embedded into essays and other written analysis.
+                </div>
+
+                <strong>How do I build my collection?</strong><br />
+                <div class="feature-help-instructions">
+                    <ul>
+                        {{#is_faculty}}
+                            <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection by
+                            bookmarking items from sites such as YouTube or Flickr.
+                            To install the bookmarklet into your browser, visit the 
+                            <a href="/collection/add/">Add to Collection page</a> and follow directions.
+                            <strong>Recommend Sites</strong> to students via <strong>Tools</strong> menu / <strong>Manage Sources</strong>
+                            </li>
+
+                            <li style="margin-bottom: 4px">
+                                <strong>Upload</strong>: Video and audio files may be uploaded
+                                into Mediathread when you enable this feature in <strong>Tools</strong> menu / <strong>Manage Sources</strong>.
+                                An <strong>Upload from Computer</strong> link and directions then appears on the <a href="/collection/add/">Add to Collection page</a>.
+                            </li>
+                        {{/is_faculty}}
+                        {{^is_faculty}}
+                            <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection
+                            by bookmarking items from sites such as YouTube or Flickr.
+                            To install the bookmarklet into your browser, visit the <a href="/collection/add/">Add to Collection page</a>
+                            and follow directions. Your instructor also may list
+                            recommended sites on the home page.</li>
+                            <li><strong>Upload</strong>: If this feature is enabled,
+                            you may upload video and audio files from your computer. Visit the <a href="/collection/add/">Add to Collection page</a> and
+                            follow directions.</li>
+                        {{/is_faculty}}
+                    </ul>
+                </div>
+            {{/showing_my_items}}
+            {{^showing_my_items}}
+                <center>{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</center>
+            {{/showing_my_items}}
+            {{/active_filter_count}}
+            {{#active_filter_count}}
+                <center>No items matched your search. Please try again.</center>
+            {{/active_filter_count}}
+    </div>
+{{/assets}}
+{{#assets}}
+    <div class="materials column-contents">
+        <div id="record-{{id}}" class="record record-{{primary_type}} gallery-item-project">
+            <input type="hidden" class="record" value="{{id}}" name="record-id" />
+            <div class="card-thumbnail">
+                <div class="media-type">
+                    <span class="badge badge-secondary">
+                        {{media_type_label}}
+                    </span>
+                </div>
+                {{#thumb}}
+                <div class="image-overlay">
+                    <a href="{{local_url}}" title="{{title}}">
+                        <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{thumb}}" style="max-width: 100%;" />
+                    </a>
+                </div>
+                {{/thumb}}
+                {{^thumb}}
+                    {{#image}}
+                        <div class="image-overlay">
+                            <a href="{{local_url}}" title="{{title}}">
+                                <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
+                            </a>
+                        </div>
+                    {{/image}}
+                {{/thumb}}
+            </div>
+
+            <div class="px-3 {{^thumb}}{{^image}}pt-5{{/image}}{{/thumb}}">
+                <h5 id="asset-item-{{id}}" class="asset_title mt-3">
+                    <div class="actions">
+                        <a class="collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                            <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection"  />
+                        </a>
+                    </div>
+                    <a class="asset-title-link insert"
+                        {{#title}}
+                            title="{{title}}"
+                        {{/title}}
+                        {{^title}}
+                            title="-Untitled-"
+                        {{/title}}
+                        target="_blank" href="{{local_url}}">
+                        {{#title}}
+                            {{#ellipsis35}}{{title}}{{/ellipsis35}}
+                        {{/title}}
+                        {{^title}}
+                            -Untitled-
+                        {{/title}}
+                    </a>
+                </h5>
+                <hr />
+                <h6>Selections</h6>
+
+                <div id="record-{{id}}-metadata" class="record-metadata">
+                {{^annotation_count}}
+                    <p class="text-muted">None</p>
+                {{/annotation_count}}
+                {{#annotation_count}}
+                    <div class="accordion mb-3" id="selectionsAccordion-{{id}}">
+                        {{#annotations}}
+                            {{^is_null}}
+                                <div class="card" id="annotation-{{id}}">
+                                    <div class="card-header p-0">
+                                        <button class="btn btn-link btn-block text-left collapsed"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#selectionCollapse-{{id}}"
+                                            aria-expanded="false">
+                                            {{#metadata.title}}
+                                                {{{metadata.title}}}
+                                            {{/metadata.title}}
+                                            {{^metadata.title}}
+                                                -Untitled-
+                                            {{/metadata.title}}
+                                        </button>
+                                    </div>
+                                    <div id="selectionCollapse-{{id}}" class="collapse"
+                                        data-title="{{#metadata.title}}{{{metadata.title}}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
+                                        data-selectionid="{{id}}"
+                                        data-parent="#selectionsAccordion-{{asset_id}}">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {{#thumbable}}
+                                                <div class="col-md-auto">
+                                                    <div class="annotation-thumb-{{id}}"></div>
+                                                </div>
+                                                {{/thumbable}}
+                                                <div class="col-md-auto">
+                                                    <p class="card-text">
+                                                        <span class="metadata-label">Author:</span>
+                                                        <span class="metadata-value">{{author.public_name}}</span>
+                                                    </p>
+                                                    {{#metadata}}
+                                                        {{#timecode}}
+                                                            <p class="card-text">
+                                                                <span class="metadata-label">Time code:</span>
+                                                                <span class="metadata-value">{{timecode}}</span>
+                                                            </p>
+                                                        {{/timecode}}
+                                                    {{/metadata}}
+
+                                                    <div>
+                                                        {{#citable}}
+                                                            <button class="btn btn-warning materialCitation clickableCitation d-inline"
+                                                                title="{{#metadata.title}}{{{metadata.title}}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
+                                                                name="{{url}}" data-type="{{metadata.primary_type}}" data-range="{{range1}}">
+                                                                Insert in Text
+                                                            </button>
+                                                        {{/citable}}
+                                                        {{#editable}}
+                                                            <button class="collection-choice edit-annotation btn btn-info d-inline"
+                                                                data-id="{{id}}" title="Quick edit selection attributes">
+                                                                Edit
+                                                            </button>
+                                                        {{/editable}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!--  end card-body -->
+                                    </div>
+                                </div>
+                            {{/is_null}} {{! annotation is not null }}
+                        {{/annotations}} {{! iterate annotations }}
+                    </div> {{! class="asset-clips" }}
+                {{/annotation_count}} {{! annotations exist }}
+                </div> {{! end record metadata }}
+            </div>
+        </div> {{! end id="record-id" }}
+    </div> {{! end class="materials column-contents scroll" }}
+{{/assets}}
+</script>
+{% endverbatim %}

@@ -1,0 +1,63 @@
+{% verbatim %}
+<script type="text/x-template" id="project_readonly-template">
+<div class="panel-subcontainer {{context.project.type}}">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="col-md-6 pl-0">
+            <h1 class="page-title" {{#context.can_edit}}contenteditable="true"{{/context.can_edit}}>
+                {{context.project.title}}
+            </h1>
+            <input name="title" value="{{context.project.title}}" type="hidden" />
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div class="participant-container">
+            <h5>by <span class="participants_chosen">
+                {{#context.project.participants}}
+                    {{public_name}}{{^last}}, {{/last}}
+                {{/context.project.participants}}
+                </span>
+            </h5>
+        </div>
+        {{#context.project.current_version}}
+            <h5>Viewing version from {{context.project.modified}}</h5>
+        {{/context.project.current_version}}
+        <div>
+            <h5 class="project-visibility-description d-inline">
+                {{context.project.visibility}}
+            </h5>
+            <h5 class="d-inline">
+                <a class="last-version-public"
+                    style="display: {{#context.project.public_url}}inline{{/context.project.public_url}}{{^context.project.public_url}}none{{/context.project.public_url}}"
+                    href="{{context.project.public_url}}">(permalink)</a>
+            </h5>
+        </div>
+    </div>
+    <div class="row">
+        {{! Media Display Window and or a Collections box }}
+        <div class="col-md-6 order-md-2">
+            <div class="asset-view-published"
+                style="{{#context.editing}}display: none{{/context.editing}}">
+                <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
+                    <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                    <div class="asset-display"></div>
+                    <div class="clipstrip-display"></div>
+                    <blockquote class="blockquote text-center mt-2">
+                        <div class="annotation-title publishedCitation text-center"></div>
+                        <div class="asset-title text-center"></div>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 order-md-1">
+            <div class="essay-space-container">
+                <div id="{{context.project.id}}-essay-space" class="essay-space mt-4" 
+                    style="display:{{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">  
+                    {{{context.project.body}}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loaded"></div>
+</div>
+</script>
+{% endverbatim %}

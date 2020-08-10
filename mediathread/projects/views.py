@@ -342,7 +342,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
     """
 
-    template_name = 'projects/project_readonly.html'
+    template_name = 'projects/composition_readonly.html'
 
     def get(self, *args, **kwargs):
         """

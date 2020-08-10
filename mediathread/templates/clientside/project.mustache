@@ -1,3 +1,5 @@
+{% verbatim %}
+<script type="text/x-template" id="project-template">
 <div class="panel-subcontainer {{context.project.type}}">
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div class="col-md-6 pl-0">
@@ -144,9 +146,6 @@
                 </span>
             </h5>
         </div>
-        {{#context.project.current_version}}
-            <h5>Viewing version from {{context.project.modified}}</h5>
-        {{/context.project.current_version}}
         <div>
             <h5 class="project-visibility-description d-inline">
                 {{context.project.visibility}}
@@ -219,3 +218,5 @@
     </div>
     <div id="loaded"></div>
 </div>
+</script>
+{% endverbatim %}

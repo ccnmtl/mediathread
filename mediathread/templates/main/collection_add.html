@@ -2,20 +2,12 @@
 {% load waffle_tags %}
 
 <div class="accordion bg-light" id="upload-import-accordion">
-   <div class="card border-0 bg-light">
-       <div class="card-header bg-light" id="headingOne">
-               <button class="btn btn-primary float-right"
-                   type="button" data-toggle="collapse"
-                   data-target="#collapseOne" aria-expanded="true"
-                   aria-controls="collapseOne">
-                       Add to collection
-               </button>
-       </div>
+  <div class="card border-0 bg-light">
        <div id="collapseOne" class="collapse bg-light"
            aria-labelledby="headingOne"
            data-parent="#upload-import-accordion">
 
-           <h4 class="text-center">Add To Collection</h4>
+           <h4 class="text-center mt-2">Add To Collection</h4>
            <div class="card-body">
                <div class="card-deck">
                        {% if can_upload and uploader %}

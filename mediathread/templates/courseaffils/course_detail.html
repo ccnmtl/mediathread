@@ -29,8 +29,16 @@
         <div role="tabpanel">
             <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap">
                 <h1 class="page-title">Collection</h1>
-                {% include 'main/collection_add.html' %}
+                <div class="bg-light" id="headingOne">
+                       <button class="btn btn-primary float-right"
+                           type="button" data-toggle="collapse"
+                           data-target="#collapseOne" aria-expanded="true"
+                           aria-controls="collapseOne">
+                               Add to collection
+                       </button>
+                </div>
             </div>
+            {% include 'main/collection_add.html' %}
         </div>
     </div>
 

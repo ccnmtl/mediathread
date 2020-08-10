@@ -4254,3 +4254,8 @@ ul.section-tabs>li>a.active {
 input#annotationFilter {
     max-width: 140px;
 }
+
+ul.selection-spinner {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}

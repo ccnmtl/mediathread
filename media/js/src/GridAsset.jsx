@@ -19,36 +19,6 @@ import {
 } from './utils';
 import {objectProportioned, displaySelection} from './openlayersUtils';
 
-class Selections extends React.Component {
-    render() {
-        const annotations = this.props.asset.annotations;
-        return (
-            <React.Fragment>
-                <hr />
-                <h6>Selections</h6>
-                {annotations.length > 0 && (
-                    <AnnotationScroller
-                        annotations={annotations}
-                        onSelectedAnnotationUpdate={
-                            this.props.onSelectedAnnotationUpdate}
-                    />
-                )}
-                {annotations.length <= 0 && (
-                    <p className="card-text text-muted">
-                        None
-                    </p>
-                )}
-            </React.Fragment>
-        );
-    }
-}
-
-Selections.propTypes = {
-    asset: PropTypes.object,
-    onSelectedAnnotationUpdate: PropTypes.func.isRequired,
-    currentUser: PropTypes.number.isRequired
-};
-
 export default class GridAsset extends React.Component {
     constructor(props) {
         super(props);
@@ -100,7 +70,17 @@ export default class GridAsset extends React.Component {
 
         return (
             <div className="col-sm-4">
-                <div className="card" key={this.props.asset.id}>
+                <h5 className="text-nowrap text-truncate">
+                    <a
+                        onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
+                        href={assetUrl}
+                        title={this.props.asset.title}
+                        dangerouslySetInnerHTML={{
+                            __html: this.props.asset.title
+                        }}>
+                    </a>
+                </h5>
+                <div key={this.props.asset.id}>
                     <div className="card-thumbnail">
                         <div className="media-type">
                             <span className="badge badge-light">
@@ -132,23 +112,11 @@ export default class GridAsset extends React.Component {
                         </div>
                     </div>
 
-                    <div className="card-body">
-                        <h5 className="card-title">
-                            <a
-                                onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
-                                href={assetUrl}
-                                title={this.props.asset.title}
-                                dangerouslySetInnerHTML={{
-                                    __html: this.props.asset.title
-                                }}>
-                            </a>
-                        </h5>
-                        <Selections
-                            asset={this.props.asset}
-                            onSelectedAnnotationUpdate={
-                                this.onSelectedAnnotationUpdate}
-                            currentUser={this.props.currentUser} />
-                    </div>
+                    <AnnotationScroller
+                        asset={this.props.asset}
+                        onSelectedAnnotationUpdate={
+                            this.onSelectedAnnotationUpdate}
+                    />
 
                 </div>
             </div>

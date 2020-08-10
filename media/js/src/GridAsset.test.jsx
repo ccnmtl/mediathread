@@ -46,10 +46,6 @@ it('renders the asset', async() => {
 
     expect(container.textContent).toContain(fakeAsset.title);
 
-    // Contains previous and next buttons
-    expect(container.textContent).toContain('«');
-    expect(container.textContent).toContain('»');
-
     // remove the mock to ensure tests are completely isolated
     global.fetch.mockRestore();
 });

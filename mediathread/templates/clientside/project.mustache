@@ -34,63 +34,12 @@
                         </div>
                     </div>
                 </div>
-            {{/context.can_edit}}
 
-            {{#context.can_edit}}
                 <a class="project-revisionbutton btn btn-outline-secondary btn-sm"
                     href="{{project_revisions_url}}" title="View project revisions" />
                     Revisions
                 </a>
             {{/context.can_edit}}
-
-            {{#context.my_response}}
-                {{^context.viewing_my_response}}
-                    <button class="project project-my-response btn btn-outline-secondary btn-sm"
-                        type="button" data-url="{{context.my_response.url}}">
-                        My Response
-                    </button>
-                {{/context.viewing_my_response}}
-            {{/context.my_response}}
-
-            {{#context.my_responses.length}}
-                <button class="project project-my-responses btn btn-outline-secondary btn-sm"
-                    type="button">
-                    My Responses ({{context.my_responses_count}})
-                </button>
-                <div class="my-response-list" style="display: none" title="My Responses">
-                    <div>Select an assignment response, then click "View"</div>
-                    <select name="my-responses" multiple="multiple">
-                        {{#context.my_responses}}
-                            <option value="{{url}}">
-                                {{ modified }} &mdash;
-                                {{#attribution_list}}
-                                    {{ name }}{{^last}}, {{/last}} 
-                                {{/attribution_list}}
-                            </option>
-                        {{/context.my_responses}}
-                    </select> 
-                </div>
-            {{/context.my_responses.length}}
-
-            {{#context.responses.length}}
-                <button class="project project-responsesbutton btn btn-outline-secondary btn-sm"
-                    type="button">
-                    Class Responses ({{context.response_count}})
-                </button>
-                <div class="response-list" style="display: none" title="Responses">
-                    <div>Select an assignment response, then click "View"</div>
-                    <select name="responses" multiple="multiple">
-                      {{#context.responses}}
-                        <option value="{{url}}">
-                          {{#attribution_list}}
-                            {{ name }}{{^last}}, {{/last}} 
-                          {{/attribution_list}}
-                           &mdash; {{ submitted }}
-                        </option>
-                      {{/context.responses}}
-                    </select>
-                </div>
-            {{/context.responses.length}}
 
             <a class="project-export btn btn-outline-secondary btn-sm"
                 href="/course/{{context.project.course_id}}/project/export/msword/{{context.project.id}}/">

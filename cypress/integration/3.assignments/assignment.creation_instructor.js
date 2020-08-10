@@ -34,12 +34,11 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('a.nav-link.active').contains('Assignments');
         cy.get('.breadcrumb-item').contains('Back to all assignments');
         cy.get('.page-title').contains('Create Composition Assignment');
-        cy.get('h4:visible').contains('Step 1');
         cy.get('#page2').contains('Get Started');
         cy.get('#page2').click();
 
         cy.log('Add a title and some text');
-        cy.get('h4:visible').contains('Step 2');
+        cy.get('h4:visible').contains('1.');
         cy.get('input[name="title"]').should('be.visible');
         cy.get('input[name="title"]').click().clear()
             .type('Assignment: Scenario 1');
@@ -49,7 +48,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#page3:visible').click();
 
         cy.log('Add a due date');
-        cy.get('h4:visible').contains('Step 3');
+        cy.get('h4:visible').contains('2.');
         cy.get('input[name="due_date"]').should('be.visible');
         cy.get('input[name="due_date"]:visible').click()
         cy.get('.ui-state-default.ui-state-highlight').click();
@@ -60,7 +59,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#page4').focus().click();
 
         cy.log('add publish options & save');
-        cy.get('h4:visible').contains('Step 4');
+        cy.get('h4:visible').contains('3.');
         cy.get('#id_publish_1').should('be.visible');
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getAsset, getAssets, getCourseUrl} from './utils';
+import {getAsset, getAssets} from './utils';
 import CollectionTab from './CollectionTab';
 import {defineTimecodeSpinner} from './timecodeSpinner.js';
 
@@ -107,36 +107,8 @@ class Main extends React.Component {
     }
 
     render() {
-        const courseUrl = getCourseUrl();
         return (
             <div>
-                <nav
-                    id="three-section-tabs"
-                    className="nav nav-tabs flex-column flex-sm-row"
-                    role="tablist">
-                    <a
-                        className="flex-sm-fill text-sm-center nav-link active"
-                        role="tab"
-                        title="Collection"
-                        href={courseUrl}>
-                        Collection
-                    </a>
-                    <a
-                        className="flex-sm-fill text-sm-center nav-link"
-                        role="tab"
-                        title="Assignments"
-                        href={`${courseUrl}assignments/`}>
-                        Assignments
-                    </a>
-                    <a
-                        className="flex-sm-fill text-sm-center nav-link"
-                        role="tab"
-                        title="Projects"
-                        href={`${courseUrl}projects/`}>
-                        Projects
-                    </a>
-                </nav>
-
                 <div className="tab-content">
                     <CollectionTab
                         asset={this.state.asset}

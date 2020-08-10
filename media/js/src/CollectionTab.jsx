@@ -174,11 +174,6 @@ export default class CollectionTab extends React.Component {
 
         return (
             <div role="tabpanel">
-                {!this.state.selectedAsset && (
-                    <div className="d-flex justify-content-between align-items-center flex-wrap">
-                        <h1 className="page-title">Collection</h1>
-                    </div>
-                )}
 
                 {backButton}
 

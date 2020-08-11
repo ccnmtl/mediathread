@@ -116,21 +116,25 @@
             jQuery('.project-submit-count-label').html($label.html());
             return window.annotationList.hasAnnotations(this.viewer);
         },
-        incrementSelectionCount: function(evt) {
+        adjustSelectionCount: function(evt, increment) {
             var $elt = jQuery('.project-note-count');
-            var value = parseInt($elt.html(), 10) + 1;
+            var value = parseInt($elt.html(), 10) + increment;
             $elt.html(value);
 
             var label = value === 1 ? 'Selection' : 'Selections';
             jQuery('.project-note-count-label').html(label);
+
+            if (value > 0) {
+                $elt.parent('button').removeAttr('disabled');
+            } else {
+                $elt.parent('button').attr('disabled', 'disabled');
+            }
+        },
+        incrementSelectionCount: function(evt) {
+            this.adjustSelectionCount(evt, 1);
         },
         decrementSelectionCount: function(evt) {
-            var $elt = jQuery('.project-note-count');
-            var value = parseInt($elt.html(), 10) - 1;
-            $elt.html(value);
-
-            var label = value === 1 ? 'Selection' : 'Selections';
-            jQuery('.project-note-count-label').html(label);
+            this.adjustSelectionCount(evt, -1);
         },
         onSaveFeedbackSuccess: function(frm, json) {
             // rerender the form based on the return context

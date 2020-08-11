@@ -1,0 +1,32 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_sources-template">
+
+<h2>Sources</h2>
+{{#asset-current}}
+  <h4><a href="{{sources.url.url}}">Item Permalink</a></h4>
+  {{#sources.xmeml}}
+    <h4 class="metadata-title">Final Cut Pro</h4>
+    <dl>
+      <dd>
+        <a onclick="return annotationList.showExportDialog(this, {{id}});" href="#">Export clips to XML</a>
+        <div class="export-finalcutpro" style="display: none" title="Export Final Cut Pro XML">
+          <div class="selection-list" title="Selections">
+            <form name="export-finalcutpro" method="POST" action="/asset/xmeml/{{id}}/"
+            onsubmit="return annotationList.onExportSubmit();">
+            <div>Order the selections by clicking and dragging. Click "Export" when you're ready.</div>
+            <br />
+            <ul class="selections"></ul>
+            </form>
+          </div>
+        </div>
+      </dd>
+    </dl>
+  {{/sources.xmeml}}
+
+  {{#metadata}}
+    <h4><b>{{key}}</b></h4>
+    <div>{{value}}</div>
+  {{/metadata}}
+{{/asset-current}}
+</script>
+{% endverbatim %}

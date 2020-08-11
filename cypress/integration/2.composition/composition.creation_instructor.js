@@ -8,7 +8,6 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 describe('Instructor Creates Composition', () => {
     beforeEach(() => {
-        cy.visit('/course/1/');
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
         cy.get('.card-group h5 a').contains('MAAP Award Reception');

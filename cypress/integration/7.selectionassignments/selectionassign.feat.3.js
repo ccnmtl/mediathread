@@ -18,6 +18,8 @@ describe('Selection Assignment Feat: Instructor adds & edits feedback', () => {
         cy.visit('/project/view/2/');
         cy.title().should('contain', 'Sample Selection Assignment');
         cy.contains('1 Responses').should('exist');
+        cy.get('.btn-edit-assignment').contains('Edit Assignment')
+            .should('be.visible');
         cy.get('span.feedback-count').should('contain', '0');
         cy.contains('add feedback').click({force: true});
         cy.get('#annotation-feedback-student_one > form > .form-control')

@@ -1,0 +1,54 @@
+{% verbatim %}
+<script type="text/x-template" id="asset_references-template">
+
+<h2>Tags</h2>
+{{#tags.length}}
+<div>
+  <span>
+    {{#tags}}
+      <a class="switcher-choice filterbyclasstag"
+        href="{{name}}">{{name}} ({{count}})</a> {{^last}}, {{/last}}
+    {{/tags}}
+  </span>
+</div>
+<br />
+<br />
+{{/tags.length}}
+
+{{#vocabulary}}
+  <h2>{{display_name}}</h2>
+  <div>
+    <span>
+      {{#term_set}}
+        <a href="#" class="switcher-choice filterbyvocabulary"
+          data-vocabulary-id="vocabulary-{{vocabulary_id}}"
+          data-term-id="{{id}}">
+          {{display_name}} ({{count}})</a> {{^last}}, {{/last}}
+      {{/term_set}}
+    </span>
+  </div>
+  <br />
+  <br />
+{{/vocabulary}}
+
+
+<h2>Class References</h2>
+<ul class="clumper">
+  {{#references}}
+    <li>
+      <div class="asset_title type-{{type}}">
+        <a href="{{url}}" class="title">{{title}}</a>
+      </div>
+
+      <div class="asset-activities">
+
+        <div class="asset-activity">
+          collected {{ modified }}
+        </div>
+
+      </div>
+    </li>
+  {{/references}}
+</ul>
+</script>
+{% endverbatim %}

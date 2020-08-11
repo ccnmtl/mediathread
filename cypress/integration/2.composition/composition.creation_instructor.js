@@ -10,7 +10,7 @@ describe('Instructor Creates Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
     });
 
     it('should create a composition as an Instructor', () => {

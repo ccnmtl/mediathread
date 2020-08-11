@@ -3,7 +3,7 @@ describe('Instructor Feat: Students are forbidden', () => {
     beforeEach(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
     });
 
     it('Manage sources should be forbidden', () => {

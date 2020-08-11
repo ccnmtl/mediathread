@@ -1,0 +1,26 @@
+{% load static %}
+{% load waffle_tags %}
+{% if collections.count %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title text-center">Recommended Sources</h5>
+            <p class="card-text">Your instructor suggests that you import items from these sites.</p>
+            {% for collection in collections %}
+                <div class="recommend_source">
+                    {% if collection.thumb_url %}
+                        <div class="source_thumb">
+                            <a href="/explore/redirect/{{collection.id}}/">
+                                <img src="{{STATIC_URL}}{{collection.thumb_url}}" alt="{{collection.title}} icon"
+                                    class="collection-link" />
+                                <span class="sr-only">{{collection.title}} icon</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="source_title">
+                        <a href="/explore/redirect/{{collection.id}}/" class="collection-link">{{collection.title}}</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

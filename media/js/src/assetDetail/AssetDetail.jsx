@@ -87,7 +87,7 @@ export default class AssetDetail extends React.Component {
 
             activeSelection: activeSelection ? activeSelection.title : null,
 
-            tab: hasSelection ? 'viewSelections' : 'viewItem',
+            tab: 'viewSelections',
 
             isDrawing: false
         };
@@ -450,7 +450,7 @@ export default class AssetDetail extends React.Component {
         let media = null;
 
         let invisibleEl = null;
-        if (this.state.tab === 'viewItem') {
+        if (this.state.tab === 'viewMetadata') {
             invisibleEl = (
                 <div className="input-group">
                     <div className="form-check form-control-sm invisible">
@@ -511,6 +511,9 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (this.type === 'video') {
+            const showDuration = this.state.tab === 'createSelection' ||
+                  (this.state.activeSelection &&
+                   this.state.tab === 'viewSelections');
             const annotationTools = (
                 <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
                     <form>
@@ -595,7 +598,8 @@ export default class AssetDetail extends React.Component {
                                         </div>
                                     </div>
 
-                                    <div className="col-md-3">
+
+                                    <div className={'col-md-3 ' + (showDuration ? '' : 'invisible')}>
                                         Duration:{String.fromCharCode(160)}
                                         <strong>{formatTimecode(getDuration(
                                             this.state.selectionStartTime,
@@ -655,13 +659,6 @@ export default class AssetDetail extends React.Component {
                         variant="pills" defaultActiveKey="/">
                         <Nav.Item>
                             <Nav.Link
-                                onClick={() => this.onSelectTab('viewItem')}
-                                active={this.state.tab === 'viewItem'}>
-                                View Item
-                            </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link
                                 onClick={() => this.onSelectTab('viewSelections')}
                                 active={this.state.tab === 'viewSelections'}>
                                 View Selections
@@ -672,6 +669,13 @@ export default class AssetDetail extends React.Component {
                                 onClick={() => this.onSelectTab('createSelection')}
                                 active={this.state.tab === 'createSelection'}>
                                 Create Selection
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link
+                                onClick={() => this.onSelectTab('viewMetadata')}
+                                active={this.state.tab === 'viewMetadata'}>
+                                View Metadata
                             </Nav.Link>
                         </Nav.Item>
                     </Nav>
@@ -711,6 +715,7 @@ export default class AssetDetail extends React.Component {
                                 terms={this.props.terms}
                                 filteredSelections={this.props.asset.annotations}
                                 onSelectSelection={this.onSelectSelection}
+                                onSelectTab={this.onSelectTab}
                                 onViewSelection={this.onViewSelection}
                                 onPlaySelection={this.onPlaySelection}
                                 onSaveSelection={this.onSaveSelection}
@@ -735,7 +740,7 @@ export default class AssetDetail extends React.Component {
                                 onShowValidationError={this.onShowValidationError}
                             />
                         )}
-                        {this.state.tab === 'viewItem' && (
+                        {this.state.tab === 'viewMetadata' && (
                             <ViewItem asset={this.props.asset} />
                         )}
                     </div>

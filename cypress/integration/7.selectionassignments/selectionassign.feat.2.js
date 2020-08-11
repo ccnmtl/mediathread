@@ -9,7 +9,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
     before(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
     });
 
     it('should create student response', () => {

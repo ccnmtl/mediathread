@@ -1,6 +1,6 @@
 <nav id="three-section-tabs" class="nav nav-tabs flex-column flex-sm-row"
     role="tablist">
-    <a class="flex-sm-fill text-sm-center nav-link" role="tab"
+    <a class="flex-sm-fill text-sm-center nav-link {% if active == 'collection' %}active{% endif %}" role="tab"
         title="Collection" href="{% url 'course_detail' request.course.pk %}">
         Collection
     </a>

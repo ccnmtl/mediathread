@@ -9,7 +9,7 @@ describe('Discussion View: Create Discussion', () => {
     it('Instructor Creates Discussion', () => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
 
         cy.visit('/course/1/assignments/');
         cy.get('#cu-privacy-notice-icon').click();
@@ -90,7 +90,7 @@ describe('Discussion View: Create Discussion', () => {
     it('Student responds to the Discussion', () => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
 
         cy.visit('/course/1/assignments/');
         cy.get('#cu-privacy-notice-icon').click();

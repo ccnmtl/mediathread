@@ -38,7 +38,7 @@ from mediathread.main.views import (
     CourseInviteUserByEmailView, CourseAcceptInvitationView,
     CourseResendInviteView, set_user_setting, CoursePanoptoSourceView,
     CoursePanoptoIngestLogView, CourseConvertMaterialsView,
-    LTICourseSelector, LTICourseCreate, SplashView, CollectionAddView)
+    LTICourseSelector, LTICourseCreate, SplashView)
 from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView, ProjectListView, AssignmentListView)
@@ -264,10 +264,6 @@ urlpatterns = [
     path('upload/redirect/<int:collection_id>/',
          RedirectToUploaderView.as_view(),
          name='uploader_redirect'),
-
-    path('course/<int:course_pk>/collection/add/',
-         CollectionAddView.as_view(),
-         name='collection-add-view'),
 
     path('impersonate/', include('impersonate.urls')),
 

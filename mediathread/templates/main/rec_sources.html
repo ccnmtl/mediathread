@@ -5,7 +5,9 @@
         <div class="card-body">
             <h5 class="card-title text-center">Recommended Sources</h5>
             <p class="card-text">Your instructor suggests that you import items from these sites.</p>
+            <div style="height: 300px; overflow-y: scroll">
             {% for collection in collections %}
+
                 <div class="recommend_source">
                     {% if collection.thumb_url %}
                         <div class="source_thumb">
@@ -21,6 +23,7 @@
                     </div>
                 </div>
             {% endfor %}
+            </div>
         </div>
     </div>
 {% endif %}

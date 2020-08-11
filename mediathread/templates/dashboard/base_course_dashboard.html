@@ -17,7 +17,19 @@
 
 {% block content %}
     {{ block.super }}
-
+    <div class="row mt-2">
+        <div class="col-md-auto">
+            <nav aria-label="breadcrumb" class="d-none d-md-block">
+              <ol class="breadcrumb bg-light mb-0">
+                <li class="breadcrumb-item" aria-current="page">
+                    <a href="{% url 'course_detail' request.course.pk %}">
+                        Back to course
+                    </a>
+                </li>
+              </ol>
+            </nav>
+        </div>
+    </div>
     <div class="dashboard-module-header"><h2>Manage Course</h2></div>
 
     <div class="layout-horizontal">

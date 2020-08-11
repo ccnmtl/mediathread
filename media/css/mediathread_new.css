@@ -4228,4 +4228,5 @@ input#annotationFilter {
 ul.selection-spinner {
     margin-bottom: 0;
     padding-bottom: 0;
+    padding-right: 0;
 }

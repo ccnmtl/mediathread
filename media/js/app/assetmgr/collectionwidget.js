@@ -684,7 +684,7 @@ CollectionWidget.prototype.deleteAnnotation = function(annotationId) {
 CollectionWidget.prototype.getCourse = function() {
     return jQuery.ajax({
         type: 'GET',
-        url: '/api/course/',
+        url: '/api/course/?course=' + MediaThread.current_course,
         dataType: 'json'
     });
 };
@@ -692,7 +692,7 @@ CollectionWidget.prototype.getCourse = function() {
 CollectionWidget.prototype.getVocabulary = function() {
     return jQuery.ajax({
         type: 'GET',
-        url: '/api/vocabulary/',
+        url: '/api/vocabulary/?course=' + MediaThread.current_course,
         dataType: 'json'
     });
 };

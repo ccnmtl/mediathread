@@ -25,6 +25,24 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
 {% endblock %}
 
+{% block clientside_templates %}
+    {% include "clientside/asset_view_help.mustache" %}
+    {% include "clientside/asset_view_details.mustache" %}
+    {% include "clientside/asset_view_details_quick_edit.mustache" %}
+    {% include "clientside/asset_references.mustache" %}
+    {% include "clientside/asset_annotation_list.mustache" %}
+    {% include "clientside/asset_annotation_current.mustache" %}
+    {% include "clientside/asset_global_annotation.mustache" %}
+    {% include "clientside/asset_global_annotation_quick_edit.mustache" %}
+    {% include "clientside/asset_sources.mustache" %}
+    {% include "clientside/asset_feedback.mustache" %}
+
+    {% include "clientside/collection_chooser.mustache" %}
+    {% include "clientside/collectionwidget.mustache" %}
+    {% include "clientside/collectionwidget_quickedit.mustache" %}
+    {% include "clientside/collectionwidget_assets.mustache" %}
+{% endblock %}
+
 {% block js %}
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}

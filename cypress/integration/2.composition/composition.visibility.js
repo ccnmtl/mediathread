@@ -12,7 +12,7 @@ describe('Student Project Visibility', () => {
         cy.log('Login');
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
-        cy.get('.card-title a').contains('MAAP Award Reception');
+        cy.get('.card-group h5 a').contains('MAAP Award Reception');
 
         cy.log('Go to projects list');
         cy.visit('/course/1/projects');

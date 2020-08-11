@@ -84,9 +84,19 @@
                             <input type="hidden" name="project_type" value="discussion-assignment" />
 
                             <div data-page="1" data-page-content="instructions" class="page">
-                                <p>A discussion assignment is....</p>
-
-                                <p>{% lorem %}</p>
+                                <p>A discussion assignment allows students to
+                                    post comments in a threaded discussion
+                                    containing Mediathread selections. Discussions
+                                    in Mediathread look similar to other online
+                                    comment sections (i.e. comment sections in news
+                                    articles, reddit, etc.), with the added feature
+                                    of media selections inserted into the text.</p>
+    
+                                <p>This type of assignment can be used to generate
+                                    conversation among members of your class of a
+                                    thematic topic or challenge, substantiating
+                                    their comments with embedded media selections.
+                                </p>
 
                                 <div class="row mb-5">
                                     <div class="col text-right">
@@ -106,16 +116,23 @@
                                 </div>
                                 <div class="form-group">
                                     <label><strong>Instructions for completing assignment</strong></label>
-                                    <p>
-                                    {% lorem %}
-                                    </p>
-
-                                    <p>Instructions may include:</p>
+                                    <p>Write a discussion prompt that asks
+                                    students to reply to you or each other,
+                                    providing evidence or buttressing their
+                                    comments with media selections as
+                                    appropriate. Students may be instructed to
+                                    use selections of a designated media item,
+                                    or to incorporate media they’ve added into
+                                    Mediathread, and to respond directly to you
+                                    or to each other. The following are a few
+                                    tips for guiding discussion in Mediathread:
+                                </p>
 
                                     <ul>
-                                    <li>One</li>
-                                    <li>Two</li>
-                                    <li>Three</li>
+                                    <li>Pose open-ended prompts that help students connect class themes to interpretation, analysis, or personal experience.</li>
+                                    <li>Designate requirements such as minimum or maximum number of comments to post, and media selections to include.</li>
+                                    <li>Specify how to integrate media selections (as evidence, illustrations, examples, etc.)</li>
+                                    <li>Discuss benefits of using the discussion and annotations.</li>
                                     </ul>
                                     <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                         {{form.instance.body}}

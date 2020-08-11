@@ -380,4 +380,26 @@
     {% endif %}
 </div>
 {% endwith %}{% endwith %}{% endwith %}
+
+<!-- Collection Modal -->
+<div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Course Collection</h4>
+            </div>
+            <div class="modal-body collection-body">
+                <div class="quick-edit" style="display: none"></div>
+                <div class="collection-view"></div>
+            </div>
+            <div class="next-page-loader" style="display: none">
+                <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader-small.gif">
+                Loading more items
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}

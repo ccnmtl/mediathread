@@ -128,6 +128,7 @@ if (!Sherd.Video.Vimeo) {
             var embedCode = '<div id="' + wrapperID + '" ' +
                 'class="sherd-vimeo-wrapper embed-responsive embed-responsive-16by9">' +
                 '<iframe id="' + playerID + '" ' +
+                'title="Vimeo video ' + obj.title + '" ' + 
                 'src="' + src + '" ' +
                 'width="' + obj.options.width + '" ' +
                 'height="' + obj.options.height + '" ' +

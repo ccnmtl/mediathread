@@ -30,7 +30,7 @@
         {{/annotation_data}}>
       </div>
 
-      <h2>
+      <div class="original-annotation-title">
         {{#id}}
           Edit Selection
         {{/id}}
@@ -42,7 +42,7 @@
             Create Selection
           {{/copying}}
         {{/id}}
-      </h2>
+      </div>
         {{/annotation}}
 
         <form id="edit-annotation-form" name="edit-annotation-form" onsubmit="return false;">
@@ -53,17 +53,17 @@
           <div id="annotation-body">
             <label for="annotation-title">Title:</label>
             <div>
-              <input data-label="Title" type="text" id="id_annotation-title"
+              <input data-label="Title" type="text" class="w-100 mb-3"
               name="annotation-title" value="{{annotation.metadata.title}}"/>
             </div>
 
           {{#vocabulary.length}}
             <div class="vocabulary">
               <label>Terms</label>
-              <select class="vocabulary"
+              <select class="vocabulary" class="w-100"
                 data-placeholder="select {{display_name?lower()}}"
                 name="vocabulary" multiple="multiple">
-                
+
                 {{#vocabulary}}
                     <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
                     {{#term_set}}
@@ -77,29 +77,31 @@
           <br />
             {{#annotation}}
               <label for="annotation-tags">Tags</label>
-              <div><input data-label="Selection Tags" type="text" id="id_annotation-tags"
+              <div><input data-label="Selection Tags" type="text"
                 name="annotation-tags" data-placeholder="select or create tags"
                 value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                   <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
 
                   <label for="annotation-body">Note</label>
-                  <textarea data-label="Selection Notes" id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
+                  <textarea data-label="Selection Notes" rows="7" cols="44" name="annotation-body">{{metadata.body}}</textarea>
 
                   <input type="hidden" name="annotation-range1" value="{{range1}}" />
                   <input type="hidden" name="annotation-range2" value="{{range2}}" />
                   <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
 
-                  <input class="btn btn-primary float-right" type="button" name="Save" value="Save Selection"
-                  onclick="javascript:annotationList.saveAnnotation(this)" />
-
-                  <input class="btn btn-primary float-right" type="button" name="Cancel" value="Cancel"
-                  onclick="javascript:annotationList.cancelAnnotation()" />
-
                   {{#id}} <!-- Editing existing annotation -->
                     <input type="hidden" name="annotation-id" value="{{id}}" />
                   {{/id}}
+
+                  <div class="row no-gutters">
+                    <div class="col text-right">
+                      <input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"
+                      onclick="javascript:annotationList.cancelAnnotation()" />
+                      <input class="btn btn-primary" type="button" name="Save" value="Save Selection"
+                      onclick="javascript:annotationList.saveAnnotation(this)" />
+                    </div>
+                  </div>
             {{/annotation}}
-            <div class="visualclear"></div>
           </div>
         </form>
   </div>

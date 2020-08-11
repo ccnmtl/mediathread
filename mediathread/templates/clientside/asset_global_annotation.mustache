@@ -72,7 +72,7 @@
   </div>
 {{/asset-current}}
 
-<form id="edit-global-annotation-form" method="post"
+<form method="post"
   {{#asset-current.global_annotation.id}}
     action="/course/{{getCourseId}}/asset/save/{{asset-current.id}}/annotations/{{asset-current.global_annotation.id}}/"
   {{/asset-current.global_annotation.id}}
@@ -120,7 +120,7 @@
         name="annotation-tags"
         data-placeholder="select or create tags"
         value="{{#global_annotation.metadata.tags}}{{name}}{{^last}}, {{/last}}{{/global_annotation.metadata.tags}}"
-          id="id_annotation-tags" />
+          />
           <div class="helptext">Use commas to separate tags. Example: tag1, tag two, tag3</div>
       </div>
     </div>
@@ -128,8 +128,7 @@
     <div>
       <label>Notes</label>
       <div>
-        <textarea data-label="Notes"
-          id="id_annotation-body" rows="7" cols="51"
+        <textarea data-label="Notes" rows="7" cols="51"
           name="annotation-body" value="{{global_annotation.metadata.body}}">{{global_annotation.metadata.body}}</textarea>
       </div>
     </div>

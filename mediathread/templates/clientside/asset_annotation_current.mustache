@@ -54,7 +54,7 @@
         <div id="annotation-body">
           {{#annotation}}
             <label for="annotation-title">Title</label>
-            <div><input type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/></div>
+            <div><input class="w-100 mb-3" type="text" id="id_annotation-title" name="annotation-title" value="{{metadata.title}}"/></div>
           {{/annotation}}
 
           {{#vocabulary.length}}
@@ -64,7 +64,6 @@
                 data-placeholder="select {{display_name?lower()}}"
                 name="vocabulary"
                 multiple="multiple">
-
                 {{#vocabulary}}
                     <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
                     {{#term_set}}

@@ -228,7 +228,7 @@ function DjangoSherd_Asset_Config() {
 var CitationView = function () {
     var self = this;
     self.citation_link = 'a.materialCitation';
-    self.options = {  autoplay: true, presentation: 'small', targets: {} };
+    self.options = {autoplay: true, presentation: 'small', targets: {}};
 };
 
 CitationView.prototype.init = function (options) {
@@ -244,7 +244,8 @@ CitationView.prototype.init = function (options) {
     }
 
     if (self.options.default_target) {
-        self.options.targets.asset = document.getElementById(self.options.default_target);
+        self.options.targets.asset =
+            document.getElementById(self.options.default_target);
     }
 
     // Create an assetview.
@@ -383,7 +384,7 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
         self.options.onPrepareCitation(asset_target);
     }
 
-    if (!self.options.default_target) {
+    if (anchor && !self.options.default_target) {
         var display_position = self.options.position || null;
         if (!display_position) {
             display_position = jQuery(anchor).offset();

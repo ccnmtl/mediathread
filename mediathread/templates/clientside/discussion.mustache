@@ -69,7 +69,28 @@
         </div>
         <div class="col-md-6">
             {{! Media Display Window and or a Collections box }}
-            <div class="collection-materials bg-light"
+            {{#context.can_edit}}
+            <div class="quick-edit px-3 bg-light" style="display: none">
+                <div id="asset-workspace-panel-container">
+                    <div id="asset-view-header">
+                        <h3 class="asset-view-title">{{title}}</h3>
+                    </div>
+                    <div class="asset-view-container">
+                        <div class="asset-view-published asset-view-dialog">
+                            <div id="asset-workspace-videoclipbox" class="videoclipbox">
+                                <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                <div class="asset-display"></div>
+                                <div class="clipstrip-display"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="asset-view-tabs">
+                        <div id="asset-view-details-quick-edit" class="asset-view-details"></div>
+                    </div>
+                </div>
+            </div>
+            {{/context.can_edit}}
+            <div class="main-view collection-materials bg-light"
                 style="display:{{#context.editing}}block{{/context.editing}}{{^context.editing}}none{{/context.editing}}">
                 <div class="ajaxloader">
                     <div class="message">
@@ -80,7 +101,7 @@
                 </div>
                 <div id="{{context.discussion.id}}-collection_table" class="collection_table"></div>
             </div>
-            <div class="asset-view-published"
+            <div class="main-view asset-view-published"
                 style="display: {{#context.editing}}none{{/context.editing}}{{^context.editing}}block{{/context.editing}}">
                 <div id="{{context.discussion.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                     <div class="asset-object" style="border: none; background-color: #ededed;"></div><!-- width changes here too if video size changes -->

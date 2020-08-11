@@ -32,7 +32,8 @@
                 <div class="bg-light" id="headingOne">
                        <button class="btn btn-primary float-right"
                            type="button" data-toggle="collapse"
-                           data-target="#collapseOne" aria-expanded="true"
+                           data-target="#collapseOne"
+                           aria-expanded="{% if assets_exist %}false{% else %}true{% endif %}
                            aria-controls="collapseOne">
                                Add to collection
                        </button>

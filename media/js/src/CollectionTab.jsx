@@ -48,6 +48,10 @@ export default class CollectionTab extends React.Component {
     enterAssetDetailView(e, asset) {
         this.followLink(e);
 
+        jQuery('.collection-header')
+            .removeClass('d-flex')
+            .addClass('d-none');
+
         this.setState({
             selectedAsset: asset
         }, function() {
@@ -57,6 +61,10 @@ export default class CollectionTab extends React.Component {
     }
 
     leaveAssetDetailView(e) {
+        jQuery('.collection-header')
+            .removeClass('d-none')
+            .addClass('d-flex');
+
         this.followLink(e);
 
         this.setState({

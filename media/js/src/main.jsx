@@ -24,9 +24,9 @@ class Main extends React.Component {
         if (match && match.length >= 2) {
             assetId = parseInt(match[1], 10);
         }
+        this.assetId = assetId;
 
         const me = this;
-
         if (assetId) {
             getAsset(assetId).then(function(d) {
                 me.setState({
@@ -123,6 +123,14 @@ class Main extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    componentDidMount() {
+        if (this.assetId) {
+            jQuery('.collection-header')
+                .removeClass('d-flex')
+                .addClass('d-none');
+        }
     }
 }
 

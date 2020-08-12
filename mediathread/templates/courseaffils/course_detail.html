@@ -30,13 +30,12 @@
             <div class="mt-2 d-flex justify-content-between align-items-center flex-wrap collection-header">
                 <h1 class="page-title">Collection</h1>
                 <div class="bg-light" id="addToCollection">
-                       <button class="btn btn-primary float-right"
-                           type="button" data-toggle="collapse"
-                           data-target="#collapseOne"
-                           aria-expanded="{% if assets_exist %}false{% else %}true{% endif %}
-                           aria-controls="collapseOne">
-                               Add to collection
-                       </button>
+                    <button class="btn btn-primary float-right"
+                            type="button" data-toggle="collapse"
+                            data-target="#collapseOne" aria-expanded="true"
+                            aria-controls="collapseOne">
+                        Add to collection
+                    </button>
                 </div>
             </div>
             {% include 'main/collection_add.html' %}

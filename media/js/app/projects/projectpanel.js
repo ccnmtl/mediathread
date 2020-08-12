@@ -1,5 +1,6 @@
 /* global djangosherd: true, CitationView: true, CollectionList: true */
 /* global MediaThread: true, showMessage: true */
+/* global isElementInViewport: true */
 /* global tinymce: true, tinymceSettings: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
@@ -18,6 +19,7 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
     this.panel = panel;
     this.$parentContainer = $parent;
     this.space_owner = space_owner;
+
     self.$el.find('.project-savebutton').text('Saved');
 
     djangosherd.storage.json_update(panel.context);
@@ -132,6 +134,55 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
         });
         tinymce.init(settings);
     }
+
+    self._bind(self.$el, '#next-selection', 'click', function(evt) {
+        if (self.highlightLink(true)) {
+            evt.preventDefault();
+        }
+    });
+    self._bind(self.$el, '#previous-selection', 'click', function(evt) {
+        if (self.highlightLink(false)) {
+            evt.preventDefault();
+        }
+    });
+};
+
+ProjectPanelHandler.prototype.highlightLink = function(nextLink) {
+    var $parent = this.$el.find('.essay-space:visible');
+    if ($parent.length < 1) {
+        return false;
+    }
+
+    var elt;
+    var idx;
+    var $activeCitation = $parent.find('a.materialCitation.active-annotation');
+    var $citations = $parent.find('a.materialCitation');
+    if ($activeCitation.length < 1) {
+        // no citations are selected yet
+        elt = $parent.find('a.materialCitation').first()[0];
+    } else if (nextLink) {
+        // scrolling down
+        idx = $citations.index($activeCitation);
+        elt = $citations.get(idx + 1);  // undefined if idx is too large
+    } else {
+        // scrolling up
+        idx = $citations.index($activeCitation);
+        if (idx > 0) {
+            elt = $citations.get(idx - 1);
+        }
+    }
+
+    if (!elt) {
+        return false;
+    }
+
+    jQuery(elt).trigger('click');
+
+    if (!isElementInViewport(elt)) {
+        jQuery('html, body').animate({
+            scrollTop: jQuery(elt).position().top}, 200);
+    }
+    return true;
 };
 
 ProjectPanelHandler.prototype.onTinyMCEInitialize = function(instance) {

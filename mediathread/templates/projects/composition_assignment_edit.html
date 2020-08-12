@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <div data-page="2" data-page-content="title" class="hidden page">
-                                <h4>1. Write title &amp; instructions</h4><br />
+                                <div class="h4" data-cy="step-title">1. Write title &amp; instructions</div><br />
                                 <div class="form-group">
                                     <label for="assignment-title"><strong>Assignment Title</strong></label><br />
                                     {% if form.instance %}{{form.instance.title}}{% endif %}
@@ -157,7 +157,7 @@
                                 </div>
                             </div>
                             <div data-page="3" data-page-content="due-date" class="hidden page">
-                                <h4>2. Set response due date &amp; visibility</h4><br />
+                                <div class="h4" data-cy="step-title">2. Set response due date &amp; visibility</div><br />
                                 <div class="form-group">
                                     <label for="due_date"><strong>Due Date</strong></label>
                                     <input class="form-control" type="text" id="due_date"
@@ -182,7 +182,7 @@
                                 </div>
                             </div>
                             <div data-page="4" data-page-content="publish" class="hidden page">
-                                <h4>3. Publish assignment to students</h4><br />
+                                <div class="h4" data-cy="step-title">3. Publish assignment to students</div><br />
 
                                 <label><strong>Publish Options</strong></label>
                                 <div class="form-group">

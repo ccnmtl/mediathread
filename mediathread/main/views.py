@@ -63,7 +63,7 @@ from mediathread.mixins import (
     ajax_required,
     AjaxRequiredMixin, JSONResponseMixin,
     LoggedInMixin, LoggedInFacultyMixin,
-    LoggedInSuperuserMixin, RestrictedMaterialsMixin
+    LoggedInSuperuserMixin
 )
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
@@ -148,7 +148,7 @@ def deprecated_course_detail_view(request, course_pk):
     return context
 
 
-class CourseDetailView(LoggedInMixin, RestrictedMaterialsMixin, DetailView):
+class CourseDetailView(LoggedInMixin, DetailView):
     model = Course
 
     def dispatch(self, request, *args, **kwargs):
@@ -172,9 +172,6 @@ class CourseDetailView(LoggedInMixin, RestrictedMaterialsMixin, DetailView):
         collections = qs.filter(uploader=False).order_by('title')
         uploader = qs.filter(uploader=True).first()
 
-        assets = Asset.objects.by_course_and_user(course, self.request.user)
-        (assets, notes) = self.visible_assets_and_notes(self.request, assets)
-
         owners = []
         if (self.request.course.is_member(self.request.user) and
             (self.request.user.is_staff or
@@ -183,7 +180,6 @@ class CourseDetailView(LoggedInMixin, RestrictedMaterialsMixin, DetailView):
 
         context.update({
             'course': course,
-            'assets_exist': assets.exists(),
             'classwork_owner': self.request.user,
             'information_title': course_information_title(course),
             'faculty_feed': Project.objects.faculty_compositions(

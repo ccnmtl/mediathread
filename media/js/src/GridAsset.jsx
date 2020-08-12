@@ -17,7 +17,9 @@ import Asset from './Asset';
 import {
     capitalizeFirstLetter, handleBrokenImage, getAssetUrl
 } from './utils';
-import {objectProportioned, displaySelection} from './openlayersUtils';
+import {
+    objectProportioned, displaySelection, resetMap
+} from './openlayersUtils';
 
 export default class GridAsset extends React.Component {
     constructor(props) {
@@ -28,8 +30,9 @@ export default class GridAsset extends React.Component {
             thumbnailUrl: '/media/img/thumb_video.png'
         };
 
+        this.selectionSource = new VectorSource();
         this.selectionLayer = new VectorLayer({
-            source: new VectorSource()
+            source: this.selectionSource
         });
 
         this.asset = new Asset(this.props.asset);
@@ -45,9 +48,19 @@ export default class GridAsset extends React.Component {
         this.setState({selectedAnnotation: a});
 
         if (type === 'image') {
-            this.map.removeLayer(this.selectionLayer);
-            const newLayer = displaySelection(a, this.map);
-            this.selectionLayer = newLayer;
+            if (this.selectionLayer) {
+                this.map.removeLayer(this.selectionLayer);
+            }
+
+            if (a) {
+                const newLayer = displaySelection(a, this.map);
+                this.selectionLayer = newLayer;
+            } else {
+                resetMap(
+                    this.map,
+                    this.selectionSource,
+                    this.asset.getImage());
+            }
         }
     }
     render() {
@@ -69,8 +82,8 @@ export default class GridAsset extends React.Component {
         const assetUrl = getAssetUrl(this.props.asset.id);
 
         return (
-            <div className="col-sm-4">
-                <h5 className="text-nowrap text-truncate">
+            <div className="col-sm-4 border-right border-white mb-2">
+                <h5 className="text-nowrap text-truncate pr-2">
                     <a
                         onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
                         href={assetUrl}

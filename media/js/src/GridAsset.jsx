@@ -82,8 +82,8 @@ export default class GridAsset extends React.Component {
         const assetUrl = getAssetUrl(this.props.asset.id);
 
         return (
-            <div className="col-sm-4 border-right border-white mb-2">
-                <h5 className="text-nowrap text-truncate pr-2">
+            <div className="col-sm-4 border-right-8 border-white mb-4">
+                <h5 className="text-nowrap text-truncate">
                     <a
                         onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
                         href={assetUrl}

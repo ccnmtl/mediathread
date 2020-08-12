@@ -4166,6 +4166,14 @@ ul.section-tabs>li>a.active {
     padding: 0;
 }
 
+.assets .card-group>.col-sm-4>h5 {
+    padding-right: 8rem;
+}
+
+.border-right-8 {
+    border-right: 8px solid rgba(255, 255, 255, 0);
+}
+
 /*
  * Fix up card borders to look right in the card group.
  * This is necessary because I'm adding in the .col-sm-4,

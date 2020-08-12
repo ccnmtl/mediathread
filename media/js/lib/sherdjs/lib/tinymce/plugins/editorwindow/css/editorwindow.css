@@ -13,42 +13,10 @@ div.mce_editorwindow
   height:auto;
   /*end init defaults*/
 
-  background-color:#EDEDED;
-  border:1px solid #555555;
-  padding:0.5em 1em 0.5em 0.5em;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.2);
+  background-color: white;
+
+  padding:0 1em 0 0 0;
 
  }
-/*
-a.mce_editorwindow_closebtn
-{ 
-  float:right;
-  border:1px solid red;
-  background-color:#FFC0C0;
-  color:red;
-  padding:2px;
-  margin-left:10px;
- }
-*/
-a.mce_editorwindow_closebtn
-{ 
-    display:block;
-  float:right;
-  /*IE7 with float:right makes the parent div width:100% and looks bad
-    so we float it left instead.  not perfect, but looks ok.
-   */
-    *float:left;
-  background-image:url(cornerx.png);
-  margin-left:10px;
-    *margin-right:10px;
-    *margin-left:0px;
-  width:16px;
-  height:16px;
-  color:transparent;
-  /*for IE 6-8 not supporting transparent text:*/
-    overflow:hidden;
-    line-height:48px;
- }
-a.mce_editorwindow_closebtn:hover
-{ 
-  background-image:url(cornerx_red.png);
-}

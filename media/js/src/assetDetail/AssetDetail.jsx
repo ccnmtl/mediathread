@@ -200,11 +200,10 @@ export default class AssetDetail extends React.Component {
                         return me.props.onUpdateAsset(
                             d.assets[me.asset.asset.id]);
                     }).then(function() {
-                        // Open this selection's accordion item.
                         openSelectionAccordionItem(
                             jQuery('#selectionsAccordion'),
-                            createdSelection.id
-                        );
+                            createdSelection.id,
+                            true);
                     });
             });
         });
@@ -236,11 +235,10 @@ export default class AssetDetail extends React.Component {
                         return me.props.onUpdateAsset(
                             d.assets[me.asset.asset.id]);
                     }).then(function() {
-                        // Open this selection's accordion item.
                         openSelectionAccordionItem(
                             jQuery('#selectionsAccordion'),
-                            selectionId
-                        );
+                            selectionId,
+                            true);
                     });
             }, function(errorText) {
                 me.setState({

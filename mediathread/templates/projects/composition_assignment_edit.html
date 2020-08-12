@@ -89,8 +89,8 @@
                             <div data-page="1" data-page-content="instructions" class="page">
                             <p>A composition assignment allows students to
                                 write essays containing embedded media. Students
-                                write in an authoring space and insert media
-                                selections into their text.</p>
+                                write in a text box and insert media selections
+                                into their text.</p>
 
                             <p>This type of assignment is ideally used for
                                 essays and other compositions that cite
@@ -119,15 +119,15 @@
                             <div data-page="2" data-page-content="title" class="hidden page">
                                 <h4>1. Write title &amp; instructions</h4><br />
                                 <div class="form-group">
-                                    <label><strong>Assignment Title</strong></label><br />
+                                    <label for="assignment-title"><strong>Assignment Title</strong></label><br />
                                     {% if form.instance %}{{form.instance.title}}{% endif %}
-                                    <input type="text" name="title" class="form-control"
+                                    <input type="text" name="title" class="form-control" id="assignment-title"
                                         value="{% if form.instance.title != form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endif %}"/>
                                     <div class="help-inline">Title is a required field</div>
                                 </div>
-                                <div class="form-group">
-                                    <label><strong>Instructions for completing assignment</strong></label>
-                                    <p>Instructions for Mediathread compositions
+                                <div class="form-group mt-3">
+                                <label for="assignment-instructions"><strong>Assignment Instructions</strong></label><br />
+                                <p>Instructions for Mediathread compositions
                                     are often similar to instructions for
                                     writing an academic essay. In addition to
                                     (or instead of) quoting source text,
@@ -136,10 +136,10 @@
                                     provide evidence or buttress arguments. A
                                     composition assignment could include:</p>
 
-                                    <ul>
+                                <ul>
                                     <li>Instructions for giving the composition a title.</li>
                                     <li>Designation of a minimum or maximum number of selections to include in the composition.</li>
-                                    <li>Guidance on how to use selections in the composition (as evidence, as illustrations, as examples, etc.)</li>
+                                    <li>Guidance on how to use selections in the composition (as evidence, as illustrations, as examples, etc.).</li>
                                     <li>Instructions for publishing the composition (sharing with instructor, the whole class, the public).</li>
                                     </ul>
                                     <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
@@ -160,7 +160,7 @@
                                 <h4>2. Set response due date &amp; visibility</h4><br />
                                 <div class="form-group">
                                     <label for="due_date"><strong>Due Date</strong></label>
-                                    <input class="form-control" type="text"
+                                    <input class="form-control" type="text" id="due_date"
                                         name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                                 </div>
                                 <div class="help-inline">Please choose a due date.</div>

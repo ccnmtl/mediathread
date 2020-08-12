@@ -3,7 +3,8 @@
 
 <div class="accordion bg-light" id="upload-import-accordion">
   <div class="card border-0 bg-light">
-       <div id="collapseOne" class="collapse bg-light"
+       <div id="collapseOne"
+           class="collapse bg-light {% if assets_exist %}hide{% else %}show{% endif %}"
            aria-labelledby="headingOne"
            data-parent="#upload-import-accordion">
 

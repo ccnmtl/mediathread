@@ -71,6 +71,29 @@ body.mce-content-body {
 
 div.mce_editorwindow {
     min-width: 324px;
+    margin-top: 5px;
+}
+
+div.mce_editorwindow .asset-object {
+    background-color: white;
+    border: 0;
+}
+
+div.mce_editorwindow .mce_top {
+    background-color: #343a40;
+}
+
+div.mce_editorwindow .mce_editorwindow_closebtn {
+    float: right;
+    margin: 5px;
+}
+
+div.mce_editorwindow .mce_content {
+    clear: both;
+}
+
+div.mce_editorwindow .mce_editorwindow_closebtn:hover {
+  background-image: none;
 }
 
 .defaultSkin table.mceLayout {
@@ -84,10 +107,15 @@ div.mce_editorwindow {
     top: 5px;
 }
 
-#project-workspace .asset-view-published {
+.main-view.asset-view-published {
     margin-top: 83px;
 }
-#project-workspace .collection-materials {
+
+.main-view.asset-view-published .videoclipbox {
+    border-top: 40px solid #343a40;
+}
+
+.main-view.collection-materials {
     margin-top: 62px;
 }
 
@@ -147,6 +175,46 @@ div.save-publish-status li {
 
 .save-publish-status .right.small {
     margin: -10px -5px 0 0;
+}
+
+/* ---- Quick Edit -- */
+
+.discussion .quick-edit #asset-view-header h3,
+.composition .quick-edit #asset-view-header h3 {
+    margin-top: 55px;
+    text-align: center;
+    padding-top: 1rem!important;
+}
+
+.discussion .quick-edit .asset-view-published,
+.composition .quick-edit .asset-view-published {
+    margin: 0;
+    margin-top: 0;
+    float: none;
+    width: 100%;
+    min-width: 100%;
+    min-height: auto;
+    height: auto;
+    position: relative;
+    padding: 0;
+}
+
+.discussion .quick-edit .original-annotation-title,
+.composition .quick-edit .original-annotation-title {
+    margin-top: 1.5rem;
+}
+
+.discussion .quick-edit .asset-view-tabs,
+.discussion .quick-edit .asset-view-container,
+.composition .quick-edit .asset-view-tabs,
+.composition .quick-edit .asset-view-container {
+    width: 385px;
+    margin: auto;
+}
+
+.original-annotation-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 /* ---- Selection & Sequence Assignments ------- */

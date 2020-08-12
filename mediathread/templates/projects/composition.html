@@ -19,10 +19,21 @@
 {% endblock %}
 
 {% block clientside_templates %}
+    {% include "clientside/asset_view_help.mustache" %}
+    {% include "clientside/asset_view_details.mustache" %}
+    {% include "clientside/asset_view_details_quick_edit.mustache" %}
+    {% include "clientside/asset_references.mustache" %}
+    {% include "clientside/asset_annotation_list.mustache" %}
+    {% include "clientside/asset_annotation_current.mustache" %}
+    {% include "clientside/asset_global_annotation.mustache" %}
+    {% include "clientside/asset_global_annotation_quick_edit.mustache" %}
+    {% include "clientside/asset_sources.mustache" %}
+    {% include "clientside/asset_feedback.mustache" %}
     {% include "clientside/asset_quick_edit.mustache" %}
     {% include "clientside/collection.mustache" %}
     {% include "clientside/collection_assets.mustache" %}
     {% include "clientside/collection_chooser.mustache" %}
+    {% include "clientside/project_feedback.mustache" %}
     {% include "clientside/project.mustache" %}
 {% endblock %}
 

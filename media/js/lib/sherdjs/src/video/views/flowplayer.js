@@ -54,7 +54,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     presentation = self.presentations['default'];
                     break;
                 }
-                
+
                 obj.options = {
                     width: presentation.width(),
                     height: presentation.height()
@@ -72,13 +72,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 object: obj,
                 htmlID: wrapperID,
                 playerID: playerID, // Used by .initialize post initialization
-                timedisplayID: 'timedisplay' + playerID,
-                currentTimeID: 'currtime' + playerID,
-                durationID: 'totalcliplength' + playerID,
                 playerParams: params,
-                text: '<div class="flowplayer-timedisplay" id="timedisplay' + playerID + '" style="visibility:hidden;">' +
-                      '<span id="currtime' + playerID + '">00:00:00</span>/<span id="totalcliplength' + playerID + '">00:00:00</span></div>' + 
-                      '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
+                text: '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
                     '<div class="fp-full fp-outlined no-brand sherd-flowplayer no-hover fixed-controls"' +
                           'poster="' + posterUrl + '"' +
                            'style="display:block;" id="' + playerID + '">' +
@@ -93,10 +88,10 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     }
                 }
             }
-            
+
             return create_obj;
         };
-        
+
         // self.components -- Access to the internal player and any options needed at runtime
         this.microformat.components = function (html_dom, create_obj) {
             try {
@@ -110,13 +105,9 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     rv.mediaUrl = create_obj.playerParams.url;
                     rv.presentation = create_obj.object.presentation;
                     rv.autoplay = create_obj.object.autoplay ? true : false;
-                    rv.timedisplay = document.getElementById(create_obj.timedisplayID);
-                    rv.elapsed = document.getElementById(create_obj.currentTimeID);
-                    rv.duration = document.getElementById(create_obj.durationID);
-                    rv.lastDuration = 0;
                     rv.itemId = create_obj.object.id;
-                    rv.primaryType = create_obj.object.primary_type;                    
-                    
+                    rv.primaryType = create_obj.object.primary_type;
+
                     if (create_obj.staticDuration) {
                         rv.staticDuration = create_obj.staticDuration;
                     }
@@ -125,7 +116,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             } catch (e) {}
             return false;
         };
-        
+
         // Replace the video identifier within the rendered .html
         this.microformat.update = function (obj, html_dom) {
             var rc = false;
@@ -213,7 +204,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     splash: false,
                     swf: flowplayer.html5_swf_location
                  };
-               
+
                  if (create_obj.object.flv || create_obj.object.flv_pseudo) {
                      options.playlist.push([{flv: create_obj.playerParams.url}]);
                  } else {
@@ -222,23 +213,21 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
                  var elt = jQuery("#" + create_obj.playerID);
                  jQuery(elt).flowplayer(options);
-                
+
                  jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
-    
+
                 // Save reference to the player
                 self.components.player = flowplayer(elt);
                 self.components.provider = create_obj.playerParams.provider;
-                
+
                 // register for notifications from clipstrip to seek to various times in the video
                 self.events.connect(self, 'seek', self.media.playAt);
                 self.events.connect(self, 'playclip', function (obj) {
                     self.media.seek(obj.start, obj.end, true);
                 });
-                
+
                 self.components.player.bind("ready", function(e, api) {
                     self.state.ready = true;
-                    self.components.timedisplay.style.visibility = 'visible';
-                    self.components.duration.innerHTML = self.secondsToCode(self.media.duration());
 
                     if (self.state.starttime || self.state.autoplay) {
                         self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
@@ -270,7 +259,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 });
             }
         };
-        
+
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
@@ -278,7 +267,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             return self.components.player ?
                 self.components.player.video.duration : 0;
         };
-        
+
         this.media.pause = function () {
             if (self.components.player) {
                 self.components.player.pause();
@@ -309,7 +298,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 delete self.state.starttime;
                 delete self.state.endtime;
                 delete self.state.autoplay;
-    
+
                 if (starttime !== undefined) {
                     self.components.player.seek(starttime, function() {
                         if (autoplay) {
@@ -327,12 +316,12 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 }
             }
         };
-        
+
         this.media.time = function () {
             return self.components.player ? 
                 self.components.player.video.time : 0;
         };
-        
+
         this.media.timestrip = function () {
             // The clipstrip is calibrated to the flowplayer scrubber
             // Visually, it looks a little "short", but trust, it tags along

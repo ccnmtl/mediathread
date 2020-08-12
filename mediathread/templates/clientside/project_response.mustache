@@ -62,7 +62,6 @@
                                             Revisions
                                         </a>
                                     {{/context.can_edit}}
-
                                     <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
                                         Export to Word
                                     </a>
@@ -139,7 +138,28 @@
                             <div class="row">
                                 {{! Media Display Window and or a Collections box }}
                                 <div class="col-md-6 order-md-2">
-                                    <div class="collection-materials"
+                                    {{#context.can_edit}}
+                                    <div class="quick-edit px-3 bg-light" style="display: none">
+                                        <div id="asset-workspace-panel-container">
+                                            <div id="asset-view-header">
+                                                <h3 class="asset-view-title">{{title}}</h3>
+                                            </div>
+                                            <div class="asset-view-container">
+                                                <div class="asset-view-published asset-view-dialog">
+                                                    <div id="asset-workspace-videoclipbox" class="videoclipbox">
+                                                        <div class="asset-object" style="border: none; background-color: #ededed;"></div>
+                                                        <div class="asset-display"></div>
+                                                        <div class="clipstrip-display"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="asset-view-tabs">
+                                                <div id="asset-view-details-quick-edit" class="asset-view-details"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/context.can_edit}}
+                                    <div class="main-view collection-materials"
                                         style="display:{{^context.editing}}none{{/context.editing}}">
                                         <div class="ajaxloader">
                                             <div class="message">
@@ -150,7 +170,7 @@
                                         </div>
                                         <div id="{{context.project.id}}-collection_table" class="collection_table"></div>
                                     </div>
-                                    <div class="asset-view-published"
+                                    <div class="main-view asset-view-published"
                                         style="{{#context.editing}}display: none{{/context.editing}}">
                                         <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>

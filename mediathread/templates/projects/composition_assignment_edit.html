@@ -87,11 +87,21 @@
                             <input type="hidden" name="project_type" value="assignment" />
 
                             <div data-page="1" data-page-content="instructions" class="page">
-                                <p>A composition assignment is....</p>
+                            <p>A composition assignment allows students to
+                                write essays containing embedded media. Students
+                                write in an authoring space and insert media
+                                selections into their text.</p>
 
-                                <p>{% lorem %}</p>
+                            <p>This type of assignment is ideally used for
+                                essays and other compositions that cite
+                                selections of multimedia as evidence. It can
+                                also be used to assemble "playlists" of
+                                selections.</p>
 
-                                <p>Visibility of student responses can be set at one of the following levels:</p>
+                            <p>Compositions may be authored individually
+                                (the default setting) or by a group.</p>
+
+                            <p>Visibility of student responses can be set at one of the following levels:</p>
                                 <ul>
                                 <li>Student responses are visible only to instructors</li>
                                 <li>Students can see other responses only after submitting their own</li>
@@ -117,16 +127,20 @@
                                 </div>
                                 <div class="form-group">
                                     <label><strong>Instructions for completing assignment</strong></label>
-                                    <p>
-                                    {% lorem %}
-                                    </p>
-
-                                    <p>Instructions may include:</p>
+                                    <p>Instructions for Mediathread compositions
+                                    are often similar to instructions for
+                                    writing an academic essay. In addition to
+                                    (or instead of) quoting source text,
+                                    students may be instructed to weave media
+                                    selections into their writing in order to
+                                    provide evidence or buttress arguments. A
+                                    composition assignment could include:</p>
 
                                     <ul>
-                                    <li>One</li>
-                                    <li>Two</li>
-                                    <li>Three</li>
+                                    <li>Instructions for giving the composition a title.</li>
+                                    <li>Designation of a minimum or maximum number of selections to include in the composition.</li>
+                                    <li>Guidance on how to use selections in the composition (as evidence, as illustrations, as examples, etc.)</li>
+                                    <li>Instructions for publishing the composition (sharing with instructor, the whole class, the public).</li>
                                     </ul>
                                     <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                         {{form.instance.body}}

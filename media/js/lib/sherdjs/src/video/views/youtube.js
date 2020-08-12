@@ -88,7 +88,8 @@ if (!Sherd.Video.YouTube) {
                 mediaUrl: url, // Used by _seek seeking behavior
                 text: '<div id="' + wrapperID + '" class="sherd-youtube-wrapper ' +
                     'embed-responsive embed-responsive-16by9">' +
-                    '<iframe type="text/html" ' +
+                    '<iframe title="YouTube video ' + obj.title + '"' +
+                    'type="text/html" ' +
                     'src="' + url + '?' + urlParams + '" ' +
                     'width="' + obj.options.width + '" ' +
                     'height="' + obj.options.height + '" ' +

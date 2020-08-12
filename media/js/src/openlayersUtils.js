@@ -94,7 +94,9 @@ const displaySelection = function(a, map) {
     // Fit the selection in the view
     const feature = source.getFeatures()[0];
     const polygon = feature.getGeometry();
-    view.fit(polygon, {padding: [20, 20, 20, 20]});
+    if (polygon) {
+        view.fit(polygon, {padding: [20, 20, 20, 20]});
+    }
     return newLayer;
 };
 

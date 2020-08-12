@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from datetime import datetime, timedelta
 import json
+from json import JSONDecodeError
 import re
 
 from django.contrib.auth.models import User
@@ -30,7 +31,14 @@ class Annotation(models.Model):
 
     def annotation(self):
         if self.annotation_data:
-            return json.loads(self.annotation_data)
+            try:
+                return json.loads(self.annotation_data)
+            except JSONDecodeError:
+                # If the JSON can't be parsed (maybe it was
+                # single-quoted instead of double-quoted), don't throw
+                # an exception, completely breaking the asset
+                # view. Just display an empty annotation.
+                return {}
         else:
             return None
 

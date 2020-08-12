@@ -89,7 +89,8 @@ export default class AssetDetail extends React.Component {
 
             tab: 'viewSelections',
 
-            isDrawing: false
+            isDrawing: false,
+            isEditing: null
         };
 
         this.draw = null;
@@ -125,10 +126,23 @@ export default class AssetDetail extends React.Component {
         this.onSelectTab = this.onSelectTab.bind(this);
 
         this.onDrawEnd = this.onDrawEnd.bind(this);
+        this.onUpdateIsEditing = this.onUpdateIsEditing.bind(this);
 
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
 
         this.addInteraction = this.addInteraction.bind(this);
+    }
+
+    onUpdateIsEditing(newVal) {
+        let newState = {isEditing: newVal};
+
+        // If we're leaving editing mode, clear the vector layer.
+        if (!newVal) {
+            this.onClearVectorLayer();
+            newState.isDrawing = false;
+        }
+
+        this.setState(newState);
     }
 
     onCreateSelection(e, tags, terms) {
@@ -219,6 +233,37 @@ export default class AssetDetail extends React.Component {
 
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
+        let annotationData = {};
+        if (this.type === 'image') {
+            const feature = this.selectionSource.getFeatures()[0];
+
+            const geometry = feature.getGeometry();
+            const coords = geometry.getCoordinates();
+            const extent = geometry.getExtent();
+
+            annotationData = {
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: coords
+                },
+                default: false,
+                x: -2,
+                y: -1,
+                zoom: 1,
+                extent: extent
+            };
+        } else if (this.type === 'video') {
+            annotationData = {
+                startCode: formatTimecode(this.state.selectionStartTime || 0),
+                endCode: formatTimecode(this.state.selectionEndTime),
+                duration: this.state.selectionEndTime -
+                    (this.state.selectionStartTime || 0),
+                timeScale: 1,
+                start: this.state.selectionStartTime || 0,
+                end: this.state.selectionEndTime
+            };
+        }
+
         return updateSherdNote(
             this.asset.asset.id,
             selectionId,
@@ -226,7 +271,8 @@ export default class AssetDetail extends React.Component {
                 title: selectionTitle,
                 tags: tags,
                 terms: terms,
-                body: document.getElementById('newSelectionNotes').value
+                body: document.getElementById('newSelectionNotes').value,
+                annotation_data: JSON.stringify(annotationData)
             })
             .then(function(data) {
                 // Refresh the selections.
@@ -424,6 +470,10 @@ export default class AssetDetail extends React.Component {
         if (this.selectionSource) {
             clearSource(this.selectionSource);
         }
+
+        if (this.selectionLayer) {
+            this.map.removeLayer(this.selectionLayer);
+        }
     }
 
     onPlaySelection(e) {
@@ -464,17 +514,8 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
-                            {this.state.tab === 'viewSelections' && (
-                                <div className="input-group">
-                                    <div className="form-check form-control-sm">
-                                        <input className="form-check-input" type="checkbox" id="overlayAllCheckbox" />
-                                        <label className="form-check-label" htmlFor="overlayAllCheckbox">
-                                            Overlay all selections
-                                        </label>
-                                    </div>
-                                </div>
-                            )}
-                            {this.state.tab === 'createSelection' && (
+                            {(this.state.tab === 'createSelection' ||
+                              (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>
                                     <button
                                         type="button"
@@ -523,7 +564,21 @@ export default class AssetDetail extends React.Component {
                                     <div className="col-md-9">
                                         <div className="input-group">
 
-                                            {this.state.tab === 'createSelection' && (
+                                            {this.state.activeSelection &&
+                                             this.state.tab === 'viewSelections' &&
+                                             !this.state.isEditing && (
+                                                <>
+                                                    {formatTimecode(this.state.selectionStartTime)}
+
+                                                    {String.fromCharCode(160)}
+                                                    {String.fromCharCode(8212)}
+                                                    {String.fromCharCode(160)}
+
+                                                    {formatTimecode(this.state.selectionEndTime)}
+                                                </>
+                                            )}
+
+                                            {(this.state.tab === 'createSelection' || this.state.isEditing) && (
                                                 <>
                                                     <button
                                                         onClick={this.onStartTimeClick}
@@ -537,25 +592,11 @@ export default class AssetDetail extends React.Component {
                                                         onChange={this.onStartTimeUpdate}
                                                         timecode={this.state.selectionStartTime}
                                                     />
-                                                </>
-                                            )}
-                                            {this.state.activeSelection && this.state.tab === 'viewSelections' && (
-                                                formatTimecode(this.state.selectionStartTime)
-                                            )}
 
-                                            {
-                                                (this.state.tab === 'createSelection' ||
-                                                 (this.state.activeSelection && this.state.tab === 'viewSelections')
-                                                ) && (
-                                                    <>
-                                                        {String.fromCharCode(160)}
-                                                        {String.fromCharCode(8212)}
-                                                        {String.fromCharCode(160)}
-                                                    </>
-                                                )}
+                                                    {String.fromCharCode(160)}
+                                                    {String.fromCharCode(8212)}
+                                                    {String.fromCharCode(160)}
 
-                                            {this.state.tab === 'createSelection' && (
-                                                <>
                                                     <button
                                                         onClick={this.onEndTimeClick}
                                                         type="button"
@@ -569,9 +610,7 @@ export default class AssetDetail extends React.Component {
                                                     />
                                                 </>
                                             )}
-                                            {this.state.activeSelection && this.state.tab === 'viewSelections' && (
-                                                formatTimecode(this.state.selectionEndTime)
-                                            )}
+
 
                                             {
                                                 (this.state.tab === 'createSelection' ||
@@ -711,7 +750,12 @@ export default class AssetDetail extends React.Component {
                                 type={this.type}
                                 tags={this.props.tags}
                                 terms={this.props.terms}
+                                selectionSource={this.selectionSource}
+                                selectionStartTime={this.state.selectionStartTime}
+                                selectionEndTime={this.state.selectionEndTime}
                                 filteredSelections={this.props.asset.annotations}
+                                isEditing={this.state.isEditing}
+                                onUpdateIsEditing={this.onUpdateIsEditing}
                                 onSelectSelection={this.onSelectSelection}
                                 onSelectTab={this.onSelectTab}
                                 onViewSelection={this.onViewSelection}
@@ -725,18 +769,21 @@ export default class AssetDetail extends React.Component {
                             />
                         )}
                         {this.state.tab === 'createSelection' && (
-                            <CreateSelection
-                                type={this.type}
-                                tags={this.props.tags}
-                                terms={this.props.terms}
-                                selectionSource={this.selectionSource}
-                                selectionStartTime={this.state.selectionStartTime}
-                                selectionEndTime={this.state.selectionEndTime}
-                                onStartTimeClick={this.onStartTimeClick}
-                                onEndTimeClick={this.onEndTimeClick}
-                                onCreateSelection={this.onCreateSelection}
-                                onShowValidationError={this.onShowValidationError}
-                            />
+                            <>
+                                <h4>2. Add Details</h4>
+                                <CreateSelection
+                                    type={this.type}
+                                    tags={this.props.tags}
+                                    terms={this.props.terms}
+                                    selectionSource={this.selectionSource}
+                                    selectionStartTime={this.state.selectionStartTime}
+                                    selectionEndTime={this.state.selectionEndTime}
+                                    onStartTimeClick={this.onStartTimeClick}
+                                    onEndTimeClick={this.onEndTimeClick}
+                                    onCreateSelection={this.onCreateSelection}
+                                    onShowValidationError={this.onShowValidationError}
+                                />
+                            </>
                         )}
                         {this.state.tab === 'viewMetadata' && (
                             <ViewItem asset={this.props.asset} />

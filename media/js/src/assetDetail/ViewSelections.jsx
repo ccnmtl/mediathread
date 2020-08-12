@@ -17,8 +17,7 @@ export default class ViewSelections extends React.Component {
         super(props);
 
         this.state = {
-            groupBy: 'author',
-            isEditing: null
+            groupBy: 'author'
         };
 
         this.onClickEdit = this.onClickEdit.bind(this);
@@ -35,12 +34,12 @@ export default class ViewSelections extends React.Component {
 
     onClickEdit(e, s) {
         e.preventDefault();
-        this.setState({isEditing: s});
+        this.props.onUpdateIsEditing(s);
     }
 
     onClickCancel(e) {
         e.preventDefault();
-        this.setState({isEditing: null});
+        this.props.onUpdateIsEditing(null);
     }
 
     onClickDelete(selectionId) {
@@ -48,14 +47,17 @@ export default class ViewSelections extends React.Component {
     }
 
     onDeleteSelection(e) {
-        this.setState({isEditing: false});
+        this.props.onUpdateIsEditing(null);
         return this.props.onDeleteSelection(e);
     }
 
     onSaveSelection(e, selectionId, tags, terms) {
-        this.setState({isEditing: false});
+        const me = this;
         return this.props.onSaveSelection(
-            e, selectionId, tags, terms);
+            e, selectionId, tags, terms
+        ).then(function() {
+            me.props.onUpdateIsEditing(null);
+        });
     }
 
     renderSelection(s, key, tags, terms) {
@@ -229,8 +231,11 @@ export default class ViewSelections extends React.Component {
                 <EditSelectionForm
                     type={this.props.type}
                     selection={selection}
+                    selectionStartTime={this.props.selectionStartTime}
+                    selectionEndTime={this.props.selectionEndTime}
                     tags={this.props.tags}
                     terms={this.props.terms}
+                    selectionSource={this.props.selectionSource}
                     onClickCancel={this.onClickCancel}
                     onSaveSelection={this.onSaveSelection}
                     onClickDelete={this.onClickDelete}
@@ -260,8 +265,8 @@ export default class ViewSelections extends React.Component {
     }
 
     render() {
-        if (this.state.isEditing) {
-            return this.renderEditForm(this.state.isEditing);
+        if (this.props.isEditing) {
+            return this.renderEditForm(this.props.isEditing);
         }
 
         let selections = {};
@@ -379,8 +384,8 @@ export default class ViewSelections extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (
-            prevState.isEditing !== this.state.isEditing &&
-                !this.state.isEditing
+            prevProps.isEditing !== this.props.isEditing &&
+                !this.props.isEditing
         ) {
             // When coming out of the isEditing state, re-register the
             // accordion event listeners.
@@ -397,7 +402,12 @@ ViewSelections.propTypes = {
     type: PropTypes.string.isRequired,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    selectionSource: PropTypes.object,
+    selectionStartTime: PropTypes.number,
+    selectionEndTime: PropTypes.number,
     filteredSelections: PropTypes.array,
+    isEditing: PropTypes.object,
+    onUpdateIsEditing: PropTypes.func.isRequired,
     onSelectSelection: PropTypes.func.isRequired,
     onSelectTab: PropTypes.func.isRequired,
     onViewSelection: PropTypes.func.isRequired,

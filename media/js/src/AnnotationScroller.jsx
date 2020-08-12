@@ -51,6 +51,8 @@ export default class AnnotationScroller extends React.Component {
         const courseUrl = getCourseUrl();
 
         let activeLink = getAssetUrl(this.props.asset.id);
+        let onLinkClick = (e) => this.props.enterAssetDetailView(
+            e, this.props.asset);
         const plural = this.props.asset.annotations.length === 1 ? '' : 's';
         let activeTitle = 'Original Item ' +
             `(${this.props.asset.annotations.length} selection${plural})`;
@@ -58,6 +60,7 @@ export default class AnnotationScroller extends React.Component {
             activeLink = `${courseUrl}react/asset/` +
                   selectedAnnotation.asset_id +
                 '/annotations/' + selectedAnnotation.id + '/';
+            onLinkClick = (e) => {};
             const pageInfo =
                 `(${this.state.currentAnnotation + 1} of ` +
                   `${this.props.asset.annotations.length}) `;
@@ -87,7 +90,10 @@ export default class AnnotationScroller extends React.Component {
                     </li>
 
                     <li className="page-item w-100 text-center text-nowrap text-truncate">
-                        <a className="page-link" href={activeLink}>
+                        <a
+                            onClick={onLinkClick}
+                            className="page-link"
+                            href={activeLink}>
                             {activeTitle}
                         </a>
                     </li>
@@ -119,5 +125,6 @@ export default class AnnotationScroller extends React.Component {
 
 AnnotationScroller.propTypes = {
     asset: PropTypes.object.isRequired,
-    onSelectedAnnotationUpdate: PropTypes.func.isRequired
+    onSelectedAnnotationUpdate: PropTypes.func.isRequired,
+    enterAssetDetailView: PropTypes.func.isRequired
 };

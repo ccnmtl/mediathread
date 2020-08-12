@@ -102,6 +102,7 @@ export default class GridAsset extends React.Component {
                         </div>
                         <div className="image-overlay">
                             <a
+                                onClick={(e) => this.props.enterAssetDetailView(e, this.props.asset)}
                                 href={assetUrl}
                                 title={this.props.asset.title}>
                                 {type === 'image' && (
@@ -129,6 +130,7 @@ export default class GridAsset extends React.Component {
                         asset={this.props.asset}
                         onSelectedAnnotationUpdate={
                             this.onSelectedAnnotationUpdate}
+                        enterAssetDetailView={this.props.enterAssetDetailView}
                     />
 
                 </div>

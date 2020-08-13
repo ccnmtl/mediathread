@@ -2,6 +2,7 @@
 /* exported _propertyCount, getVisibleContentHeight */
 /* exported switcher, toggleHelp, toggleHelpOverlay, storeData */
 /* exported retrieveData, showMessage, urlWithCourse */
+/* exported isElementInViewport */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 // eslint-disable-next-line no-unused-vars
@@ -39,6 +40,24 @@ function getVisibleContentHeight() {
         elt = document.getElementById('three-section-tabs');
     }
     return viewportheight - (20 + elt.clientHeight);
+}
+
+
+/*
+ * https://stackoverflow.com/questions/123999/how-can-i-tell-if-a-
+ * dom-element-is-visible-in-the-current-viewport/7557433#7557433
+ */
+//eslint-disable-next-line no-unused-vars
+function isElementInViewport(el) {
+    var rect = el.getBoundingClientRect();
+    var inView =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (
+            window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (
+            window.innerWidth || document.documentElement.clientWidth);
+    return inView;
 }
 
 // eslint-disable-next-line no-unused-vars

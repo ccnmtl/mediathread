@@ -1,5 +1,4 @@
 {% extends "base_new.html" %}
-{% load waffle_tags %}
 
 {% block title %}
     {% if form.instance %}{{form.instance.title}}{% else %}Create Assignment{% endif %}
@@ -84,21 +83,21 @@
                             <input type="hidden" name="project_type" value="discussion-assignment" />
 
                             <div data-page="1" data-page-content="instructions" class="page">
-                                <p>A discussion assignment allows students to
-                                    post comments in a threaded discussion
-                                    containing Mediathread selections. Discussions
-                                    in Mediathread look similar to other online
-                                    comment sections (i.e. comment sections in news
-                                    articles, reddit, etc.), with the added feature
-                                    of media selections inserted into the text.</p>
-    
-                                <p>This type of assignment can be used to generate
-                                    conversation among members of your class of a
-                                    thematic topic or challenge, substantiating
-                                    their comments with embedded media selections.
-                                </p>
+                            <p>A discussion assignment allows students to
+                                post comments in a threaded discussion
+                                containing Mediathread selections. Discussions
+                                in Mediathread look similar to other online
+                                comment sections (i.e. comment sections in news
+                                articles, reddit, etc.), with the added feature
+                                of media selections inserted into the text.</p>
 
-                                <div class="row mb-5">
+                            <p>This type of assignment can be used to
+                                generate conversation among members of your
+                                class about a thematic topic or challenge,
+                                substantiating comments with embedded media
+                                selections.</p>
+
+                            <div class="row mb-5">
                                     <div class="col text-right">
                                         <button id="page2" class="btn btn-primary next">
                                             Get Started
@@ -107,32 +106,27 @@
                                 </div>
                             </div>
                             <div data-page="2" data-page-content="title" class="hidden page">
-                                <h4>1. Write title &amp; instructions</h4><br />
+                                <div class="h4" data-cy="step-title">1. Write title &amp; instructions</div><br />
                                 <div class="form-group">
-                                    <label><strong>Assignment Title</strong></label><br />
-                                    <input type="text" name="title" class="form-control"
+                                    <label for="assignment-title"><strong>Discussion Title</strong></label><br />
+                                    <input id="assignment-title" type="text" name="title" class="form-control"
                                         value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                                     <div class="help-inline">Title is a required field</div>
                                 </div>
-                                <div class="form-group">
-                                    <label><strong>Instructions for completing assignment</strong></label>
-                                    <p>Write a discussion prompt that asks
+                                <div class="form-group mt-3">
+                                <label for="assignment-instructions"><strong>Discussion Prompt</strong></label><br />
+                                <p>Write a discussion prompt that asks
                                     students to reply to you or each other,
                                     providing evidence or buttressing their
                                     comments with media selections as
-                                    appropriate. Students may be instructed to
-                                    use selections of a designated media item,
-                                    or to incorporate media they’ve added into
-                                    Mediathread, and to respond directly to you
-                                    or to each other. The following are a few
-                                    tips for guiding discussion in Mediathread:
-                                </p>
+                                    appropriate. Here are a few tips for guiding
+                                    discussion in Mediathread:</p>
 
-                                    <ul>
+                                <ul>
                                     <li>Pose open-ended prompts that help students connect class themes to interpretation, analysis, or personal experience.</li>
-                                    <li>Designate requirements such as minimum or maximum number of comments to post, and media selections to include.</li>
-                                    <li>Specify how to integrate media selections (as evidence, illustrations, examples, etc.)</li>
-                                    <li>Discuss benefits of using the discussion and annotations.</li>
+                                    <li>Specify requirements such as minimum or maximum number of comments to post, and media selections to include.</li>
+                                    <li>Specify how to integrate media selections (as evidence, illustrations, examples, etc.).</li>
+                                    <li>Indicate how discussion posts will connect to or shape subsequent class activities.</li>
                                     </ul>
                                     <textarea name="body" class="form-control mceEditor" id="assignment-instructions">
                                         {{form.instance.body}}
@@ -149,10 +143,10 @@
                                 </div>
                             </div>
                             <div data-page="3" data-page-content="due-date" class="hidden page">
-                                <h4>2. Set response due date</h4><br />
+                                <div class="h4" data-cy="step-title">2. Set response due date</div><br />
                                 <div class="form-group">
                                     <label for="due_date"><strong>Due Date</strong></label>
-                                    <input class="form-control" type="text"
+                                    <input id="due_date" class="form-control" type="text"
                                         name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                                 </div>
                                 <div class="help-inline">Please choose a due date.</div>
@@ -167,7 +161,7 @@
                                 </div>
                             </div>
                             <div data-page="4" data-page-content="publish" class="hidden page">
-                                <h4>3. Publish assignment to students</h4><br />
+                                <div class="h4" data-cy="step-title">3. Publish assignment to students</div><br />
 
                                 <label><strong>Publish Options</strong></label>
                                 <div class="form-group">

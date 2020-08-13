@@ -8,6 +8,7 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 from django.utils.text import slugify
 import factory
+from factory.django import DjangoModelFactory
 import json
 from mediathread.assetmgr.models import (
     Asset, Source, ExternalCollection,
@@ -24,7 +25,7 @@ from structuredcollaboration.models import Collaboration, \
 from threadedcomments.models import ThreadedComment
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
     username = factory.Sequence(lambda n: 'user%d' % n)
@@ -32,7 +33,7 @@ class UserFactory(factory.DjangoModelFactory):
     email = factory.LazyAttribute(lambda u: '%s@example.com' % u.username)
 
 
-class UserProfileFactory(factory.DjangoModelFactory):
+class UserProfileFactory(DjangoModelFactory):
     class Meta:
         model = UserProfile
 
@@ -44,21 +45,21 @@ class UserProfileFactory(factory.DjangoModelFactory):
     self_registered = True
 
 
-class GroupFactory(factory.DjangoModelFactory):
+class GroupFactory(DjangoModelFactory):
     class Meta:
         model = Group
     name = factory.Sequence(
         lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
 
 
-class RegistrationProfileFactory(factory.DjangoModelFactory):
+class RegistrationProfileFactory(DjangoModelFactory):
     class Meta:
         model = RegistrationProfile
     user = factory.SubFactory(UserFactory)
     activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
-class CourseFactory(factory.DjangoModelFactory):
+class CourseFactory(DjangoModelFactory):
     class Meta:
         model = Course
     title = 'Sample Course'
@@ -78,7 +79,7 @@ class CourseFactory(factory.DjangoModelFactory):
             coll.save()
 
 
-class SourceFactory(factory.DjangoModelFactory):
+class SourceFactory(DjangoModelFactory):
     class Meta:
         model = Source
 
@@ -88,7 +89,7 @@ class SourceFactory(factory.DjangoModelFactory):
     media_type = 'ext'
 
 
-class AssetFactory(factory.DjangoModelFactory):
+class AssetFactory(DjangoModelFactory):
     class Meta:
         model = Asset
     title = factory.Sequence(lambda n: 'asset %d' % n)
@@ -104,7 +105,7 @@ class AssetFactory(factory.DjangoModelFactory):
             self.source_set.add(source)
 
 
-class ExternalCollectionFactory(factory.DjangoModelFactory):
+class ExternalCollectionFactory(DjangoModelFactory):
     class Meta:
         model = ExternalCollection
 
@@ -114,7 +115,7 @@ class ExternalCollectionFactory(factory.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
 
 
-class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
+class SuggestedExternalCollectionFactory(DjangoModelFactory):
     class Meta:
         model = SuggestedExternalCollection
 
@@ -123,7 +124,7 @@ class SuggestedExternalCollectionFactory(factory.DjangoModelFactory):
     description = 'description'
 
 
-class SherdNoteFactory(factory.DjangoModelFactory):
+class SherdNoteFactory(DjangoModelFactory):
     class Meta:
         model = SherdNote
     title = factory.Sequence(lambda n: 'note %d' % n)
@@ -133,7 +134,7 @@ class SherdNoteFactory(factory.DjangoModelFactory):
     author = factory.SubFactory(UserFactory)
 
 
-class ProjectFactory(factory.DjangoModelFactory):
+class ProjectFactory(DjangoModelFactory):
     class Meta:
         model = Project
     course = factory.SubFactory(CourseFactory)
@@ -161,31 +162,31 @@ class ProjectFactory(factory.DjangoModelFactory):
             self.participants.add(self.author)
 
 
-class CollaborationFactory(factory.DjangoModelFactory):
+class CollaborationFactory(DjangoModelFactory):
     class Meta:
         model = Collaboration
     user = factory.SubFactory(UserFactory)
     group = factory.SubFactory(GroupFactory)
 
 
-class CollaborationPolicyRecordFactory(factory.DjangoModelFactory):
+class CollaborationPolicyRecordFactory(DjangoModelFactory):
     class Meta:
         model = CollaborationPolicyRecord
 
 
-class AssignmentItemFactory(factory.DjangoModelFactory):
+class AssignmentItemFactory(DjangoModelFactory):
     class Meta:
         model = AssignmentItem
 
 
-class ProjectNoteFactory(factory.DjangoModelFactory):
+class ProjectNoteFactory(DjangoModelFactory):
     class Meta:
         model = ProjectNote
 
     project = factory.SubFactory(ProjectFactory)
 
 
-class CourseInvitationFactory(factory.DjangoModelFactory):
+class CourseInvitationFactory(DjangoModelFactory):
     class Meta:
         model = CourseInvitation
 

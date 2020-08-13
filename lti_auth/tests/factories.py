@@ -8,6 +8,7 @@ from django.contrib.auth.models import User, Group, AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 import factory
+from factory.django import DjangoModelFactory
 import oauthlib.oauth1
 from oauthlib.oauth1.rfc5849 import CONTENT_TYPE_FORM_URLENCODED
 import six
@@ -77,20 +78,20 @@ def generate_lti_request(course_context=None, provider=None, use=None):
     return request
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
     username = factory.Sequence(lambda n: 'user%d' % n)
     password = factory.PostGenerationMethodCall('set_password', 'test')
 
 
-class GroupFactory(factory.DjangoModelFactory):
+class GroupFactory(DjangoModelFactory):
     class Meta:
         model = Group
     name = factory.Sequence(lambda n: 'group %s' % n)
 
 
-class LTICourseContextFactory(factory.DjangoModelFactory):
+class LTICourseContextFactory(DjangoModelFactory):
     class Meta:
         model = LTICourseContext
 

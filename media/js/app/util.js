@@ -185,17 +185,17 @@ function showMessage(msg, onclose, customTitle, position) {
         resizable: false,
         modal: true,
         title: title,
-        close: function(evt, ui) {
-            if (onclose) {
-                onclose(evt, ui);
-                $dialogConfirm.html('');
-            }
-        },
         buttons: {
-            'OK': function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+            'Cancel': function() {
                 jQuery(this).dialog('close');
+            },
+            'OK': function(evt, ui) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                jQuery(this).dialog('close');
+                if (onclose) {
+                    onclose(evt, ui);
+                }
             }
         }
     });

@@ -108,19 +108,17 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="tab-content">
-                    <CollectionTab
-                        asset={this.state.asset}
-                        assets={this.state.assets}
-                        assetCount={this.state.assetCount}
-                        onUpdateAssets={this.onUpdateAssets}
-                        owners={this.state.owners}
-                        tags={this.state.tags}
-                        terms={this.state.terms}
-                        assetError={this.state.assetError}
-                        currentUser={this.state.currentUser} />
-                </div>
+            <div className="tab-content">
+                <CollectionTab
+                    asset={this.state.asset}
+                    assets={this.state.assets}
+                    assetCount={this.state.assetCount}
+                    onUpdateAssets={this.onUpdateAssets}
+                    owners={this.state.owners}
+                    tags={this.state.tags}
+                    terms={this.state.terms}
+                    assetError={this.state.assetError}
+                    currentUser={this.state.currentUser} />
             </div>
         );
     }

@@ -1,5 +1,6 @@
 import isFinite from 'lodash/isFinite';
 import find from 'lodash/find';
+import findIndex from 'lodash/findIndex';
 import {groupBy, sortBy} from 'lodash';
 
 /**
@@ -564,6 +565,17 @@ const openSelectionAccordionItem = function(
     });
 };
 
+/**
+ * Given an array of assets and a new asset, put the new one in the
+ * array. Return the new array.
+ */
+const updateAsset = function(assets, asset) {
+    const newAssets = assets.slice(0);
+    const idx = findIndex(newAssets, {id: asset.id});
+    newAssets.splice(idx, 1, asset);
+    return newAssets;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection,
@@ -577,5 +589,6 @@ export {
     getAssetUrl,
     groupByAuthor, groupByTag, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
-    openSelectionAccordionItem
+    openSelectionAccordionItem,
+    updateAsset
 };

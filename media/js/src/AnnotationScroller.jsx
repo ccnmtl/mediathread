@@ -54,8 +54,8 @@ export default class AnnotationScroller extends React.Component {
         let onLinkClick = (e) => this.props.enterAssetDetailView(
             e, this.props.asset);
         const plural = this.props.asset.annotations.length === 1 ? '' : 's';
-        let activeTitle = 'Original Item ' +
-            `(${this.props.asset.annotations.length} selection${plural})`;
+        let activeTitle = 'Original Item with ' +
+            `${this.props.asset.annotations.length} selection${plural}`;
         if (selectedAnnotation) {
             activeLink = `${courseUrl}react/asset/` +
                   selectedAnnotation.asset_id +

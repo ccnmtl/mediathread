@@ -700,7 +700,11 @@ class ProjectPrintView(LoggedInCourseMixin, ProjectReadableMixin,
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['project'] = self.project
+
+        body = SherdNote.objects.fully_qualify_references(
+            self.project.body, self.request.get_host(), self.project.course)
+        ctx = {'project': self.project, 'body': body}
+
         return ctx
 
 
@@ -709,7 +713,7 @@ class ProjectExportWord(LoggedInCourseMixin, ProjectReadableMixin,
 
     def get(self, request, course_pk, project_id):
         body = SherdNote.objects.fully_qualify_references(
-            self.project.body, self.request.get_host())
+            self.project.body, self.request.get_host(), self.project.course)
         body = body.replace('padding-left', 'margin-left')
 
         ctx = {'project': self.project, 'body': body}

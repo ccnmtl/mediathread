@@ -9,7 +9,7 @@ import AssetDetail from './assetDetail/AssetDetail';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
-import {getAssets, getCourseUrl} from './utils';
+import {getAssets, getCourseUrl, updateAsset} from './utils';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -67,13 +67,15 @@ export default class CollectionTab extends React.Component {
 
         this.followLink(e);
 
-        this.setState({
-            selectedAsset: null
-        });
-
+        // If the collection's assets haven't been fetched yet (if the
+        // user navigated directly to the item detail page), we need
+        // to make sure to fetch the assets.
         if (!this.props.assets || !this.props.assets.length) {
             const me = this;
-            getAssets().then(function(d) {
+            getAssets(
+                '',
+                window.MediaThread.current_username
+            ).then(function(d) {
                 me.props.onUpdateAssets(
                     d.assets,
                     d.asset_count,
@@ -82,7 +84,18 @@ export default class CollectionTab extends React.Component {
                     d.space_viewer.id
                 );
             });
+        } else {
+            // Sync the selected asset with the state of the
+            // collection's assets, in case the user added, edited, or
+            // removed any selections on this asset.
+            const newAssets = updateAsset(
+                this.props.assets, this.state.selectedAsset);
+            this.props.onUpdateAssets(newAssets);
         }
+
+        this.setState({
+            selectedAsset: null
+        });
     }
 
     /**

@@ -154,7 +154,7 @@ export default class AssetDetail extends React.Component {
         const me = this;
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
-        let promise = null;
+        let selectionData = {};
 
         if (this.type === 'image') {
             // Only allow one feature per selection
@@ -164,7 +164,7 @@ export default class AssetDetail extends React.Component {
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
 
-            promise = createSherdNote(this.asset.asset.id, {
+            selectionData = {
                 title: selectionTitle,
                 tags: tags,
                 terms: terms,
@@ -182,9 +182,9 @@ export default class AssetDetail extends React.Component {
                     zoom: 1,
                     extent: extent
                 }
-            });
+            };
         } else if (this.type === 'video') {
-            promise = createSherdNote(this.asset.asset.id, {
+            selectionData = {
                 title: selectionTitle,
                 tags: tags,
                 terms: terms,
@@ -200,27 +200,28 @@ export default class AssetDetail extends React.Component {
                     start: this.state.selectionStartTime || 0,
                     end: this.state.selectionEndTime
                 }
-            });
+            };
         }
 
-        return promise.then(function(createdSelection) {
-            return me.setState({
-                activeSelection: createdSelection.title,
-                tab: 'viewSelections'
-            }, function() {
-                // Refresh the selections.
-                return getAsset(me.asset.asset.id)
-                    .then(function(d) {
-                        return me.props.onUpdateAsset(
-                            d.assets[me.asset.asset.id]);
-                    }).then(function() {
-                        openSelectionAccordionItem(
-                            jQuery('#selectionsAccordion'),
-                            createdSelection.id,
-                            true);
-                    });
+        return createSherdNote(this.asset.asset.id, selectionData)
+            .then(function(createdSelection) {
+                return me.setState({
+                    activeSelection: createdSelection.title,
+                    tab: 'viewSelections'
+                }, function() {
+                    // Refresh the selections.
+                    return getAsset(me.asset.asset.id)
+                        .then(function(d) {
+                            return me.props.onUpdateAsset(
+                                d.assets[me.asset.asset.id]);
+                        }).then(function() {
+                            openSelectionAccordionItem(
+                                jQuery('#selectionsAccordion'),
+                                createdSelection.id,
+                                true);
+                        });
+                });
             });
-        });
     }
 
     onSaveSelection(e, selectionId, tags, terms) {

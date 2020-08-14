@@ -1,5 +1,3 @@
-/* eslint max-len: 0 */
-
 import PropTypes from 'prop-types';
 import SelectionForm from '../forms/SelectionForm';
 

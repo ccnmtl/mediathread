@@ -226,7 +226,7 @@ class SherdNoteManager(models.Manager):
                 gannotation = None
             return gannotation, False
 
-    def fully_qualify_references(self, text, host):
+    def fully_qualify_references(self, text, host, course):
         """
         Replace relative urls with fully-qualified urls
         Designed for exporting project contents
@@ -235,12 +235,15 @@ class SherdNoteManager(models.Manager):
         # annotations
         regex_string = \
             r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/annotations/(\d+)'
-        replace_with = r'href="http://%s/asset/\2/annotations/\3' % host
+        replace_with = \
+            r'href="http://%s/course/%s/react/asset/\2/annotations/\3' % (
+                host, course.id)
         text = re.sub(regex_string, replace_with, text)
 
         # assets
         regex_string = r'(name=|href=|openCitation\()[\'"]/asset/(\d+)/[^a]'
-        replace_with = r'href="http://%s/asset/\2/"' % host
+        replace_with = \
+            r'href="http://%s/course/%s/react/asset/\2/"' % (host, course.id)
         text = re.sub(regex_string, replace_with, text)
 
         return text

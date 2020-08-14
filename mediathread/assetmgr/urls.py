@@ -5,7 +5,7 @@ from django.urls import path
 from mediathread.assetmgr.views import (
     AssetWorkspaceView, AssetReferenceView, ManageExternalCollectionView,
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
-    most_recent, annotation_create, annotation_create_global,
+    MostRecentView, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
     AnnotationCopyView, ManageIngestView
 )
@@ -28,7 +28,7 @@ urlpatterns = [
          {}, 'asset-references'),
 
     # Goto the most recently created asset by user
-    path('most_recent/', most_recent, name='asset-most-recent'),
+    path('most_recent/', MostRecentView.as_view(), name='asset-most-recent'),
 
     path('<int:asset_id>/', AssetWorkspaceView.as_view(),
          {}, 'asset-view'),

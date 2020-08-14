@@ -137,7 +137,8 @@ def asset_switch_course(request, asset_id):
         rv = {}
         rv['switch_to'] = asset.course
         rv['switch_from'] = request.course
-        rv['redirect'] = reverse('asset-view', args=[asset_id])
+        rv['redirect'] = reverse('react_asset_detail',
+                                 args=[asset.course.id, asset_id])
         return render(request, 'assetmgr/asset_not_found.html', rv)
     except Asset.DoesNotExist:
         raise Http404("This item does not exist.")
@@ -151,14 +152,17 @@ def asset_workspace_courselookup(asset_id=None, annot_id=None):
         return Asset.objects.get(pk=asset_id).course
 
 
-@login_required
-@allow_http("GET", "POST")
-def most_recent(request):
-    user = request.user
-    user_id = user.id
-    asset = Asset.objects.filter(author_id=user_id).order_by('-modified')[0]
-    asset_id = str(asset.id)
-    return HttpResponseRedirect('/asset/' + asset_id + '/')
+class MostRecentView(LoggedInCourseMixin, View):
+
+    def get(self, request):
+        asset = Asset.objects.filter(
+            author=self.request.user).order_by('-modified')[0]
+        url = reverse('react_asset_detail',
+                      args=[self.request.course.id, asset.id])
+        return HttpResponseRedirect(url)
+
+    def post(self, request):
+        return self.get()
 
 
 # This view is used by Mediathread's browser extension, so disable CSRF
@@ -990,6 +994,17 @@ class AssetEmbedView(TemplateView):
 class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          JSONResponseMixin, View):
 
+    def redirect_to_react_views(self, course_id, asset_id, annot_id):
+        if annot_id:
+            url = reverse('react_annotation_detail',
+                          args=[course_id, asset_id, annot_id])
+        elif asset_id:
+            url = reverse('react_asset_detail', args=[course_id, asset_id])
+        else:
+            url = reverse('course_detail', args=[course_id])
+
+        return HttpResponseRedirect(url)
+
     def get(self, request, course_pk=None, asset_id=None, annot_id=None):
         if asset_id:
             try:
@@ -1000,10 +1015,11 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             except Source.DoesNotExist:
                 return render(request, '500.html', {})
 
-        ctx = {'asset_id': asset_id, 'annotation_id': annot_id}
-
         if not request.is_ajax():
-            return render(request, 'assetmgr/asset_workspace.html', ctx)
+            return self.redirect_to_react_views(
+                request.course.id, asset_id, annot_id)
+
+        ctx = {'asset_id': asset_id, 'annotation_id': annot_id}
 
         qs = Vocabulary.objects.filter(course=request.course)
         vocabulary = VocabularyResource().render_list(request, qs)

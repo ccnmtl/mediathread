@@ -38,7 +38,7 @@ describe('Taxonomy Feature: Create, Duplicate, Delete Term', () => {
         cy.get('.create-term-submit').click({force: true});
         cy.get('#dialog-confirm').should('contain',
             'Red term already exists. Please choose a new name');
-        cy.get('.ui-dialog-buttonset > .ui-button').click();
+        cy.get('.ui-dialog-buttonset > .ui-button').contains('OK').click();
 
         cy.log('delete the term');
         cy.get('.delete-term').click();

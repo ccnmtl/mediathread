@@ -34,7 +34,8 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
         cy.get('[name="Save"]').click({force: true});
         cy.get('#dialog-confirm')
             .should('contain', 'Please specify a selection title');
-        cy.get('.ui-dialog-buttonset > .ui-button').click({force: true});
+        cy.get('.ui-dialog-buttonset > .ui-button')
+            .contains('OK').click({force: true});
         cy.get('input[name="annotation-title"]').type('Foo');
         cy.get('[name="Save"]').click({force: true});
         cy.contains('Submit Response').click({force: true});

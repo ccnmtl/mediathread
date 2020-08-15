@@ -147,9 +147,11 @@
                         No due date
                     {% endif %}
                 </h5>
-                <div class="project-visibility-description pr-3">
+                {% if is_faculty %}
+                <div data-cy="assignment-visibility" class="project-visibility-description pr-3">
                     <h5>{{assignment.visibility_short}}</h5>
                 </div>
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col">

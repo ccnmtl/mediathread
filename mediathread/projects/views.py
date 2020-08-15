@@ -548,6 +548,11 @@ class SequenceAssignmentView(AssignmentView):
 class CompositionAssignmentView(AssignmentView):
     template_name = 'projects/composition_assignment.html'
 
+    def get_extra_context(self):
+        return {'show_instructions':
+                not self.ctx['the_response'] or
+                len(self.ctx['the_response'].body) < 1}
+
 
 class CompositionAssignmentResponseView(
         LoggedInCourseMixin, ProjectReadableMixin,

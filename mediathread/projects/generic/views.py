@@ -81,7 +81,7 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
         students = self.request.course.students.order_by(
             'last_name', 'first_name', 'username')
 
-        ctx = {
+        self.ctx = {
             'is_faculty': is_faculty,
             'assignment': parent,
             'assignment_can_edit': assignment_can_edit,
@@ -96,8 +96,8 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'feedback_count': feedback_count,
             'students': students
         }
-        ctx.update(self.get_extra_context())
-        return ctx
+        self.ctx.update(self.get_extra_context())
+        return self.ctx
 
 
 class AssignmentEditView(LoggedInFacultyMixin, TemplateView):

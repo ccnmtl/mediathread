@@ -964,6 +964,66 @@ class SequenceAssignmentViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.context['responses'], [])
 
 
+class CompositionAssignmentViewTest(MediathreadTestMixin, TestCase):
+
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.assignment = ProjectFactory.create(
+            course=self.sample_course, author=self.instructor_one,
+            policy='CourseProtected',
+            project_type='assignment')
+
+    def test_view(self):
+        url = reverse('project-workspace',
+                      args=[self.sample_course.id, self.assignment.id])
+
+        # anonymous
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 302)
+
+        # student
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+        # author
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+
+    def test_get_extra_context(self):
+        url = reverse('project-workspace',
+                      args=[self.sample_course.id, self.assignment.id])
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue(response.context_data['show_instructions'])
+
+        self.client.login(username=self.student_one.username,
+                          password='test')
+        response = self.client.get(url, {})
+        self.assertTrue(response.context_data['show_instructions'])
+
+        response_one = ProjectFactory.create(
+            course=self.sample_course, author=self.student_one,
+            title='Student One Response',
+            policy='PrivateEditorsAreOwners', parent=self.assignment)
+        url = reverse('project-workspace',
+                      args=[self.sample_course.id, response_one.id])
+
+        response = self.client.get(url, {})
+        self.assertTrue(response.context_data['show_instructions'])
+
+        response_one.body = 'A brilliant response'
+        response_one.save()
+        response = self.client.get(url, {})
+        self.assertFalse(response.context_data['show_instructions'])
+
+
 class AssignmentEditViewTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):

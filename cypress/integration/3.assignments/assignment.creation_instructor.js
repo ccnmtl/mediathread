@@ -74,6 +74,7 @@ describe('Assignment Feature: Instructor Creation', () => {
             .contains('The Columbia Center for Teaching and Learning');
         cy.get('.project-revisionbutton').should('not.be.visible');
         cy.contains('Respond To Assignment').should('not.exist');
+        cy.get('#response').should('not.be.visible')
     });
 
     it('should show on assignments page', () => {

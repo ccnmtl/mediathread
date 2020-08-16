@@ -118,15 +118,21 @@
         },
         adjustSelectionCount: function(evt, increment) {
             var $elt = jQuery('.project-note-count');
-            var value = parseInt($elt.html(), 10) + increment;
-            $elt.html(value);
 
-            var label = value === 1 ? 'Selection' : 'Selections';
-            jQuery('.project-note-count-label').html(label);
+            var html = $elt.html();
+            var noteCount = html.length ? parseInt(html, 10) : 0;
+            noteCount += increment;
 
-            if (value > 0) {
+            if (noteCount > 0) {
+                // Enabled button will display "Submit n Selections"
+                $elt.html(noteCount);
+                var label = noteCount === 1 ? 'Selection' : 'Selections';
+                jQuery('.project-note-count-label').html(label);
                 $elt.parent('button').removeAttr('disabled');
             } else {
+                // Disabled button will display "Submit Selections"
+                $elt.html('');
+                jQuery('.project-note-count-label').html('Selections');
                 $elt.parent('button').attr('disabled', 'disabled');
             }
         },

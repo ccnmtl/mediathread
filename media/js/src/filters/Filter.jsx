@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {tagsToReactSelect, termsToReactSelect} from '../utils';
+import {tagsToReactSelect, termsToReactSelect, getFilters} from '../utils';
 
 // Make the react-select inputs look like Bootstrap's
 // form-control-sm.
@@ -56,19 +56,6 @@ const allOption = {
 };
 
 /**
- * Given a state object, return only the filters.
- */
-const getFilters = function(state) {
-    return {
-        owner: state.owner,
-        title: state.title,
-        tags: state.tags,
-        terms: state.terms,
-        date: state.date
-    };
-};
-
-/**
  * General search filter components with title, owner, tags, etc.
  *
  * This class can be used to filter assets or selections by extending
@@ -79,14 +66,7 @@ export default class Filter extends React.Component {
         super(props);
         this.state = {
             currentPage: 0,
-            pageCount: 1,
-
-            // Filters
-            owner: this.props.defaultOwner ? null : 'all',
-            title: null,
-            tags: [],
-            terms: [],
-            date: 'all'
+            pageCount: 1
         };
 
         this.offset = 20;
@@ -107,7 +87,7 @@ export default class Filter extends React.Component {
         this.setState({
             currentPage: pageNumber
         }, function() {
-            me.filterItems(getFilters(me.state));
+            me.filterItems(getFilters(me.props));
         });
     }
     onPageClick(page) {
@@ -117,28 +97,16 @@ export default class Filter extends React.Component {
         this.setState({
             currentPage: page
         }, function() {
-            me.filterItems(getFilters(me.state));
+            me.filterItems(getFilters(me.props));
         });
     }
     handleTagsChange(e) {
-        const me = this;
-        this.setState({
-            currentPage: 0,
-            tags: e
-        }, function() {
-            me.filterItems(getFilters(me.state));
-        });
-
+        this.setState({currentPage: 0});
+        this.props.onUpdateFilter({tags: e});
     }
     handleTermsChange(e) {
-        const me = this;
-        this.setState({
-            currentPage: 0,
-            terms: e
-        }, function() {
-            me.filterItems(getFilters(me.state));
-        });
-
+        this.setState({currentPage: 0});
+        this.props.onUpdateFilter({terms: e});
     }
     handleTitleSearch(e) {
         if (e.key === 'Enter') {
@@ -146,39 +114,25 @@ export default class Filter extends React.Component {
         }
     }
     handleTitleFilterSearch() {
-        this.filterItems(getFilters(this.state));
+        this.filterItems(getFilters(this.props));
     }
     handleTitleChange(e) {
         const query = e.target.value.trim().toLowerCase();
-        this.setState({
-            currentPage: 0,
-            title: query
-        });
+        this.setState({currentPage: 0});
+        this.props.onUpdateFilter({title: query});
     }
     handleOwnerChange(e) {
-        const me = this;
-
         let newOwner = e.value;
         if (newOwner === 'me') {
             newOwner = window.MediaThread.current_username;
         }
 
-        this.setState({
-            currentPage: 0,
-            owner: newOwner
-        }, function() {
-            me.filterItems(getFilters(me.state));
-        });
-
+        this.setState({currentPage: 0});
+        this.props.onUpdateFilter({owner: newOwner});
     }
     handleDateChange(e) {
-        const me = this;
-        this.setState({
-            currentPage: 0,
-            date: e.value
-        }, function() {
-            me.filterItems(getFilters(me.state));
-        });
+        this.setState({date: e.value});
+        this.props.onUpdateFilter({date: e.value});
     }
 
     /**
@@ -218,8 +172,8 @@ export default class Filter extends React.Component {
     }
 
     render() {
-        const tagsOptions = tagsToReactSelect(this.props.tags);
-        const termsOptions = termsToReactSelect(this.props.terms);
+        const tagsOptions = tagsToReactSelect(this.props.allTags);
+        const termsOptions = termsToReactSelect(this.props.allTerms);
 
         const termGroupLabel = function(data) {
             return (
@@ -433,10 +387,17 @@ Filter.propTypes = {
     itemCount: PropTypes.number,
     hidePagination: PropTypes.bool.isRequired,
     owners: PropTypes.array,
-    tags: PropTypes.array,
-    terms: PropTypes.array,
+    allTags: PropTypes.array,
+    allTerms: PropTypes.array,
     viewMode: PropTypes.string.isRequired,
     onUpdateItems: PropTypes.func.isRequired,
     setViewMode: PropTypes.func.isRequired,
-    defaultOwner: PropTypes.number
+    onUpdateFilter: PropTypes.func.isRequired,
+
+    // Filter vals
+    owner: PropTypes.string,
+    title: PropTypes.string,
+    tags: PropTypes.array,
+    terms: PropTypes.array,
+    date: PropTypes.string
 };

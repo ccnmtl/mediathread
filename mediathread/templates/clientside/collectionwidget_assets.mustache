@@ -67,7 +67,7 @@
         <div id="record-{{id}}" class="record record-{{primary_type}} gallery-item-project">
             <input type="hidden" class="record" value="{{id}}" name="record-id" />
             <div class="actions">
-                <a class="btn btn-xs btn-default collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
+                <a class="btn btn-sm btn-default collection-choice create-annotation" href="{{id}}" title="Create selection on this item">
                     <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection" />
                     Create selection
                 </a>
@@ -86,14 +86,14 @@
                         name="{{local_url}}"/>
                     </span>
                 {{/citable}}
-                <h4 id="asset-item-{{id}}" class="asset_title">
+                <h5 id="asset-item-{{id}}" class="asset_title">
                     {{#title}}
                         {{#ellipsis35}}{{title}}{{/ellipsis35}}
                     {{/title}}
                     {{^title}}
                         -Untitled-
                     {{/title}}
-                </h4>
+                </h5>
                 <div class="clearfix"></div>
                 <table class="item-level-info">
                     <tr>
@@ -149,11 +149,11 @@
                                 <div id="annotation-{{id}}" class="selection-level-info">
                                     {{#editable}}
                                         <div class="actions">
-                                            <a class="btn btn-xs btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
+                                            <a class="btn btn-sm btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
                                                 <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
                                                 Edit Selection
                                             </a>
-                                            <a class="btn btn-xs btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
+                                            <a class="btn btn-sm btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
                                                 <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Remove selection from your collection" />
                                                 Remove Selection
                                             </a>
@@ -171,14 +171,14 @@
                                                     title="Add selection to the composition"
                                                     name="{{url}}"/>
                                             {{/citable}}
-                                            <h4>
+                                            <h5>
                                                 {{#metadata.title}}
                                                     {{{metadata.title}}}
                                                 {{/metadata.title}}
                                                 {{^metadata.title}}
                                                     -Untitled-
                                                 {{/metadata.title}}
-                                            </h4>
+                                            </h5>
                                         </div>
                                         <div class="annotation-thumb-{{id}}"></div>
                                         <div class="metadata-container">

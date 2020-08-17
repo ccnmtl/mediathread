@@ -101,7 +101,6 @@ button.jux-rewind.disabled {
     content: "T";
     font-family: "Georgia, serif";
     margin: 34% 28%;
-    display: inline-block;
     font-size: 36px;
     font-weight: bold;
 }
@@ -112,13 +111,14 @@ button.jux-rewind.disabled {
 
 .jux-media-display .media-track-icon:before,
 .jux-track-container.jux-media .track-icon:before {
-    content:"\e009";
-    font-family:"Glyphicons Halflings";
-    line-height: 1;
-    display:inline-block;
-    font-size: 28px;
-    margin: 20% 25%;
+    content: "M";
+    font-family: "Georgia, serif";
+    margin-left: 10px;
+    font-size: 36px;
+    font-weight: bold;
 }
+
+
 
 .jux-media-display .media-track-icon:before {
     font-size: 16px;
@@ -285,15 +285,6 @@ button.jux-rewind.disabled {
     outline: 0;
     float: left;
     margin-right: 0px;
-}
-
-.jux-spine-display button.add-spine:before {
-    content:"\e081";
-    font-family:"Glyphicons Halflings";
-    line-height: 1;
-    display:inline-block;
-    font-size: 50px;
-    margin: 10px 5px 10px 0px;
 }
 
 .jux-media-display {

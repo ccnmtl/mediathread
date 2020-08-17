@@ -16,6 +16,7 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.title().should('eq', 'Mediathread Sample Assignment');
         cy.get('.page-title').should('contain', 'Sample Assignment');
+        cy.get('[data-cy="assignment-visibility"]').should('not.exist')
         cy.get('.project-revisionbutton').should('not.exist');
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('not.exist');
@@ -51,8 +52,9 @@ describe('Assignment Feature: Student Response', () => {
             .click();
         cy.get('.btn-save-project').contains('Save');
         cy.get('.btn-save-project').click();
-        cy.get('.project-visibility-description')
-            .should('contain', 'Shared with Instructor');
+
+        cy.get('[data-cy="response-visibility"]')
+            .contains('Shared with Instructor').should('be.visible');
     });
 
     it('should show on assignments page', () => {

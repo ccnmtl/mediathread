@@ -1,59 +1,28 @@
+{% load user_projects coursetags %}
 {% load coursetags %}
 
-{% if is_faculty or the_response and the_response.is_submitted %}
-    {% if responses|length > 0 %}
-        <button class="btn btn-primary btn-sm right" type="button" data-toggle="modal" data-target="#response-list">
-            Responses &nbsp;<span class="badge">{{responses|length}}</span>
+{% if is_faculty %}
+    <div class="dropdown d-inline ml-1">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="student-response-dropdown"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{responses|length}} of {{students|length}} students responded
         </button>
-        <div class="modal fade" id="response-list" tabindex="-1"
-            role="dialog" aria-labelledby="Responses">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close"
-                            data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">Responses</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th>Author</th>
-                                    <th>Submitted</th>
-                                    {% if is_faculty %}<th>Feedback Given</th>{% endif %}
-                                </tr>
-                                {% for response in responses %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'project-workspace' response.id %}">
-                                            {% public_name for response.author %}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{response.date_submitted|date:'m/d/Y h:i a'}}
-                                    </td>
-                                    {% if is_faculty %}
-                                        <td>
-                                            <span data-id="feedback-date-{{the_response.id}}">
-                                                {{response.feedback_date|date:'m/d/Y h:i a'}}
-                                            </span>
-                                        </td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="student-response-dropdown">
+            {% for student in students %}
+                {% student_response responses student as response %}
+                {% if response %}
+                    <a href="{% url 'project-workspace' request.course.id response.id %}"
+                        class="dropdown-item" type="button">
+                        {% public_name for student %} ({{response.date_submitted|date:"m/d/Y"}})
+                    </a>
+                {% else %}
+                    <a href="#" class="dropdown-item disabled" type="button">
+                        {% public_name for student %}
+                    </a>
+                {% endif %}
+            {% endfor %}
         </div>
-    {% else %}{% if is_faculty %}
-        <div class="right">
-            <h2><span class="label label-primary">No responses yet</h2>
-        </div>
-    {% endif %}{% endif %}
+    </div>
 {% endif %}
 
 {% comment %} Submit & Unsubmit Modals {% endcomment %}
@@ -70,7 +39,7 @@
             <div>A primary video and at least one secondary media item are required to submit your response.</div><br />
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
@@ -104,7 +73,7 @@
                 <input type="hidden" name="publish" value="{{submit_policy}}" />
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             <button type="button" class="btn btn-primary submit-response">Submit</button>
           </div>
         </div>
@@ -152,7 +121,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                             <button type="submit" class="btn btn-primary btn-save-visibility">Save</button>
                         </div>
                     </form>

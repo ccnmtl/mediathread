@@ -33,6 +33,7 @@ describe('Assignment Feature: Instructor View', () => {
             .contains('Instructions').should('be.visible');
         cy.get('#response-heading-one').should('not.exist');
         cy.get('#feedback-heading-one').should('not.exist');
+        cy.get('#instructions').should('be.visible');
 
         cy.log('Select student response');
         cy.get('#student-response-dropdown').click()
@@ -40,6 +41,7 @@ describe('Assignment Feature: Instructor View', () => {
 
         cy.log('View the response');
         cy.title().should('include', 'Mediathread Sample Assignment Response');
+        cy.get('#instructions').should('not.be.visible');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('#assignment-responses').should('not.be.visible');
         cy.get('[data-cy="response-visibility"]')

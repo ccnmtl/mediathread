@@ -40,6 +40,7 @@ from mediathread.projects.models import (
     PUBLISHED)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from mediathread.util import attach_course_to_request
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
 from threadedcomments.models import ThreadedComment
@@ -323,8 +324,8 @@ class SequenceReadOnlyView(ProjectReadableMixin, TemplateView):
         }
 
 
-class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
-                          TemplateView):
+class ProjectReadOnlyView(ProjectReadableMixin,
+                          JSONResponseMixin, TemplateView):
     """
     A single panel read-only view of the specified project/version combination.
     No assignment, response or feedback access/links.
@@ -358,6 +359,7 @@ class ProjectReadOnlyView(ProjectReadableMixin, JSONResponseMixin,
 
         """
 
+        attach_course_to_request(self.request, **kwargs)
         data = {'space_owner': self.request.user.username}
         version_number = self.kwargs.get('version_number', None)
 
@@ -547,6 +549,11 @@ class SequenceAssignmentView(AssignmentView):
 
 class CompositionAssignmentView(AssignmentView):
     template_name = 'projects/composition_assignment.html'
+
+    def get_extra_context(self):
+        return {'show_instructions':
+                not self.ctx['the_response'] or
+                len(self.ctx['the_response'].body) < 1}
 
 
 class CompositionAssignmentResponseView(

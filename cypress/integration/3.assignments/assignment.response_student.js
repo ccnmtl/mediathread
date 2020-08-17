@@ -22,6 +22,8 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('not.exist');
         cy.get('.participant_list').should('not.be', 'visible');
+        cy.get('.project-visibility').should('not.have.attr', 'href');
+        cy.get('#instructions').should('be.visible');
         cy.contains('Respond to Assignment').should('exist');
 
         cy.log('create the response');
@@ -35,6 +37,7 @@ describe('Assignment Feature: Student Response', () => {
             .should('be', 'visible');
         cy.get('.composition .participant-container')
             .should('not.be', 'visible');
+        cy.get('#instructions').should('be.visible');
 
         cy.log('Add a title and some text');
         cy.get('.composition .page-title').click().clear()

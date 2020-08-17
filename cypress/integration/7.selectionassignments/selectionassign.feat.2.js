@@ -28,19 +28,41 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
         cy.title().should('contain', 'Sample Selection Assignment');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('button.btn-show-submit').should('be', 'disabled')
+
+        cy.log('Create a selection');
         cy.get('button.create-selection').should('contain', 'Create Selection')
             .click();
+        cy.get('#edit-annotation-form').should('be.visible');
         cy.get('[name="Save"]').should('exist');
-        cy.get('[name="Save"]').click({force: true});
+        cy.get('[name="Save"]').click();
         cy.get('#dialog-confirm')
             .should('contain', 'Please specify a selection title');
         cy.get('.ui-dialog-buttonset > .ui-button')
-            .contains('OK').click({force: true});
+            .contains('OK').click();
         cy.get('input[name="annotation-title"]').type('Foo');
-        cy.get('[name="Save"]').click({force: true});
-        cy.contains('Submit Response').click({force: true});
-        cy.get('.submit-response').click({force: true});
-        cy.contains('Submitted').should('exist');
-        cy.contains('Submit Response').should('not.exist');
+        cy.get('[name="Save"]').click();
+        cy.get('#edit-annotation-form').should('not.be.visible');
+
+        cy.log('Review the selection');
+        cy.get('.btn-show-submit')
+            .contains('Submit 1 Selection').should('not.be', 'disabled');
+        cy.get('.annotation-group .group-header .group-title')
+            .contains('One, Student');
+        cy.get('.annotation-group button.delete').should('be.visible');
+        cy.get('.annotation-group button.edit').should('be.visible');
+
+        cy.log('Submit the response');
+        cy.get('button.btn-show-submit').click();
+        cy.get('#submit-project').should('be.visible');
+        cy.get('#submit-project').within(() => {
+            cy.get('h4.modal-title').contains('1 Selection'); 
+            cy.get('.submit-response').should('be.visible');
+            cy.get('.submit-response').click();
+        });
+        cy.get('[data-cy="response-submitted-status"]')
+            .contains('Submitted').should('exist');
+        cy.get('[data-cy="response-submitted-status"]')
+            .contains('1 Selection').should('exist');
+        cy.get('.btn-show-submit').should('not.exist');
     });
 });

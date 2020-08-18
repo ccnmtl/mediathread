@@ -4129,6 +4129,10 @@ ul.section-tabs>li>a.active {
     height: 480px;
 }
 
+.asset-detail h2.asset-detail-title {
+    padding: .5em 0 .25em 0;
+}
+
 .course-collection .card-title, .course-collection .card-text {
     white-space: nowrap;
     overflow: hidden;

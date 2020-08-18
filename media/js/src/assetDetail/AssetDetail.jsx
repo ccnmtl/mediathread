@@ -687,8 +687,8 @@ export default class AssetDetail extends React.Component {
 
         return (
             <div className="tab-content asset-detail">
-                <div className="row">
-                    <h2 className="col-md-7">
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+                    <h2 className="col-md-7 asset-detail-title">
                         {this.props.asset.title}
                     </h2>
 

@@ -2594,8 +2594,14 @@ a.hs-control.hs-control-show.plist.float
 
 .collection-embed,
 #collection-modal .modal-dialog {
-    width: 650px !important;
-    max-width: 650px !important;
+    width: 800px !important;
+    max-width: 800px !important;
+}
+
+#collection-modal .modal-body {
+    max-height: 85vh;
+    overflow-y: auto;
+    margin-bottom: 2px;
 }
 
 ul.clumper {
@@ -4196,10 +4202,6 @@ ul.section-tabs>li>a.active {
     .card-group>.col-sm-4>.card {
         border-radius: 0;
     }
-}
-
-.container-switcher {
-    display: inline-block;
 }
 
 .table .thead-darkgray th {

@@ -7,6 +7,7 @@ main {
 }
 
 /* accessible blue */
+.page-link,
 .btn-link,
 a, a.page-link {
     color: #0056b3;
@@ -3307,6 +3308,7 @@ form#edit-annotation-form {
     padding-right: 20px;
     margin-top: -10px;
     padding-bottom: 10px;
+    width: fit-content;
 }
 
 div#asset-view-details div#asset-global-annotation {

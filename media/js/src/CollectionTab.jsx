@@ -6,23 +6,38 @@ import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './filters/AssetFilter';
 import AssetDetail from './assetDetail/AssetDetail';
+import EmptyCollection from './alerts/EmptyCollection';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
-import {getAssets, getCourseUrl} from './utils';
+import {getAssets, getCourseUrl, updateAsset} from './utils';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             viewMode: 'grid',
-            selectedAsset: null
+            selectedAsset: null,
+
+            // Filters
+            title: null,
+            owner: window.MediaThread ?
+                window.MediaThread.current_username :
+                'all',
+            tags: [],
+            terms: [],
+            date: 'all'
         };
 
         this.setViewMode = this.setViewMode.bind(this);
         this.enterAssetDetailView = this.enterAssetDetailView.bind(this);
         this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
+        this.onUpdateFilter = this.onUpdateFilter.bind(this);
+    }
+
+    onUpdateFilter(newState) {
+        this.setState(newState);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -67,13 +82,15 @@ export default class CollectionTab extends React.Component {
 
         this.followLink(e);
 
-        this.setState({
-            selectedAsset: null
-        });
-
+        // If the collection's assets haven't been fetched yet (if the
+        // user navigated directly to the item detail page), we need
+        // to make sure to fetch the assets.
         if (!this.props.assets || !this.props.assets.length) {
             const me = this;
-            getAssets().then(function(d) {
+            getAssets(
+                '',
+                window.MediaThread.current_username
+            ).then(function(d) {
                 me.props.onUpdateAssets(
                     d.assets,
                     d.asset_count,
@@ -82,7 +99,18 @@ export default class CollectionTab extends React.Component {
                     d.space_viewer.id
                 );
             });
+        } else {
+            // Sync the selected asset with the state of the
+            // collection's assets, in case the user added, edited, or
+            // removed any selections on this asset.
+            const newAssets = updateAsset(
+                this.props.assets, this.state.selectedAsset);
+            this.props.onUpdateAssets(newAssets);
         }
+
+        this.setState({
+            selectedAsset: null
+        });
     }
 
     /**
@@ -143,7 +171,18 @@ export default class CollectionTab extends React.Component {
                 );
             }
 
-            if (assets.length === 0) {
+            const myUsername = window.MediaThread ? window.MediaThread.current_username : 'me';
+
+            if (
+                !this.state.title &&
+                    this.state.owner === myUsername &&
+                    (!this.state.tags || this.state.tags.length === 0) &&
+                    (!this.state.terms || this.state.terms.length === 0) &&
+                    this.state.date === 'all' &&
+                    assets.length === 0
+            ) {
+                assetsDom = <EmptyCollection />;
+            } else if (assets.length === 0) {
                 assetsDom = <NoAssetsFound />;
             } else {
                 assetsDom = <div>{assets}</div>;
@@ -191,11 +230,18 @@ export default class CollectionTab extends React.Component {
                         itemCount={this.props.assetCount}
                         hidePagination={false}
                         owners={this.props.owners}
-                        tags={this.props.tags}
-                        terms={this.props.terms}
+                        allTags={this.props.tags}
+                        allTerms={this.props.terms}
                         viewMode={this.state.viewMode}
-                        onUpdateItems={this.props.onUpdateAssets}
                         setViewMode={this.setViewMode}
+                        onUpdateItems={this.props.onUpdateAssets}
+
+                        onUpdateFilter={this.onUpdateFilter}
+                        owner={this.state.owner}
+                        title={this.state.title}
+                        tags={this.state.tags}
+                        terms={this.state.terms}
+                        date={this.state.date}
                     />
                 )}
 

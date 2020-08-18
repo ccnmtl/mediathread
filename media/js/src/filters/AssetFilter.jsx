@@ -1,5 +1,5 @@
 import Filter from './Filter';
-import {getAssets} from '../utils';
+import {getAssets, getFilters} from '../utils';
 
 export default class AssetFilter extends Filter {
     constructor(props) {
@@ -46,7 +46,7 @@ export default class AssetFilter extends Filter {
         });
     }
     /**
-     * Filter this.props.assets into this.state.filteredAssets, based
+     * Filter this.props.items into this.state.filteredItems, based
      * on the current state of this component's search filters.
      */
     filterItems(filters={}) {
@@ -73,11 +73,21 @@ export default class AssetFilter extends Filter {
         });
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.assets !== this.props.assets) {
-            this.setState({filteredAssets: this.props.assets});
+        if (prevProps.items !== this.props.items) {
+            this.setState({filteredItems: this.props.items});
         }
+
         if (prevProps.itemCount !== this.props.itemCount) {
             this.updatePageCount();
+        }
+
+        if (
+            prevProps.owner !== this.props.owner ||
+                prevProps.tags !== this.props.tags ||
+                prevProps.terms !== this.props.terms ||
+                prevProps.date !== this.props.date
+        ) {
+            this.filterItems(getFilters(this.props));
         }
     }
 }

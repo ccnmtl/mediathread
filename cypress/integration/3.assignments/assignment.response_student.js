@@ -16,12 +16,14 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.title().should('eq', 'Mediathread Sample Assignment');
         cy.get('.page-title').should('contain', 'Sample Assignment');
+        cy.get('[data-cy="assignment-visibility"]').should('not.exist')
         cy.get('.project-revisionbutton').should('not.exist');
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('not.exist');
         cy.get('.participant_list').should('not.be', 'visible');
         cy.get('.project-visibility').should('not.have.attr', 'href');
+        cy.get('#instructions').should('be.visible');
         cy.contains('Respond to Assignment').should('exist');
 
         cy.log('create the response');
@@ -35,6 +37,7 @@ describe('Assignment Feature: Student Response', () => {
             .should('be', 'visible');
         cy.get('.composition .participant-container')
             .should('not.be', 'visible');
+        cy.get('#instructions').should('be.visible');
 
         cy.log('Add a title and some text');
         cy.get('.composition .page-title').click().clear()
@@ -49,8 +52,9 @@ describe('Assignment Feature: Student Response', () => {
             .click();
         cy.get('.btn-save-project').contains('Save');
         cy.get('.btn-save-project').click();
-        cy.get('.project-visibility-description')
-            .should('contain', 'Shared with Instructor');
+
+        cy.get('[data-cy="response-visibility"]')
+            .contains('Shared with Instructor').should('be.visible');
     });
 
     it('should show on assignments page', () => {

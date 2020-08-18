@@ -368,8 +368,8 @@ export default class ViewSelections extends React.Component {
         $selectionsAccordion.on('show.bs.collapse', function(e) {
             const selectionId = parseInt(
                 jQuery(e.target).data('selectionid'), 10);
-            const selection = find(me.props.filteredSelections, function(s) {
-                return s.id === selectionId;
+            const selection = find(me.props.filteredSelections, {
+                id: selectionId
             });
             me.props.onViewSelection(e, selection);
         });

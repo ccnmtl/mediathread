@@ -45,7 +45,7 @@ certifi==2020.6.20  # sentry-sdk
 cryptography==3.0
 pyOpenSSL==19.1.0
 asn1crypto==1.4.0  # for pyOpenSSL
-cffi==1.14.1  # for pyOpenSSL
+cffi==1.14.2  # for pyOpenSSL
 
 requests==2.24.0
 contextlib2==0.6.0.post1
@@ -61,7 +61,7 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.4
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.16.3
+sentry-sdk==0.16.5
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0
@@ -73,7 +73,7 @@ django-debug-toolbar==2.2
 django-markwhat==1.6.2
 ipaddress==1.0.23
 text-unidecode==1.3  # for faker
-Faker==4.1.1
+Faker==4.1.2
 factory_boy==3.0.1
 django-impersonate==1.5.1
 django-registration-redux==2.8

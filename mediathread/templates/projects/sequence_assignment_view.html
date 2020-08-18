@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 {% load user_projects coursetags %}
 
 {% block title %}
@@ -76,330 +76,343 @@
             secondaryInstructions: '{{assignment.custom_instructions_2}}'
         });
     </script>
-
     <script src="{{STATIC_URL}}juxtapose/loaders.css.js"></script>
     <script src="{{STATIC_URL}}juxtapose/bundle-k.js"></script>
 {% endblock %}
 
 {% block content %}
-{% with public_url=the_response.public_url %}
-{% with the_feedback=the_response.feedback_discussion %}
-{% with "help_sequence_assignment" as help_id %}
+    {% with public_url=the_response.public_url %}
+    {% with the_feedback=the_response.feedback_discussion %}
+    {% with active='assignments' %}
+        {% include 'main/three_section_tabs.html' %}
+    {% endwith %}
 
-<div class="sequence-assignment">
-    {% if not read_only_view %}
-    {% include "help/help_contentarea.html" %}
-    {% endif %}
-
-    <h2>
-        Sequence Assignment <span class="project-view-title">{{assignment.title}}</span>
-        {% if not read_only_view %}
-            <div class="actions">{% include "help/help_button.html" %}</div>
-        {% endif %}
-    </h2>
-
-    <div>
-        <div class="left small col-half">
-            {% if assignment_can_edit %}
-                <div>
-                    <a href="{% url 'sequence-assignment-edit' course.pk assignment.id %}">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                        Edit Assignment
-                    </a>
-                    &nbsp;|&nbsp;
-                    <span class="metadata-value">
-                        {{assignment.visibility_short}}
-                    </span>
-                </div>
-            {% endif %}
-        </div>
-        <div class="right col-half">
-            {% if not is_faculty and not the_response %}
-                <div class="text-right">
-                    <form action="/project/create/" method="post">
-                        <input type="hidden" name="parent" value="{{assignment.id}}" />
-                        <input type="hidden" name="project_type" value="composition" />
-                        <input type="hidden" name="title" value="My Response" />
-                        <input class="btn btn-success" type="submit" value="Respond to Assignment" />
-                    </form>
-                </div>
-            {% else %}
-                {% include "projects/sequence_assignment_responses.html" %}
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="clearfix"></div>
-    <div class="spacer"></div>
-
-    {% if read_only_view %}
-        {% if assignment.summary|length > 0 %}
-            <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
-                        <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Background
+    <div class="tab-content">
+        <div role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-md-auto">
+                    <nav aria-label="breadcrumb" class="d-none d-md-block">
+                      <ol class="breadcrumb bg-light mb-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <a href="{% url 'assignment-list' request.course.pk %}">
+                                Back to all assignments
                             </a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
-                        <div class="panel-body">
-                            <p>
-                                {{assignment.summary|safe}}
-                            </p>
-                        </div>
-                    </div>
+                        </li>
+                      </ol>
+                    </nav>
                 </div>
             </div>
-        {% endif %}
-    {% else %}
-    <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingOne">
-                <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Instructions
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}" role="tabpanel" aria-labelledby="headingOne">
-                <div class="panel-body">
-                    {% if assignment.due_date %}
-                        <div class="small">
-                            <span class="metadata-label">
-                                <b>Due Date</b>:
-                            </span>
-                            <span class="metadata-value">
-                                {{assignment.due_date|date:'m/d/y'}}
-                            </span>
-                        </div>
-                    {% endif %}
-                    <div class="small">
-                        <span class="metadata-label"><strong>Response Visibility</strong>:</span>
-                        {% for key, value in response_view_policies %}
-                            {% ifequal key assignment.response_view_policy %}
-                                <span class="metadata-value">{{value}}</span>
-                            {% endifequal %}
-                        {% endfor %}
+            <div class="sequence-assignment">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="col-md-6 pl-0">
+                        <h1 class="page-title">
+                            {{assignment.title}}
+                        </h1>
                     </div>
-                    <div class="small">
-                        <span class="metadata-label"><strong>Response Requirements</strong>:</span>
-                        There must be a primary video and at least one
-                        secondary element in order for this response
-                        to be submitted.
+                    <div class="col-md-6 text-right pr-0">
+                            {% if assignment_can_edit %}
+                                    <a class="btn btn-outline-secondary btn-edit-assignment"
+                                    href="{% url 'sequence-assignment-edit' request.course.pk assignment.id %}">
+                                        Edit Assignment
+                                    </a>
+                            {% endif %}
+                            {% if not is_faculty and not the_response %}
+                                <div class="text-right">
+                                    <form action="/project/create/" method="post">
+                                        <input type="hidden" name="parent" value="{{assignment.id}}" />
+                                        <input type="hidden" name="project_type" value="composition" />
+                                        <input type="hidden" name="title" value="My Response" />
+                                        <input class="btn btn-success" type="submit" value="Respond to Assignment" />
+                                    </form>
+                                </div>
+                            {% else %}
+                                {% include "projects/sequence_assignment_responses.html" %}
+                            {% endif %}
                     </div>
-                    <p>
-                        <strong>General Instructions</strong>
-                        {{assignment.body|safe}}
-                    </p>
-                    {% if assignment.custom_instructions_1|length > 0 %}
-                        <p>
-                        <strong>Selecting Your Primary Video</strong><br />
-                        {{assignment.custom_instructions_1}}
-                        </p>
-                    {% endif %}
-                    {% if assignment.custom_instructions_2|length > 0 %}
-                        <p>
-                        <strong>Selecting Secondary Materials</strong><br />
-                        {{assignment.custom_instructions_2}}
-                        </p>
-                    {% endif %}
                 </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    <div class="spacer"></div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                    <h5>
+                        {% if assignment.due_date %}
+                            Due {{assignment.due_date|date:'m/d/y'}}
+                        {% else %}
+                            No due date
+                        {% endif %}
+                    </h5>
+                    <div class="project-visibility-description pr-3">
+                        <h5>{{assignment.visibility_short}}</h5>
+                    </div>
+                </div>
 
-    {% if the_response %}
-        <div class="assignment-response">
-            {% if response_can_edit and not the_response.is_submitted %}
-                <div class="right">
-                    <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
-                    <strong>
-                        Draft
-                    </strong>
-                </div>
                 <div class="clearfix"></div>
                 <div class="spacer"></div>
-            {% endif %}
-            <div class="left title-container">
-                {% if the_response.is_submitted %}
-                    <div class="assignment-response-title">{{the_response.title}}</div>
-                    <div class="assignment-response-author">
-                        by {% public_name for the_response.author %}
-                    </div>
-                {% else %}{% if response_can_edit %}
-                    <div>
-                        <label>Response Title</label>&nbsp;
-                        <input type="text" name="title"
-                            value="{{the_response.title}}" maxlength="80"
-                            placeholder="Specify a title"
-                            class="project-title form-control" />
-                    </div>
-                {% endif %}{% endif %}
-            </div>
-            <div class="right tabs-container">
-                {% if the_response.is_submitted %}
-                    <div class="right">
-                        {% if read_only_view %}
-                        <strong>
-                            {{the_response.modified|date:"m/d/Y h:i a"}}
-                        </strong> 
-                        {% else %}
-                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                        <strong>
-                            Submitted
-                        </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
-                        {% endif %}
 
-                        {% if response_can_edit and allow_public_compositions %}
-                            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#visibility-list">
-                                <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
-                                {% if public_url %}Permalink{% else %}Share{% endif %}
-                            </a>
-                        {% else %}{% if public_url %}
-                            <a href="{{public_url}}">Permalink</a>
-                        {% endif %}{% endif %}
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="spacer"></div>
-                {% endif %}
-                <ul class="nav nav-tabs navbar-right" role="tablist">
-                    <li role="presentation" class="active editor">
-                        <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
-                            Sequence
-                        </a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
-                        Reflection</a>
-                    </li>
-                    {% if is_faculty or response_can_edit and the_feedback %}
-                        <li role="presentation">
-                            <a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
-                                Feedback
-                            </a>
-                        </li>
+                {% if read_only_view %}
+                    {% if assignment.summary|length > 0 %}
+                        <div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                            aria-expanded="true" aria-controls="collapseOne">
+                                            <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span> Background
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse {% if show_instructions %}in{% endif %}"
+                                    role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <p>
+                                            {{assignment.summary|safe}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% endif %}
-                    {% if not the_response.is_submitted and response_can_edit %}
-                        <li role="presentation">
-                            <a href="#" class="btn btn-primary btn-tab btn-save disabled">Saved</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#" class="btn btn-primary btn-tab btn-show-submit disabled">Submit</a>
-                        </li>
-                    {% endif %}
-                    {% if is_faculty %}
-                        <li role="presentation">
-                            <form class='unsubmit-response-form'
-                                action="{% url 'unsubmit-response' %}"
-                                    method="post">
-                                <input name="student-response" type="hidden" value="{{the_response.id}}" />
-                                <a href="#" class="btn btn-warning btn-tab btn-unsubmit">Unsubmit</a>
-                            </form>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="clearfix"></div>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel"
-                     class="tab-pane fade in active {% if the_response.is_submitted %}submitted{% endif %}"
-                     id="sequence">
-                    <div class="loader">
-                        <div class="ball-pulse">
-                            <div></div>
-                            <div></div>
-                            <div></div>
+                {% else %}
+                <div class="row">
+                    <div class="col">
+                        <div id="instructions-accordion" class="accordion mb-3">
+                            <div class="card boarder-0">
+                                <div class="card-header pb-0" id="instructions-heading-on">
+                                    <h2>
+                                        <button class="btn btn-link btn-block text-left"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#instructions" aria-expanded="true"
+                                            aria-controls="instructions">
+                                            Instructions
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="instructions" class="collapse bg-light bg-light {% if show_instructions %}in{% endif %}"
+                                    aria-labelledby="instructions-heading-one" data-parent="#instructions-accordion">
+                                    <div class="p-4">
+                                        <div class="small">
+                                            <span class="metadata-label"><strong>Response Visibility</strong>:</span>
+                                            {% for key, value in response_view_policies %}
+                                                {% ifequal key assignment.response_view_policy %}
+                                                    <span class="metadata-value">{{value}}</span>
+                                                {% endifequal %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="small">
+                                            <span class="metadata-label"><strong>Response Requirements</strong>:</span>
+                                            There must be a primary video and at least one
+                                            secondary element in order for this response
+                                            to be submitted.
+                                        </div>
+                                        <p class="mt-4">
+                                            <strong>General Instructions</strong>
+                                            {{assignment.body|safe}}
+                                        </p>
+                                        {% if assignment.custom_instructions_1|length > 0 %}
+                                            <p class="mt-4">
+                                            <strong>Selecting Your Primary Video</strong><br />
+                                            {{assignment.custom_instructions_1}}
+                                            </p>
+                                        {% endif %}
+                                        {% if assignment.custom_instructions_2|length > 0 %}
+                                            <p class="mt-4">
+                                            <strong>Selecting Secondary Materials</strong><br />
+                                            {{assignment.custom_instructions_2}}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="jux-container"></div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade" id="reflection">
-                    {% if the_response.is_submitted %}
-                        {{the_response.body|safe}}
-                    {% else %}{% if response_can_edit %}
-                        <textarea name="body" class="form-control mceEditor"
-                            placeholder="Reflect on your sequence creation and intent">{{the_response.body|safe}}</textarea>
-                    {% endif %}{% endif %}
-                </div>
+                {% endif %}
+                <div class="spacer"></div>
 
-                {% if is_faculty or response_can_edit and the_feedback %}
-                    <div role="tabpanel" class="tab-pane fade" id="feedback">
-                        {% if is_faculty %}
-                            <form method="post" data-username="{{the_response.author.username}}"
-                                {% if the_feedback %}
-                                    action="/discussion/comment/{{the_feedback.id}}/">
-                                {% else %}
-                                    action="/discussion/create/">
-                                {% endif %}
-
-                                {% if the_feedback %}
-                                    <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
-                                    <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
-                                    <div class="clearfix"></div>
-                                    <div class="spacer"></div>
-                                {% else %}
-                                    <input type="hidden" name="comment_html" value="{{the_response.title}} feedback" />
-                                    <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
-                                    <input type="hidden" name="inherit" value="true" />
-                                    <input type="hidden" name="app_label" value="projects" />
-                                    <input type="hidden" name="model" value="project" />
-                                    <input type="hidden" name="obj_pk" value="{{the_response.id}}" />
-                                    <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
-                                {% endif %}
-
-                                <textarea name="comment" class="form-control mceEditor"
-                                    placeholder="Offer feedback on this student's work">{{the_feedback.comment}}</textarea>
-
-                                <div class="spacer"></div>
-
-                                <div class="right">
-                                    <span class="alert alert-success" role="alert" style="display: none">
-                                        Your feedback was saved
-                                    </span>
-                                    <button class="btn btn-primary btn-sm save-feedback">
-                                        Save Feedback
-                                    </button>
-                                </div>
-                            </form>
-                            <div class="clearfix"></div>
-                        {% else %}
-                            <div class="left"><b>{% public_name for the_feedback.user %}</b></div>
-                            <div class="right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
-                            <div class="clearfix"></div>
-                            <p>{{the_feedback.comment|safe}}</p>
+                {% if the_response %}
+                    <div class="assignment-response">
+                        {% if response_can_edit and not the_response.is_submitted %}
+                            <div class="float-right">
+                                <strong>
+                                    Draft
+                                </strong>
+                            </div>
                         {% endif %}
+                        <div class="title-container">
+                            {% if the_response.is_submitted %}
+                                <div class="assignment-response-title">{{the_response.title}}</div>
+                                <div class="assignment-response-author">
+                                    by {% public_name for the_response.author %}
+                                </div>
+                            {% else %}{% if response_can_edit %}
+                                <div>
+                                    <label>Response Title</label>&nbsp;
+                                    <input type="text" name="title"
+                                        value="{{the_response.title}}" maxlength="80"
+                                        placeholder="Specify a title"
+                                        class="project-title form-control" />
+                                </div>
+                            {% endif %}{% endif %}
+                        </div>
+                        <div class="float-right tabs-container">
+                            {% if the_response.is_submitted %}
+                                <div class="float-right">
+                                    {% if read_only_view %}
+                                    <strong>
+                                        {{the_response.modified|date:"m/d/Y h:i a"}}
+                                    </strong>
+                                    {% else %}
+                                    <strong>
+                                        Submitted
+                                    </strong> {{the_response.modified|date:"m/d/Y h:i a"}}
+                                    {% endif %}
+
+                                    {% if response_can_edit and allow_public_compositions %}
+                                        <a class="btn btn-primary btn-sm" href="#" data-toggle="modal"
+                                            data-target="#visibility-list">
+                                            {% if public_url %}Permalink{% else %}Share{% endif %}
+                                        </a>
+                                    {% else %}{% if public_url %}
+                                        <a href="{{public_url}}">Permalink</a>
+                                    {% endif %}{% endif %}
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="spacer"></div>
+                            {% endif %}
+                            <ul class="nav nav-tabs float-right" role="tablist">
+                                <li role="presentation" class="editor nav-item">
+                                    <a class="nav-link active" href="#sequence" aria-controls="sequence-editor"
+                                    role="tab" data-toggle="tab">
+                                        Sequence
+                                    </a>
+                                </li>
+                                <li role="presentation" class="nav-item">
+                                    <a class="nav-link" href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
+                                    Reflection</a>
+                                </li>
+                                {% if is_faculty or response_can_edit and the_feedback %}
+                                    <li role="presentation" class="nav-item">
+                                        <a class="nav-link" href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">
+                                            Feedback
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                {% if not the_response.is_submitted and response_can_edit %}
+                                    <li role="presentation" class="nav-item">
+                                        <a href="#" class="btn btn-primary btn-tab btn-save disabled">Saved</a>
+                                    </li>
+                                    <li role="presentation" class="nav-item">
+                                        <a href="#" class="btn btn-primary btn-tab btn-show-submit disabled">Submit</a>
+                                    </li>
+                                {% endif %}
+                                {% if is_faculty %}
+                                    <li role="presentation">
+                                        <form class='unsubmit-response-form'
+                                            action="{% url 'unsubmit-response' %}"
+                                            method="post">
+                                            {% csrf_token %}
+                                            <input name="student-response" type="hidden" value="{{the_response.id}}" />
+                                            <a href="#" class="btn btn-warning btn-tab btn-unsubmit">Unsubmit</a>
+                                        </form>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="clearfix"></div>
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel"
+                                 class="tab-pane fade show active {% if the_response.is_submitted %}submitted{% endif %}"
+                                 id="sequence">
+                                <div class="loader">
+                                    <div class="ball-pulse">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                <div id="jux-container"></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="reflection">
+                                {% if the_response.is_submitted %}
+                                    {{the_response.body|safe}}
+                                {% else %}{% if response_can_edit %}
+                                    <textarea name="body" class="form-control mceEditor"
+                                        placeholder="Reflect on your sequence creation and intent">{{the_response.body|safe}}</textarea>
+                                {% endif %}{% endif %}
+                            </div>
+
+                            {% if is_faculty or response_can_edit and the_feedback %}
+                                <div role="tabpanel" class="tab-pane fade" id="feedback">
+                                    {% if is_faculty %}
+                                        <form method="post" data-username="{{the_response.author.username}}"
+                                            {% if the_feedback %}
+                                                action="/discussion/comment/{{the_feedback.id}}/">
+                                            {% else %}
+                                                action="/discussion/create/">
+                                            {% endif %}
+
+                                            {% if the_feedback %}
+                                                <div class="float-left"><b>{% public_name for the_feedback.user %}</b></div>
+                                                <div class="float-right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
+                                                <div class="clearfix"></div>
+                                                <div class="spacer"></div>
+                                            {% else %}
+                                                <input type="hidden" name="comment_html" value="{{the_response.title}} feedback" />
+                                                <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                                <input type="hidden" name="inherit" value="true" />
+                                                <input type="hidden" name="app_label" value="projects" />
+                                                <input type="hidden" name="model" value="project" />
+                                                <input type="hidden" name="obj_pk" value="{{the_response.id}}" />
+                                                <input type="hidden" name="publish" value="PrivateStudentAndFaculty" />
+                                            {% endif %}
+
+                                            <textarea name="comment" class="form-control mceEditor"
+                                                placeholder="Offer feedback on this student's work">{{the_feedback.comment}}</textarea>
+
+                                            <div class="spacer"></div>
+
+                                            <div class="float-right">
+                                                <span class="alert alert-success" role="alert" style="display: none">
+                                                    Your feedback was saved
+                                                </span>
+                                                <button class="btn btn-primary btn-sm save-feedback">
+                                                    Save Feedback
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <div class="clearfix"></div>
+                                    {% else %}
+                                        <div class="float-left"><b>{% public_name for the_feedback.user %}</b></div>
+                                        <div class="float-right"><b>{{the_feedback.submit_date|date:"m/d/Y h:i a"}}</b></div>
+                                        <div class="clearfix"></div>
+                                        <p>{{the_feedback.comment|safe}}</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 {% endif %}
             </div>
+            {% endwith %}{% endwith %}
         </div>
-    {% endif %}
-</div>
-{% endwith %}{% endwith %}{% endwith %}
-
-<!-- Collection Modal -->
-<div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title">Course Collection</h4>
-            </div>
-            <div class="modal-body collection-body">
-                <div class="quick-edit" style="display: none"></div>
-                <div class="collection-view"></div>
-            </div>
-            <div class="next-page-loader" style="display: none">
-                <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader-small.gif">
-                Loading more items
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+    <!-- Collection Modal -->
+    <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Course Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body collection-body">
+                    <div class="quick-edit" style="display: none"></div>
+                    <div class="collection-view"></div>
+                </div>
+                <div class="next-page-loader" style="display: none">
+                    <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader-small.gif">
+                    Loading more items
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 {% endblock %}

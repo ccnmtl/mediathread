@@ -147,9 +147,11 @@
                         No due date
                     {% endif %}
                 </h5>
-                <div class="project-visibility-description pr-3">
+                {% if is_faculty %}
+                <div data-cy="assignment-visibility" class="project-visibility-description pr-3">
                     <h5>{{assignment.visibility_short}}</h5>
                 </div>
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col">
@@ -159,14 +161,14 @@
                                 <h2>
                                     <button class="btn btn-link btn-block text-left"
                                         type="button" data-toggle="collapse"
-                                        data-target="#instructions" aria-expanded="true"
+                                        data-target="#instructions" aria-expanded="{% if show_instructions %}true{% else %}false{% endif %}"
                                         aria-controls="instructions">
                                             Instructions
                                     </button>
                                 </h2>
                             </div>
                             <div id="instructions"
-                                class="collapse bg-light bg-light {% if the_response or my_response %}hide{% else %}show{% endif %}"
+                                class="collapse bg-light bg-light {% if show_instructions %}show{% else %}hide{% endif %}"
                                 aria-labelledby="instructions-heading-one"
                                 data-parent="#instructions-accordion">
                                 <div class="p-4">

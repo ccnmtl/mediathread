@@ -46,7 +46,7 @@ Projects
                     <ul class="list-group">
                         {% for v in versions %}
                         <li class="list-group-item">
-                            <a href="{% url 'project-view-readonly' project.id v.version_number %}">{{v.modified}}</strong> by {{v.author}}</a> 
+                            <a href="{% url 'project-view-readonly' request.course.id project.id v.version_number %}">{{v.modified}}</strong> by {{v.author}}</a> 
                         </li>
                         {% endfor %}
                     </ul>

@@ -62,17 +62,13 @@
                 </div>
                 {{#thumb}}
                 <div class="image-overlay">
-                    <a href="{{local_url}}" title="{{title}}">
-                        <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{thumb}}" style="max-width: 100%;" />
-                    </a>
+                    <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{thumb}}" style="max-width: 100%;" />
                 </div>
                 {{/thumb}}
                 {{^thumb}}
                     {{#image}}
                         <div class="image-overlay">
-                            <a href="{{local_url}}" title="{{title}}">
-                                <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
-                            </a>
+                            <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
                         </div>
                     {{/image}}
                 {{/thumb}}

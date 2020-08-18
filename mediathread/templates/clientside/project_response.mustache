@@ -62,11 +62,13 @@
                                             Revisions
                                         </a>
                                     {{/context.can_edit}}
-                                    <a class="project-export btn btn-outline-secondary btn-sm" href="/project/export/msword/{{context.project.id}}/">
+                                    <a class="project-export btn btn-outline-secondary btn-sm"
+                                        href="/course/{{context.project.course_id}}/project/export/msword/{{context.project.id}}/">
                                         Export to Word
                                     </a>
 
-                                    <a class="project-print btn btn-outline-secondary btn-sm" href="/project/export/html/{{context.project.id}}/" target="_blank">
+                                    <a class="project-print btn btn-outline-secondary btn-sm"
+                                        href="/course/{{context.project.course_id}}/project/print/{{context.project.id}}/" target="_blank">
                                         Print
                                     </a>
 
@@ -125,7 +127,7 @@
                                     <h5>Viewing version from {{context.project.modified}}</h5>
                                 {{/context.project.current_version}}
                                 <div>
-                                    <h5 class="project-visibility-description d-inline">
+                                    <h5 data-cy="response-visibility" class="project-visibility-description d-inline">
                                         {{context.project.visibility}}
                                     </h5>
                                     <h5 class="d-inline">
@@ -172,6 +174,40 @@
                                     </div>
                                     <div class="main-view asset-view-published"
                                         style="{{#context.editing}}display: none{{/context.editing}}">
+
+                                        <div class="clearfix">
+                                        <nav aria-label="Annotation navigation" class="float-right">
+                                            <ul class="pagination btn-sm selection-spinner border-1 mb-0">
+                                                <li class="page-item pt-2 mr-2">
+                                                    <span>
+                                                        Scroll Selections
+                                                    </span>
+                                                </li>
+                                                <li class="page-item">
+                                                    <button id="previous-selection" class="page-link btn-sm"
+                                                        title="Previous Selection"
+                                                        aria-label="Previous Selection">
+                                                        <span aria-hidden="true">
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                                <li class="page-item">
+                                                    <button id="next-selection" class="page-link btn-sm" title="Next Selection"
+                                                        aria-label="Next Selection">
+                                                        <span aria-hidden="true">
+                                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                        </div>
+
                                         <div id="{{context.project.id}}-videoclipbox" class="videoclipbox" style="display: none;">
                                             <div class="asset-object" style="border: none; background-color: #ededed;"></div>
                                             <div class="asset-display"></div>

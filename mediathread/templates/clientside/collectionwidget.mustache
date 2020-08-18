@@ -13,20 +13,25 @@
         <div class="filter-widget" style="display: none">
             <div class="spacer"></div>
             <div class="row">
-                <div class="col-xs-4">
-                    <div class="switcher-tool switcher-search-text input-group">
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <div class="col">
+                    <div class="switcher-tool switcher-search-text input-group input-group-sm">
+                        <div class="input-group-prepend"><span class="mr-2">
+                            <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+                                <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                            </svg></span>
+                        </div>
                         <input type="text" class="form-control" name="search-text"
                             value="{{active_filters.search_text}}" placeholder="Search"/>
-                        <span class="input-group-btn">
-                            <button class="btn btn-default btn-search-text" type="button">Go</button>
-                        </span>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary btn-search-text" type="button">Go</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xs-5">
+                <div class="col">
                     <div class="collection-chooser-container"></div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col">
                     <div class="switcher collection-media-filter switcher-tool
                      {{#disable_media_type}}disabled{{/disable_media_type}}">
                         <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
@@ -52,11 +57,11 @@
             </div>
             <div class="spacer"></div>
             <div class="row">
-                <div class="col-xs-4">
+                <div class="col-sm">
                     <div class="switcher-tool">
                         <span class="course-tags-prefix">Tags </span>
                         <select class="course-tags"
-                            data-placeholder="Select tags" 
+                            data-placeholder="Select tags"
                             multiple="multiple">
                             {{#active_tags}}
                                 <option value="{{name}}">{{name}}</option>
@@ -65,7 +70,7 @@
                     </div>
                </div>
 
-               <div class="col-xs-5">
+               <div class="col-sm">
                     <div class="switcher-tool">
                         <span class="concept-prefix" title="{{Terms}}">Terms</span>
                         <select class="vocabulary"
@@ -84,7 +89,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-sm">
                     <div class="switcher collection-date-filter switcher-tool">
                         <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
                             <span class="switcher-prefix">Date </span>

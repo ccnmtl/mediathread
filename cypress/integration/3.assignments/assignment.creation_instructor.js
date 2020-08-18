@@ -38,7 +38,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#page2').click();
 
         cy.log('Add a title and some text');
-        cy.get('h4:visible').contains('1.');
+        cy.get('[data-cy="step-title"]:visible').contains('1.');
         cy.get('input[name="title"]').should('be.visible');
         cy.get('input[name="title"]').click().clear()
             .type('Assignment: Scenario 1');
@@ -48,7 +48,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#page3:visible').click();
 
         cy.log('Add a due date');
-        cy.get('h4:visible').contains('2.');
+        cy.get('[data-cy="step-title"]:visible').contains('2.');
         cy.get('input[name="due_date"]').should('be.visible');
         cy.get('input[name="due_date"]:visible').click()
         cy.get('.ui-state-default.ui-state-highlight').click();
@@ -59,7 +59,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#page4').focus().click();
 
         cy.log('add publish options & save');
-        cy.get('h4:visible').contains('3.');
+        cy.get('[data-cy="step-title"]:visible').contains('3.');
         cy.get('#id_publish_1').should('be.visible');
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();
@@ -74,6 +74,7 @@ describe('Assignment Feature: Instructor Creation', () => {
             .contains('The Columbia Center for Teaching and Learning');
         cy.get('.project-revisionbutton').should('not.be.visible');
         cy.contains('Respond To Assignment').should('not.exist');
+        cy.get('#response').should('not.be.visible')
     });
 
     it('should show on assignments page', () => {

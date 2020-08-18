@@ -258,7 +258,8 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/asset/most_recent/', {}, follow=True)
         self.assertEquals(response.status_code, 200)
 
-        url = '/asset/%s/' % asset1.id
+        url = '/course/%s/react/asset/%s/' % \
+            (self.sample_course.id, asset1.id)
         self.assertEquals(response.redirect_chain, [(url, 302)])
 
     def test_asset_delete(self):

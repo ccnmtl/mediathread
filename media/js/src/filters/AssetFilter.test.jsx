@@ -39,6 +39,7 @@ it('renders the asset filter', async() => {
                 viewMode="grid"
                 hidePagination={false}
                 onUpdateItems={function() {}}
+                onUpdateFilter={function() {}}
                 setViewMode={function() {}}
             />,
             container

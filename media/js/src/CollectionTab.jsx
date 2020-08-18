@@ -6,6 +6,7 @@ import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './filters/AssetFilter';
 import AssetDetail from './assetDetail/AssetDetail';
+import EmptyCollection from './alerts/EmptyCollection';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
@@ -16,13 +17,27 @@ export default class CollectionTab extends React.Component {
         super(props);
         this.state = {
             viewMode: 'grid',
-            selectedAsset: null
+            selectedAsset: null,
+
+            // Filters
+            title: null,
+            owner: window.MediaThread ?
+                window.MediaThread.current_username :
+                'all',
+            tags: [],
+            terms: [],
+            date: 'all'
         };
 
         this.setViewMode = this.setViewMode.bind(this);
         this.enterAssetDetailView = this.enterAssetDetailView.bind(this);
         this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
+        this.onUpdateFilter = this.onUpdateFilter.bind(this);
+    }
+
+    onUpdateFilter(newState) {
+        this.setState(newState);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -156,7 +171,18 @@ export default class CollectionTab extends React.Component {
                 );
             }
 
-            if (assets.length === 0) {
+            const myUsername = window.MediaThread ? window.MediaThread.current_username : 'me';
+
+            if (
+                !this.state.title &&
+                    this.state.owner === myUsername &&
+                    (!this.state.tags || this.state.tags.length === 0) &&
+                    (!this.state.terms || this.state.terms.length === 0) &&
+                    this.state.date === 'all' &&
+                    assets.length === 0
+            ) {
+                assetsDom = <EmptyCollection />;
+            } else if (assets.length === 0) {
                 assetsDom = <NoAssetsFound />;
             } else {
                 assetsDom = <div>{assets}</div>;
@@ -204,11 +230,18 @@ export default class CollectionTab extends React.Component {
                         itemCount={this.props.assetCount}
                         hidePagination={false}
                         owners={this.props.owners}
-                        tags={this.props.tags}
-                        terms={this.props.terms}
+                        allTags={this.props.tags}
+                        allTerms={this.props.terms}
                         viewMode={this.state.viewMode}
-                        onUpdateItems={this.props.onUpdateAssets}
                         setViewMode={this.setViewMode}
+                        onUpdateItems={this.props.onUpdateAssets}
+
+                        onUpdateFilter={this.onUpdateFilter}
+                        owner={this.state.owner}
+                        title={this.state.title}
+                        tags={this.state.tags}
+                        terms={this.state.terms}
+                        date={this.state.date}
                     />
                 )}
 

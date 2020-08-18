@@ -576,6 +576,19 @@ const updateAsset = function(assets, asset) {
     return newAssets;
 };
 
+/**
+ * Given a state object, return only the filters.
+ */
+const getFilters = function(state) {
+    return {
+        owner: state.owner,
+        title: state.title,
+        tags: state.tags,
+        terms: state.terms,
+        date: state.date
+    };
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection,
@@ -590,5 +603,6 @@ export {
     groupByAuthor, groupByTag, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem,
-    updateAsset
+    updateAsset,
+    getFilters
 };

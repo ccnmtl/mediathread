@@ -484,8 +484,8 @@ class IsLoggedInDataView(View):
         course_selected = SESSION_KEY in request.session
 
         course_name = ''
-        if 'ccnmtl.courseaffils.course' in request.session:
-            course_name = request.session['ccnmtl.courseaffils.course'].title
+        if SESSION_KEY in request.session:
+            course_name = request.session[SESSION_KEY].title
 
         d = {
             'logged_in': logged_in,

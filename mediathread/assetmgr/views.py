@@ -272,7 +272,11 @@ class AssetCreateView(View):
     ''' No login required so server2server interface is possible'''
     def post(self, request):
         user = self.parse_user(request)
-        if not request.course or not request.course.is_member(user):
+
+        if not request.course:
+            raise Http404("No course provided")
+
+        if not request.course.is_member(user):
             return HttpResponseForbidden(
                 "You must be a member of the course to add assets.")
 

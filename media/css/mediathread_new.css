@@ -2592,12 +2592,6 @@ a.hs-control.hs-control-show.plist.float
     font-size: .95em;
 }
 
-.collection-embed,
-#collection-modal .modal-dialog {
-    width: 650px !important;
-    max-width: 650px !important;
-}
-
 ul.clumper {
     display: block;
     float: left;
@@ -4196,10 +4190,6 @@ ul.section-tabs>li>a.active {
     .card-group>.col-sm-4>.card {
         border-radius: 0;
     }
-}
-
-.container-switcher {
-    display: inline-block;
 }
 
 .table .thead-darkgray th {

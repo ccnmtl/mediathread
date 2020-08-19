@@ -3,6 +3,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import capitalize from 'lodash/capitalize';
+import find from 'lodash/find';
 import {tagsToReactSelect, termsToReactSelect, getFilters} from '../utils';
 
 // Make the react-select inputs look like Bootstrap's
@@ -45,6 +47,20 @@ const reactSelectStyles = {
     })
 };
 
+const getDateValue = function(date) {
+    if (date === 'lastweek') {
+        return {
+            value: date,
+            label: 'Within the last week'
+        };
+    }
+
+    return {
+        value: date,
+        label: capitalize(date)
+    };
+};
+
 const meOption = {
     value: 'me',
     label: 'Me'
@@ -53,6 +69,31 @@ const meOption = {
 const allOption = {
     value: 'all',
     label: 'All Class Members'
+};
+
+/**
+ * Given an owner string and an array of owner objects, return the
+ * appropriate owner object.
+ */
+const getOwnerValue = function(str, owners) {
+    if (window.MediaThread && str === window.MediaThread.current_username) {
+        return meOption;
+    } else if (str === 'all') {
+        return allOption;
+    }
+
+    const owner = find(owners, function(o) {
+        return o.username === str;
+    });
+
+    if (owner) {
+        return {
+            value: owner.username,
+            label: owner.public_name
+        };
+    }
+
+    return null;
 };
 
 /**
@@ -298,6 +339,7 @@ export default class Filter extends React.Component {
                                     placeholder="Search for..."
                                     onChange={this.handleTitleChange}
                                     onKeyDown={this.handleTitleSearch}
+                                    value={this.props.title || ''}
                                 />
                                 <div className="input-group-append">
                                     <a
@@ -321,7 +363,8 @@ export default class Filter extends React.Component {
                                     'react-select form-control form-control-sm'
                                 }
                                 onChange={this.handleOwnerChange}
-                                defaultValue={meOption}
+                                value={getOwnerValue(
+                                    this.props.owner, this.props.owners)}
                                 options={this.getOwnersOptions()} />
                         </div>
                         <div className="form-group col-md-2">
@@ -334,6 +377,7 @@ export default class Filter extends React.Component {
                                     'react-select form-control form-control-sm'
                                 }
                                 onChange={this.handleTagsChange}
+                                value={this.props.tags}
                                 isMulti
                                 options={tagsOptions} />
                         </div>
@@ -347,6 +391,7 @@ export default class Filter extends React.Component {
                                     'react-select form-control form-control-sm'
                                 }
                                 onChange={this.handleTermsChange}
+                                value={this.props.terms}
                                 isMulti
                                 formatGroupLabel={termGroupLabel}
                                 options={termsOptions} />
@@ -364,6 +409,7 @@ export default class Filter extends React.Component {
                                 defaultValue={{
                                     value: 'all', label: 'All'
                                 }}
+                                value={getDateValue(this.props.date)}
                                 options={[
                                     { value: 'all', label: 'All' },
                                     { value: 'today', label: 'Today' },

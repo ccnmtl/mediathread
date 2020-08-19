@@ -1,4 +1,5 @@
 import isFinite from 'lodash/isFinite';
+import filter from 'lodash/filter';
 import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
 import {groupBy, sortBy} from 'lodash';
@@ -577,6 +578,59 @@ const updateAsset = function(assets, asset) {
 };
 
 /**
+ * Given an asset, apply the given search filters to its selections.
+ *
+ * Returns the asset, with possibly less selections than were given.
+ */
+const filterSelections = function(asset, title, owner, tags, terms, date) {
+    asset.annotations = filter(asset.annotations, function(a) {
+        if (title) {
+            if (!a.title.toLowerCase().includes(title.toLowerCase())) {
+                return false;
+            }
+        }
+
+        if (owner && owner !== a.author.username) {
+            return false;
+        }
+
+        if (tags) {
+            let unmatchedTags = false;
+            tags.forEach(function(tags) {
+                if (!a.metadata.tags.includes(tags)) {
+                    unmatchedTags = true;
+                    return false;
+                }
+            });
+
+            if (unmatchedTags) {
+                return false;
+            }
+        }
+
+        if (terms) {
+            let unmatchedTerm = false;
+            terms.forEach(function(term) {
+                if (!a.vocabulary.includes(term)) {
+                    unmatchedTerm = true;
+                    return false;
+                }
+            });
+
+            if (unmatchedTerm) {
+                return false;
+            }
+        }
+
+        // TODO - date filter here.
+
+        return true;
+    });
+
+    return asset;
+};
+
+/**
  * Given a state object, return only the filters.
  */
 const getFilters = function(state) {
@@ -603,6 +657,6 @@ export {
     groupByAuthor, groupByTag, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem,
-    updateAsset,
+    updateAsset, filterSelections,
     getFilters
 };

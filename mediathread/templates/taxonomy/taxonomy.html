@@ -114,15 +114,14 @@
                         <div class="card-body">
                         <h3>Terms</h3>
                             <div class="row">
-                            <div class="col-md-10">
-                                <input type="text" name="term_name" class="form-control float-left" placeholder="Type new term name here"/>
-                            <a class="btn btn-light create-term-submit float-left" href="#">
-                                <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
-                            </a>
-                            </div>
+                                <div class="col-md-10">
+                                    <input type="text" name="term_name" class="form-control float-left" placeholder="Type new term name here"/>
+                                <a class="btn btn-light create-term-submit float-left" href="#">
+                                    <img src="{{STATIC_URL}}img/icons/meth_addselection.png" alt="Create term" />
+                                </a>
+                                </div>
                             </div>
 
-                        <div class="visualclear"></div>
                         <% if (vocabularies[i].term_set.length > 0) { %>
                             <div class="term-container">
                             <% for (var j=0; j < vocabularies[i].term_set.length; j++) { %>

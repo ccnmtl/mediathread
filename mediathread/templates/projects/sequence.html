@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 {% load user_projects coursetags %}
 
 {% block title %}
@@ -75,133 +75,178 @@
 
 {% block content %}
 
-<div class="sequence">
-    <div class="spacer"></div>
-    <div class="sequence-composition">
-        <div class="left title-container">
-            {% if read_only_view %}
-                <h1>{{project.title}}</h1>
-                by {% public_name for project.author %}
-            {% else %}
-            <div>
-                <label>Sequence Title</label>&nbsp;
-                <input type="text" name="title"
-                       value="{{project.title}}" maxlength="80"
-                       placeholder="Specify a title"
-                       class="project-title form-control" />
+{% with active='projects' %}
+    {% include 'main/three_section_tabs.html' %}
+{% endwith %}
+<div class="tab-content">
+    <div class="tabpanel">
+        <div class="row mt-2">
+            <div class="col-md-auto">
+                <nav aria-label="breadcrumb" class="d-none d-md-block">
+                  <ol class="breadcrumb bg-light mb-0">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <a href="{% url 'project-list' request.course.pk %}">
+                            Back to all projects
+                        </a>
+                    </li>
+                  </ol>
+                </nav>
             </div>
-            {% endif %}
         </div>
-        <div class="right tabs-container">
-
-            <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Save Changes</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="well">
-                                <div class="right small">required</div>
-                                <label for="due_date">Visibility</label><br />
-                                <div class="small">Select who can see your work</div><br />
-                                <ul id="id_publish">
-                                    <li>
-                                        <label for="id_publish_0">
-                                            <input
-                                                {% if project.visibility_policy == 'PrivateEditorsAreOwners' %}
-                                                checked="checked"
-                                                {% endif %}
-                                                id="id_publish_0"
-                                                name="publish" type="radio"
-                                                value="PrivateEditorsAreOwners">
-                                            Draft - only you can view
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label for="id_publish_1">
-                                            <input
-                                                {% if project.visibility_policy == 'CourseProtected' %}
-                                                checked="checked"
-                                                {% endif %}
-                                                id="id_publish_1" name="publish"
-                                                type="radio" value="CourseProtected">
-                                            Whole Class - all class members can view
-                                        </label>
-                                    </li>
-                                    {% if allow_public_compositions %}
-                                    <li>
-                                        <label for="id_publish_2">
-                                            <input
-                                                {% if project.visibility_policy == 'PublicEditorsAreOwners' %}
-                                                checked="checked"
-                                                {% endif %}
-                                                id="id_publish_2" name="publish"
-                                                type="radio" value="PublicEditorsAreOwners">
-                                            Whole World - a public url is provided
-                                        </label>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                                <div class="small help-inline">Select who can see your work</div>
+        <div class="sequence">
+            <div class="sequence-composition">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="col-md-6 pl-0">
+                        <h1 class="page-title">
+                            {{project.title}}
+                        </h1>
+                    </div>
+                </div>
+                <div class="save-publish-status modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Save Changes</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card">
+                                    <div class="float-right small ml-1">required</div>
+                                    <label for="due_date" class="ml-1">Visibility</label><br />
+                                    <div class="ml-1">Select who can see your work</div><br />
+                                    <ul id="id_publish">
+                                        <li>
+                                            <label for="id_publish_0">
+                                                <input
+                                                    {% if project.visibility_policy == 'PrivateEditorsAreOwners' %}
+                                                    checked="checked"
+                                                    {% endif %}
+                                                    id="id_publish_0"
+                                                    name="publish" type="radio"
+                                                    value="PrivateEditorsAreOwners" />
+                                                Draft - only you can view
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label for="id_publish_1">
+                                                <input
+                                                    {% if project.visibility_policy == 'CourseProtected' %}
+                                                    checked="checked"
+                                                    {% endif %}
+                                                    id="id_publish_1" name="publish"
+                                                    type="radio" value="CourseProtected" />
+                                                Whole Class - all class members can view
+                                            </label>
+                                        </li>
+                                        {% if allow_public_compositions %}
+                                        <li>
+                                            <label for="id_publish_2">
+                                                <input
+                                                    {% if project.visibility_policy == 'PublicEditorsAreOwners' %}
+                                                    checked="checked"
+                                                    {% endif %}
+                                                    id="id_publish_2" name="publish"
+                                                    type="radio" value="PublicEditorsAreOwners" />
+                                                Whole World - a public url is provided
+                                            </label>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                    <div class="small help-inline">Select who can see your work</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-save-project">Save</button>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-save-project">Save</button>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <div class="sequence-proj-status">
+                        <strong>{{project.status|safe}}</strong>
+                    </div>
+                </div>
+                <div class="title-container">
+                    {% if read_only_view %}
+                        <div class="assignment-response-title">{{project.title}}</div>
+                        <div class="assignment-response-author">
+                            by {% public_name for project.author%}
                         </div>
+                    {% else %}
+                    <div class="form-inline">
+                        <label>Sequence Title</label>&nbsp;
+                        <input type="text" name="title"
+                               value="{{project.title}}" maxlength="80"
+                               placeholder="Specify a title"
+                               class="project-title form-control" />
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="float-right tabs-container">
+                    <ul class="nav nav-tabs float-right" role="tablist">
+                        <li role="presentation" class="editor nav-item">
+                            <a class="nav-link active" href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
+                                Sequence
+                            </a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a class="nav-link" href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
+                                Reflection</a>
+                        </li>
+                        {% if can_edit %}
+                            <button class="btn btn-primary btn-tab btn-save">Save</button>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel"
+                         class="tab-pane fade show active {% if read_only_view %}read-only{% endif %}"
+                         id="sequence">
+                        <div class="loader">
+                            <div class="ball-pulse">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
+                        </div>
+                        <div id="jux-container"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="reflection">
+                        {% if can_edit %}
+                            <textarea name="body" class="form-control mceEditor"
+                                      placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
+                        {% else %}
+                            {{project.body|safe}}
+                        {% endif %}
                     </div>
                 </div>
-            </div>
-            <div class="right">
-                <div class="sequence-proj-status">
-                    {{project.status|safe}}
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="spacer"></div>
-            <ul class="nav nav-tabs navbar-right" role="tablist">
-                <li role="presentation" class="active editor">
-                    <a href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
-                        Sequence
-                    </a>
-                </li>
-                <li role="presentation">
-                    <a href="#reflection" aria-controls="reflection" role="tab" data-toggle="tab">
-                        Reflection</a>
-                </li>
-                {% if can_edit %}
-                    <button class="btn btn-primary btn-tab btn-save">Save</button>
-                {% endif %}
-            </ul>
-        </div>
-        <div class="clearfix"></div>
-        <div class="spacer"></div>
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel"
-                 class="tab-pane fade in active {% if read_only_view %}read-only{% endif %}"
-                 id="sequence">
-                <div class="loader">
-                    <div class="ball-pulse">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-                <div id="jux-container"></div>
-            </div>
-            <div role="tabpanel" class="tab-pane fade" id="reflection">
-                {% if can_edit %}
-                    <textarea name="body" class="form-control mceEditor"
-                              placeholder="Reflect on your sequence creation and intent">{{project.body|safe}}</textarea>
-                {% else %}
-                    {{project.body|safe}}
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
+<div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Course Collection</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body collection-body">
+                <div class="quick-edit" style="display: none"></div>
+                <div class="collection-view"></div>
+            </div>
+            <div class="next-page-loader" style="display: none">
+                <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader-small.gif">
+                Loading more items
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}

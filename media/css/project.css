@@ -30,7 +30,7 @@ h1.project-title {
     max-width: 450px;
 }
 
-.essay-space { 
+.essay-space {
   min-height: 300px;
   overflow: auto;
   position:relative;/*important companion to overflow:auto for IE7*/
@@ -139,11 +139,11 @@ div.mce_editorwindow .mce_editorwindow_closebtn:hover {
     width: 100% !important;
 }
 
-.project-content { 
+.project-content {
     width: 100% !important;
     border: 1px solid #ccc;
 }
- 
+
 #id_participants {*height: 15em;}
 
 div.save-publish-status {
@@ -218,7 +218,7 @@ div.save-publish-status li {
 /* Selection Assignment */
 .selection-assignment .annotation-ajaxloader {
     margin-top: 25px;
-    height: 150px;    
+    height: 150px;
     width: 90%;
 }
 
@@ -357,11 +357,20 @@ div.save-publish-status li {
     margin-right: 10px;
 }
 
+.sequence-composition .tab-content {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-top: -1px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
 form[name="sequence-assignment-edit"] p {
     margin-top: 0;
 }
 
-form[name="sequence-assignment-edit"] input[type=checkbox], 
+form[name="sequence-assignment-edit"] input[type=checkbox],
 form[name="sequence-assignment-edit"] input[type=radio] {
     margin: 0 0 0 -20px;
 }
@@ -398,8 +407,8 @@ form[name="sequence-assignment-edit"] input[type=radio] {
 .selection-assignment .gallery-item-overlay div {
     margin-top: 40%;
     outline: 0;
-    -moz-user-select: none; 
-    -khtml-user-select: none; 
+    -moz-user-select: none;
+    -khtml-user-select: none;
     user-select: none;
 }
 
@@ -438,8 +447,8 @@ form.threaded_comments_form table.threaded_comments_form_table {
     width: 100%;
 }
 
-form.threaded_comments_form table, 
-form.threaded_comments_form table tr, 
+form.threaded_comments_form table,
+form.threaded_comments_form table tr,
 form.threaded_comments_form table tr td {
     border: none;
 }

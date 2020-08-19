@@ -3824,6 +3824,7 @@ div.ui-dialog div.asset-view-details h2 {
     color: #212121;
     border-top: 1px solid #ccc;
     height: 42px;
+    box-sizing: content-box;
 }
 
 #taxonomy div.term-container div.term-display {

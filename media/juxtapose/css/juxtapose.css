@@ -249,7 +249,7 @@ button.jux-rewind.disabled {
 
 .jux-spine-display .instructions,
 .jux-media-display .instructions {
-    font-size: 1.2em;
+    font-size: 1em;
     clear: both;
     line-height: 1.4em;
     text-align: center;
@@ -262,7 +262,7 @@ button.jux-rewind.disabled {
 
 .jux-media-display .help-text {
     width: 80%;
-    margin: 22% auto;
+    margin: 18% auto;
 }
 
 .jux-spine-display .help-text {

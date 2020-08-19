@@ -2592,6 +2592,18 @@ a.hs-control.hs-control-show.plist.float
     font-size: .95em;
 }
 
+.collection-embed,
+#collection-modal .modal-dialog {
+    width: 800px !important;
+    max-width: 800px !important;
+}
+
+#collection-modal .modal-body {
+    max-height: 85vh;
+    overflow-y: auto;
+    margin-bottom: 2px;
+}
+
 ul.clumper {
     display: block;
     float: left;

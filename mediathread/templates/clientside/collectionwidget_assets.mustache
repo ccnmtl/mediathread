@@ -44,15 +44,17 @@
             {{/showing_my_items}}
             {{^showing_my_items}}
                 <br /><br />
-                <div class="well">
-                <div class="text-center">{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</div>
+                    </div>
                 </div>
             {{/showing_my_items}}
             {{/active_filter_count}}
             {{#active_filter_count}}
                 <br /><br />
-                <div class="well">
-                <div>
+                <div class="card">
+                <div class="card-body">
                     <h5 class="text-center">No items matched your search</h5>
                     <p>Suggestions:</p>
                     <p>1. Use the filter options above to change or broaden the search.</p>
@@ -152,10 +154,6 @@
                                             <a class="btn btn-sm btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
                                                 <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
                                                 Edit Selection
-                                            </a>
-                                            <a class="btn btn-sm btn-default collection-choice delete-annotation" href="{{id}}" title="Remove selection from your collection">
-                                                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_delete.png"  class="delete_icon" alt="Remove selection from your collection" />
-                                                Remove Selection
                                             </a>
                                         </div>
                                     {{/editable}}

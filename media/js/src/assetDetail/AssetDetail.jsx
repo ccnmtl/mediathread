@@ -733,7 +733,7 @@ export default class AssetDetail extends React.Component {
                         variant="primary"
                         show={this.state.showDeletedDialog}
                         onClose={this.hideDeletedDialog}>
-                        <Alert.Heading>Selection deleted.</Alert.Heading>
+                        Selection deleted.
                     </Alert>
                 </div>
 

@@ -133,16 +133,28 @@ export default class AssetDetail extends React.Component {
         this.addInteraction = this.addInteraction.bind(this);
     }
 
-    onUpdateIsEditing(newVal) {
+    onUpdateIsEditing(newVal, activeSelection=null) {
         let newState = {isEditing: newVal};
 
-        // If we're leaving editing mode, clear the vector layer.
+        // If we're leaving editing mode, clear the vector layer,
         if (!newVal) {
             this.onClearVectorLayer();
             newState.isDrawing = false;
+
+            // and select the selection that was being edited.
+            if (activeSelection) {
+                newState.activeSelection = activeSelection.title;
+            }
         }
 
-        this.setState(newState);
+        this.setState(newState, function() {
+            if (activeSelection) {
+                openSelectionAccordionItem(
+                    jQuery('#selectionsAccordion'),
+                    activeSelection.id,
+                    true);
+            }
+        });
     }
 
     onCreateSelection(e, tags, terms) {

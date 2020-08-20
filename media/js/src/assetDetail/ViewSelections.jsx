@@ -37,9 +37,9 @@ export default class ViewSelections extends React.Component {
         this.props.onUpdateIsEditing(s);
     }
 
-    onClickCancel(e) {
+    onClickCancel(e, selection) {
         e.preventDefault();
-        this.props.onUpdateIsEditing(null);
+        this.props.onUpdateIsEditing(null, selection);
     }
 
     onClickDelete(selectionId) {

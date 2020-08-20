@@ -198,7 +198,8 @@ export default class SelectionForm extends React.Component {
                         <>
                             <Button
                                 variant="secondary" size="sm"
-                                onClick={this.props.onClickCancel}>
+                                onClick={(e) => this.props.onClickCancel(
+                                    e, this.props.selection)}>
                                 Cancel
                             </Button>&nbsp;
                         </>

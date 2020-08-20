@@ -13,15 +13,17 @@
         </a>
     {% endif %}
     <hr>
-    <p>
-        If you're connecting to a non-Columbia Mediathread instance,
-        you'll need to update the extension's URL.
-    </p>
-    <button class="btn btn-outline-secondary update-chrome-extension-hosturl">
-        Update Mediathread URL
-    </button>
-    <div class="update-chrome-extension-feedback"></div>
-    <div class="clearfix"></div>
+        {% if not request.META.HTTP_HOST == 'mediathread.ctl.columbia.edu' or not request.META.HTTP_HOST == 'mediathread.ccnmtl.columbia.edu' %}
+            <p>
+                The extension is configured to collect to the <u>mediathread.ctl.columbia.edu</u> domain.
+                Use this button to update the extension to collect to your current domain.
+            </p>
+            <button class="btn btn-outline-secondary btn-sm update-chrome-extension-hosturl">
+                Update Mediathread URL
+            </button>
+            <div class="update-chrome-extension-feedback"></div>
+            <div class="clearfix"></div>
+        {% endif %}
 </div>
 
 <script>

@@ -28,8 +28,8 @@ export default class CollectionListView extends React.Component {
 
         const me = this;
         getAssets(
-            // TODO: pass in correct filters here
-            '', '', [], [], 'all',
+            this.props.title, this.props.owner, this.props.tags,
+            this.props.terms, this.props.date,
             0, orderBy
         ).then(function(d) {
             me.props.onUpdateAssets(d.assets, d.asset_count);
@@ -169,5 +169,12 @@ export default class CollectionListView extends React.Component {
 CollectionListView.propTypes = {
     assets: PropTypes.array,
     enterAssetDetailView: PropTypes.func.isRequired,
-    onUpdateAssets: PropTypes.func.isRequired
+    onUpdateAssets: PropTypes.func.isRequired,
+
+    // Filters
+    owner: PropTypes.string,
+    title: PropTypes.string,
+    tags: PropTypes.array,
+    terms: PropTypes.array,
+    date: PropTypes.string
 };

@@ -10,7 +10,9 @@ import EmptyCollection from './alerts/EmptyCollection';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
-import {getAssets, getCourseUrl, updateAsset} from './utils';
+import {
+    getAsset, getAssets, getCourseUrl, updateAsset, filterSelections
+} from './utils';
 
 export default class CollectionTab extends React.Component {
     constructor(props) {
@@ -67,11 +69,20 @@ export default class CollectionTab extends React.Component {
             .removeClass('d-flex')
             .addClass('d-none');
 
-        this.setState({
-            selectedAsset: asset
-        }, function() {
-            // Scroll to top when entering asset detail view.
-            window.scrollTo(0, 0);
+        // Need to fetch the asset to get all the selections. The
+        // collection view's selections are filtered by AssetFilter.
+        const me = this;
+        getAsset(asset.id).then(function(d) {
+            me.setState({
+                selectedAsset: d.assets[asset.id]
+            }, function() {
+                // Scroll to top when entering asset detail view.
+                window.scrollTo(0, 0);
+            });
+        }, function(e) {
+            me.setState({
+                assetError: e
+            });
         });
     }
 
@@ -104,7 +115,15 @@ export default class CollectionTab extends React.Component {
             // collection's assets, in case the user added, edited, or
             // removed any selections on this asset.
             const newAssets = updateAsset(
-                this.props.assets, this.state.selectedAsset);
+                this.props.assets,
+                // Filter the annotations of this selection based on
+                // the current asset filter state.
+                filterSelections(
+                    this.state.selectedAsset,
+                    this.state.title, this.state.owner,
+                    this.state.tags, this.state.terms,
+                    this.state.date
+                ));
             this.props.onUpdateAssets(newAssets);
         }
 
@@ -192,7 +211,14 @@ export default class CollectionTab extends React.Component {
                 <CollectionListView
                     assets={assetList}
                     enterAssetDetailView={this.enterAssetDetailView}
-                    onUpdateAssets={this.props.onUpdateAssets} />
+                    onUpdateAssets={this.props.onUpdateAssets}
+
+                    owner={this.state.owner}
+                    title={this.state.title}
+                    tags={this.state.tags}
+                    terms={this.state.terms}
+                    date={this.state.date}
+                />
             );
         }
 

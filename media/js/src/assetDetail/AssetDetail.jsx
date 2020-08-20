@@ -892,6 +892,7 @@ export default class AssetDetail extends React.Component {
 
         this.draw = new Draw({
             source: this.selectionSource,
+            stopClick: true,
             type: 'Polygon'
         });
 

@@ -14,7 +14,10 @@ jQuery(document).ready(function() {
 
                     $el.hide();
                     $el.text(msg);
-                    $el.addClass('alert alert-danger');
+                    if(msg === defaultResponse){
+                        $el.addClass('alert alert-danger');
+                    }
+                    $el.addClass('alert alert-info');
                     $el.fadeIn();
                 });
         }

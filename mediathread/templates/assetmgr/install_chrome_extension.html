@@ -13,15 +13,17 @@
         </a>
     {% endif %}
     <hr>
-    <p>
-        The extension is configured to collect to the mediathread.ctl.columbia.edu domain.
-        Use this button to update the extension to collect to your current domain.
-    </p>
-    <button class="btn btn-outline-secondary btn-sm update-chrome-extension-hosturl">
-        Update Mediathread URL
-    </button>
-    <div class="update-chrome-extension-feedback"></div>
-    <div class="clearfix"></div>
+    {% if request.META.HTTP_HOST == 'mediathread.ctl.columbia.edu' or request.META.HTTP_HOST == 'mediathread.ccnmtl.columbia.edu' %}
+        <p>
+            The extension is configured to collect to the mediathread.ctl.columbia.edu domain.
+            Use this button to update the extension to collect to your current domain.
+        </p>
+        <button class="btn btn-outline-secondary btn-sm update-chrome-extension-hosturl">
+            Update Mediathread URL
+        </button>
+        <div class="update-chrome-extension-feedback"></div>
+        <div class="clearfix"></div
+    {% endif %}
 </div>
 
 <script>

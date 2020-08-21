@@ -50,12 +50,12 @@
       <div class="modal-dialog" role="document" data-width="620">
         <div class="modal-content">
           <div class="modal-header">
+              <h4 class="modal-title">
+                  Submit Response
+              </h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">
-                Submit Response
-            </h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body text-left">
             <div>Please review assignment instructions before submitting.</div>
                 <p>
                     {% ifequal assignment.response_view_policy 'never' %}
@@ -67,7 +67,7 @@
                     {% endifequal %}{% endifequal %}{% endifequal %}
                 </p>
                 <div class="alert alert-danger" role="alert">
-                    <strong>Important!</strong><br /><br />
+                    <strong>Important!</strong><br />
                     Once you submit your response, you will not be able to unsubmit or edit it.
                 </div>
                 <input type="hidden" name="publish" value="{{submit_policy}}" />

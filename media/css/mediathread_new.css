@@ -4146,6 +4146,10 @@ ul.section-tabs>li>a.active {
     padding: .5em 0 .25em 0;
 }
 
+.asset-detail .table-metadata th {
+    font-weight: normal;
+}
+
 .course-collection .card-title, .course-collection .card-text {
     white-space: nowrap;
     overflow: hidden;

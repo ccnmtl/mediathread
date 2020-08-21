@@ -72,6 +72,7 @@ describe('Instructor creates a selection', () => {
         cy.log('verify the create form is visible');
         cy.get('#annotation-current').should('be.visible');
         cy.get('#annotation-body').should('be.visible');
+        cy.get('input[name="annotation-title"]').should('be.visible');
         cy.get('input[name="annotation-title"]').type('Test Selection');
         cy.get('#edit-annotation-form .select2-input')
             .type('abc{enter}');

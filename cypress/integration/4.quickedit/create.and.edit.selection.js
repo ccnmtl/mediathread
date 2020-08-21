@@ -85,8 +85,8 @@ describe('Instructor creates a selection', () => {
         cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('.quick-edit').should('not.be.visible');
         cy.get('.collection-materials').should('be.visible');
-        cy.get('button.btn-link').contains('Test Selection')
-            .should('be.visible');
+        cy.get('button.btn-link').should('be.visible')
+            .contains('Test Selection')
         cy.get('button.btn-link').contains('Test Selection').first().click();
         cy.get('.collapse.show').within(() => {
             cy.get('button.materialCitation').contains('Insert in Text');

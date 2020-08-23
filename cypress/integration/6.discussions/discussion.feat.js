@@ -27,7 +27,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('a.nav-link.active').contains('Assignments');
         cy.get('.breadcrumb-item').contains('Back to all assignments');
         cy.get('.page-title').contains('Create Discussion Assignment');
-        cy.get('#page2').contains('Get Started');
+        cy.get('#page2').contains('Next');
         cy.get('#page2').click();
 
         cy.log('Add a title and some text');

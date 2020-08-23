@@ -93,8 +93,13 @@
                     </a>
                 </h5>
                 <hr />
-                <h6>Selections</h6>
-
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="m-0 mt-1">Selections</h6>
+                    <a class="btn btn-sm btn-link collection-choice create-annotation p-0" href="{{id}}"
+                        title="Create selection on this item" class="create_annotation_icon">   
+                        Create Selection
+                    </a>
+                </div>
                 <div id="record-{{id}}-metadata" class="record-metadata">
                 {{^annotation_count}}
                     <p class="text-muted">None</p>

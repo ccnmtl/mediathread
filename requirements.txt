@@ -94,7 +94,7 @@ django-bootstrap3==14.1.0
 django-bootstrap4==2.2.0
 beautifulsoup4==4.9.1
 ua_parser==0.10.0
-user_agents==2.1
+user_agents==2.2.0
 django_user_agents==0.4.0
 gunicorn==20.0.4
 path==15.0.0

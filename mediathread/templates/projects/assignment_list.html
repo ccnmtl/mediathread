@@ -116,6 +116,15 @@ Assignments
                 $frm.find('[name="page"]').val(1);
                 jQuery('#search-form').submit();
             });
+            jQuery('#title-search').on('keyup', (evt) => {
+                if (evt.key === 'Enter' || evt.keyCode === 13) {
+                    const $frm = jQuery('#search-form');
+                    const title = jQuery('#title-search').val();
+                    $frm.find('[name="title"]').val(title);
+                    $frm.find('[name="page"]').val(1);
+                    jQuery('#search-form').submit();
+                }
+            });
             jQuery('.btn-title-search').on('click', (evt) => {
                 const $frm = jQuery('#search-form');
                 const title = jQuery('#title-search').val();

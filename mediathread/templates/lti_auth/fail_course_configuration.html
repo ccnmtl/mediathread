@@ -55,6 +55,7 @@
                 </p>
 
                 <form class="text-center" action="{% url 'lti-course-create' %}" method='POST'>
+                    {% csrf_token %}
                     <input type="hidden" name="lms_course" value="{{lms_course}}">
                     <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
                     <input type="hidden" name="sis_course_id" value="{{sis_course_id}}">
@@ -99,6 +100,7 @@
                                     </td>
                                     <td>
                                         <form action="{% url 'lti-enable-course' %}" method="post">
+                                            {% csrf_token %}
                                             <input type="hidden" name="group" value="{{course.group.id}}">
                                             <input type="hidden" name="faculty_group" value="{{course.faculty_group.id}}">
                                             <input type="hidden" name="lms_course" value="{{lms_course}}">

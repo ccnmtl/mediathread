@@ -3,7 +3,7 @@
     <table class="table table-bordered table-striped w-100">
         <thead class="thead-darkgray">
             <th>
-                Due Date
+                Due
             </th>
             <th>
                 Title
@@ -28,21 +28,20 @@
                  <tr>
                     <td>
                         {% if object.due_date %}
-                            {% if comments.0 > 0 %}
-                                {{object.due_date|date:"n/j/y"}}
-                            {% else %}{% if object.due_date < today %}
+                            {{object.due_date|date:"n/j/y"}}<br />
+                            {% if comments.0 < 1 and object.due_date < today %}
                                 <div class="small text-danger">
                                     Overdue {{object.due_date|timesince:today }}
                                 </div>
                             {% else %}{% if object.due_date > today %}
                                 <div class="small">
-                                    {{today|timeuntil:object.due_date }}
+                                    Due in {{object.due_date|timeuntil:today }}
                                 </div>
                             {% else %}
                                 <div class="small">
                                     Due today
                                 </div>
-                            {% endif %}{% endif %}{% endif %}
+                            {% endif %}{% endif %}
                         {% endif %}
                     </td>
                     <td>
@@ -94,7 +93,7 @@
                                             </div>
                                         {% else %}{% if object.due_date > today %}
                                             <div class="small">
-                                                {{today|timeuntil:object.due_date }}
+                                                Due in {{object.due_date|timeuntil:today }}
                                             </div>
                                         {% else %}
                                             <div class="small">

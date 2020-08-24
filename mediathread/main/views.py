@@ -188,6 +188,7 @@ class CourseDetailView(LoggedInMixin, DetailView):
             'owners': owners,
             'collections': collections,
             'uploader': uploader,
+            'msg': self.request.GET.get('msg', ''),
             'can_upload': course_details.can_upload(self.request.user,
                                                     self.request.course),
         })

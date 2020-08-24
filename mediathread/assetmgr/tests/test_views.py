@@ -471,9 +471,11 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
             response = self.client.post("/save/", post_data, follow=True)
             asset = Asset.objects.get(title="Test Video")
+            asset_url = "/accounts/login/?next=/course/%s/asset/%s/" % (
+                self.sample_course.id, asset.id)
             self.assertRedirects(
                 response,
-                "/accounts/login/?next=/asset/%s/" % asset.id,
+                asset_url,
                 status_code=302,
                 target_status_code=200)
             self.assertEquals(asset.author.username, self.student_one.username)

@@ -321,7 +321,7 @@ class AssetCreateView(View):
 
         # create a global annotation
         asset.global_annotation(user, True)
-        asset_url = reverse('asset-view', args=[asset.id])
+        asset_url = reverse('asset-view', args=[request.course.id, asset.id])
         source = request.POST.get('asset-source', "")
 
         if source == 'bookmarklet':

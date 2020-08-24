@@ -2,7 +2,7 @@ Hello -
 
 Your video "{{item.title}}" for the {{course.title}} course is now available in Mediathread.
 
-You can view and annotate the video here: https://{{domain}}/asset/{{item.id}}/
+You can view and annotate the video here: https://{{domain}}/course/{{course.id}}/asset/{{item.id}}/
 
 Thanks,
 The Mediathread Staff

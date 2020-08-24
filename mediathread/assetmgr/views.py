@@ -858,6 +858,7 @@ EMBED_WIDTH = 635
 EMBED_HEIGHT = 450
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(xframe_options_exempt, name='dispatch')
 class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                          TemplateView):

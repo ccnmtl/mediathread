@@ -17,6 +17,15 @@
 
 {% block uncompressable_js %}
     <script src="{% static 'js/bundle.js' %}"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            {% ifequal msg "upload" %}
+                var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
+                showMessage(msg);
+            {% endifequal %}
+        });
+    </script>
 {% endblock %}
 
 {% block content %}

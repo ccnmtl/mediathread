@@ -548,7 +548,8 @@ class RedirectToUploaderView(LoggedInCourseMixin, View):
              request.user.has_perm('assetmgr.can_upload_for'))):
             username = as_user
 
-        redirect_back = "%s?msg=upload" % (request.build_absolute_uri('/'))
+        url = reverse('course_detail', args=[self.request.course.id])
+        redirect_back = '{}?msg=upload'.format(request.build_absolute_uri(url))
 
         nonce = '%smthc' % datetime.datetime.now().isoformat()
 

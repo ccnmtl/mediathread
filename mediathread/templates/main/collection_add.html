@@ -58,7 +58,7 @@
                                            {% else %}
                                                <h6 class="card-title">Video</h6>
                                                <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
-
+                                                    {% csrf_token %}
                                                        <div class="form-row align-items-center">
                                                            {% if owners %}
                                                                <div class="col-auto my-1">
@@ -77,7 +77,7 @@
                                                </form>
                                                <h6 class="card-title mt-2">Audio</h6>
                                                <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
-
+                                                   {% csrf_token %}
                                                        <div class="form-row align-items-center">
                                                            {% if owners %}
                                                                <div class="col-auto my-1">

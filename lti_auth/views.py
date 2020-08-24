@@ -3,13 +3,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View, TemplateView
-
 from lti_auth.lti import LTI
 from lti_auth.models import LTICourseContext
 
@@ -70,6 +70,7 @@ class LTIAuthMixin(object):
         return super(LTIAuthMixin, self).dispatch(request, *args, **kwargs)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(xframe_options_exempt, name='dispatch')
 class LTIRoutingView(LTIAuthMixin, View):
     request_type = 'initial'
@@ -140,6 +141,7 @@ class LTILandingPage(TemplateView):
         }
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(xframe_options_exempt, name='dispatch')
 class LTICourseEnableView(View):
 

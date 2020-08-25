@@ -65,7 +65,7 @@
         el: jQuery('.sequence').first(),
         viewer: '{{request.user.username}}',
         projectId: {{project.id}},
-        readOnly: {% if read_only_view %}true{% else %}false{% endif %}
+        readOnly: {% if can_edit %}false{% else %}true{% endif %}
     });
     </script>
 
@@ -168,18 +168,18 @@
                     </div>
                 </div>
                 <div class="title-container">
-                    {% if can_edit %}
-                        <div class="form-inline">
-                            <label>Sequence Title</label>&nbsp;
-                            <input type="text" name="title"
-                                   value="{{project.title}}" maxlength="80"
-                                   placeholder="Specify a title"
-                                   class="project-title form-control" />
+                    {% if not can_edit %}
+                        <div class="assignment-response-title">{{project.title}}</div>
+                        <div class="assignment-response-author">
+                            by {% public_name for project.author%}
                         </div>
                     {% else %}
-                    <div class="assignment-response-title">{{project.title}}</div>
-                    <div class="assignment-response-author">
-                        by {% public_name for project.author%}
+                    <div class="form-inline">
+                        <label>Sequence Title</label>&nbsp;
+                        <input type="text" name="title"
+                               value="{{project.title}}" maxlength="80"
+                               placeholder="Specify a title"
+                               class="project-title form-control" />
                     </div>
                     {% endif %}
                 </div>

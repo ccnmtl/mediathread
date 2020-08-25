@@ -643,6 +643,38 @@ const getFilters = function(state) {
     };
 };
 
+/**
+ * Given an array of selections, return all the tags present.
+ */
+const getTags = function(annotations) {
+    const tags = [];
+    annotations.forEach(function(a) {
+        a.metadata.tags.forEach(function(tag) {
+            if (!tags.includes(tag.name)) {
+                tags.push(tag.name);
+            }
+        });
+    });
+    return tags;
+};
+
+/**
+ * Given an array of selections, return all the terms present.
+ */
+const getTerms = function(annotations) {
+    const terms = [];
+    annotations.forEach(function(a) {
+        a.vocabulary.forEach(function(vocab) {
+            vocab.terms.forEach(function(term) {
+                if (!terms.includes(term.display_name)) {
+                    terms.push(term.display_name);
+                }
+            });
+        });
+    });
+    return terms;
+};
+
 export {
     getAssets, getAsset, getAssetReferences,
     createSelection,
@@ -658,5 +690,6 @@ export {
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem,
     updateAsset, filterSelections,
-    getFilters
+    getFilters,
+    getTags, getTerms
 };

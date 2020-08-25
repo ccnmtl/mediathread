@@ -246,8 +246,12 @@ export default class AssetDetail extends React.Component {
 
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
-        let annotationData = {};
-        if (this.type === 'image') {
+        let annotationData = null;
+        if (
+            this.type === 'image' &&
+                this.selectionSource &&
+                this.selectionSource.getFeatures().length
+        ) {
             const feature = this.selectionSource.getFeatures()[0];
 
             const geometry = feature.getGeometry();
@@ -277,37 +281,40 @@ export default class AssetDetail extends React.Component {
             };
         }
 
+        const newData = {
+            title: selectionTitle,
+            tags: tags,
+            terms: terms,
+            body: document.getElementById('newSelectionNotes').value
+        };
+
+        if (annotationData) {
+            newData.annotation_data = JSON.stringify(annotationData);
+        }
+
         return updateSherdNote(
-            this.asset.asset.id,
-            selectionId,
-            {
-                title: selectionTitle,
-                tags: tags,
-                terms: terms,
-                body: document.getElementById('newSelectionNotes').value,
-                annotation_data: JSON.stringify(annotationData)
-            })
-            .then(function(data) {
-                // Refresh the selections.
-                return getAsset(me.asset.asset.id)
-                    .then(function(d) {
-                        return me.props.onUpdateAsset(
-                            d.assets[me.asset.asset.id]);
-                    }).then(function() {
-                        openSelectionAccordionItem(
-                            jQuery('#selectionsAccordion'),
-                            selectionId,
-                            true);
-                    });
-            }, function(errorText) {
-                me.setState({
-                    showCreateError: true,
-                    createError: errorText
-                }, function() {
-                    const elt = document.getElementById('create-error-alert');
-                    elt.scrollIntoView();
+            this.asset.asset.id, selectionId, newData
+        ).then(function(data) {
+            // Refresh the selections.
+            return getAsset(me.asset.asset.id)
+                .then(function(d) {
+                    return me.props.onUpdateAsset(
+                        d.assets[me.asset.asset.id]);
+                }).then(function() {
+                    openSelectionAccordionItem(
+                        jQuery('#selectionsAccordion'),
+                        selectionId,
+                        true);
                 });
+        }, function(errorText) {
+            me.setState({
+                showCreateError: true,
+                createError: errorText
+            }, function() {
+                const elt = document.getElementById('create-error-alert');
+                elt.scrollIntoView();
             });
+        });
     }
 
     onDeleteSelection(e) {

@@ -71,7 +71,10 @@ export default class SelectionForm extends React.Component {
         if (
             (
                 this.props.type === 'image' &&
-                    !hasSelection(this.props.selectionSource)
+                    (
+                        !hasSelection(this.props.selectionSource) &&
+                            !this.props.selection
+                    )
             ) || (
                 this.props.type === 'video' &&
                     !this.props.selectionStartTime &&

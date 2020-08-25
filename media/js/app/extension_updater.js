@@ -14,10 +14,10 @@ jQuery(document).ready(function() {
                     var oldmsg = 'Mediathread URL updated to:';
 
                     $el.hide();
-                    if(msg === defaultResponse){
+                    if(msg === defaultResponse) {
                         $el.addClass('alert alert-danger');
                         $el.text(msg);
-                    } else if (!msg.includes(oldmsg)){
+                    } else if (msg.includes(oldmsg)) {
                         $el.addClass('alert alert-info');
                         msg = 'The extension will now collect to' +
                                 window.location.origin;

@@ -44,30 +44,35 @@ var CollectionList = function(config) {
         var self = event.data.self;
         var $div = self.$el.find('div.collection-assets');
         if (!self.citable && $div.length > 0) {
-            self.scrollTop = $div.scrollTop();
             event.data.self.refresh();
         }
     });
-    jQuery(window).on('annotation.on_create', {'self': self}, function(event) {
-        var self = event.data.self;
-        self.scrollTop =
-            self.$el.find('div.collection-assets').scrollTop();
-        event.data.self.refresh();
-    });
+    jQuery(window).on('annotation.on_create', {'self': self},
+        function(event, params) {
+            var self = event.data.self;
+            self.current_annotation = params.annotationId;
+
+            const page = self.current_records.paginator.currentPage;
+            const offset = (page - 1) * self.limits.limit;
+            self.refresh(null, offset, true);
+        }
+    );
     jQuery(window).on('annotation.on_delete', {'self': self}, function(event) {
         var self = event.data.self;
         if (!self.citable) {
-            self.scrollTop =
-                self.$el.find('div.collection-assets').scrollTop();
             event.data.self.refresh();
         }
     });
-    jQuery(window).on('annotation.on_save', {'self': self}, function(event) {
-        var self = event.data.self;
-        self.scrollTop =
-            self.$el.find('div.collection-assets').scrollTop();
-        event.data.self.refresh();
-    });
+    jQuery(window).on('annotation.on_save', {'self': self},
+        function(event, params) {
+            var self = event.data.self;
+            self.current_annotation = params.annotationId;
+
+            const page = self.current_records.paginator.currentPage;
+            const offset = (page - 1) * self.limits.limit;
+            self.refresh(null, offset, true);
+        }
+    );
 
     MediaThread.loadTemplate(config.template)
         .done(function() {
@@ -82,7 +87,6 @@ var CollectionList = function(config) {
 
     self.$el.on('click', '.filter-widget h3', function(evt) {
         jQuery(evt.currentTarget).parent().toggleClass('collapsed');
-        jQuery(window).trigger('resize');
     });
 
     self.$el.on('blur', 'input[name="search-text"]', function(evt) {
@@ -302,6 +306,16 @@ CollectionList.prototype.appendItems = function(config) {
     function(the_records) {
         self.appendAssets(the_records);
         self.loading = false;
+
+        if (self.current_annotation) {
+            let $elt = jQuery('#selectionCollapse-' + self.current_annotation);
+            $elt.collapse({toggle: true});
+
+            $elt = jQuery('#annotation-' + self.current_annotation);
+            jQuery('html, body').animate(
+                {scrollTop: $elt.offset().top - 50}, 100);
+            delete self.current_annotation;
+        }
     });
 };
 
@@ -598,8 +612,6 @@ CollectionList.prototype.updateSwitcher = function() {
                 }
             }
             jQuery(vocabulary).select2('val', values);
-
-            jQuery(window).trigger('resize');
         });
 };
 
@@ -675,31 +687,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
 
     self.updateSwitcher();
 
-    var $window = jQuery(window);
-    var $document = jQuery(document);
-    if (self.current_asset === null) {
-        // handles the maximized view
-        $window.scroll(function() {
-            if (!self.getLoading() &&
-                $window.scrollTop() >=
-                    ($document.height() - $window.height() - 300)) {
-                self.appendItems(self.current_records);
-            }
-        });
-    } else {
-        // handle the minimized view
-        var q = 'div.collection-assets';
-        var $container = self.$el.find(q);
-        var container = $container[0];
-        $container.scroll(function() {
-            if (!self.getLoading() &&
-                container.scrollTop +
-                $container.innerHeight() >=
-                container.scrollHeight - 300) {
-                self.appendItems(self.current_records);
-            }
-        });
-    }
+    self.appendItems(self.current_records);
 
     jQuery('.filter-widget').show();
 
@@ -709,13 +697,6 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
         self.view_callback(the_records.assets.length);
     }
 
-    if (self.scrollTop) {
-        self.$el.find('div.collection-assets')
-            .scrollTop(self.scrollTop);
-        self.scrollTop = undefined;
-    }
-
-    jQuery(window).trigger('resize');
     self.setLoading(false);
 };
 

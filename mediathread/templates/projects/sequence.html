@@ -65,7 +65,7 @@
         el: jQuery('.sequence').first(),
         viewer: '{{request.user.username}}',
         projectId: {{project.id}},
-        readOnly: {% if read_only_view %}true{% else %}false{% endif %}
+        readOnly: {% if can_edit %}false{% else %}true{% endif %}
     });
     </script>
 
@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <div class="title-container">
-                    {% if read_only_view %}
+                    {% if not can_edit %}
                         <div class="assignment-response-title">{{project.title}}</div>
                         <div class="assignment-response-author">
                             by {% public_name for project.author%}
@@ -205,7 +205,7 @@
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel"
-                         class="tab-pane fade show active {% if read_only_view %}read-only{% endif %}"
+                         class="tab-pane fade show active {% if not can_edit %}read-only{% endif %}"
                          id="sequence">
                         <div class="loader">
                             <div class="ball-pulse">

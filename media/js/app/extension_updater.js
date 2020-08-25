@@ -11,13 +11,19 @@ jQuery(document).ready(function() {
                     var $el = jQuery('.update-chrome-extension-feedback');
                     var defaultResponse = 'Error Updating Settings.';
                     var msg = response ? response : defaultResponse;
+                    var oldmsg = 'Mediathread URL updated to:';
 
                     $el.hide();
-                    $el.text(msg);
                     if(msg === defaultResponse){
                         $el.addClass('alert alert-danger');
+                        $el.text(msg);
+                    } else if (!msg.includes(oldmsg)){
+                        $el.addClass('alert alert-info');
+                        msg = 'The extension will now collect to' + window.location.origin;
                     } else {
-                        $el.addClass('alert alert-info');}
+                        $el.text(msg);
+                        $el.addClass('alert alert-info');
+                    }
                     $el.fadeIn();
                 });
         }

@@ -19,7 +19,8 @@ jQuery(document).ready(function() {
                         $el.text(msg);
                     } else if (!msg.includes(oldmsg)){
                         $el.addClass('alert alert-info');
-                        msg = 'The extension will now collect to' + window.location.origin;
+                        msg = 'The extension will now collect to' +
+                                window.location.origin;
                         $el.text(msg);
                     } else {
                         $el.text(msg);

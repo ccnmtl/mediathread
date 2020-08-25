@@ -155,7 +155,7 @@
                                     </div>
                                 {% else %}{% if object.due_date > today %}
                                     <div class="small">
-                                        {{today|timeuntil:object.due_date }}
+                                        Due in {{object.due_date|timeuntil:today }}
                                     </div>
                                 {% else %}
                                     <div class="small">

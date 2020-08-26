@@ -120,13 +120,17 @@ def update_annotation(request, annotation):
             for key, val in request.POST.items()
             if key.startswith('annotation-')
         )
+        term_ids = request.POST.getlist('vocabulary')
     else:
         # Try to load the data from the body as JSON, if it's not
         # included as form data.
         try:
             form = json.loads(request.body)
+
         except JSONDecodeError:
             form = {}
+
+        term_ids = form.get('terms') or form.get('vocabulary')
 
     if form.get('range1') or form.get('range2'):
         assert not annotation.is_null()
@@ -144,4 +148,4 @@ def update_annotation(request, annotation):
 
     annotation.save()
 
-    update_vocabulary_terms(request, annotation)
+    update_vocabulary_terms(request, annotation, term_ids)

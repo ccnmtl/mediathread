@@ -26,8 +26,9 @@ def taxonomy_workspace(request):
     }
 
 
-def update_vocabulary_terms(request, note):
-    term_ids = request.POST.getlist('vocabulary')
+def update_vocabulary_terms(request, note, term_ids=None):
+    if not term_ids:
+        term_ids = request.POST.getlist('vocabulary')
 
     # Retrieve concepts/terms that this object is currently associated with
     associations = TermRelationship.objects.filter(sherdnote=note)

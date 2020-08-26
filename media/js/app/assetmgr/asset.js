@@ -787,6 +787,7 @@
         ///Annotation Add Form
         //  - author === current_user
         this.newAnnotation = function() {
+            this.active_annotation = null;
             var context = {
                 'vocabulary': self.vocabulary,
                 'annotation': {

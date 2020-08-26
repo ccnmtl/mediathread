@@ -34,14 +34,13 @@
         </td>
     {% endif %}
     <td>
+        {% with exceptions='swav,swinstructor' %}
         {% for user in course.faculty_group.user_set.all %}
-        {% firstof user.get_full_name user.username %},
-            {% with exceptions='swav,swinstructor' %}
-                {% if not user.is_staff and not user.username in exceptions %}
-                    {% firstof user.get_full_name user.username %},
-                {% endif %}
-            {% endwith %}
+            {% if not user.is_staff and not user.username in exceptions %}
+                {% firstof user.get_full_name user.username %},
+            {% endif %}
         {% endfor %}
+        {% endwith %}
     </td>
     {% if add_privilege %}
         <td class="manage-course">

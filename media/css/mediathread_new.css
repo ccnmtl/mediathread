@@ -1852,6 +1852,12 @@ div.homepage-column-info {
     margin-bottom: 0;
 }
 
+.switcher-search-text .input-group-prepend {
+    border: 1px solid #CCCCCC;
+    background-color: #EFEFEF;
+    padding: 2px 0px 0px 6px;
+}
+
 .switcher.disabled a.switcher-top {
     background-color: #EFEFEF;
 }
@@ -1879,7 +1885,7 @@ span.course-tags-prefix,
 span.concept-prefix {
     border: 1px solid #CCCCCC;
     border-right: none;
-    height: 31px;
+    height: 32px;
 }
 
 .switcher .switcher-options h3 {
@@ -2785,7 +2791,6 @@ div#instructor-column {
 
 
 div.materials {
-    margin: 0 5px;
     overflow-x: hidden;
     box-shadow: none;
     border: none;
@@ -2892,6 +2897,16 @@ table.item-level-info td.item-meta {
     border-collapse: collapse;
     background-color:#f7f7f7;
     text-align: left;
+    padding: 7px;
+}
+
+.record-asset-properties .asset_title {
+    padding-top: 3px;
+}
+
+.selection-citation-title {
+    padding-top: 5px;
+    font-size: 1.1rem;
 }
 
 table.selection-level-info td {
@@ -3085,10 +3100,9 @@ div.collection_table {
 
 .gallery-item-project {
     margin-top: 10px;
-    margin-left: 5px;
-    width: 98%;
     border: 1px solid rgba(0,0,0,.125);
     background: white;
+    padding: 7px;
 }
 
 .gallery-item {

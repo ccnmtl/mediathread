@@ -57,3 +57,33 @@ nav#three-section-tabs a.active { margin-bottom: -1px; }
 	nav#three-section-tabs .active { border: 1px solid #dee2e6; }
 	#add-button { margin-bottom: 1em; }
 }
+
+
+@media (min-width: 768px)
+{
+	.carousel-caption .display-3 {
+		font-size: 2rem;
+	}
+	.carousel-caption .lead {
+		display: none;
+	}
+}
+
+
+@media (min-width: 992px)
+{
+	.carousel-caption .display-3 {
+		font-size: 2.7rem;
+	}
+	.carousel-caption .lead {
+		display: block;
+	}
+}
+
+
+@media (min-width: 1200px)
+{
+	.carousel-caption .display-3 {
+		font-size: 3.70rem;
+	}
+}

@@ -9,6 +9,7 @@ from django.db.models import (
     F, Value, CharField, OuterRef, Subquery)
 from django.db.models import Q
 from django.db.models.functions import Concat
+from django.db.models.functions import Lower
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
 from django.shortcuts import get_object_or_404
@@ -785,12 +786,19 @@ class ProjectListView(LoggedInCourseMixin, ListView):
             F('author__last_name'), output_field=CharField()))
         return qs
 
+    def annotate_title(self, qs):
+        return qs.annotate(title_lower=Lower('title'))
+
     def sort_queryset(self, qs, default_field, default_direction):
         sort_by = self.request.GET.get('sortby', default_field)
         direction = self.request.GET.get('direction', default_direction)
 
         if sort_by == 'full_name':
             qs = self.annotate_full_name(qs)
+
+        if sort_by == 'title':
+            qs = self.annotate_title(qs)
+            sort_by = 'title_lower'
 
         if direction == 'desc':
             return qs.order_by(F(sort_by).desc(nulls_last=True))

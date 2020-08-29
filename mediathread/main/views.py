@@ -158,7 +158,7 @@ class CourseDetailView(LoggedInMixin, DetailView):
         self.course = course
 
         # This handles staff & true course members
-        if not cached_course_is_member(course, self.request.user):
+        if not course.is_member(self.request.user):
             return HttpResponseRedirect('/accounts/login/')
 
         # Set the course in the session cookie. This is legacy

@@ -1,9 +1,5 @@
 from datetime import datetime
 import hashlib
-import hmac
-import json
-import re
-from smtplib import SMTPRecipientsRefused, SMTPDataError
 
 from courseaffils.columbia import CanvasTemplate, WindTemplate
 from courseaffils.lib import in_course_or_404, in_course, get_public_name
@@ -18,11 +14,12 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.urls import reverse
 from django.core.validators import validate_email
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import (
+    HttpResponse, HttpResponseRedirect, Http404)
 from django.shortcuts import get_object_or_404
 from django.template import loader
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
@@ -33,10 +30,8 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
 from djangohelpers.lib import rendered_with, allow_http
-import requests
-from sentry_sdk import capture_exception
-from threadedcomments.models import ThreadedComment
-
+import hmac
+import json
 from lti_auth.models import LTICourseContext
 from mediathread.api import UserResource, CourseInfoResource
 from mediathread.assetmgr.api import AssetResource
@@ -47,7 +42,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     cached_course_is_faculty, course_information_title,
-    has_student_activity, allow_roster_changes)
+    has_student_activity, allow_roster_changes, cached_course_is_member)
 from mediathread.main.forms import (
     ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
@@ -67,7 +62,12 @@ from mediathread.mixins import (
 )
 from mediathread.projects.api import ProjectResource
 from mediathread.projects.models import Project
+import re
+import requests
+from sentry_sdk import capture_exception
+from smtplib import SMTPRecipientsRefused, SMTPDataError
 from structuredcollaboration.models import Collaboration
+from threadedcomments.models import ThreadedComment
 
 
 # returns important setting information for all web pages.
@@ -156,6 +156,10 @@ class CourseDetailView(LoggedInMixin, DetailView):
         course = get_object_or_404(Course, pk=course_pk)
         request.course = course
         self.course = course
+
+        # This handles staff & true course members
+        if not cached_course_is_member(course, self.request.user):
+            return HttpResponseRedirect('/accounts/login/')
 
         # Set the course in the session cookie. This is legacy
         # functionality, but still used by the Mediathread collection

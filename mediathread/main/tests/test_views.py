@@ -1814,10 +1814,9 @@ class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
             object_pk=self.course.pk, slug=slugify(self.course.title))
 
     def test_get(self):
+        # only course members or staff can view the course
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
-        self.assertEqual(r.status_code, 200)
-        self.assertContains(r, self.course.title)
-        self.assertContains(r, 'Course Non-member')
+        self.assertEqual(r.status_code, 302)
 
         # TODO:
         # r = self.client.get(

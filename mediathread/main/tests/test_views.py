@@ -1813,6 +1813,9 @@ class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
             content_type=ContentType.objects.get_for_model(Course),
             object_pk=self.course.pk, slug=slugify(self.course.title))
 
+    def tearDown(self):
+        cache.clear()
+
     def test_get(self):
         # only course members or staff can view the course
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))

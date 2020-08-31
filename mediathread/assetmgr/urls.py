@@ -65,7 +65,7 @@ urlpatterns = [
     path('embed/view/<int:course_id>/<int:annot_id>/',
          AssetEmbedView.as_view(), {}, 'selection-embed-view'),
 
-    path('embed', AssetEmbedListView.as_view(), {}, 'asset-embed-list'),
+    path('embed/', AssetEmbedListView.as_view(), {}, 'asset-embed-list'),
 
     path('scalar/', ScalarExportView.as_view(), name='scalar_export'),
 

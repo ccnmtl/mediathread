@@ -61,7 +61,7 @@
 
 {% block content %}
 <form method="post" action="." class="register-form">
-
+    {% csrf_token %}
     <h2 class="pagetitle signuptitle">Sign up for an account</h2>
     <div><p>
     If you already have a username or password, but have forgotten either,

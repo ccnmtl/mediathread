@@ -1809,15 +1809,16 @@ class CourseDetailViewTest(LoggedInUserTestMixin, TestCase):
     def setUp(self):
         super(CourseDetailViewTest, self).setUp()
         self.course = CourseFactory()
-        Collaboration.objects.get_or_create(
-            content_type=ContentType.objects.get_for_model(Course),
-            object_pk=self.course.pk, slug=slugify(self.course.title))
+
+    def tearDown(self):
+        cache.clear()
 
     def test_get(self):
+        self.assertFalse(self.course.is_member(self.u))
+
+        # only course members or staff can view the course
         r = self.client.get(reverse('course_detail', args=(self.course.pk,)))
-        self.assertEqual(r.status_code, 200)
-        self.assertContains(r, self.course.title)
-        self.assertContains(r, 'Course Non-member')
+        self.assertEqual(r.status_code, 302)
 
         # TODO:
         # r = self.client.get(

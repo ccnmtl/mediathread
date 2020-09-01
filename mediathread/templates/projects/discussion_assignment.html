@@ -93,7 +93,7 @@
                     {% endif %}
                     {% if is_faculty %}
                         {% published_assignment_responses assignment as response_count %}
-                        <div class="dropdown d-inline ml-1">
+                        <div class="dropdown d-inline ml-1 response-dropdown">
                             <button class="btn btn-primary dropdown-toggle" type="button" id="student-response-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{response_count}} of {{students|length}} students responded
@@ -114,7 +114,6 @@
                                 {% endfor %}
                             </div>
                         </div>
-
                     {% endif %}
                 </div>
             </div>

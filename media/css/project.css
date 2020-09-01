@@ -578,3 +578,8 @@ div.selector h2 img.help-tooltip {
         transform: rotate(360deg);
     }
 }
+
+.response-dropdown .dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+}

@@ -95,17 +95,19 @@
                 </div>
                 <div class="col-md-6 text-right pr-0">
                     {% if not is_faculty and responses|length > 1 %}
-                        <button id="assignment-responses" type="button" class="btn btn-primary dropdown-toggle"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Class Responses
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="assignment-responses">
-                            {% for response in responses %}
-                                <a class="dropdown-item"
-                                    href="{% url 'project-workspace' request.course.id response.id %}">
-                                    {{response.attribution_last_first}}
-                                </a>
-                            {% endfor %}
+                        <div class="response-dropdown">
+                            <button id="assignment-responses" type="button" class="btn btn-primary dropdown-toggle"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Class Responses
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="assignment-responses">
+                                {% for response in responses %}
+                                    <a class="dropdown-item"
+                                        href="{% url 'project-workspace' request.course.id response.id %}">
+                                        {{response.attribution_last_first}}
+                                    </a>
+                                {% endfor %}
+                            </div>
                         </div>
                     {% endif %}
                     {% if assignment_can_edit %}
@@ -115,7 +117,7 @@
                         </a>
                     {% endif %}
                     {% if is_faculty %}
-                        <div class="dropdown d-inline ml-1">
+                        <div class="dropdown d-inline ml-1 response-dropdown">
                             <button class="btn btn-primary dropdown-toggle" type="button" id="student-response-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{responses|length}} of {{students|length}} students responded

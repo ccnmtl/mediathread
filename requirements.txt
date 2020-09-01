@@ -54,7 +54,7 @@ rjsmin==1.1.0
 
 djangowind==1.2.3
 django-tagging==0.5.0
-django-reversion==3.0.7
+django-reversion==3.0.8
 
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.2

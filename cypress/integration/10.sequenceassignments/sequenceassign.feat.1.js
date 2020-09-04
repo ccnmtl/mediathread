@@ -18,20 +18,19 @@ describe('Sequence Assignment Feat: Instructor Creation', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.contains('Add an assignment').click({force: true});
         cy.get('#addSequenceAssignment').click({force: true});
-        cy.get('[data-page="1"] > .row > .col > .btn').click({force: true});
+        cy.contains('Next').click();
         cy.title().should('eq', 'Mediathread Create Sequence Assignment');
         cy.contains('Next').click({force: true});
         cy.contains('Write title & instructions').should('exist');
-        cy.contains('Next').click();
+        cy.contains('Next').click({force: true});
         cy.contains('Title is a required field').should('exist');
         cy.contains('Instructions is a required field').should('exist');
         cy.get('input[name="title"]').type('Test Sequence Assignment');
         cy.getIframeBody().find('p').click()
             .type('Example instructions');
-        cy.contains('Next').click();
-        cy.get('texarea[name="custom_instructions_1"]').type('test');
-        cy.getIframeBody().find('p').click()
-            .type('Example summary');
+        cy.contains('Next').click({force: true});
+        cy.get('textarea[name="custom_instructions_1"]').type('test');
+        cy.get('#summary_ifr').type('Example summary');
         cy.contains('Set response due date & visibility').should('exist');
         cy.contains('Next').click({force: true});
         cy.contains('Please choose a due date').should('exist');

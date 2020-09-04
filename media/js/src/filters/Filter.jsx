@@ -158,7 +158,7 @@ export default class Filter extends React.Component {
         this.filterItems(getFilters(this.props));
     }
     handleTitleChange(e) {
-        const query = e.target.value.trim().toLowerCase();
+        const query = e.target.value.toLowerCase();
         this.setState({currentPage: 0});
         this.props.onUpdateFilter({title: query});
     }

@@ -52,10 +52,10 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.citationTemplate > .clickableCitation').click();
 
         cy.log('Add secondary elements');
-        cy.get('.jux-media > .jux-track').click();
+        cy.get('.jux-media > .jux-track').click({force: true});
         cy.get('#annotation-7 > .selection-citation > :nth-child(1) > .materialCitation')
             .click();
-        cy.get('.jux-txt > .jux-track').click();
+        cy.get('.jux-txt > .jux-track').click({force: true});
         // cy.contains('Add text annoatation').should('exist');
         cy.get('form > .form-control').type('Example annotation');
         cy.get('.modal-body > form > .btn').click();

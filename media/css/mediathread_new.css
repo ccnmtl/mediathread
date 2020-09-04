@@ -1796,6 +1796,13 @@ td.panel-container.collection.minimized div.intro-text ul {
     margin: 0 1em 0.7em 1em;
 }
 
+@media (max-width: 575px)
+{
+    .breadcrumb {
+        display: none;
+    }
+}
+
 div.homepage-column-info {
     color: #3a87ad;
     background-color: #d9edf7;

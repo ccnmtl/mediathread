@@ -26,7 +26,6 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         });
         cy.title().should('contain', 'Test Sequence Assignment');
         cy.get('.btn-edit-assignment').should('not.exist');
-        cy.get('button.btn-show-submit').should('be', 'disabled');
         cy.contains('Place secondary elements').should('be.visible');
         cy.contains('Add a primary video').should('be.visible');
 
@@ -34,7 +33,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('button.add-spine').click({force: true});
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
-        cy.get('.choice_all_items').click({force: true});
+        cy.get('.choice_all_items > .switcher-choice').click({force: true});
 
         cy.log('create selection');
         cy.get('.create_annotation_icon').click({force: true});

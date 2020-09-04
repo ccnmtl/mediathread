@@ -380,8 +380,12 @@ class MediathreadTestMixin(object):
                 title='The Armory - Home to CCNMTL\'s CUMC Office',
                 primary_source='image',
                 author=self.instructor_one, course=self.sample_course),
+            AssetFactory(
+                title='Test Asset 2',
+                primary_source='video',
+                author=self.instructor_one, course=self.sample_course)
         ]
-
+        
         for idx, item in enumerate(items):
             if idx == 0:  # everyone has the first item
                 a = [self.instructor_one, self.student_one, self.student_two]

@@ -34,6 +34,7 @@ describe('Student Creates Composition', () => {
         cy.get('.project-editbutton.active').should('exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
+        cy.get('.project-submitbutton').should('exist');
         cy.get('.participant-container').should('be', 'visible');
         cy.get('select[name="participants"]').should('exist');
         cy.get('select[name="participants"]').should('not.be.visible');
@@ -44,7 +45,6 @@ describe('Student Creates Composition', () => {
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
         cy.get('.project-savebutton').click();
-        cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
 
         cy.log('should toggle preview mode');

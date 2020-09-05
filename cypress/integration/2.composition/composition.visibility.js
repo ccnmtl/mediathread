@@ -28,7 +28,7 @@ describe('Student Project Visibility', () => {
         cy.get('#loaded').should('exist');
         cy.get('.page-title').click().clear()
             .type('Composition Public: Scenario 3');
-        cy.get('.project-savebutton').click();
+        cy.get('.project-submitbutton').click();
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');
@@ -67,7 +67,7 @@ describe('Student Project Visibility', () => {
         cy.get('.breadcrumb-item').contains('Back to all projects');
         cy.get('#loaded').should('exist');
         cy.get('.page-title').click().clear().type('Student One Public Essay');
-        cy.get('.project-savebutton').click();
+        cy.get('.project-submitbutton').click();
         cy.contains('Whole Class - all class members can view').click();
         cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-savebutton').should('contain', 'Saved');

@@ -21,6 +21,7 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('not.exist');
+        cy.get('.project-submitbutton').should('not.exist');
         cy.get('.participant_list').should('not.be', 'visible');
         cy.get('.project-visibility').should('not.have.attr', 'href');
         cy.get('#instructions').should('be.visible');
@@ -33,6 +34,7 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.composition .project-editbutton.active').should('exist');
         cy.get('.composition .project-previewbutton.active').should('not.exist');
         cy.get('.composition .project-savebutton').should('exist');
+        cy.get('.composition .project-submitbutton').should('exist');
         cy.get('.composition .participant-edit-container')
             .should('be', 'visible');
         cy.get('.composition .participant-container')
@@ -44,10 +46,9 @@ describe('Assignment Feature: Student Response', () => {
             .type('Sample Assignment Response');
         cy.get('.composition').getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
-        cy.get('.composition .project-savebutton').click();
 
         cy.log('Save as submitted to the instructor');
-        cy.get('.project-savebutton').click({ force: true });
+        cy.get('.project-submitbutton').click({force: true});
         cy.contains('Instructor - only author(s) and instructor can view')
             .click();
         cy.get('.btn-save-project').contains('Save');

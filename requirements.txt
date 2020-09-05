@@ -107,7 +107,7 @@ django-smtp-ssl==1.0
 djangorestframework==3.11.1
 
 ccnmtlsettings==1.8.4
-django-extensions==3.0.7
+django-extensions==3.0.8
 
 s3transfer==0.3.3
 jmespath==0.10.0

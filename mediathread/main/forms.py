@@ -199,12 +199,6 @@ class DashboardSettingsForm(forms.ModelForm):
         js = ('js/lib/jquery.are-you-sure.js',
               'js/forms/unsaved-notice.js',)
 
-    homepage_title = forms.CharField(
-        max_length=24,
-        label='Homepage "From Your Instructor" Title',
-        help_text='This feature allows faculty to customize the left-hand '
-        'column title on the Mediathread homepage. This must be less than '
-        '25 characters long. Defaults to "From Your Instructor".')
     publish_to_world = forms.BooleanField(
         label='"Publish To The World" Compositions',
         required=False,
@@ -238,7 +232,6 @@ class DashboardSettingsForm(forms.ModelForm):
     def initial_data(self):
         return {
             'title': self.instance.title,
-            'homepage_title': 'From Your Instructor',
             'publish_to_world': False,
             'see_eachothers_items': True,
             'see_eachothers_selections': True,
@@ -250,8 +243,6 @@ class DashboardSettingsForm(forms.ModelForm):
         r = super(DashboardSettingsForm, self).__init__(*args, **kwargs)
         self.fields['publish_to_world'].initial = \
             allow_public_compositions(self.instance)
-        self.fields['homepage_title'].initial = \
-            course_information_title(self.instance)
         self.fields['see_eachothers_items'].initial = \
             all_items_are_visible(self.instance)
         self.fields['see_eachothers_selections'].initial = \
@@ -280,10 +271,6 @@ class DashboardSettingsForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         course = super(DashboardSettingsForm, self).save(*args, **kwargs)
         cleaned_data = self.cleaned_data
-
-        course.add_detail(
-            course_details.COURSE_INFORMATION_TITLE_KEY,
-            cleaned_data.get('homepage_title'))
 
         course.add_detail(
             course_details.ITEM_VISIBILITY_KEY,

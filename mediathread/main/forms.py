@@ -8,7 +8,7 @@ from mediathread.main import course_details
 from mediathread.main.course_details import (
     allow_public_compositions,
     all_items_are_visible, all_selections_are_visible,
-    course_information_title, allow_item_download, allow_roster_changes)
+    allow_item_download, allow_roster_changes)
 from mediathread.projects.models import Project
 
 

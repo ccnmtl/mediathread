@@ -1470,7 +1470,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
-                'homepage_title': 'new homepage title',
             },
             follow=True)
 
@@ -1481,8 +1480,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
         course = Course.objects.get(title='New Title')
         self.assertEqual(allow_public_compositions(course), False)
-        self.assertEqual(course_information_title(course),
-                         'new homepage title')
         self.assertEqual(all_items_are_visible(course), False)
         self.assertEqual(all_selections_are_visible(course), False)
         self.assertEqual(allow_item_download(course), False)
@@ -1491,7 +1488,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
-                'homepage_title': 'new homepage title',
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
@@ -1505,8 +1501,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Course.objects.filter(title='New Title').count(), 1)
         course = Course.objects.get(title='New Title')
         self.assertEqual(allow_public_compositions(course), True)
-        self.assertEqual(course_information_title(course),
-                         'new homepage title')
         self.assertEqual(all_items_are_visible(course), True)
         self.assertEqual(all_selections_are_visible(course), True)
         self.assertEqual(allow_item_download(course), True)
@@ -1515,7 +1509,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
-                'homepage_title': 'new homepage title',
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,
@@ -1531,7 +1524,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': 'New Title',
-                'homepage_title': 'new homepage title',
             },
             follow=True)
 
@@ -1543,8 +1535,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(Course.objects.filter(title='New Title').count(), 2)
         course = response.context['object']
         self.assertEqual(allow_public_compositions(course), False)
-        self.assertEqual(course_information_title(course),
-                         'new homepage title')
         self.assertEqual(all_items_are_visible(course), False)
         self.assertEqual(all_selections_are_visible(course), False)
 
@@ -1554,7 +1544,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
             reverse('course-settings-general', args=[self.course.pk]),
             {
                 'title': '     ',
-                'homepage_title': 'new homepage title',
             },
             follow=True)
 
@@ -1580,7 +1569,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         response = self.client.post(
             reverse('course-settings-general', args=[self.course.pk]), {
                 'title': '     ',
-                'homepage_title': 'doesnt update',
                 'publish_to_world': False,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': False,
@@ -1605,7 +1593,6 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         response = self.client.post(
             reverse('course-settings-general', args=[self.course.pk]), {
                 'title': 'New Title 1',
-                'homepage_title': 'updated homepage title',
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True
@@ -1613,13 +1600,10 @@ class InstructorDashboardSettingsViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         course.refresh_from_db()
         self.assertEqual(course.title, 'New Title 1')
-        self.assertEqual(course_information_title(course),
-                         'updated homepage title')
 
         response = self.client.post(
             reverse('course-settings-general', args=[self.course.pk]), {
                 'title': 'New Title',
-                'homepage_title': 'doesnt update',
                 'publish_to_world': True,
                 'see_eachothers_items': True,
                 'see_eachothers_selections': True,

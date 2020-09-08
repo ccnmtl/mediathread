@@ -1,5 +1,5 @@
 {% extends "base_new.html" %}
-{% load coursetags static %}
+{% load coursetags static comments %}
 
 {% block title %}
 Assignments
@@ -100,6 +100,22 @@ Assignments
                     </div>
                 </div>
             </div>
+            {% endif %}
+
+            {% if discussions|length > 0 %}
+                <h3 class="mt-5">Past Discussions</h3>
+                <p><i>Discussion created prior to August 2020 were available outside the assignment context.</i></p>
+                <ul>
+                {% for disc in discussions %}
+                    <li>
+                        <a href="/discussion/{{disc.id}}/">
+                            {% firstof disc.title disc.content_object.title "Untitled" %}</a>
+                            {% get_comment_count for disc.content_object as comment_count%}
+                            ({{comment_count}})
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
             {% endif %}
         </div>
     </div>

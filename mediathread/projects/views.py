@@ -23,6 +23,7 @@ from mediathread.api import CourseResource
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
 from mediathread.assetmgr.models import Asset
+from mediathread.discussions.utils import get_course_discussions
 from mediathread.discussions.views import threaded_comment_json
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.main.course_details import allow_public_compositions, \
@@ -822,6 +823,7 @@ class AssignmentListView(ProjectListView):
         ctx = super().get_context_data(**kwargs)
         ctx['status'] = self.request.GET.get('status', 'all')
         ctx['title'] = self.request.GET.get('title', '')
+        ctx['discussions'] = get_course_discussions(self.request.course)
         return ctx
 
     def filter_by_status(self, qs):

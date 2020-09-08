@@ -23,13 +23,13 @@
             </th>
             <th data-sort-by="project_type"
                 class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
-                Type
+                Assignment Type
             </th>
             <th data-sort-by="modified"
                 class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
                 Last Updated
             </th>
-            <th>Action</th>
+            <th>Delete</th>
         </thead>
         <tbody>
         {% for object in object_list %}
@@ -55,7 +55,7 @@
                     {{object.attribution}}
                 </td>
                 <td>
-                    {{object.description}}
+                    {{object.assignment}}
                 </td>
                 <td>
                     {{object.modified}}
@@ -63,7 +63,7 @@
                 <td>
                     {% if response_count < 1 %}
                         {% if request.user == object.author or request.user in object.participants %}
-                            <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
+                            <button class="btn btn-danger btn-sm" title="Delete {{object.title}}"
                                 data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                 Delete
                             </button>
@@ -79,6 +79,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>Are you sure you want to delete {{object.title}}?</p>
+                                            <p class="small">There are currently no responses to this assignment</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button"
@@ -86,7 +87,7 @@
                                             <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
                                                 {% csrf_token %}
                                                 <button type="submit" data-project-id="{{object.id}}"
-                                                    class="btn btn-primary btn-delete-project">Delete</button>
+                                                    class="btn btn-danger btn-delete-project">Delete</button>
                                             </form>
                                         </div>
                                     </div>

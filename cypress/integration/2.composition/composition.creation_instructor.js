@@ -31,6 +31,7 @@ describe('Instructor Creates Composition', () => {
         cy.get('.project-editbutton.active').should('exist');
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
+        cy.get('.project-submitbutton').should('exist');
         cy.get('select[name="participants"]').should('exist');
         cy.get('select[name="participants"]').should('not.be.visible');
         cy.get('.participant-container').should('be.visible');
@@ -46,8 +47,8 @@ describe('Instructor Creates Composition', () => {
         cy.get('#id_publish').should('not.be.visible');
         cy.get('.btn-save-project').should('not.be.visible');
         cy.get('.project-savebutton').contains('Save').should('be.visible');
-        cy.get('.project-savebutton').click();
 
+        cy.get('.project-submitbutton').click();
         cy.get('.save-publish-status.modal').should('be.visible');
         cy.get('.save-publish-status.modal #id_publish').find('li')
             .should('contain', 'Draft - only you can view')

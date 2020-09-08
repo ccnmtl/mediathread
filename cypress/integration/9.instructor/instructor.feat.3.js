@@ -27,7 +27,7 @@ describe('Instructor Feat: Test Create Composition', () => {
         cy.get('.page-title').contains('Untitled')
         cy.get('.page-title').click().clear()
             .type('Instructor Feature 3');
-        cy.get('.project-savebutton').click();
+        cy.get('.project-submitbutton').click();
         cy.get('.btn-save-project').click();
         cy.title().should('contain', 'Instructor Feature 3');
         cy.visit('/course/1/projects/');

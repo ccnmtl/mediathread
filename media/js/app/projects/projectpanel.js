@@ -54,6 +54,10 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
 
     // hook up behaviors
     self._bind(self.$el, '.project-savebutton', 'click', function(evt) {
+        self.saveProject();
+        return false;
+    });
+    self._bind(self.$el, '.project-submitbutton', 'click', function(evt) {
         self.showSaveOptions(evt);
         return false;
     });

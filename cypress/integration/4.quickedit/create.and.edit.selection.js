@@ -32,7 +32,7 @@ describe('Instructor creates a selection', () => {
             .type('Quick Edit Composition');
         cy.getIframeBody().find('p').click()
             .type('The Columbia Center for New Teaching and Learning');
-        cy.get('.project-savebutton').click();
+        cy.get('.project-submitbutton').click();
         cy.get('.btn-save-project').click();
 
         cy.log('verify asset exists');

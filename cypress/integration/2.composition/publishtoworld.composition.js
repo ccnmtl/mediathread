@@ -50,7 +50,7 @@ describe('Publish To World Public Composition', () => {
             .contains('Our esteemed leaders');
 
         cy.log('save project and set project visibility to public');
-        cy.get('.project-savebutton').click();
+        cy.get('.project-submitbutton').click();
         cy.contains('Whole World - a public url is provided').click();
         cy.get('.btn-save-project').contains('Save').click();
         cy.get('.project-visibility-description')
@@ -71,6 +71,7 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.project-editbutton.active').should('not.exist');
                 cy.get('.project-previewbutton.active').should('not.exist');
                 cy.get('.project-savebutton').should('not.exist');
+                cy.get('.project-submitbutton').should('not.exist');
                 cy.get('.participant_list').should('not.exist');
                 cy.get('.materialCitation').click();
 

@@ -124,6 +124,8 @@ export default class SelectionForm extends React.Component {
                 this.props.selection.vocabulary);
         }
 
+        const hasVocab = this.props.terms && this.props.terms.length > 0;
+
         return (
             <Form
                 noValidate
@@ -156,19 +158,21 @@ export default class SelectionForm extends React.Component {
                         options={tagsOptions} />
                 </Form.Group>
 
-                <Form.Group>
-                    <label htmlFor="newSelectionTerms">Terms</label>
-                    <Select
-                        id="newSelectionTerms"
-                        ref={this.termsRef}
-                        menuPortalTarget={document.body}
-                        styles={reactSelectStyles}
-                        className="react-select form-control"
-                        onChange={this.handleTermsChange}
-                        isMulti
-                        defaultValue={selectedTerms}
-                        options={termsOptions} />
-                </Form.Group>
+                {hasVocab && (
+                    <Form.Group>
+                        <label htmlFor="newSelectionTerms">Terms</label>
+                        <Select
+                            id="newSelectionTerms"
+                            ref={this.termsRef}
+                            menuPortalTarget={document.body}
+                            styles={reactSelectStyles}
+                            className="react-select form-control"
+                            onChange={this.handleTermsChange}
+                            isMulti
+                            defaultValue={selectedTerms}
+                            options={termsOptions} />
+                    </Form.Group>
+                )}
 
                 <Form.Group>
                     <label

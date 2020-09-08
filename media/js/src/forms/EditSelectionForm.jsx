@@ -17,7 +17,6 @@ export default class EditSelectionForm extends SelectionForm {
         // Get the tags and terms values from the react-select
         // components.
         const rawTags = this.tagsRef.current.state.value;
-        const rawTerms = this.termsRef.current.state.value;
 
         // Tags are handled as a space-separated CharField, while
         // Terms are handled with primary keys.
@@ -32,13 +31,18 @@ export default class EditSelectionForm extends SelectionForm {
             tags = tags.slice(0, -1);
         }
 
-        const terms = [];
-        if (rawTerms) {
-            rawTerms.forEach(function(term) {
-                if (term && term.data) {
-                    terms.push(term.data.id);
-                }
-            });
+        let terms = null;
+        if (this.termsRef && this.termsRef.current) {
+            const rawTerms = this.termsRef.current.state.value;
+
+            terms = [];
+            if (rawTerms) {
+                rawTerms.forEach(function(term) {
+                    if (term && term.data) {
+                        terms.push(term.data.id);
+                    }
+                });
+            }
         }
 
         return this.props.onSaveSelection(

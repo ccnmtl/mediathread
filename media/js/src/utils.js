@@ -664,6 +664,10 @@ const getTags = function(annotations) {
 const getTerms = function(annotations) {
     const terms = [];
     annotations.forEach(function(a) {
+        if (!('vocabulary' in a)) {
+            return false;
+        }
+
         a.vocabulary.forEach(function(vocab) {
             vocab.terms.forEach(function(term) {
                 if (!terms.includes(term.display_name)) {

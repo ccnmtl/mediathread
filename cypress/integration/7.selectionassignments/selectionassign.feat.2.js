@@ -20,7 +20,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
             cy.get('td').eq(1).contains('Sample Selection Assignment');
             cy.get('td').eq(2).contains('No Response Yet');
             cy.get('td').eq(5).contains('Add Response');
-            cy.get('td').eq(4).contains('Selection');
+            cy.get('td').eq(3).contains('Selection');
 
             cy.get('td').eq(5).contains('Add Response').click();
         });

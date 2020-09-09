@@ -67,7 +67,7 @@ describe('Assignment Feature: Student Response', () => {
             cy.get('td').eq(2).contains('Shared with Instructor');
             cy.get('td').eq(2).contains('Submitted');
             cy.get('td').eq(5).contains('View Response');
-            cy.get('td').eq(4).contains('Composition');
+            cy.get('td').eq(3).contains('Composition');
         });
     });
 

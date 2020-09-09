@@ -79,6 +79,8 @@ export default class AssetDetail extends React.Component {
             selectionStartTime: activeSelection ? activeSelection.range1 : 0,
             selectionEndTime: activeSelection ? activeSelection.range2 : 0,
 
+            assetTitle: this.props.asset ? this.props.asset.title : null,
+
             deletingSelectionId: null,
             showDeleteDialog: false,
             showDeletedDialog: false,
@@ -131,6 +133,7 @@ export default class AssetDetail extends React.Component {
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
 
         this.addInteraction = this.addInteraction.bind(this);
+        this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -155,6 +158,10 @@ export default class AssetDetail extends React.Component {
                     true);
             }
         });
+    }
+
+    onUpdateAssetTitle(newTitle) {
+        this.setState({assetTitle: newTitle});
     }
 
     onCreateSelection(e, tags, terms) {
@@ -708,7 +715,7 @@ export default class AssetDetail extends React.Component {
             <div className="tab-content asset-detail">
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
                     <h2 className="col-md-7 asset-detail-title">
-                        {this.props.asset.title}
+                        {this.state.assetTitle}
                     </h2>
 
                     <Nav
@@ -806,7 +813,10 @@ export default class AssetDetail extends React.Component {
                             </>
                         )}
                         {this.state.tab === 'viewMetadata' && (
-                            <ViewItem asset={this.props.asset} />
+                            <ViewItem
+                                asset={this.props.asset}
+                                onUpdateAssetTitle={this.onUpdateAssetTitle}
+                            />
                         )}
                     </div>
 

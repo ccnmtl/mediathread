@@ -99,6 +99,21 @@ const getAsset = function(id=null) {
         });
 };
 
+const updateAssetTitle = function(assetId, newTitle) {
+    const url = `/asset/${assetId}/save/`;
+
+    return authedFetch(url, 'put', JSON.stringify({
+        title: newTitle
+    })).then(function(response) {
+        if (response.status === 200) {
+            return response.json();
+        } else {
+            throw 'Error updating asset: ' +
+                `(${response.status}) ${response.statusText}`;
+        }
+    });
+};
+
 const getAssetReferences = function(id=null) {
     let url = `/asset/references/${id}/`;
 
@@ -681,6 +696,7 @@ const getTerms = function(annotations) {
 
 export {
     getAssets, getAsset, getAssetReferences,
+    updateAssetTitle,
     createSelection,
     createSherdNote, updateSherdNote,
     deleteSelection,

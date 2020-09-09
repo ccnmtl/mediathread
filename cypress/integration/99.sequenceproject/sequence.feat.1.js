@@ -13,9 +13,9 @@ describe('Sequence Project Feat: Student Creation', () => {
     });
 
     it('Student Creates Sequence Project', () => {
-        cy.get('#projects-list').click();
         cy.get('#cu-privacy-notice-icon').click();
-        cy.get('#add-sequence-button').click();
+        cy.get('#projects-list').click();
+        cy.get('#add-sequence-button').click({force: true});
         cy.title().should('contain', 'Mediathread — Untitled');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('button.btn-show-submit').should('not.exist');

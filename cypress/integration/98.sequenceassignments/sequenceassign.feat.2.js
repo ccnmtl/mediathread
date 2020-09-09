@@ -7,7 +7,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
 
     before(() => {
-        cy.login('student_two', 'test');
+        cy.login('student_one', 'test');
         cy.visit('/course/1/');
         cy.get('.card-group h5 a').contains('MAAP Award Reception');
     });
@@ -49,9 +49,10 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection');
         cy.contains('Edit Selection').should('exist');
-        cy.get('.citationTemplate > .clickableCitation').click();
+        cy.get('.citationTemplate > .clickableCitation').click({force: true});
 
         cy.log('Add secondary elements');
+        cy.wait(500);
         cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
         cy.get('#annotation-7 > .selection-citation > :nth-child(1) > .materialCitation')
             .click();

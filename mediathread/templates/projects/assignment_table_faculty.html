@@ -29,7 +29,7 @@
                 class="sortable {% if sortby == 'modified' %}{{direction}}{% endif %}">
                 Last Updated
             </th>
-            <th>Delete</th>
+            <th>Action</th>
         </thead>
         <tbody>
         {% for object in object_list %}
@@ -55,7 +55,15 @@
                     {{object.attribution}}
                 </td>
                 <td>
-                    {{object.assignment}}
+                    {% if object.description == 'Sequence Assignment' %}
+                        Sequence
+                    {% elif object.description == 'Composition Assignment' %}
+                        Composition
+                    {% elif object.description == 'Selection Assignment' %}
+                        Selection
+                    {% elif object.description == 'Discussion Assignment' %}
+                        Discussion
+                    {% endif %}
                 </td>
                 <td>
                     {{object.modified}}
@@ -63,7 +71,7 @@
                 <td>
                     {% if response_count < 1 %}
                         {% if request.user == object.author or request.user in object.participants %}
-                            <button class="btn btn-danger btn-sm" title="Delete {{object.title}}"
+                            <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
                                 data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                 Delete
                             </button>
@@ -79,7 +87,6 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>Are you sure you want to delete {{object.title}}?</p>
-                                            <p class="small">There are currently no responses to this assignment</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button"
@@ -87,7 +94,7 @@
                                             <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
                                                 {% csrf_token %}
                                                 <button type="submit" data-project-id="{{object.id}}"
-                                                    class="btn btn-danger btn-delete-project">Delete</button>
+                                                    class="btn btn-primary btn-delete-project">Delete</button>
                                             </form>
                                         </div>
                                     </div>

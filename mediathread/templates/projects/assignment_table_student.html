@@ -12,13 +12,13 @@
                 Response Status
             </th>
             <th>
-                Action
-            </th>
-            <th>
-                Type
+                Assignment Type
             </th>
             <th>
                 Last Updated
+            </th>
+            <th>
+                Action
             </th>
         </thead>
         <tbody>
@@ -57,28 +57,36 @@
                         {% endif %}{% endif %}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-primary btn-block"
-                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                            Add Comments
-                        </a>
-                    </td>
-                    <td>
-                        {{object.description}}
+                        {% if object.description == 'Sequence Assignment' %}
+                            Sequence
+                        {% elif object.description == 'Composition Assignment' %}
+                            Composition
+                        {% elif object.description == 'Selection Assignment' %}
+                            Selection
+                        {% elif object.description == 'Discussion Assignment' %}
+                            Discussion
+                        {% endif %}
                     </td>
                     <td>
                         {% if comments.0 %}
                             {{comments.1}}
                         {% endif %}
                     </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary btn-block"
+                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                            Add Comments
+                        </a>
+                    </td>
                 </tr>
             {% else %}
                 {% my_assignment_responses object request.user as responses %}
-    
+
                 {% comment %}
                     Users can potentially have multiple responses to an assignment
                     by collaborating with fellow students.
                 {% endcomment %}
-    
+
                 {% if responses.exists %}
                     {% for response_collaboration in responses %}
                         {% with response=response_collaboration.content_object %}
@@ -115,6 +123,20 @@
                                 {% endif %}
                             </td>
                             <td>
+                                {% if object.description == 'Sequence Assignment' %}
+                                    Sequence
+                                {% elif object.description == 'Composition Assignment' %}
+                                    Composition
+                                {% elif object.description == 'Selection Assignment' %}
+                                    Selection
+                                {% elif object.description == 'Discussion Assignment' %}
+                                    Discussion
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{response.modified|date:"n/j/y g:iA"}}
+                            </td>
+                            <td>
                                 {% if response.feedback_discussion %}
                                     <a class="btn btn-sm btn-primary btn-block"
                                         href="{% url 'project-workspace' request.course.id response.id %}" title="{{response.title}}">
@@ -131,12 +153,6 @@
                                         Edit Response
                                     </a>
                                 {% endif %}{% endif %}
-                            </td>
-                            <td>
-                                {{object.description}}
-                            </td>
-                            <td>
-                                {{response.modified|date:"n/j/y g:iA"}}
                             </td>
                         </tr>
                         {% endwith %}
@@ -171,6 +187,19 @@
                             No Response Yet
                         </td>
                         <td>
+                            {% if object.description == 'Sequence Assignment' %}
+                                Sequence
+                            {% elif object.description == 'Composition Assignment' %}
+                                Composition
+                            {% elif object.description == 'Selection Assignment' %}
+                                Selection
+                            {% elif object.description == 'Discussion Assignment' %}
+                                Discussion
+                            {% endif %}
+                        </td>
+                        <td>
+                        </td>
+                        <td>
                             {% if object.is_discussion_assignment %}
                                 <a href="{% url 'project-workspace' request.course.id object.id %}">
                                     Add Comment
@@ -184,11 +213,6 @@
                                     <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
                                 </form>
                             {% endif %}
-                        </td>
-                        <td>
-                            {{object.description}}
-                        </td>
-                        <td>
                         </td>
                     </tr>
                 {% endif %}

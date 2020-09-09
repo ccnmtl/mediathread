@@ -12,13 +12,16 @@
                 Response Status
             </th>
             <th>
-                Assignment Type
+                Type
             </th>
             <th>
                 Last Updated
             </th>
             <th>
                 Action
+            </th>
+            <th>
+                Delete
             </th>
         </thead>
         <tbody>
@@ -57,15 +60,7 @@
                         {% endif %}{% endif %}
                     </td>
                     <td>
-                        {% if object.description == 'Sequence Assignment' %}
-                            Sequence
-                        {% elif object.description == 'Composition Assignment' %}
-                            Composition
-                        {% elif object.description == 'Selection Assignment' %}
-                            Selection
-                        {% elif object.description == 'Discussion Assignment' %}
-                            Discussion
-                        {% endif %}
+                        {{object.description}}
                     </td>
                     <td>
                         {% if comments.0 %}
@@ -77,6 +72,8 @@
                             href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
                             Add Comments
                         </a>
+                    </td>
+                    <td>
                     </td>
                 </tr>
             {% else %}
@@ -123,15 +120,7 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if object.description == 'Sequence Assignment' %}
-                                    Sequence
-                                {% elif object.description == 'Composition Assignment' %}
-                                    Composition
-                                {% elif object.description == 'Selection Assignment' %}
-                                    Selection
-                                {% elif object.description == 'Discussion Assignment' %}
-                                    Discussion
-                                {% endif %}
+                                {{object.description}}
                             </td>
                             <td>
                                 {{response.modified|date:"n/j/y g:iA"}}
@@ -153,6 +142,40 @@
                                         Edit Response
                                     </a>
                                 {% endif %}{% endif %}
+                            </td>
+                            <td>
+                                {% if not response.feedback_discussion and not response.is_submitted %}
+
+                                    <button class="btn btn-danger btn-sm" title="Delete {{response.title}}"
+                                        data-toggle="modal" data-target="#delete-project-{{response.id}}">
+                                        Delete
+                                    </button>
+                                    <div id="delete-project-{{response.id}}" class="modal" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete {{response.title}}</h5>
+                                                    <button type="button" class="close"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete {{response.title}}?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button"
+                                                        class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <form action="{% url 'project-delete' request.course.id response.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <button type="submit" data-project-id="{{response.id}}"
+                                                            class="btn btn-danger btn-delete-project">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endwith %}
@@ -187,15 +210,7 @@
                             No Response Yet
                         </td>
                         <td>
-                            {% if object.description == 'Sequence Assignment' %}
-                                Sequence
-                            {% elif object.description == 'Composition Assignment' %}
-                                Composition
-                            {% elif object.description == 'Selection Assignment' %}
-                                Selection
-                            {% elif object.description == 'Discussion Assignment' %}
-                                Discussion
-                            {% endif %}
+                            {{object.description}}
                         </td>
                         <td>
                         </td>
@@ -213,6 +228,8 @@
                                     <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
                                 </form>
                             {% endif %}
+                        </td>
+                        <td>
                         </td>
                     </tr>
                 {% endif %}

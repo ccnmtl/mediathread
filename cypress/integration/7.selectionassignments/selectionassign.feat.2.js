@@ -19,10 +19,10 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(1).contains('Sample Selection Assignment');
             cy.get('td').eq(2).contains('No Response Yet');
-            cy.get('td').eq(3).contains('Add Response');
-            cy.get('td').eq(4).contains('Selection Assignment');
+            cy.get('td').eq(5).contains('Add Response');
+            cy.get('td').eq(4).contains('Selection');
 
-            cy.get('td').eq(3).contains('Add Response').click();
+            cy.get('td').eq(5).contains('Add Response').click();
         });
 
         cy.title().should('contain', 'Sample Selection Assignment');
@@ -55,7 +55,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
         cy.get('button.btn-show-submit').click();
         cy.get('#submit-project').should('be.visible');
         cy.get('#submit-project').within(() => {
-            cy.get('h4.modal-title').contains('1 Selection'); 
+            cy.get('h4.modal-title').contains('1 Selection');
             cy.get('.submit-response').should('be.visible');
             cy.get('.submit-response').click();
         });

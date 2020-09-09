@@ -86,7 +86,7 @@ describe('Assignment Feature: Instructor Creation', () => {
             cy.get('td').eq(2).contains('Shared with Class');
             cy.get('td').eq(3).contains('0 / 3');
             cy.get('td').eq(4).contains('Instructor One');
-            cy.get('td').eq(5).contains('Composition Assignment');
+            cy.get('td').eq(5).contains('Composition');
             cy.get('td').eq(7).contains('Delete');
         });
     });

@@ -30,13 +30,11 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.citationTemplate > .materialCitation').click({force: true});
 
         cy.log('Add secondary elements');
-        cy.get('.jux-media > .jux-track').click();
-        cy.get('.switcher_collection_chooser > .switcher-top')
-            .click({force: true});
-        cy.get('.choice_all_items').click({force: true});
-        cy.get('#annotation-7 > .selection-citation > :nth-child(1) > .materialCitation')
+        cy.wait(500);
+        cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
+        cy.get('#record-1 > .record-asset-properties > .citationTemplate > .materialCitation')
             .click();
-        cy.get('.jux-txt > .jux-track').click();
+        cy.get('.jux-txt > .jux-track > :nth-child(3)').click({force: true});
         // cy.contains('Add text annoatation').should('exist');
         cy.get('form > .form-control').type('Project annotation');
         cy.get('.modal-body > form > .btn').click();

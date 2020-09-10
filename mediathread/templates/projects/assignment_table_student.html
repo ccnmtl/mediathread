@@ -12,7 +12,7 @@
                 Response Status
             </th>
             <th>
-                Type
+                Assignment Type
             </th>
             <th>
                 Last Updated
@@ -60,7 +60,15 @@
                         {% endif %}{% endif %}
                     </td>
                     <td>
-                        {{object.description}}
+                        {% if object.description == 'Sequence Assignment' %}
+                            Sequence
+                        {% elif object.description == 'Composition Assignment' %}
+                            Composition
+                        {% elif object.description == 'Selection Assignment' %}
+                            Selection
+                        {% elif object.description == 'Discussion Assignment' %}
+                            Discussion
+                        {% endif %}
                     </td>
                     <td>
                         {% if comments.0 %}
@@ -120,7 +128,15 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {{object.description}}
+                                {% if object.description == 'Sequence Assignment' %}
+                                    Sequence
+                                {% elif object.description == 'Composition Assignment' %}
+                                    Composition
+                                {% elif object.description == 'Selection Assignment' %}
+                                    Selection
+                                {% elif object.description == 'Discussion Assignment' %}
+                                    Discussion
+                                {% endif %}
                             </td>
                             <td>
                                 {{response.modified|date:"n/j/y g:iA"}}
@@ -211,7 +227,15 @@
                             No Response Yet
                         </td>
                         <td>
-                            {{object.description}}
+                            {% if object.description == 'Sequence Assignment' %}
+                                Sequence
+                            {% elif object.description == 'Composition Assignment' %}
+                                Composition
+                            {% elif object.description == 'Selection Assignment' %}
+                                Selection
+                            {% elif object.description == 'Discussion Assignment' %}
+                                Discussion
+                            {% endif %}
                         </td>
                         <td>
                         </td>

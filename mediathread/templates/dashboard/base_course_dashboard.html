@@ -37,11 +37,27 @@
             <nav aria-label="context" role="navigation">
                 <ul class="section-tabs">
                     <li>
+                        <strong>Preferences</strong>
+                    </li>
+                    <li>
                         <a
                             {% if '/settings/' in request.path %}class="active"{% endif %}
                             href="{% url 'course-settings-general' request.course.pk %}">
-                            General
+                            General Settings
                         </a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/roster/' in request.path %}class="active"{% endif %}
+                            href="{% url 'course-roster' request.course.pk %}">Roster</a>
+                    </li>
+                    <li>
+                        <a
+                            {% if '/taxonomy/' in request.path %}class="active"{% endif %}
+                            href="{% url 'taxonomy-workspace' request.course.pk %}">Vocabulary</a>
+                    </li>
+                    <li>
+                        <strong>Materials</strong>
                     </li>
                     <li>
                         <a
@@ -61,42 +77,34 @@
                             {% if '/migrate/' in request.path %}class="active"{% endif %}
                             href="{% url 'dashboard-migrate' request.course.pk %}">Migrations</a>
                     </li>
+                    {% if user.is_superuser %}
+                        <li>
+                            <a {% if '/convert/' in request.path %}class="active"{% endif %}
+                                href="{% url 'course-convert-materials' request.course.pk %}">Conversions</a>
+                        </li>
+                        <li>
+                            <a {% if '/delete/' in request.path %}class="active"{% endif %}
+                                href="{% url 'course-delete-materials' request.course.pk %}">Deletions</a>
+                        </li>
+                    {% endif %}
                     <li>
-                        <a
-                            {% if '/taxonomy/' in request.path %}class="active"{% endif %}
-                            href="{% url 'taxonomy-workspace' request.course.pk %}">Vocabulary</a>
-                    </li>
-                    <li>
-                        <a
-                            {% if '/roster/' in request.path %}class="active"{% endif %}
-                            href="{% url 'course-roster' request.course.pk %}">Roster</a>
-                    </li>
-                    <li>
-                        <a
-                            {% if '/reports/class_assignments/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_assignments/">Course Assignments</a>
+                        <strong>Participation</strong>
                     </li>
                     <li>
                         <a
                             {% if '/reports/class_activity/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_activity/">Course Activity</a>
+                            href="/reports/class_activity/">Activity</a>
                     </li>
                     <li>
                         <a
                             {% if '/reports/class_summary/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_summary/">Course Member Contributions</a>
+                            href="/reports/class_summary/">Member Contributions</a>
                     </li>
-
-                    {% if user.is_superuser %}
-                        <li>
-                            <a {% if '/delete/' in request.path %}class="active"{% endif %}
-                                href="{% url 'course-delete-materials' request.course.pk %}">Delete Materials</a>
-                        </li>
-                        <li>
-                            <a {% if '/convert/' in request.path %}class="active"{% endif %}
-                                href="{% url 'course-convert-materials' request.course.pk %}">Convert Materials</a>
-                        </li>
-                    {% endif %}
+                    <li>
+                        <a
+                            {% if '/reports/class_assignments/' in request.path %}class="active"{% endif %}
+                            href="/reports/class_assignments/">Assignment Responses</a>
+                    </li>
                 </ul>
             </nav>
         </div>

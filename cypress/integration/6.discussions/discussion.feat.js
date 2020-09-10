@@ -82,7 +82,7 @@ describe('Discussion View: Create Discussion', () => {
             cy.get('td').eq(2).contains('Shared with Class');
             cy.get('td').eq(3).contains('0 / 3');
             cy.get('td').eq(4).contains('Instructor One');
-            cy.get('td').eq(5).contains('Discussion Assignment');
+            cy.get('td').eq(5).contains('Discussion');
             cy.get('td').eq(7).contains('Delete');
         });
     });
@@ -133,7 +133,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.contains('Discussion: Scenario 1').parent('tr').within(() => {
             cy.get('td').eq(1).contains('Discussion: Scenario 1');
             cy.get('td').eq(2).contains('Shared 1 comment');
-            cy.get('td').eq(3).contains('Add Comments');
+            cy.get('td').eq(5).contains('Add Comments');
         });
     });
 

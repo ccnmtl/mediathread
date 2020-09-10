@@ -59,7 +59,7 @@ Projects
                                                     <input type="hidden" name="project_type" value="composition" />
                                                     <button id="add-composition-button" type="submit" class="btn btn-outline-primary btn-sm mr-2">
                                                         Add Composition
-                                                    </button> 
+                                                    </button>
                                                 </form>
                                             </div>
                                         </div>
@@ -154,7 +154,7 @@ Projects
                                         Last Updated
                                     </th>
                                     <th>
-                                        Action
+                                        Delete
                                     </th>
                                 </thead>
                                 <tbody>
@@ -172,7 +172,7 @@ Projects
                                         <td>{{object.modified|date:"n/j/y g:iA"}}</td>
                                         <td>
                                             {% if request.user == object.author or request.user in object.participants %}
-                                            <button class="btn btn-outline-secondary btn-sm" title="Delete {{object.title}}"
+                                            <button class="btn btn-danger btn-sm" title="Delete {{object.title}}"
                                                 data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                                 Delete
                                             </button>
@@ -195,7 +195,7 @@ Projects
                                                             <form action="{% url 'project-delete' request.course.id object.id %}" method="post">
                                                                 {% csrf_token %}
                                                                 <button type="submit" data-project-id="{{object.id}}"
-                                                                    class="btn btn-primary btn-delete-project">Delete</button>
+                                                                    class="btn btn-danger btn-delete-project">Delete</button>
                                                             </form>
                                                         </div>
                                                     </div>

@@ -11,7 +11,7 @@ import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
 
 import {
-    getAsset, getAssets, getCourseUrl, updateAsset, filterSelections
+    getAsset, getAssets, getCourseUrl
 } from './utils';
 
 export default class CollectionTab extends React.Component {
@@ -36,6 +36,8 @@ export default class CollectionTab extends React.Component {
         this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
         this.onUpdateFilter = this.onUpdateFilter.bind(this);
+
+        this.filterRef = React.createRef();
     }
 
     onUpdateFilter(newState) {
@@ -111,20 +113,24 @@ export default class CollectionTab extends React.Component {
                 );
             });
         } else {
-            // Sync the selected asset with the state of the
-            // collection's assets, in case the user added, edited, or
-            // removed any selections on this asset.
-            const newAssets = updateAsset(
-                this.props.assets,
-                // Filter the annotations of this selection based on
-                // the current asset filter state.
-                filterSelections(
-                    this.state.selectedAsset,
-                    this.state.title, this.state.owner,
-                    this.state.tags, this.state.terms,
-                    this.state.date
-                ));
-            this.props.onUpdateAssets(newAssets);
+            // Sync assets and tag/term state with the server.
+            const me = this;
+            getAssets(
+                this.state.title, this.state.owner, this.state.tags,
+                this.state.terms, this.state.date
+            ).then(function(d) {
+                me.props.onUpdateAssets(
+                    d.assets, d.asset_count,
+                    d.active_tags, d.active_vocabulary
+                );
+
+                if (me.filterRef && me.filterRef.current) {
+                    me.filterRef.current.updatePageCount(d.asset_count);
+                }
+            }, function(e) {
+                console.error('asset get error!', e);
+            });
+
         }
 
         this.setState({
@@ -252,6 +258,7 @@ export default class CollectionTab extends React.Component {
 
                 {!this.state.selectedAsset && (
                     <AssetFilter
+                        ref={this.filterRef}
                         items={this.props.assets}
                         itemCount={this.props.assetCount}
                         hidePagination={false}

@@ -26,8 +26,19 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('button.add-spine').click({force: true});
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
-        cy.get('.choice_all_items').click({force: true});
-        cy.get('.citationTemplate > .materialCitation').click({force: true});
+        cy.get('.choice_all_items > .switcher-choice').click({force: true});
+        // cy.get('.selection-citation > :nth-child(1) > .materialCitation')
+        //     .click({force: true});
+
+        cy.log('create selection');
+        cy.contains('Create selection').click({force: true});
+        cy.get('input[name="annotation-title"]').type('Example Selection 2');
+        cy.get('#clipStart').clear().type('00:00:02');
+        cy.get('#clipEnd').clear().type('00:00:05');
+        cy.get('.col > .btn-primary').click();
+        cy.get('.selection-citation-title')
+            .should('contain', 'Example Selection 2');
+        cy.get('.citationTemplate > .clickableCitation').click({force: true});
 
         cy.log('Add secondary elements');
         cy.wait(500);
@@ -49,7 +60,7 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.btn-save-project').click({force: true});
 
         cy.log('go back to projects');
-        cy.get('.breadcrumb-item > a').click();
+        cy.get('.breadcrumb').click();
         cy.contains('Example project').should('exist');
     });
 });

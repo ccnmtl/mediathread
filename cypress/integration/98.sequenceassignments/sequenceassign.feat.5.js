@@ -18,10 +18,10 @@ describe('Sequence Assignment Feat: Student reviews Student Response', () => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(1).contains('Test Sequence Assignment');
             cy.get('td').eq(2).contains('No Response Yet');
-            cy.get('td').eq(3).contains('Add Response');
-            cy.get('td').eq(4).contains('Sequence Assignment');
+            cy.get('td').eq(5).contains('Add Response');
+            cy.get('td').eq(3).contains('Sequence');
 
-            cy.get('td').eq(3).contains('Add Response').click();
+            cy.get('td').eq(5).contains('Add Response').click();
         });
         cy.get('#assignment-responses').click();
         cy.contains('One, Student').click();

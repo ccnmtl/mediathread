@@ -59,7 +59,7 @@ django-reversion==3.0.7
 requirements/src/djangohelpers-0.20-py2.py3-none-any.whl
 django-contrib-comments==1.9.2
 django-threadedcomments==1.2
-django-courseaffils==2.2.4
+django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0
 sentry-sdk==0.16.5
 django-appconf==1.0.4

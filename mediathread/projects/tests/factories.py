@@ -1,10 +1,11 @@
 import factory
+from factory.django import DjangoModelFactory
 from mediathread.sequence.tests.factories import SequenceAssetFactory
 from mediathread.projects.models import ProjectSequenceAsset
 from mediathread.factories import ProjectFactory
 
 
-class ProjectSequenceAssetFactory(factory.DjangoModelFactory):
+class ProjectSequenceAssetFactory(DjangoModelFactory):
     class Meta:
         model = ProjectSequenceAsset
 

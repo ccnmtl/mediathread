@@ -1,5 +1,6 @@
 import factory
 from factory import fuzzy
+from factory.django import DjangoModelFactory
 from mediathread.factories import (
     UserFactory, CourseFactory, SherdNoteFactory
 )
@@ -8,7 +9,7 @@ from mediathread.sequence.models import (
 )
 
 
-class SequenceAssetFactory(factory.DjangoModelFactory):
+class SequenceAssetFactory(DjangoModelFactory):
     class Meta:
         model = SequenceAsset
 
@@ -16,7 +17,7 @@ class SequenceAssetFactory(factory.DjangoModelFactory):
     course = factory.SubFactory(CourseFactory)
 
 
-class SequenceMediaElementFactory(factory.DjangoModelFactory):
+class SequenceMediaElementFactory(DjangoModelFactory):
     class Meta:
         model = SequenceMediaElement
 
@@ -26,7 +27,7 @@ class SequenceMediaElementFactory(factory.DjangoModelFactory):
     media = factory.SubFactory(SherdNoteFactory)
 
 
-class SequenceTextElementFactory(factory.DjangoModelFactory):
+class SequenceTextElementFactory(DjangoModelFactory):
     class Meta:
         model = SequenceTextElement
 

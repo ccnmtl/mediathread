@@ -2270,6 +2270,14 @@ div.gallery-item h4.asset_title {
    display: inline-block;
 }
 
+.btn-info {
+    background-color: #128193 !important
+}
+
+#s2id_autogen2, #s2id_autogen4 {
+    color: #666666 !important;
+}
+
 /* flowplayer skin override */
 
 .fp-player .fp-share,

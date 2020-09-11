@@ -9,7 +9,7 @@
                     <label for="search-text-owner">Title</label>
                     <div class="switcher-tool switcher-search-text input-group">
                         <span class="input-group-addon"></span>
-                        <input type="text" class="form-control form-control-sm" name="search-text"
+                        <input id="search-text-owner" type="text" class="form-control form-control-sm" name="search-text"
                             value="{{active_filters.search_text}}" placeholder="Title"/>
                         <span class="input-group-btn">
                             <button class="btn btn-secondary btn-sm btn-search-text" type="button">Go</button>
@@ -27,7 +27,7 @@
                     <label for="switcher-tags">Tags</label>
                     <div class="switcher-tool">
                         <select class="course-tags w-100" id="switcher-tags"
-                            data-placeholder="Select tags" 
+                            data-placeholder="Select tags"
                             multiple="multiple">
                             {{#active_tags}}
                                 <option value="{{name}}">{{name}}</option>

@@ -42,19 +42,19 @@
                     <td>
                         {% if object.due_date %}
                             {{object.due_date|date:"n/j/y"}}<br />
-                            {% if comments.0 < 1 and object.due_date < today %}
-                                <div class="text-danger">
-                                    <strong>{{object.due_date|timesince:today|date_format_change}} Overdue</strong>
-                                </div>
-                            {% else %}{% if object.due_date > today %}
-
-                                {{object.due_date|timeuntil:today|date_format_change}} Remaining
-
-                            {% else %}
-                                <div class="text-warning">
-                                    <strong>Due today</strong>
-                                </div>
-                            {% endif %}{% endif %}
+                            {% if comments.0 < 1 %}
+                                {% if object.due_date < today %}
+                                    <div class="text-danger">
+                                        <strong>{{object.due_date|timesince:today|date_format_change}} Overdue</strong>
+                                    </div>
+                                {% else %}{% if object.due_date > today %}
+                                    {{object.due_date|timeuntil:today|date_format_change}} Remaining
+                                {% else %}
+                                    <div class="text-warning">
+                                        <strong>Due today</strong>
+                                    </div>
+                                {% endif %}{% endif %}
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td class="text-right">

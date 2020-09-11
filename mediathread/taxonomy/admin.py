@@ -1,6 +1,5 @@
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
 from django.contrib import admin
-from django.utils.encoding import smart_text
 
 
 def term_vocabulary_name(obj):

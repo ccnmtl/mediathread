@@ -87,14 +87,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
+                    <h4 class="modal-title">Share with Others</h4>
                     <button type="button" class="close"
                         data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title">Share with Others</h4>
                 </div>
                 <div class="modal-body">
-                    <div>
+                    <div class="text-left">
                         Your response visibility is set as <b>{{the_response.visibility_short}}</b>.<br /><br />
                         {% if public_url %}
                             <div class="panel panel-default">
@@ -108,23 +108,25 @@
                         {% endif %}
                     </div><br>
 
-                    <label>Change who can see your response</label>
-                    <form action="{% url 'project-visibility' the_response.id %}" method="post">
-                        <div class="radio">
-                            <label>
-                                <input {% if not public_url %}checked="checked"{% endif %} name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
-                            </label>
-                        </div>
-                        <div class="radio">
-                            <label>
-                                <input {% if public_url %}checked="checked"{% endif %} name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided</label>
-                        </div>
+                    <div class="text-left">
+                        <label>Change who can see your response</label>
+                        <form action="{% url 'project-visibility' the_response.id %}" method="post">
+                            <div class="radio">
+                                <label>
+                                    <input {% if not public_url %}checked="checked"{% endif %} name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input {% if public_url %}checked="checked"{% endif %} name="publish" type="radio" value="PublicEditorsAreOwners"> Whole World - a public url is provided</label>
+                            </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-primary btn-save-visibility">Save</button>
-                        </div>
-                    </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary btn-save-visibility">Save</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

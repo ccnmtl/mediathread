@@ -71,3 +71,13 @@ def student_response(responses, user):
         if user in response.attribution_list():
             return response
     return None
+
+
+@register.filter
+def date_format_change(date):
+    if "hours" in date or "hour" in date:
+        return date.replace('hours', 'hrs').replace('minutes', 'mins').replace(
+            'hour', 'hr').replace('minute', 'min')
+    elif "weeks" in date or "week" in date:
+        return date.replace('weeks', 'w').replace('days', 'd').replace(
+            'day', 'd').replace('week', 'w').replace('day', 'd')

@@ -131,9 +131,9 @@ describe('Discussion View: Create Discussion', () => {
         cy.log('View status on the assignments page');
         cy.visit('/course/1/assignments');
         cy.contains('Discussion: Scenario 1').parent('tr').within(() => {
-            cy.get('td').eq(1).contains('Discussion: Scenario 1');
-            cy.get('td').eq(2).contains('Shared 1 comment');
-            cy.get('td').eq(5).contains('Add Comments');
+            cy.get('td').eq(2).contains('Discussion: Scenario 1');
+            cy.get('td').eq(1).contains('Shared 1 comment');
+            cy.get('td').eq(3).contains('Add Comments');
         });
     });
 

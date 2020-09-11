@@ -128,6 +128,17 @@
                                             </label>
                                         </li>
                                         <li>
+                                            <label for="id_publish_3">
+                                                <input
+                                                    {% if project.visibility_policy == 'InstructorShared' %}
+                                                    checked="checked"
+                                                    {% endif %}
+                                                    id="id_publish_3" name="publish"
+                                                    type="radio" value="InstructorShared" />
+                                                Instructor - only author(s) and instructor can view
+                                            </label>
+                                        </li>
+                                        <li>
                                             <label for="id_publish_1">
                                                 <input
                                                     {% if project.visibility_policy == 'CourseProtected' %}
@@ -151,17 +162,6 @@
                                             </label>
                                         </li>
                                         {% endif %}
-                                        <li>
-                                            <label for="id_publish_3">
-                                                <input
-                                                    {% if project.visibility_policy == 'InstructorShared' %}
-                                                    checked="checked"
-                                                    {% endif %}
-                                                    id="id_publish_3" name="publish"
-                                                    type="radio" value="InstructorShared" />
-                                                Instructor - only author(s) and instructor can view
-                                            </label>
-                                        </li>
                                     </ul>
                                     <div class="small help-inline">Select who can see your work</div>
                                 </div>

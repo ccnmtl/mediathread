@@ -20,8 +20,10 @@ export default class TimecodeEditor extends React.Component {
         }
         return (
             <div className="jux-timecode-editor">
+                <label htmlFor="juxTimecode">Terms</label>
                 <input
                     required
+                    id="juxTimecode"
                     ref={this.spinnerRef}
                     min={this.props.min}
                     defaultValue={timecode} />

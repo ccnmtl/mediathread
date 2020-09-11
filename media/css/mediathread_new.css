@@ -2082,6 +2082,10 @@ a.switcher-top.menuclosed span.down-arrow:hover {
     background-image: url(../img/switcher/icon_down_arrow_hover.png);
 }
 
+.css-1rukdar-placeholder {
+    color: #666666 !important;
+}
+
 /** Course CSS **/
 ul li {
     margin: 0 0 5px 0;

@@ -111,6 +111,7 @@
                     <div class="text-left">
                         <label>Change who can see your response</label>
                         <form action="{% url 'project-visibility' the_response.id %}" method="post">
+                            {% csrf_token %}
                             <div class="radio">
                                 <label>
                                     <input {% if not public_url %}checked="checked"{% endif %} name="publish" type="radio" value="CourseProtected"> Whole Class - all class members can view

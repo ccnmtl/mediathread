@@ -45,13 +45,13 @@
                             {% if comments.0 < 1 %}
                                 {% if object.due_date < today %}
                                     <div class="text-danger">
-                                        <strong>{{object.due_date|timesince:today|date_format_change}} Overdue</strong>
+                                        {{object.due_date|timesince:today|date_format_change}} Overdue
                                     </div>
                                 {% else %}{% if object.due_date > today %}
                                     {{object.due_date|timeuntil:today|date_format_change}} Remaining
                                 {% else %}
                                     <div class="text-warning">
-                                        <strong>Due today</strong>
+                                        Due today
                                     </div>
                                 {% endif %}{% endif %}
                             {% endif %}
@@ -112,7 +112,7 @@
                                     {% if not response.is_submitted %}
                                         {% if object.due_date < today %}
                                             <div class="text-danger">
-                                                <strong>{{object.due_date|timesince:today|date_format_change}} Overdue</strong>
+                                                {{object.due_date|timesince:today|date_format_change}} Overdue
                                             </div>
                                         {% else %}{% if object.due_date > today %}
 
@@ -120,7 +120,7 @@
 
                                         {% else %}
                                             <div class="text-warning">
-                                                <strong>Due today</strong>
+                                                Due today
                                             </div>
                                         {% endif %}{% endif %}
                                     {% endif %}
@@ -173,7 +173,7 @@
                             <td>
                                 {% if request.user == response.author or request.user in response.participants %}
                                     {% if not response.feedback_discussion and not response.is_submitted %}
-                                        <button class="btn btn-danger btn-sm" title="Delete {{response.title}}"
+                                        <button class="btn btn-link btn-sm" title="Delete {{response.title}}"
                                             data-toggle="modal" data-target="#delete-project-{{response.id}}">
                                             Delete
                                         </button>
@@ -218,7 +218,7 @@
                                 {{object.due_date|date:"n/j/y"}}<br />
                                 {% if object.due_date < today %}
                                     <div class="text-danger">
-                                        <strong>{{object.due_date|timesince:today|date_format_change}} Overdue</strong>
+                                        {{object.due_date|timesince:today|date_format_change}} Overdue
                                     </div>
                                 {% else %}{% if object.due_date > today %}
 
@@ -226,7 +226,7 @@
 
                                 {% else %}
                                     <div class="text-warning">
-                                        <strong>Due today</strong>
+                                        Due today
                                     </div>
                                 {% endif %}{% endif %}
                             {% endif %}

@@ -326,7 +326,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             // The clipstrip is calibrated to the flowplayer scrubber
             // Visually, it looks a little "short", but trust, it tags along
             // with the circle shaped thumb properly.
-            var w = self.components.width;
+            var w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
                 trackX: 2,

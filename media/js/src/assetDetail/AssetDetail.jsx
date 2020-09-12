@@ -882,7 +882,7 @@ export default class AssetDetail extends React.Component {
                 layers: [
                     new ImageLayer({
                         source: new Static({
-                            url: thumbnail,
+                            url: img.url,
                             projection: projection,
                             imageExtent: extent
                         })

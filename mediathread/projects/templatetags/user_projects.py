@@ -76,11 +76,15 @@ def student_response(responses, user):
 @register.filter
 def date_format_change(date):
     if "hours" in date or "hour" in date:
-        newDate = date.replace('hours', 'hrs').replace('minutes', 'mins').replace(
-            'hour', 'hr').replace('minute', 'min')
+        newDate = date.replace('hours', 'hrs').replace('hour', 'hr').replace(
+            'minute', 'min').replace('minutes', 'mins')
         return ''.join(newDate.split())
-
     elif "weeks" in date or "week" in date:
         newDate = date.replace('weeks', 'w').replace('days', 'd').replace(
-            'day', 'd').replace('week', 'w').replace('day', 'd')
+            'day', 'd').replace('day', 'd').replace('week', 'w')
         return ''.join(newDate.split())
+    elif "month" in date or "months" in date:
+        newDate = date.replace('month', 'M').replace('months', 'M')
+        return ''.join(newDate.split())
+    else:
+        return date

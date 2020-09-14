@@ -1,28 +1,38 @@
 {% load user_projects %}
 <div class="table-responsive">
-    <table class="table table-bordered table-striped w-100">
+    <table class="table table-striped">
+        <colgroup>
+           <col span="1" style="width: 14%;">
+           <col span="1" style="width: 14%;">
+           <col span="1" style="width: 32%;">
+           <col span="1" style="width: 14%;">
+           <col span="1" style="width: 12%;">
+           <col span="1" style="width: 14%;">
+        </colgroup>
         <thead class="thead-darkgray">
-            <th>
-                Due
-            </th>
-            <th>
-                Title
-            </th>
-            <th>
-                Response Status
-            </th>
-            <th>
-                Assignment Type
-            </th>
-            <th>
-                Last Updated
-            </th>
-            <th>
-                Action
-            </th>
-            <th>
-                Delete
-            </th>
+            <tr>
+                <th scope="col">
+                    Due
+                </th>
+                <th scope="col" class="text-right">
+                    Status
+                </th>
+                <th scope="col">
+                    Title
+                </th>
+                <th scope="col">
+                    Action
+                </th>
+                <th scope="col">
+                    Assignment Type
+                </th>
+                <th scope="col">
+                    Last Updated
+                </th>
+                <th scope="col">
+                    Delete
+                </th>
+            </tr>
         </thead>
         <tbody>
         {% for object in object_list %}
@@ -32,32 +42,38 @@
                     <td>
                         {% if object.due_date %}
                             {{object.due_date|date:"n/j/y"}}<br />
-                            {% if comments.0 < 1 and object.due_date < today %}
-                                <div class="small text-danger">
-                                    Overdue {{object.due_date|timesince:today }}
-                                </div>
-                            {% else %}{% if object.due_date > today %}
-                                <div class="small">
-                                    Due in {{object.due_date|timeuntil:today }}
-                                </div>
-                            {% else %}
-                                <div class="small">
-                                    Due today
-                                </div>
-                            {% endif %}{% endif %}
+                            {% if comments.0 < 1 %}
+                                {% if object.due_date < today %}
+                                    <div class="text-danger">
+                                        {{object.due_date|timesince:today|date_format_change}} Overdue
+                                    </div>
+                                {% else %}{% if object.due_date > today %}
+                                    {{object.due_date|timeuntil:today|date_format_change}} Remaining
+                                {% else %}
+                                    <div class="text-warning">
+                                        Due today
+                                    </div>
+                                {% endif %}{% endif %}
+                            {% endif %}
                         {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if comments.0 == 0 %}
+                            <div class="badge badge-danger">No Comments</div>
+                        {% else %}{% if comments.0 == 1 %}
+                            <div class="badge badge-success">Shared {{comments.0}} comment</div>
+                        {% else %}
+                            <div class="badge badge-success">Shared {{comments.0}} comments</div>
+                        {% endif %}{% endif %}
                     </td>
                     <td>
                         {{object.title}}
                     </td>
                     <td>
-                        {% if comments.0 == 0 %}
-                            No comments yet
-                        {% else %}{% if comments.0 == 1 %}
-                            Shared {{comments.0}} comment
-                        {% else %}
-                            Shared {{comments.0}} comments
-                        {% endif %}{% endif %}
+                        <a class="btn btn-sm btn-primary btn-block"
+                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
+                            Add Comments
+                        </a>
                     </td>
                     <td>
                         {% if object.description == 'Sequence Assignment' %}
@@ -74,12 +90,6 @@
                         {% if comments.0 %}
                             {{comments.1}}
                         {% endif %}
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-primary btn-block"
-                            href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
-                            Add Comments
-                        </a>
                     </td>
                     <td>
                     </td>
@@ -101,45 +111,32 @@
                                     {{object.due_date|date:"n/j/y"}}<br />
                                     {% if not response.is_submitted %}
                                         {% if object.due_date < today %}
-                                            <div class="small text-danger">
-                                                Overdue {{object.due_date|timesince:today }}
+                                            <div class="text-danger">
+                                                {{object.due_date|timesince:today|date_format_change}} Overdue
                                             </div>
                                         {% else %}{% if object.due_date > today %}
-                                            <div class="small">
-                                                Due in {{object.due_date|timeuntil:today }}
-                                            </div>
+
+                                            {{object.due_date|timeuntil:today|date_format_change}} Remaining
+
                                         {% else %}
-                                            <div class="small">
+                                            <div class="text-warning">
                                                 Due today
                                             </div>
                                         {% endif %}{% endif %}
                                     {% endif %}
                                 {% endif %}
                             </td>
+                            <td class="text-right">
+                                {% if response.visibility_short == 'Draft' %}
+                                    <div class="badge badge-secondary">{{response.visibility_short}}</div>
+
+                                {% else  %}
+                                    <div class="badge badge-success">{{response.visibility_short}}</div>
+
+                                {% endif %}
+                            </td>
                             <td>
                                 {{object.title}}
-                            </td>
-                            <td>
-                                {% if response.is_submitted %}
-                                    <div>Submitted {{response.date_submitted|date:"n/j/y g:iA"}}</div>
-                                    <div>{{response.visibility_short}}</div>
-                                {% else %}
-                                    {{response.visibility_short}}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if object.description == 'Sequence Assignment' %}
-                                    Sequence
-                                {% elif object.description == 'Composition Assignment' %}
-                                    Composition
-                                {% elif object.description == 'Selection Assignment' %}
-                                    Selection
-                                {% elif object.description == 'Discussion Assignment' %}
-                                    Discussion
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{response.modified|date:"n/j/y g:iA"}}
                             </td>
                             <td>
                                 {% if response.feedback_discussion %}
@@ -160,9 +157,23 @@
                                 {% endif %}{% endif %}
                             </td>
                             <td>
+                                {% if object.description == 'Sequence Assignment' %}
+                                    Sequence
+                                {% elif object.description == 'Composition Assignment' %}
+                                    Composition
+                                {% elif object.description == 'Selection Assignment' %}
+                                    Selection
+                                {% elif object.description == 'Discussion Assignment' %}
+                                    Discussion
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{response.modified|date:"n/j/y g:iA"}}
+                            </td>
+                            <td>
                                 {% if request.user == response.author or request.user in response.participants %}
                                     {% if not response.feedback_discussion and not response.is_submitted %}
-                                        <button class="btn btn-danger btn-sm" title="Delete {{response.title}}"
+                                        <button class="btn btn-link btn-sm" title="Delete {{response.title}}"
                                             data-toggle="modal" data-target="#delete-project-{{response.id}}">
                                             Delete
                                         </button>
@@ -206,38 +217,25 @@
                             {% if object.due_date %}
                                 {{object.due_date|date:"n/j/y"}}<br />
                                 {% if object.due_date < today %}
-                                    <div class="small text-danger">
-                                        Overdue {{object.due_date|timesince:today }}
+                                    <div class="text-danger">
+                                        {{object.due_date|timesince:today|date_format_change}} Overdue
                                     </div>
                                 {% else %}{% if object.due_date > today %}
-                                    <div class="small">
-                                        Due in {{object.due_date|timeuntil:today }}
-                                    </div>
+
+                                    {{object.due_date|timeuntil:today|date_format_change}} Remaining
+
                                 {% else %}
-                                    <div class="small">
+                                    <div class="text-warning">
                                         Due today
                                     </div>
                                 {% endif %}{% endif %}
                             {% endif %}
                         </td>
+                        <td class="text-right">
+                            <div class="badge badge-danger">No Response</div>
+                        </td>
                         <td>
                             {{object.title}}
-                        </td>
-                        <td>
-                            No Response Yet
-                        </td>
-                        <td>
-                            {% if object.description == 'Sequence Assignment' %}
-                                Sequence
-                            {% elif object.description == 'Composition Assignment' %}
-                                Composition
-                            {% elif object.description == 'Selection Assignment' %}
-                                Selection
-                            {% elif object.description == 'Discussion Assignment' %}
-                                Discussion
-                            {% endif %}
-                        </td>
-                        <td>
                         </td>
                         <td>
                             {% if object.is_discussion_assignment %}
@@ -253,6 +251,19 @@
                                     <button class="btn btn-sm btn-primary btn-block" type="submit">Add Response</button>
                                 </form>
                             {% endif %}
+                        </td>
+                        <td>
+                            {% if object.description == 'Sequence Assignment' %}
+                                Sequence
+                            {% elif object.description == 'Composition Assignment' %}
+                                Composition
+                            {% elif object.description == 'Selection Assignment' %}
+                                Selection
+                            {% elif object.description == 'Discussion Assignment' %}
+                                Discussion
+                            {% endif %}
+                        </td>
+                        <td>
                         </td>
                         <td>
                         </td>

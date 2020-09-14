@@ -63,11 +63,10 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.contains('Sample Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(1).contains('Sample Assignment');
-            cy.get('td').eq(2).contains('Shared with Instructor');
-            cy.get('td').eq(2).contains('Submitted');
-            cy.get('td').eq(5).contains('View Response');
-            cy.get('td').eq(3).contains('Composition');
+            cy.get('td').eq(2).contains('Sample Assignment');
+            cy.get('td').eq(1).contains('Shared with Instructor');
+            cy.get('td').eq(3).contains('View Response');
+            cy.get('td').eq(4).contains('Composition');
         });
     });
 

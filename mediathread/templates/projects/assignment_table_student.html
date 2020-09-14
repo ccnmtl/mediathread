@@ -76,14 +76,10 @@
                         </a>
                     </td>
                     <td>
-                        {% if object.description == 'Sequence Assignment' %}
-                            Sequence
-                        {% elif object.description == 'Composition Assignment' %}
-                            Composition
-                        {% elif object.description == 'Selection Assignment' %}
-                            Selection
-                        {% elif object.description == 'Discussion Assignment' %}
+                        {% if object.description == 'Discussion Assignment' %}
                             Discussion
+                        {% else %}
+                            {{object.description}}
                         {% endif %}
                     </td>
                     <td>

@@ -132,18 +132,18 @@ Projects
                 <div class="col-12">
                     {% if object_list.exists %}
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped w-100 tablesorter">
+                            <table class="table table-striped tablesorter">
                                 <thead class="thead-darkgray">
-                                    <th data-sort-by="title"
-                                        class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
-                                        Title
-                                    </th>
-                                    <th data-sort-by="visibility">
-                                        Status
-                                    </th>
                                     <th data-sort-by="full_name"
                                         class="sortable {% if sortby == 'full_name' %}{{direction}}{% endif %}">
                                         Authors
+                                    </th>
+                                    <th data-sort-by="visibility" class="text-right">
+                                        Status
+                                    </th>
+                                    <th data-sort-by="title"
+                                        class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
+                                        Title
                                     </th>
                                     <th data-sort-by="project_type"
                                         class="sortable {% if sortby == 'project_type' %}{{direction}}{% endif %}">
@@ -160,19 +160,27 @@ Projects
                                 <tbody>
                                 {% for object in object_list %}
                                     <tr>
+                                        <td>{{object.attribution}}</td>
+                                        <td class="text-right">
+                                            {% if object.visibility_short == 'Draft' %}
+                                                <div class="badge badge-secondary">{{object.visibility_short}}</div>
+
+                                            {% else  %}
+                                                <div class="badge badge-success">{{object.visibility_short}}</div>
+
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <a href="{% url 'project-workspace' request.course.id object.id %}"
                                                 title="{{object.title}}">
                                                 {{object.title}}
                                             </a>
                                         </td>
-                                        <td>{{object.visibility_short}}</td>
-                                        <td>{{object.attribution}}</td>
                                         <td>{{object.description}}</td>
                                         <td>{{object.modified|date:"n/j/y g:iA"}}</td>
                                         <td>
                                             {% if request.user == object.author or request.user in object.participants %}
-                                            <button class="btn btn-danger btn-sm" title="Delete {{object.title}}"
+                                            <button class="btn btn-link btn-sm" title="Delete {{object.title}}"
                                                 data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                                 Delete
                                             </button>

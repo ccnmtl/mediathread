@@ -175,8 +175,8 @@
                         </div>
                     {% else %}
                     <div class="form-inline">
-                        <label>Sequence Title</label>&nbsp;
-                        <input type="text" name="title"
+                        <label for="title">Sequence Title</label>&nbsp;
+                        <input type="text" name="title" id="title"
                                value="{{project.title}}" maxlength="80"
                                placeholder="Specify a title"
                                class="project-title form-control" />
@@ -188,7 +188,7 @@
                 <div class="float-right tabs-container">
                     <ul class="nav nav-tabs float-right" role="tablist">
                         <li role="presentation" class="editor nav-item">
-                            <a class="nav-link active" href="#sequence" aria-controls="sequence-editor" role="tab" data-toggle="tab">
+                            <a class="nav-link active" href="#sequence" aria-controls="sequence" role="tab" data-toggle="tab">
                                 Sequence
                             </a>
                         </li>

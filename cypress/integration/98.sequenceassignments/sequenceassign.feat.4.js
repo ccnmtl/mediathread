@@ -18,12 +18,12 @@ describe('Sequence Assignment Feat: Student reviews feedback', () => {
         cy.visit('/course/1/assignments/');
         cy.contains('Test Sequence Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(1).contains('Test Sequence Assignment');
-            cy.get('td').eq(2).contains('Submitted');
-            cy.get('td').eq(5).contains('View Feedback');
-            cy.get('td').eq(3).contains('Sequence');
+            cy.get('td').eq(2).contains('Test Sequence Assignment');
+            cy.get('td').eq(1).contains('Submitted');
+            cy.get('td').eq(3).contains('View Feedback');
+            cy.get('td').eq(4).contains('Sequence');
 
-            cy.get('td').eq(5).contains('View Feedback').click();
+            cy.get('td').eq(3).contains('View Feedback').click();
         });
         cy.contains('Feedback').click({force: true});
         cy.contains('Example feedback').should('exist');

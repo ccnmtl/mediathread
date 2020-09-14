@@ -3356,11 +3356,6 @@ div#asset-view-details  a.edit-item {
     padding: 3px 8px 2px 4px;
 }
 
-div#asset-view-details .filter-selections {
-    margin: -8px 0 0 0;
-    padding: 3px 8px 2px 4px;
-}
-
 div#asset-header table {
     width: 100%;
 }

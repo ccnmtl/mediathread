@@ -409,7 +409,7 @@ if (!Sherd.Video.YouTube) {
         };
 
         this.media.timestrip = function () {
-            var w = document.getElementById(self.playerID).width;
+            var w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
                 trackX: 3,

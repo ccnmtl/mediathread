@@ -301,7 +301,7 @@ if (!Sherd.Video.Vimeo) {
         };
 
         this.media.timestrip = function () {
-            var w = self.components.width;
+            var w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
                 trackX: 96,

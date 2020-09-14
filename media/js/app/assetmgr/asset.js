@@ -249,6 +249,7 @@
 
         ///Groupby('author')
         ///Groupby('tag')
+        ///Groupby('term')
         //  - get, group
         //  - replace/hide-show Layer, group-by color
         //  - decorate
@@ -306,6 +307,23 @@
                     } else {
                         //127 ensures that None is last
                         return [String.fromCharCode(127) + 'No Tags'];
+                    }
+                };
+                break;
+            case 'term':
+                this.layers[grouping].color_by = function(ann) {
+                    if (ann.vocabulary.length) {
+                        var terms = [];
+                        for (var i = 0; i < ann.vocabulary.length; i++) {
+                            var vterms = ann.vocabulary[i].terms;
+                            for (var j = 0; j < vterms.length; j++) {
+                                terms.push(vterms[j].display_name);
+                            }
+                        }
+                        return terms;
+                    } else {
+                        //127 ensures that None is last
+                        return [String.fromCharCode(127) + 'No Terms'];
                     }
                 };
                 break;

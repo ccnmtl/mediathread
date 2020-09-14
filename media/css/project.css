@@ -416,16 +416,19 @@ form[name="sequence-assignment-edit"] input[type=radio] {
     display: none;
 }
 
-.selection-assignment .filter-selections {
-    display: none;
-}
-
 .selection-assignment .selected-item .gallery-item {
     margin-top: 30px;
     float: none;
 }
 
 .clipstrip-display {
+    display: none;
+}
+
+.selection-assignment .clipstrip-display {
+    display: block;
+}
+.selection-assignment #clipStripLayer_focus {
     display: none;
 }
 

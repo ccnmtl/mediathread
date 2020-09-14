@@ -191,7 +191,7 @@
                                   </div>
                                   <div class="modal-body">
                                     <form method="post" class="project-response-form"
-                                        action="{% url 'project-save' my_response.id %}">
+                                        action="{% url 'project-save' request.course.id my_response.id %}">
                                         {% csrf_token %}
                                         <div>Please review assignment instructions before submitting. Instructions may specify:</div>
                                         <ul class="pl-0">

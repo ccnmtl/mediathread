@@ -816,6 +816,7 @@ export default class AssetDetail extends React.Component {
                             <ViewItem
                                 asset={this.props.asset}
                                 onUpdateAssetTitle={this.onUpdateAssetTitle}
+                                onShowValidationError={this.onShowValidationError}
                             />
                         )}
                     </div>

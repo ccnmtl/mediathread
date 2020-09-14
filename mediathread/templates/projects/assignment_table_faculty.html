@@ -1,18 +1,18 @@
 {% load user_projects %}
 
 <div class="table-responsive">
-    <table class="table table-bordered table-striped w-100 tablesorter">
+    <table class="table table-striped tablesorter">
         <thead class="thead-darkgray">
             <th data-sort-by="due_date"
                 class="sortable {% if sortby == 'due_date' %}{{direction}}{% endif %}">
                 Due Date
             </th>
+            <th class="text-right">
+                Status
+            </th>
             <th data-sort-by="title"
                 class="sortable {% if sortby == 'title' %}{{direction}}{% endif %}">
                 Title
-            </th>
-            <th>
-                Status
             </th>
             <th>
                 Responses
@@ -40,13 +40,19 @@
                         {{object.due_date|date:"n/j/y"}}<br />
                     {% endif %}
                 </td>
+                <td class="text-right">
+                    {% if object.visibility_short == 'Draft' %}
+                        <div class="badge badge-secondary">{{object.visibility_short}}</div>
+
+                    {% else  %}
+                        <div class="badge badge-success">{{object.visibility_short}}</div>
+
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{% url 'project-workspace' request.course.id object.id %}" title="{{object.title}}">
                         {{object.title}}
                     </a>
-                </td>
-                <td>
-                    {{object.visibility_short}}
                 </td>
                 <td class="text-center">
                     {{response_count}} / {{request.course.students|length}}
@@ -71,7 +77,7 @@
                 <td>
                     {% if response_count < 1 %}
                         {% if request.user == object.author or request.user in object.participants %}
-                            <button class="btn btn-danger btn-sm" title="Delete {{object.title}}"
+                            <button class="btn btn-link btn-sm" title="Delete {{object.title}}"
                                 data-toggle="modal" data-target="#delete-project-{{object.id}}">
                                 Delete
                             </button>

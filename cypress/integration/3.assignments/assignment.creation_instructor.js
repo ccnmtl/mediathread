@@ -26,7 +26,7 @@ describe('Assignment Feature: Instructor Creation', () => {
 
         cy.log('Create a composition assignment');
         cy.get('#composition-assignment-card a')
-            .contains('Add Assignment').click()
+            .contains('Add Assignment').click();
 
         cy.log('Go through the wizard');
         cy.title().should('eq', 'Mediathread Create Assignment');
@@ -50,9 +50,9 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.log('Add a due date');
         cy.get('[data-cy="step-title"]:visible').contains('2.');
         cy.get('input[name="due_date"]').should('be.visible');
-        cy.get('input[name="due_date"]:visible').click()
+        cy.get('input[name="due_date"]:visible').click();
         cy.get('.ui-state-default.ui-state-highlight').click();
-        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty')
+        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty');
         cy.get('#ui-datepicker-div').should('not.be.visible');
         cy.get('#id_response_view_policy_0').should('be.visible');
         cy.get('#id_response_view_policy_0').click();
@@ -74,7 +74,7 @@ describe('Assignment Feature: Instructor Creation', () => {
             .contains('The Columbia Center for Teaching and Learning');
         cy.get('.project-revisionbutton').should('not.be.visible');
         cy.contains('Respond To Assignment').should('not.exist');
-        cy.get('#response').should('not.be.visible')
+        cy.get('#response').should('not.be.visible');
     });
 
     it('should show on assignments page', () => {
@@ -82,8 +82,8 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(1).contains('Assignment: Scenario 1');
-            cy.get('td').eq(2).contains('Shared with Class');
+            cy.get('td').eq(2).contains('Assignment: Scenario 1');
+            cy.get('td').eq(1).contains('Shared with Class');
             cy.get('td').eq(3).contains('0 / 3');
             cy.get('td').eq(4).contains('Instructor One');
             cy.get('td').eq(5).contains('Composition');

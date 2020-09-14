@@ -17,12 +17,12 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
         cy.get('#cu-privacy-notice-icon').click();
         cy.contains('Sample Selection Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(1).contains('Sample Selection Assignment');
-            cy.get('td').eq(2).contains('No Response Yet');
-            cy.get('td').eq(5).contains('Add Response');
-            cy.get('td').eq(3).contains('Selection');
+            cy.get('td').eq(2).contains('Sample Selection Assignment');
+            cy.get('td').eq(1).contains('No Response');
+            cy.get('td').eq(3).contains('Add Response');
+            cy.get('td').eq(4).contains('Selection');
 
-            cy.get('td').eq(5).contains('Add Response').click();
+            cy.get('td').eq(3).contains('Add Response').click();
         });
 
         cy.title().should('contain', 'Sample Selection Assignment');

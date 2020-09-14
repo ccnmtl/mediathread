@@ -353,7 +353,7 @@ export default class Filter extends React.Component {
                             </div>
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="owner-filter">Owner</label>
+                            <label htmlFor="react-select-2-input">Owner</label>
                             <Select
                                 id="owner-filter"
                                 menuPortalTarget={document.body}
@@ -368,7 +368,7 @@ export default class Filter extends React.Component {
                                 options={this.getOwnersOptions()} />
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="tag-filter">Tag</label>
+                            <label htmlFor="react-select-3-input">Tag</label>
                             <Select
                                 id="tag-filter"
                                 menuPortalTarget={document.body}
@@ -382,7 +382,7 @@ export default class Filter extends React.Component {
                                 options={tagsOptions} />
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="term-filter">Term</label>
+                            <label htmlFor="react-select-4-input">Term</label>
                             <Select
                                 id="term-filter"
                                 menuPortalTarget={document.body}
@@ -397,7 +397,7 @@ export default class Filter extends React.Component {
                                 options={termsOptions} />
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="filter-date">Date</label>
+                            <label htmlFor="react-select-5-input">Date</label>
                             <Select
                                 id="filter-date"
                                 menuPortalTarget={document.body}

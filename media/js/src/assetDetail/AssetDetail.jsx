@@ -861,7 +861,6 @@ export default class AssetDetail extends React.Component {
         }
 
         if (this.type === 'image') {
-            const thumbnail = this.asset.getThumbnail();
             const img = this.asset.getImage();
 
             const extent = objectProportioned(img.width, img.height);
@@ -882,7 +881,7 @@ export default class AssetDetail extends React.Component {
                 layers: [
                     new ImageLayer({
                         source: new Static({
-                            url: thumbnail,
+                            url: img.url,
                             projection: projection,
                             imageExtent: extent
                         })

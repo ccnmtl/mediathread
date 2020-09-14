@@ -20,7 +20,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="public-navbarDropdown">
             <a class="dropdown-item" href="/about/">About Mediathread</a>
-            <a class="dropdown-item" href="/testimonials/">Testimonials</a>
+            <a class="dropdown-item" href="/testimonials/" style="display:none">Testimonials</a>
             <a class="dropdown-item" href="/history/">Mediathread History</a>
         </div>
         </li>
@@ -29,15 +29,15 @@
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="useMediathread-navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Use Mediathread </a>
         <div class="dropdown-menu" aria-labelledby="useMediathread-navbarDropdown">
-            <a class="dropdown-item" href="/value/">Pedagogical Value</a>
+            <a class="dropdown-item" href="/value/" style="display:none">Pedagogical Value</a>
             <a class="dropdown-item" href="/features/">Features</a>
         </div>
         </li>
         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="getSupport-navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Get Support </a>
         <div class="dropdown-menu" aria-labelledby="getSupport-navbarDropdown">
-            <a class="dropdown-item" href="/faculty/">Faculty</a>
-            <a class="dropdown-item" href="/students/">Students</a>
+            <a class="dropdown-item" href="/faculty/" style="display:none">Faculty</a>
+            <a class="dropdown-item" href="/students/" style="display:none">Students</a>
             <a class="dropdown-item" href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Knowledge Base</a>
             <a class="dropdown-item" href="{% url 'contact-us' %}">Contact Us</a>
         </div>
@@ -45,7 +45,7 @@
 
     <!-- Only show if not logged in -->
     {% if not request.user.is_authenticated %}
-        <li class="nav-item"> <a class="nav-link" href="/getinvolved/"> Get Involved </a> </li>
+        <li class="nav-item"> <a class="nav-link" href="/getinvolved/" style="display:none"> Get Involved </a> </li>
     {% endif %}
 
     <!-- Logged in logic -->

@@ -17,22 +17,27 @@
 
     {{#asset-current}}
         <div class="btn-group float-right">
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle filter-selections"
+            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle filter-selections"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_view.png" /> View <span class="caret"></span>
+                View Options <span class="caret"></span>
             </button>
             <div id="annotation-filter-menu" class="dropdown-menu dropdown-menu-right">
                 <form name="annotation-list-filter">
                     <div class="annotation-filter-groupby">
-                        <div><b>Group selections by</b></div>
+                        <div class="mb-1"><b>Group selections by</b></div>
                         <div class="radio">
-                            <label>
-                                <input type="radio" name="groupby" value="author" />author
+                            <label class="mb-0">
+                                <input type="radio" name="groupby" value="author" /> author
                             </label>
                         </div>
                         <div class="radio">
-                            <label>
-                                <input type="radio" name="groupby" value="tag" />tag
+                            <label class="mb-0">
+                                <input type="radio" name="groupby" value="tag" /> tag
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="mb-0">
+                                <input type="radio" name="groupby" value="term" /> term
                             </label>
                         </div>
                         <hr />

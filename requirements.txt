@@ -21,7 +21,7 @@ python-mimeparse==1.6.0  # tastypie
 python-dateutil==2.8.1  # tastypie
 defusedxml==0.6.0  # tastypie
 django-tastypie==0.14.2
-coverage==5.2.1
+coverage==5.3
 logilab-common==1.7.3
 lazy-object-proxy==1.5.1
 wrapt==1.12.1
@@ -128,7 +128,7 @@ appdirs==1.4.4  # zeep
 attrs==20.2.0  # zeep
 zeep==3.4.0
 
-stevedore==3.2.1
+stevedore==3.2.2
 pyyaml==5.3.1
 bandit==1.6.2
 funcsigs==1.0.2

@@ -2082,6 +2082,10 @@ a.switcher-top.menuclosed span.down-arrow:hover {
     background-image: url(../img/switcher/icon_down_arrow_hover.png);
 }
 
+.css-1rukdar-placeholder {
+    color: #666666 !important;
+}
+
 /** Course CSS **/
 ul li {
     margin: 0 0 5px 0;
@@ -3349,11 +3353,6 @@ div#asset-view-details div#asset-global-annotation {
 }
 
 div#asset-view-details  a.edit-item {
-    padding: 3px 8px 2px 4px;
-}
-
-div#asset-view-details .filter-selections {
-    margin: -8px 0 0 0;
     padding: 3px 8px 2px 4px;
 }
 

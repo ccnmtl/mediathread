@@ -10,6 +10,7 @@ from mediathread.assetmgr.views import (
     AnnotationCopyView, ManageIngestView
 )
 from mediathread.djangosherd.apiviews import SherdNoteCreate
+from mediathread.assetmgr.apiviews import AssetUpdate
 
 
 media_root = os.path.join(os.path.dirname(__file__), 'media')
@@ -42,6 +43,10 @@ urlpatterns = [
     path('<int:asset_id>/sherdnote/create/',
          SherdNoteCreate.as_view(),
          name='sherdnote-create'),
+
+    path('<int:asset_id>/save/',
+         AssetUpdate.as_view(),
+         name='asset-update'),
 
     path('create/<int:asset_id>/global/', annotation_create_global),
 

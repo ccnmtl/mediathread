@@ -28,6 +28,8 @@ from threadedcomments.models import ThreadedComment
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
+
+    is_staff = False
     username = factory.Sequence(lambda n: 'user%d' % n)
     password = factory.PostGenerationMethodCall('set_password', 'test')
     email = factory.LazyAttribute(lambda u: '%s@example.com' % u.username)
@@ -422,3 +424,13 @@ class MediathreadTestMixin(object):
             asset=items[0], author=self.student_two,
             body='student two selection note',
             tags=',student_two_selection', range1=0, range2=1)
+
+
+class LoggedInStaffTestMixin(object):
+    def setUp(self):
+        self.u = UserFactory(username='test_user', is_staff=True)
+        self.u.set_password('test')
+        self.u.save()
+        login = self.client.login(username='test_user',
+                                  password='test')
+        assert(login is True)

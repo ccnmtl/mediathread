@@ -3,15 +3,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Form from 'react-bootstrap/Form';
+
 import find from 'lodash/find';
 
-import {getAssetReferences, getTags, getTerms} from '../utils';
+import {
+    getAssetReferences, getTags, getTerms, updateAssetTitle
+} from '../utils';
 
 export default class ViewItem extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            references: null
+            references: null,
+            validated: false,
+            isRenaming: false,
+            assetTitleEditing: this.props.asset ? this.props.asset.title : null,
+            assetTitle: this.props.asset ? this.props.asset.title : null
         };
 
         const me = this;
@@ -20,7 +28,47 @@ export default class ViewItem extends React.Component {
                 me.setState({references: data['references']});
             }
         });
+
+        this.onClickRename = this.onClickRename.bind(this);
+        this.onClickCancel = this.onClickCancel.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.onChangeTitle = this.onChangeTitle.bind(this);
     }
+
+    onClickRename(e) {
+        this.setState({isRenaming: true});
+    }
+
+    onClickCancel(e) {
+        this.setState({isRenaming: false});
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+            this.props.onShowValidationError('Please specify an item title.');
+        } else {
+            const me = this;
+            return updateAssetTitle(this.props.asset.id, this.state.assetTitleEditing)
+                .then(function() {
+                    me.setState({
+                        isRenaming: false,
+                        assetTitle: me.state.assetTitleEditing
+                    });
+                    me.props.onUpdateAssetTitle(me.state.assetTitleEditing);
+                });
+        }
+
+        return this.setState({validated: true});
+    }
+
+    onChangeTitle(e) {
+        this.setState({assetTitleEditing: e.target.value});
+    }
+
     render() {
         let authorId = null;
         if (this.props.asset && this.props.asset.author) {
@@ -103,12 +151,48 @@ export default class ViewItem extends React.Component {
                         <tr>
                             <th scope="row">Item Name</th>
                             <td>
-                                {this.props.asset.title}
-                                &nbsp;
-                                {userIsAuthor && (
-                                    <button type="submit" className="btn btn-secondary btn-sm">
-                                        Rename
-                                    </button>
+                                {this.state.isRenaming && (
+                                    <Form
+                                        noValidate
+                                        validated={this.state.validated}
+                                        onSubmit={this.handleSubmit}>
+                                        <Form.Group>
+                                            <Form.Control
+                                                required
+                                                type="text"
+                                                aria-label="Item Name"
+                                                size="sm"
+                                                className="mb-1"
+                                                onChange={this.onChangeTitle}
+                                                value={this.state.assetTitleEditing} />
+                                            <button
+                                                onClick={this.onClickCancel}
+                                                type="button"
+                                                className="btn btn-sm btn-secondary mr-1">
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="btn btn-sm btn-primary">
+                                                Save
+                                            </button>
+                                        </Form.Group>
+                                    </Form>
+                                )}
+
+                                {!this.state.isRenaming && (
+                                    <>
+                                        {this.state.assetTitle}
+                                        &nbsp;
+                                        {userIsAuthor && (
+                                            <button
+                                                type="submit"
+                                                onClick={this.onClickRename}
+                                                className="btn btn-secondary btn-sm">
+                                                Rename
+                                            </button>
+                                        )}
+                                    </>
                                 )}
                             </td>
                         </tr>
@@ -143,5 +227,7 @@ export default class ViewItem extends React.Component {
 }
 
 ViewItem.propTypes = {
-    asset: PropTypes.object
+    asset: PropTypes.object,
+    onUpdateAssetTitle: PropTypes.func.isRequired,
+    onShowValidationError: PropTypes.func.isRequired
 };

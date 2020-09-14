@@ -18,7 +18,7 @@ class SourceSerializer(serializers.ModelSerializer):
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
-        fields = ('id', 'primary_source', 'media_type')
+        fields = ('id', 'title', 'primary_source', 'media_type')
 
     primary_source = SerializerMethodField()
 

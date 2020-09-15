@@ -10,7 +10,9 @@ import Modal from 'react-bootstrap/Modal';
 import find from 'lodash/find';
 
 import EditSelectionForm from '../forms/EditSelectionForm';
-import {groupByAuthor, groupByTag, formatTimecode, getDuration} from '../utils';
+import {
+    groupByAuthor, groupByTerm, groupByTag, formatTimecode, getDuration
+} from '../utils';
 
 export default class ViewSelections extends React.Component {
     constructor(props) {
@@ -159,13 +161,13 @@ export default class ViewSelections extends React.Component {
         const groupedSelections = [];
         for (const key in selections) {
             let selectionGroup = selections[key];
-            let tagName = null;
+            let groupName = null;
 
             if (
                 Object.prototype.hasOwnProperty.call(
                     selectionGroup, 'selections')
             ) {
-                tagName = selectionGroup.tagName;
+                groupName = selectionGroup.tagName || selectionGroup.termName;
                 selectionGroup = selectionGroup.selections;
             }
 
@@ -180,7 +182,7 @@ export default class ViewSelections extends React.Component {
                     } else {
                         groupedSelections.push(
                             <h5 key={'title-' + reactKey}>
-                                {tagName}
+                                {groupName}
                             </h5>);
                     }
                 }
@@ -272,6 +274,8 @@ export default class ViewSelections extends React.Component {
         let selections = {};
         if (this.state.groupBy === 'author') {
             selections = groupByAuthor(this.props.filteredSelections);
+        } else if (this.state.groupBy === 'term') {
+            selections = groupByTerm(this.props.filteredSelections);
         } else {
             selections = groupByTag(this.props.filteredSelections);
         }
@@ -311,6 +315,14 @@ export default class ViewSelections extends React.Component {
                             )}
                             onClick={(e) => this.onSelectGrouping(e, 'tag')}>
                             Group by tag
+                        </button>
+                        <button
+                            type="button"
+                            className={'btn btn-outline-secondary btn-sm ' + (
+                                this.state.groupBy === 'term' ? 'active' : ''
+                            )}
+                            onClick={(e) => this.onSelectGrouping(e, 'term')}>
+                            Group by term
                         </button>
                     </div>
 

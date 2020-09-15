@@ -82,7 +82,7 @@ django-cors-headers==3.5.0
 
 # Django >= 3.1 has full support for samesite cookies.
 # Until then, we'll need to use this.
-django-cookies-samesite==0.6.6
+django-cookies-samesite==0.7.0
 
 httplib2==0.18.1
 oauth==1.0.1

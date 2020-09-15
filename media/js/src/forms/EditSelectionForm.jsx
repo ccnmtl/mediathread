@@ -18,17 +18,13 @@ export default class EditSelectionForm extends SelectionForm {
         // components.
         const rawTags = this.tagsRef.current.state.value;
 
-        // Tags are handled as a space-separated CharField, while
+        // Tags are handled as a comma-separated CharField, while
         // Terms are handled with primary keys.
         let tags = '';
         if (rawTags) {
             rawTags.forEach(function(tag) {
-                tags += tag.value + ' ';
+                tags += tag.value + ',';
             });
-        }
-
-        if (tags.length) {
-            tags = tags.slice(0, -1);
         }
 
         let terms = null;

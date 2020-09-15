@@ -16,10 +16,10 @@ describe('Discussion View: Create Discussion', () => {
 
         cy.log('Create a discussion');
         cy.get('button').contains('Add an assignment').should('be.visible');
-        cy.get('button').contains('Add an assignment').click()
+        cy.get('button').contains('Add an assignment').click();
         cy.get('#discussion-assignment-card').should('be.visible');
         cy.get('#discussion-assignment-card a')
-            .contains('Add Assignment').click()
+            .contains('Add Assignment').click();
 
         cy.log('create discussion wizard');
         cy.title().should('eq', 'Mediathread Create Assignment');
@@ -43,10 +43,10 @@ describe('Discussion View: Create Discussion', () => {
         cy.log('Add a due date');
         cy.get('[data-cy="step-title"]:visible').contains('2.');
         cy.get('input[name="due_date"]').should('be.visible');
-        cy.get('input[name="due_date"]:visible').click()
+        cy.get('input[name="due_date"]:visible').click();
         cy.get('.ui-state-default.ui-state-highlight').click();
         cy.get('input[name="due_date"]:visible').invoke('val')
-            .should('not.be.empty')
+            .should('not.be.empty');
         cy.get('#ui-datepicker-div').should('not.be.visible');
         cy.get('#page4').focus().click();
 
@@ -78,13 +78,13 @@ describe('Discussion View: Create Discussion', () => {
         cy.contains('Discussion: Scenario 1')
             .parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(1).contains('Discussion: Scenario 1');
-            cy.get('td').eq(2).contains('Shared with Class');
-            cy.get('td').eq(3).contains('0 / 3');
-            cy.get('td').eq(4).contains('Instructor One');
-            cy.get('td').eq(5).contains('Discussion');
-            cy.get('td').eq(7).contains('Delete');
-        });
+                cy.get('td').eq(2).contains('Discussion: Scenario 1');
+                cy.get('td').eq(1).contains('Shared with Class');
+                cy.get('td').eq(3).contains('0 / 3');
+                cy.get('td').eq(4).contains('Instructor One');
+                cy.get('td').eq(5).contains('Discussion');
+                cy.get('td').eq(7).contains('Delete');
+            });
     });
 
     it('Student responds to the Discussion', () => {
@@ -142,13 +142,13 @@ describe('Discussion View: Create Discussion', () => {
         cy.visit('/course/1/assignments');
         cy.contains('Discussion: Scenario 1')
             .parent('td').parent('tr').within(() => {
-            cy.get('td').eq(3).contains('1 / 3');
-            cy.get('td').eq(7).should('not.contain', 'Delete');
-        });
+                cy.get('td').eq(3).contains('1 / 3');
+                cy.get('td').eq(7).should('not.contain', 'Delete');
+            });
         cy.get('a').contains('Discussion: Scenario 1').click();
         cy.get('#student-response-dropdown')
             .contains('1 of 3 students responded');
-        cy.get('#student-response-dropdown').click()
+        cy.get('#student-response-dropdown').click();
         cy.get('a.dropdown-item')
             .contains('Student One (1 comment)').should('be.visible');
     });

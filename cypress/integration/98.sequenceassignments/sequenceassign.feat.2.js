@@ -36,7 +36,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.choice_all_items > .switcher-choice').click({force: true});
 
         cy.log('create selection');
-        cy.get('.create_annotation_icon').click({force: true});
+        cy.get('#create-annotation-icon').click({force: true});
         cy.get('#btnClipStart').should('be.visible');
         cy.get('#btnClipEnd').should('be.visible');
         cy.get('.col > .btn-primary').click({force: true});
@@ -60,7 +60,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         // cy.contains('Add text annoatation').should('exist');
         cy.get('form > .form-control').type('Example annotation');
         cy.get('.modal-body > form > .btn').click();
-        cy.get('.project-title').clear().type('Example response');
+        cy.get('.project-title').clear({force: true}).type('Example response');
         cy.get('.nav-link').should('have.attr', 'href');
         //TODO: for some reasone cy.contains('Reflection') doesn't work
         cy.get('.nav > :nth-child(2) > .nav-link').click();

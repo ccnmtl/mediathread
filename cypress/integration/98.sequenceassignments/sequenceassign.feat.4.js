@@ -19,7 +19,7 @@ describe('Sequence Assignment Feat: Student reviews feedback', () => {
         cy.contains('Test Sequence Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Test Sequence Assignment');
-            cy.get('td').eq(1).contains('Submitted');
+            cy.get('td').eq(1).contains('Shared with Class');
             cy.get('td').eq(3).contains('View Feedback');
             cy.get('td').eq(4).contains('Sequence');
 

@@ -51,4 +51,13 @@ describe('Manage Course', function() {
         cy.get('input#id_see_eachothers_selections').should('not.be.checked');
         cy.get('input#id_see_eachothers_items').should('not.be.checked');
     });
+
+    it('changes settings to default', function() {
+        cy.url().should('match', /course\/1\/dashboard\/settings\/$/);
+        cy.get('input#id_see_eachothers_items').click();
+        cy.get('input#id_see_eachothers_selections').click();
+        cy.get('.btn-primary').click();
+        cy.get('input#id_see_eachothers_selections').should('be.checked');
+        cy.get('input#id_see_eachothers_items').should('be.checked');
+    });
 });

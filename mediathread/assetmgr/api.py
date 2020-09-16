@@ -69,6 +69,7 @@ class AssetResource(ModelResource):
         bundle.data['editable_title'] = (
             bundle.request.user.is_staff or
             bundle.obj.author == bundle.request.user)
+        bundle.data['editable'] = (bundle.obj.author == bundle.request.user)
 
         bundle.data['annotations'] = []
         bundle.data['annotation_count'] = 0

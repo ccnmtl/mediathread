@@ -62,8 +62,8 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('#id_publish_1').click();
         cy.get('.btn-save-project').click({force: true});
 
-        cy.log('go back to projects');
-        cy.get('.breadcrumb').click();
-        cy.contains('Example project').should('exist');
+        // cy.log('go back to projects');
+        // cy.get('.breadcrumb').click();
+        // cy.contains('Example project').should('exist');
     });
 });

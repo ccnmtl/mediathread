@@ -41,16 +41,6 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection 2');
         cy.get('.citationTemplate > .clickableCitation').click({force: true});
-
-        cy.log('Add secondary elements');
-        cy.wait(500);
-        cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
-        cy.get('#record-1 > .record-asset-properties > .citationTemplate > .materialCitation')
-            .click();
-        cy.get('.jux-txt > .jux-track > :nth-child(3)').click({force: true});
-        // cy.contains('Add text annoatation').should('exist');
-        cy.get('form > .form-control').type('Project annotation');
-        cy.get('.modal-body > form > .btn').click();
         cy.get('#title').clear({force: true})
             .type('Example project', {force: true});
         //TODO: for some reasone cy.contains('Reflection') doesn't work

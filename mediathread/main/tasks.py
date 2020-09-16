@@ -1,18 +1,17 @@
 from celery.schedules import crontab
 from celery.task.base import periodic_task
+from courseaffils.columbia import CanvasTemplate, WindTemplate
 from courseaffils.models import Course
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages.constants import ERROR, INFO, WARNING
 from django.contrib.sites.shortcuts import get_current_site
-from panopto.session import PanoptoSessionManager
-
 from mediathread.assetmgr.models import Source, Asset
-from mediathread.main.course_details import (
-    get_upload_folder, get_ingest_folder)
+from mediathread.main.course_details import get_upload_folder
 from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.util import user_display_name, send_template_email
+from panopto.session import PanoptoSessionManager
 
 
 class PanoptoIngester(object):
@@ -43,16 +42,6 @@ class PanoptoIngester(object):
             self.log_message(course, session, ERROR, msg)
         return complete
 
-    def is_description_valid(self, course, session):
-        valid = ('Description' in session and
-                 session['Description'] and
-                 len(session['Description']) > 0)
-        if not valid:
-            msg = '{} ({}) has no UNI specified'.format(
-                session['Name'], session['Id'])
-            self.log_message(course, session, ERROR, msg)
-        return valid
-
     def is_already_imported(self, course, session):
         session_name = session['Name']
         session_id = session['Id']
@@ -64,6 +53,14 @@ class PanoptoIngester(object):
                 '{} ({}) already imported'.format(session_name, session_id))
         return imported
 
+    def get_course(self, course_string):
+        d = CanvasTemplate.to_dict(course_string)
+        s = WindTemplate.to_string(d)
+        try:
+            return Course.objects.get(group__name=s)
+        except Course.DoesNotExist:
+            return None
+
     def get_author(self, course, uni):
         # If the student UNI is not yet in this course, add them as a student
         user, created = User.objects.get_or_create(username=uni)
@@ -71,6 +68,14 @@ class PanoptoIngester(object):
         if not course.is_true_member(user):
             course.group.user_set.add(user)
         return user, created
+
+    def add_session_status(self, course, session, item, author, created):
+        msg = '{} ({}) saved as <a href="/asset/{}/">{}</a> for {}'.format(
+            session['Name'], session['Id'], item.id,
+            item.title, user_display_name(author))
+        if created:
+            msg = '{}. <b>{} is a new user</b>'.format(msg, author.username)
+        self.log_message(course, session, INFO, msg)
 
     def create_item(self, course, name, author, session_id, thumb_url):
         # Create a Mediathread item using Session Name as the Item Title
@@ -87,13 +92,31 @@ class PanoptoIngester(object):
         asset.global_annotation(author, auto_create=True)
         return asset
 
-    def add_session_status(self, course, session, item, author, created):
-        msg = '{} ({}) saved as <a href="/asset/{}/">{}</a> for {}'.format(
-            session['Name'], session['Id'], item.id,
-            item.title, user_display_name(author))
-        if created:
-            msg = '{}. <b>{} is a new user</b>'.format(msg, author.username)
-        self.log_message(course, session, INFO, msg)
+    def parse_description(self, session_id, session_name, description):
+        pieces = description.split(',')
+        if len(pieces) != 2 or len(pieces[0]) < 1 or len(pieces[1]) < 1:
+            return []
+
+        return pieces
+
+    def process_session(self, mgr, session, course, author, course_folder_id):
+        if not self.is_session_complete(course, session):
+            return
+        if self.is_already_imported(course, session):
+            return
+
+        # Create a Mediathread Item for this session
+        session_id = session['Id']
+        item = self.create_item(
+            course, session['Name'], author, session_id, session['ThumbUrl'])
+
+        # Move the item to this course's folder
+        mgr.move_sessions([session_id], course_folder_id)
+
+        # Send an email to the student letting them know the video is ready
+        self.send_email(course, author, item)
+
+        return item
 
     def send_email(self, course, author, item):
         data = {
@@ -110,52 +133,58 @@ class PanoptoIngester(object):
             'main/mediathread_submission.txt',
             data, email_address)
 
-    def ingest_sessions(self, course, ingest_folder_id):
-        course_folder_id = get_upload_folder(course)
+    def folder_ingest(self, course, author, ingest_folder_id):
+        '''
+            Ingest all videos within an identified Panopto folder.
+            The passed author will own all ingested videos.
+            This functionality is available to instructors within
+            the Managed Course section of Mediathread.
+        '''
+        folder_id = get_upload_folder(course)
         session_mgr = self.get_session_manager()
 
         for session in session_mgr.get_session_list(ingest_folder_id):
-            if not self.is_session_complete(course, session):
+            item = self.process_session(
+                session_mgr, session, course, author, folder_id)
+
+            # Craft a message about this session
+            self.add_session_status(course, session, item, author, False)
+
+    def automated_ingest(self):
+        '''
+            Ingest all videos within the Mediathread bulk ingest folder.
+            Course and author are specified within each session's
+            description. This runs as an hourly task
+        '''
+        folder_id = settings.PANOPTO_INGEST_FOLDER
+        session_mgr = self.get_session_manager()
+
+        for session in session_mgr.get_session_list(folder_id):
+            uni, course_string = \
+                self.parse_description(
+                    session['Id'], session['Description'].lower().strip())
+
+            # Get the course from the coursestring
+            course = self.get_course(course_string)
+            if not course:
                 continue
-            if self.is_already_imported(course, session):
-                continue
-            if not self.is_description_valid(course, session):
+
+            # Get the course destination folder
+            course_folder_id = get_upload_folder(course)
+            if not course_folder_id:
                 continue
 
             # Get the author via the UNI stashed in the session description
-            author, created = \
-                self.get_author(course, session['Description'].lower().strip())
+            # The author will be created and added to the course if needed
+            author, created = self.get_author(course, uni)
 
-            # Create a Mediathread Item for this session
-            session_id = session['Id']
-            item = self.create_item(
-                course, session['Name'], author, session_id,
-                session['ThumbUrl'])
-
-            # Move the item to this course's folder
-            session_mgr.move_sessions([session_id], course_folder_id)
+            item = self.process_session(
+                session_mgr, session, course, author, course_folder_id)
 
             # Craft a message about this session
             self.add_session_status(course, session, item, author, created)
 
-            # Send an email to the student letting them know the video is ready
-            self.send_email(course, author, item)
-
-    def get_courses(self):
-        return Course.objects.filter(
-            coursedetails__name='ingest_folder',
-            coursedetails__value__isnull=False).exclude(
-                coursedetails__value__exact='')
-
-    def ingest(self):
-        for course in self.get_courses():
-            try:
-                self.ingest_sessions(course, get_ingest_folder(course))
-            except Course.DoesNotExist:
-                msg = 'No matching course found for {}'.format(course.name)
-                self.add_message(WARNING, msg)
-
 
 @periodic_task(run_every=crontab(hour="*", minute='0'))
 def panopto_ingest():
-    PanoptoIngester().ingest()
+    PanoptoIngester().automated_ingest()

@@ -133,7 +133,7 @@ export default class CollectionTab extends React.Component {
 
         }
 
-        this.setState({
+        return this.setState({
             selectedAsset: null
         });
     }
@@ -163,6 +163,7 @@ export default class CollectionTab extends React.Component {
                     asset={this.state.selectedAsset}
                     tags={this.props.tags}
                     terms={this.props.terms}
+                    leaveAssetDetailView={this.leaveAssetDetailView}
                     onUpdateAsset={this.onUpdateAsset} />
             );
         } else if (this.props.assetError) {

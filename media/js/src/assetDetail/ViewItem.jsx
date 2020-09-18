@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import find from 'lodash/find';
 
 import {
-    getAssetReferences, getTags, getTerms, updateAssetTitle
+    getAssetReferences, removeAsset, getTags, getTerms, updateAssetTitle
 } from '../utils';
 
 export default class ViewItem extends React.Component {
@@ -31,6 +31,7 @@ export default class ViewItem extends React.Component {
 
         this.onClickRename = this.onClickRename.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
+        this.onClickRemove = this.onClickRemove.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeTitle = this.onChangeTitle.bind(this);
     }
@@ -41,6 +42,22 @@ export default class ViewItem extends React.Component {
 
     onClickCancel(e) {
         this.setState({isRenaming: false});
+    }
+
+    onClickRemove(e) {
+        const r = window.confirm('Remove this asset from your collection?');
+
+        if (r === true) {
+            const me = this;
+            return removeAsset(this.props.asset.id)
+                .then(function() {
+                    return me.props.leaveAssetDetailView();
+                }).then(function() {
+                    window.scrollTo(0, 0);
+                });
+        }
+
+        return null;
     }
 
     handleSubmit(e) {
@@ -217,9 +234,14 @@ export default class ViewItem extends React.Component {
                     {description}
                 </p>
 
-                <button type="submit" className="btn btn-danger btn-sm float-right">
-                    Remove from my Collection
-                </button>
+                {this.props.asset && this.props.asset.editable && (
+                    <button
+                        type="button"
+                        className="btn btn-danger btn-sm float-right"
+                        onClick={this.onClickRemove}>
+                        Remove from my Collection
+                    </button>
+                )}
             </div>
         );
 
@@ -229,5 +251,6 @@ export default class ViewItem extends React.Component {
 ViewItem.propTypes = {
     asset: PropTypes.object,
     onUpdateAssetTitle: PropTypes.func.isRequired,
-    onShowValidationError: PropTypes.func.isRequired
+    onShowValidationError: PropTypes.func.isRequired,
+    leaveAssetDetailView: PropTypes.func.isRequired
 };

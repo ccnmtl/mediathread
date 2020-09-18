@@ -94,29 +94,29 @@
                                 {% endif %}
 
                                 <div data-page="1" data-page-content="instructions" class="page">
-                                    <p>A sequence assignment allows students to line up a 
-                                    "primary" selection of video or audio against multiple 
-                                    "secondary" selections and/or annotations. The 
-                                    secondary selections will appear at designated points 
+                                    <p>A sequence assignment allows students to line up a
+                                    "primary" selection of video or audio against multiple
+                                    "secondary" selections and/or annotations. The
+                                    secondary selections will appear at designated points
                                     when the primary selection plays.</p>
 
-                                    <p>This type of assignment is good for assessing how 
-                                    students juxtapose a primary media object against other 
-                                    media selections (ie, visual annotations) or a series 
+                                    <p>This type of assignment is good for assessing how
+                                    students juxtapose a primary media object against other
+                                    media selections (ie, visual annotations) or a series
                                     of thoughts (ie, textual annotations).</p>
 
-                                    <p>The assignment has two workspaces as described 
+                                    <p>The assignment has two workspaces as described
                                     below.</p>
 
                                     <h4>Sequence workspace:</h4>
 
-                                    <p><img src="{{STATIC_URL}}img/screenshot-sequence.jpg" style="width:500px; border: 1px solid #ccc;" /></p>
+                                    <p><img src="{{STATIC_URL}}img/screenshot-sequence.jpg" style="width:500px; border: 1px solid #ccc;" alt="sequence screenshot"/></p>
 
                                     <p>In the sequence workspace, students may be asked to display correlations or contrasts in context, or to prepare a set of annotations that appear as a media selection plays.</p>
 
                                     <h4>Reflection workspace:</h4>
 
-                                    <p><img src="{{STATIC_URL}}img/screenshot-reflection.jpg" style="width:500px; border: 1px solid #ccc;" /></p>
+                                    <p><img src="{{STATIC_URL}}img/screenshot-reflection.jpg" style="width:500px; border: 1px solid #ccc;" alt="reflection screenshot" /></p>
 
                                     <p>Instructors have the option of asking students for an overall reflection on a complete sequence.</p>
 
@@ -136,18 +136,18 @@
                                 <div data-page="2" data-page-content="title" class="hidden page">
                                     <h4>1. Write title &amp; instructions</h4><br />
                                     <div class="form-group">
-                                        <label><strong>Assignment Title</strong></label><br />
-                                        <input type="text" name="title" class="form-control"
+                                        <label for="assignment-title"><strong>Assignment Title</strong></label><br />
+                                        <input type="text" name="title" class="form-control" id="assignment-title"
                                             value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                                         <div class="help-inline">Title is a required field</div>
                                     </div>
                                     <div class="form-group">
                                         <label><strong>Instructions for completing assignment</strong></label>
                                         <p>
-                                        Add instructions to guide students as they select a 
-                                        primary media object and decide how to line up a 
-                                        series of visual or textual annotations against it, 
-                                        which will appear as the primary media object 
+                                        Add instructions to guide students as they select a
+                                        primary media object and decide how to line up a
+                                        series of visual or textual annotations against it,
+                                        which will appear as the primary media object
                                         plays.
                                         </p>
 
@@ -184,10 +184,10 @@
                                         <p>Add brief, targeted instructions to provide guidance on how to choose a primary video or audio. (140 character limit)</p>
                                         <div class="row">
                                             <div class="col-md-6" style="max-width: 330px;">
-                                            <img src="{{STATIC_URL}}img/screenshot-custom1.jpg" style="width:300px; border: 1px solid #ccc;" />
+                                            <img src="{{STATIC_URL}}img/screenshot-custom1.jpg" style="width:300px; border: 1px solid #ccc;" alt="primary custom instructions" />
                                             </div>
                                             <div class="col-md-6">
-                                            <textarea name="custom_instructions_1" class="form-control" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                            <textarea name="custom_instructions_1" class="form-control" maxlength="140" aria-label="primary custom instructions" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -199,10 +199,10 @@
                                         <p>Add brief, targeted instructions to provide guidance on how to choose secondary media objects. (140 character limit)</p>
                                         <div class="row">
                                             <div class="col-md-6" style="max-width: 330px;">
-                                            <img src="{{STATIC_URL}}img/screenshot-custom2.jpg" style="width:300px; border: 1px solid #ccc;" />
+                                            <img src="{{STATIC_URL}}img/screenshot-custom2.jpg" style="width:300px; border: 1px solid #ccc;" alt="secondary custom insrtuctions" />
                                             </div>
                                             <div class="col-md-6">
-                                            <textarea name="custom_instructions_2" class="form-control" maxlength="140" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
+                                            <textarea name="custom_instructions_2" class="form-control" maxlength="140" aria-label="secondary custom instructions" placeholder="Custom instructions (optional)..." style="height: 100px; margin-top: 20px;">{{form.instance.custom_instructions_2}}</textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                                     <h4>3. Set response due date &amp; visibility</h4><br />
                                     <div class="form-group">
                                         <label for="due_date"><strong>Due Date</strong></label>
-                                        <input class="form-control" type="text"
+                                        <input class="form-control" type="text" id="due_date"
                                             name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                                     </div>
                                     <div class="help-inline">Please choose a due date.</div>
@@ -248,7 +248,7 @@
                                         {{form.response_view_policy}}
                                     </div>
                                     <div class="help-inline">Please choose how responses will be viewed.</div>
-                                    <div><i>Note: After students respond to an assignment, they cannot edit their 
+                                    <div><i>Note: After students respond to an assignment, they cannot edit their
                                     response unless an instructor "unsubmits" it for further editing.</i></div><br />
 
                                     <div class="row mb-5">

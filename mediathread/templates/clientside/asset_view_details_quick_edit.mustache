@@ -53,7 +53,7 @@
           <div id="annotation-body">
             <label for="annotation-title">Title:</label>
             <div>
-              <input data-label="Title" type="text" class="w-100 mb-3"
+              <input data-label="Title" type="text" class="w-100 mb-3" id="annotation-title"
               name="annotation-title" value="{{annotation.metadata.title}}"/>
             </div>
 
@@ -82,8 +82,8 @@
                 value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                   <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
 
-                  <label for="annotation-body">Note</label>
-                  <textarea data-label="Selection Notes" rows="7" cols="44" name="annotation-body">{{metadata.body}}</textarea>
+                  <label for="annotation_body">Note</label>
+                  <textarea data-label="Selection Notes" rows="7" cols="44" id="annotation_body" name="annotation-body">{{metadata.body}}</textarea>
 
                   <input type="hidden" name="annotation-range1" value="{{range1}}" />
                   <input type="hidden" name="annotation-range2" value="{{range2}}" />

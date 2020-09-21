@@ -12,7 +12,7 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
     self.$parentContainer = $parent;
     self.space_owner = space_owner;
     self.form = self.$el.find('form.threaded_comments_form')[0];
-    self.max_comment_length = 3000;
+    self.max_comment_length = 20000;
 
     djangosherd.storage.json_update(panel.context);
 

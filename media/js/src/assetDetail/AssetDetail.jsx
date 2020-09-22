@@ -817,6 +817,7 @@ export default class AssetDetail extends React.Component {
                                 asset={this.props.asset}
                                 onUpdateAssetTitle={this.onUpdateAssetTitle}
                                 onShowValidationError={this.onShowValidationError}
+                                leaveAssetDetailView={this.props.leaveAssetDetailView}
                             />
                         )}
                     </div>
@@ -939,5 +940,6 @@ AssetDetail.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    leaveAssetDetailView: PropTypes.func.isRequired,
     onUpdateAsset: PropTypes.func.isRequired
 };

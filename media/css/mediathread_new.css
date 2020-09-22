@@ -144,7 +144,7 @@ h6.course-title {
 
 .meta {
     font-size: .875em;
-    color: #777;
+    color: #747474;
     clear: both;
     display: block;
     float: left;
@@ -2282,6 +2282,9 @@ div.gallery-item h4.asset_title {
     color: #666666 !important;
 }
 
+#s2id_autogen8, #s2id_autogen12 {
+    color: #666666 !important;
+}
 /* flowplayer skin override */
 
 .fp-player .fp-share,
@@ -3912,6 +3915,10 @@ a.btn.btn-warning {
     font-weight: normal;
 }
 
+a.btn.btn-warning {
+    color: blue;
+}
+
 a.btn.btn-default img.right {
     padding: 4px 0 0 10px;
 }
@@ -4088,7 +4095,11 @@ ul.section-tabs>li>a.active {
   background-color: #f89406;
 }
 .badge-success {
-  background-color: #468847;
+  background-color: #4e804f;
+}
+
+.text-danger {
+    color: #b94a48 !important;
 }
 
 .page-count {

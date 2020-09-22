@@ -71,6 +71,7 @@ class RestrictedMaterialsMixin(object):
 
         record_owner_name = kwargs.pop('record_owner_name', None)
         self.initialize(record_owner_name)
+
         return super(RestrictedMaterialsMixin, self).dispatch(*args, **kwargs)
 
     def initialize(self, record_owner_name=None):
@@ -79,8 +80,8 @@ class RestrictedMaterialsMixin(object):
 
         self.record_owner = None
         if record_owner_name:
-            self.record_owner = get_object_or_404(User,
-                                                  username=record_owner_name)
+            self.record_owner = get_object_or_404(
+                User, username=record_owner_name)
 
         # Is the current user faculty or a CTL staff member
         self.is_viewer_faculty = cached_course_is_faculty(self.request.course,

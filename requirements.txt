@@ -61,14 +61,14 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.17.4
+sentry-sdk==0.17.6
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2
 
-django-debug-toolbar==2.2
+django-debug-toolbar==3.0
 
 django-markwhat==1.6.2
 ipaddress==1.0.23
@@ -107,12 +107,12 @@ django-smtp-ssl==1.0
 djangorestframework==3.11.1
 
 ccnmtlsettings==1.9.0
-django-extensions==3.0.8
+django-extensions==3.0.9
 
 s3transfer==0.3.3
 jmespath==0.10.0
 
-botocore>=1.16.0,<1.18.0
+botocore>=1.16.0,<1.19.0
 boto3>=1.13.0,<1.16.0
 
 entrypoints==0.3

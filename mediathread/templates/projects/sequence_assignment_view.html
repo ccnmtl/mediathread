@@ -185,7 +185,7 @@
                                     </h2>
                                 </div>
                                 <div id="instructions" class="collapse bg-light bg-light {% if show_instructions %}in{% endif %}"
-                                    aria-labelledby="instructions-heading-one" data-parent="#instructions-accordion">
+                                    aria-label="instructions-heading-one" data-parent="#instructions-accordion">
                                     <div class="p-4">
                                         <div class="small">
                                             <span class="metadata-label"><strong>Response Visibility</strong>:</span>
@@ -243,8 +243,8 @@
                                 </div>
                             {% else %}{% if response_can_edit %}
                                 <div>
-                                    <label>Response Title</label>&nbsp;
-                                    <input type="text" name="title"
+                                    <label for="response-title">Response Title</label>&nbsp;
+                                    <input type="text" name="title" id="response-title"
                                         value="{{the_response.title}}" maxlength="80"
                                         placeholder="Specify a title"
                                         class="project-title form-control" />
@@ -278,7 +278,7 @@
                             {% endif %}
                             <ul class="nav nav-tabs float-right" role="tablist">
                                 <li role="presentation" class="editor nav-item">
-                                    <a class="nav-link active" href="#sequence" aria-controls="sequence-editor"
+                                    <a class="nav-link active" href="#sequence" aria-controls="sequence"
                                     role="tab" data-toggle="tab">
                                         Sequence
                                     </a>

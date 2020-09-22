@@ -100,7 +100,7 @@
                             {% endif %}
                         </strong>
                         <div class="modal fade text-left" id="unsubmit-response" tabindex="-1"
-                            role="dialog" aria-labelledby="Unsubmit Response">
+                            role="dialog" aria-label="Unsubmit Response">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -114,7 +114,7 @@
                                         <form action="/project/unsubmit/" method="post">
                                             {% csrf_token %}
                                             <label for="student-response-id">Select Response</label>
-                                            <select name="student-response" class="form-control">
+                                            <select name="student-response" class="form-control" id="student-response-id">
                                                 {% for response in responses %}
                                                     {% if response.is_submitted %}
                                                         <option value="{{response.id}}">

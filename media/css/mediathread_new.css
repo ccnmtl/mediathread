@@ -2278,7 +2278,7 @@ div.gallery-item h4.asset_title {
     background-color: #128193 !important
 }
 
-#s2id_autogen2, #s2id_autogen4 {
+#s2id_autogen2, #s2id_autogen4, #s2id_autogen1, #s2id_autogen3 {
     color: #666666 !important;
 }
 
@@ -4299,4 +4299,9 @@ ul.selection-spinner {
     margin-bottom: 0;
     padding-bottom: 0;
     padding-right: 0;
+}
+
+.metadata {
+    font-size: 1.25rem;
+    font-family: 'Montserrat', sans-serif;
 }

@@ -110,23 +110,6 @@ class ManageExternalCollectionView(
         return HttpResponseRedirect(redirect_url)
 
 
-class ManageIngestView(LoggedInCourseMixin, LoggedInFacultyMixin, View):
-
-    def post(self, request):
-        enable = request.POST.get('enable', None)
-        if enable is None:
-            return HttpResponseBadRequest('Invalid request parameters')
-
-        if enable == '1':
-            course_details.add_ingest_folder(request.course)
-        else:
-            course_details.clear_ingest_folder(request.course)
-
-        redirect_url = reverse(
-            'course-manage-sources', args=[request.course.pk])
-        return HttpResponseRedirect(redirect_url)
-
-
 @login_required
 def asset_switch_course(request, asset_id):
     try:

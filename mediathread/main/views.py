@@ -260,7 +260,8 @@ class CoursePanoptoIngestLogView(LoggedInFacultyMixin, ListView):
     def get_context_data(self, **kwargs):
         cx = super(CoursePanoptoIngestLogView, self).get_context_data(**kwargs)
         cx['base_url'] = u'{}?page='.format(
-            reverse('course-panopto-ingest-log'))
+            reverse('course-panopto-ingest-log',
+                    args=[self.request.course.pk]))
 
         return cx
 
@@ -948,7 +949,7 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         ingester = PanoptoIngester(self.request)
 
         folder_id = self.request.POST.get('folder_name', '')
-        ingester.ingest_sessions(request.course, request.user, folder_id)
+        ingester.folder_ingest(request.course, request.user, folder_id)
 
         return HttpResponseRedirect(
             reverse('course-panopto-source', args=[request.course.pk]))

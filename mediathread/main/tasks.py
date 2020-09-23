@@ -53,12 +53,16 @@ class PanoptoIngester(object):
                 '{} ({}) already imported'.format(session_name, session_id))
         return imported
 
-    def get_course(self, course_string):
+    def get_course(self, session, course_string):
         d = CanvasTemplate.to_dict(course_string)
         s = WindTemplate.to_string(d)
         try:
             return Course.objects.get(group__name=s)
         except Course.DoesNotExist:
+            self.log_message(
+                None, session, ERROR,
+                '{} ({}): No course matches {}'.format(
+                    session['Name'], session['Id'], course_string))
             return None
 
     def get_author(self, course, uni):
@@ -66,8 +70,18 @@ class PanoptoIngester(object):
         user, created = User.objects.get_or_create(username=uni)
 
         if not course.is_true_member(user):
+            # @todo - determine if there is an api we could use to validate
+            # a student's course membership
             course.group.user_set.add(user)
         return user, created
+
+    def get_course_folder(self, course):
+        course_folder_id = get_upload_folder(course)
+        if not course_folder_id:
+            self.log_message(
+                course, None, ERROR,
+                '{} course does not have upload enabled'.format(course.title))
+        return course_folder_id
 
     def add_session_status(self, course, session, item, author, created):
         msg = '{} ({}) saved as <a href="/asset/{}/">{}</a> for {}'.format(
@@ -92,12 +106,18 @@ class PanoptoIngester(object):
         asset.global_annotation(author, auto_create=True)
         return asset
 
-    def parse_description(self, session_id, session_name, description):
-        pieces = description.split(',')
-        if len(pieces) != 2 or len(pieces[0]) < 1 or len(pieces[1]) < 1:
+    def parse_description(self, session):
+        try:
+            description = session['Description'].lower().strip()
+            pieces = description.split(',')
+            assert len(pieces) == 2
+            return pieces
+        except (AttributeError, AssertionError):
+            self.log_message(
+                None, session, ERROR,
+                '{} ({}) does not have a UNI and/or coursestring'.format(
+                    session['Name'], session['Id']))
             return []
-
-        return pieces
 
     def process_session(self, mgr, session, course, author, course_folder_id):
         if not self.is_session_complete(course, session):
@@ -140,49 +160,64 @@ class PanoptoIngester(object):
             This functionality is available to instructors within
             the Managed Course section of Mediathread.
         '''
-        folder_id = get_upload_folder(course)
+        # Get the destination folder
+        course_folder_id = self.get_course_folder(course)
+        if not course_folder_id:
+            return
+
         session_mgr = self.get_session_manager()
 
         for session in session_mgr.get_session_list(ingest_folder_id):
             item = self.process_session(
-                session_mgr, session, course, author, folder_id)
+                session_mgr, session, course, author, course_folder_id)
 
             # Craft a message about this session
             self.add_session_status(course, session, item, author, False)
 
     def automated_ingest(self):
         '''
-            Ingest all videos within the Mediathread bulk ingest folder.
-            Course and author are specified within each session's
-            description. This runs as an hourly task
+            Periodically ingest videos within the identified Panopto folders.
+            Course and author should be specified within each session's
+            description. Once identified, the videos are associated with the
+            course and author, then moved to the course's
+            default upload folder. This runs as an hourly task.
+
+            Videos within the common folder are expected to be uploaded with
+                UNI,course_string
+            in the video description.
+
+            * UNI - is the student or faculty identifier
+            * course_string - is the Canvas flavor of a course identifier, i.e.
+                SOCWT7100_099_2020_3
         '''
-        folder_id = settings.PANOPTO_INGEST_FOLDER
-        session_mgr = self.get_session_manager()
+        for bulk_folder_id in settings.PANOPTO_INGEST_FOLDERS:
+            session_mgr = self.get_session_manager()
 
-        for session in session_mgr.get_session_list(folder_id):
-            uni, course_string = \
-                self.parse_description(
-                    session['Id'], session['Description'].lower().strip())
+            for session in session_mgr.get_session_list(bulk_folder_id):
+                # Get the uni & course_string from the video's description
+                pieces = self.parse_description(session)
+                if not pieces:
+                    continue
 
-            # Get the course from the coursestring
-            course = self.get_course(course_string)
-            if not course:
-                continue
+                # Get the course from the course_string
+                course = self.get_course(session, pieces[1])
+                if not course:
+                    continue
 
-            # Get the course destination folder
-            course_folder_id = get_upload_folder(course)
-            if not course_folder_id:
-                continue
+                # Get the destination folder for the course
+                course_folder_id = self.get_course_folder(course)
+                if not course_folder_id:
+                    continue
 
-            # Get the author via the UNI stashed in the session description
-            # The author will be created and added to the course if needed
-            author, created = self.get_author(course, uni)
+                # Get the author via the UNI stashed in the session description
+                # The author will be created and added to the course if needed
+                author, created = self.get_author(course, pieces[0])
 
-            item = self.process_session(
-                session_mgr, session, course, author, course_folder_id)
+                item = self.process_session(
+                    session_mgr, session, course, author, course_folder_id)
 
-            # Craft a message about this session
-            self.add_session_status(course, session, item, author, created)
+                # Craft a message about this session
+                self.add_session_status(course, session, item, author, created)
 
 
 @periodic_task(run_every=crontab(hour="*", minute='0'))

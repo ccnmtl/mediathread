@@ -4315,6 +4315,12 @@ ul.selection-spinner {
     }
 }
 
+.av-selections {
+    margin: 0px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
 .metadata {
     font-size: 1.25rem;
     font-family: 'Montserrat', sans-serif;

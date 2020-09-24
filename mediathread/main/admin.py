@@ -39,4 +39,17 @@ class CourseInvitationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(CourseInvitation, CourseInvitationAdmin)
-admin.site.register(PanoptoIngestLogEntry)
+
+
+class PanoptoIngestLogEntryAdmin(admin.ModelAdmin):
+    class Meta:
+        model = PanoptoIngestLogEntry
+
+    list_display = ('course', 'session_id', 'level',
+                    'message', 'created_at')
+    list_filter = ('level',)
+
+    search_fields = ('course__title', 'session_id')
+
+
+admin.site.register(PanoptoIngestLogEntry, PanoptoIngestLogEntryAdmin)

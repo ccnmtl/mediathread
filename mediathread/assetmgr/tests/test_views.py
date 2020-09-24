@@ -192,15 +192,6 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         ExternalCollection.objects.get(course=self.sample_course,
                                        title=suggested.title)
 
-    def test_manage_ingest_get(self):
-        self.assertTrue(
-            self.client.login(username=self.instructor_one.username,
-                              password='test'))
-        self.switch_course(self.client, self.sample_course)
-
-        response = self.client.get('/asset/ingest/')
-        self.assertEquals(response.status_code, 405)
-
     def test_asset_create_via_bookmarklet(self):
         data = {'title': 'YouTube Asset',
                 'youtube': 'https://www.youtube.com/abcdefghi',

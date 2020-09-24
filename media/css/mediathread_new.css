@@ -4301,6 +4301,20 @@ ul.selection-spinner {
     padding-right: 0;
 }
 
+@media (max-width: 1126px)
+{
+    .asset-detail .nav-item {
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        line-height: 1.5;
+        border-radius: .2rem;
+    }
+
+    .asset-detail .nav {
+        flex-wrap: nowrap;
+    }
+}
+
 .metadata {
     font-size: 1.25rem;
     font-family: 'Montserrat', sans-serif;

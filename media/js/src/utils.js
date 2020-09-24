@@ -115,7 +115,7 @@ const updateAssetTitle = function(assetId, newTitle) {
 };
 
 const getAssetReferences = function(id=null) {
-    let url = `/asset/references/${id}/`;
+    const url = `/asset/references/${id}/`;
 
     return authedFetch(url)
         .then(function(response) {
@@ -123,6 +123,20 @@ const getAssetReferences = function(id=null) {
                 return response.json();
             } else {
                 throw 'Error loading asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
+};
+
+const removeAsset = function(assetId) {
+    const url = `/asset/delete/${assetId}/`;
+
+    return authedFetch(url)
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error removing asset: ' +
                     `(${response.status}) ${response.statusText}`;
             }
         });
@@ -771,6 +785,7 @@ const getTerms = function(annotations) {
 
 export {
     getAssets, getAsset, getAssetReferences,
+    removeAsset,
     updateAssetTitle,
     createSelection,
     createSherdNote, updateSherdNote,

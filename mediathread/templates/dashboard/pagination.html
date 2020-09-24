@@ -1,5 +1,5 @@
 {% if paginator.num_pages > 1 %}
-    <div class="pull-right mt-1">
+    <div class="float-right mt-1">
         <a class="btn btn-secondary btn-sm  {% if not page_obj.has_next %}disabled{% endif %}"
             {% if page_obj.has_next %}
                 href="{{base_url}}{{page_obj.next_page_number}}"
@@ -16,10 +16,10 @@
              Last <span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span>
         </a>
     </div>
-    <div class="pull-right page-count">
-        <label for="page-number-input-{{instance}}">Page {{page_obj.number}} of {{paginator.num_pages}}</label>
+    <div class="float-right page-count">
+        <label class="px-2" for="page-number-input-{{instance}}">Page {{page_obj.number}} of {{paginator.num_pages}}</label>
     </div>
-    <div class="pull-right mt-1">
+    <div class="float-right mt-1">
         <a class="btn btn-secondary btn-sm  {% if not page_obj.has_previous %}disabled{% endif %}"
             data-page-number="1" href="{{base_url}}1">
             <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span> First

@@ -31,7 +31,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
         this.addStorage = function (stor) {
             this.targetstorage.push(stor);
         };
-        
+
         this.unbind = {};
 
         // @todo -- this getState is what is used for storing
@@ -66,7 +66,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
                     obj.start = 0;
                     obj.end = 0;
                 }
-                
+
                 // hook up an extra playbutton
                 if (self.unbind.hasOwnProperty('tool_play')) {
                     self.unbind.tool_play.disconnect();
@@ -198,7 +198,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
 
             var postEndButton = function(movieTime) {
                 var movieTimeCode = secondsToCode(movieTime);
-                
+
                 if (self.targetview.media.pause) {
                     ///due to overwhelming user feedback for it to pause on clicking end-button
                     self.targetview.media.pause();
@@ -286,10 +286,10 @@ if (!Sherd.Video.Annotators.ClipForm) {
                        'Create a selection by clicking Start Time and End Time buttons as the video plays, ' +
                        'or by manually typing in times in the associated edit boxes.<br /><br />' +
                        'Add title, tags and notes. If a Course Vocabulary has been enabled by the instructor, ' +
-                       'apply vocabulary terms. Click Save when you are finished.' +                   
+                       'apply vocabulary terms. Click Save when you are finished.' +
                    '</p>' +
                       '<table>' +
-                       '<tr><td span="0"><div><label for="annotation-title">Selection Times</label></div></td></tr>' + 
+                       '<tr><td span="0"><div><label for="annotation-title">Selection Times</label></div></td></tr>' +
                        '<tr class="sherd-clipform-editing">' +
                          '<td>' +
                            '<input type="button" class="btn-primary" value="Start Time" id="btnClipStart"/> ' +
@@ -302,15 +302,15 @@ if (!Sherd.Video.Annotators.ClipForm) {
                        '</tr>' +
                        '<tr class="sherd-clipform-editing">' +
                          '<td>' +
-                           '<input type="text" class="timecode" id="clipStart" value="' + self.components.start + '" />' +
+                           '<input type="text" class="timecode" id="clipStart" aria-label="clip start" value="' + self.components.start + '" />' +
                            '<div class="helptext timecode">HH:MM:SS</div>' +
                          '</td>' +
                          '<td style="width: 10px; text-align: center">-</td>' +
                          '<td>' +
-                           '<input type="text" class="timecode" id="clipEnd" value="' + self.components.end + '" />' +
+                           '<input type="text" class="timecode" id="clipEnd" aria-label="clip end" value="' + self.components.end + '" />' +
                            '<div class="helptext timecode">HH:MM:SS</div>' +
                          '</td>' +
-                         '<td class="sherd-clipform-play">' + 
+                         '<td class="sherd-clipform-play">' +
                          '<input type="image" title="Play Clip" class="regButton videoplay" id="btnPlayClip" src="' + STATIC_URL + 'img/icons/meth_video_play.png"/>' +
                          '</td>' +
                        '</tr>' +
@@ -318,7 +318,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
                 '</div>'
             };
         };
-        
+
         this.microformat.components = function (html_dom, create_obj) {
             return {
                 'form' : html_dom,

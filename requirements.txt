@@ -42,10 +42,10 @@ chardet==3.0.4
 idna==2.10
 urllib3==1.25.10  # sentry-sdk
 certifi==2020.6.20  # sentry-sdk
-cryptography==3.1
+cryptography==3.1.1
 pyOpenSSL==19.1.0
 asn1crypto==1.4.0  # for pyOpenSSL
-cffi==1.14.2  # for pyOpenSSL
+cffi==1.14.3  # for pyOpenSSL
 
 requests==2.24.0
 contextlib2==0.6.0.post1
@@ -61,14 +61,14 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.17.4
+sentry-sdk==0.17.6
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2
 
-django-debug-toolbar==2.2
+django-debug-toolbar==3.1
 
 django-markwhat==1.6.2
 ipaddress==1.0.23
@@ -107,13 +107,13 @@ django-smtp-ssl==1.0
 djangorestframework==3.11.1
 
 ccnmtlsettings==1.9.0
-django-extensions==3.0.8
+django-extensions==3.0.9
 
 s3transfer==0.3.3
 jmespath==0.10.0
 
-botocore>=1.16.0,<1.18.0
-boto3>=1.13.0,<1.15.0
+botocore>=1.16.0,<1.19.0
+boto3>=1.13.0,<1.16.0
 
 entrypoints==0.3
 django-storages==1.10.1
@@ -122,7 +122,7 @@ django-cacheds3storage==0.2.2
 requests-toolbelt==0.9.1
 pytz==2020.1
 isodate==0.6.0
-cached-property==1.5.1
+cached-property==1.5.2
 
 appdirs==1.4.4  # zeep
 attrs==20.2.0  # zeep

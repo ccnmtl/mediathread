@@ -6,10 +6,8 @@ from django.core import mail
 from django.core.cache import cache
 from django.test import TestCase
 from django.test.client import RequestFactory
-
-from mediathread.factories import MediathreadTestMixin, AssetFactory
-from mediathread.main.course_details import INGEST_FOLDER_KEY, \
-    clear_ingest_folder
+from mediathread.factories import MediathreadTestMixin, AssetFactory, \
+    CourseFactory
 from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.tasks import PanoptoIngester
 
@@ -31,17 +29,6 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
     def tearDown(self):
         cache.clear()
 
-    def test_get_courses(self):
-        self.assertEquals(self.ingester.get_courses().count(), 0)
-
-        self.sample_course.add_detail(INGEST_FOLDER_KEY, 'folder id')
-        qs = self.ingester.get_courses()
-        self.assertEquals(qs.count(), 1)
-        self.assertEquals(qs.first(), self.sample_course)
-
-        clear_ingest_folder(self.sample_course)
-        self.assertEquals(self.ingester.get_courses().count(), 0)
-
     def test_log_message(self):
         self.ingester.log_message(
             self.sample_course, {'Id': 4}, ERROR, 'logged')
@@ -57,10 +44,10 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
         log_entry = PanoptoIngestLogEntry.objects.first()
         self.assertIsNotNone(log_entry)
-        self.assertEquals(log_entry.session_id, '4')
-        self.assertEquals(log_entry.course, self.sample_course)
-        self.assertEquals(log_entry.level, INFO)
-        self.assertEquals(log_entry.message, 'foo')
+        self.assertEqual(log_entry.session_id, '4')
+        self.assertEqual(log_entry.course, self.sample_course)
+        self.assertEqual(log_entry.level, INFO)
+        self.assertEqual(log_entry.message, 'foo')
 
     def test_is_already_imported(self):
         session = {'Name': 'The Name', 'Id': 'source url'}
@@ -73,7 +60,7 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
             self.sample_course, session))
 
     def test_get_author(self):
-        self.assertEquals(
+        self.assertEqual(
             self.ingester.get_author(self.sample_course, 'student_one'),
             (self.student_one, False))
 
@@ -87,11 +74,11 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
                 'Doe, Jim', self.student_one, 'session_id', 'thumb')
 
             self.assertTrue(item.title, 'Doe, Jim')
-            self.assertEquals(item.course, self.sample_course)
-            self.assertEquals(item.author, self.student_one)
-            self.assertEquals(item.primary.url, 'session_id')
-            self.assertEquals(item.thumb_url, 'https://localhost/thumb')
-            self.assertEquals(item.primary.label, 'mp4_panopto')
+            self.assertEqual(item.course, self.sample_course)
+            self.assertEqual(item.author, self.student_one)
+            self.assertEqual(item.primary.url, 'session_id')
+            self.assertEqual(item.thumb_url, 'https://localhost/thumb')
+            self.assertEqual(item.primary.label, 'mp4_panopto')
 
     def test_complete_incomplete(self):
         ctx = {'State': 'foo', 'Name': 'bar', 'Id': 1}
@@ -105,7 +92,7 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
         self.assertTrue(self.ingester.is_session_complete(
             self.sample_course, ctx))
         messages = [m.message for m in get_messages(self.request)]
-        self.assertEquals(len(messages), 0)
+        self.assertEqual(len(messages), 0)
 
     def test_add_session_status(self):
         item = AssetFactory(
@@ -141,6 +128,38 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
         self.assertEqual(mail.outbox[0].subject,
                          'Mediathread submission now available')
-        self.assertEquals(mail.outbox[0].from_email, settings.SERVER_EMAIL)
-        self.assertEquals(mail.outbox[0].to,
-                          [self.student_one.email])
+        self.assertEqual(mail.outbox[0].from_email, settings.SERVER_EMAIL)
+        self.assertEqual(mail.outbox[0].to, [self.student_one.email])
+
+    def test_parse_description(self):
+        a = self.ingester.parse_description(
+            {'Id': 1, 'Name': 'session1', 'Description': ''})
+        self.assertEqual(a, [])
+        msgs = [m.message for m in get_messages(self.request)]
+        self.assertTrue(
+            ('session1 (1) does not have a UNI and/or coursestring') in msgs)
+
+        a = self.ingester.parse_description(
+            {'Id': 1, 'Name': 'session1', 'Description': 'foo'})
+        self.assertEqual(a, [])
+
+        a = self.ingester.parse_description(
+            {'Id': 1, 'Name': 'session1', 'Description': 'uni,course'})
+        self.assertEqual(a, ['uni', 'course'])
+
+    def test_get_course(self):
+        session = {'Id': 1, 'Name': 'session1'}
+        course_string = 'SOCWT7100_099_2020_3'
+        self.assertIsNone(self.ingester.get_course(session, course_string))
+
+        msgs = [m.message for m in get_messages(self.request)]
+        self.assertTrue(
+            ('session1 (1): No course matches SOCWT7100_099_2020_3') in msgs)
+
+        course = CourseFactory()
+        course.group.name = 't1.y2010.s001.cf1000.scnc.st.course:columbia.edu'
+        course.group.save()
+        course_string = 'SCNCF1000_001_2010_1'
+        self.assertEqual(
+            self.ingester.get_course(session, course_string),
+            course)

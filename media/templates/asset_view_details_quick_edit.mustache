@@ -60,7 +60,7 @@
               <select class="vocabulary"
                 data-placeholder="select {{display_name?lower()}}"
                 name="vocabulary" multiple="multiple">
-                
+
                 {{#vocabulary}}
                     <optgroup data-id="vocabulary-{{id}}" label="{{display_name}}">
                     {{#term_set}}
@@ -79,7 +79,7 @@
                 value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
                   <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
 
-                  <label for="annotation-body">Note</label>
+                  <label for="id_annotation-body">Note</label>
                   <textarea data-label="Selection Notes" id="id_annotation-body" rows="7" cols="51" name="annotation-body">{{metadata.body}}</textarea>
 
                   <input type="hidden" name="annotation-range1" value="{{range1}}" />

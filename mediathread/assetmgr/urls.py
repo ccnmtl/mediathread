@@ -7,7 +7,7 @@ from mediathread.assetmgr.views import (
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
     MostRecentView, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
-    AnnotationCopyView, ManageIngestView
+    AnnotationCopyView
 )
 from mediathread.djangosherd.apiviews import SherdNoteCreate
 from mediathread.assetmgr.apiviews import AssetUpdate
@@ -20,9 +20,6 @@ urlpatterns = [
     path('archive/',
          ManageExternalCollectionView.as_view(), {},
          'collection-add-or-remove'),
-    path('ingest/',
-         ManageIngestView.as_view(), {},
-         'ingest-enable-disable'),
 
     # Archive save or delete
     path('references/<int:asset_id>/', AssetReferenceView.as_view(),

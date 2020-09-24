@@ -99,8 +99,9 @@ class CourseInvitation(models.Model):
 
 
 class PanoptoIngestLogEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    session_id = models.TextField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE,
+                               blank=True, null=True)
+    session_id = models.TextField(blank=True, null=True)
     level = models.IntegerField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

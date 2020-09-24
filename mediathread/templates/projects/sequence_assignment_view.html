@@ -131,15 +131,15 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
-                    <h5>
+                    <p class="metadata">
                         {% if assignment.due_date %}
                             Due {{assignment.due_date|date:'m/d/y'}}
                         {% else %}
                             No due date
                         {% endif %}
-                    </h5>
+                    </p>
                     <div class="project-visibility-description pr-3">
-                        <h5>{{assignment.visibility_short}}</h5>
+                        <p class="metadata">{{assignment.visibility_short}}</p>
                     </div>
                 </div>
 

@@ -205,7 +205,6 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         course = self.request.course
 
-        ingester = course_details.get_ingest_folder(course) != ''
         uploader = course_details.get_uploader(course)
         suggested = SuggestedExternalCollection.objects.all()
         upload_permission = int(course.get_detail(
@@ -218,7 +217,6 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             'space_viewer': self.request.user,
             'is_staff': self.request.user.is_staff,
             'uploader': uploader,
-            'ingester': ingester,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
             course_details.UPLOAD_PERMISSION_KEY: upload_permission
         }
@@ -262,7 +260,8 @@ class CoursePanoptoIngestLogView(LoggedInFacultyMixin, ListView):
     def get_context_data(self, **kwargs):
         cx = super(CoursePanoptoIngestLogView, self).get_context_data(**kwargs)
         cx['base_url'] = u'{}?page='.format(
-            reverse('course-panopto-ingest-log'))
+            reverse('course-panopto-ingest-log',
+                    args=[self.request.course.pk]))
 
         return cx
 
@@ -950,7 +949,7 @@ class CoursePanoptoSourceView(LoggedInFacultyMixin, TemplateView):
         ingester = PanoptoIngester(self.request)
 
         folder_id = self.request.POST.get('folder_name', '')
-        ingester.ingest_sessions(request.course, folder_id)
+        ingester.folder_ingest(request.course, request.user, folder_id)
 
         return HttpResponseRedirect(
             reverse('course-panopto-source', args=[request.course.pk]))

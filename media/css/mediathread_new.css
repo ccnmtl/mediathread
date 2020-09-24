@@ -4314,3 +4314,9 @@ ul.selection-spinner {
         flex-wrap: nowrap;
     }
 }
+
+.av-selections {
+    margin: 0px;
+    margin-right: 10px;
+    font-weight: bold;
+}

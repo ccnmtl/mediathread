@@ -233,7 +233,7 @@
                         <h1>{{assignment.title}}</h1>
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                             {% if assignment.due_date %}
-                                <h5 class="mt-2">Due {{assignment.due_date|date:'m/d/y'}}</h5>
+                                <p class="mt-2 metadata">Due {{assignment.due_date|date:'m/d/y'}}</p>
                             {% endif %}
                             {% if assignment_can_edit %}
                             <a class="btn btn-outline-secondary btn-edit-assignment btn-sm"

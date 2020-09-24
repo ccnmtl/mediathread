@@ -61,7 +61,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description')
             .contains('Shared with Class');
-        cy.get('h5').contains('Due').should('be.visible');
+        cy.contains('Due').should('be.visible');
         cy.get('.threadedcomments-container').should('be.visible');
         cy.get('#student-response-dropdown')
             .contains('0 of 3 students responded');
@@ -100,7 +100,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('.project-visibility-description').should('not.be.visible');
-        cy.get('h5').contains('Due').should('be.visible');
+        cy.contains('Due').should('be.visible');
         cy.get('.threadedcomments-container').should('be.visible');
 
         cy.get('li.comment-thread').within(() => {

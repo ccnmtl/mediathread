@@ -4289,3 +4289,9 @@ ul.selection-spinner {
     padding-bottom: 0;
     padding-right: 0;
 }
+
+.av-selections {
+    margin: 0px;
+    margin-right: 10px;
+    font-weight: bold;
+}

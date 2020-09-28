@@ -7,7 +7,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import (
     F, Value, CharField, OuterRef, Subquery)
-from django.db.models import Q
 from django.db.models.functions import Concat
 from django.db.models.functions import Lower
 from django.http import HttpResponse, HttpResponseRedirect, \
@@ -862,9 +861,13 @@ class AssignmentListView(ProjectListView):
 
             # use a subquery to retrieve the date of the user's response
             # and annotate the date_submitted
+
+            # @todo - there is a corner case here if the author has their own
+            # response and is a participant in a response as well.
+            # for the moment, choose the author until we can figure out how
+            # to annotate multiple properly.
             my_responses = Project.objects.filter(
-                (Q(author=self.request.user) |
-                 Q(participants=self.request.user)),
+                author=self.request.user,
                 collaboration___parent__object_pk=OuterRef('pk')).distinct()
             qs = qs.annotate(response_submitted=Subquery(
                 my_responses.values('date_submitted')))

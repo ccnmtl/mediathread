@@ -68,7 +68,7 @@ django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2
 
-django-debug-toolbar==3.1
+django-debug-toolbar==3.1.1
 
 django-markwhat==1.6.2
 ipaddress==1.0.23

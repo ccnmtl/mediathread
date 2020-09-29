@@ -1,10 +1,10 @@
 <div>
     <ul class="pagination nav justify-content-end btn-sm" style="padding: 0px;">
         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-            <a class="page-link" data-page-number="1" aria-label="First">First</a>
+            <a class="page-link" href="#" data-page-number="1" aria-label="First">First</a>
         </li>
         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-            <a class="page-link"
+            <a class="page-link" href="#"
                 data-page-number="{% if page_obj.has_previous %}{{page_obj.previous_page_number}}{% endif %}"
                 aria-label="Previous">
                 Previous
@@ -16,14 +16,14 @@
             </div>
         </li>
         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-            <a class="page-link"
+            <a class="page-link" href="#"
                 data-page-number="{% if page_obj.has_next %}{{page_obj.next_page_number}}{% endif %}"
                 aria-label="Next">
                 Next
             </a>
         </li>
         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-            <a class="page-link" data-page-number="{{paginator.num_pages}}" aria-label="Last">
+            <a class="page-link" href="#" data-page-number="{{paginator.num_pages}}" aria-label="Last">
                 Last
             </a>
         </li>

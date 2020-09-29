@@ -1851,7 +1851,7 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
         with self.settings(ASSET_CONVERT_API=None):
             ctx = view.get_context_data()
             self.assertFalse(ctx['endpoint'])
-            self.assertEquals(ctx['assets'].count(), 3)
+            self.assertEquals(ctx['assets'].count(), 4)
 
     def test_get_conversion_endpoint(self):
         view = CourseConvertMaterialsView()

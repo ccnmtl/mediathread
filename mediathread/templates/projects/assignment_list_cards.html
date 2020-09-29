@@ -18,7 +18,7 @@
                         </a>
                     </div>
                     <div class="col text-right">
-                        <a class="btn btn-sm btn-outline-primary mr-2" title="Add Selection Assignment"
+                        <a class="btn btn-sm btn-outline-primary mr-2" title="Add Selection Assignment" id="addSelectionAssignment"
                             href="{% url 'selection-assignment-create' request.course.id %}">
                             Add Assignment
                         </a>
@@ -44,7 +44,7 @@
                         </a>
                     </div>
                     <div class="col text-right">
-                        <a class="btn btn-sm btn-outline-primary mr-2" title="Add Composition Assignment"
+                        <a class="btn btn-sm btn-outline-primary mr-2" title="Add Composition Assignment" id="addCompositionAssignment"
                             href="{% url 'composition-assignment-create' request.course.id %}">
                             Add Assignment
                         </a>
@@ -70,7 +70,7 @@
                         </a>
                     </div>
                     <div class="col-md text-right">
-                        <a class="btn btn-sm btn-outline-primary" title="Add Sequence Assignment"
+                        <a class="btn btn-sm btn-outline-primary" title="Add Sequence Assignment" id="addSequenceAssignment"
                             href="{% url 'sequence-assignment-create' request.course.id %}">
                             Add Assignment
                         </a>
@@ -96,7 +96,7 @@
                         </a>
                     </div>
                     <div class="col text-right">
-                        <a class="btn btn-sm btn-outline-primary" title="Add Discussion Assignment"
+                        <a class="btn btn-sm btn-outline-primary" title="Add Discussion Assignment" id="addDiscussionAssignment"
                             href="{% url 'discussion-assignment-create-wizard' request.course.pk%}">
                             Add Assignment
                         </a>

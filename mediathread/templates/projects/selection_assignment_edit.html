@@ -117,7 +117,7 @@
                             <div data-page="2" data-page-content="choose-item" class="page hidden">
                                 <h4>1. Choose an item from the course collection</h4>
 
-                                <select class="form-control my-4 select-asset" name="item">
+                                <select class="form-control my-4 select-asset" name="item" aria-label="choose item">
                                     <option value="" disabled selected hidden>Choose an item</option>
                                     {% for item in items %}
                                         <option value="{{item.id}}" {% if item == the_item %}selected="selected"{% endif %}>
@@ -139,9 +139,10 @@
                             <div data-page="3" data-page-content="title" class="hidden page">
                                 <h4>2. Write title &amp; instructions</h4>
                                 <div class="form-group">
-                                    <label><strong>Assignment Title</strong></label>
+                                    <label for="assignment-title"><strong>Assignment Title</strong></label>
                                     <input type="text" name="title" class="form-control"
                                         placholder="Assignment Title"
+                                        id="assignment-title"
                                         value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
                                     <div class="help-inline">Title is a required field</div>
                                 </div>
@@ -173,7 +174,7 @@
                                 <p></p>
                                 <div class="form-group">
                                     <label for="due_date"><strong>Due Date</strong></label>
-                                    <input class="form-control" type="text"
+                                    <input class="form-control" type="text" id="due_date"
                                         name="due_date" value="{{form.instance.due_date|date:'m/d/y'}}">
                                 </div>
                                 <div class="help-inline">Please choose a due date.</div>

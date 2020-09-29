@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
+from tagging.models import Tag
 
 from mediathread.factories import AssetFactory, MediathreadTestMixin
 from mediathread.djangosherd.models import SherdNote
@@ -58,8 +59,31 @@ class SherdNoteTestsAsStudent(
         self.assertEqual(note.range2, 27.565)
         self.assertEqual(note.author, self.u)
 
-        self.assertTrue(
-            note.asset.global_annotation(self.u, False) is not None)
+        data = {
+            'title': 'note title 2',
+            'body': 'note body 2',
+            'range1': 43,
+            'range2': 47.565,
+            'tags': 'My Tag,Green,Black',
+        }
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(SherdNote.objects.count(), 3)
+        note = SherdNote.objects.get(title='note title 2')
+        self.assertEqual(note.body, 'note body 2')
+        self.assertEqual(note.range1, 43)
+        self.assertEqual(note.range2, 47.565)
+        self.assertEqual(note.author, self.u)
+
+        # test saved tag functionality
+        tags = note.tags_split()
+        self.assertEqual(len(tags), 3)
+        Tag.objects.get(name='my tag')
+        Tag.objects.get(name='green')
+        Tag.objects.get(name='black')
+        with self.assertRaises(Tag.DoesNotExist):
+            Tag.objects.get(name='unknown tag')
 
     def test_create_sherdnote_that_starts_at_0(self):
         """
@@ -85,9 +109,6 @@ class SherdNoteTestsAsStudent(
         self.assertEqual(note.range2, 17.565)
         self.assertEqual(note.author, self.u)
 
-        self.assertTrue(
-            note.asset.global_annotation(self.u, False) is not None)
-
     def test_create_sherdnote_on_classmates_asset(self):
         """
         Ensure we can create a new SherdNote (annotation) object on a
@@ -110,8 +131,6 @@ class SherdNoteTestsAsStudent(
         self.assertEqual(SherdNote.objects.count(), 2)
         note = SherdNote.objects.get(title='note title')
         self.assertEqual(note.author, self.u)
-        self.assertTrue(
-            note.asset.global_annotation(self.u, False) is not None)
 
     def test_create_sherdnote_on_own_image_asset(self):
         """

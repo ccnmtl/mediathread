@@ -4,9 +4,9 @@ You have successfully created a new Mediathread site for {{course.title}}.
 
 The Center for Teaching and Learning (CTL) offers instructors a range of support for using Mediathread effectively.
 
-For an overview of Mediathread, please visit https://mediathread.info. For specific information about Mediathread features, please visit the CTL knowledge base (http://support.ctl.columbia.edu/).
+For an overview of Mediathread, please visit our About page (https://mediathread.ctl.columbia.edu/about/). For specific information about Mediathread features, please visit the CTL Knowledge Base (http://support.ctl.columbia.edu/).
 
-CTL learning designers can help you conceptualize and set up assignments in Mediathread. We are also happy to offer in-person training sessions for your class. Please email us at ccnmtl-mediathread@columbia.edu to request a consultation or training.
+CTL learning designers can help you conceptualize and set up assignments in Mediathread. Please email us at ccnmtl-mediathread@columbia.edu to request a consultation.
 
 Mediathread is designed and maintained here at the CTL, and we are always eager to receive ideas from the Columbia community – please let us know how it goes! We hope you have a successful semester using Mediathread.
 

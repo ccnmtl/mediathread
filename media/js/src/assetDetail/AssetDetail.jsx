@@ -541,23 +541,26 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
+                            { (this.state.activeSelection && this.state.tab === 'viewSelections') && (
+                                <p className="av-selections">Selection</p>
+                            )}
                             {(this.state.tab === 'createSelection' ||
                               (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>
+                                    <p className="av-selections">Selection</p>
                                     <button
                                         type="button"
                                         autoFocus={true}
                                         ref={this.polygonButtonRef}
-                                        className="btn btn-outline-light btn-sm mr-2 polygon-button"
+                                        className="btn btn-light btn-sm mr-2 polygon-button"
                                         onClick={this.addInteraction}>
-                                        <svg className="bi bi-pentagon-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 0l8 6.5-3 9.5H3L0 6.5 8 0z"></path>
+                                        <svg className="bi bi-pentagon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M8 1.288l-6.842 5.56L3.733 15h8.534l2.575-8.153L8 1.288zM16 6.5L8 0 0 6.5 3 16h10l3-9.5z"></path>
                                         </svg> Draw Shape
                                     </button>
-
                                     <button
                                         type="button"
-                                        className="btn btn-outline-light btn-sm"
+                                        className="btn btn-light btn-sm"
                                         onClick={this.onClearVectorLayer}>
                                         Clear
                                     </button>
@@ -588,31 +591,35 @@ export default class AssetDetail extends React.Component {
 
                             {(this.state.tab === 'createSelection' || this.state.tab === 'viewSelections') && (
                                 <>
-                                    <div className="col-md-9">
+                                    <div className="col-md-10">
                                         <div className="input-group">
 
                                             {this.state.activeSelection &&
                                              this.state.tab === 'viewSelections' &&
                                              !this.state.isEditing && (
                                                 <>
-                                                    {formatTimecode(this.state.selectionStartTime)}
+                                                    <label className="av-selections mt-1">Selection</label>
+                                                    <div className="mt-1">
+                                                        {formatTimecode(this.state.selectionStartTime)}
 
-                                                    {String.fromCharCode(160)}
-                                                    {String.fromCharCode(8212)}
-                                                    {String.fromCharCode(160)}
+                                                        {String.fromCharCode(160)}
+                                                        {String.fromCharCode(8212)}
+                                                        {String.fromCharCode(160)}
 
-                                                    {formatTimecode(this.state.selectionEndTime)}
+                                                        {formatTimecode(this.state.selectionEndTime)}
+                                                    </div>
                                                 </>
                                             )}
 
                                             {(this.state.tab === 'createSelection' || this.state.isEditing) && (
                                                 <>
+                                                    <label className="av-selections mt-1" htmlFor="juxTimecode">Selection</label>
                                                     <button
                                                         onClick={this.onStartTimeClick}
                                                         ref={this.startButtonRef}
                                                         type="button"
-                                                        className="btn btn-outline-light btn-sm">
-                                                        Selection Start
+                                                        className="btn btn-light btn-sm mr-1">
+                                                        Start
                                                     </button>
                                                     <TimecodeEditor
                                                         min={0}
@@ -620,15 +627,11 @@ export default class AssetDetail extends React.Component {
                                                         timecode={this.state.selectionStartTime}
                                                     />
 
-                                                    {String.fromCharCode(160)}
-                                                    {String.fromCharCode(8212)}
-                                                    {String.fromCharCode(160)}
-
                                                     <button
                                                         onClick={this.onEndTimeClick}
                                                         type="button"
-                                                        className="btn btn-outline-light btn-sm">
-                                                        Selection Stop
+                                                        className="btn btn-light btn-sm ml-2 mr-1">
+                                                        Stop
                                                     </button>
                                                     <TimecodeEditor
                                                         min={0}
@@ -637,38 +640,37 @@ export default class AssetDetail extends React.Component {
                                                     />
                                                 </>
                                             )}
-
-
-                                            {
-                                                (this.state.tab === 'createSelection' ||
-                                                 (this.state.activeSelection && this.state.tab === 'viewSelections')
-                                                ) && (
-                                                    <button
-                                                        onClick={this.onPlaySelection}
-                                                        type="button"
-                                                        disabled={
-                                                            this.state.selectionStartTime >=
-                                                                this.state.selectionEndTime
-                                                        }
-                                                        className="btn btn-primary btn-sm ml-2">
-                                                        Play
-                                                        <svg
-                                                            width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-play-fill ml-1"
-                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
-                                                        </svg>
-                                                    </button>
-                                                )}
+                                            <div className={'ml-2 ' + 'mt-1 ' + (showDuration ? '' : 'invisible')}>
+                                                {String.fromCharCode(8226)} Length:{String.fromCharCode(160)}
+                                                <strong>{formatTimecode(getDuration(
+                                                    this.state.selectionStartTime,
+                                                    this.state.selectionEndTime))}
+                                                </strong>
+                                            </div>
                                         </div>
                                     </div>
 
-
-                                    <div className={'col-md-3 ' + (showDuration ? '' : 'invisible')}>
-                                        Duration:{String.fromCharCode(160)}
-                                        <strong>{formatTimecode(getDuration(
-                                            this.state.selectionStartTime,
-                                            this.state.selectionEndTime))}
-                                        </strong>
+                                    <div className={'col-md-2 text-right' + (showDuration ? '' : 'invisible')}>
+                                        {
+                                            (this.state.tab === 'createSelection' ||
+                                             (this.state.activeSelection && this.state.tab === 'viewSelections')
+                                            ) && (
+                                                <button
+                                                    onClick={this.onPlaySelection}
+                                                    type="button"
+                                                    disabled={
+                                                        this.state.selectionStartTime >=
+                                                            this.state.selectionEndTime
+                                                    }
+                                                    className="btn btn-primary btn-sm">
+                                                    Play
+                                                    <svg
+                                                        width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-play-fill ml-1"
+                                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                                    </svg>
+                                                </button>
+                                            )}
                                     </div>
                                 </>
                             )}
@@ -817,6 +819,7 @@ export default class AssetDetail extends React.Component {
                                 asset={this.props.asset}
                                 onUpdateAssetTitle={this.onUpdateAssetTitle}
                                 onShowValidationError={this.onShowValidationError}
+                                leaveAssetDetailView={this.props.leaveAssetDetailView}
                             />
                         )}
                     </div>
@@ -939,5 +942,6 @@ AssetDetail.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
+    leaveAssetDetailView: PropTypes.func.isRequired,
     onUpdateAsset: PropTypes.func.isRequired
 };

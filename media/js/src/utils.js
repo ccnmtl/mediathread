@@ -115,7 +115,7 @@ const updateAssetTitle = function(assetId, newTitle) {
 };
 
 const getAssetReferences = function(id=null) {
-    let url = `/asset/references/${id}/`;
+    const url = `/asset/references/${id}/`;
 
     return authedFetch(url)
         .then(function(response) {
@@ -123,6 +123,20 @@ const getAssetReferences = function(id=null) {
                 return response.json();
             } else {
                 throw 'Error loading asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
+};
+
+const removeAsset = function(assetId) {
+    const url = `/asset/delete/${assetId}/`;
+
+    return authedFetch(url)
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error removing asset: ' +
                     `(${response.status}) ${response.statusText}`;
             }
         });
@@ -450,6 +464,81 @@ const groupByTag = function(selections) {
 };
 
 /**
+ * Given an array of selections, return an array of those selections
+ * grouped by term.
+ *
+ * Structure of returned array:
+ *
+ * [
+ *   {
+ *     termName: 'Term Name'
+ *     termId: 123
+ *     selections: [ ... ]
+ *   },
+ *   ...
+ * ]
+ */
+const groupByTerm = function(selections) {
+    const out = [];
+
+    selections.forEach(function(s) {
+        if (s.vocabulary && s.vocabulary.length) {
+            s.vocabulary.forEach(function(vocabulary) {
+                if (!vocabulary || !vocabulary.terms) {
+                    return false;
+                }
+
+                vocabulary.terms.forEach(function(term) {
+                    const foundTerm = find(out, function(o) {
+                        return parseInt(o.termId, 10) === parseInt(term.id, 10);
+                    });
+
+                    if (!foundTerm) {
+                        out.push({
+                            termName: term.display_name,
+                            termId: term.id,
+                            selections: [s]
+                        });
+                    } else {
+                        foundTerm.selections.push(s);
+                    }
+                });
+            });
+        } else {
+            const foundTerm = find(out, function(o) {
+                return parseInt(o.termId, 10) === 0;
+            });
+            if (!foundTerm) {
+                out.push({
+                    termName: 'No Terms',
+                    termId: 0,
+                    selections: [s]
+                });
+            } else {
+                foundTerm.selections.push(s);
+            }
+        }
+    });
+
+    const sorted = sortBy(out, [
+        function(group) {
+            // Sort the 'No Terms' group to the end.
+            if (group && group.termId === 0) {
+                return null;
+            }
+
+            if (group && group.termName) {
+                return group.termName.toLowerCase();
+            }
+
+            return null;
+        }
+    ]);
+
+    return sorted;
+};
+
+/**
  * Given a tag ID and a selection, return the tag name.
  */
 const getTagName = function(tagId, selection, tagCache={}) {
@@ -696,6 +785,7 @@ const getTerms = function(annotations) {
 
 export {
     getAssets, getAsset, getAssetReferences,
+    removeAsset,
     updateAssetTitle,
     createSelection,
     createSherdNote, updateSherdNote,
@@ -706,7 +796,7 @@ export {
     capitalizeFirstLetter, formatDay, getAssetType,
     handleBrokenImage, getPlayerTime, getCourseUrl,
     getAssetUrl,
-    groupByAuthor, groupByTag, getTagName,
+    groupByAuthor, groupByTag, groupByTerm, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem,
     updateAsset, filterSelections,

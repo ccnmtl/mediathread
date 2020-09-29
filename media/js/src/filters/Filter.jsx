@@ -381,21 +381,25 @@ export default class Filter extends React.Component {
                                 isMulti
                                 options={tagsOptions} />
                         </div>
-                        <div className="form-group col-md-2">
-                            <label htmlFor="react-select-4-input">Term</label>
-                            <Select
-                                id="term-filter"
-                                menuPortalTarget={document.body}
-                                styles={reactSelectStyles}
-                                className={
-                                    'react-select form-control form-control-sm'
-                                }
-                                onChange={this.handleTermsChange}
-                                value={this.props.terms}
-                                isMulti
-                                formatGroupLabel={termGroupLabel}
-                                options={termsOptions} />
-                        </div>
+
+                        {window.MediaThread && window.MediaThread.current_course_has_vocab && (
+                            <div className="form-group col-md-2">
+                                <label htmlFor="react-select-4-input">Term</label>
+                                <Select
+                                    id="term-filter"
+                                    menuPortalTarget={document.body}
+                                    styles={reactSelectStyles}
+                                    className={
+                                        'react-select form-control form-control-sm'
+                                    }
+                                    onChange={this.handleTermsChange}
+                                    value={this.props.terms}
+                                    isMulti
+                                    formatGroupLabel={termGroupLabel}
+                                    options={termsOptions} />
+                            </div>
+                        )}
+
                         <div className="form-group col-md-2">
                             <label htmlFor="react-select-5-input">Date</label>
                             <Select

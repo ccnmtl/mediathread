@@ -24,11 +24,11 @@ describe('Taxonomy Feature: Try invalid Onomy url', () => {
 
         cy.log('create a taxonomy');
         cy.get('a.create-vocabulary-open').click({force: true});
-        cy.get('#id_display_name').type('Colors');
+        cy.get('input.create-vocabulary-name').type('Colors');
         cy.get('.create-vocabulary-submit').click({force: true});
         cy.contains('Colors').should('exist');
         cy.contains('Import').click();
-        cy.get('#onomy_url').type('incorrect');
+        cy.get('[name=onomy_url]').type('incorrect');
         cy.get('a.import-vocabulary-submit').click();
         cy.get('[data-id="Black"]').should('not.exist');
         cy.get('[data-id="Blue"]').should('not.exist');

@@ -24,7 +24,7 @@ describe('Taxonomy Feature: Edit', () => {
 
         cy.log('create a taxonomy');
         cy.get('a.create-vocabulary-open').click({force: true});
-        cy.get('#id_display_name').type('Colors');
+        cy.get('input.create-vocabulary-name').type('Colors');
         cy.get('.create-vocabulary-submit').click({force: true});
         cy.contains('Colors').should('exist');
 
@@ -33,8 +33,8 @@ describe('Taxonomy Feature: Edit', () => {
         cy.get('.edit_icon').click({force: true});
 
         cy.log('name and save');
-        cy.get('#id_display_name').clear({force: true})
-            .type('Shapes', {force: true});
+        cy.focused('input[name="display_name"]').clear();
+        cy.focused('input[name="display_name"]').type('Shapes');
         cy.get('.edit-vocabulary-submit').click({force: true});
         cy.contains('Shapes').should('exist');
         cy.contains('Colors').should('not.exist');

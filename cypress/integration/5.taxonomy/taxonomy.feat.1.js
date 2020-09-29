@@ -24,7 +24,7 @@ describe('Taxonomy Feature', () => {
 
         cy.log('create a taxonomy');
         cy.get('a.create-vocabulary-open').click();
-        cy.get('#id_display_name')
+        cy.get('input.create-vocabulary-name')
             .should('have.attr', 'placeholder', 'Concept name');
 
         cy.log('name and save');

@@ -45,7 +45,7 @@ class VocabularyValidation(Validation):
             course=bundle.request.course)
 
         if len(a) > 0:  # vocabulary exists with this name
-            if 'pk' not in bundle.data or a[0].pk != int(bundle.data['pk']):
+            if not bundle.obj or not bundle.obj.pk or a[0].pk != bundle.obj.pk:
                 # a vocabulary already exists with this name
                 msg = 'A %s concept exists. Please choose another name' \
                     % bundle.data['display_name']

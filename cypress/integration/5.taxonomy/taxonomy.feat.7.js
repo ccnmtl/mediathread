@@ -24,11 +24,11 @@ describe('Taxonomy Feature: Edit Terms', () => {
 
         cy.log('create a taxonomy');
         cy.get('a.create-vocabulary-open').click({force: true});
-        cy.get('#id_display_name').type('Colors');
+        cy.get('input.create-vocabulary-name').type('Colors');
         cy.get('.create-vocabulary-submit').click({force: true});
         cy.contains('Colors').should('exist');
         cy.contains('Import').click();
-        cy.get('#onomy_url').type('/media/onomy/test.json');
+        cy.get('[name=onomy_url]').type('/media/onomy/test.json');
         cy.get('a.import-vocabulary-submit').click();
         cy.get('[data-id="Black"]').should('exist');
         cy.get('[data-id="Blue"]').should('exist');
@@ -43,24 +43,31 @@ describe('Taxonomy Feature: Edit Terms', () => {
         cy.get('[data-id="Pink"]').should('exist');
         cy.contains('Colors').click();
         cy.get('[data-id="Red"]').should('exist');
-        //Should this maybe be placed inside the h5?
-        cy.get(':nth-child(11) > .term-display > .term-actions > .delete-term > .delete_icon')
-            .click();
-        cy.contains('OK').click();
+
+        cy.get('[data-id="Black"]').parent('.term-display').within(() => {
+            cy.get('.term-actions .delete-term img').should('exist');
+            cy.get('.term-actions .delete-term img').click({force: true, waitforanimations: true});
+            cy.wait(500);
+        });
+        cy.get('.ui-dialog').should('be.visible');
+        cy.get('.ui-button').contains('OK').click();
         cy.get('div.term-display h5').should('not.be', 'visible');
 
         cy.log('refresh from the onomy url');
         cy.contains('Refresh').click();
         cy.get('[data-id="Red"]').should('exist');
-    });
-    it('clean up', () => {
-      cy.get('#vocabulary-wrapper-7 > .vocabulary-display > .actions > .delete-vocabulary > .delete_icon')
-            .click();
-        cy.get('.ui-dialog-buttonset > :nth-child(2)').click();
-        cy.get('#vocabulary-wrapper-8').click();
-        cy.get('.delete-vocabulary > .delete_icon').click();
-        cy.get('.ui-dialog-buttonset > :nth-child(2)').click();
-        cy.contains('Colors').should('not.be', 'visible');
-        cy.contains('Pastels').should('not.be', 'visible');
+
+        // cleanup
+        cy.get('[data-cy="delete-colors"]').click();
+        cy.get('.ui-dialog').should('be.visible');
+        cy.get('.ui-button').contains('OK').click();
+        cy.get('.display-name').contains('Colors').should('not.exist');
+        cy.get('.ui-dialog').should('not.be.visible');
+
+        cy.get('.display-name').contains('Pastels').click();
+        cy.get('[data-cy="delete-pastels"]').click();
+        cy.get('.ui-dialog').should('be.visible');
+        cy.get('.ui-button').contains('OK').click();
+        cy.get('.display-name').should('not.exist');
     });
 });

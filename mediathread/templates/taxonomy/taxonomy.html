@@ -26,13 +26,14 @@
                                     <img src="{{STATIC_URL}}img/icons/meth_edit.png" class="edit_icon" alt="Edit vocabulary"  />
                                 </a>
                                 <a class="icon-link delete-vocabulary"
+                                    data-cy="delete-<%=vocabularies[i].display_name.toLowerCase()%>"
                                     href="<%=vocabularies[i].id%>">
                                     <img src="{{STATIC_URL}}img/icons/meth_delete.png" class="delete_icon" alt="Delete vocabulary"  />
                                 </a>
                             </div>
                         </div>
                         <div class="vocabulary-edit" style="display: none">
-                            <input class="form-control float-left" id="id_display_name" type="text" name="display_name"
+                            <input class="form-control float-left" type="text" name="display_name"
                                 maxlength="50" value="<%=vocabularies[i].display_name%>"></input>
                             <input type="hidden" name="vocabulary_id" value="<%=vocabularies[i].id%>"/>
                             <a class="btn btn-light btn-sm edit-vocabulary-close float-right" href="#">
@@ -55,7 +56,7 @@
                         </div>
                         <div class="vocabulary-create" style="display: none">
                             <input class="create-vocabulary-name form-control float-left"
-                                id="id_display_name" type="text" name="display_name"
+                                type="text" name="display_name"
                                 maxlength="50" placeholder="Concept name">
                             <input type="hidden" name="object_id" value="<%=course_id%>"/>
                             <a class="btn btn-light btn-sm float-right create-vocabulary-close" href="#">
@@ -97,7 +98,7 @@
                             <a href="http://onomy.org">onomy.org</a> now to build your own taxonomies.
                         </p>
                         <label><b>Published Onomy Urls</b> <i>JSON format, separated by commas</i></label>
-                        <input class="form-control float-left" type="text" name="onomy_url" id="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
+                        <input class="form-control float-left" type="text" name="onomy_url" value="<%=vocabularies[i].onomy_url%>"></input>
                         <input type="hidden" name="object_id" value="<%=course_id%>"/>
                         <a class="btn btn-light btn-sm float-right import-vocabulary-close" href="#">
                            <span aria-hidden="true">x</span>
@@ -143,7 +144,7 @@
                                         </div>
                                     </div>
                                     <div class="term-edit" style="display: none">
-                                        <input class="form-control float-left" id="id_display_name" type="text" name="term_name"
+                                        <input class="form-control float-left" type="text" name="term_name"
                                             maxlength="50" value="<%=vocabularies[i].term_set[j].display_name%>">
                                         <a class="btn btn-light btn-sm float-right edit-term-close" href="#">
                                             <span aria-hidden="true">x</span>

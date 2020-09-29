@@ -24,11 +24,11 @@ describe('Taxonomy Feature: Refresh', () => {
 
         cy.log('create a taxonomy');
         cy.get('a.create-vocabulary-open').click({force: true});
-        cy.get('#id_display_name').type('Colors');
+        cy.get('input.create-vocabulary-name').type('Colors');
         cy.get('.create-vocabulary-submit').click({force: true});
         cy.contains('Colors').should('exist');
         cy.contains('Import').click();
-        cy.get('#onomy_url').type('/media/onomy/test.json');
+        cy.get('[name=onomy_url]').type('/media/onomy/test.json');
         cy.get('a.import-vocabulary-submit').click();
         cy.get('[data-id="Black"]').should('exist');
         cy.get('[data-id="Blue"]').should('exist');
@@ -43,7 +43,7 @@ describe('Taxonomy Feature: Refresh', () => {
         cy.get('[data-id="Pink"]').should('exist');
         cy.contains('Colors').click();
         cy.get('.import-vocabulary-open > span').click({force: true});
-        cy.get('#onomy_url').type(',/media/onomy/reimport_test.json');
+        cy.get('[name=onomy_url]:visible').type(',/media/onomy/reimport_test.json');
         cy.get('#import-vocabulary-btn')
             .click();
         cy.get('[data-id="Black"]').should('exist');

@@ -15,7 +15,9 @@ class Main extends React.Component {
             // pagination.
             assetCount: null,
             assetError: null,
-            owners: null
+            owners: null,
+            tags: null,
+            terms: null
         };
 
         let assetId = null;

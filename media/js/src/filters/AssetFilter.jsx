@@ -58,7 +58,12 @@ export default class AssetFilter extends Filter {
             filters.terms, filters.date,
             this.state.currentPage * this.offset
         ).then(function(d) {
-            me.props.onUpdateItems(d.assets, d.asset_count);
+            me.props.onUpdateItems(
+                d.assets,
+                d.asset_count,
+                d.active_tags,
+                d.active_vocabulary
+            );
             me.updatePageCount(d.asset_count);
         }, function(e) {
             console.error('asset get error!', e);

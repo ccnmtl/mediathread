@@ -10,32 +10,29 @@
         </div>
     </div>
     <div class="media-column">
-        <div class="filter-widget" style="display: none">
-            <div class="spacer"></div>
-            <div class="row">
-                <div class="col">
-                    <div class="switcher-tool switcher-search-text input-group input-group-sm">
-                        <div class="input-group-prepend"><span class="mr-2">
-                            <svg width="1.2em" height="1.2em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-                                <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-                            </svg></span>
-                        </div>
-                        <input type="text" class="form-control" name="search-text" aria-label="search-text"
-                            value="{{active_filters.search_text}}" placeholder="Search"/>
-                        <div class="input-group-append">
-                            <button class="btn btn-secondary btn-search-text" type="button">Go</button>
-                        </div>
+        <div class="filter-widget bg-light" style="display: none">
+            <div class="row px-3">
+                <div class="col-md-6">
+                    <label for="search-text-owner">Title</label>
+                    <div class="switcher-tool switcher-search-text input-group">
+                        <span class="input-group-addon"></span>
+                        <input id="search-text-owner" type="text" class="form-control form-control-sm" name="search-text" aria-label="search-text"
+                            value="{{active_filters.search_text}}" placeholder="Title"/>
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary btn-sm btn-search-text" type="button">Go</button>
+                        </span>
                     </div>
                 </div>
-                <div class="col">
+
+                <div class="col-md-3">
+                    <label for="switcher-owner">Owner</label>
                     <div class="collection-chooser-container"></div>
                 </div>
-                <div class="col">
+                <div class="col-md-3">
+                    <label>Type</label>
                     <div class="switcher collection-media-filter switcher-tool
                      {{#disable_media_type}}disabled{{/disable_media_type}}">
                         <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
-                            <span class="switcher-prefix">Type </span>
                             <span class="down-arrow"></span>
 
                             {{#active_filters.media_type}}
@@ -55,15 +52,11 @@
                     </div>
                 </div>
             </div>
-            <div class="spacer"></div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="switcher-tool input-group">
-
-                        <span class="course-tags-prefix input-group-prepend">Tags</span>
-
-                        <select class="course-tags"
+            <div class="row p-3">
+                <div class="col-md-5">
+                    <label for="switcher-tags">Tags</label>
+                    <div class="switcher-tool">
+                        <select class="course-tags w-100" id="switcher-tags"
                             data-placeholder="Select tags"
                             multiple="multiple">
                             {{#active_tags}}
@@ -73,12 +66,10 @@
                     </div>
                </div>
 
-               <div class="col-5">
-                    <div class="switcher-tool input-group">
-                        <div class="input-group-prepend">
-                            <span class="concept-prefix" title="{{Terms}}">Terms</span>
-                        </div>
-                        <select class="vocabulary"
+               <div class="col-md-5">
+                    <div class="switcher-tool">
+                        <label for="switcher-terms">Terms</label><br />
+                        <select class="vocabulary w-100"
                             data-placeholder="Select {{#lower}}{{display_name}}{{/lower}}"
                             multiple="multiple">
 
@@ -94,10 +85,11 @@
                         </select>
                     </div>
                 </div>
-                <div class="col">
+
+                <div class="col-md-2">
                     <div class="switcher collection-date-filter switcher-tool">
-                        <a class="switcher-top menuclosed" onclick="return switcher(event, this);">
-                            <span class="switcher-prefix">Date</span>
+                        <label for="switcher-date">Date</label>
+                        <a class="switcher-top menuclosed" href="#" onclick="return switcher(event, this);">
                             <span class="down-arrow"></span>
 
                             {{#active_filters.modified}}
@@ -117,15 +109,14 @@
                     </div>
                 </div>
             </div>
-
-        </div>  {{! end filter widget }}
-        <div class="clearfix"></div>
-
-        <div class="collection-assets scroll annotation-embedding">
-            <div id="asset_table" class="asset-table"></div>
         </div>
+    </div>  {{! end filter widget }}
+    <div class="clearfix"></div>
 
-    </div>  {{! end media column }}
-</div>
+    <div class="collection-assets annotation-embedding">
+        <div id="asset_table" class="asset-table"></div>
+    </div>
+</div>  {{! end media column }}
+
 </script>
 {% endverbatim %}

@@ -54,8 +54,10 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.log('Add secondary elements');
         cy.wait(500);
         cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
-        cy.get('#annotation-7 > .selection-citation > :nth-child(1) > .materialCitation')
-            .click();
+        cy.contains('Example Selection').should('exist');
+        cy.get('#annotation-12 > .card-header > .btn').click({force: true});
+        cy.get('#selectionCollapse-12 > .card-body > .row > .col-md-auto > div > #insert-selection')
+            .click({force: true});
         cy.get('.jux-txt > .jux-track > :nth-child(3)').click({force: true});
         // cy.contains('Add text annoatation').should('exist');
         cy.get('form > .form-control').type('Example annotation');

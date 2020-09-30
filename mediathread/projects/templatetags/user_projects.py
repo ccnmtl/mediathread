@@ -77,10 +77,11 @@ def student_response(responses, user):
 @register.filter
 def date_format_change(date):
     newDate = date.replace('hours', 'hrs').replace('hour', 'hr').replace(
-        'minute', 'min').replace('minutes', 'mins').replace('weeks',
-        'w').replace('days', 'd').replace('day', 'd').replace('week',
-        'w').replace('month', 'm').replace('months', 'm').replace('year', 'Y')
+            'minute', 'min').replace('minutes', 'mins').replace(
+            'weeks', 'w').replace('days', 'd').replace('day', 'd').replace(
+            'week', 'w').replace('month', 'm').replace('months', 'm').replace(
+            'year', 'Y')
 
-    newFormat= ''.join(newDate.split())
+    newFormat = ''.join(newDate.split())
 
     return re.sub(r'(?<=[,])(?=[^\s])', r' ', newFormat)

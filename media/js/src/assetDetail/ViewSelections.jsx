@@ -316,14 +316,16 @@ export default class ViewSelections extends React.Component {
                             onClick={(e) => this.onSelectGrouping(e, 'tag')}>
                             Group by tag
                         </button>
-                        <button
-                            type="button"
-                            className={'btn btn-outline-secondary btn-sm ' + (
-                                this.state.groupBy === 'term' ? 'active' : ''
-                            )}
-                            onClick={(e) => this.onSelectGrouping(e, 'term')}>
-                            Group by term
-                        </button>
+                        {window.MediaThread && window.MediaThread.current_course_has_vocab && (
+                            <button
+                                type="button"
+                                className={'btn btn-outline-secondary btn-sm ' + (
+                                    this.state.groupBy === 'term' ? 'active' : ''
+                                )}
+                                onClick={(e) => this.onSelectGrouping(e, 'term')}>
+                                Group by term
+                            </button>
+                        )}
                     </div>
 
                     <form hidden className="form-inline">

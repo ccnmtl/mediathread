@@ -12,9 +12,12 @@ UPLOAD_PERMISSION_ADMINISTRATOR = 0
 UPLOAD_PERMISSION_INSTRUCTOR = 1
 UPLOAD_PERMISSION_STUDENT = 2
 
-UPLOAD_PERMISSION_LEVELS = [(UPLOAD_PERMISSION_ADMINISTRATOR, 'Administrator'),
-                            (UPLOAD_PERMISSION_INSTRUCTOR, 'Instructor'),
-                            (UPLOAD_PERMISSION_STUDENT, 'Student')]
+UPLOAD_PERMISSION_LEVELS = [(UPLOAD_PERMISSION_ADMINISTRATOR,
+                            'Administrators Only'),
+                            (UPLOAD_PERMISSION_INSTRUCTOR,
+                            'Instructors and Administrators'),
+                            (UPLOAD_PERMISSION_STUDENT,
+                            'Students, Instructors and Administrators (All)')]
 
 UPLOAD_PERMISSION_DEFAULT = UPLOAD_PERMISSION_INSTRUCTOR
 

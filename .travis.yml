@@ -1,7 +1,7 @@
 language: python
 dist: bionic
 addons:
-  firefox: "68.7.0esr"
+  firefox: "81.0"
   apt:
     packages:
       # for Cypress

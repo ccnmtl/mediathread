@@ -27,7 +27,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
 
         cy.title().should('contain', 'Sample Selection Assignment');
         cy.get('.btn-edit-assignment').should('not.exist');
-        cy.get('button.btn-show-submit').should('be', 'disabled')
+        cy.get('button.btn-show-submit').should('be.disabled');
 
         cy.log('Create a selection');
         cy.get('button.create-selection').should('contain', 'Create Selection')

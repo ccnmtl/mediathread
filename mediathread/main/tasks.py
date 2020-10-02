@@ -220,6 +220,6 @@ class PanoptoIngester(object):
                 self.add_session_status(course, session, item, author, created)
 
 
-@periodic_task(run_every=crontab(hour="*", minute='0'))
+@periodic_task(run_every=crontab(minute='*/10'))
 def panopto_ingest():
     PanoptoIngester().automated_ingest()

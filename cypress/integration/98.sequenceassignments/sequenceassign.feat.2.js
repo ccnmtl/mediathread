@@ -49,7 +49,8 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection');
         cy.contains('Edit Selection').should('exist');
-        cy.get('.citationTemplate > .clickableCitation').click({force: true});
+        cy.get('.selection-citation-title').click({force: true});
+        cy.get('#insert-selection').click();
 
         cy.log('Add secondary elements');
         cy.wait(500);

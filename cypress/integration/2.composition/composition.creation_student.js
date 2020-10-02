@@ -26,7 +26,7 @@ describe('Student Creates Composition', () => {
         cy.get('.breadcrumb-item').contains('Back to all projects');
 
         cy.get('.page-title').should('be.visible');
-        cy.get('.page-title').contains('Untitled')
+        cy.get('.page-title').contains('Untitled');
         cy.contains('ul', 'Student One').should('exist');
         cy.get('.project-visibility-description')
             .contains('Draft').should('exist');
@@ -35,7 +35,7 @@ describe('Student Creates Composition', () => {
         cy.get('.project-previewbutton.active').should('not.exist');
         cy.get('.project-savebutton').should('exist');
         cy.get('.project-submitbutton').should('exist');
-        cy.get('.participant-container').should('be', 'visible');
+        cy.get('.participant-container').should('be.visible');
         cy.get('select[name="participants"]').should('exist');
         cy.get('select[name="participants"]').should('not.be.visible');
 
@@ -53,7 +53,7 @@ describe('Student Creates Composition', () => {
         cy.get('.project-editbutton.active').should('not.exist');
         cy.get('.project-previewbutton.active').should('exist');
         cy.get('.project-savebutton').should('contain', 'Saved');
-        cy.get('.participant-container').should('be', 'visible');
+        cy.get('.participant-container').should('be.visible');
     });
 
     it('should show on projects page', () => {

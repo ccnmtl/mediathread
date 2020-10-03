@@ -67,7 +67,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.nav-link').should('have.attr', 'href');
         //TODO: for some reasone cy.contains('Reflection') doesn't work
         cy.get('.nav > :nth-child(2) > .nav-link').click();
-        cy.getIframeBody().find('p').click()
+        cy.getIframeBody().find('p').click({force: true})
             .type('Example reflection');
         cy.get('.btn-save').click();
         cy.get('.btn-show-submit').click({force: true});

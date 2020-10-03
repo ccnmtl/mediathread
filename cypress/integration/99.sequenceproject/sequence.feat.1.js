@@ -40,7 +40,7 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.col > .btn-primary').click();
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection 2');
-        cy.get('.citationTemplate > .clickableCitation').click({force: true});
+        cy.get('#annotation-19 > .card-header > .btn').click({force: true});
         cy.get('#title').clear({force: true})
             .type('Example project', {force: true});
         //TODO: for some reasone cy.contains('Reflection') doesn't work

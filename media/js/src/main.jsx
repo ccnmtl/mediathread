@@ -130,6 +130,8 @@ class Main extends React.Component {
             jQuery('.collection-header')
                 .removeClass('d-flex')
                 .addClass('d-none');
+            jQuery('.collectionAdd')
+                .removeClass('show');
         }
     }
 }

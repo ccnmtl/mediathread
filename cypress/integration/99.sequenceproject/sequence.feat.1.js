@@ -30,6 +30,9 @@ describe('Sequence Project Feat: Student Creation', () => {
 
         cy.log('create selection');
         cy.get('#create-annotation-icon').click({force: true});
+        cy.wait(500);
+        cy.get('#btnClipStart').should('be.visible');
+        cy.get('#btnClipEnd').should('be.visible');
         cy.get('#clipStart').clear().type('00:00:02');
         cy.get('#clipEnd').clear().type('00:00:05');
         cy.get('#annotation-title').type('Example Selection 2');
@@ -40,7 +43,7 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('#title').clear({force: true})
             .type('Example project', {force: true});
         //TODO: for some reasone cy.contains('Reflection') doesn't work
-        cy.get('.nav > :nth-child(2) > .nav-link').click();
+        cy.get('.nav > :nth-child(2) > .nav-link').click({force: true});
         cy.getIframeBody().find('p').click({force: true})
             .type('Project reflection');
         cy.get('.btn-save').click();

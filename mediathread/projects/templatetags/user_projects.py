@@ -79,8 +79,8 @@ def date_format_change(date):
     newDate = date.replace('hours', 'hrs').replace('hour', 'hr').replace(
             'minute', 'min').replace('minutes', 'mins').replace(
             'weeks', 'w').replace('days', 'd').replace('day', 'd').replace(
-            'week', 'w').replace('month', 'm').replace('months', 'm').replace(
-            'year', 'Y')
+            'week', 'w').replace('month', 'm').replace('ms', 'm').replace(
+            'year', 'y').replace('ys', 'yrs')
 
     newFormat = ''.join(newDate.split())
 

@@ -11,7 +11,7 @@ from mediathread.projects.models import PUBLISH_WHOLE_CLASS, PUBLISH_DRAFT, \
     Project
 from mediathread.projects.templatetags.user_projects import (
     published_assignment_responses, comment_count, my_assignment_responses,
-    assignment_responses)
+    assignment_responses, date_format_change)
 
 
 class TestTemplateTags(MediathreadTestMixin, TestCase):
@@ -116,3 +116,18 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
             comment_count(assignment, self.instructor_two)[0], 1)
         self.assertEqual(
             comment_count(assignment, self.student_one)[0], 1)
+
+    def test_date_format_change(self):
+        self.assertEqual(date_format_change('weeks'), 'w')
+        self.assertEqual(date_format_change('week'), 'w')
+        self.assertEqual(date_format_change('hours'), 'hrs')
+        self.assertEqual(date_format_change('hour'), 'hr')
+        self.assertEqual(date_format_change('minute'), 'min')
+        self.assertEqual(date_format_change('minutes'), 'mins')
+        self.assertEqual(date_format_change('days'), 'd')
+        self.assertEqual(date_format_change('day'), 'd')
+        self.assertEqual(date_format_change('month'), 'm')
+        self.assertEqual(date_format_change('ms'), 'm')
+        self.assertEqual(date_format_change('year'), 'y')
+        self.assertEqual(date_format_change('ys'), 'yrs')
+        self.assertEqual(date_format_change('2weeks,5days'), '2w, 5d')

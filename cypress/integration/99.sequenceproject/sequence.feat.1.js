@@ -48,7 +48,7 @@ describe('Sequence Project Feat: Student Creation', () => {
             .type('Project reflection');
         cy.get('.btn-save').click();
         cy.get('.modal-title').should('contain', 'Save Changes');
-        cy.get('#id_publish_1').click();
+        cy.get('#id_publish_1').click({force: true});
         cy.get('.btn-save-project').click({force: true});
 
     });

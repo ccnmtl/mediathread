@@ -30,8 +30,6 @@ describe('Sequence Project Feat: Student Creation', () => {
 
         cy.log('create selection');
         cy.get('#create-annotation-icon').click({force: true});
-        cy.get('#btnClipStart').should('be.visible');
-        cy.get('#btnClipEnd').should('be.visible');
         cy.get('#clipStart').clear().type('00:00:02');
         cy.get('#clipEnd').clear().type('00:00:05');
         cy.get('#annotation-title').type('Example Selection 2');

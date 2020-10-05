@@ -30,12 +30,15 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.contains('Add a primary video').should('be.visible');
 
         cy.log('Add primary video');
+        cy.wait(500);
+        cy.get('button.add-spine').should('be.visible');
         cy.get('button.add-spine').click({force: true});
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
         cy.get('.choice_all_items > .switcher-choice').click({force: true});
 
         cy.log('create selection');
+        cy.get('#create-annotation-icon').should('be.visible');
         cy.get('#create-annotation-icon').click({force: true});
         cy.get('#btnClipStart').should('be.visible');
         cy.get('#btnClipEnd').should('be.visible');
@@ -49,13 +52,16 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection');
         cy.contains('Edit Selection').should('exist');
-        cy.get('.citationTemplate > .clickableCitation').click({force: true});
+        cy.get('.selection-citation-title').click({force: true});
+        cy.get('#insert-selection').click({force: true});
 
         cy.log('Add secondary elements');
         cy.wait(500);
         cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
-        cy.get('#annotation-7 > .selection-citation > :nth-child(1) > .materialCitation')
-            .click();
+        cy.contains('Example Selection').should('exist');
+        cy.get('#annotation-12 > .card-header > .btn').click({force: true});
+        cy.get('#selectionCollapse-12 > .card-body > .row > .col-md-auto > div > #insert-selection')
+            .click({force: true});
         cy.get('.jux-txt > .jux-track > :nth-child(3)').click({force: true});
         // cy.contains('Add text annoatation').should('exist');
         cy.get('form > .form-control').type('Example annotation');
@@ -64,7 +70,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('.nav-link').should('have.attr', 'href');
         //TODO: for some reasone cy.contains('Reflection') doesn't work
         cy.get('.nav > :nth-child(2) > .nav-link').click();
-        cy.getIframeBody().find('p').click()
+        cy.getIframeBody().find('p').click({force: true})
             .type('Example reflection');
         cy.get('.btn-save').click();
         cy.get('.btn-show-submit').click({force: true});

@@ -1,6 +1,5 @@
 {% verbatim %}
 <script type="text/x-template" id="collectionwidget_assets-template">
-
 {{^assets}}
     <div class="default-content intro-text">
         {{^active_filter_count}}
@@ -43,24 +42,11 @@
                 </div>
             {{/showing_my_items}}
             {{^showing_my_items}}
-                <br /><br />
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</div>
-                    </div>
-                </div>
+                <center>{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</center>
             {{/showing_my_items}}
             {{/active_filter_count}}
             {{#active_filter_count}}
-                <br /><br />
-                <div class="card">
-                <div class="card-body">
-                    <h5 class="text-center">No items matched your search</h5>
-                    <p>Suggestions:</p>
-                    <p>1. Use the filter options above to change or broaden the search.</p>
-                    <p>2. Or, build the course collection by importing or uploading materials. Visit the <a href="/">homepage</a> to learn more.</p>
-                </div>
-                </div>
+                <center>No items matched your search. Please try again.</center>
             {{/active_filter_count}}
     </div>
 {{/assets}}
@@ -68,171 +54,128 @@
     <div class="materials column-contents">
         <div id="record-{{id}}" class="record record-{{primary_type}} gallery-item-project">
             <input type="hidden" class="record" value="{{id}}" name="record-id" />
-            <div class="actions">
-                <a class="btn btn-sm btn-default collection-choice create-annotation" id="create-annotation-icon" href="{{id}}" title="Create selection on this item">
-                    <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_addselection.png" class="create_annotation_icon" alt="Create selection" />
-                    Create selection
-                </a>
-            </div>
-            <div class="record-asset-properties pull-left">
-                {{#citable}}
-                    <span class="citationTemplate">
-                        <img class="materialCitation clickableCitation" alt=""
-                         data-asset-id="{{id}}"
-                         {{#global_annotation}}
-                            data-annotation-id="{{id}}"
-                            data-editable=1
-                         {{/global_annotation}}
-                         src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_{{media_type_label}}.png#annotation={{local_url}}&title={{title}}&type={{primary_type}}&range1=0"
-                        title="Add item to the composition"
-                        name="{{local_url}}"/>
+            <div class="card-thumbnail">
+                <div class="media-type">
+                    <span class="badge badge-secondary">
+                        {{media_type_label}}
                     </span>
-                {{/citable}}
-                <h5 id="asset-item-{{id}}" class="asset_title">
-                    {{#title}}
-                        {{#ellipsis35}}{{title}}{{/ellipsis35}}
-                    {{/title}}
-                    {{^title}}
-                        -Untitled-
-                    {{/title}}
-                </h5>
-                <div class="clearfix"></div>
-                <table class="item-level-info">
-                    <tr>
-                        <td class="item-thumb">
-                            {{#thumb}}
-                                <img class="asset-thumb" src="{{thumb}}" alt="Item Thumbnail" />
-                            {{/thumb}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="item-meta">
-                            {{#global_annotation}}
-                                <ul class="record-metadata-list">
-                                    {{#vocabulary}}
-                                        <li class="annotation-global-body meta">
-                                            <span class="metadata-label">{{display_name}}: </span>
-                                            <span class="metadata-value">
-                                                {{#terms}}
-                                                    {{display_name}}
-                                                {{/terms}}
-                                            </span>
-                                        </li>
-                                    {{/vocabulary}}
-
-                                    {{#metadata.tags.length}}
-                                        <li class="annotation-global-tags meta">
-                                            <span class="metadata-label">Item Tags:</span>
-                                            <span class="metadata-value">
-                                                {{#metadata.tags}}
-                                                    {{name}}&nbsp;
-                                                {{/metadata.tags}}
-                                            </span>
-                                        </li>
-                                    {{/metadata.tags.length}}
-
-                                    {{#metadata.body}}
-                                        <li class="annotation-global-body meta">
-                                            <span class="metadata-label">Item Note:</span> <span class="metadata-value">{{metadata.body}}</span>
-                                        </li>
-                                    {{/metadata.body}}
-                                </ul>
-                            {{/global_annotation}}
-                        </td>
-                    </tr>
-                </table>
+                </div>
+                {{#thumb}}
+                <div class="image-overlay">
+                    <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{thumb}}" style="max-width: 100%;" />
+                </div>
+                {{/thumb}}
+                {{^thumb}}
+                    {{#image}}
+                        <div class="image-overlay">
+                            <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
+                        </div>
+                    {{/image}}
+                {{/thumb}}
             </div>
-            <div class="clearfix"></div>
-            <div id="record-{{id}}-metadata" class="record-metadata">
+            <div class="px-3 {{^thumb}}{{^image}}pt-5{{/image}}{{/thumb}}">
+                <h5 id="asset-item-{{id}}" class="asset_title mt-3">
+                    <a class="asset-title-link insert"
+                        {{#title}}
+                            title="{{title}}"
+                        {{/title}}
+                        {{^title}}
+                            title="-Untitled-"
+                        {{/title}}
+                        target="_blank" href="{{local_url}}">
+                        {{#title}}
+                            {{#ellipsis35}}{{title}}{{/ellipsis35}}
+                        {{/title}}
+                        {{^title}}
+                            -Untitled-
+                        {{/title}}
+                    </a>
+                </h5>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="m-0 mt-1">Selections</h6>
+                    <a class="btn btn-sm btn-link collection-choice create-annotation" class="create_annotation_icon"
+                        id="create-annotation-icon" href="{{id}}" title="Create selection on this item">
+                        Create selection
+                    </a>
+                </div>
+                <div id="record-{{id}}-metadata" class="record-metadata">
+                {{^annotation_count}}
+                    <p class="text-muted">None</p>
+                {{/annotation_count}}
                 {{#annotation_count}}
-                    <div class="asset-clips">
+                    <div class="accordion mb-3" id="selectionsAccordion-{{id}}">
                         {{#annotations}}
                             {{^is_null}}
-                                <div id="annotation-{{id}}" class="selection-level-info">
-                                    {{#editable}}
-                                        <div class="actions">
-                                            <a class="btn btn-sm btn-default collection-choice edit-annotation" href="{{id}}" title="Edit selection attributes">
-                                                <img src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_edit.png" class="edit_icon edit-selection-icon" alt="Edit selection attributes" />
-                                                Edit Selection
-                                            </a>
-                                        </div>
-                                    {{/editable}}
-                                    <div class="selection-citation">
-                                        <div>
-                                            {{#citable}}
-                                                <img class="materialCitation clickableCitation" alt=""
-                                                    data-annotation-id="{{id}}" data-asset-id="{{asset_id}}"
-                                                    {{#editable}}
-                                                    data-editable=1
-                                                    {{/editable}}
-                                                    src="{{#staticUrl}}{{/staticUrl}}img/icons/meth_insert_selection.png#annotation={{url}}&title={{metadata.title}}&type={{metadata.primary_type}}&range1={{range1}}"
-                                                    title="Add selection to the composition"
-                                                    name="{{url}}"/>
-                                            {{/citable}}
-                                            <div class="selection-citation-title">
-                                                {{#metadata.title}}
-                                                    {{{metadata.title}}}
-                                                {{/metadata.title}}
-                                                {{^metadata.title}}
-                                                    -Untitled-
-                                                {{/metadata.title}}
-                                            </div>
-                                        </div>
-                                        <div class="annotation-thumb-{{id}}"></div>
-                                        <div class="metadata-container">
-                                            <div class="meta">
-                                                <span class="metadata-label">Author:</span>
-                                                <span class="metadata-value">{{author.public_name}}</span>
-                                            </div>
-                                        </div>
-                                        {{#metadata}}
-                                            {{#timecode}}
-                                                <div class="annotation-timecode meta">
-                                                    <span class="metadata-label">Time code:</span>
-                                                    <span class="metadata-value">{{timecode}}</span>
-                                                </div>
-                                            {{/timecode}}
-                                        {{/metadata}}
-                                        <div id="annotation-body-{{id}}" class="meta">
-                                            {{#vocabulary}}
-                                                <div>
-                                                    <span class="metadata-label">{{display_name}}: </span>
-                                                    <span class="metadata-value">
-                                                        {{#terms}}
-                                                            {{display_name}}
-                                                        {{/terms}}
-                                                    </span>
-                                                </div>
-                                            {{/vocabulary}}
-
-                                            {{#metadata}}
-                                                {{#tags.length}}
-                                                    <div><span class="metadata-label">Tags:</span>
-                                                    <span class="metadata-value">
-                                                        {{#tags}}
-                                                            {{name}}&nbsp;
-                                                        {{/tags}}
-                                                    </span>
-                                                    </div>
-                                                {{/tags.length}}
-                                                {{#body}}
-                                                    <div>
-                                                        <span class="metadata-label">Note:</span>
-                                                        <span class="metadata-value">{{body}}</span>
-                                                    </div>
-                                                {{/body}}
-                                            {{/metadata}}
-                                        </div>
+                                <div class="card" id="annotation-{{id}}">
+                                    <div class="card-header p-0">
+                                        <button class="btn btn-link btn-block text-left collapsed selection-citation-title"
+                                            type="button" data-toggle="collapse"
+                                            data-target="#selectionCollapse-{{id}}"
+                                            aria-expanded="false">
+                                            {{#metadata.title}}
+                                                {{{metadata.title}}}
+                                            {{/metadata.title}}
+                                            {{^metadata.title}}
+                                                -Untitled-
+                                            {{/metadata.title}}
+                                        </button>
                                     </div>
-                                    <div class="clearfix"></div>
+                                    <div id="selectionCollapse-{{id}}" class="collapse"
+                                        data-title="{{#metadata.title}}{{{metadata.title}}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
+                                        data-selectionid="{{id}}"
+                                        data-parent="#selectionsAccordion-{{asset_id}}">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {{#thumbable}}
+                                                <div class="col-md-auto">
+                                                    <div class="annotation-thumb-{{id}}"></div>
+                                                </div>
+                                                {{/thumbable}}
+                                                <div class="col-md-auto">
+                                                    <p class="card-text">
+                                                        <span class="metadata-label">Author:</span>
+                                                        <span class="metadata-value">{{author.public_name}}</span>
+                                                    </p>
+                                                    {{#metadata}}
+                                                        {{#timecode}}
+                                                            <p class="card-text">
+                                                                <span class="metadata-label">Time code:</span>
+                                                                <span class="metadata-value">{{timecode}}</span>
+                                                            </p>
+                                                        {{/timecode}}
+                                                    {{/metadata}}
+                                                    <div>
+                                                        {{#citable}}
+                                                            <button class="btn btn-sm btn-warning materialCitation clickableCitation d-inline"
+                                                                data-annotation-id="{{id}}" data-asset-id="{{asset_id}}"
+                                                                {{#editable}}
+                                                                data-editable=1
+                                                                {{/editable}}
+                                                                name="{{url}}" data-type="{{metadata.primary_type}}" data-range="{{range1}}"
+                                                                title="Add selection to the composition"
+                                                                id="insert-selection">
+                                                                Insert
+                                                            </button>
+                                                        {{/citable}}
+                                                        {{#editable}}
+                                                            <a class="btn btn-sm btn-info collection-choice edit-annotation edit_icon edit-selection-icon" href="{{id}}" title="Edit selection attributes">
+                                                                Edit Selection
+                                                            </a>
+                                                        {{/editable}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <!--  end card-body -->
+                                    </div>
                                 </div>
                             {{/is_null}} {{! annotation is not null }}
                         {{/annotations}} {{! iterate annotations }}
-                    </div>{{! class="asset-clips" }}
-                {{/annotation_count}}
-            {{! annotations exist }}
-        </div> {{! end record metadata }}
-    </div> {{! end id="record-id" }}
+                    </div> {{! class="asset-clips" }}
+                {{/annotation_count}} {{! annotations exist }}
+                </div> {{! end record metadata }}
+            </div>
+        </div> {{! end id="record-id" }}
     </div> {{! end class="materials column-contents scroll" }}
 {{/assets}}
 </script>

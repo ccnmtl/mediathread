@@ -8,7 +8,7 @@ mccabe==0.6.1
 pycodestyle==2.6.0
 configparser==5.0.0
 importlib-metadata==2.0.0  # for flake8
-zipp==3.2.0
+zipp==3.3.0
 flake8==3.8.4
 lxml==4.5.2
 extras==1.0.0

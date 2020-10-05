@@ -30,12 +30,15 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.contains('Add a primary video').should('be.visible');
 
         cy.log('Add primary video');
+        cy.wait(500);
+        cy.get('button.add-spine').should('be.visible');
         cy.get('button.add-spine').click({force: true});
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
         cy.get('.choice_all_items > .switcher-choice').click({force: true});
 
         cy.log('create selection');
+        cy.get('#create-annotation-icon').should('be.visible');
         cy.get('#create-annotation-icon').click({force: true});
         cy.get('#btnClipStart').should('be.visible');
         cy.get('#btnClipEnd').should('be.visible');

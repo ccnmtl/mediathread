@@ -23,14 +23,16 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.contains('Add a primary video').should('be.visible');
 
         cy.log('Add primary video');
-        cy.contains('Add a primary video').click({force: true});
+        cy.wait(500);
+        cy.get('button.add-spine').should('be.visible');
+        cy.get('button.add-spine').click({force: true});
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
         cy.get('.choice_all_items > .switcher-choice').click({force: true});
 
         cy.log('create selection');
+        cy.get('#create-annotation-icon').should('be.visible');
         cy.get('#create-annotation-icon').click({force: true});
-        cy.wait(500);
         cy.get('#btnClipStart').should('be.visible');
         cy.get('#btnClipEnd').should('be.visible');
         cy.get('#clipStart').clear().type('00:00:02');
@@ -39,11 +41,11 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.col > .btn-primary').click();
         cy.get('.selection-citation-title')
             .should('contain', 'Example Selection 2');
-        cy.get('#annotation-19 > .card-header > .btn').click({force: true});
+        cy.contains('Example Selection 2').click({force: true});
+        cy.contains('Insert').click({force: true});
         cy.get('#title').clear({force: true})
             .type('Example project', {force: true});
-        //TODO: for some reasone cy.contains('Reflection') doesn't work
-        cy.get('.nav > :nth-child(2) > .nav-link').click({force: true});
+        cy.contains('Reflection').click({force: true});
         cy.getIframeBody().find('p').click({force: true})
             .type('Project reflection');
         cy.get('.btn-save').click();

@@ -27,8 +27,6 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('.switcher_collection_chooser > .switcher-top')
             .click({force: true});
         cy.get('.choice_all_items > .switcher-choice').click({force: true});
-        // cy.get('.selection-citation > :nth-child(1) > .materialCitation')
-        //     .click({force: true});
 
         cy.log('create selection');
         cy.get('#create-annotation-icon').click({force: true});
@@ -52,8 +50,5 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('#id_publish_1').click();
         cy.get('.btn-save-project').click({force: true});
 
-        // cy.log('go back to projects');
-        // cy.get('.breadcrumb').click();
-        // cy.contains('Example project').should('exist');
     });
 });

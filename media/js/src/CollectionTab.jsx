@@ -71,6 +71,9 @@ export default class CollectionTab extends React.Component {
             .removeClass('d-flex')
             .addClass('d-none');
 
+        jQuery('.collectionAdd')
+            .removeClass('show');
+
         // Need to fetch the asset to get all the selections. The
         // collection view's selections are filtered by AssetFilter.
         const me = this;

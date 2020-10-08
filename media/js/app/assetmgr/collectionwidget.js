@@ -232,6 +232,13 @@ CollectionWidget.prototype.mapEvents = function() {
         return false;
     });
 
+    self.$el.on('click', 'a.page-link', function(evt) {
+        const page = jQuery(evt.target).data('page-number');
+        const offset = (page - 1) * self.limits.limit;
+        self.refresh(offset, true);
+        return false;
+    });
+
     self.$el.on('click', '.clickableCitation', function(evt) {
         var $elt = jQuery(this);
         var annotationId = $elt.data('annotation-id');
@@ -364,50 +371,18 @@ CollectionWidget.prototype.filter = function() {
     return false;
 };
 
-CollectionWidget.prototype.refresh = function() {
+CollectionWidget.prototype.refresh = function(offset, updating) {
     this.setLoading(true);
-    this.limits.offset = 0;
+    this.limits.offset = offset || 0;
 
     var self = this;
     djangosherd.storage.get({
         type: 'asset',
-        url: this.filteredUrl()
+        url: this.filteredUrl(updating || false)
     },
     false,
     function(the_records) {
         self.updateAssets(the_records);
-    });
-};
-
-CollectionWidget.prototype.nextPage = function() {
-    this.loading = true;
-    this.$modal.find('.next-page-loader').show();
-    this.limits.offset += this.limits.limit;
-
-    var url = this.filteredUrl();
-    url += '&offset=' + this.limits.offset + '&limit=' + this.limits.limit;
-
-    var self = this;
-    djangosherd.storage.get({
-        type: 'asset',
-        url: url
-    },
-    false,
-    function(the_records) {
-        if (the_records.assets.length > 0) {
-            var html = jQuery(Mustache.render(
-                MediaThread.templates[self.template + '_assets'],
-                jQuery.extend({}, the_records, MediaThread.mustacheHelpers)
-            ));
-            var $container = self.$el.find('.asset-table');
-            $container.append(html);
-
-            self.createThumbs(the_records.assets);
-
-            jQuery(window).trigger('assets.refresh', [html]);
-        }
-        self.$modal.find('.next-page-loader').hide();
-        self.loading = false;
     });
 };
 
@@ -597,15 +572,6 @@ CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
     this.updateSwitcher();
 
     var self = this;
-    var $body = this.$modal.find('.collection-body');
-
-    $body.scroll(function() {
-        if ((jQuery(this).scrollTop() + jQuery(this).outerHeight() >=
-             jQuery(this)[0].scrollHeight - 10) &&
-                 !self.getLoading()) {
-            self.nextPage(self.current_records);
-        }
-    });
 
     jQuery('.filter-widget').show();
 
@@ -714,7 +680,7 @@ CollectionWidget.prototype.isValidFilter = function(filter) {
     return filters.indexOf(filter) > -1 || filter.startsWith('vocabulary-');
 };
 
-CollectionWidget.prototype.filteredUrl = function() {
+CollectionWidget.prototype.filteredUrl = function(updating) {
     var url = this.baseUrl();
 
     // tack on all the filters
@@ -732,11 +698,17 @@ CollectionWidget.prototype.filteredUrl = function() {
         }
     }
 
-    var excludeTypes = ['image_fpxid'];
-    var filters = jQuery.param({
-        primary_type: excludeTypes
-    });
-    url += '&' + filters;
+    if (updating) {
+        var urlParams = {
+            offset: this.limits.offset,
+            limit: this.limits.limit
+        };
+
+        url += '&' + jQuery.param(urlParams);
+    }
+
+    url = urlWithCourse(url, MediaThread.current_course);
+
     return url;
 };
 
@@ -761,9 +733,9 @@ CollectionWidget.prototype.getLoading = function() {
 CollectionWidget.prototype.setLoading = function(isLoading) {
     this.loading = isLoading;
     if (this.loading) {
-        this.$el.find('.ajaxloader').show();
+        jQuery('.ajaxloader').show();
     } else {
-        this.$el.find('.ajaxloader').hide();
+        jQuery('.ajaxloader').hide();
     }
 };
 

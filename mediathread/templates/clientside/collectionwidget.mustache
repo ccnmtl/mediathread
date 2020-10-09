@@ -2,13 +2,6 @@
 <script type="text/x-template" id="collectionwidget-template">
 
 <div class="collection_table collection-widget">
-    <div class="ajaxloader">
-        <div class="message">
-        <img alt="Loading..." src="{{#staticUrl}}{{/staticUrl}}img/ajax-loader.gif">
-        <br /><br />
-        <div>Refreshing the collection</div>
-        </div>
-    </div>
     <div class="media-column">
         <div class="filter-widget bg-light" style="display: none">
             <div class="row px-3">
@@ -112,10 +105,34 @@
         </div>
     </div>  {{! end filter widget }}
     <div class="clearfix"></div>
-
     <div class="collection-assets annotation-embedding">
         <div id="asset_table" class="asset-table"></div>
     </div>
+    {{#asset_count}}
+        {{#paginator}}
+            {{#numPages}}
+                <ul class="pagination nav justify-content-end btn-sm mt-2" style="padding: 0px;">
+                    <li class="page-item {{^hasPrev}}disabled{{/hasPrev}}">
+                        <a class="page-link"
+                            href="#" data-page-number="{{prevPage}}" aria-label="Previous">
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item active">
+                        <div class="page-link">
+                            {{currentPage}} of {{numPages}}<span class="sr-only">(current)</span>
+                        </div>
+                    </li>
+                    <li class="page-item {{^hasNext}}disabled{{/hasNext}}">
+                        <a class="page-link "
+                            data-page-number="{{nextPage}}" href="#" aria-label="Next">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            {{/numPages}}
+        {{/paginator}}
+    {{/asset_count}}
 </div>  {{! end media column }}
 
 </script>

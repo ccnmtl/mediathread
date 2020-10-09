@@ -1,5 +1,6 @@
 {% extends "base_new.html" %}
 {% load user_projects coursetags %}
+{% load static %}
 
 {% block title %}
     {% if project.title %}&mdash; {{project.title}}{% else %}&mdash; Sequence{% endif %}
@@ -242,6 +243,13 @@
 </div>
 <div id="collection-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
+        <div class="ajaxloader">
+            <div class="message">
+            <img alt="Loading..." src="{% static 'img/ajax-loader.gif' %}">
+            <br /><br />
+            <div>Refreshing the collection</div>
+            </div>
+        </div>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Course Collection</h5>
@@ -252,10 +260,6 @@
             <div class="modal-body collection-body">
                 <div class="quick-edit" style="display: none"></div>
                 <div class="collection-view"></div>
-            </div>
-            <div class="next-page-loader" style="display: none">
-                <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader-small.gif">
-                Loading more items
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

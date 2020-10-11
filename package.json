@@ -44,7 +44,7 @@
     "jsdom": "^16.0.1",
     "start-server-and-test": "^1.11.0",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^4.0.0"
   },
   "dependencies": {
     "get-youtube-id": "^1.0.1",

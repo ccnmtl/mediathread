@@ -107,4 +107,12 @@ export default class Asset {
         }
         return null;
     }
+    getCaptionTrack() {
+        if (!this.asset || !this.asset.metadata) {
+            return null;
+        }
+
+        let track = this.asset.metadata.find(elt => elt.key === 'caption_track');
+        return track ? track.value[0] : null
+    }
 }

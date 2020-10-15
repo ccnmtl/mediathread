@@ -112,7 +112,7 @@ export default class Asset {
             return null;
         }
 
-        let track = this.asset.metadata.find(elt => elt.key === 'caption_track');
-        return track ? track.value[0] : null
+        let key = this.asset.metadata.find(elt => elt.key === 'caption_track');
+        return key ? key.value[0] : null;
     }
 }

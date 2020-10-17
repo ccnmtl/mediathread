@@ -685,13 +685,15 @@ export default class AssetDetail extends React.Component {
                 vidUrl = source.url;
             }
 
+            let extraConfig = {file: {attributes: {}}};
+            if (!MediaThread.allow_item_download) {
+                extraConfig.file.attributes.controlsList = 'nodownload';
+            }
             const captionTrack = this.asset.getCaptionTrack();
-            let extraConfig = {};
             if (captionTrack) {
-                extraConfig.file = {
-                    attributes: {crossOrigin: "true"},
-                    tracks: [{kind: 'subtitles', src: captionTrack, default: true}]
-                }
+                extraConfig.file.attributes = {crossOrigin: "true"};
+                extraConfig.file.tracks =
+                    [{kind: 'subtitles', src: captionTrack, default: true}];
             }
 
             media = (

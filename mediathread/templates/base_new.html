@@ -178,6 +178,7 @@ A new base.html without the course context overwritten in the template.
                 {% if request.course %}
                 this.current_course = {{ request.course.pk }};
                 this.current_course_has_vocab = {% if request.course.vocabulary_set.count > 0 %}true{% else %}false{% endif %};
+                this.allow_item_download = {% if allow_item_download %}true{% else %}false{% endif %};
                 {% endif %}
 
                 {% if the_response %}

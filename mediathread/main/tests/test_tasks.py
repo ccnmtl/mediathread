@@ -149,7 +149,7 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
 
     def test_get_course(self):
         session = {'Id': 1, 'Name': 'session1'}
-        course_string = 'SOCWT7100_099_2020_3'
+        course_string = ' SOCWT7100_099_2020_3'
         self.assertIsNone(self.ingester.get_course(session, course_string))
 
         msgs = [m.message for m in get_messages(self.request)]

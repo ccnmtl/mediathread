@@ -87,8 +87,12 @@ COURSE_INFORMATION_TITLE_DEFAULT = "From Your Instructor"
 
 
 def allow_item_download(course):
-    value = int(course.get_detail(ALLOW_ITEM_DOWNLOAD_KEY,
-                                  ALLOW_ITEM_DOWNLOAD_DEFAULT))
+    try:
+        value = int(course.get_detail(ALLOW_ITEM_DOWNLOAD_KEY,
+                                      ALLOW_ITEM_DOWNLOAD_DEFAULT))
+    except AttributeError:
+        value = False
+
     return bool(value)
 
 

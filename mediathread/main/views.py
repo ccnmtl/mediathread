@@ -42,7 +42,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main import course_details
 from mediathread.main.course_details import (
     cached_course_is_faculty, course_information_title,
-    has_student_activity, allow_roster_changes)
+    has_student_activity, allow_roster_changes, allow_item_download)
 from mediathread.main.forms import (
     ContactUsForm, CourseDeleteMaterialsForm, AcceptInvitationForm,
     CourseActivateForm, DashboardSettingsForm
@@ -86,6 +86,7 @@ def django_settings(request):
 
     return {'settings': dict([(k, getattr(settings, k, None))
                               for k in whitelist]),
+            'allow_item_download': allow_item_download(request.course),
             'EXPERIMENTAL': 'experimental' in request.COOKIES}
 
 

@@ -168,6 +168,7 @@ A new base.html without the course context overwritten in the template.
             }
 
             var MediaThread = new (function() {
+                this.staticUrl = '{{STATIC_URL}}';
                 this.templates = {};
                 {% if request.user.is_authenticated %}
                 this.current_user = {{request.user.id}};

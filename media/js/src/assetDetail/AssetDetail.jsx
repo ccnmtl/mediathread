@@ -685,6 +685,15 @@ export default class AssetDetail extends React.Component {
                 vidUrl = source.url;
             }
 
+            const captionTrack = this.asset.getCaptionTrack();
+            let extraConfig = {};
+            if (captionTrack) {
+                extraConfig.file = {
+                    attributes: {crossOrigin: "true"},
+                    tracks: [{kind: 'subtitles', src: captionTrack, default: true}]
+                }
+            }
+
             media = (
                 <React.Fragment>
                     {annotationTools}
@@ -697,7 +706,9 @@ export default class AssetDetail extends React.Component {
                             onProgress={this.onPlayerProgress.bind(this)}
                             ref={this.playerRef}
                             url={vidUrl}
-                            controls={true} />
+                            controls={true}
+                            config={extraConfig}
+                           />
                     </div>
                 </React.Fragment>
             );

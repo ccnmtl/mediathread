@@ -25,9 +25,12 @@ export default class GridAsset extends React.Component {
     constructor(props) {
         super(props);
 
+        const mediaPrefix = typeof MediaThread !== 'undefined' ?
+              MediaThread.staticUrl : '/media/';
+
         this.state = {
             selectedAnnotation: null,
-            thumbnailUrl: '/media/img/thumb_video.png'
+            thumbnailUrl: mediaPrefix + 'img/thumb_video.png'
         };
 
         this.selectionSource = new VectorSource();

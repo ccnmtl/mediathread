@@ -54,6 +54,7 @@ class PanoptoIngester(object):
         return imported
 
     def get_course(self, session, course_string):
+        course_string = course_string.strip()
         d = CanvasTemplate.to_dict(course_string)
         s = WindTemplate.to_string(d)
         try:

@@ -73,6 +73,13 @@ def student_response(responses, user):
             return response
     return None
 
+@register.simple_tag
+def feedback(responses, user):
+    for response in responses:
+        if user in response.attribution_list():
+            feedback = response.feedback_discussion()
+            if feedback:
+                return feedback
 
 @register.filter
 def date_format_change(date):

@@ -56,7 +56,15 @@ class PanoptoIngester(object):
     def get_course(self, session, course_string):
         course_string = course_string.strip()
         d = CanvasTemplate.to_dict(course_string)
-        s = WindTemplate.to_string(d)
+        try:
+            s = WindTemplate.to_string(d)
+        except AttributeError:
+            self.log_message(
+                None, session, ERROR,
+                '{} ({}): No course matches {}'.format(
+                    session['Name'], session['Id'], course_string))
+            return None
+
         try:
             return Course.objects.get(group__name=s)
         except Course.DoesNotExist:

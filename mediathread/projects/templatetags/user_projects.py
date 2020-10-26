@@ -75,12 +75,10 @@ def student_response(responses, user):
 
 
 @register.simple_tag
-def feedback(responses, user):
-    for response in responses:
-        if user in response.attribution_list():
-            feedback = response.feedback_discussion()
-            if feedback:
-                return feedback
+def feedback(response):
+    feedback = response.feedback_discussion()
+    if feedback:
+        return feedback
 
 
 @register.simple_tag

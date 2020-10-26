@@ -28,7 +28,7 @@
                     {% feedback submitted as feedback %}
                         <a href="{% url 'project-workspace' request.course.id submitted.id %}"
                             class="dropdown-item" type="button">
-                            {{submitted.attribution_last_first}}
+                            {{submitted.attribution}}
                             {% if feedback %}
                                 <span class="badge badge-success">Complete</span>
                             {% else %}

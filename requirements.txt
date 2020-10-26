@@ -40,7 +40,7 @@ chardet==3.0.4
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==2.10
-urllib3==1.25.10  # sentry-sdk
+urllib3==1.25.11  # sentry-sdk
 certifi==2020.6.20  # sentry-sdk
 cryptography==3.1.1
 pyOpenSSL==19.1.0
@@ -61,7 +61,7 @@ django-contrib-comments==1.9.2
 django-threadedcomments==1.2
 django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0
-sentry-sdk==0.19.0
+sentry-sdk==0.19.1
 django-appconf==1.0.4
 django-compressor==2.4
 django-stagingcontext==0.1.0
@@ -112,7 +112,7 @@ django-extensions==3.0.9
 s3transfer==0.3.3
 jmespath==0.10.0
 
-botocore>=1.16.0,<1.19.0
+botocore>=1.16.0,<1.20.0
 boto3>=1.13.0,<1.17.0
 
 entrypoints==0.3

@@ -1,24 +1,15 @@
 /* global pv: true */
 //requires Protovis: http://vis.stanford.edu/protovis/
 
+/* eslint-disable-next-line no-unused-vars */
 var SherdReport = function() {
     var self = this;
     this.started = false;
 
     this.nodeMouseDown = function(node) {
-        jQuery('#reports-graph-chosenlink')
+        jQuery('#contributedTo')
             .html(node.nodeName)
             .attr('href', node.href);
-
-        if (node.users) {
-            jQuery('#reports-student-tbody tr').removeClass('highlight');
-            for (var author in node.users) {
-                if (Object.prototype.hasOwnProperty.call(node.users, author)) {
-                    jQuery('#reports-student-tbody tr.user-' + author)
-                        .addClass('highlight');
-                }
-            }
-        }
 
         self.innerMouseDown.apply(this, arguments);
     };
@@ -28,7 +19,7 @@ var SherdReport = function() {
     };
 
     this.init = function(json) {
-        var w = jQuery('#reports-graph-link').width();
+        var w = jQuery('#reports-graph').width();
         var h = Math.max(500, jQuery(window).height() - 300);
         var domainColors = pv.Colors.category20();
 
@@ -100,34 +91,20 @@ var SherdReport = function() {
         self.force = force;
 
         ///User summary actions
-        jQuery('#reports-student-tbody tr').click(function(evt) {
-            var on = jQuery(this).hasClass('highlight');
-            jQuery('#reports-student-tbody tr').removeClass('highlight');
-            if (on) {
+        jQuery('.custom-select').on('change', function(evt) {
+            var username = this.value;
+            if (username === 'all') {
                 self.nodes.lineWidth(self.nodeDefaultLineWidth);
+                jQuery(this).siblings().removeClass('active');
             } else {
-                var user = jQuery(this)
-                    .addClass('highlight').attr('data-username');
-
+                jQuery(this).siblings().removeClass('active');
+                jQuery(this).addClass('active');
                 self.nodes.lineWidth(function(d) {
-                    return (d.users &&
-                            d.users[user] ? 10 : self.nodeDefaultLineWidth(d));
+                    return (
+                        d.users &&
+                        d.users[username] ? 10 : self.nodeDefaultLineWidth(d));
                 });
             }
         });
     };
 }; //end SherdReport
-
-var sherdReport = new SherdReport();
-
-window['hs_onshow_reports-graph'] = function() {
-    if (!sherdReport.started) {
-        sherdReport.started = true;
-        jQuery.ajax({
-            url: '/reports/class_summary/graph.json?nocache=' +
-                Number(new Date()) + location.search.replace(/^./, '&'),
-            dataType: 'json',
-            success: sherdReport.init
-        });
-    }
-};

@@ -19,22 +19,32 @@
     <div class="dropdown d-inline ml-1">
         <button class="btn btn-primary dropdown-toggle" type="button" id="student-response-dropdown"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{responses|length}} of {{students|length}} students responded
+            {% get_submitted responses as submittedResponses %}
+            {{submittedResponses|length}} of {{students|length}} Students Responded
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="student-response-dropdown">
-            {% for student in students %}
-                {% student_response responses student as response %}
-                {% if response.date_submitted %}
-                    <a href="{% url 'project-workspace' request.course.id response.id %}"
-                        class="dropdown-item" type="button">
-                        {% public_name for student %} ({{response.date_submitted|date:"m/d/Y"}})
-                    </a>
-                {% else %}
-                    <a href="#" class="dropdown-item disabled" type="button">
-                        {% public_name for student %}
-                    </a>
-                {% endif %}
-            {% endfor %}
+            <h6 class="dropdown-header">Submitted</h6>
+                {% for submitted in submittedResponses %}
+                    {% feedback submitted as feedback %}
+                        <a href="{% url 'project-workspace' request.course.id submitted.id %}"
+                            class="dropdown-item" type="button">
+                            {{submitted.attribution}}
+                            {% if feedback %}
+                                <span class="badge badge-success">Complete</span>
+                            {% else %}
+                                <span class="badge badge-warning">Respond</span>
+                            {% endif %}
+                        </a>
+                {% endfor %}
+            <h6 class="dropdown-header">Assigned</h6>
+                {% for student in students %}
+                    {% student_response responses student as response %}
+                    {% if not response.date_submitted %}
+                        <a href="#" class="dropdown-item disabled" type="button">
+                            {% public_name for student %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
         </div>
     </div>
 {% endif %}

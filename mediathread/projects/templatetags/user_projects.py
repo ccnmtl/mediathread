@@ -74,6 +74,22 @@ def student_response(responses, user):
     return None
 
 
+@register.simple_tag
+def feedback(response):
+    feedback = response.feedback_discussion()
+    if feedback:
+        return feedback
+
+
+@register.simple_tag
+def get_submitted(responses):
+    submitted = []
+    for response in responses:
+        if response.date_submitted:
+            submitted.append(response)
+    return submitted
+
+
 @register.filter
 def date_format_change(date):
     newDate = date.replace('hours', 'hrs').replace('hour', 'hr').replace(

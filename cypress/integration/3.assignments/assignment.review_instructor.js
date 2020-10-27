@@ -27,7 +27,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.get('[data-cy="assignment-visibility"]')
             .contains('Shared with Class').should('be.visible');
         cy.get('#student-response-dropdown')
-            .contains('1 of 3 students responded').should('be.visible');
+            .contains('1 of 3 Students Responded').should('be.visible');
         cy.get('#assignment-responses').should('not.be.visible');
         cy.get('#instructions-heading-one')
             .contains('Instructions').should('be.visible');
@@ -48,7 +48,7 @@ describe('Assignment Feature: Instructor View', () => {
             .contains('Shared with Instructor').should('be.visible');
 
         cy.get('#student-response-dropdown')
-            .contains('1 of 3 students responded').should('be.visible');
+            .contains('1 of 3 Students Responded').should('be.visible');
         cy.get('#instructions-heading-one')
             .contains('Instructions').should('be.visible');
         cy.get('#response-heading-one').should('be.visible');
@@ -61,7 +61,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.get('#loaded').should('exist');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('#student-response-dropdown')
-            .contains('1 of 3 students responded').should('be.visible');
+            .contains('1 of 3 Students Responded').should('be.visible');
         cy.get('#assignment-responses').should('not.be.visible');
         cy.get('#instructions-heading-one')
             .contains('Instructions').should('be.visible');

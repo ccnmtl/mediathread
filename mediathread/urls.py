@@ -285,7 +285,8 @@ urlpatterns = [
          name='course-settings-general'),
 
     # Reporting
-    path('reports/', include('mediathread.reports.urls')),
+    path('course/<int:course_pk>/reports/',
+         include('mediathread.reports.urls')),
 
     # Bookmarklet, Wardenclyffe, Staff custom asset entry
     path('save/', AssetCreateView.as_view(), name='asset-save'),

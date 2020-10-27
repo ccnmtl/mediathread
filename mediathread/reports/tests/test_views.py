@@ -65,12 +65,14 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         cache.clear()
 
     def test_class_assignments_report_logged_out(self):
-        url = reverse('class-assignment-report', args=[self.assignment1.id])
+        url = reverse('class-assignment-report',
+                      args=[self.sample_course.id, self.assignment1.id])
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEquals(response.status_code, 302)
 
     def test_class_assignment_report(self):
-        url = reverse('class-assignment-report', args=[self.assignment1.id])
+        url = reverse('class-assignment-report',
+                      args=[self.sample_course.id, self.assignment1.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -88,12 +90,13 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(response.context_data['responses']), 2)
 
         # not an assignment
-        url = reverse('class-assignment-report', args=[1232])
+        url = reverse('class-assignment-report',
+                      args=[self.sample_course.id, 1232])
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
     def test_class_assignments(self):
-        url = reverse('class-assignments')
+        url = reverse('class-assignments', args=[self.sample_course.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -114,7 +117,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
                           self.assignment2)
 
     def test_class_summary(self):
-        url = reverse('class-summary')
+        url = reverse('class-summary', args=[self.sample_course.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -130,7 +133,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(len(response.context_data['students']), 5)
 
     def test_class_activity_report(self):
-        url = reverse('class-activity')
+        url = reverse('class-activity', args=[self.sample_course.id])
         self.create_discussion(self.sample_course, self.instructor_one)
 
         # as student
@@ -157,7 +160,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
     def test_class_summary_graph(self):
         self.create_discussion(self.sample_course, self.instructor_one)
 
-        url = reverse('class-summary-graph')
+        url = reverse('class-summary-graph', args=[self.sample_course.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -187,7 +190,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertTrue('Comment: Instructor One' in node_names)
 
     def test_mediathread_activity_report(self):
-        url = reverse('mediathread-activity-by-course')
+        url = reverse('mediathread-activity-by-course',
+                      args=[self.sample_course.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -202,7 +206,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_mediathread_activity_report_staff(self):
-        url = reverse('mediathread-activity-by-course')
+        url = reverse('mediathread-activity-by-course',
+                      args=[self.sample_course.id])
 
         # as superuser
         staff = UserFactory(is_staff=True, is_superuser=True)
@@ -220,7 +225,8 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
     def test_self_registration_report(self):
         UserProfileFactory(user=self.student_one)
         RegistrationProfileFactory(user=self.student_one)
-        url = reverse('mediathread-self-registration')
+        url = reverse('mediathread-self-registration',
+                      args=[self.sample_course.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')
@@ -354,7 +360,8 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
             next(rows)
 
     def test_view(self):
-        url = reverse('assignment-detail-report', args=[self.assignment1.id])
+        url = reverse('assignment-detail-report',
+                      args=[self.sample_course.id, self.assignment1.id])
 
         # as student
         self.client.login(username=self.student_one.username, password='test')

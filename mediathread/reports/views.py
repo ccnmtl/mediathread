@@ -1,7 +1,3 @@
-import unicodecsv as csv
-import json
-import re
-
 from courseaffils.lib import users_in_course
 from courseaffils.models import Course
 from django.contrib.auth.models import User
@@ -11,74 +7,80 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.http.response import StreamingHttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic.base import View
-from djangohelpers.lib import allow_http, rendered_with
-from registration.models import RegistrationProfile
-from tagging.models import Tag
-
+from django.views.generic.base import View, TemplateView
+import json
 from mediathread.assetmgr.models import Asset, Source
 from mediathread.discussions.utils import get_course_discussions
 from mediathread.djangosherd.models import DiscussionIndex, SherdNote
 from mediathread.main import course_details
 from mediathread.main.clumper import Clumper
 from mediathread.main.util import user_display_name
-from mediathread.mixins import faculty_only, LoggedInSuperuserMixin, \
+from mediathread.mixins import LoggedInSuperuserMixin, \
     CSVResponseMixin, LoggedInFacultyMixin
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import TermRelationship
+import re
+from registration.models import RegistrationProfile
 from structuredcollaboration.models import Collaboration
+from tagging.models import Tag
+import unicodecsv as csv
 
 
-@allow_http("GET")
-@rendered_with('dashboard/class_assignment_report.html')
-@faculty_only
-def class_assignment_report(request, project_id):
-    assignment = get_object_or_404(Project, id=project_id)
-    responses = assignment.responses(request.course, request.user)
-    return {'assignment': assignment, 'responses': responses}
+class ClassAssignmentReport(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_assignment_report.html'
+
+    def get_context_data(self, **kwargs):
+        project_id = self.kwargs.get('project_id', None)
+        assignment = get_object_or_404(Project, id=project_id)
+        responses = assignment.responses(
+            self.request.course, self.request.user)
+        return {'assignment': assignment, 'responses': responses}
 
 
-@allow_http("GET")
-@rendered_with('dashboard/class_assignments.html')
-@faculty_only
-def class_assignments(request):
-    assignments = []
-    for project in Project.objects.filter(request.course.faculty_filter):
-        if project.is_essay_assignment() or project.is_selection_assignment():
-            assignments.append(project)
+class ClassAssignmentsView(LoggedInFacultyMixin, TemplateView):
 
-    return {'assignments': sorted(assignments,
-                                  key=lambda assignment: assignment.title),
-            'num_students': len(request.course.students)}
+    template_name = 'dashboard/class_assignments.html'
+
+    def get_context_data(self, **kwargs):
+        assignments = []
+        qs = Project.objects.filter(self.request.course.faculty_filter)
+        for project in qs:
+            if (project.is_essay_assignment() or
+                project.is_sequence_assignment() or
+                project.is_discussion_assignment() or
+                    project.is_selection_assignment()):
+                assignments.append(project)
+
+        return {'assignments': sorted(assignments,
+                                      key=lambda assignment: assignment.title),
+                'num_students': len(self.request.course.students)}
 
 
-@allow_http("GET")
-@rendered_with('dashboard/class_summary.html')
-@faculty_only
-def class_summary(request):
-    collab_context = request.collaboration_context
-    students = []
-    for student in users_in_course(request.course).order_by('last_name',
-                                                            'first_name',
-                                                            'username'):
+class ClassSummaryView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_summary.html'
 
-        student.__dict__.update({
-            'annotations':
-            SherdNote.objects.filter(asset__course=request.course,
-                                     author=student).count(),
-            'all_projects':
-            len(Project.objects.visible_by_course_and_user(
-                request.course, request.user, student, False)),
+    def get_context_data(self, **kwargs):
+        collab = Collaboration.objects.get_for_object(self.request.course)
+        students = []
+        qs = users_in_course(self.request.course).order_by(
+            'last_name', 'first_name', 'username')
+        for student in qs:
+            student.__dict__.update({
+                'annotations':
+                SherdNote.objects.filter(
+                    asset__course=self.request.course, author=student).count(),
+                'all_projects':
+                len(Project.objects.visible_by_course_and_user(
+                    self.request.course, self.request.user, student, False)),
+                'comments':
+                DiscussionIndex.objects.filter(
+                    participant=student,
+                    collaboration__context=collab).count()
+            })
+            students.append(student)
 
-            'comments':
-            DiscussionIndex.objects.filter(
-                participant=student,
-                collaboration__context=collab_context).count()
-        })
-        students.append(student)
-
-    context = {'students': students}
-    return context
+        context = {'students': students}
+        return context
 
 
 class ClassSummaryGraphView(LoggedInFacultyMixin, View):
@@ -196,8 +198,8 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
                     'value': val['str'],
                     'bare': val['bare'], })
 
-        self.initialize_discussions(request.course,
-                                    request.collaboration_context)
+        collab_context = Collaboration.objects.get_for_object(request.course)
+        self.initialize_discussions(request.course, collab_context)
 
         the_context = {'nodes': self.nodes, 'links': self.links}
 
@@ -205,23 +207,25 @@ class ClassSummaryGraphView(LoggedInFacultyMixin, View):
                             content_type='application/json')
 
 
-@allow_http("GET")
-@rendered_with('dashboard/class_activity.html')
-@faculty_only
-def class_activity(request):
-    assets = SherdNote.objects.filter(
-        asset__course=request.course).order_by('-added')[:40]
+class ClassActivityView(LoggedInFacultyMixin, TemplateView):
+    template_name = 'dashboard/class_activity.html'
 
-    projects = Project.objects.filter(
-        course=request.course,
-        date_submitted__isnull=False).order_by('-modified')[:40]
+    def get_context_data(self, **kwargs):
+        assets = SherdNote.objects.filter(
+            asset__course=self.request.course).order_by('-added')[:40]
 
-    discussions = DiscussionIndex.with_permission(
-        request, DiscussionIndex.objects.filter(
-            collaboration__context=request.collaboration_context).order_by(
-                '-modified')[:40],)
+        projects = Project.objects.filter(
+            course=self.request.course,
+            date_submitted__isnull=False).order_by('-modified')[:40]
 
-    return {'my_feed': Clumper(assets, projects, discussions)}
+        collab_context = Collaboration.objects.get_for_object(
+            self.request.course)
+        discussions = DiscussionIndex.with_permission(
+            self.request, DiscussionIndex.objects.filter(
+                collaboration__context=collab_context).order_by(
+                    '-modified')[:40],)
+
+        return {'my_feed': Clumper(assets, projects, discussions)}
 
 
 class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):

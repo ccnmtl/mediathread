@@ -2,9 +2,9 @@
 {% load comments user_projects coursetags %}
 
 {% block dashboard_content %}
-<h2>Assignment Report: {{assignment.title}}</h2>
+<h3><a href="{% url 'class-assignments' request.course.pk %}">Assignment Responses</a> | {{assignment.title}}</h3>
 <a class="float-right"
-    href="{% url 'assignment-detail-report' assignment.id %}">
+    href="{% url 'assignment-detail-report' request.course.pk assignment.id %}">
     Download Detail
 </a>
 <div class="clearfix"></div>

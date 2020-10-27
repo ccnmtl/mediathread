@@ -2105,10 +2105,6 @@ ul li {
   text-align:left;
 }
 
-.panel-column>p, #reports-graph-link, #reports-graph {
-    margin: 1em;
-}
-
 input.columnbutton {
     margin: -2px -5px 0px 3px;
 }
@@ -2352,6 +2348,10 @@ div.gallery-item h4.asset_title {
     min-width: 800px;
     padding-left: 50px;
     padding-right: 50px;
+}
+
+.dashboard-module-body .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: white;
 }
 
 .dashboard-module-body p {

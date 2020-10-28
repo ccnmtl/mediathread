@@ -93,17 +93,17 @@
                     <li>
                         <a
                             {% if '/reports/class_activity/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_activity/">Activity</a>
+                            href="{% url 'class-activity' request.course.pk %}">Activity</a>
                     </li>
                     <li>
                         <a
                             {% if '/reports/class_summary/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_summary/">Member Contributions</a>
+                            href="{% url 'class-summary' request.course.pk %}">Member Contributions</a>
                     </li>
                     <li>
                         <a
                             {% if '/reports/class_assignments/' in request.path %}class="active"{% endif %}
-                            href="/reports/class_assignments/">Assignment Responses</a>
+                            href="{% url 'class-assignments' request.course.pk %}">Assignment Responses</a>
                     </li>
                 </ul>
             </nav>

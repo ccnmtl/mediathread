@@ -15,10 +15,10 @@ describe('Instructor Feat: Test Assignment Responses', () => {
 
         cy.get('a[href="/course/1/dashboard/settings/"]').click();
         cy.title().should('contain', 'Manage Course');
-        cy.get('a[href="/reports/class_assignments/"]').click();
+        cy.get('a[href="/course/1/reports/class_assignments/"]').click();
         cy.contains('1 / 3').should('have.attr', 'href');
         cy.contains('1 / 3').click();
-        cy.contains('Assignment Report: Sample Assignment').should('exist');
+        cy.contains('Assignment Responses | Sample Assignment').should('exist');
         cy.contains('Student One').should('exist');
         cy.contains('Sample Assignment Response').should('have.attr', 'href');
         cy.contains('Shared with Instructor').should('exist');

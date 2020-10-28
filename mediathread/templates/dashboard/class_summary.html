@@ -1,188 +1,148 @@
 {% extends 'dashboard/base_course_dashboard.html' %}
 {% load comments coursetags %}
 
+{% block js %}
+    <script type="text/javascript" src="{{STATIC_URL}}js/app/dashboard/reports.js"></script>
+{% endblock %}
+
 {% block uncompressable_js %}
     <script type="text/javascript">
-        var hs_controls = [];
+        jQuery(document).ready(function() {
+            $('.nav-tabs a').click(function(e) {
+                window.location.hash = this.hash;
+            });
 
-        function cookie_name(el) {
-            var name = "hsstate_";
-            //across pages
-            if (/^global-/.test(el.id)) {
-                name += "#" + el.id;
-            } else {
-                name +=  document.location + "#" + el.id;
-            }
-            return name.replace(/\W/g, "_");
-        }
-
-        function futureDate() {
-            var d = new Date();
-            d.setTime(Date.parse('October, 4 2030 07:04:11'));
-            return d;
-        }
-
-        function hs_getTarget(a) {
-            var elt = jQuery(a.href.substr(a.href.indexOf('#')));
-            if (elt.length) {
-                return elt.get(0);
-            } else {
-                throw new Error('hs.js: target id: ' + a.href + ' not found');
-            }
-        }
-
-        function hs_hide(e) {
-            e = (typeof e === 'number' ? this : e);
-
-            jQuery(e)
-            .removeClass("hs-show")
-            .addClass("hs-hide");
-
-            jQuery(hs_controls[e.id])
-            .removeClass("hs-control-show")
-            .addClass("hs-control-hide");
-
-            if (typeof window['hs_onhide_' + e.id] === 'function') {
-                window['hs_onhide_' + e.id](e);
-            }
-        }
-
-        function hs_show(e) {
-            jQuery(e)
-            .removeClass("hs-hide")
-            .addClass("hs-show");
-
-            jQuery(hs_controls[e.id])
-            .removeClass("hs-control-hide")
-            .addClass("hs-control-show");
-
-            if (typeof window['hs_onshow_' + e.id] === 'function') {
-                window['hs_onshow_' + e.id](e);
-            }
-        }
-
-
-        function hs_toggle() {
-            var target = hs_getTarget(this);
-            if (jQuery(target).hasClass("hs-hide")) {
-                hs_show(target);
-                storeData(cookie_name(target), "show", futureDate());
-            } else {
-                hs_hide(target);
-                storeData(cookie_name(target), "hidden", futureDate());
-            }
-            return false;
-        }
-
-        function hs_addControlCallback() {
-            //log("adding callback to " + a);
-            jQuery(this)
-            .click(hs_toggle)
-            .addClass('hs-control-show');
-            hs_controls[hs_getTarget(this).id] = this;
-        }
-
-
-        function hs_lookForCookie() {
-            var e = hs_getTarget(this);
-            var s = retrieveData(cookie_name(e));
-            if (s === "hidden") {
-                hs_hide(e);
-            }
-            if (s === "show") {
-                hs_show(e);
-            }
-        }
-
-        function hs_init(parent) {
-            parent = ((parent && parent.tagName) ? parent : document);
-            jQuery('a.hs-control', parent).each(hs_addControlCallback);
-            jQuery('.hs-init-hide', parent).each(hs_hide);
-            jQuery('a.hs-control', parent).each(hs_lookForCookie);
-        }
-
-        jQuery(hs_init);
+            var sherdReport = new SherdReport();
+            sherdReport.started = true;
+            jQuery.ajax({
+                url: '/course/' + MediaThread.current_course + '/reports/class_summary/graph.json?nocache=' +
+                    Number(new Date()) + location.search.replace(/^./, '&'),
+                dataType: 'json',
+                success: sherdReport.init
+            });
+        });
     </script>
+
     <script type="text/javascript" src="{{STATIC_URL}}js/protovis/protovis.min.js"></script>
 {% endblock %}
 
 {% block dashboard_content %}
-    <h2>Report: Course Member Contributions</h2>
 
-<p>This report lists the number of each course member's saved selections, discussion thread posts, and compositions. To access an individual person's work, click on her name. </p>
-<table id="summary_columns">
-<tr>
+    <h3>Member Contributions</h3>
+    <ul class="nav nav-tabs nav-pills" role="tablist">
+        <li class="nav-item" role="tab" aria-selected="true">
+            <a class="nav-link active" data-toggle="tab" href="#the-graph"
+                aria-controls="the-graph">
+                Visualization
+            </a>
+        </li>
+        <li class="nav-item" role="tab"  aria-selected="false">
+            <a class="nav-link" data-toggle="tab" href="#the-table"
+                aria-controls="the-table">
+                Table
+            </a>
+        </li>
+    </ul>
 
-<td class="mainsection">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Selections</th>
-          <th>Discussion Posts</th>
-          <th>Compositions</th>
-        </tr>
-      </thead>
-      <tbody id="reports-student-tbody" class="table-striped">
-        {% for student in students %}
-        <tr data-username="{{student.username}}" class="user-{{student.username}}">
-          <td><a href="/?username={{student.username}}">
-            {%public_name for student %}
-          </a></td>
-          <td>{{student.annotations}}</td>
-          <td>{{student.comments}}</td>
-          <td>{{student.all_projects}}</td>
-       <!--   <td>{{student.project_adds}}</td>
-          <td>{{student.project_deletes}}</td>-->
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-</td>
+    <div class="tab-content mt-2">
+        <div class="tab-pane fade active show" id="the-graph" role="tabpanel">
+            <div class="row">
+                <div class="col-12">
+                    <p>
+                        This report shows each course member's saved selections,
+                        discussion comments, projects and assignments.
 
-<td class="mainsection">
- <div>
-  <div class="panel-column">
-    <h2>Experimental Graph Visualization</h2>
-    <p> This graph tries to visualize the different inter-connected objects in the course.
-            It's incredibly experimental--we'd like to link the dots to the objects, and filter, and many other things.  Suggestions are welcome.
-          </p>
+                        This graph visualizes each contribution in a course and show the inter-connectedness
+                        between them. It's incredibly experimental. Suggestions are welcome.
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect01">Highlight</label>
+                        </div>
+                        <select class="custom-select" id="inputGroupSelect01">
+                            <option value="all" selected>All Contributors</option>
+                            {% for student in students %}
+                                <option value="{{student.username}}">{% public_name for student %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="contributedTo">Selected Work</label>
+                        </div>
+                        <div class="border w-75 rounded">
+                            <a target="_blank" rel="noopener noreferrer" style="margin-top: .35rem;"
+                                class="bg-white ml-2 float-left" href="#" id="contributedTo"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <div id="reports-graph-link">
-      <a class="hs-control" href="#reports-graph"></a> Show/Hide Graph
-      <a id="reports-graph-chosenlink" href=""></a>
+            <div class="row">
+                <div class="col-10">
+                    <div id="reports-graph">
+                        <div id="reports-graph-visualization" class="bg-light border">
+                            <div class="p-5 text-center">
+                                <img alt="Loading..." src="{{STATIC_URL}}img/ajax-loader.gif">
+                                Loading visualization
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <h6>Graph Key</h6>
+                    <div>
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-square-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"/>
+</svg> Assignments and Projects
+                    </div>
+                    <div>
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-circle-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="8" cy="8" r="8"/>
+</svg> Items, colored by source
+                    </div>
+                    <div>
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-diamond-fill mr-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.482 1.482 0 0 1 0-2.098L6.95.435z"/>
+</svg> Discussion comments
+                    </div>
+                    <h6 class="mt-5">Controls</h6>
+                        <strong>Click</strong> on a shape to identify the contribution.<br />
+                        <strong>Select a contributor</strong> to highlight their work.<br />
+                        <strong>Drag</strong> on the whitespace to pan. <strong>Click and drag</strong>
+                        nodes to understand the algorithm.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="the-table" role="tabpanel">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Selections</th>
+                        <th>Discussion Posts</th>
+                        <th>Compositions</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-student-tbody" class="table-striped">
+                    {% for student in students %}
+                        <tr data-username="{{student.username}}"
+                            class="user-{{student.username}}">
+                            <td>{% public_name for student %}</td>
+                            <td>{{student.annotations}}</td>
+                            <td>{{student.comments}}</td>
+                            <td>{{student.all_projects}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-      <div id="reports-graph" class="hs-init-hide">
-        <ul>
-          <li><a class="help hs-control hs-init-show" href="#reports-graph-help"></a> <b>Details</b></li>
-          <li id="reports-graph-help">
-             <ul>
-              <li>Fastest in Google Chrome and Safari, still supported in Firefox and IE9</li>
-              <li>
-                <b>Squares</b> are Compositions,
-                <b>Circles</b> are Items, colored by their Source,
-                <b>Diamonds</b> are chained comments in a Discussion,
-                lighter lines are Item-level anotations (compared to an annotated Selection), instructor Compositions have lighter borders
-              </li>
-              <li><b>Controls:</b> hover over an object for title/details, mouse-wheel zooms in/out, drag on whitespace to pan, drag a node to help the display algorithm.
-              </li>
-              <li>Click on a node for a link to the item above</li>
-              <li>Click on a user row on the left to highlight that user's contributions.</li>
-            </ul>
-          </li>
-        </ul>
-        <div id="reports-graph-visualization"></div>
-      </div>
-      </div>
-      </div>
-</td>
-
-</tr>
-</table>
-
-
-
-
-
-
- {% endblock %}
+{% endblock %}

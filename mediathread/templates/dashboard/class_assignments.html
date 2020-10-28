@@ -4,7 +4,7 @@
 
 
 {% block dashboard_content %}
-    <h2>Report: Assignment Responses</h2>
+    <h3>Assignment Responses</h3>
 {% if assignments %}
 
 <table class="table table-bordered">
@@ -21,7 +21,7 @@
       {{assignment.title}}
     </td>
     <td>
-      <a href="{% url 'class-assignment-report' assignment.id %}">
+      <a href="{% url 'class-assignment-report' request.course.pk assignment.id %}">
     {{assignment|assignment_responses:request|length}} / {{num_students}}
       </a>
     </td>

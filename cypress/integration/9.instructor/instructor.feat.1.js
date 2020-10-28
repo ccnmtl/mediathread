@@ -22,11 +22,14 @@ describe('Instructor Feat: Students are forbidden', () => {
     });
 
     it('Reports should be forbidden', () => {
-        cy.visit('/reports/class_assignments/', {failOnStatusCode: false});
+        cy.visit('/course/1/reports/class_assignments/',
+                 {failOnStatusCode: false});
         cy.contains('forbidden').should('be.visible');
-        cy.visit('/reports/class_activity/', {failOnStatusCode: false});
+        cy.visit('/course/1/reports/class_activity/',
+                 {failOnStatusCode: false});
         cy.contains('forbidden').should('be.visible');
-        cy.visit('/reports/class_summary', {failOnStatusCode: false});
+        cy.visit('/course/1/reports/class_summary',
+                {failOnStatusCode: false});
         cy.contains('forbidden').should('be.visible');
     });
 });

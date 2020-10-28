@@ -14,7 +14,7 @@ describe('Instructor Feat: Student Contributions', () => {
     it('should test assignment response as an instructor', () => {
         cy.get('a[href="/course/1/dashboard/settings/"]').click();
         cy.title().should('contain', 'Manage Course');
-        cy.get('a[href="/reports/class_summary/"]').click();
-        cy.contains('Report: Course Member Contributions');
+        cy.get('a[href="/course/1/reports/class_summary/"]').click();
+        cy.contains('Member Contributions');
     });
 });

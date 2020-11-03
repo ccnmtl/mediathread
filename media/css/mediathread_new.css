@@ -26,7 +26,7 @@ a, a.page-link {
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-    color: #0056b3;
+    color: #0056b3 !important;
 }
 
 .page-item.active .page-link {

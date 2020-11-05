@@ -268,6 +268,8 @@ ProjectPanelHandler.prototype.saveAuthors = function(evt) {
                 // Must include logged in user
                 jQuery($modal).find('.invalid-feedback').hide();
                 jQuery($modal).modal('hide');
+
+                self.saveProject();
             }
         }
     }

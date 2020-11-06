@@ -25,8 +25,8 @@ export default class GridAsset extends React.Component {
     constructor(props) {
         super(props);
 
-        const mediaPrefix = typeof MediaThread !== 'undefined' ?
-              MediaThread.staticUrl : '/media/';
+        const mediaPrefix = typeof window.MediaThread !== 'undefined' ?
+            window.MediaThread.staticUrl : '/media/';
 
         this.state = {
             selectedAnnotation: null,

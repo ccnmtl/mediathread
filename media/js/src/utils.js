@@ -4,6 +4,8 @@ import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
 import {groupBy, sortBy} from 'lodash';
 
+const ASSETS_PER_PAGE = 20;
+
 /**
  * A wrapper for `fetch` that passes along auth credentials.
  */
@@ -32,7 +34,7 @@ const getAssets = function(
     params.append('course', window.MediaThread.current_course);
 
     // Pagination
-    params.append('limit', 20);
+    params.append('limit', ASSETS_PER_PAGE);
     params.append('offset', offset);
 
     // Ordering
@@ -784,6 +786,7 @@ const getTerms = function(annotations) {
 };
 
 export {
+    ASSETS_PER_PAGE,
     getAssets, getAsset, getAssetReferences,
     removeAsset,
     updateAssetTitle,

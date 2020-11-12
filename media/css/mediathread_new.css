@@ -4220,10 +4220,6 @@ ul.section-tabs>li>a.active {
     z-index: 1;
 }
 
-#view-pagination {
-    margin-bottom: 1em;
-}
-
 .assets .card-group>.col-sm-4 {
     padding: 0;
 }

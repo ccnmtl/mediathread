@@ -9,8 +9,11 @@ import AssetDetail from './assetDetail/AssetDetail';
 import EmptyCollection from './alerts/EmptyCollection';
 import LoadingAssets from './alerts/LoadingAssets';
 import NoAssetsFound from './alerts/NoAssetsFound';
+import Pagination from './Pagination';
+import GridListSwitcher from './GridListSwitcher';
 
 import {
+    ASSETS_PER_PAGE,
     getAsset, getAssets, getCourseUrl
 } from './utils';
 
@@ -28,7 +31,11 @@ export default class CollectionTab extends React.Component {
                 'all',
             tags: [],
             terms: [],
-            date: 'all'
+            date: 'all',
+
+            // Pagination
+            currentPage: 0,
+            pageCount: 1
         };
 
         this.setViewMode = this.setViewMode.bind(this);
@@ -36,12 +43,30 @@ export default class CollectionTab extends React.Component {
         this.leaveAssetDetailView = this.leaveAssetDetailView.bind(this);
         this.onUpdateAsset = this.onUpdateAsset.bind(this);
         this.onUpdateFilter = this.onUpdateFilter.bind(this);
+        this.updatePageCount = this.updatePageCount.bind(this);
+        this.updateCurrentPage = this.updateCurrentPage.bind(this);
 
         this.filterRef = React.createRef();
     }
 
     onUpdateFilter(newState) {
-        this.setState(newState);
+        this.setState({
+            currentPage: 0,
+            ...newState
+        });
+    }
+
+    updateCurrentPage(pageNumber) {
+        this.setState({currentPage: pageNumber});
+    }
+
+    updatePageCount(assetCount=null, currentPage=null) {
+        if (assetCount === null) {
+            assetCount = this.props.assetCount;
+        }
+        this.setState({
+            pageCount: Math.ceil(assetCount / ASSETS_PER_PAGE)
+        });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -49,6 +74,10 @@ export default class CollectionTab extends React.Component {
             this.setState({
                 selectedAsset: this.props.asset
             });
+        }
+
+        if (prevProps.assetCount !== this.props.assetCount) {
+            this.updatePageCount();
         }
     }
 
@@ -261,30 +290,71 @@ export default class CollectionTab extends React.Component {
                 {backButton}
 
                 {!this.state.selectedAsset && (
-                    <AssetFilter
-                        ref={this.filterRef}
-                        items={this.props.assets}
-                        itemCount={this.props.assetCount}
-                        hidePagination={false}
-                        owners={this.props.owners}
-                        allTags={this.props.tags}
-                        allTerms={this.props.terms}
-                        viewMode={this.state.viewMode}
-                        setViewMode={this.setViewMode}
-                        onUpdateItems={this.props.onUpdateAssets}
+                    <>
+                        <AssetFilter
+                            ref={this.filterRef}
+                            items={this.props.assets}
+                            itemCount={this.props.assetCount}
+                            currentPage={this.state.currentPage}
+                            updatePageCount={this.updatePageCount}
+                            owners={this.props.owners}
+                            allTags={this.props.tags}
+                            allTerms={this.props.terms}
+                            onUpdateItems={this.props.onUpdateAssets}
 
-                        onUpdateFilter={this.onUpdateFilter}
-                        owner={this.state.owner}
-                        title={this.state.title}
-                        tags={this.state.tags}
-                        terms={this.state.terms}
-                        date={this.state.date}
-                    />
+                            onUpdateFilter={this.onUpdateFilter}
+                            owner={this.state.owner}
+                            title={this.state.title}
+                            tags={this.state.tags}
+                            terms={this.state.terms}
+                            date={this.state.date}
+                        />
+
+                        <div className="row mb-1">
+                            <GridListSwitcher
+                                viewMode={this.state.viewMode}
+                                setViewMode={this.setViewMode} />
+                            <Pagination
+                                onUpdateItems={this.props.onUpdateAssets}
+                                currentPage={this.state.currentPage}
+                                pageCount={this.state.pageCount}
+                                updatePageCount={this.updatePageCount}
+                                updateCurrentPage={this.updateCurrentPage}
+
+                                owner={this.state.owner}
+                                title={this.state.title}
+                                tags={this.state.tags}
+                                terms={this.state.terms}
+                                date={this.state.date}
+                            />
+                        </div>
+                    </>
                 )}
 
                 <div className="assets">
                     {assetsDom}
                 </div>
+
+                {!this.state.selectedAsset && (
+                    <div className="row mt-1">
+                        <GridListSwitcher
+                            viewMode={this.state.viewMode}
+                            setViewMode={this.setViewMode} />
+                        <Pagination
+                            onUpdateItems={this.props.onUpdateAssets}
+                            currentPage={this.state.currentPage}
+                            pageCount={this.state.pageCount}
+                            updatePageCount={this.updatePageCount}
+                            updateCurrentPage={this.updateCurrentPage}
+
+                            owner={this.state.owner}
+                            title={this.state.title}
+                            tags={this.state.tags}
+                            terms={this.state.terms}
+                            date={this.state.date}
+                        />
+                    </div>
+                )}
             </div>
         );
     }

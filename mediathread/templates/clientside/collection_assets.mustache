@@ -18,25 +18,24 @@
                             <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection by
                             bookmarking items from sites such as YouTube or Flickr.
                             To install the bookmarklet into your browser, visit the
-                            <a href="/collection/add/">Add to Collection page</a> and follow directions.
+                            <a href="/course/{{getCourseId}}/">Collection page</a>, click the Add To Collection button on the upper right hand side and follow directions.
                             <strong>Recommend Sites</strong> to students via <strong>Tools</strong> menu / <strong>Manage Sources</strong>
                             </li>
 
                             <li style="margin-bottom: 4px">
                                 <strong>Upload</strong>: Video and audio files may be uploaded
                                 into Mediathread when you enable this feature in <strong>Tools</strong> menu / <strong>Manage Sources</strong>.
-                                An <strong>Upload from Computer</strong> link and directions then appears on the <a href="/collection/add/">Add to Collection page</a>.
+                                An <strong>Upload Media</strong> section and directions then appears on the Add To Collection drop down located on the <a href="/course/{{getCourseId}}/">Collection page</a>.
                             </li>
                         {{/is_faculty}}
                         {{^is_faculty}}
                             <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection
                             by bookmarking items from sites such as YouTube or Flickr.
-                            To install the bookmarklet into your browser, visit the <a href="/collection/add/">Add to Collection page</a>
-                            and follow directions. Your instructor also may list
-                            recommended sites on the home page.</li>
+                            To install the bookmarklet into your browser, visit the <a href="/course/{{getCourseId}}/">Collection page</a> where you can click the Add To Collection button
+                            on the upper right hand side and follow directions. Your instructor also may list recommended sites.</li>
                             <li><strong>Upload</strong>: If this feature is enabled,
-                            you may upload video and audio files from your computer. Visit the <a href="/collection/add/">Add to Collection page</a> and
-                            follow directions.</li>
+                            you may upload video and audio files from your computer. Visit the <a href="/course/{{getCourseId}}/">Collection page</a> where you can click the Add To Collection button
+                            on the upper right hand side and follow directions.</li>
                         {{/is_faculty}}
                     </ul>
                 </div>

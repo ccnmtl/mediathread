@@ -326,6 +326,10 @@ const getAssetType = function(primaryType) {
         type = 'video';
     } else if (primaryType === 'image_fpxid' || primaryType === 'image_fpx') {
         type = 'image';
+    } else if (primaryType === 'mp4_audio') {
+        type = 'audio';
+    } else {
+        type = 'unknown';
     }
 
     return type;

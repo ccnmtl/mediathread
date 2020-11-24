@@ -324,7 +324,8 @@ const getAssetType = function(primaryType) {
             primaryType === 'video_pseudo'
     ) {
         type = 'video';
-    } else if (primaryType === 'image_fpxid' || primaryType === 'image_fpx') {
+    } else if (primaryType === 'image_fpxid' || primaryType === 'image_fpx'
+                || primaryType === 'image') {
         type = 'image';
     } else if (primaryType === 'mp4_audio') {
         type = 'audio';

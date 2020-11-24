@@ -13,12 +13,16 @@ export default class Asset {
             return null;
         }
 
+        // Use youtube's thumbnail format for getting the biggest
+        // thumbnail available.
+
         if (
             this.asset.primary_type === 'youtube' &&
                 this.asset.sources &&
                 this.asset.sources.url
         ) {
-            return '/media/img/thumb_video.png';
+            const youtubeId = getYouTubeID(this.asset.sources.url.url);
+            return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
         } else if (
             this.asset.primary_type === 'vimeo' &&
                 this.asset.sources &&

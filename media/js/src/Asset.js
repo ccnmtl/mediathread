@@ -15,6 +15,7 @@ export default class Asset {
 
         // Use youtube's thumbnail format for getting the biggest
         // thumbnail available.
+
         if (
             this.asset.primary_type === 'youtube' &&
                 this.asset.sources &&
@@ -31,13 +32,12 @@ export default class Asset {
             const url = `https://vimeo.com/api/oembed.json?url=${vUrl}`;
             return fetch(url).then(function(response) {
                 if (response.status === 200) {
-                    return response.json();
+                    return response.json().then(function(d) {
+                        return d.thumbnail_url;
+                    });
                 } else {
-                    throw 'Error loading Vimeo thumbnail: ' +
-                        `(${response.status}) ${response.statusText}`;
+                    return '/media/img/thumb_video.png';
                 }
-            }).then(function(d) {
-                return d.thumbnail_url;
             });
         }
 
@@ -53,7 +53,9 @@ export default class Asset {
         if (!this.asset || !this.asset.sources) {
             return null;
         }
-
+        if (!this.asset.sources.thumb){
+            this.asset.sources.thumb = '/media/img/thumb_image.png';
+        }
         return this.asset.sources.image ||
             this.asset.sources.thumb;
     }

@@ -25,12 +25,12 @@ export default class GridAsset extends React.Component {
     constructor(props) {
         super(props);
 
-        const mediaPrefix = typeof window.MediaThread !== 'undefined' ?
+        const mediaPrefix = typeof MediaThread !== 'undefined' ?
             window.MediaThread.staticUrl : '/media/';
 
         this.state = {
             selectedAnnotation: null,
-            thumbnailUrl: mediaPrefix + 'img/thumb_video.png'
+            thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png'
         };
 
         this.selectionSource = new VectorSource();
@@ -124,6 +124,24 @@ export default class GridAsset extends React.Component {
                                         src={this.state.thumbnailUrl}
                                         onError={() => handleBrokenImage(type)} />
                                 )}
+                                {type === 'audio' && (
+                                    <img
+                                        className="mx-auto d-block img-fluid"
+                                        style={{'maxWidth': '100%'}}
+                                        alt={'audio thumbnail for: ' +
+                                             this.props.asset.title}
+                                        src={this.state.thumbnailUrl}
+                                        onError={() => handleBrokenImage(type)} />
+                                )}
+                                {type === 'unknown' && (
+                                    <img
+                                        className="mx-auto d-block img-fluid"
+                                        style={{'maxWidth': '100%'}}
+                                        alt={'thumbnail for: ' +
+                                             this.props.asset.title}
+                                        src={this.state.thumbnailUrl}
+                                        onError={() => handleBrokenImage(type)} />
+                                )}
                             </a>
                             {annotationDom}
                         </div>
@@ -144,6 +162,7 @@ export default class GridAsset extends React.Component {
         let thumbnail = this.asset.getThumbnail();
         if (typeof thumbnail === 'string') {
             this.setState({thumbnailUrl: this.asset.getThumbnail()});
+
         } else if (thumbnail && thumbnail.then) {
             const me = this;
             this.asset.getThumbnail().then(function(url) {
@@ -180,6 +199,14 @@ export default class GridAsset extends React.Component {
                     zoom: 0.5
                 })
             });
+        }
+
+        if(this.asset.getType() === 'unknown'){
+            this.setState({thumbnailUrl: '/media/img/thumb_unknown.png'});
+        }
+
+        if(this.asset.getType() === 'audio'){
+            this.setState({thumbnailUrl: '/media/img/thumb_audio.png'});
         }
     }
 }

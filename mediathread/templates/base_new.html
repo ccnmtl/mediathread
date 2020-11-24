@@ -8,6 +8,7 @@ A new base.html without the course context overwritten in the template.
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Mediathread {% block title %}{% endblock %}</title>
 
         <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
@@ -68,7 +69,7 @@ A new base.html without the course context overwritten in the template.
 
         {% block uncompressable_css %}
         {% endblock %}
-        
+
         {% block clientside_templates %}{% endblock %}
 
         <link rel="chrome-webstore-item"

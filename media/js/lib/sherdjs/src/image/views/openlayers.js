@@ -32,12 +32,12 @@ An annotation looks like this:
 
 if (!Math.log2) {
     var div = Math.log(2);
-    Math.log2 = function (x) {
+    Math.log2 = function(x) {
         return Math.log(x) / div;
     };
 }
 if (!window.console) {
-    window.console = { log: function () {} };
+    window.console = { log: function() {} };
 }
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Image) { Sherd.Image = {}; }
@@ -47,13 +47,13 @@ if (!Sherd.Image.OpenLayers) {
      * openlayers/openlayers/examples/modify-feature.html
      * openlayers/openlayers/examples/vector-formats.html
      */
-    Sherd.Image.OpenLayers = function () {
+    Sherd.Image.OpenLayers = function() {
         var self = this;
         Sherd.Base.AssetView.apply(this, arguments); //inherit
 
         this.presentation = null;
 
-        this.events.connect(window, 'resize', function () {
+        this.events.connect(window, 'resize', function() {
             if (self.presentation) {
                 self.presentation.resize();
             }
@@ -61,7 +61,7 @@ if (!Sherd.Image.OpenLayers) {
 
         this.openlayers = {
             'features': [],
-            'feature2json': function (feature) {
+            'feature2json': function(feature) {
                 if (self.openlayers.GeoJSON) {
                     return {
                         'geometry': self.openlayers.GeoJSON.extract.geometry.call(
@@ -69,7 +69,7 @@ if (!Sherd.Image.OpenLayers) {
                     };
                 }
             },
-            'features2svg': function () {
+            'features2svg': function() {
                 throw new Error('not implemented correctly');
                 ///This gets it from the vectorLayer, which is
                 /// abandoned for a Rootcontainer object, which will be different
@@ -77,10 +77,10 @@ if (!Sherd.Image.OpenLayers) {
                 //var x = new OpenLayers.Format.XML();
                 //return x.write(self.openlayers.vectorLayer.v.renderer.rendererRoot);
             },
-            'frag2feature': function (obj, map) {
+            'frag2feature': function(obj, map) {
                 var extent = self.openlayers.map.getMaxExtent().toArray(); //left,?bottom,right,top
                 var geow = extent[2] - extent[0],
-                geoh = extent[3] - extent[1];
+                    geoh = extent[3] - extent[1];
 
                 if (self.current_obj.type === 'xyztile') {
                     ///bottom extent is not reliable, so we use 1000px = 90deg
@@ -110,14 +110,14 @@ if (!Sherd.Image.OpenLayers) {
                     var right = topleft[0] + geow * obj.xywh.w;
                     var bottom = topleft[1] - geoh * obj.xywh.h;
                     geometry.coordinates.push([topleft,
-                                               [right, topleft[1]], //topright
-                                               [right, bottom], //bottomright
-                                               [topleft[0], bottom], //bottomleft
-                                               topleft]); //return to topleft
+                        [right, topleft[1]], //topright
+                        [right, bottom], //bottomright
+                        [topleft[0], bottom], //bottomleft
+                        topleft]); //return to topleft
                 }
                 return self.openlayers.GeoJSON.parseFeature({geometry: geometry});
             },
-            'object_proportioned': function (object) {
+            'object_proportioned': function(object) {
                 var dim = {w: 180, h: 90};
                 var w = object.width || 180;//76.23;//
                 var h = object.height || 90;
@@ -128,25 +128,25 @@ if (!Sherd.Image.OpenLayers) {
                 }
                 return dim;
             },
-            'object2bounds': function (object) {
+            'object2bounds': function(object) {
                 ///TODO:figure these out better
                 ///should fail without w/h better
                 ///test image: 466x550, 1694x2000
                 ///180/2000.0 * 1694 = 152.46 (/2 = 76.23)
                 var dim = self.openlayers.object_proportioned(object);
                 return new OpenLayers.Bounds(-dim.w,
-                        -dim.h,
-                        dim.w,
-                        dim.h
+                    -dim.h,
+                    dim.w,
+                    dim.h
                 );
             }
         };
 
-        this.Layer = function () {};
+        this.Layer = function() {};
         this.Layer.prototype = {
             all_layers: [],
             root: { hover: false, click: false, layers: {} },
-            _adoptIntoRootContainer: function (new_layer, opts) {
+            _adoptIntoRootContainer: function(new_layer, opts) {
                 /* In order to get mouse events through layers, they need to
                all exist within the same SVG object.  In OpenLayers, this is done
                with OpenLayers/Layer/Vector/RootContainer.js which can only
@@ -163,7 +163,7 @@ if (!Sherd.Image.OpenLayers) {
                 var listeners = this.root.layers[new_layer.v.id] = {me: new_layer};
 
                 this.all_layers.push(new_layer.v);
-                this.all_layers.sort(function (a, b) {
+                this.all_layers.sort(function(a, b) {
                     return a.sherd_layerapi.zIndex - b.sherd_layerapi.zIndex;
                 });
                 //setting the setLayerIndex reorders the map array, so we respect opts.zIndex
@@ -188,19 +188,19 @@ if (!Sherd.Image.OpenLayers) {
 
                 this.root.globalMouseListener = new OpenLayers.Control.SelectFeature(this.all_layers, {
                     'hover': this.root.hover,
-                    overFeature: function (feature) {
+                    overFeature: function(feature) {
                         var lay = layerSelf.root.layers[feature.layer.id];
                         if (lay.onmouseenter) {
                             lay.onmouseenter(feature.sherd_id, feature.layer.sherd_layername);
                         }
                     },
-                    clickFeature: function (feature) {
+                    clickFeature: function(feature) {
                         var lay = layerSelf.root.layers[feature.layer.id];
                         if (lay.onclick) {
                             lay.onclick(feature.sherd_id, feature.layer.sherd_layername);
                         }
                     },
-                    outFeature: function (feature) {
+                    outFeature: function(feature) {
                         var lay = layerSelf.root.layers[feature.layer.id];
                         if (lay.onmouseleave) {
                             lay.onmouseleave(feature.sherd_id, feature.layer.sherd_layername);
@@ -213,7 +213,7 @@ if (!Sherd.Image.OpenLayers) {
                 this.root.globalMouseListener.activate();
 
             },
-            create: function (name, opts) {
+            create: function(name, opts) {
                 /* opts = {title, onclick(ann_id, layer_name), onhover(ann_id, layer_name), }
                  */
                 this.v = new OpenLayers.Layer.Vector(name || "Annotations", { projection: 'Flatland:1',
@@ -247,7 +247,7 @@ if (!Sherd.Image.OpenLayers) {
                     }
                 }
             },
-            add: function (ann, opts) {
+            add: function(ann, opts) {
                 if (!this.v) {
                     throw new Error('layer not created yet');
                 }
@@ -289,7 +289,7 @@ if (!Sherd.Image.OpenLayers) {
                 }
                 this.v.addFeatures(features);
             },
-            remove: function (ann_id) {
+            remove: function(ann_id) {
                 //returns the opts that were used to add it
                 if (this.v && ann_id in this._anns) {
                     this.v.removeFeatures(this._anns[ann_id].f);
@@ -298,7 +298,7 @@ if (!Sherd.Image.OpenLayers) {
                     return o;
                 }
             },
-            removeAll: function () {
+            removeAll: function() {
                 if (!this.v) {
                     return;
                 }
@@ -309,23 +309,23 @@ if (!Sherd.Image.OpenLayers) {
                     }
                 }
             },
-            show: function () {
+            show: function() {
                 this.v.setVisibility(true);
             },
-            hide: function () {
+            hide: function() {
                 this.v.setVisibility(false);
             },
             //extension for internal openlayers stuff
-            getLayer: function () {
+            getLayer: function() {
                 return this.v;
             }
         };
 
         this.presentations = {
             'thumb': {
-                height: function () { return '100px'; },
-                width: function () { return '100px'; },
-                initialize: function (obj, presenter) {
+                height: function() { return '100px'; },
+                width: function() { return '100px'; },
+                initialize: function(obj, presenter) {
                     ///remove controls
                     var m = presenter.openlayers.map;
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
@@ -333,25 +333,25 @@ if (!Sherd.Image.OpenLayers) {
                         controls[i].disableZoomWheel();
                         if (controls[i].dragPan) {
                             controls[i].dragPan.deactivate();
-                         }
+                        }
                     }
 
                     while (m.controls.length) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {},
+                resize: function() {},
                 controls: false
             },
             'gallery': {
-                height: function (obj, presenter) {
+                height: function(obj, presenter) {
                     // scale the height
                     return parseInt(this.width(obj, presenter), 10) / obj.width * obj.height + 'px';
                 },
-                width: function (obj, presenter) {
+                width: function(obj, presenter) {
                     return '200px';
                 },
-                initialize: function (obj, presenter) {
+                initialize: function(obj, presenter) {
                     ///remove controls
                     var m = presenter.openlayers.map;
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
@@ -359,22 +359,22 @@ if (!Sherd.Image.OpenLayers) {
                         controls[i].disableZoomWheel();
                         if (controls[i].dragPan) {
                             controls[i].dragPan.deactivate();
-                         }
+                        }
                     }
 
                     while (m.controls.length) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {},
+                resize: function() {},
                 controls: false
             },
             'default': {
-                height: function (obj, presenter) {
+                height: function(obj, presenter) {
                     return Sherd.winHeight() + 'px';
                 },
-                width: function (obj, presenter) { return '100%'; },
-                initialize: function (obj, presenter) {
+                width: function(obj, presenter) { return '100%'; },
+                initialize: function(obj, presenter) {
                     //remove controls
                     var m = presenter.openlayers.map;
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
@@ -389,28 +389,35 @@ if (!Sherd.Image.OpenLayers) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {
+                resize: function() {
                     self.components.top.style.height = Sherd.winHeight() + 'px';
                 },
                 controls: false
             },
             'medium': {
-                height: function (obj, presenter) {
+                height: function(obj, presenter) {
                     var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
                     return height + 'px';
                 },
-                width: function (obj, presenter) { return '100%'; },
-                initialize: function (obj, presenter) {},
-                resize: function () {
+                width: function(obj, presenter) { return '100%'; },
+                initialize: function(obj, presenter) {
+                    //remove controls
+                    var m = presenter.openlayers.map;
+                    var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
+                    for (var i = 0; i < controls.length; i++) {
+                        controls[i].disableZoomWheel();
+                    }
+                },
+                resize: function() {
                     var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
                     self.components.top.style.height = height + 'px';
                 },
                 controls: true
             },
             'small': {
-                height: function () { return '390px'; },
-                width: function () { return '320px'; },
-                initialize: function (obj, presenter) {
+                height: function() { return '390px'; },
+                width: function() { return '320px'; },
+                initialize: function(obj, presenter) {
                     ///remove controls
                     var m = presenter.openlayers.map;
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
@@ -418,21 +425,21 @@ if (!Sherd.Image.OpenLayers) {
                         controls[i].disableZoomWheel();
                         if (controls[i].dragPan) {
                             controls[i].dragPan.deactivate();
-                         }
+                        }
                     }
 
                     while (m.controls.length) {
                         m.removeControl(m.controls[0]);
                     }
                 },
-                resize: function () {},
+                resize: function() {},
                 controls: false
             }
         };
 
         this.currentfeature = false;
         this.current_obj = false;
-        this.getState = function () {
+        this.getState = function() {
             var geojson = {};
             if (self.currentfeature) {
                 geojson = self.openlayers.feature2json(self.currentfeature);
@@ -450,9 +457,9 @@ if (!Sherd.Image.OpenLayers) {
             }
             return geojson;
         };
-        this.setState = function (obj) {
+        this.setState = function(obj) {
             var state = {
-               /*
+                /*
                 * 'x':0,//center of -180:180
                 * 'y':0,//center of -90:90
                 */
@@ -483,10 +490,10 @@ if (!Sherd.Image.OpenLayers) {
             if (self.currentfeature) {
                 self.openlayers.vectorLayer.add(self.openlayers.feature2json(self.currentfeature),
                     { color: 'grey',
-                      bgcolor: 'white',
-                      //pointerEvents:'none',
-                      zIndex: 850//lower than the highlight layer in assets.js
-                     });
+                        bgcolor: 'white',
+                        //pointerEvents:'none',
+                        zIndex: 850//lower than the highlight layer in assets.js
+                    });
 
                 var bounds = self.currentfeature.geometry.getBounds();
                 if (!obj.preserveCurrentFocus) {
@@ -501,7 +508,7 @@ if (!Sherd.Image.OpenLayers) {
             } else if (!obj || !obj.preserveCurrentFocus) {
                 if (state.x !== undefined) {
                     self.openlayers.map.setCenter(
-                            new OpenLayers.LonLat(state.x, state.y), state.zoom
+                        new OpenLayers.LonLat(state.x, state.y), state.zoom
                     );
                 } else {
                     self.openlayers.map.zoomToMaxExtent();
@@ -509,7 +516,7 @@ if (!Sherd.Image.OpenLayers) {
             }
         };
         this.microformat = {};
-        this.microformat.create = function (obj, doc, options) {
+        this.microformat.create = function(obj, doc, options) {
             var wrapperID = Sherd.Base.newID('openlayers-wrapper');
             ///TODO:zoom-levels might be something more direct on the object?
             if (!obj.options) {
@@ -525,8 +532,8 @@ if (!Sherd.Image.OpenLayers) {
             }
             if (obj['image-metadata']) {
                 obj.options.numZoomLevels = Math.ceil(
-                        Math.log2(Math.max(obj['image-metadata'].height,
-                                obj['image-metadata'].width)) - 5);
+                    Math.log2(Math.max(obj['image-metadata'].height,
+                        obj['image-metadata'].width)) - 5);
             }
             return {
                 object: obj,
@@ -535,18 +542,18 @@ if (!Sherd.Image.OpenLayers) {
                 winHeight: options && options.functions && options.functions.winHeight ? options.functions.winHeight : Sherd.winHeight
             };
         };
-        this.microformat.update = function (obj, html_dom) {
+        this.microformat.update = function(obj, html_dom) {
             ///1. test if something exists in components now (else return false)
             ///2. assert( obj ~= from_obj) (else return false)
             //map is destroyed during .deinitialize(), so we don't need to
         };
-        this.deinitialize = function () {
+        this.deinitialize = function() {
             if (this.openlayers.map) {
                 this.Layer.prototype.destroyAll();
                 this.openlayers.map.destroy();
             }
         };
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             if (!create_obj) {
                 return;
             }
@@ -555,15 +562,15 @@ if (!Sherd.Image.OpenLayers) {
 
             var presentation;
             switch (typeof create_obj.object.presentation) {
-                case 'string':
-                    presentation = self.presentations[create_obj.object.presentation];
-                    break;
-                case 'object':
-                    presentation = create_obj.object.presentation;
-                    break;
-                case 'undefined':
-                    presentation = self.presentations['default'];
-                    break;
+            case 'string':
+                presentation = self.presentations[create_obj.object.presentation];
+                break;
+            case 'object':
+                presentation = create_obj.object.presentation;
+                break;
+            case 'undefined':
+                presentation = self.presentations['default'];
+                break;
             }
             top.style.width = presentation.width(create_obj.object, self);
             top.style.height = presentation.height(create_obj.object, self);
@@ -576,7 +583,7 @@ if (!Sherd.Image.OpenLayers) {
                 // Drupal 5 to Hugo.
                 !/amazonaws.com\/ccnmtl-digitaltibet-static-prod/.test(
                     create_obj.object.image)
-               ) {
+            ) {
                 ///DOC: Tile x0,y0 upper left starts at (-180,80)
                 ///DOC: whereas single images start at (-180,90)
                 var md = create_obj.object['xyztile-metadata'];
@@ -591,9 +598,9 @@ if (!Sherd.Image.OpenLayers) {
                       (setting to 90 also breaks at different places)
                     */
                     objopt.maxExtent = new OpenLayers.Bounds(-180,
-                                                             -280,//80-Math.ceil(md.height*px2deg),
-                                                             -180 + Math.ceil(md.width * px2deg),
-                                                             80);
+                        -280,//80-Math.ceil(md.height*px2deg),
+                        -180 + Math.ceil(md.width * px2deg),
+                        80);
                 } else {
                     //everything should fit in this?
                     objopt.maxExtent = new OpenLayers.Bounds(-180, (80 - 360), 180, 80);
@@ -606,8 +613,8 @@ if (!Sherd.Image.OpenLayers) {
                 );
                 self.openlayers.map.maxExtent = objopt.maxExtent;
                 ///HACK: to make the tiler work for partial tiles (e.g. not exactly 256x256)
-                self.openlayers.graphic.getImageSize = function () { return null; };
-                self.openlayers.graphic.zoomToMaxExtent = function () {
+                self.openlayers.graphic.getImageSize = function() { return null; };
+                self.openlayers.graphic.zoomToMaxExtent = function() {
                     self.openlayers.map.setCenter(this.maxExtent.getCenterLonLat());
                 };
                 self.current_obj = {
@@ -637,7 +644,7 @@ if (!Sherd.Image.OpenLayers) {
                     tiles.push({all: 1, x: 1}); //z=0
                     tiles = tiles.reverse();
 
-                    self.openlayers.graphic.getURL = function (bounds) {
+                    self.openlayers.graphic.getURL = function(bounds) {
                         var res = this.map.getResolution();
                         var x = Math.round((bounds.left - this.maxExtent.left) /
                                            (res * this.tileSize.w));
@@ -743,7 +750,7 @@ if (!Sherd.Image.OpenLayers) {
             presentation.initialize(create_obj.object, self);
             self.presentation = presentation;
         };
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             return {
                 'top': html_dom,
                 'winHeight': create_obj.winHeight
@@ -751,7 +758,7 @@ if (!Sherd.Image.OpenLayers) {
         };
 
         this.queryformat = {
-            find: function (str) {
+            find: function(str) {
                 var xywh = String(str).match(/xywh=((\w+):)?([.\d]+),([.\d]+),([.\d]+),([.\d]+)/);
                 if (xywh !== null) {
                     var ann = {

@@ -22,7 +22,14 @@ export default class Asset {
                 this.asset.sources.url
         ) {
             const youtubeId = getYouTubeID(this.asset.sources.url.url);
-            return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+            const url = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+            return fetch(url, {mode: 'no-cors'}).then(function(response) {
+                if (response.status === 200) {
+                    return url;
+                } else {
+                    return '/media/img/thumb_video.png';
+                }
+            });
         } else if (
             this.asset.primary_type === 'vimeo' &&
                 this.asset.sources &&

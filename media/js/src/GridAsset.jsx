@@ -200,13 +200,15 @@ export default class GridAsset extends React.Component {
                 })
             });
         }
+        const mediaPrefix = typeof MediaThread !== 'undefined' ?
+            window.MediaThread.staticUrl : '/media/';
 
         if(this.asset.getType() === 'unknown'){
-            this.setState({thumbnailUrl: '/media/img/thumb_unknown.png'});
+            this.setState({thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png'});
         }
 
         if(this.asset.getType() === 'audio'){
-            this.setState({thumbnailUrl: '/media/img/thumb_audio.png'});
+            this.setState({thumbnailUrl: mediaPrefix + '/media/img/thumb_audio.png'});
         }
     }
 }

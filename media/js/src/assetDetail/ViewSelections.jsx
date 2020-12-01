@@ -116,7 +116,7 @@ export default class ViewSelections extends React.Component {
                         )}
 
                         {s.metadata && s.metadata.body && (
-                            <p className="card-text">
+                            <p className="card-text text-wrap">
                                 {s.metadata.body}
                             </p>
                         )}

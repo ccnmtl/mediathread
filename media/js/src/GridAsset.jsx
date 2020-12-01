@@ -208,7 +208,7 @@ export default class GridAsset extends React.Component {
         }
 
         if(this.asset.getType() === 'audio'){
-            this.setState({thumbnailUrl: mediaPrefix + '/media/img/thumb_audio.png'});
+            this.setState({thumbnailUrl: mediaPrefix + 'img/thumb_audio.png'});
         }
     }
 }

@@ -19,7 +19,7 @@ describe('Student Creates Composition', () => {
 
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('button#add-composition-button').click();
 
         cy.get('a.nav-link.active').contains('Projects');

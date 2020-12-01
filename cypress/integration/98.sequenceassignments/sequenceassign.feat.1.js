@@ -15,7 +15,7 @@ describe('Sequence Assignment Feat: Instructor Creation', () => {
     it('Instructor Creates Sequence Assignment', () => {
         cy.log('create assignment');
         cy.visit('/course/1/assignments/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Add an assignment').click({force: true});
         cy.get('#addSequenceAssignment').click({force: true});
         cy.contains('Next').click();

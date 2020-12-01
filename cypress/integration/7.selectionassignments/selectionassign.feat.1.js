@@ -15,7 +15,7 @@ describe('Selection Assignment Feat: Instructor Creation', () => {
     it('Instructor Creates Assignment', () => {
         cy.log('create assignment');
         cy.visit('/course/1/project/create/sa/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         //TODO: test selection creation from homepage
         cy.title().should('eq', 'Mediathread Create Assignment');
         cy.contains('Next').click();

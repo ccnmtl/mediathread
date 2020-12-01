@@ -15,7 +15,7 @@ describe('Publish To World Public Composition', () => {
     it('enables publish to world in the course & creates project', () => {
         cy.log('enable publish to world');
         cy.visit('/course/1/dashboard/settings/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         if (cy.get('input#id_publish_to_world').should('not.be.checked')) {
             cy.get('input#id_publish_to_world').click();
         }

@@ -14,7 +14,7 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
 
     it('should create student response', () => {
         cy.contains('Assignments').click();
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Test Sequence Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Test Sequence Assignment');

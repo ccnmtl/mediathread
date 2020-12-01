@@ -18,7 +18,7 @@ describe('Instructor Creates Composition', () => {
         cy.log('creates a project');
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('button#add-composition-button').click();
 
         cy.log('should check composition panel features');
@@ -80,7 +80,7 @@ describe('Instructor Creates Composition', () => {
 
     it('should show on projects page', () => {
         cy.visit('/course/1/projects/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Composition: Scenario 1').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Composition: Scenario 1');

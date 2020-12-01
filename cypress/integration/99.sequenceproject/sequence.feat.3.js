@@ -14,7 +14,7 @@ describe('Sequence Project Feat: Other Student Can View', () => {
 
     it('Student Views Sequence Project', () => {
         cy.get('#projects-list').click();
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#select-owner').select('One, Student');
         cy.contains('Example project').should('exist');
         cy.contains('Example project').click();

@@ -15,7 +15,7 @@ describe('Instructor Feat: Test Create Composition', () => {
         cy.log('creates a project');
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click()
         cy.get('button#add-composition-button').should('be.visible')

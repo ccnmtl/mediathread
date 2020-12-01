@@ -22,19 +22,15 @@ export default class Asset {
                 this.asset.sources &&
                 this.asset.sources.url
         ) {
-            const proxyurl = 'https://cors-anywhere.herokuapp.com/';
             const youtubeId = getYouTubeID(this.asset.sources.url.url);
             const url = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-            return fetch(proxyurl + url)
-                .then(response => response.status)
-                .then(contents => {console.log(contents);
-                    if(contents === 200){
-                        return url;
-                    } else {
-                        return mediaPrefix + 'img/thumb_video.png';
-                    }
-                })
-                .catch(() => console.log('Can’t access ' + url + ' response.'));
+            return fetch(url, {mode: 'no-cors'}).then(function(response) {
+                if (response.status === 200) {
+                    return url;
+                } else {
+                    return mediaPrefix + 'img/thumb_video.png';
+                }
+            });
         } else if (
             this.asset.primary_type === 'vimeo' &&
                 this.asset.sources &&

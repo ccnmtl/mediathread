@@ -88,6 +88,13 @@ export default class ViewSelections extends React.Component {
                     data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
                     <div className="card-body">
+
+                        {s.author.public_name.length > 0 && (
+                            <p className="card-text">
+                                Author: {s.author.public_name}
+                            </p>
+                        )}
+
                         {this.props.type === 'video' && (
                             <>
                                 <p className="card-text">

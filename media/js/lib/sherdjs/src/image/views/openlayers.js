@@ -406,6 +406,12 @@ if (!Sherd.Image.OpenLayers) {
                     var controls = m.getControlsByClass('OpenLayers.Control.Navigation');
                     for (var i = 0; i < controls.length; i++) {
                         controls[i].disableZoomWheel();
+                        if (controls[i].dragPan) {
+                            controls[i].dragPan.deactivate();
+                        }
+                    }
+                    while (m.controls.length) {
+                        m.removeControl(m.controls[0]);
                     }
                 },
                 resize: function() {

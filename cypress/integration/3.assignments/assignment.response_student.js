@@ -23,7 +23,7 @@ describe('Assignment Feature: Student Response', () => {
         cy.get('.project-savebutton').should('not.exist');
         cy.get('.project-submitbutton').should('not.exist');
         cy.get('.participant_list').should('not.be', 'visible');
-        cy.get('.project-visibility').should('not.have.attr', 'href');
+        cy.get('.project-visibility').should('not.exist');
         cy.get('#instructions').should('be.visible');
         cy.contains('Respond to Assignment').should('exist');
 

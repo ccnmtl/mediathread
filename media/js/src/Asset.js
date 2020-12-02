@@ -12,7 +12,8 @@ export default class Asset {
         if (!this.asset) {
             return null;
         }
-
+        const mediaPrefix = typeof MediaThread !== 'undefined' ?
+            window.MediaThread.staticUrl : '/media/';
         // Use youtube's thumbnail format for getting the biggest
         // thumbnail available.
 
@@ -27,7 +28,7 @@ export default class Asset {
                 if (response.status === 200) {
                     return url;
                 } else {
-                    return '/media/img/thumb_video.png';
+                    return mediaPrefix + 'img/thumb_video.png';
                 }
             });
         } else if (
@@ -43,7 +44,7 @@ export default class Asset {
                         return d.thumbnail_url;
                     });
                 } else {
-                    return '/media/img/thumb_video.png';
+                    return mediaPrefix + 'img/thumb_video.png';
                 }
             });
         }
@@ -60,8 +61,10 @@ export default class Asset {
         if (!this.asset || !this.asset.sources) {
             return null;
         }
+        const mediaPrefix = typeof MediaThread !== 'undefined' ?
+            window.MediaThread.staticUrl : '/media/';
         if (!this.asset.sources.thumb){
-            this.asset.sources.thumb = '/media/img/thumb_image.png';
+            this.asset.sources.thumb = mediaPrefix + 'img/thumb_image.png';
         }
         return this.asset.sources.image ||
             this.asset.sources.thumb;

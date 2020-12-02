@@ -13,7 +13,7 @@ describe('Sequence Project Feat: Student Creation', () => {
     });
 
     it('Student Creates Sequence Project', () => {
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#projects-list').click();
         cy.get('#add-sequence-button').click({force: true});
         cy.title().should('contain', 'Mediathread — Untitled');

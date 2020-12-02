@@ -17,7 +17,7 @@ describe('Student Project Visibility', () => {
         cy.log('Go to projects list');
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click()
         cy.get('button#add-composition-button').should('be.visible')
@@ -40,7 +40,7 @@ describe('Student Project Visibility', () => {
         cy.login('student_one', 'test');
 
         cy.visit('/course/1/projects/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#select-owner').select('instructor_one');
          cy.contains('Composition Public: Scenario 3').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
@@ -57,7 +57,7 @@ describe('Student Project Visibility', () => {
 
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click()
         cy.get('button#add-composition-button').should('be.visible')
@@ -78,7 +78,7 @@ describe('Student Project Visibility', () => {
     it('views Student One composition as Student Two', () => {
         cy.login('student_two', 'test');
         cy.visit('/course/1/projects/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#select-owner').select('student_one');
 
         cy.contains('Student One Public Essay').parent('td').parent('tr').within(() => {

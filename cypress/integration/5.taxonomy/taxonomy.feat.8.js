@@ -19,7 +19,7 @@ describe('Taxonomy Feature: Refresh', () => {
         cy.log('shortcut to taxonomy');
         cy.title().should('include', 'Course Vocabulary Workspace');
         cy.get('#loaded').should('exist');
-        cy.get('#cu-privacy-notice-icon').click({force: true});
+        cy.get('#cu-privacy-notice-button').click({force: true});
         cy.get('#new-vocabulary').should('exist');
 
         cy.log('create a taxonomy');

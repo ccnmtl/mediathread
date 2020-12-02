@@ -14,7 +14,7 @@ describe('Assignment Feature: Instructor View', () => {
 
     it('Reviews the assignment', () => {
         cy.log('visit the assignments page');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.visit('/course/1/assignments/');
 
         cy.contains('1 / 3').parent('tr').within(() => {

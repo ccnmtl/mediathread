@@ -14,7 +14,7 @@ describe('Selection Assignment Feat: Instructor adds & edits feedback', () => {
     it('should add and edits feedback', () => {
 
         //TODO: use the UI to navigate to the Sample Selection Assignment page
-        cy.get('#cu-privacy-notice-icon').click({force: true});
+        cy.get('#cu-privacy-notice-button').click({force: true});
         cy.visit('/project/view/2/');
         cy.title().should('contain', 'Sample Selection Assignment');
         cy.contains('1 Responses').should('exist');

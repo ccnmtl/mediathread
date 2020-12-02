@@ -13,7 +13,7 @@ describe('Sequence Assignment Feat: Instructor adds feedback', () => {
 
     it('should add and edits feedback', () => {
 
-        cy.get('#cu-privacy-notice-icon').click({force: true});
+        cy.get('#cu-privacy-notice-button').click({force: true});
         cy.visit('/course/1/assignments/');
         cy.contains('Test Sequence Assignment').click();
         cy.get('#student-response-dropdown').click();

@@ -13,7 +13,7 @@ describe('Assignment Feature: Student Response', () => {
 
     it('creates a response as a Student', () => {
         cy.log('respond as a student');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.title().should('eq', 'Mediathread Sample Assignment');
         cy.get('.page-title').should('contain', 'Sample Assignment');
         cy.get('[data-cy="assignment-visibility"]').should('not.exist');
@@ -62,7 +62,7 @@ describe('Assignment Feature: Student Response', () => {
 
     it('should show on assignments page', () => {
         cy.visit('/course/1/assignments/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Sample Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Sample Assignment');

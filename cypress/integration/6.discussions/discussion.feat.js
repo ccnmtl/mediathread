@@ -12,7 +12,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('.card-group h5 a').contains('MAAP Award Reception');
 
         cy.visit('/course/1/assignments/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
 
         cy.log('Create a discussion');
         cy.get('button').contains('Add an assignment').should('be.visible');
@@ -93,7 +93,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('.card-group h5 a').contains('MAAP Award Reception');
 
         cy.visit('/course/1/assignments/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('a').contains('Add Comments').click();
 
         cy.log('View discussion as a student');

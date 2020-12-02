@@ -14,7 +14,7 @@ describe('Sequence Assignment Feat: Student reviews feedback', () => {
     it('should review feedback', () => {
 
         //TODO: use the UI to navigate to the Sample Selection Assignment page
-        cy.get('#cu-privacy-notice-icon').click({force: true});
+        cy.get('#cu-privacy-notice-button').click({force: true});
         cy.visit('/course/1/assignments/');
         cy.contains('Test Sequence Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element

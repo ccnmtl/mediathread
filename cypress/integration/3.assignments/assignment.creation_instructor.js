@@ -14,7 +14,7 @@ describe('Assignment Feature: Instructor Creation', () => {
 
     it('Instructor Creates Assignment', () => {
         cy.log('create assignment');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
 
         cy.log('Navigate to the assignments page');
         cy.visit('/course/1/assignments/');
@@ -79,7 +79,7 @@ describe('Assignment Feature: Instructor Creation', () => {
 
     it('should show on assignments page', () => {
         cy.visit('/course/1/assignments');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Assignment: Scenario 1');

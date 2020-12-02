@@ -14,7 +14,7 @@ describe('Selection Assignment Feat: Student Responds To Assignment', () => {
 
     it('should create student response', () => {
         cy.visit('/course/1/assignments/');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.contains('Sample Selection Assignment').parent('tr').within(() => {
             // all searches are automatically rooted to the found tr element
             cy.get('td').eq(2).contains('Sample Selection Assignment');

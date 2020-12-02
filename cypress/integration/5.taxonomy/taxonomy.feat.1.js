@@ -19,7 +19,7 @@ describe('Taxonomy Feature', () => {
         cy.log('Vocabulary page');
         cy.title().should('include', 'Course Vocabulary Workspace');
         cy.get('#loaded').should('exist');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#new-vocabulary').should('exist');
 
         cy.log('create a taxonomy');

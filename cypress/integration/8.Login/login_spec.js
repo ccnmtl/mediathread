@@ -2,7 +2,7 @@ describe('Log In Feature: Test Instructor Login', () => {
     it('Logs in as instructor_one', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('instructor_one').blur();
@@ -22,7 +22,7 @@ describe('Log In Feature: Test Invalid login', () => {
     it('should not log in', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('foo').blur();
@@ -36,7 +36,7 @@ describe('Log In Feature: Test Student Login', () => {
     it('should test student login', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('student_one').blur();
@@ -52,7 +52,7 @@ describe('Log In Feature: Test Switch Course feature', () => {
     it('should test student login', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
-        cy.get('#cu-privacy-notice-icon').click();
+        cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
         cy.get('#id_username').type('student_three').blur();

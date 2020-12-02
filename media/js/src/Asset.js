@@ -22,15 +22,8 @@ export default class Asset {
                 this.asset.sources &&
                 this.asset.sources.url
         ) {
-            const youtubeId = getYouTubeID(this.asset.sources.url.url);
-            const url = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
-            return fetch(url, {mode: 'no-cors'}).then(function(response) {
-                if (response.status === 200) {
-                    return url;
-                } else {
-                    return mediaPrefix + 'img/thumb_video.png';
-                }
-            });
+            const youtubeId = getYouTubeID(this.asset.sources.youtube.url);
+            return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
         } else if (
             this.asset.primary_type === 'vimeo' &&
                 this.asset.sources &&

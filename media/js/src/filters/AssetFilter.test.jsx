@@ -41,6 +41,7 @@ it('renders the asset filter', async() => {
                 onUpdateItems={function() {}}
                 onUpdateFilter={function() {}}
                 setViewMode={function() {}}
+                onClearFilter={function() {}}
             />,
             container
         );

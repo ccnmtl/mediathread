@@ -36,7 +36,7 @@ astroid==2.4.2
 pyasn1==0.4.8
 ndg-httpsclient==0.5.1
 
-chardet==3.0.4
+chardet==4.0.0
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==2.10

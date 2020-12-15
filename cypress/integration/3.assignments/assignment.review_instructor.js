@@ -28,7 +28,7 @@ describe('Assignment Feature: Instructor View', () => {
             .contains('Shared with Class').should('be.visible');
         cy.get('#student-response-dropdown')
             .contains('1 of 3 Students Responded').should('be.visible');
-        cy.get('#assignment-responses').should('not.be.visible');
+        cy.get('#assignment-responses').should('not.exist');
         cy.get('#instructions-heading-one')
             .contains('Instructions').should('be.visible');
         cy.get('#response-heading-one').should('not.exist');
@@ -43,7 +43,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.title().should('include', 'Mediathread Sample Assignment Response');
         cy.get('#instructions').should('not.be.visible');
         cy.get('.btn-edit-assignment').should('exist');
-        cy.get('#assignment-responses').should('not.be.visible');
+        cy.get('#assignment-responses').should('not.exist');
         cy.get('[data-cy="response-visibility"]')
             .contains('Shared with Instructor').should('be.visible');
 
@@ -62,7 +62,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('#student-response-dropdown')
             .contains('1 of 3 Students Responded').should('be.visible');
-        cy.get('#assignment-responses').should('not.be.visible');
+        cy.get('#assignment-responses').should('not.exist');
         cy.get('#instructions-heading-one')
             .contains('Instructions').should('be.visible');
         cy.get('#response-heading-one').should('be.visible');
@@ -79,12 +79,12 @@ describe('Assignment Feature: Instructor View', () => {
         cy.title().should('include', 'Mediathread Sample Assignment Response');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('[data-cy="assignment-visibility"]').should('not.exist');
-        cy.get('#response').should('not.be.visible');
+        cy.get('#response').should('not.exist');
         cy.get('[data-cy="response-visibility"]')
             .contains('Shared with Instructor')
             .should('exist').should('not.be.visible');
-        cy.get('#assignment-responses').should('not.be.visible');
-        cy.get('#student-responses').should('not.be.visible');
+        cy.get('#assignment-responses').should('not.exist');
+        cy.get('#student-responses').should('not.exist');
         cy.get('#instructions-heading-one').should('be.visible');
         cy.get('#response-heading-one').should('be.visible');
         cy.get('#feedback-heading-one').should('be.visible');

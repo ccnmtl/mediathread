@@ -62,7 +62,7 @@ describe('Instructor creates a selection', () => {
 
         cy.log('verify new selection is visible');
         cy.get('div.ajaxloader').should('not.be.visible');
-        cy.get('button.btn-link').contains('Rename Selection');
+        cy.get('#annotation-7').contains('Rename Selection');
 
         cy.log('create a new selection');
         cy.log('click the +/create button next to the asset');

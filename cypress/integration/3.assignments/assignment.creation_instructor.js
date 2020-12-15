@@ -68,13 +68,13 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('#student-response-dropdown')
             .contains('0 of 3 Students Responded').should('be.visible');
-        cy.get('#assignment-responses').should('not.be.visible');
+        cy.get('#assignment-responses').should('not.exist');
         cy.get('#instructions-heading-one').contains('Instructions');
         cy.get('#instructions')
             .contains('The Columbia Center for Teaching and Learning');
-        cy.get('.project-revisionbutton').should('not.be.visible');
+        cy.get('.project-revisionbutton').should('not.exist');
         cy.contains('Respond To Assignment').should('not.exist');
-        cy.get('#response').should('not.be.visible');
+        cy.get('#response').should('not.exist');
     });
 
     it('should show on assignments page', () => {

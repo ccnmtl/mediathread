@@ -99,7 +99,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.log('View discussion as a student');
         cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
         cy.get('.btn-edit-assignment').should('not.exist');
-        cy.get('.project-visibility-description').should('not.be.visible');
+        cy.get('.project-visibility-description').should('not.exist');
         cy.contains('Due').should('be.visible');
         cy.get('.threadedcomments-container').should('be.visible');
 
@@ -107,7 +107,7 @@ describe('Discussion View: Create Discussion', () => {
             cy.get('.threaded_comment_author').contains('Instructor One');
             cy.get('.threaded_comment_text')
                 .contains('A suitable discussion prompt');
-            cy.get('.edit_prompt').should('not.be.visible');
+            cy.get('.edit_prompt').should('not.exist');
             cy.get('.respond_prompt').should('be.visible');
             cy.get('.respond_prompt').click();
         });

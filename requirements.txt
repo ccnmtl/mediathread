@@ -47,7 +47,7 @@ pyOpenSSL==20.0.1
 asn1crypto==1.4.0  # for pyOpenSSL
 cffi==1.14.4  # for pyOpenSSL
 
-requests==2.25.0
+requests==2.25.1
 contextlib2==0.6.0.post1
 rcssmin==1.0.6
 rjsmin==1.1.0

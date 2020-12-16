@@ -65,7 +65,8 @@ export default class CollectionTab extends React.Component {
                 'all',
             tags: [],
             terms: [],
-            date: 'all'
+            date: 'all',
+            currentPage: 0
         });
     }
 

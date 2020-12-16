@@ -326,7 +326,7 @@ export default class AssetFilter extends React.Component {
                                     className="btn btn-secondary btn-sm btn-block"
                                     type="button"
                                     onClick={this.props.onClearFilter}>
-                                Clear All
+                                Clear
                                 </a>
                             </div>
                         </div>

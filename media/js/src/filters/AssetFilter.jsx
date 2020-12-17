@@ -223,7 +223,7 @@ export default class AssetFilter extends React.Component {
             <React.Fragment>
                 <form id="search-well">
                     <div className="form-row">
-                        <div className="form-group col-md-4">
+                        <div className="form-group col-md-3">
                             <label htmlFor="filter-search">Title</label>
                             <div className="input-group mb-3">
                                 <input
@@ -318,6 +318,18 @@ export default class AssetFilter extends React.Component {
                                     }
                                 ]} />
                         </div>
+                        <div className="form-group col-md-1">
+                            <label htmlFor="react-select-5-input">&nbsp;</label>
+                            <div className="input-group mb-3">
+                                <a
+                                    href="#"
+                                    className="btn btn-secondary btn-sm btn-block"
+                                    type="button"
+                                    onClick={this.props.onClearFilter}>
+                                Clear
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </React.Fragment>
@@ -335,6 +347,7 @@ AssetFilter.propTypes = {
     allTerms: PropTypes.array,
     onUpdateItems: PropTypes.func.isRequired,
     onUpdateFilter: PropTypes.func.isRequired,
+    onClearFilter: PropTypes.func.isRequired,
 
     // Filter vals
     owner: PropTypes.string,

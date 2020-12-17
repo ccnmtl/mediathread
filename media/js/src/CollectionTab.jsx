@@ -45,6 +45,7 @@ export default class CollectionTab extends React.Component {
         this.onUpdateFilter = this.onUpdateFilter.bind(this);
         this.updatePageCount = this.updatePageCount.bind(this);
         this.updateCurrentPage = this.updateCurrentPage.bind(this);
+        this.onClearFilter = this.onClearFilter.bind(this);
 
         this.filterRef = React.createRef();
     }
@@ -53,6 +54,19 @@ export default class CollectionTab extends React.Component {
         this.setState({
             currentPage: 0,
             ...newState
+        });
+    }
+
+    onClearFilter() {
+        this.setState({
+            title: null,
+            owner: window.MediaThread ?
+                window.MediaThread.current_username :
+                'all',
+            tags: [],
+            terms: [],
+            date: 'all',
+            currentPage: 0
         });
     }
 
@@ -303,6 +317,7 @@ export default class CollectionTab extends React.Component {
                             onUpdateItems={this.props.onUpdateAssets}
 
                             onUpdateFilter={this.onUpdateFilter}
+                            onClearFilter={this.onClearFilter}
                             owner={this.state.owner}
                             title={this.state.title}
                             tags={this.state.tags}

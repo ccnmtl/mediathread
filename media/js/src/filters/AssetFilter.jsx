@@ -210,11 +210,12 @@ export default class AssetFilter extends React.Component {
     render() {
         const tagsOptions = tagsToReactSelect(this.props.allTags);
         const termsOptions = termsToReactSelect(this.props.allTerms);
+        console.log('terms option', termsOptions)
 
         const termGroupLabel = function(data) {
             return (
                 <div>
-                    <span>{data.label}</span>
+                    <strong>{data.label}</strong>
                 </div>
             );
         };
@@ -278,7 +279,7 @@ export default class AssetFilter extends React.Component {
 
                         {window.MediaThread && window.MediaThread.current_course_has_vocab && (
                             <div className="form-group col-md-2">
-                                <label htmlFor="react-select-4-input">Term</label>
+                                <label htmlFor="react-select-4-input">Course Vocabulary</label>
                                 <Select
                                     id="term-filter"
                                     menuPortalTarget={document.body}

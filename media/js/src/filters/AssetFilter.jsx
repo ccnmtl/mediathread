@@ -48,6 +48,10 @@ const reactSelectStyles = {
     input: (provided, state) => ({
         ...provided,
         height: '21px'
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        paddingLeft: '20px'
     })
 };
 
@@ -210,12 +214,11 @@ export default class AssetFilter extends React.Component {
     render() {
         const tagsOptions = tagsToReactSelect(this.props.allTags);
         const termsOptions = termsToReactSelect(this.props.allTerms);
-        console.log('terms option', termsOptions)
 
         const termGroupLabel = function(data) {
             return (
-                <div>
-                    <strong>{data.label}</strong>
+                <div className="font-weight-bold">
+                    <span>{data.label}</span>
                 </div>
             );
         };

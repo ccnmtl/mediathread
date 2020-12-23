@@ -91,13 +91,14 @@ export default class ViewSelections extends React.Component {
 
                         {s.author.public_name.length > 0 && (
                             <p className="card-text">
-                                Author: {s.author.public_name}
+                                <strong>Author:</strong> {s.author.public_name}
                             </p>
                         )}
 
                         {this.props.type === 'video' && (
                             <>
                                 <p className="card-text">
+                                    <strong>Time code: </strong>
                                     {formatTimecode(s.range1)}
                                     {String.fromCharCode(160)}
                                     {String.fromCharCode(8212)}
@@ -105,20 +106,20 @@ export default class ViewSelections extends React.Component {
                                     {formatTimecode(s.range2)}
                                 </p>
                                 <p className="card-text">
-                                    Duration: <strong>{formatTimecode(getDuration(s.range1, s.range2))}</strong>
+                                    <strong>Duration:</strong> {formatTimecode(getDuration(s.range1, s.range2))}
                                 </p>
                             </>
                         )}
 
                         {tags.length > 0 && (
                             <p className="card-text">
-                                Tags: {tags}
+                                <strong>Tags:</strong> {tags}
                             </p>
                         )}
 
                         {terms.length > 0 && (
                             <p className="card-text">
-                                Terms: {terms}
+                                <strong>Course Vocabulary:</strong> {terms}
                             </p>
                         )}
 
@@ -186,6 +187,20 @@ export default class ViewSelections extends React.Component {
                             <h5 key={'title-' + reactKey}>
                                 {s.author.public_name}
                             </h5>);
+                    } else if (me.state.groupBy === 'term') {
+                        if(groupName != 'No Vocabulary'){
+                            s.vocabulary.forEach(function(vocab) {
+                                groupedSelections.push(
+                                    <h5 key={'title-' + reactKey}>
+                                        {vocab.display_name}: {groupName}
+                                    </h5>);
+                            });
+                        } else {
+                            groupedSelections.push(
+                                <h5 key={'title-' + reactKey}>
+                                    {groupName}
+                                </h5>);
+                        }
                     } else {
                         groupedSelections.push(
                             <h5 key={'title-' + reactKey}>
@@ -330,7 +345,7 @@ export default class ViewSelections extends React.Component {
                                     this.state.groupBy === 'term' ? 'active' : ''
                                 )}
                                 onClick={(e) => this.onSelectGrouping(e, 'term')}>
-                                Group by term
+                                Group by course vocabulary
                             </button>
                         )}
                     </div>

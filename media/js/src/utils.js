@@ -578,7 +578,13 @@ const tagsToReactSelect = function(tags, isCreating=false) {
     }
 
     return tags.map(function(tag) {
-        let label = `${tag.name} (${tag.count})`;
+        let label = '';
+
+        if(tag.count > 0){
+            label = `${tag.name} (${tag.count})`;
+        } else {
+            label = `${tag.name}`;
+        }
         if (isCreating) {
             label = tag.name;
         }

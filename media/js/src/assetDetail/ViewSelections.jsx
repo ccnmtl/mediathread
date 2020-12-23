@@ -11,7 +11,8 @@ import find from 'lodash/find';
 
 import EditSelectionForm from '../forms/EditSelectionForm';
 import {
-    groupByAuthor, groupByTerm, groupByTag, formatTimecode, getDuration
+    groupByAuthor, groupByTerm, groupByTag, formatTimecode, getDuration,
+    capitalizeFirstLetter
 } from '../utils';
 
 export default class ViewSelections extends React.Component {
@@ -192,7 +193,7 @@ export default class ViewSelections extends React.Component {
                             s.vocabulary.forEach(function(vocab) {
                                 groupedSelections.push(
                                     <h5 key={'title-' + reactKey}>
-                                        {vocab.display_name}: {groupName}
+                                        {capitalizeFirstLetter(vocab.display_name)}: {groupName}
                                     </h5>);
                             });
                         } else {

@@ -33,6 +33,10 @@ const reactSelectStyles = {
     placeholder: (provided, state) => ({
         ...provided,
         top: '45%'
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        paddingLeft: '20px'
     })
 };
 
@@ -123,6 +127,14 @@ export default class SelectionForm extends React.Component {
             selectedTerms = termsToReactSelectValues(
                 this.props.selection.vocabulary);
         }
+        const termGroupLabel = function(data) {
+
+            return (
+                <div className="font-weight-bold h6">
+                    <span>{data.label}</span>
+                </div>
+            );
+        };
 
         const hasVocab = this.props.terms && this.props.terms.length > 0;
 
@@ -160,7 +172,7 @@ export default class SelectionForm extends React.Component {
 
                 {hasVocab && (
                     <Form.Group>
-                        <label htmlFor="react-select-7-input">Terms</label>
+                        <label htmlFor="react-select-7-input">Course Vocabulary</label>
                         <Select
                             id="newSelectionTerms"
                             ref={this.termsRef}
@@ -170,6 +182,7 @@ export default class SelectionForm extends React.Component {
                             onChange={this.handleTermsChange}
                             isMulti
                             defaultValue={selectedTerms}
+                            formatGroupLabel={termGroupLabel}
                             options={termsOptions} />
                     </Form.Group>
                 )}

@@ -109,7 +109,7 @@ export default class ViewItem extends React.Component {
         }
 
         let tags = 'There are no tags.';
-        let terms = 'There are no terms.';
+        let terms = 'There are no vocabulary terms.';
         if (this.props.asset && this.props.asset.annotations) {
             const tagsArray = getTags(this.props.asset.annotations);
             if (tagsArray.length > 0) {
@@ -142,7 +142,7 @@ export default class ViewItem extends React.Component {
 
                 <hr />
 
-                <h3>Terms</h3>
+                <h3>Course Vocabulary</h3>
                 <p>
                     {terms}
                 </p>

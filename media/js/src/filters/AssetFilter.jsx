@@ -48,6 +48,10 @@ const reactSelectStyles = {
     input: (provided, state) => ({
         ...provided,
         height: '21px'
+    }),
+    option: (provided, state) => ({
+        ...provided,
+        paddingLeft: '20px'
     })
 };
 
@@ -212,8 +216,9 @@ export default class AssetFilter extends React.Component {
         const termsOptions = termsToReactSelect(this.props.allTerms);
 
         const termGroupLabel = function(data) {
+
             return (
-                <div>
+                <div className="font-weight-bold">
                     <span>{data.label}</span>
                 </div>
             );
@@ -278,7 +283,7 @@ export default class AssetFilter extends React.Component {
 
                         {window.MediaThread && window.MediaThread.current_course_has_vocab && (
                             <div className="form-group col-md-2">
-                                <label htmlFor="react-select-4-input">Term</label>
+                                <label htmlFor="react-select-4-input">Course Vocabulary</label>
                                 <Select
                                     id="term-filter"
                                     menuPortalTarget={document.body}

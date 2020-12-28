@@ -517,7 +517,7 @@ const groupByTerm = function(selections) {
             });
             if (!foundTerm) {
                 out.push({
-                    termName: 'No Terms',
+                    termName: 'No Vocabulary',
                     termId: 0,
                     selections: [s]
                 });
@@ -529,7 +529,7 @@ const groupByTerm = function(selections) {
 
     const sorted = sortBy(out, [
         function(group) {
-            // Sort the 'No Terms' group to the end.
+            // Sort the 'No Vocabulary' group to the end.
             if (group && group.termId === 0) {
                 return null;
             }
@@ -578,7 +578,13 @@ const tagsToReactSelect = function(tags, isCreating=false) {
     }
 
     return tags.map(function(tag) {
-        let label = `${tag.name} (${tag.count})`;
+        let label = '';
+
+        if(tag.count > 0){
+            label = `${tag.name} (${tag.count})`;
+        } else {
+            label = `${tag.name}`;
+        }
         if (isCreating) {
             label = tag.name;
         }
@@ -608,12 +614,20 @@ const termsToReactSelect = function(vocabs) {
             termSet.forEach(function(t) {
                 const data = t;
                 data.vocab_id = term.id;
-
-                termOptions.push({
-                    label: `${t.display_name} (${t.count})`,
-                    value: t.name,
-                    data: data
-                });
+                if(t.count > 0){
+                    termOptions.push({
+                        label: `${t.display_name} (${t.count})`,
+                        value: t.name,
+                        data: data
+                    });
+                }
+                else {
+                    termOptions.push({
+                        label: `${t.display_name}`,
+                        value: t.name,
+                        data: data
+                    });
+                }
             });
         }
 

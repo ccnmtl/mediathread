@@ -82,7 +82,7 @@ export default class CollectionListView extends React.Component {
                 }
             },
             {
-                name: 'Terms',
+                name: 'Course Vocabulary',
                 selector: 'terms',
                 sortable: false,
                 wrap: true,

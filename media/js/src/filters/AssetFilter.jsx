@@ -218,7 +218,7 @@ export default class AssetFilter extends React.Component {
         const termGroupLabel = function(data) {
 
             return (
-                <div className="font-weight-bold h6">
+                <div className="font-weight-bold">
                     <span>{data.label}</span>
                 </div>
             );

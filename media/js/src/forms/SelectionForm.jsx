@@ -172,7 +172,8 @@ export default class SelectionForm extends React.Component {
 
                 {hasVocab && (
                     <Form.Group>
-                        <label htmlFor="react-select-7-input">Course Vocabulary</label>
+                        <label htmlFor="react-select-7-input">
+                            Course Vocabulary</label>
                         <Select
                             id="newSelectionTerms"
                             ref={this.termsRef}

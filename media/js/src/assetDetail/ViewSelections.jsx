@@ -227,12 +227,13 @@ export default class ViewSelections extends React.Component {
                 const terms = [];
                 if (s.vocabulary) {
                     s.vocabulary.forEach(function(vocab) {
-                        vocab.terms.forEach(function(term) {
+                        vocab.terms.forEach(function(term, idx) {
+                            const isNotLast = idx < vocab.terms.length - 1;
                             terms.push(
                                 <React.Fragment key={`termfragment-${reactKey}-${term.id}`}>
                                     <a href="#">
                                         {term.display_name}
-                                    </a>,&nbsp;
+                                    </a>{isNotLast && ', '}
                                 </React.Fragment>
                             );
                         });

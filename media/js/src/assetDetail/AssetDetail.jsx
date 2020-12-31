@@ -905,6 +905,7 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
+                keyboardEventTarget: document,
                 layers: [
                     new ImageLayer({
                         source: new Static({

@@ -88,45 +88,52 @@ export default class ViewSelections extends React.Component {
                     data-title={s.title}
                     data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
-                    <div className="card-body">
+                    <div className="card-body container">
 
                         {s.author.public_name.length > 0 && (
-                            <p className="card-text">
-                                <strong>Author:</strong> {s.author.public_name}
+                            <p className="card-text row">
+                                <span className="text-muted text-right col-3">Author</span>
+                                <span className="col text-left">{s.author.public_name}</span>
                             </p>
                         )}
 
                         {this.props.type === 'video' && (
                             <>
-                                <p className="card-text">
-                                    <strong>Time code: </strong>
-                                    {formatTimecode(s.range1)}
-                                    {String.fromCharCode(160)}
-                                    {String.fromCharCode(8212)}
-                                    {String.fromCharCode(160)}
-                                    {formatTimecode(s.range2)}
+                                <p className="card-text row">
+                                    <span className="text-muted text-right col-3">Selection </span>
+                                    <span className="col text-left">
+                                        {formatTimecode(s.range1)}
+                                        {String.fromCharCode(160)}
+                                        {String.fromCharCode(8212)}
+                                        {String.fromCharCode(160)}
+                                        {formatTimecode(s.range2)}
+                                    </span>
                                 </p>
-                                <p className="card-text">
-                                    <strong>Duration:</strong> {formatTimecode(getDuration(s.range1, s.range2))}
+                                <p className="card-text row">
+                                    <span className="text-muted text-right col-3">Duration</span>
+                                    <span className="col text-left"> {formatTimecode(getDuration(s.range1, s.range2))}</span>
                                 </p>
                             </>
                         )}
 
                         {tags.length > 0 && (
-                            <p className="card-text">
-                                <strong>Tags:</strong> {tags}
+                            <p className="card-text row">
+                                <span className="text-muted text-right col-3">Tags </span>
+                                <span className="col text-left">{tags}</span>
                             </p>
                         )}
 
                         {terms.length > 0 && (
-                            <p className="card-text">
-                                <strong>Course Vocabulary:</strong> {terms}
+                            <p className="card-text row">
+                                <span className="text-muted text-right text-wrap col-3">Course Vocabulary </span>
+                                <span className="col text-left">{terms}</span>
                             </p>
                         )}
 
                         {s.metadata && s.metadata.body && (
-                            <p className="card-text text-wrap">
-                                {s.metadata.body}
+                            <p className="card-text row">
+                                <span className="col-3"></span>
+                                <span className="col">{s.metadata.body}</span>
                             </p>
                         )}
 
@@ -135,7 +142,7 @@ export default class ViewSelections extends React.Component {
                                 <a
                                     onClick={(e) => this.onClickEdit(e, s)}
                                     href="#"
-                                    className="btn btn-secondary btn-sm mr-2">
+                                    className="btn btn-secondary btn-sm mr-2 float-right">
                                     Edit
                                 </a>
                             )}
@@ -144,7 +151,7 @@ export default class ViewSelections extends React.Component {
                                 <button
                                     type="button"
                                     onClick={this.props.onPlaySelection}
-                                    className="btn btn-primary btn-sm">
+                                    className="btn btn-primary btn-sm float-right">
                                     Play
                                     <svg
                                         width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-play-fill ml-1"

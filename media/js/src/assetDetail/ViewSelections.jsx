@@ -88,7 +88,7 @@ export default class ViewSelections extends React.Component {
                     data-title={s.title}
                     data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
-                    <div className="card-body container">
+                    <div className="card-body container pl-0">
 
                         {s.author.public_name.length > 0 && (
                             <p className="card-text row">
@@ -138,15 +138,6 @@ export default class ViewSelections extends React.Component {
                         )}
 
                         <p className="card-text">
-                            {isAuthor && (
-                                <a
-                                    onClick={(e) => this.onClickEdit(e, s)}
-                                    href="#"
-                                    className="btn btn-secondary btn-sm mr-2 float-right">
-                                    Edit
-                                </a>
-                            )}
-
                             {this.props.type === 'video' && (
                                 <button
                                     type="button"
@@ -159,6 +150,15 @@ export default class ViewSelections extends React.Component {
                                         <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
                                     </svg>
                                 </button>
+                            )}
+
+                            {isAuthor && (
+                                <a
+                                    onClick={(e) => this.onClickEdit(e, s)}
+                                    href="#"
+                                    className="btn btn-secondary btn-sm mr-2 float-right">
+                                    Edit
+                                </a>
                             )}
                         </p>
                     </div>

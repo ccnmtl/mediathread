@@ -16,7 +16,7 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
-import {defaults as defaultControls} from 'ol/control';
+import {Control, defaults as defaultControls} from 'ol/control';
 import {defaults as defaultInteractions} from 'ol/interaction';
 
 import Asset from '../Asset';
@@ -898,6 +898,38 @@ export default class AssetDetail extends React.Component {
                 extent: extent
             });
 
+            var CenterControl = /*@__PURE__*/(function(Control) {
+                function CenterControl(opt_options) {
+                    var options = opt_options || {};
+
+                    var button = document.createElement('button');
+                    button.innerHTML = 'c';
+
+                    var element = document.createElement('div');
+                    element.className = 'center-btn ol-unselectable ol-control';
+                    element.appendChild(button);
+
+                    Control.call(this, {
+                        element: element,
+                        target: options.target,
+                    });
+
+                    button.addEventListener('click', this.handleCenter.bind(this), false);
+                }
+
+                if (Control) CenterControl.__proto__ = Control;
+                CenterControl.prototype = Object.create(Control && Control.prototype);
+                CenterControl.prototype.constructor = CenterControl;
+
+                CenterControl.prototype.handleCenter = function handleCenter(){
+                    this.getMap().getView().setCenter(getCenter(extent));
+                    this.getMap().getView().setZoom(1);
+                };
+
+                return CenterControl;
+            }(Control));
+
+
             this.selectionSource = new VectorSource({wrapX: false});
             const selectionLayer = new VectorLayer({
                 source: this.selectionSource
@@ -905,6 +937,7 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
+                controls: defaultControls().extend([new CenterControl()]),
                 keyboardEventTarget: document,
                 layers: [
                     new ImageLayer({

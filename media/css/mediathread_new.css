@@ -4213,6 +4213,32 @@ ul.section-tabs>li>a.active {
     margin-top: 1em;
 }
 
+.selection-metadatalabel {
+    width: 120px;
+    text-align: right;
+}
+
+@media screen and (max-width: 730px ) {
+  .selection-metadatalabel {
+      float: none;
+      text-align: left;
+  }
+  .selection-metadatavalue {
+      padding-left: 0;
+  }
+}
+
+ @media screen and (max-width: 575px ) {
+  .selection-metadatalabel {
+      width: 120px;
+      text-align: right;
+  }
+  .selection-metadatavalue {
+      padding-left: 15px;
+  }
+}
+
+
 .media-type {
     position: absolute;
     left: .8em;

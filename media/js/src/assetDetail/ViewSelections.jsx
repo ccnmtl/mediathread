@@ -88,20 +88,20 @@ export default class ViewSelections extends React.Component {
                     data-title={s.title}
                     data-selectionid={s.id}
                     data-parent="#selectionsAccordion">
-                    <div className="card-body container pl-0">
+                    <div className="card-body container">
 
                         {s.author.public_name.length > 0 && (
                             <p className="card-text row">
-                                <span className="text-muted text-right col-3">Author</span>
-                                <span className="col text-left">{s.author.public_name}</span>
+                                <span className="text-muted selection-metadatalabel">Author</span>
+                                <span className="col text-left selection-metadatavalue">{s.author.public_name}</span>
                             </p>
                         )}
 
                         {this.props.type === 'video' && (
                             <>
                                 <p className="card-text row">
-                                    <span className="text-muted text-right col-3">Selection </span>
-                                    <span className="col text-left">
+                                    <span className="text-muted selection-metadatalabel">Selection </span>
+                                    <span className="col text-left selection-metadatavalue">
                                         {formatTimecode(s.range1)}
                                         {String.fromCharCode(160)}
                                         {String.fromCharCode(8212)}
@@ -110,30 +110,30 @@ export default class ViewSelections extends React.Component {
                                     </span>
                                 </p>
                                 <p className="card-text row">
-                                    <span className="text-muted text-right col-3">Duration</span>
-                                    <span className="col text-left"> {formatTimecode(getDuration(s.range1, s.range2))}</span>
+                                    <span className="text-muted selection-metadatalabel">Duration</span>
+                                    <span className="col text-left selection-metadatavalue"> {formatTimecode(getDuration(s.range1, s.range2))}</span>
                                 </p>
                             </>
                         )}
 
                         {tags.length > 0 && (
                             <p className="card-text row">
-                                <span className="text-muted text-right col-3">Tags </span>
-                                <span className="col text-left">{tags}</span>
+                                <span className="text-muted selection-metadatalabel">Tags </span>
+                                <span className="col text-left selection-metadatavalue">{tags}</span>
                             </p>
                         )}
 
                         {terms.length > 0 && (
                             <p className="card-text row">
-                                <span className="text-muted text-right text-wrap col-3">Course Vocabulary </span>
-                                <span className="col text-left">{terms}</span>
+                                <span className="text-muted text-wrap selection-metadatalabel">Course Vocabulary </span>
+                                <span className="col text-left selection-metadatavalue">{terms}</span>
                             </p>
                         )}
 
                         {s.metadata && s.metadata.body && (
                             <p className="card-text row">
-                                <span className="col-3"></span>
-                                <span className="col">{s.metadata.body}</span>
+                                <span className="text-muted selection-metadatalabel">Notes </span>
+                                <span className="col text-left text-wrap selection-metadatavalue">{s.metadata.body}</span>
                             </p>
                         )}
 

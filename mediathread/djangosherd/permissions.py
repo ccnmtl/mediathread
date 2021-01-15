@@ -15,9 +15,15 @@ class AssetIsVisible(BasePermission):
         if obj.author == request.user:
             return True
 
+        # Am I a faculty member?
         if cached_course_is_faculty(obj.course, request.user):
             return True
 
+        # Does a faculty member own this item?
+        if cached_course_is_faculty(obj.course, obj.author):
+            return True
+
+        # Has the faculty member restricted the item view?
         if not all_items_are_visible(obj.course):
             raise PermissionDenied
 

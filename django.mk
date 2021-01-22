@@ -42,7 +42,7 @@ else
 	COVERAGE ?= $(VE)/bin/coverage
 endif
 
-jenkins: check flake8 test eslint bandit
+jenkins: check flake8 test eslint jstest bandit
 
 $(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)

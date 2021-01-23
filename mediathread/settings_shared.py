@@ -237,10 +237,10 @@ if 'test' in sys.argv or \
             'default': {
                 'ENGINE': 'django.db.backends.postgresql_psycopg2',
                 'NAME': 'mediathread',
-                'HOST': '',
+                'HOST': 'localhost',
                 'PORT': 5432,
-                'USER': '',
-                'PASSWORD': '',
+                'USER': 'postgres',
+                'PASSWORD': 'postgres',
                 'ATOMIC_REQUESTS': True,
             }
         }

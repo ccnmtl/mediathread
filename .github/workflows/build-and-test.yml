@@ -9,8 +9,9 @@ jobs:
         node-version: [12.x]
     services:
       postgres:
-        image: postgis/postgis:13-master
+        image: postgres:10
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
@@ -21,6 +22,10 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v2
+      - name: Create Test Database
+        run: psql -c 'create database test_mediathread;' -U postgres
+      - name: npm install
+        run: npm install
       - name: Build with Makefile
         run: make
       - name: Run Integration Tests

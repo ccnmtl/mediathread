@@ -236,6 +236,7 @@ if 'test' in sys.argv or \
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': 'mediathread',
                 'HOST': '',
                 'PORT': 5432,
                 'USER': '',

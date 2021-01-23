@@ -22,8 +22,6 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v2
-      - name: Create Test Database
-        run: psql -c 'create database test_mediathread;' -U postgres
       - name: npm install
         run: npm install
       - name: Build with Makefile

@@ -22,8 +22,6 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v2
-      - name: npm install
-        run: npm install
       - name: Build with Makefile
         run: make
       - name: Run Integration Tests

@@ -9,8 +9,9 @@ jobs:
         node-version: [12.x]
     services:
       postgres:
-        image: postgis/postgis:13-master
+        image: postgres:10
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready

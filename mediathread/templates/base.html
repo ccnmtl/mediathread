@@ -130,7 +130,7 @@
                                     <div class="visualclear"></div>
                                     <!-- Settings Menu -->
                                     <div class="settings_submenu" style="display: none">
-                                         <a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Knowledge Base</a>
+                                         <a href="/kb/">Knowledge Base</a>
                                          <a href="/contact/">Contact Us</a>
                                     </div>
                                 {% endblock %}
@@ -164,7 +164,7 @@
                                 </div>
                             </li>
                         {% else %}
-                            <li><div unselectable="on"><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></div></li>
+                            <li><div unselectable="on"><a href="/kb/">Help</a></div></li>
                             {% if request.user.is_authenticated %}
                                 <li><a href="/accounts/logout/?next=/">Log Out</a></li>
                             {% else %}
@@ -234,7 +234,7 @@
            <ol id="footernav">
                <li><a href="https://mediathread.info" target="_blank">About</a></li>
                <li><a href="/contact/">Contact Us</a></li>
-               <li><a href="http://support.ctl.columbia.edu/knowledgebase/topics/6593-mediathread">Help</a></li>
+               <li><a href="/kb/">Help</a></li>
             </ol>
         </div><!-- id="footer" -->
     {% endblock %}

@@ -29,7 +29,7 @@ unicodecsv==0.14.1
 
 editdistance==0.5.3
 
-pylint==2.6.2
+pylint==2.7.1
 
 astroid==2.5
 

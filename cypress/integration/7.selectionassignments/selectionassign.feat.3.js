@@ -21,11 +21,12 @@ describe('Selection Assignment Feat: Instructor adds & edits feedback', () => {
         cy.get('.btn-edit-assignment').contains('Edit Assignment')
             .should('be.visible');
         cy.get('span.feedback-count').should('contain', '0');
-        cy.contains('add feedback').click({force: true});
+        cy.get('#addFeedback').should('contain', 'add feedback')
+            .click({force: true});
         cy.get('#annotation-feedback-student_one > form > .form-control')
             .type('good job');
         cy.contains('Save Feedback').click({force: true});
-        cy.contains('edit feedback').should('exist')
+        cy.get('#editFeedback').should('contain', 'edit feedback')
             .and('have.attr', 'href');
         cy.get('span.feedback-count').should('contain', '1');
     });

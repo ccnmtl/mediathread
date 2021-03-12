@@ -2,7 +2,7 @@ from datetime import datetime
 import hashlib
 
 from courseaffils.columbia import CanvasTemplate, WindTemplate
-from courseaffils.lib import in_course_or_404, in_course, get_public_name
+from courseaffils.lib import in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
 from courseaffils.views import CourseListView
@@ -29,7 +29,7 @@ from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from djangohelpers.lib import rendered_with, allow_http
+from djangohelpers.lib import allow_http
 import hmac
 import json
 from lti_auth.models import LTICourseContext
@@ -103,50 +103,6 @@ class SplashView(TemplateView):
             return HttpResponseRedirect(course_url)
         else:
             return HttpResponseRedirect(reverse('course_list'))
-
-
-@rendered_with('main/deprecated_homepage.html')
-def deprecated_course_detail_view(request, course_pk):
-    try:
-        course = get_object_or_404(Course, pk=course_pk)
-        request.course = course
-        request.session[SESSION_KEY] = course
-    except Course.DoesNotExist:
-        return HttpResponseRedirect('/accounts/login/')
-
-    logged_in_user = request.user
-    classwork_owner = request.user  # Viewing your own work by default
-    if 'username' in request.GET:
-        user_name = request.GET['username']
-        in_course_or_404(user_name, request.course)
-        classwork_owner = get_object_or_404(User, username=user_name)
-
-    qs = ExternalCollection.objects.filter(course=request.course)
-    collections = qs.filter(uploader=False).order_by('title')
-    uploader = qs.filter(uploader=True).first()
-
-    owners = []
-    if (request.course.is_member(logged_in_user) and
-        (logged_in_user.is_staff or
-         logged_in_user.has_perm('assetmgr.can_upload_for'))):
-        owners = UserResource().render_list(request, request.course.members)
-
-    context = {
-        'classwork_owner': classwork_owner,
-        'information_title': course_information_title(course),
-        'faculty_feed': Project.objects.faculty_compositions(course,
-                                                             logged_in_user),
-        'is_faculty': cached_course_is_faculty(course, logged_in_user),
-        'discussions': get_course_discussions(course),
-        'msg': request.GET.get('msg', ''),
-        'view': request.GET.get('view', ''),
-        'collections': collections,
-        'uploader': uploader,
-        'can_upload': course_details.can_upload(request.user, request.course),
-        'owners': owners
-    }
-
-    return context
 
 
 class CourseDetailView(LoggedInMixin, DetailView):

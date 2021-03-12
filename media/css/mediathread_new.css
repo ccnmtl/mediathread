@@ -2650,8 +2650,7 @@ a.hs-control.hs-control-show.plist.float
 
 .collection-embed,
 #collection-modal .modal-dialog {
-    width: 800px !important;
-    max-width: 800px !important;
+    width: 98%;
 }
 
 #collection-modal .modal-body {

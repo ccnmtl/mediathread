@@ -203,7 +203,8 @@ div.save-publish-status li {
 .discussion .quick-edit .asset-view-tabs,
 .discussion .quick-edit .asset-view-container,
 .composition .quick-edit .asset-view-tabs,
-.composition .quick-edit .asset-view-container {
+.composition .quick-edit .asset-view-container,
+.collection-embed .quick-edit .asset-view-container {
     width: 385px;
     margin: auto;
 }

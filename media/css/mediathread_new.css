@@ -4375,3 +4375,8 @@ ul.selection-spinner {
     font-size: 1.25rem;
     font-family: 'Montserrat', sans-serif;
 }
+
+.center-btn {
+    top: 65px;
+    left: .5em;
+}

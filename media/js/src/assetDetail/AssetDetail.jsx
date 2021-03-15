@@ -16,7 +16,9 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
-import {Control, defaults as defaultControls} from 'ol/control';
+import {defaults as defaultControls} from 'ol/control';
+import Zoom from 'ol/control/Zoom';
+import Attribution from 'ol/control/Attribution';
 import {defaults as defaultInteractions} from 'ol/interaction';
 
 import Asset from '../Asset';
@@ -26,6 +28,7 @@ import {
     formatTimecode, parseTimecode, getDuration,
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
+import {CenterControl} from '../centercontrol';
 import {
     objectProportioned, displaySelection, clearSource, resetMap
 } from '../openlayersUtils';
@@ -870,6 +873,8 @@ export default class AssetDetail extends React.Component {
                 defaultControls().forEach(function(control) {
                     me.map.addControl(control);
                 });
+                me.map.addControl(new CenterControl());
+
                 defaultInteractions().forEach(function(interaction) {
                     me.map.addInteraction(interaction);
                 });
@@ -898,37 +903,10 @@ export default class AssetDetail extends React.Component {
                 extent: extent
             });
 
-            var CenterControl = /*@__PURE__*/(function(Control) {
-                function CenterControl(opt_options) {
-                    var options = opt_options || {};
-
-                    var button = document.createElement('button');
-                    button.innerHTML = 'c';
-
-                    var element = document.createElement('div');
-                    element.className = 'center-btn ol-unselectable ol-control';
-                    element.appendChild(button);
-
-                    Control.call(this, {
-                        element: element,
-                        target: options.target,
-                    });
-
-                    button.addEventListener('click', this.handleCenter.bind(this), false);
-                }
-
-                if (Control) CenterControl.__proto__ = Control;
-                CenterControl.prototype = Object.create(Control && Control.prototype);
-                CenterControl.prototype.constructor = CenterControl;
-
-                CenterControl.prototype.handleCenter = function handleCenter(){
-                    this.getMap().getView().setCenter(getCenter(extent));
-                    this.getMap().getView().setZoom(1);
-                };
-
-                return CenterControl;
-            }(Control));
-
+            CenterControl.prototype.handleCenter = function handleCenter(){
+                this.getMap().getView().setCenter(getCenter(extent));
+                this.getMap().getView().setZoom(1);
+            };
 
             this.selectionSource = new VectorSource({wrapX: false});
             const selectionLayer = new VectorLayer({
@@ -937,7 +915,7 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
-                controls: defaultControls().extend([new CenterControl()]),
+                controls: [new Zoom(), new Attribution(), new CenterControl()],
                 keyboardEventTarget: document,
                 layers: [
                     new ImageLayer({

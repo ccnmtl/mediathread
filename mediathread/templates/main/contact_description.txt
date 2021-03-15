@@ -7,3 +7,5 @@ Course: {{course}}
 Category: {{category}}
 
 {{description}}
+
+{{debug_info}}

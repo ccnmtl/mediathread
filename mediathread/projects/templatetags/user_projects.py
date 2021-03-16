@@ -104,5 +104,5 @@ def date_format_change(date):
 
 
 @register.simple_tag
-def show_discussion_response(status, comments):
-    return status != 'no-response' or comments[0] == 0
+def show_discussion_response(status, comment_count):
+    return status != 'no-response' or comment_count == 0

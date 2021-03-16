@@ -1,52 +1,51 @@
 {% verbatim %}
 <script type="text/x-template" id="collection_assets-template">
 {{^assets}}
-    <div class="default-content intro-text feature-help">
+    <div class="p-4">
         {{^active_filter_count}}
             {{#showing_my_items}}
-                You have not collected any materials.<br /><br />
+                <h5 class="mb-4">You have not collected any materials.</h5>
                 <strong>What is a collection?</strong>
-                <div class="feature-help-instructions">
+                <div class="mb-3">
                     A collection is a set of images, video and/or audio brought into Mediathread that
                     can be annotated, organized, and embedded into essays and other written analysis.
                 </div>
-
-                <strong>How do I build my collection?</strong><br />
-                <div class="feature-help-instructions">
-                    <ul>
+                <strong>How do I build my collection?</strong>
+                <div>
+                    <ul class="ml-0">
                         {{#is_faculty}}
-                            <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection by
-                            bookmarking items from sites such as YouTube or Flickr.
-                            To install the bookmarklet into your browser, visit the
-                            <a href="/course/{{getCourseId}}/">Collection page</a>, click the Add To Collection button on the upper right hand side and follow directions.
+                            <li class="mb-3"><strong>Import</strong>: Build your collection by
+                            collecting items from sites such as YouTube or Flickr using the extension.
+                            To install the extension into your browser, visit the
+                            <a href="/course/{{getCourseId}}/">course homepage</a>, click the Add To Collection button on the upper right-hand side and follow directions.
                             <strong>Recommend Sites</strong> to students via <strong>Tools</strong> menu / <strong>Manage Sources</strong>
                             </li>
-
-                            <li style="margin-bottom: 4px">
+                            <li>
                                 <strong>Upload</strong>: Video and audio files may be uploaded
                                 into Mediathread when you enable this feature in <strong>Tools</strong> menu / <strong>Manage Sources</strong>.
-                                An <strong>Upload Media</strong> section and directions then appears on the Add To Collection drop down located on the <a href="/course/{{getCourseId}}/">Collection page</a>.
+                                An <strong>Upload Media</strong> section and directions then appears on the Add To Collection drop down located on the <a href="/course/{{getCourseId}}/">course homepage</a>.
                             </li>
                         {{/is_faculty}}
                         {{^is_faculty}}
-                            <li style="margin-bottom: 4px"><strong>Import</strong>: Build your collection
-                            by bookmarking items from sites such as YouTube or Flickr.
-                            To install the bookmarklet into your browser, visit the <a href="/course/{{getCourseId}}/">Collection page</a> where you can click the Add To Collection button
-                            on the upper right hand side and follow directions. Your instructor also may list recommended sites.</li>
+                            <li class="mb-3"><strong>Import</strong>: Build your collection
+                            by collecting items from sites such as YouTube or Flickr using the extension.
+                            To install the extension into your browser, visit the <a href="/course/{{getCourseId}}/">course homepage</a> where you can click the Add To Collection button
+                            on the upper right-hand side and follow directions. Your instructor also may list recommended sites.</li>
                             <li><strong>Upload</strong>: If this feature is enabled,
-                            you may upload video and audio files from your computer. Visit the <a href="/course/{{getCourseId}}/">Collection page</a> where you can click the Add To Collection button
+                            you may upload video and audio files from your computer. Visit the <a href="/course/{{getCourseId}}/">course homepage</a> where you can click the Add To Collection button
                             on the upper right hand side and follow directions.</li>
                         {{/is_faculty}}
                     </ul>
                 </div>
             {{/showing_my_items}}
             {{^showing_my_items}}
-                <center>{{space_owner.public_name}} has not collected any materials.<br /><br />Please select another owner.</center>
+                <h5>{{space_owner.public_name}} has not collected any materials.</h5>
+                Please select another owner.</center>
             {{/showing_my_items}}
-            {{/active_filter_count}}
-            {{#active_filter_count}}
-                <center>No items matched your search. Please try again.</center>
-            {{/active_filter_count}}
+        {{/active_filter_count}}
+        {{#active_filter_count}}
+            <h5>No items matched your search. Please try again.</h5>
+        {{/active_filter_count}}
     </div>
 {{/assets}}
 {{#assets}}

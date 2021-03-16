@@ -38,6 +38,8 @@
         {% for object in object_list %}
             {% if object.is_discussion_assignment %}
                 {% comment_count object request.user as comments %}
+                {% show_discussion_response status comments as show_response %}
+                {% if show_response %}
                  <tr>
                     <td>
                         {% if object.due_date %}
@@ -94,6 +96,7 @@
                     <td>
                     </td>
                 </tr>
+                {% endif %}
             {% else %}
                 {% my_assignment_responses object request.user as responses %}
 

@@ -372,21 +372,16 @@ class ContactUsView(FormView):
         return initial
 
     def form_valid(self, form):
-        subject = "Mediathread Contact Us Request"
+        subject = 'Mediathread Contact Us Request'
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/contact_description.txt')
         form_data['description'] = smart_text(tmpl.render(form_data))
 
-        # POST to the task assignment destination
-        task_url = getattr(settings, 'TASK_ASSIGNMENT_DESTINATION', None)
-        if task_url is not None:
-            response = requests.post(task_url, data=form_data)
-            if not response.status_code == 200:
-                # send to server email instead
-                send_mail(subject, form_data['description'],
-                          settings.SERVER_EMAIL, (settings.SERVER_EMAIL,))
+        # send to server email instead
+        send_mail('Mediathread Support Request', form_data['description'],
+                  settings.SERVER_EMAIL, (settings.SERVER_EMAIL,))
 
-        # POST to the support email
+        # send a follow-up to the user requesting help
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
         if support_email is None:
             send_template_email(

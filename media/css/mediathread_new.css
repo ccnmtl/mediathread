@@ -422,6 +422,10 @@ img
     overflow: auto;
 }
 
+input[name='decoy'] {
+    display: none !important;
+}
+
 /* ########## jQuery UI extensions/overrides ########## */
 
 .ui-icon-reverse {

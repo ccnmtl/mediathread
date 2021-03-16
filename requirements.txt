@@ -5,7 +5,7 @@ statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.3.0
 mccabe==0.6.1
-pycodestyle==2.6.0
+pycodestyle==2.7.0
 configparser==5.0.2
 importlib-metadata==3.7.3  # for flake8
 zipp==3.4.1

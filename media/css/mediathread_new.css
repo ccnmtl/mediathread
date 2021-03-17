@@ -1791,43 +1791,6 @@ td#explore div.help-tab {
    width: 30px;
 }
 
-td.collection.subpanel div.feature-help,
-tr.discussion-content-row td.collection div.feature-help {
-    position: static;
-    padding: 10px;
-    width: 90%;
-}
-
-div#media_gallery div.feature-help {
-    position: static;
-    width: 60%;
-    margin-left: 20px;
-    z-index: 100;
-}
-
-div#media_gallery div.intro-text {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-}
-
-td.panel-container.collection.minimized div.feature-help {
-    text-align: left !important;
-    width: 90% !important;
-    margin-left: 0 !important;
-}
-
-td.panel-container.collection.minimized div.intro-text {
-    border: 0 !important;
-    padding: 0 !important;
-}
-
-td.panel-container.collection.minimized div.intro-text ul {
-    margin: 0 1em 0.7em 1em;
-}
-
 @media (max-width: 575px)
 {
     .breadcrumb {
@@ -3584,23 +3547,6 @@ div.feature-help {
     border-bottom-right-radius: 10px;
     top: 58px;
     border: none;
-}
-
-div.feature-help div.feature-help-instructions {
-    font-size: .875em;
-    background-color: #ededed;
-    padding: 5px;
-    margin: 10px 0;
-}
-
-div.feature-help div.feature-help-instructions ol,
-div.feature-help div.feature-help-instructions ul {
-    margin: 0 .4em 0 1.25em;
-}
-
-div.feature-help div.feature-help-instructions img {
-    vertical-align: middle;
-    margin-bottom: 4px;
 }
 
 /* Timepicker CSS -- used in assignment date selection */

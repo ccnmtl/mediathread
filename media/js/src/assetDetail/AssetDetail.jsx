@@ -867,6 +867,7 @@ export default class AssetDetail extends React.Component {
 
                 this.map.getControls().clear();
                 this.map.getInteractions().clear();
+                this.map.addInteraction(this.draw);
 
             } else {
 

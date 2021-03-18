@@ -130,6 +130,7 @@ export default class AssetDetail extends React.Component {
         this.onSelectTab = this.onSelectTab.bind(this);
 
         this.onDrawEnd = this.onDrawEnd.bind(this);
+        this.onDrawStart = this.onDrawStart.bind(this);
         this.onUpdateIsEditing = this.onUpdateIsEditing.bind(this);
 
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
@@ -867,6 +868,7 @@ export default class AssetDetail extends React.Component {
 
                 this.map.getControls().clear();
                 this.map.getInteractions().clear();
+                this.map.addInteraction(this.draw);
 
             } else {
 

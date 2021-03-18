@@ -109,7 +109,7 @@ djangorestframework==3.12.2
 ccnmtlsettings==1.9.0
 django-extensions==3.1.1
 
-s3transfer==0.3.4
+s3transfer==0.3.5
 jmespath==0.10.0
 
 botocore>=1.16.0,<1.21.0

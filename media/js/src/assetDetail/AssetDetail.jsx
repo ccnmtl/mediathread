@@ -16,9 +16,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Projection from 'ol/proj/Projection';
 import Static from 'ol/source/ImageStatic';
-import {defaults as defaultControls} from 'ol/control';
 import Zoom from 'ol/control/Zoom';
-import Attribution from 'ol/control/Attribution';
+
 import {defaults as defaultInteractions} from 'ol/interaction';
 
 import Asset from '../Asset';
@@ -847,6 +846,8 @@ export default class AssetDetail extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         const me = this;
+        const centerControl = new CenterControl();
+        const zoomControl = new Zoom();
 
         if (
             prevState.tab !== this.state.tab &&
@@ -863,17 +864,14 @@ export default class AssetDetail extends React.Component {
             // Turn off the openlayers map controls when isDrawing
             // changes from false to true.
             if (this.state.isDrawing) {
-                this.map.getControls().forEach(function(control) {
-                    me.map.removeControl(control);
-                });
-                this.map.getInteractions().forEach(function(interaction) {
-                    me.map.removeInteraction(interaction);
-                });
+
+                this.map.getControls().clear();
+                this.map.getInteractions().clear();
+
             } else {
-                defaultControls().forEach(function(control) {
-                    me.map.addControl(control);
-                });
-                me.map.addControl(new CenterControl());
+
+                this.map.addControl(zoomControl);
+                this.map.addControl(centerControl);
 
                 defaultInteractions().forEach(function(interaction) {
                     me.map.addInteraction(interaction);
@@ -915,7 +913,7 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
-                controls: [new Zoom(), new Attribution(), new CenterControl()],
+                controls: [new Zoom(), new CenterControl()],
                 keyboardEventTarget: document,
                 layers: [
                     new ImageLayer({
@@ -933,12 +931,19 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
+
         }
     }
 
     onDrawEnd() {
         this.setState({isDrawing: false});
     }
+
+    onDrawStart() {
+        this.setState({isDrawing: true});
+        this.onClearVectorLayer();
+    }
+
 
     addInteraction() {
         if (this.draw) {
@@ -955,7 +960,7 @@ export default class AssetDetail extends React.Component {
 
         // Every time a drawing is started, clear the vector
         // layer. Each selection only has a single shape, for now.
-        this.draw.on('drawstart', this.onClearVectorLayer);
+        this.draw.on('drawstart', this.onDrawStart);
         this.draw.on('drawend', this.onDrawEnd);
         this.draw.on('drawabort', this.onDrawEnd);
 

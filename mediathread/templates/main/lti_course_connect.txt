@@ -4,7 +4,7 @@ You have successfully created a new Mediathread site for {{course.title}}.
 
 The Center for Teaching and Learning (CTL) offers instructors a range of support for using Mediathread effectively.
 
-For an overview of Mediathread, please visit our About page (https://mediathread.ctl.columbia.edu/about/). For specific information about Mediathread features, please visit the CTL Knowledge Base (http://support.ctl.columbia.edu/).
+For an overview of Mediathread, please visit our About page (https://mediathread.ctl.columbia.edu/about/). For specific information about Mediathread features, please visit the CTL Knowledge Base (https://mediathread.ctl.columbia.edu/kb/).
 
 CTL learning designers Andrew Corpuz (abc2188@columbia.edu) or Michael Tarnow (mit2114@columbia.edu) can help you conceptualize and set up assignments in Mediathread.
 

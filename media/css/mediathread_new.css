@@ -45,12 +45,40 @@ a, a.page-link {
     background-color: #0056b3;
 }
 
-
 .badge-primary,
 .btn-primary,
 .btn-outline-primary:not(:disabled):not(.disabled).active {
     background-color: #0056b3;
     border-color: #0056b3;
+}
+
+.mce-floatpanel .mce-btn button {
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    border-radius: .2em;
+}
+
+.mce-floatpanel .mce-btn button:focus,
+.mce-floatpanel .mce-btn button:hover,
+.mce-floatpanel .mce-btn button:active {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.mce-floatpanel .mce-primary button {
+    color: white;
+    background-color: #0056b3;
+    border-color: #0056b3;
+    border-radius: .2em;
+}
+
+.mce-floatpanel .mce-primary button:focus,
+.mce-floatpanel .mce-primary button:hover,
+.mce-floatpanel .mce-primary button:active {
+    color: white;
+    background-color: #0069d9;
+    border-color: #0062cc;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -4346,4 +4374,9 @@ ul.selection-spinner {
 .metadata {
     font-size: 1.25rem;
     font-family: 'Montserrat', sans-serif;
+}
+
+.center-btn {
+    top: 65px;
+    left: .5em;
 }

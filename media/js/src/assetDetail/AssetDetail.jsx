@@ -553,7 +553,6 @@ export default class AssetDetail extends React.Component {
                                     <p className="av-selections">Selection</p>
                                     <button
                                         type="button"
-                                        autoFocus={true}
                                         ref={this.polygonButtonRef}
                                         className="btn btn-light btn-sm mr-2 polygon-button"
                                         onClick={this.addInteraction}>
@@ -854,9 +853,7 @@ export default class AssetDetail extends React.Component {
             prevState.tab !== this.state.tab &&
                 this.state.tab === 'createSelection'
         ) {
-            if (this.type === 'image') {
-                this.polygonButtonRef.current.focus();
-            } else if (this.type === 'video') {
+            if (this.type === 'video') {
                 this.startButtonRef.current.focus();
             }
         }

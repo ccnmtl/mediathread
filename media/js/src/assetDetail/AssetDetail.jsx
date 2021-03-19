@@ -936,6 +936,9 @@ export default class AssetDetail extends React.Component {
 
     onDrawEnd() {
         this.setState({isDrawing: false});
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
     }
 
     onDrawStart() {

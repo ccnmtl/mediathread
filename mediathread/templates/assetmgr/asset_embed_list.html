@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_new.html" %}
 {% load static %}
 
 {% block title %}
@@ -15,6 +15,24 @@
 
 {% block uncompressable_css %}
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+{% endblock %}
+
+{% block clientside_templates %}
+    {% include "clientside/asset_view_help.mustache" %}
+    {% include "clientside/asset_view_details.mustache" %}
+    {% include "clientside/asset_view_details_quick_edit.mustache" %}
+    {% include "clientside/asset_references.mustache" %}
+    {% include "clientside/asset_annotation_list.mustache" %}
+    {% include "clientside/asset_annotation_current.mustache" %}
+    {% include "clientside/asset_global_annotation.mustache" %}
+    {% include "clientside/asset_global_annotation_quick_edit.mustache" %}
+    {% include "clientside/asset_sources.mustache" %}
+    {% include "clientside/asset_feedback.mustache" %}
+
+    {% include "clientside/collection_chooser.mustache" %}
+    {% include "clientside/collectionwidget.mustache" %}
+    {% include "clientside/collectionwidget_quickedit.mustache" %}
+    {% include "clientside/collectionwidget_assets.mustache" %}
 {% endblock %}
 
 {% block js %}
@@ -40,10 +58,10 @@
     </script>
 {% endblock %}
 
-{% block container %}
+{% block masthead %}
 {% endblock %}
 
-{% block collection-modal %}
+{% block container %}
     <div>
         <div id="header">
             <div id="standardnav_container">
@@ -67,7 +85,7 @@
         <input type="hidden" name="width" value="{{width}}" />
         <input type="hidden" name="height" value="{{height}}" />
     </form>
-    <div id="collection-modal" class="show-assets collection-embed" style="width: 650px">
+    <div id="collection-modal" class="show-assets collection-embed">
         <div class="collection-body">
             <div class="quick-edit" style="display: none"></div>
             <div class="collection-view"></div>

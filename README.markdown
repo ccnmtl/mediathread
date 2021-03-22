@@ -138,6 +138,14 @@ settings that the docker image uses and is designed to allow you to
 override/set the important values through environment variables (so
 configuration can be kept out of the docker image).
 
+CYPRESS
+------------------
+Mediathread has a large set of integration tests, implemented using the [Cypress testing infrastructure](https://www.cypress.io/).
+
+To run the tests in headless mode, simply run `make cypress`.
+
+To run the tests in interactive mode, first run the standalone integration server, `make integrationserver` then `npm run cypress:ffopen` to bring up the interactive test console.
+
 DJANGO SITE INFRASTRUCTURE
 ----------------
 Mediathread makes use of the Django Sites framework. https://docs.djangoproject.com/en/2.2/ref/contrib/sites/

@@ -101,3 +101,8 @@ def date_format_change(date):
     newFormat = ''.join(newDate.split())
 
     return re.sub(r'(?<=[,])(?=[^\s])', r' ', newFormat)
+
+
+@register.simple_tag
+def show_discussion_response(status, comment_count):
+    return status != 'no-response' or comment_count == 0

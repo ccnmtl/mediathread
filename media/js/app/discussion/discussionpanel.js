@@ -40,11 +40,11 @@ var DiscussionPanelHandler = function(el, $parent, panel, space_owner) {
         self: this
     }, this.cancel);
 
-    if (jQuery(this.form.elements.name).attr('value') === '') {
+    if (!jQuery(this.form.elements.name).attr('value')) {
         jQuery(this.form.elements.name).attr('value', this.space_owner);
     }
 
-    if (jQuery(this.form.elements.email).attr('value') === '') {
+    if (!jQuery(this.form.elements.email).attr('value')) {
         jQuery(this.form.elements.email).attr('value', 'null@example.com');
     }
 

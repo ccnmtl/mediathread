@@ -32,7 +32,6 @@ from mediathread.main.views import (
     ContactUsView, IsLoggedInView, IsLoggedInDataView,
     MigrateMaterialsView, MigrateCourseView, CourseManageSourcesView,
     CourseDeleteMaterialsView, CourseDetailView,
-    deprecated_course_detail_view,
     CourseRosterView, CoursePromoteUserView, CourseDemoteUserView,
     CourseRemoveUserView, CourseAddUserByUNIView,
     CourseInviteUserByEmailView, CourseAcceptInvitationView,
@@ -81,9 +80,6 @@ if hasattr(settings, 'CAS_BASE'):
 
 urlpatterns = [
     path('', SplashView.as_view(), name='splash'),
-    path('course/<int:course_pk>/oldhome/',
-         deprecated_course_detail_view,
-         name='home'),
     path('500', error_500, name='error_500'),
     admin_logout_page,
     logout_page,

@@ -96,7 +96,10 @@ export default class AssetDetail extends React.Component {
             isDrawing: false,
             isEditing: null,
 
-            annotationTool: null
+            annotationTool: null,
+            release: false,
+            cancel: false,
+            clear: false
         };
 
         this.draw = null;
@@ -141,6 +144,9 @@ export default class AssetDetail extends React.Component {
         this.addInteraction = this.addInteraction.bind(this);
         this.addFFInteraction = this.addFFInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
+        this.onRelease = this.onRelease.bind(this);
+        this.onCancel = this.onCancel.bind(this);
+        this.onClear = this.onClear.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -546,6 +552,15 @@ export default class AssetDetail extends React.Component {
         }
     }
 
+    onClear(){
+        this.onClearVectorLayer();
+        this.setState({clear: false, release: false, annotationTool: null});
+    }
+
+    onRelease(){
+        this.setState({isDrawing: false, release: false, annotationTool: null});
+    }
+
     onPlaySelection(e) {
         e.preventDefault();
         // Queue the selection, if it's not queued already.
@@ -594,7 +609,7 @@ export default class AssetDetail extends React.Component {
                                     <button
                                         type="button"
                                         ref={this.polygonButtonRef}
-                                        className="btn btn-light btn-sm mr-2 polygon-button"
+                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.annotationTool === 'polygon' ? 'bg-warning' : '')}
                                         onClick={this.addInteraction}>
                                         <svg className="bi bi-pentagon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M8 1.288l-6.842 5.56L3.733 15h8.534l2.575-8.153L8 1.288zM16 6.5L8 0 0 6.5 3 16h10l3-9.5z"></path>
@@ -603,18 +618,36 @@ export default class AssetDetail extends React.Component {
                                     <button
                                         type="button"
                                         ref={this.freeformButtonRef}
-                                        className="btn btn-light btn-sm mr-2 freeform-button"
+                                        className={'btn btn-light btn-sm mr-2 freeform-button ' + (this.state.annotationTool === 'freeform' ? 'bg-warning' : '')}
                                         onClick={this.addFFInteraction}>
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                                         </svg> Free Form
                                     </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-light btn-sm"
-                                        onClick={this.onClearVectorLayer}>
-                                        Clear
-                                    </button>
+                                    {(this.state.cancel) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm"
+                                            onClick={this.onCancel}>
+                                            Cancel
+                                        </button>
+                                    )}
+                                    {(this.state.release) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-light btn-sm"
+                                            onClick={this.onRelease}>
+                                        Release
+                                        </button>
+                                    )}
+                                    {(this.state.clear) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm"
+                                            onClick={this.onClear}>
+                                            Clear
+                                        </button>
+                                    )}
                                 </React.Fragment>
                             )}
                         </div>
@@ -984,21 +1017,34 @@ export default class AssetDetail extends React.Component {
     }
 
     onDrawEnd() {
-        this.setState({isDrawing: false});
+        this.setState({cancel: false});
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
+    }
+
+    onCancel() {
+        this.setState({cancel: false, isDrawing: false, annotationTool: null});
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
     }
 
     onDrawStart() {
-        this.setState({isDrawing: true});
+        this.setState({
+            isDrawing: true,
+            cancel: false,
+            release: true,
+            clear: true});
         this.onClearVectorLayer();
     }
 
 
     addInteraction() {
         this.setState({
-            annotationTool: 'polygon'
+            annotationTool: 'polygon',
+            cancel: true,
+            release: false
         });
         if (this.draw) {
             this.map.removeInteraction(this.draw);
@@ -1023,7 +1069,9 @@ export default class AssetDetail extends React.Component {
 
     addFFInteraction() {
         this.setState({
-            annotationTool: 'freeform'
+            annotationTool: 'freeform',
+            cancel: true,
+            release: false
         });
 
         if (this.draw) {

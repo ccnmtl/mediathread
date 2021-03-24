@@ -103,7 +103,7 @@ export default class AssetDetail extends React.Component {
 
         this.playerRef = React.createRef();
         this.polygonButtonRef = React.createRef();
-        this.lineStringButtonRef = React.createRef();
+        this.freeformButtonRef = React.createRef();
         this.startButtonRef = React.createRef();
 
         this.asset = new Asset(this.props.asset);
@@ -175,7 +175,6 @@ export default class AssetDetail extends React.Component {
         // Clear the validation errors here since apparently the form
         // passed validation.
         this.setState({validationError: null});
-
         e.preventDefault();
         const me = this;
         const selectionTitle = document.getElementById('newSelectionTitle').value;
@@ -206,10 +205,11 @@ export default class AssetDetail extends React.Component {
                         x: -2,
                         y: -1,
                         zoom: 1,
-                        extent: extent
+                        extent: extent,
+                        tool: 'polygon',
                     }
                 };
-            } else if (this.state.annotationTool === 'lineString'){
+            } else if (this.state.annotationTool === 'freeform'){
                 selectionData = {
                     title: selectionTitle,
                     tags: tags,
@@ -226,7 +226,8 @@ export default class AssetDetail extends React.Component {
                         x: -2,
                         y: -1,
                         zoom: 1,
-                        extent: extent
+                        extent: extent,
+                        tool: 'freeform'
                     }
                 };
             }
@@ -275,7 +276,6 @@ export default class AssetDetail extends React.Component {
         // Clear the validation errors here since apparently the form
         // passed validation.
         this.setState({validationError: null});
-
         e.preventDefault();
         const me = this;
 
@@ -302,9 +302,10 @@ export default class AssetDetail extends React.Component {
                     x: -2,
                     y: -1,
                     zoom: 1,
-                    extent: extent
+                    extent: extent,
+                    tool: 'polygon'
                 };
-            } else if (this.state.annotationTool === 'lineString'){
+            } else if (this.state.annotationTool === 'freeform'){
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -314,7 +315,8 @@ export default class AssetDetail extends React.Component {
                     x: -2,
                     y: -1,
                     zoom: 1,
-                    extent: extent
+                    extent: extent,
+                    tool: 'freeform'
                 };
             }
         } else if (this.type === 'video') {
@@ -600,8 +602,8 @@ export default class AssetDetail extends React.Component {
                                     </button>
                                     <button
                                         type="button"
-                                        ref={this.lineStringButtonRef}
-                                        className="btn btn-light btn-sm mr-2 lineString-button"
+                                        ref={this.freeformButtonRef}
+                                        className="btn btn-light btn-sm mr-2 freeform-button"
                                         onClick={this.addFFInteraction}>
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
@@ -1021,7 +1023,7 @@ export default class AssetDetail extends React.Component {
 
     addFFInteraction() {
         this.setState({
-            annotationTool: 'lineString'
+            annotationTool: 'freeform'
         });
 
         if (this.draw) {

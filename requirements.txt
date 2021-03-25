@@ -10,7 +10,7 @@ configparser==5.0.2
 importlib-metadata==3.7.3  # for flake8
 zipp==3.4.1
 flake8==3.9.0
-lxml==4.6.2
+lxml==4.6.3
 extras==1.0.0
 fixtures==3.0.0
 pbr>=0.11
@@ -23,7 +23,7 @@ defusedxml==0.7.1  # tastypie
 django-tastypie==0.14.3
 coverage==5.5
 logilab-common==1.8.1
-lazy-object-proxy==1.5.2
+lazy-object-proxy==1.6.0
 wrapt==1.12.1
 unicodecsv==0.14.1
 
@@ -109,7 +109,7 @@ djangorestframework==3.12.2
 ccnmtlsettings==1.9.0
 django-extensions==3.1.1
 
-s3transfer==0.3.4
+s3transfer==0.3.6
 jmespath==0.10.0
 
 botocore>=1.16.0,<1.21.0

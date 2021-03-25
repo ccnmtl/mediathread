@@ -627,7 +627,7 @@ export default class AssetDetail extends React.Component {
                                     {(this.state.cancel) && (
                                         <button
                                             type="button"
-                                            className="btn btn-danger btn-sm"
+                                            className="btn btn-danger btn-sm ml-auto"
                                             onClick={this.onCancel}>
                                             Cancel
                                         </button>
@@ -635,15 +635,15 @@ export default class AssetDetail extends React.Component {
                                     {(this.state.release) && (
                                         <button
                                             type="button"
-                                            className="btn btn-light btn-sm"
+                                            className="btn btn-light btn-sm ml-auto"
                                             onClick={this.onRelease}>
-                                        Release
+                                            Release
                                         </button>
                                     )}
                                     {(this.state.clear) && (
                                         <button
                                             type="button"
-                                            className="btn btn-danger btn-sm"
+                                            className="btn btn-danger btn-sm ml-auto"
                                             onClick={this.onClear}>
                                             Clear
                                         </button>

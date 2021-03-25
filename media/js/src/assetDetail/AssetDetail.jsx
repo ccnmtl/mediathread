@@ -554,7 +554,11 @@ export default class AssetDetail extends React.Component {
 
     onClear(){
         this.onClearVectorLayer();
-        this.setState({clear: false, release: false, annotationTool: null});
+        this.setState({
+            isDrawing: false,
+            clear: false,
+            release: false,
+            annotationTool: null});
     }
 
     onRelease(){

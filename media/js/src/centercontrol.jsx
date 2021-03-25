@@ -18,8 +18,9 @@ const CenterControl = /*@__PURE__*/(function(Control) {
             element: element,
             target: options.target,
         });
-
-        button.addEventListener('click', this.handleCenter.bind(this), false);
+        if(this.handleCenter){
+            button.addEventListener('click', this.handleCenter.bind(this), false);
+        }
     }
 
     if (Control) CenterControl.__proto__ = Control;

@@ -94,13 +94,19 @@ export default class AssetDetail extends React.Component {
             tab: 'viewSelections',
 
             isDrawing: false,
-            isEditing: null
+            isEditing: null,
+
+            annotationTool: null,
+            release: false,
+            cancel: false,
+            clear: false
         };
 
         this.draw = null;
 
         this.playerRef = React.createRef();
         this.polygonButtonRef = React.createRef();
+        this.freeformButtonRef = React.createRef();
         this.startButtonRef = React.createRef();
 
         this.asset = new Asset(this.props.asset);
@@ -136,7 +142,11 @@ export default class AssetDetail extends React.Component {
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
 
         this.addInteraction = this.addInteraction.bind(this);
+        this.addFFInteraction = this.addFFInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
+        this.onRelease = this.onRelease.bind(this);
+        this.onCancel = this.onCancel.bind(this);
+        this.onClear = this.onClear.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -171,7 +181,6 @@ export default class AssetDetail extends React.Component {
         // Clear the validation errors here since apparently the form
         // passed validation.
         this.setState({validationError: null});
-
         e.preventDefault();
         const me = this;
         const selectionTitle = document.getElementById('newSelectionTitle').value;
@@ -185,26 +194,49 @@ export default class AssetDetail extends React.Component {
             const geometry = feature.getGeometry();
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
-
-            selectionData = {
-                title: selectionTitle,
-                tags: tags,
-                terms: terms,
-                body: document.getElementById('newSelectionNotes').value,
-                range1: -2,
-                range2: -1,
-                annotation_data: {
-                    geometry: {
-                        type: 'Polygon',
-                        coordinates: coords
-                    },
-                    default: false,
-                    x: -2,
-                    y: -1,
-                    zoom: 1,
-                    extent: extent
-                }
-            };
+            if(this.state.annotationTool === 'polygon'){
+                selectionData = {
+                    title: selectionTitle,
+                    tags: tags,
+                    terms: terms,
+                    body: document.getElementById('newSelectionNotes').value,
+                    range1: -2,
+                    range2: -1,
+                    annotation_data: {
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: coords
+                        },
+                        default: false,
+                        x: -2,
+                        y: -1,
+                        zoom: 1,
+                        extent: extent,
+                        tool: 'polygon',
+                    }
+                };
+            } else if (this.state.annotationTool === 'freeform'){
+                selectionData = {
+                    title: selectionTitle,
+                    tags: tags,
+                    terms: terms,
+                    body: document.getElementById('newSelectionNotes').value,
+                    range1: -2,
+                    range2: -1,
+                    annotation_data: {
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: coords
+                        },
+                        default: false,
+                        x: -2,
+                        y: -1,
+                        zoom: 1,
+                        extent: extent,
+                        tool: 'freeform'
+                    }
+                };
+            }
         } else if (this.type === 'video') {
             selectionData = {
                 title: selectionTitle,
@@ -250,7 +282,6 @@ export default class AssetDetail extends React.Component {
         // Clear the validation errors here since apparently the form
         // passed validation.
         this.setState({validationError: null});
-
         e.preventDefault();
         const me = this;
 
@@ -267,18 +298,33 @@ export default class AssetDetail extends React.Component {
             const geometry = feature.getGeometry();
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
-
-            annotationData = {
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: coords
-                },
-                default: false,
-                x: -2,
-                y: -1,
-                zoom: 1,
-                extent: extent
-            };
+            if (this.state.annotationTool === 'polygon'){
+                annotationData = {
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'polygon'
+                };
+            } else if (this.state.annotationTool === 'freeform'){
+                annotationData = {
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'freeform'
+                };
+            }
         } else if (this.type === 'video') {
             annotationData = {
                 startCode: formatTimecode(this.state.selectionStartTime || 0),
@@ -506,6 +552,19 @@ export default class AssetDetail extends React.Component {
         }
     }
 
+    onClear(){
+        this.onClearVectorLayer();
+        this.setState({
+            isDrawing: false,
+            clear: false,
+            release: false,
+            annotationTool: null});
+    }
+
+    onRelease(){
+        this.setState({isDrawing: false, release: false, annotationTool: null});
+    }
+
     onPlaySelection(e) {
         e.preventDefault();
         // Queue the selection, if it's not queued already.
@@ -554,7 +613,7 @@ export default class AssetDetail extends React.Component {
                                     <button
                                         type="button"
                                         ref={this.polygonButtonRef}
-                                        className="btn btn-light btn-sm mr-2 polygon-button"
+                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.annotationTool === 'polygon' ? 'bg-warning' : '')}
                                         onClick={this.addInteraction}>
                                         <svg className="bi bi-pentagon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M8 1.288l-6.842 5.56L3.733 15h8.534l2.575-8.153L8 1.288zM16 6.5L8 0 0 6.5 3 16h10l3-9.5z"></path>
@@ -562,10 +621,37 @@ export default class AssetDetail extends React.Component {
                                     </button>
                                     <button
                                         type="button"
-                                        className="btn btn-light btn-sm"
-                                        onClick={this.onClearVectorLayer}>
-                                        Clear
+                                        ref={this.freeformButtonRef}
+                                        className={'btn btn-light btn-sm mr-2 freeform-button ' + (this.state.annotationTool === 'freeform' ? 'bg-warning' : '')}
+                                        onClick={this.addFFInteraction}>
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                        </svg> Free Form
                                     </button>
+                                    {(this.state.cancel) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm ml-auto"
+                                            onClick={this.onCancel}>
+                                            Cancel
+                                        </button>
+                                    )}
+                                    {(this.state.release) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-light btn-sm ml-auto"
+                                            onClick={this.onRelease}>
+                                            Release
+                                        </button>
+                                    )}
+                                    {(this.state.clear) && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger btn-sm ml-auto"
+                                            onClick={this.onClear}>
+                                            Clear
+                                        </button>
+                                    )}
                                 </React.Fragment>
                             )}
                         </div>
@@ -935,19 +1021,35 @@ export default class AssetDetail extends React.Component {
     }
 
     onDrawEnd() {
-        this.setState({isDrawing: false});
+        this.setState({cancel: false});
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
+    }
+
+    onCancel() {
+        this.setState({cancel: false, isDrawing: false, annotationTool: null});
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
     }
 
     onDrawStart() {
-        this.setState({isDrawing: true});
+        this.setState({
+            isDrawing: true,
+            cancel: false,
+            release: true,
+            clear: true});
         this.onClearVectorLayer();
     }
 
 
     addInteraction() {
+        this.setState({
+            annotationTool: 'polygon',
+            cancel: true,
+            release: false
+        });
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
@@ -958,6 +1060,34 @@ export default class AssetDetail extends React.Component {
             source: this.selectionSource,
             stopClick: true,
             type: 'Polygon'
+        });
+
+        // Every time a drawing is started, clear the vector
+        // layer. Each selection only has a single shape, for now.
+        this.draw.on('drawstart', this.onDrawStart);
+        this.draw.on('drawend', this.onDrawEnd);
+        this.draw.on('drawabort', this.onDrawEnd);
+
+        this.map.addInteraction(this.draw);
+    }
+
+    addFFInteraction() {
+        this.setState({
+            annotationTool: 'freeform',
+            cancel: true,
+            release: false
+        });
+
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
+
+        this.setState({isDrawing: true});
+
+        this.draw = new Draw({
+            source: this.selectionSource,
+            type: 'Polygon',
+            freehand: true
         });
 
         // Every time a drawing is started, clear the vector

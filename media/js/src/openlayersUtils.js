@@ -60,16 +60,49 @@ const getCoordStyles = function() {
     ];
 };
 
+const getfreeformStyles = function() {
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: 'blue',
+                width: 3
+            }),
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            })
+        }),
+        new Style({
+            image: new CircleStyle({
+                radius: 2,
+                fill: new Fill({
+                    color: 'blue'
+                })
+            }),
+            geometry: function(feature) {
+                // return the coordinates of the first ring of
+                // the polygon
+                var coordinates =
+                    feature.getGeometry().getCoordinates()[0];
+                return new MultiPoint(coordinates);
+            }
+        })
+    ];
+};
 /**
  * Display the given selection on the given OpenLayers map.
  *
  * Returns the new VectorLayer.
  */
 const displaySelection = function(a, map) {
-    const styles = getCoordStyles();
+    let styles = null;
+    const tool = a.annotation.tool;
+    if(tool === 'polygon') {
+        styles = getCoordStyles();
+    } else {
+        styles = getfreeformStyles();
+    }
 
     const geometry = a.annotation.geometry;
-
     const view = map.getView();
     const projection = view.getProjection();
     const source = new VectorSource({

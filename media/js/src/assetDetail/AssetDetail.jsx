@@ -225,7 +225,7 @@ export default class AssetDetail extends React.Component {
                     range2: -1,
                     annotation_data: {
                         geometry: {
-                            type: 'Polygon',
+                            type: 'LineString',
                             coordinates: coords
                         },
                         default: false,
@@ -314,7 +314,7 @@ export default class AssetDetail extends React.Component {
             } else if (this.state.annotationTool === 'freeform'){
                 annotationData = {
                     geometry: {
-                        type: 'Polygon',
+                        type: 'LineString',
                         coordinates: coords
                     },
                     default: false,
@@ -1086,7 +1086,7 @@ export default class AssetDetail extends React.Component {
 
         this.draw = new Draw({
             source: this.selectionSource,
-            type: 'Polygon',
+            type: 'LineString',
             freehand: true
         });
 

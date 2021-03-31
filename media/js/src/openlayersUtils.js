@@ -31,7 +31,7 @@ const objectProportioned = function(width, height) {
 /**
  * Get annotation/selection display openlayers styles.
  */
-const getCoordStyles = function() {
+const getpolygonStyles = function() {
     return [
         new Style({
             stroke: new Stroke({
@@ -60,7 +60,7 @@ const getCoordStyles = function() {
     ];
 };
 
-const getfreeformStyles = function() {
+const getfreeformShapeStyles = function() {
     return [
         new Style({
             stroke: new Stroke({
@@ -97,9 +97,9 @@ const displaySelection = function(a, map) {
     let styles = null;
     const tool = a.annotation.tool;
     if(tool === 'polygon') {
-        styles = getCoordStyles();
+        styles = getpolygonStyles();
     } else {
-        styles = getfreeformStyles();
+        styles = getfreeformShapeStyles();
     }
 
     const geometry = a.annotation.geometry;
@@ -172,6 +172,6 @@ const resetMap = function(map, source, img) {
 };
 
 export {
-    objectProportioned, getCoordStyles, displaySelection,
-    clearSource, hasSelection, resetMap
+    objectProportioned, getpolygonStyles, getfreeformShapeStyles,
+    displaySelection, clearSource, hasSelection, resetMap
 };

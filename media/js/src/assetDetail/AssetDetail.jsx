@@ -155,7 +155,6 @@ export default class AssetDetail extends React.Component {
 
         // If we're leaving editing mode, clear the vector layer,
         if (!newVal) {
-            this.onClearVectorLayer();
             newState.isDrawing = false;
 
             // and select the selection that was being edited.

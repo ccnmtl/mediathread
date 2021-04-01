@@ -1092,8 +1092,10 @@ export default class AssetDetail extends React.Component {
         this.setState({
             annotationTool: 'polygon',
             cancel: true,
-            toolType: 'polygon'
+            toolType: 'polygon',
+            clear: false
         });
+        this.onClearVectorLayer();
 
         if (this.draw) {
             this.map.removeInteraction(this.draw);
@@ -1120,8 +1122,10 @@ export default class AssetDetail extends React.Component {
         this.setState({
             annotationTool: 'freeformShape',
             cancel: true,
-            toolType: 'freeformShape'
+            toolType: 'freeformShape',
+            clear: false
         });
+        this.onClearVectorLayer();
 
         if (this.draw) {
             this.map.removeInteraction(this.draw);
@@ -1148,8 +1152,10 @@ export default class AssetDetail extends React.Component {
         this.setState({
             annotationTool: 'drawline',
             cancel: true,
-            toolType: 'drawline'
+            toolType: 'drawline',
+            clear: false
         });
+        this.onClearVectorLayer();
 
         if (this.draw) {
             this.map.removeInteraction(this.draw);

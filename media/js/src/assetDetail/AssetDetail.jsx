@@ -635,9 +635,7 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
-                            { (this.state.activeSelection && this.state.tab === 'viewSelections' && !this.state.isEditing) && (
-                                <p className="av-selections">Selection</p>
-                            )}
+
                             {(this.state.tab === 'createSelection' ||
                               (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>

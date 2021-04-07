@@ -46,7 +46,6 @@ MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
 
 MIDDLEWARE += [  # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
@@ -79,8 +78,7 @@ INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'bootstrap4',
     'django_extensions',
-    'rest_framework',
-    'debug_toolbar',
+    'rest_framework'
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"
@@ -222,9 +220,6 @@ if 'test' in sys.argv or \
    'integrationserver' in sys.argv:
     DEBUG = True
     TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
-    MIDDLEWARE.remove(
-        'debug_toolbar.middleware.DebugToolbarMiddleware')
-    INSTALLED_APPS.remove('debug_toolbar')
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )

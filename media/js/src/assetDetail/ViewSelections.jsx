@@ -434,6 +434,20 @@ export default class ViewSelections extends React.Component {
 
     componentDidMount() {
         this.registerAccordionEvents();
+        const me = this;
+        jQuery(document).ready(function() {
+            if(jQuery('#selectionsAccordion .card.active > div').length != 0) {
+                let openDiv = jQuery('#selectionsAccordion .card.active > div').prop('outerHTML');
+                let selectionData = openDiv.indexOf('-0-');
+                let id = parseInt(openDiv.slice(selectionData + 3), 10);
+
+                const selection = find(me.props.filteredSelections, {
+                    id: id
+                });
+
+                me.props.onViewSelection(null, selection);
+            }
+        });
     }
 }
 

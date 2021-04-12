@@ -24,7 +24,6 @@ export default class ViewSelections extends React.Component {
         };
 
         this.onClickEdit = this.onClickEdit.bind(this);
-        this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickDelete = this.onClickDelete.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
         this.onSaveSelection = this.onSaveSelection.bind(this);
@@ -38,11 +37,6 @@ export default class ViewSelections extends React.Component {
     onClickEdit(e, s) {
         e.preventDefault();
         this.props.onUpdateIsEditing(s);
-    }
-
-    onClickCancel(e, selection) {
-        e.preventDefault();
-        this.props.onUpdateIsEditing(null, selection);
     }
 
     onClickDelete(selectionId) {
@@ -269,7 +263,7 @@ export default class ViewSelections extends React.Component {
                     tags={this.props.tags}
                     terms={this.props.terms}
                     selectionSource={this.props.selectionSource}
-                    onClickCancel={this.onClickCancel}
+                    onClickCancel={this.props.onClickCancel}
                     onSaveSelection={this.onSaveSelection}
                     onClickDelete={this.onClickDelete}
                     onShowValidationError={this.props.onShowValidationError}
@@ -462,5 +456,6 @@ ViewSelections.propTypes = {
     onShowValidationError: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
-    showDeleteDialogBool: PropTypes.bool.isRequired
+    showDeleteDialogBool: PropTypes.bool.isRequired,
+    onClickCancel: PropTypes.func.isRequired
 };

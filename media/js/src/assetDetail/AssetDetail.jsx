@@ -148,6 +148,7 @@ export default class AssetDetail extends React.Component {
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onClickCancel = this.onClickCancel.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -615,6 +616,13 @@ export default class AssetDetail extends React.Component {
         }
     }
 
+    onClickCancel(e, selection) {
+        e.preventDefault();
+        this.onUpdateIsEditing(null, selection);
+        this.onClearActiveSelection();
+        this.setState({annotationTool: null, toolType: null});
+    }
+
     render() {
         let media = null;
 
@@ -635,7 +643,6 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
-
                             {(this.state.tab === 'createSelection' ||
                               (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>
@@ -676,7 +683,7 @@ export default class AssetDetail extends React.Component {
                                             Cancel
                                         </button>
                                     )}
-                                    {(this.state.clear) && (
+                                    {(this.state.clear && !this.state.isEditing) && (
                                         <button
                                             type="button"
                                             id="clear-btn"
@@ -929,6 +936,7 @@ export default class AssetDetail extends React.Component {
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}
                                 showDeleteDialogBool={this.state.showDeleteDialog}
+                                onClickCancel={this.onClickCancel}
                             />
                         )}
                         {this.state.tab === 'createSelection' && (

@@ -88,6 +88,35 @@ const getfreeformShapeStyles = function() {
         })
     ];
 };
+
+const getdrawLineStyles = function() {
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: 'blue',
+                width: 3
+            }),
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            })
+        }),
+        new Style({
+            image: new CircleStyle({
+                radius: 2,
+                fill: new Fill({
+                    color: 'blue'
+                })
+            }),
+            geometry: function(feature) {
+                // return the coordinates of the first ring of
+                // the polygon
+                var coordinates =
+                    feature.getGeometry().getCoordinates()[0];
+                return new MultiPoint(coordinates);
+            }
+        })
+    ];
+};
 /**
  * Display the given selection on the given OpenLayers map.
  *
@@ -98,8 +127,10 @@ const displaySelection = function(a, map) {
     const tool = a.annotation.tool;
     if(tool === 'polygon') {
         styles = getpolygonStyles();
-    } else {
+    } else if (tool === 'freeformShape'){
         styles = getfreeformShapeStyles();
+    } else {
+        styles = getdrawLineStyles();
     }
 
     const geometry = a.annotation.geometry;

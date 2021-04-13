@@ -937,6 +937,7 @@ export default class AssetDetail extends React.Component {
                                 showDeleteDialog={this.showDeleteDialog}
                                 showDeleteDialogBool={this.state.showDeleteDialog}
                                 onClickCancel={this.onClickCancel}
+                                onClearVectorLayer={this.onClearVectorLayer}
                             />
                         )}
                         {this.state.tab === 'createSelection' && (
@@ -1010,8 +1011,9 @@ export default class AssetDetail extends React.Component {
         // If the path contains a selection ID, open the appropriate
         // selection accordion item.
         const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        let sId = null;
         if (match && match.length > 1) {
-            const sId = parseInt(match[1], 10);
+            sId = parseInt(match[1], 10);
             openSelectionAccordionItem(
                 jQuery('#selectionsAccordion'), sId, true);
         }
@@ -1057,7 +1059,12 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
-
+            if(sId) {
+                const selection = find(this.props.asset.annotations, {
+                    id: sId
+                });
+                this.onViewSelection(null, selection);
+            }
         }
     }
 

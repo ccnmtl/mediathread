@@ -429,6 +429,10 @@ export default class ViewSelections extends React.Component {
             // When coming out of the isEditing state, re-register the
             // accordion event listeners.
             this.registerAccordionEvents();
+
+            if (prevProps.isEditing) {
+                this.props.onViewSelection(null, prevProps.isEditing);
+            }
         }
     }
 

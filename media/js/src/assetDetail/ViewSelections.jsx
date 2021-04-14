@@ -12,7 +12,7 @@ import find from 'lodash/find';
 import EditSelectionForm from '../forms/EditSelectionForm';
 import {
     groupByAuthor, groupByTerm, groupByTag, formatTimecode, getDuration,
-    capitalizeFirstLetter
+    capitalizeFirstLetter, openSelectionAccordionItem
 } from '../utils';
 
 export default class ViewSelections extends React.Component {
@@ -423,6 +423,13 @@ export default class ViewSelections extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        let sId = null;
+        if (match && match.length > 1) {
+            sId = parseInt(match[1], 10);
+            openSelectionAccordionItem(
+                jQuery('#selectionsAccordion'), sId, true);
+        }
         if (
             prevProps.isEditing !== this.props.isEditing &&
                 !this.props.isEditing
@@ -433,7 +440,12 @@ export default class ViewSelections extends React.Component {
 
             if (prevProps.isEditing) {
                 this.props.onClearVectorLayer();
-                this.props.onViewSelection(null, prevProps.isEditing);
+                if(sId) {
+                    const selection = find(this.props.filteredSelections, {
+                        id: sId
+                    });
+                    this.props.onViewSelection(null, selection);
+                }
             }
         }
     }

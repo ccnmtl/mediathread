@@ -12,7 +12,7 @@ import find from 'lodash/find';
 import EditSelectionForm from '../forms/EditSelectionForm';
 import {
     groupByAuthor, groupByTerm, groupByTag, formatTimecode, getDuration,
-    capitalizeFirstLetter
+    capitalizeFirstLetter, openSelectionAccordionItem
 } from '../utils';
 
 export default class ViewSelections extends React.Component {
@@ -24,7 +24,6 @@ export default class ViewSelections extends React.Component {
         };
 
         this.onClickEdit = this.onClickEdit.bind(this);
-        this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickDelete = this.onClickDelete.bind(this);
         this.onDeleteSelection = this.onDeleteSelection.bind(this);
         this.onSaveSelection = this.onSaveSelection.bind(this);
@@ -38,11 +37,6 @@ export default class ViewSelections extends React.Component {
     onClickEdit(e, s) {
         e.preventDefault();
         this.props.onUpdateIsEditing(s);
-    }
-
-    onClickCancel(e, selection) {
-        e.preventDefault();
-        this.props.onUpdateIsEditing(null, selection);
     }
 
     onClickDelete(selectionId) {
@@ -269,7 +263,7 @@ export default class ViewSelections extends React.Component {
                     tags={this.props.tags}
                     terms={this.props.terms}
                     selectionSource={this.props.selectionSource}
-                    onClickCancel={this.onClickCancel}
+                    onClickCancel={this.props.onClickCancel}
                     onSaveSelection={this.onSaveSelection}
                     onClickDelete={this.onClickDelete}
                     onShowValidationError={this.props.onShowValidationError}
@@ -411,6 +405,7 @@ export default class ViewSelections extends React.Component {
         });
 
         $selectionsAccordion.on('show.bs.collapse', function(e) {
+            me.props.onClearVectorLayer();
             const selectionId = parseInt(
                 jQuery(e.target).data('selectionid'), 10);
             const selection = find(me.props.filteredSelections, {
@@ -428,6 +423,13 @@ export default class ViewSelections extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        let sId = null;
+        if (match && match.length > 1) {
+            sId = parseInt(match[1], 10);
+            openSelectionAccordionItem(
+                jQuery('#selectionsAccordion'), sId, true);
+        }
         if (
             prevProps.isEditing !== this.props.isEditing &&
                 !this.props.isEditing
@@ -435,6 +437,16 @@ export default class ViewSelections extends React.Component {
             // When coming out of the isEditing state, re-register the
             // accordion event listeners.
             this.registerAccordionEvents();
+
+            if (prevProps.isEditing) {
+                this.props.onClearVectorLayer();
+                if(sId) {
+                    const selection = find(this.props.filteredSelections, {
+                        id: sId
+                    });
+                    this.props.onViewSelection(null, selection);
+                }
+            }
         }
     }
 
@@ -462,5 +474,7 @@ ViewSelections.propTypes = {
     onShowValidationError: PropTypes.func.isRequired,
     hideDeleteDialog: PropTypes.func.isRequired,
     showDeleteDialog: PropTypes.func.isRequired,
-    showDeleteDialogBool: PropTypes.bool.isRequired
+    showDeleteDialogBool: PropTypes.bool.isRequired,
+    onClickCancel: PropTypes.func.isRequired,
+    onClearVectorLayer: PropTypes.func.isRequired
 };

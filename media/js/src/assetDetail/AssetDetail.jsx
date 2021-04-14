@@ -97,16 +97,17 @@ export default class AssetDetail extends React.Component {
             isEditing: null,
 
             annotationTool: null,
-            release: false,
             cancel: false,
-            clear: false
+            clear: false,
+            toolType: null
         };
 
         this.draw = null;
 
         this.playerRef = React.createRef();
         this.polygonButtonRef = React.createRef();
-        this.freeformButtonRef = React.createRef();
+        this.freeformShapeButtonRef = React.createRef();
+        this.drawlineButtonRef = React.createRef();
         this.startButtonRef = React.createRef();
 
         this.asset = new Asset(this.props.asset);
@@ -142,11 +143,12 @@ export default class AssetDetail extends React.Component {
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
 
         this.addInteraction = this.addInteraction.bind(this);
-        this.addFFInteraction = this.addFFInteraction.bind(this);
+        this.addFreeformInteraction = this.addFreeformInteraction.bind(this);
+        this.addDrawlineInteraction = this.addDrawlineInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
-        this.onRelease = this.onRelease.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onClickCancel = this.onClickCancel.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -154,7 +156,6 @@ export default class AssetDetail extends React.Component {
 
         // If we're leaving editing mode, clear the vector layer,
         if (!newVal) {
-            this.onClearVectorLayer();
             newState.isDrawing = false;
 
             // and select the selection that was being edited.
@@ -215,7 +216,7 @@ export default class AssetDetail extends React.Component {
                         tool: 'polygon',
                     }
                 };
-            } else if (this.state.annotationTool === 'freeform'){
+            } else if (this.state.annotationTool === 'freeformShape'){
                 selectionData = {
                     title: selectionTitle,
                     tags: tags,
@@ -233,7 +234,29 @@ export default class AssetDetail extends React.Component {
                         y: -1,
                         zoom: 1,
                         extent: extent,
-                        tool: 'freeform'
+                        tool: 'freeformShape'
+                    }
+                };
+            }
+            else if (this.state.annotationTool === 'drawline'){
+                selectionData = {
+                    title: selectionTitle,
+                    tags: tags,
+                    terms: terms,
+                    body: document.getElementById('newSelectionNotes').value,
+                    range1: -2,
+                    range2: -1,
+                    annotation_data: {
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: coords
+                        },
+                        default: false,
+                        x: -2,
+                        y: -1,
+                        zoom: 1,
+                        extent: extent,
+                        tool: 'drawline'
                     }
                 };
             }
@@ -311,7 +334,7 @@ export default class AssetDetail extends React.Component {
                     extent: extent,
                     tool: 'polygon'
                 };
-            } else if (this.state.annotationTool === 'freeform'){
+            } else if (this.state.annotationTool === 'freeformShape'){
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -322,7 +345,21 @@ export default class AssetDetail extends React.Component {
                     y: -1,
                     zoom: 1,
                     extent: extent,
-                    tool: 'freeform'
+                    tool: 'freeformShape'
+                };
+            }
+            else if (this.state.annotationTool === 'drawline'){
+                annotationData = {
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'drawline'
                 };
             }
         } else if (this.type === 'video') {
@@ -557,12 +594,8 @@ export default class AssetDetail extends React.Component {
         this.setState({
             isDrawing: false,
             clear: false,
-            release: false,
-            annotationTool: null});
-    }
-
-    onRelease(){
-        this.setState({isDrawing: false, release: false, annotationTool: null});
+            annotationTool: null,
+            toolType: null});
     }
 
     onPlaySelection(e) {
@@ -581,6 +614,13 @@ export default class AssetDetail extends React.Component {
             // Vimeo and <video> element
             internalPlayer.play();
         }
+    }
+
+    onClickCancel(e, selection) {
+        e.preventDefault();
+        this.onUpdateIsEditing(null, selection);
+        this.onClearActiveSelection();
+        this.setState({annotationTool: null, toolType: null});
     }
 
     render() {
@@ -603,50 +643,50 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
-                            { (this.state.activeSelection && this.state.tab === 'viewSelections') && (
-                                <p className="av-selections">Selection</p>
-                            )}
                             {(this.state.tab === 'createSelection' ||
                               (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>
-                                    <p className="av-selections">Selection</p>
+                                    <p className="av-selections">Draw Selection</p>
                                     <button
                                         type="button"
                                         ref={this.polygonButtonRef}
-                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.annotationTool === 'polygon' ? 'bg-warning' : '')}
+                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.toolType === 'polygon' ? 'bg-warning' : '')}
                                         onClick={this.addInteraction}>
                                         <svg className="bi bi-pentagon" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M8 1.288l-6.842 5.56L3.733 15h8.534l2.575-8.153L8 1.288zM16 6.5L8 0 0 6.5 3 16h10l3-9.5z"></path>
-                                        </svg> Draw Shape
+                                        </svg> Polygon
                                     </button>
                                     <button
                                         type="button"
-                                        ref={this.freeformButtonRef}
-                                        className={'btn btn-light btn-sm mr-2 freeform-button ' + (this.state.annotationTool === 'freeform' ? 'bg-warning' : '')}
-                                        onClick={this.addFFInteraction}>
+                                        ref={this.freeformShapeButtonRef}
+                                        className={'btn btn-light btn-sm mr-2 freeformShape-button ' + (this.state.toolType === 'freeformShape' ? 'bg-warning' : '')}
+                                        onClick={this.addFreeformInteraction}>
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
-                                        </svg> Free Form
+                                        </svg> Freeform Shape
+                                    </button>
+                                    <button
+                                        type="button"
+                                        ref={this.drawlineButtonRef}
+                                        className={'btn btn-light btn-sm mr-2 drawline-button ' + (this.state.toolType === 'drawline' ? 'bg-warning' : '')}
+                                        onClick={this.addDrawlineInteraction}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" className="bi bi-brush" viewBox="0 0 16 16">
+                                            <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.067 6.067 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.118 8.118 0 0 1-3.078.132 3.659 3.659 0 0 1-.562-.135 1.382 1.382 0 0 1-.466-.247.714.714 0 0 1-.204-.288.622.622 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896.126.007.243.025.348.048.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04zM4.705 11.912a1.23 1.23 0 0 0-.419-.1c-.246-.013-.573.05-.879.479-.197.275-.355.532-.5.777l-.105.177c-.106.181-.213.362-.32.528a3.39 3.39 0 0 1-.76.861c.69.112 1.736.111 2.657-.12.559-.139.843-.569.993-1.06a3.122 3.122 0 0 0 .126-.75l-.793-.792zm1.44.026c.12-.04.277-.1.458-.183a5.068 5.068 0 0 0 1.535-1.1c1.9-1.996 4.412-5.57 6.052-8.631-2.59 1.927-5.566 4.66-7.302 6.792-.442.543-.795 1.243-1.042 1.826-.121.288-.214.54-.275.72v.001l.575.575zm-4.973 3.04.007-.005a.031.031 0 0 1-.007.004zm3.582-3.043.002.001h-.002z"/>
+                                        </svg> Line
                                     </button>
                                     {(this.state.cancel) && (
                                         <button
                                             type="button"
+                                            id='cancel-btn'
                                             className="btn btn-danger btn-sm ml-auto"
                                             onClick={this.onCancel}>
                                             Cancel
                                         </button>
                                     )}
-                                    {(this.state.release) && (
+                                    {(this.state.clear && !this.state.isEditing) && (
                                         <button
                                             type="button"
-                                            className="btn btn-light btn-sm ml-auto"
-                                            onClick={this.onRelease}>
-                                            Release
-                                        </button>
-                                    )}
-                                    {(this.state.clear) && (
-                                        <button
-                                            type="button"
+                                            id="clear-btn"
                                             className="btn btn-danger btn-sm ml-auto"
                                             onClick={this.onClear}>
                                             Clear
@@ -896,6 +936,8 @@ export default class AssetDetail extends React.Component {
                                 hideDeleteDialog={this.hideDeleteDialog}
                                 showDeleteDialog={this.showDeleteDialog}
                                 showDeleteDialogBool={this.state.showDeleteDialog}
+                                onClickCancel={this.onClickCancel}
+                                onClearVectorLayer={this.onClearVectorLayer}
                             />
                         )}
                         {this.state.tab === 'createSelection' && (
@@ -969,8 +1011,9 @@ export default class AssetDetail extends React.Component {
         // If the path contains a selection ID, open the appropriate
         // selection accordion item.
         const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        let sId = null;
         if (match && match.length > 1) {
-            const sId = parseInt(match[1], 10);
+            sId = parseInt(match[1], 10);
             openSelectionAccordionItem(
                 jQuery('#selectionsAccordion'), sId, true);
         }
@@ -1016,19 +1059,34 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
-
+            if(sId) {
+                const selection = find(this.props.asset.annotations, {
+                    id: sId
+                });
+                this.onViewSelection(null, selection);
+            }
         }
     }
 
     onDrawEnd() {
-        this.setState({cancel: false});
+        this.setState({
+            cancel: false,
+            isDrawing: false,
+            toolType: null});
+
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
     }
 
     onCancel() {
-        this.setState({cancel: false, isDrawing: false, annotationTool: null});
+        this.setState({
+            cancel: false,
+            isDrawing: false,
+            annotationTool: null,
+            toolType: null
+        });
+
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
@@ -1038,7 +1096,6 @@ export default class AssetDetail extends React.Component {
         this.setState({
             isDrawing: true,
             cancel: false,
-            release: true,
             clear: true});
         this.onClearVectorLayer();
     }
@@ -1048,8 +1105,11 @@ export default class AssetDetail extends React.Component {
         this.setState({
             annotationTool: 'polygon',
             cancel: true,
-            release: false
+            toolType: 'polygon',
+            clear: false
         });
+        this.onClearVectorLayer();
+
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }
@@ -1071,12 +1131,14 @@ export default class AssetDetail extends React.Component {
         this.map.addInteraction(this.draw);
     }
 
-    addFFInteraction() {
+    addFreeformInteraction() {
         this.setState({
-            annotationTool: 'freeform',
+            annotationTool: 'freeformShape',
             cancel: true,
-            release: false
+            toolType: 'freeformShape',
+            clear: false
         });
+        this.onClearVectorLayer();
 
         if (this.draw) {
             this.map.removeInteraction(this.draw);
@@ -1087,6 +1149,36 @@ export default class AssetDetail extends React.Component {
         this.draw = new Draw({
             source: this.selectionSource,
             type: 'Polygon',
+            freehand: true
+        });
+
+        // Every time a drawing is started, clear the vector
+        // layer. Each selection only has a single shape, for now.
+        this.draw.on('drawstart', this.onDrawStart);
+        this.draw.on('drawend', this.onDrawEnd);
+        this.draw.on('drawabort', this.onDrawEnd);
+
+        this.map.addInteraction(this.draw);
+    }
+
+    addDrawlineInteraction() {
+        this.setState({
+            annotationTool: 'drawline',
+            cancel: true,
+            toolType: 'drawline',
+            clear: false
+        });
+        this.onClearVectorLayer();
+
+        if (this.draw) {
+            this.map.removeInteraction(this.draw);
+        }
+
+        this.setState({isDrawing: true});
+
+        this.draw = new Draw({
+            source: this.selectionSource,
+            type: 'LineString',
             freehand: true
         });
 

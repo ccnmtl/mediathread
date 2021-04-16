@@ -68,8 +68,6 @@ django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.1.2
 
-django-debug-toolbar==3.2.1
-
 django-markwhat==1.6.2
 ipaddress==1.0.23
 text-unidecode==1.3  # for faker

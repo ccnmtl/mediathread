@@ -302,9 +302,3 @@ urlpatterns = [
     path('s/<slug:context_slug>/<slug:obj_type>/<int:obj_id>/',
          ProjectPublicView.as_view(), name='collaboration-obj-view'),
 ]
-
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]

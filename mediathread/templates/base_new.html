@@ -35,21 +35,23 @@ A new base.html without the course context overwritten in the template.
                 integrity="sha384-5yYHk2XjpqhbWfLwJrxsdolnhl+HfgEnD1UhVzAs6Kd2fx+ZoD0wBFjd65mWgZOG"
                 crossorigin="anonymous"></script>
             <script>
-            Sentry.init({
-                dsn: 'https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468',
-                whitelistUrls: [/mediathread\.stage\.ctl\.columbia\.edu/]
-            });
-            {% if user.is_anonymous %}
-            Sentry.setUser({
-                email: 'none',
-                id: 'anonymous'
-            });
-            {% else %}
-            Sentry.setUser({
-                email: '{{user.email}}',
-                id: '{{user.username}}'
-            });
-            {% endif %}
+            if (typeof Sentry !== 'undefined') {
+                Sentry.init({
+                    dsn: 'https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468',
+                    whitelistUrls: [/mediathread\.stage\.ctl\.columbia\.edu/]
+                });
+                {% if user.is_anonymous %}
+                Sentry.setUser({
+                    email: 'none',
+                    id: 'anonymous'
+                });
+                {% else %}
+                Sentry.setUser({
+                    email: '{{user.email}}',
+                    id: '{{user.username}}'
+                });
+                {% endif %}
+            }
             </script>
         {% endif %}
 

@@ -427,8 +427,6 @@ export default class ViewSelections extends React.Component {
         let sId = null;
         if (match && match.length > 1) {
             sId = parseInt(match[1], 10);
-            openSelectionAccordionItem(
-                jQuery('#selectionsAccordion'), sId, true);
         }
         if (
             prevProps.isEditing !== this.props.isEditing &&
@@ -444,6 +442,9 @@ export default class ViewSelections extends React.Component {
                     const selection = find(this.props.filteredSelections, {
                         id: sId
                     });
+                    //Open the accordion to correct annotation
+                    openSelectionAccordionItem(
+                        jQuery('#selectionsAccordion'), sId, true);
                     this.props.onViewSelection(null, selection);
                 }
             }
@@ -451,6 +452,15 @@ export default class ViewSelections extends React.Component {
     }
 
     componentDidMount() {
+        //If navigating to direct annotation url, display the annotation
+        const match = window.location.pathname.match(/annotations\/(\d+)\//);
+        let sId = null;
+        if (match && match.length > 1) {
+            sId = parseInt(match[1], 10);
+            openSelectionAccordionItem(
+                jQuery('#selectionsAccordion'), sId, true);
+        }
+
         this.registerAccordionEvents();
     }
 }

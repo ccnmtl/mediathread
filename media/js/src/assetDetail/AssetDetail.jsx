@@ -527,8 +527,14 @@ export default class AssetDetail extends React.Component {
     }
 
     onSelectSelection(selectionTitle, selectionId=null) {
-        this.setState({activeSelection: selectionTitle});
-        updateSelectionUrl(selectionId);
+        if(selectionTitle === null && selectionId === null){
+            this.onClearActiveSelection();
+            this.setState({activeSelection: selectionTitle});
+            updateSelectionUrl(selectionId);
+        } else {
+            this.setState({activeSelection: selectionTitle});
+            updateSelectionUrl(selectionId);
+        }
     }
 
     onClearActiveSelection() {

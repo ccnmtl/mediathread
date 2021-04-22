@@ -450,15 +450,6 @@ export default class ViewSelections extends React.Component {
     }
 
     componentDidMount() {
-        //If navigating to direct annotation url, display the annotation
-        const match = window.location.pathname.match(/annotations\/(\d+)\//);
-        let sId = null;
-        if (match && match.length > 1) {
-            sId = parseInt(match[1], 10);
-            openSelectionAccordionItem(
-                jQuery('#selectionsAccordion'), sId, true);
-        }
-
         this.registerAccordionEvents();
     }
 }

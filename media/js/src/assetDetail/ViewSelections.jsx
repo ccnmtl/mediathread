@@ -400,18 +400,16 @@ export default class ViewSelections extends React.Component {
             if (sId) {
                 sId = parseInt(sId, 10);
             }
+            const selection = find(me.props.filteredSelections, {
+                id: sId
+            });
+            me.props.onViewSelection(e, selection);
             me.props.onSelectSelection(title, sId);
             jQuery(e.target).parent().addClass('active');
         });
 
         $selectionsAccordion.on('show.bs.collapse', function(e) {
             me.props.onClearVectorLayer();
-            const selectionId = parseInt(
-                jQuery(e.target).data('selectionid'), 10);
-            const selection = find(me.props.filteredSelections, {
-                id: selectionId
-            });
-            me.props.onViewSelection(e, selection);
         });
 
         $selectionsAccordion.on('hidden.bs.collapse', function(e) {

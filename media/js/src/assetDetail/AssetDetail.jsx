@@ -29,7 +29,8 @@ import {
 } from '../utils';
 import {CenterControl} from '../centercontrol';
 import {
-    objectProportioned, displaySelection, clearSource, resetMap
+    objectProportioned, displaySelection, clearSource, resetMap,
+    getdisplayStyle
 } from '../openlayersUtils';
 import CreateSelection from './CreateSelection';
 import ViewSelections from './ViewSelections';
@@ -1074,12 +1075,14 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onDrawEnd() {
+    onDrawEnd(event) {
         this.setState({
             cancel: false,
             isDrawing: false,
             toolType: null});
 
+        const feat = event.feature;
+        feat.setStyle(getdisplayStyle);
         if (this.draw) {
             this.map.removeInteraction(this.draw);
         }

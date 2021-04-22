@@ -73,7 +73,7 @@ const getfreeformShapeStyles = function() {
         }),
         new Style({
             image: new CircleStyle({
-                radius: 2,
+                radius: 1,
                 fill: new Fill({
                     color: 'blue'
                 })
@@ -102,7 +102,7 @@ const getdrawLineStyles = function() {
         }),
         new Style({
             image: new CircleStyle({
-                radius: 2,
+                radius: 1,
                 fill: new Fill({
                     color: 'blue'
                 })
@@ -117,6 +117,24 @@ const getdrawLineStyles = function() {
         })
     ];
 };
+
+/**
+ * Get draw openlayers styles.
+ */
+const getdisplayStyle = function() {
+    return [
+        new Style({
+            stroke: new Stroke({
+                color: 'blue',
+                width: 4
+            }),
+            fill: new Fill({
+                color: 'rgba(0, 0, 255, 0.1)'
+            })
+        }),
+    ];
+};
+
 /**
  * Display the given selection on the given OpenLayers map.
  *
@@ -204,5 +222,5 @@ const resetMap = function(map, source, img) {
 
 export {
     objectProportioned, getpolygonStyles, getfreeformShapeStyles,
-    displaySelection, clearSource, hasSelection, resetMap
+    displaySelection, clearSource, hasSelection, resetMap, getdisplayStyle
 };

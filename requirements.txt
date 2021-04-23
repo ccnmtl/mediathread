@@ -88,7 +88,7 @@ oauth2==1.9.0.post1
 oauthlib==3.1.0
 pylti==0.7.0
 nameparser==1.0.6
-django-bootstrap3==14.2.0
+django-bootstrap3==15.0.0
 django-bootstrap4==2.3.1
 beautifulsoup4==4.9.3
 ua_parser==0.10.0

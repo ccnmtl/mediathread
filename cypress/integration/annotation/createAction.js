@@ -50,7 +50,7 @@ describe('Student creates annotation', () => {
         cy.get('.polygon-button').should('have.class', 'bg-warning');
         cy.get('.freeformShape-button').should('not.have.class', 'bg-warning');
         cy.get('.drawline-button').should('not.have.class', 'bg-warning');
-        cy.get('#clear-btn').should('be.visible');
+        cy.get('#clear-btn').scrollIntoView().should('be.visible');
         cy.get('#cancel-btn').should('not.exist');
 
         cy.log('should enter view state after release');
@@ -62,7 +62,7 @@ describe('Student creates annotation', () => {
         cy.get('.polygon-button').should('not.have.class', 'bg-warning');
         cy.get('.freeformShape-button').should('not.have.class', 'bg-warning');
         cy.get('.drawline-button').should('not.have.class', 'bg-warning');
-        cy.get('#clear-btn').should('be.visible');
+        cy.get('#clear-btn').scrollIntoView().should('be.visible');
         cy.get('#cancel-btn').should('not.exist');
 
         cy.log('clear button Functionality');

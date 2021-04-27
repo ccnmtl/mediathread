@@ -320,8 +320,10 @@ const getAssetType = function(primaryType) {
             primaryType === 'vimeo' ||
             primaryType === 'mp4_pseudo' ||
             primaryType === 'mp4_panopto' ||
+            primaryType === 'mp4' ||
             primaryType === 'quicktime' ||
-            primaryType === 'video_pseudo'
+            primaryType === 'video_pseudo' ||
+            primaryType === 'video'
     ) {
         type = 'video';
     } else if (primaryType === 'image_fpxid' || primaryType === 'image_fpx'

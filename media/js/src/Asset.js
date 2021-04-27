@@ -93,6 +93,11 @@ export default class Asset {
                 url: o.mp4_pseudo.url
             };
         }
+        if (o.mp4 && o.mp4.url) {
+            return {
+                url: o.mp4.url
+            };
+        }
         if (o.mp4_panopto && o.mp4_panopto.url) {
             return {
                 url: o.mp4_panopto.url

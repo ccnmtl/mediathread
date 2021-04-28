@@ -312,6 +312,7 @@ export default class AssetDetail extends React.Component {
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
         let annotationData = null;
+        let newData = null;
         if (
             this.type === 'image' &&
                 this.selectionSource &&
@@ -322,6 +323,12 @@ export default class AssetDetail extends React.Component {
             const geometry = feature.getGeometry();
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
+            newData = {
+                title: selectionTitle,
+                tags: tags,
+                terms: terms,
+                body: document.getElementById('newSelectionNotes').value
+            };
             if (this.state.annotationTool === 'polygon'){
                 annotationData = {
                     geometry: {
@@ -363,7 +370,16 @@ export default class AssetDetail extends React.Component {
                     tool: 'drawline'
                 };
             }
+
         } else if (this.type === 'video') {
+            newData = {
+                title: selectionTitle,
+                tags: tags,
+                terms: terms,
+                body: document.getElementById('newSelectionNotes').value,
+                range1: this.state.selectionStartTime || 0,
+                range2: this.state.selectionEndTime
+            };
             annotationData = {
                 startCode: formatTimecode(this.state.selectionStartTime || 0),
                 endCode: formatTimecode(this.state.selectionEndTime),
@@ -374,13 +390,6 @@ export default class AssetDetail extends React.Component {
                 end: this.state.selectionEndTime
             };
         }
-
-        const newData = {
-            title: selectionTitle,
-            tags: tags,
-            terms: terms,
-            body: document.getElementById('newSelectionNotes').value
-        };
 
         if (annotationData) {
             newData.annotation_data = JSON.stringify(annotationData);

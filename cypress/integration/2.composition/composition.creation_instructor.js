@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Instructor Creates Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
@@ -23,7 +15,7 @@ describe('Instructor Creates Composition', () => {
 
         cy.log('should check composition panel features');
         cy.get('.page-title').should('be.visible');
-        cy.get('.page-title').contains('Untitled')
+        cy.get('.page-title').contains('Untitled');
         cy.contains('ul', 'Instructor One').should('exist');
         cy.get('.project-visibility-description').contains('Draft')
             .should('exist');
@@ -81,14 +73,15 @@ describe('Instructor Creates Composition', () => {
     it('should show on projects page', () => {
         cy.visit('/course/1/projects/');
         cy.get('#cu-privacy-notice-button').click();
-        cy.contains('Composition: Scenario 1').parent('td').parent('tr').within(() => {
-            // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Composition: Scenario 1');
-            cy.get('td').eq(1).contains('Draft');
-            cy.get('td').eq(0).contains('Instructor One');
-            cy.get('td').eq(3).contains('Composition');
-            cy.get('td').eq(5).contains('Delete');
-        });
+        cy.contains('Composition: Scenario 1').parent('td').parent('tr')
+            .within(() => {
+                // all searches are automatically rooted to the found tr element
+                cy.get('td').eq(2).contains('Composition: Scenario 1');
+                cy.get('td').eq(1).contains('Draft');
+                cy.get('td').eq(0).contains('Instructor One');
+                cy.get('td').eq(3).contains('Composition');
+                cy.get('td').eq(5).contains('Delete');
+            });
     });
 
 });

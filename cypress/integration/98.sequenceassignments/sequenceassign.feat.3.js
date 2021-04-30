@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Sequence Assignment Feat: Instructor adds feedback', () => {
 
     before(() => {
@@ -22,7 +16,7 @@ describe('Sequence Assignment Feat: Instructor adds feedback', () => {
         cy.contains('Feedback').click();
         cy.getIframeBody().find('p').click().type('Example feedback');
         cy.get('.save-feedback').click({force: true});
-        cy.get('.alert-success').should('contain', 'Your feedback was saved')
+        cy.get('.alert-success').should('contain', 'Your feedback was saved');
         cy.contains('Save Feedback').click({force: true});
 
     });

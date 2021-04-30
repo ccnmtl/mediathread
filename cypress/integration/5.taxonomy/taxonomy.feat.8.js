@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Taxonomy Feature: Refresh', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
@@ -43,7 +35,8 @@ describe('Taxonomy Feature: Refresh', () => {
         cy.get('[data-id="Pink"]').should('exist');
         cy.contains('Colors').click();
         cy.get('.import-vocabulary-open > span').click({force: true});
-        cy.get('[name=onomy_url]:visible').type(',/media/onomy/reimport_test.json');
+        cy.get('[name=onomy_url]:visible')
+            .type(',/media/onomy/reimport_test.json');
         cy.get('#import-vocabulary-btn')
             .click();
         cy.get('[data-id="Black"]').should('exist');

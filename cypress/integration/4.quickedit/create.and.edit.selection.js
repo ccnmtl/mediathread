@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Instructor creates a selection', () => {
     before(() => {
         cy.login('instructor_one', 'test');
@@ -20,8 +12,8 @@ describe('Instructor creates a selection', () => {
         cy.get('#cu-privacy-notice-button').click();
 
         cy.get('button').contains('Add a project').should('be.visible');
-        cy.get('button').contains('Add a project').click()
-        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button').contains('Add a project').click();
+        cy.get('button#add-composition-button').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.log('add a title and some text');
@@ -86,7 +78,7 @@ describe('Instructor creates a selection', () => {
         cy.get('.quick-edit').should('not.be.visible');
         cy.get('.collection-materials').should('be.visible');
         cy.get('button.btn-link').should('be.visible')
-            .contains('Test Selection')
+            .contains('Test Selection');
         cy.get('button.btn-link').contains('Test Selection').first().click();
         cy.get('.collapse.show').within(() => {
             cy.get('button.materialCitation').contains('Insert in Text');

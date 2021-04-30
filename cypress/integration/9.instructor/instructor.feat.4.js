@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Instructor Feat: Test Assignment Responses', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');

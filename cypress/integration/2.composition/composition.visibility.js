@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Student Project Visibility', () => {
 
     it('creates a project as an Instructor', () => {
@@ -19,8 +11,8 @@ describe('Student Project Visibility', () => {
         cy.get('.page-title').contains('Projects');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
-        cy.get('button').contains('Add a project').click()
-        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button').contains('Add a project').click();
+        cy.get('button#add-composition-button').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.get('a.nav-link.active').contains('Projects');
@@ -42,14 +34,15 @@ describe('Student Project Visibility', () => {
         cy.visit('/course/1/projects/');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#select-owner').select('instructor_one');
-         cy.contains('Composition Public: Scenario 3').parent('td').parent('tr').within(() => {
+        cy.contains('Composition Public: Scenario 3').parent('td').parent('tr')
+            .within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Composition Public: Scenario 3');
-            cy.get('td').eq(1).contains('Shared with Class');
-            cy.get('td').eq(0).contains('Instructor One');
-            cy.get('td').eq(3).contains('Composition');
-            cy.get('td').eq(5).should('not.contain', 'Delete');
-        });
+                cy.get('td').eq(2).contains('Composition Public: Scenario 3');
+                cy.get('td').eq(1).contains('Shared with Class');
+                cy.get('td').eq(0).contains('Instructor One');
+                cy.get('td').eq(3).contains('Composition');
+                cy.get('td').eq(5).should('not.contain', 'Delete');
+            });
     });
 
     it('creates a project as Student one', () => {
@@ -59,8 +52,8 @@ describe('Student Project Visibility', () => {
         cy.get('.page-title').contains('Projects');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
-        cy.get('button').contains('Add a project').click()
-        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button').contains('Add a project').click();
+        cy.get('button#add-composition-button').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.get('a.nav-link.active').contains('Projects');
@@ -81,13 +74,14 @@ describe('Student Project Visibility', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#select-owner').select('student_one');
 
-        cy.contains('Student One Public Essay').parent('td').parent('tr').within(() => {
+        cy.contains('Student One Public Essay').parent('td').parent('tr')
+            .within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Student One Public Essay');
-            cy.get('td').eq(1).contains('Shared with Class');
-            cy.get('td').eq(0).contains('Student One');
-            cy.get('td').eq(3).contains('Composition');
-            cy.get('td').eq(5).should('not.contain', 'Delete');
-        });
+                cy.get('td').eq(2).contains('Student One Public Essay');
+                cy.get('td').eq(1).contains('Shared with Class');
+                cy.get('td').eq(0).contains('Student One');
+                cy.get('td').eq(3).contains('Composition');
+                cy.get('td').eq(5).should('not.contain', 'Delete');
+            });
     });
 });

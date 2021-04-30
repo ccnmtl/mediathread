@@ -59,6 +59,9 @@ export default class Asset {
         if (!this.asset.sources.thumb){
             this.asset.sources.thumb = mediaPrefix + 'img/thumb_image.png';
         }
+        if(this.asset.sources.image.url === 'source url'){
+            this.asset.sources.image.url = mediaPrefix + 'img/thumb_image.png';
+        }
         return this.asset.sources.image ||
             this.asset.sources.thumb;
     }

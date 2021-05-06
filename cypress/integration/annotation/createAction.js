@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Student creates annotation', () => {
     before(() => {
         cy.login('student_one', 'test');
@@ -50,7 +42,7 @@ describe('Student creates annotation', () => {
         cy.get('.polygon-button').should('have.class', 'bg-warning');
         cy.get('.freeformShape-button').should('not.have.class', 'bg-warning');
         cy.get('.drawline-button').should('not.have.class', 'bg-warning');
-        cy.get('#clear-btn').should('be.visible');
+        cy.get('#clear-btn').scrollIntoView().should('be.visible');
         cy.get('#cancel-btn').should('not.exist');
 
         cy.log('should enter view state after release');
@@ -62,7 +54,7 @@ describe('Student creates annotation', () => {
         cy.get('.polygon-button').should('not.have.class', 'bg-warning');
         cy.get('.freeformShape-button').should('not.have.class', 'bg-warning');
         cy.get('.drawline-button').should('not.have.class', 'bg-warning');
-        cy.get('#clear-btn').should('be.visible');
+        cy.get('#clear-btn').scrollIntoView().should('be.visible');
         cy.get('#cancel-btn').should('not.exist');
 
         cy.log('clear button Functionality');

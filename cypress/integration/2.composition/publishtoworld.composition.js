@@ -1,11 +1,3 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Publish To World Public Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
@@ -26,8 +18,8 @@ describe('Publish To World Public Composition', () => {
         cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
         cy.get('button').contains('Add a project').should('be.visible');
-        cy.get('button').contains('Add a project').click()
-        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button').contains('Add a project').click();
+        cy.get('button#add-composition-button').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.get('a.nav-link.active').contains('Projects');
@@ -44,7 +36,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('div.ajaxloader').should('not.be.visible');
         cy.get('#asset-item-1').should('contain', 'MAAP Award Reception');
         cy.get('button.btn-link').contains('Our esteemed leaders').click();
-        cy.getIframeBody().find('p').click()
+        cy.getIframeBody().find('p').click();
         cy.get('button.materialCitation').contains('Insert in Text').click();
         cy.getIframeBody().find('a.materialCitation.asset-image')
             .contains('Our esteemed leaders');
@@ -64,8 +56,10 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.sign-out').click({force: true});
                 cy.visit(href);
 
-                cy.get('.participants_chosen').should('contain', 'Instructor One');
-                cy.get('.page-title').should('contain', 'Composition Public: Scenario 1A');
+                cy.get('.participants_chosen')
+                    .should('contain', 'Instructor One');
+                cy.get('.page-title')
+                    .should('contain', 'Composition Public: Scenario 1A');
                 cy.get('.last-version-public').should('exist');
                 cy.get('.project-revisionbutton').should('not.exist');
                 cy.get('.project-editbutton.active').should('not.exist');
@@ -76,7 +70,8 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.materialCitation').click();
 
                 //TODO: figure out why clicking on the asset title logs you out.
-                //cy.get('.annotation-title > a').should('exist').and('contain', 'MAAP Award Reception')
+                //cy.get('.annotation-title > a').should('exist')
+                //.and('contain', 'MAAP Award Reception')
             });
     });
 });

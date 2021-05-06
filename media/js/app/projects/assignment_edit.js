@@ -39,7 +39,9 @@
         validate: function(pageContent) {
             if (pageContent === 'title') {
                 var title = jQuery(this.el).find('input[name="title"]').val();
-                var body = this.tinymce.getContent();
+                if (this.tinymce) {
+                    var body = this.tinymce.getContent();
+                }
                 return title.length > 0 && body.length > 0;
             } else if (pageContent === 'due-date') {
                 var q1 = 'input[name="due_date"]';

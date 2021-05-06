@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Instructor Feat: Test Create Composition', () => {
     beforeEach(() => {
         cy.login('instructor_one', 'test');
@@ -17,14 +11,14 @@ describe('Instructor Feat: Test Create Composition', () => {
         cy.get('.page-title').contains('Projects');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('button').contains('Add a project').should('be.visible');
-        cy.get('button').contains('Add a project').click()
-        cy.get('button#add-composition-button').should('be.visible')
+        cy.get('button').contains('Add a project').click();
+        cy.get('button#add-composition-button').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.log('should check composition panel features');
         cy.get('#loaded').should('exist');
         cy.get('.page-title').should('be.visible');
-        cy.get('.page-title').contains('Untitled')
+        cy.get('.page-title').contains('Untitled');
         cy.get('.page-title').click().clear()
             .type('Instructor Feature 3');
         cy.get('.project-submitbutton').click();

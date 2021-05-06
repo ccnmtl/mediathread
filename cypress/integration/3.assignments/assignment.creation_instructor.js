@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Assignment Feature: Instructor Creation', () => {
 
     beforeEach(() => {
@@ -52,7 +46,8 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('input[name="due_date"]').should('be.visible');
         cy.get('input[name="due_date"]:visible').click();
         cy.get('.ui-state-default.ui-state-highlight').click();
-        cy.get('input[name="due_date"]:visible').invoke('val').should('not.be.empty');
+        cy.get('input[name="due_date"]:visible').invoke('val')
+            .should('not.be.empty');
         cy.get('#ui-datepicker-div').should('not.be.visible');
         cy.get('#id_response_view_policy_0').should('be.visible');
         cy.get('#id_response_view_policy_0').click();
@@ -80,14 +75,15 @@ describe('Assignment Feature: Instructor Creation', () => {
     it('should show on assignments page', () => {
         cy.visit('/course/1/assignments');
         cy.get('#cu-privacy-notice-button').click();
-        cy.contains('Assignment: Scenario 1').parent('td').parent('tr').within(() => {
+        cy.contains('Assignment: Scenario 1').parent('td').parent('tr')
+            .within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Assignment: Scenario 1');
-            cy.get('td').eq(1).contains('Shared with Class');
-            cy.get('td').eq(3).contains('0 / 3');
-            cy.get('td').eq(4).contains('Instructor One');
-            cy.get('td').eq(5).contains('Composition');
-            cy.get('td').eq(7).contains('Delete');
-        });
+                cy.get('td').eq(2).contains('Assignment: Scenario 1');
+                cy.get('td').eq(1).contains('Shared with Class');
+                cy.get('td').eq(3).contains('0 / 3');
+                cy.get('td').eq(4).contains('Instructor One');
+                cy.get('td').eq(5).contains('Composition');
+                cy.get('td').eq(7).contains('Delete');
+            });
     });
 });

@@ -1,25 +1,17 @@
-// TODO: why are we getting an error for `the_records`
-// here in the course settings page?
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
+describe('Instructor Course Sources', () => {
 
-describe('Instructor Course Sources', function() {
-
-    beforeEach(() => {
+    before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+    });
+
+    it('should check Sources page functionality', () => {
+        cy.log('should navigate to Sources page');
         cy.get('a[href*="settings"]').click();
         cy.get('a[href*="sources"]').click();
-    });
-
-    it('should navigate to Sources page', () => {
         cy.url().should('match', /course\/1\/dashboard\/sources\/$/);
-    });
 
-    it('should add YouTube as a source to the class', function() {
+        cy.log('should add YouTube as a source to the class');
         cy.get('#youtube').click();
         cy.get('#youtube').should('have.value', 'Remove');
     });
@@ -27,13 +19,13 @@ describe('Instructor Course Sources', function() {
 
 describe('Removing Course Source', () => {
 
-    beforeEach(function() {
+    before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/dashboard/settings/');
         cy.get('a[href*="sources"]').click();
     });
 
-    it('should remove YouTube as a source to the class', function() {
+    it('should remove YouTube as a source to the class', () => {
         cy.get('#youtube').should('have.value', 'Remove')
             .click();
         cy.contains('Remove').should('not.exist');

@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-    // returning false here prevents Cypress from
-    // failing the test
-    return false;
-});
-
 describe('Assignment Feature: Instructor View', () => {
 
     beforeEach(() => {
@@ -36,7 +30,7 @@ describe('Assignment Feature: Instructor View', () => {
         cy.get('#instructions').should('be.visible');
 
         cy.log('Select student response');
-        cy.get('#student-response-dropdown').click()
+        cy.get('#student-response-dropdown').click();
         cy.get('a.dropdown-item').contains('Student One').click();
 
         cy.log('View the response');

@@ -54,14 +54,23 @@ export default class Asset {
         if (!this.asset || !this.asset.sources) {
             return null;
         }
+
         const mediaPrefix = typeof MediaThread !== 'undefined' ?
             window.MediaThread.staticUrl : '/media/';
-        if (!this.asset.sources.thumb){
+
+        if (
+            this.asset.sources && !this.asset.sources.thumb
+        ) {
             this.asset.sources.thumb = mediaPrefix + 'img/thumb_image.png';
         }
-        if(this.asset.sources.image.url === 'source url'){
+
+        if (
+            this.asset.sources && this.asset.sources.image &&
+                this.asset.sources.image.url === 'source url'
+        ) {
             this.asset.sources.image.url = mediaPrefix + 'img/thumb_image.png';
         }
+
         return this.asset.sources.image ||
             this.asset.sources.thumb;
     }

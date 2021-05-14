@@ -134,6 +134,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEqual(asset.media_type(), 'video')
         self.assertFalse(asset.primary.is_image())
         self.assertFalse(asset.primary.is_audio())
+        self.assertFalse(asset.primary.is_pdf())
 
     def test_image(self):
         asset = AssetFactory.create(
@@ -142,6 +143,16 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEqual(asset.media_type(), 'image')
         self.assertTrue(asset.primary.is_image())
         self.assertFalse(asset.primary.is_audio())
+        self.assertFalse(asset.primary.is_pdf())
+
+    def test_pdf(self):
+        asset = AssetFactory.create(
+            course=self.sample_course, primary_source='pdf')
+
+        self.assertEqual(asset.media_type(), 'pdf')
+        self.assertFalse(asset.primary.is_image())
+        self.assertFalse(asset.primary.is_audio())
+        self.assertTrue(asset.primary.is_pdf())
 
     def test_migrate_many(self):
         from_course = self.sample_course

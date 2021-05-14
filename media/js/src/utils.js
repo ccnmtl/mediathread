@@ -331,6 +331,8 @@ const getAssetType = function(primaryType) {
         type = 'image';
     } else if (primaryType === 'mp4_audio') {
         type = 'audio';
+    } else if (primaryType === 'pdf') {
+        type = 'pdf';
     } else {
         type = 'unknown';
     }

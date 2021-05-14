@@ -148,16 +148,19 @@ class Asset(models.Model):
         "the description, etc, and is easy to format incorrectly. "
         "Make sure not to add any \"'s.")
 
-    # labels which determine the saving of an asset
-    # in order of priority for which label is marked primary
-    # an asset must have at least one source label from this list.
-    primary_labels = ('flv', 'flv_pseudo', 'flv_rtmp',
-                      'mp4', 'mp4_pseudo', 'mp4_rtmp',
-                      'youtube', 'ogg', 'vimeo',
-                      'video_pseudo', 'video_rtmp', 'video',
-                      'mp3', 'mp4_audio', 'mp4_panopto',
-                      'image_fpx', 'image_fpxid',  # artstor.org
-                      'image')
+    # Labels which determine the saving of an asset
+    # in order of priority for which label is marked primary.
+    # An asset must have at least one source label from this list.
+    primary_labels = (
+        'flv', 'flv_pseudo', 'flv_rtmp',
+        'mp4', 'mp4_pseudo', 'mp4_rtmp',
+        'youtube', 'ogg', 'vimeo',
+        'video_pseudo', 'video_rtmp', 'video',
+        'mp3', 'mp4_audio', 'mp4_panopto',
+        'image_fpx', 'image_fpxid',  # artstor.org
+        'image',
+        'pdf',
+    )
 
     class Meta:
         permissions = (("can_upload_for", "Can upload assets for others"),)
@@ -269,6 +272,8 @@ class Asset(models.Model):
             label = 'image'
         elif self.primary.is_audio():
             label = 'audio'
+        elif self.primary.is_pdf():
+            label = 'pdf'
 
         return label
 
@@ -359,6 +364,9 @@ class Source(models.Model):
 
     def is_audio(self):
         return self.label == 'mp3' or self.label == 'mp4_audio'
+
+    def is_pdf(self):
+        return self.label == 'pdf'
 
     def is_panopto(self):
         return self.label == 'mp4_panopto'

@@ -40,6 +40,11 @@ export default class Asset {
                     return mediaPrefix + 'img/thumb_video.png';
                 }
             });
+        } else if (
+            this.asset.primary_type === 'pdf' &&
+                this.asset.sources && this.asset.sources.pdf
+        ) {
+            return this.asset.sources.pdf.url;
         }
 
         return this.asset.thumb_url ||

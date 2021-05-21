@@ -1,6 +1,7 @@
 /* eslint max-len: 0 */
 
 import React from 'react';
+import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
 import PropTypes from 'prop-types';
 
 import Map from 'ol/Map';
@@ -69,6 +70,13 @@ export default class GridAsset extends React.Component {
     render() {
         const type = this.asset.getType();
 
+        let displayedType;
+        if (type === 'pdf') {
+            displayedType = 'PDF';
+        } else {
+            displayedType = capitalizeFirstLetter(type);
+        }
+
         let annotationDom = null;
         if (type === 'video' && this.state.selectedAnnotation) {
             annotationDom = (
@@ -100,7 +108,7 @@ export default class GridAsset extends React.Component {
                     <div className="card-thumbnail">
                         <div className="media-type">
                             <span className="badge badge-light">
-                                {capitalizeFirstLetter(type)}
+                                {displayedType}
                             </span>
                         </div>
                         <div className="image-overlay">
@@ -132,6 +140,17 @@ export default class GridAsset extends React.Component {
                                              this.props.asset.title}
                                         src={this.state.thumbnailUrl}
                                         onError={() => handleBrokenImage(type)} />
+                                )}
+                                {type === 'pdf' && (
+                                    <div className="mx-auto d-block img-fluid text-center">
+                                        <Document file={this.state.thumbnailUrl}>
+                                            <Page
+                                                pageNumber={1}
+                                                width={192}
+                                                height={192}
+                                            />
+                                        </Document>
+                                    </div>
                                 )}
                                 {type === 'unknown' && (
                                     <img

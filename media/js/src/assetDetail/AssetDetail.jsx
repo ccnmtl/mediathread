@@ -20,6 +20,8 @@ import Zoom from 'ol/control/Zoom';
 
 import {defaults as defaultInteractions} from 'ol/interaction';
 
+import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
+
 import Asset from '../Asset';
 import {
     getAsset, createSherdNote, updateSherdNote,
@@ -858,6 +860,17 @@ export default class AssetDetail extends React.Component {
                     </div>
                 </React.Fragment>
             );
+        } else if (this.type === 'pdf') {
+            let url = null;
+            if (this.props.asset.sources && this.props.asset.sources.pdf) {
+                url = this.props.asset.sources.pdf.url;
+            }
+
+            media = <Document file={url}>
+                <Page
+                    pageNumber={1}
+                />
+            </Document>;
         }
 
         let leftColumnHeader = 'Original Item';

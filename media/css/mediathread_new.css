@@ -4115,6 +4115,10 @@ ul.section-tabs>li>a.active {
     color: yellow;
 }
 
+.card-thumbnail .react-pdf__Page canvas {
+    margin: 0 auto;
+}
+
 #skip a {
     position: absolute;
     left: -10000px;

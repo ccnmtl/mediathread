@@ -1262,6 +1262,6 @@ class BookmarkletMigrationView(TemplateView):
     template_name = 'assetmgr/bookmarklet_migration.html'
 
 
-class PDFViewerDetailView(DetailView):
+class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
     template_name = 'assetmgr/pdfjs_viewer.html'
     model = Asset

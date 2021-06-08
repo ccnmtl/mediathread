@@ -85,7 +85,7 @@ django-cookies-samesite==0.9.0
 httplib2==0.19.1
 oauth==1.0.1
 oauth2==1.9.0.post1
-oauthlib==3.1.0
+oauthlib==3.1.1
 pylti==0.7.0
 nameparser==1.0.6
 django-bootstrap3==15.0.0

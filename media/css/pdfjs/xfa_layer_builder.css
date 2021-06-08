@@ -1,0 +1,246 @@
+/* Copyright 2021 Mozilla Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.xfaLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  transform-origin: 0 0;
+}
+
+.xfaLayer * {
+  color: inherit;
+  font: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  font-kerning: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.xfaLayer a {
+  color: blue;
+}
+
+.xfaRich li {
+  margin-left: 3em;
+}
+
+.xfaFont {
+  color: black;
+  font-weight: normal;
+  font-kerning: none;
+  font-size: 10px;
+  font-style: normal;
+  letter-spacing: 0;
+  text-decoration: none;
+  vertical-align: 0;
+}
+
+.xfaDraw {
+  z-index: 100;
+}
+
+.xfaExclgroup {
+  z-index: 200;
+}
+
+.xfaField {
+  z-index: 300;
+}
+
+.xfaRich {
+  z-index: 300;
+  line-height: 1.2;
+}
+
+.xfaSubform {
+  z-index: 200;
+}
+
+.xfaLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.xfaCaption {
+  flex: 1 1 auto;
+}
+
+.xfaBorderDiv {
+  background: transparent;
+  position: absolute;
+  pointer-events: none;
+}
+
+.xfaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+}
+
+.xfaContentArea {
+  overflow: hidden;
+}
+
+.xfaTextfield,
+.xfaSelect {
+  background-color: rgba(0, 54, 255, 0.13);
+}
+
+.xfaTextfield:focus,
+.xfaSelect:focus {
+  background-color: transparent;
+}
+
+.xfaTextfield,
+.xfaSelect {
+  width: 100%;
+  height: 100%;
+  flex: 100 1 0;
+  border: none;
+  resize: none;
+}
+
+.xfaButton {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+}
+
+.xfaButton:hover {
+  background: Highlight;
+}
+
+.xfaCheckbox,
+.xfaRadio {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.xfaRich {
+  white-space: pre-wrap;
+}
+
+.xfaImage {
+  width: 100%;
+  height: 100%;
+}
+
+.xfaRich {
+  width: 100%;
+  height: auto;
+}
+
+.xfaPosition {
+  display: block;
+}
+
+.xfaLrTb,
+.xfaRlTb,
+.xfaTb {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.xfaLr,
+.xfaRl,
+.xfaTb > div {
+  flex: 1 1 auto;
+}
+
+.xfaTb > div {
+  justify-content: left;
+}
+
+.xfaLr > div {
+  display: inline;
+  float: left;
+}
+
+.xfaRl > div {
+  display: inline;
+  float: right;
+}
+
+.xfaPosition {
+  position: relative;
+}
+
+.xfaArea {
+  position: relative;
+}
+
+.xfaValignMiddle {
+  display: flex;
+  align-items: center;
+}
+
+.xfaLrTb > div {
+  display: inline;
+  float: left;
+}
+
+.xfaRlTb > div {
+  display: inline;
+  float: right;
+}
+
+.xfaTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.xfaTable .xfaRow {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+}
+
+.xfaTable .xfaRow > div {
+  flex: 1 1 auto;
+}
+
+.xfaTable .xfaRlRow {
+  display: flex;
+  flex-direction: row-reverse;
+  flex: 1;
+}
+
+.xfaTable .xfaRlRow > div {
+  flex: 1;
+}
+
+@media print {
+  .xfaTextfield,
+  .xfaSelect {
+    background-color: transparent;
+  }
+}

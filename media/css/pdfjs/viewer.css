@@ -13,7 +13,698 @@
  * limitations under the License.
  */
 
-@import url(pdf_viewer.css);
+.textLayer {
+  position: absolute;
+  text-align: initial;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.textLayer span,
+.textLayer br {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.textLayer .highlight {
+  margin: -1px;
+  padding: 1px;
+  background-color: rgba(180, 0, 170, 1);
+  border-radius: 4px;
+}
+
+.textLayer .highlight.appended {
+  position: initial;
+}
+
+.textLayer .highlight.begin {
+  border-radius: 4px 0 0 4px;
+}
+
+.textLayer .highlight.end {
+  border-radius: 0 4px 4px 0;
+}
+
+.textLayer .highlight.middle {
+  border-radius: 0;
+}
+
+.textLayer .highlight.selected {
+  background-color: rgba(0, 100, 0, 1);
+}
+
+.textLayer ::-moz-selection {
+  background: rgba(0, 0, 255, 1);
+}
+
+.textLayer ::selection {
+  background: rgba(0, 0, 255, 1);
+}
+
+.textLayer .endOfContent {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  cursor: default;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.textLayer .endOfContent.active {
+  top: 0;
+}
+
+
+.annotationLayer section {
+  position: absolute;
+  text-align: initial;
+}
+
+.annotationLayer .linkAnnotation > a,
+.annotationLayer .buttonWidgetAnnotation.pushButton > a {
+  position: absolute;
+  font-size: 1em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.annotationLayer .linkAnnotation > a:hover,
+.annotationLayer .buttonWidgetAnnotation.pushButton > a:hover {
+  opacity: 0.2;
+  background: rgba(255, 255, 0, 1);
+  box-shadow: 0 2px 10px rgba(255, 255, 0, 1);
+}
+
+.annotationLayer .textAnnotation img {
+  position: absolute;
+  cursor: pointer;
+}
+
+.annotationLayer .textWidgetAnnotation input,
+.annotationLayer .textWidgetAnnotation textarea,
+.annotationLayer .choiceWidgetAnnotation select,
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  background-color: rgba(0, 54, 255, 0.13);
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  font-size: 9px;
+  height: 100%;
+  margin: 0;
+  padding: 0 3px;
+  vertical-align: top;
+  width: 100%;
+}
+
+.annotationLayer .choiceWidgetAnnotation select option {
+  padding: 0;
+}
+
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  border-radius: 50%;
+}
+
+.annotationLayer .textWidgetAnnotation textarea {
+  font: message-box;
+  font-size: 9px;
+  resize: none;
+}
+
+.annotationLayer .textWidgetAnnotation input[disabled],
+.annotationLayer .textWidgetAnnotation textarea[disabled],
+.annotationLayer .choiceWidgetAnnotation select[disabled],
+.annotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
+.annotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
+  background: none;
+  border: 1px solid transparent;
+  cursor: not-allowed;
+}
+
+.annotationLayer .textWidgetAnnotation input:hover,
+.annotationLayer .textWidgetAnnotation textarea:hover,
+.annotationLayer .choiceWidgetAnnotation select:hover,
+.annotationLayer .buttonWidgetAnnotation.checkBox input:hover,
+.annotationLayer .buttonWidgetAnnotation.radioButton input:hover {
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+
+.annotationLayer .textWidgetAnnotation input:focus,
+.annotationLayer .textWidgetAnnotation textarea:focus,
+.annotationLayer .choiceWidgetAnnotation select:focus {
+  background: none;
+  border: 1px solid transparent;
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:before,
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:after,
+.annotationLayer .buttonWidgetAnnotation.radioButton input:checked:before {
+  background-color: rgba(0, 0, 0, 1);
+  content: "";
+  display: block;
+  position: absolute;
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:before,
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:after {
+  height: 80%;
+  left: 45%;
+  width: 1px;
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:before {
+  transform: rotate(45deg);
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input:checked:after {
+  transform: rotate(-45deg);
+}
+
+.annotationLayer .buttonWidgetAnnotation.radioButton input:checked:before {
+  border-radius: 50%;
+  height: 50%;
+  left: 30%;
+  top: 20%;
+  width: 50%;
+}
+
+.annotationLayer .textWidgetAnnotation input.comb {
+  font-family: monospace;
+  padding-left: 2px;
+  padding-right: 0;
+}
+
+.annotationLayer .textWidgetAnnotation input.comb:focus {
+  /*
+   * Letter spacing is placed on the right side of each character. Hence, the
+   * letter spacing of the last character may be placed outside the visible
+   * area, causing horizontal scrolling. We avoid this by extending the width
+   * when the element has focus and revert this when it loses focus.
+   */
+  width: 115%;
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  padding: 0;
+}
+
+.annotationLayer .popupWrapper {
+  position: absolute;
+  width: 20em;
+}
+
+.annotationLayer .popup {
+  position: absolute;
+  z-index: 200;
+  max-width: 20em;
+  background-color: rgba(255, 255, 153, 1);
+  box-shadow: 0 2px 5px rgba(136, 136, 136, 1);
+  border-radius: 2px;
+  padding: 6px;
+  margin-left: 5px;
+  cursor: pointer;
+  font: message-box;
+  font-size: 9px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.annotationLayer .popup > * {
+  font-size: 9px;
+}
+
+.annotationLayer .popup h1 {
+  display: inline-block;
+}
+
+.annotationLayer .popup span {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+.annotationLayer .popup p {
+  border-top: 1px solid rgba(51, 51, 51, 1);
+  margin-top: 2px;
+  padding-top: 2px;
+}
+
+.annotationLayer .highlightAnnotation,
+.annotationLayer .underlineAnnotation,
+.annotationLayer .squigglyAnnotation,
+.annotationLayer .strikeoutAnnotation,
+.annotationLayer .freeTextAnnotation,
+.annotationLayer .lineAnnotation svg line,
+.annotationLayer .squareAnnotation svg rect,
+.annotationLayer .circleAnnotation svg ellipse,
+.annotationLayer .polylineAnnotation svg polyline,
+.annotationLayer .polygonAnnotation svg polygon,
+.annotationLayer .caretAnnotation,
+.annotationLayer .inkAnnotation svg polyline,
+.annotationLayer .stampAnnotation,
+.annotationLayer .fileAttachmentAnnotation {
+  cursor: pointer;
+}
+
+
+.xfaPrintOnly {
+  display: none;
+}
+
+.xfaLayer {
+  position: absolute;
+  text-align: initial;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  transform-origin: 0 0;
+  line-height: 1.2;
+}
+
+.xfaLayer * {
+  color: inherit;
+  font: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  -webkit-font-kerning: inherit;
+          font-kerning: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-decoration: inherit;
+  vertical-align: inherit;
+  box-sizing: border-box;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  pointer-events: auto;
+}
+
+.xfaLayer div {
+  pointer-events: none;
+}
+
+.xfaLayer a {
+  color: blue;
+}
+
+.xfaRich li {
+  margin-left: 3em;
+}
+
+.xfaFont {
+  color: black;
+  font-weight: normal;
+  -webkit-font-kerning: none;
+          font-kerning: none;
+  font-size: 10px;
+  font-style: normal;
+  letter-spacing: 0;
+  text-decoration: none;
+  vertical-align: 0;
+}
+
+.xfaDraw {
+  z-index: 100;
+}
+
+.xfaExclgroup {
+  z-index: 200;
+}
+
+.xfaField {
+  z-index: 300;
+}
+
+.xfaRich {
+  z-index: 300;
+}
+
+.xfaSubform {
+  z-index: 200;
+}
+
+.xfaCaption {
+  overflow: hidden;
+  flex: 0 1 auto;
+}
+
+.xfaCaptionForCheckButton {
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.xfaLabel {
+  height: 100%;
+  width: 100%;
+}
+
+.xfaLeft {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.xfaLeft > .xfaCaption,
+.xfaLeft > .xfaCaptionForCheckButton {
+  max-height: 100%;
+}
+
+.xfaTop {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.xfaTop > .xfaCaption,
+.xfaTop > .xfaCaptionForCheckButton {
+  width: 100%;
+}
+
+.xfaBorder {
+  background: transparent;
+  position: absolute;
+  pointer-events: none;
+}
+
+.xfaWrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+.xfaWrapped {
+  flex: 1 1 auto;
+}
+
+.xfaContentArea {
+  overflow: hidden;
+}
+
+.xfaTextfield,
+.xfaSelect {
+  background-color: rgba(0, 54, 255, 0.13);
+}
+
+.xfaTextfield:focus,
+.xfaSelect:focus {
+  background-color: transparent;
+  outline: none;
+}
+
+.xfaTextfield,
+.xfaSelect {
+  width: 100%;
+  height: 100%;
+  flex: 1 1 0;
+  border: none;
+  resize: none;
+}
+
+.xfaButton {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+}
+
+.xfaButton:hover {
+  background: Highlight;
+}
+
+.xfaCheckbox,
+.xfaRadio {
+  width: 100%;
+  height: 100%;
+  flex: 0 0 auto;
+  border: none;
+}
+
+.xfaRich {
+  white-space: pre-wrap;
+}
+
+.xfaImage {
+  width: 100%;
+  height: 100%;
+}
+
+.xfaRich {
+  width: 100%;
+  height: auto;
+}
+
+.xfaLrTb,
+.xfaRlTb,
+.xfaTb {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.xfaLr,
+.xfaRl,
+.xfaTb > div {
+  flex: 1 1 auto;
+}
+
+.xfaLr {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.xfaRl {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+}
+
+.xfaTb > div {
+  justify-content: left;
+}
+
+.xfaPosition {
+  position: relative;
+}
+
+.xfaArea {
+  position: relative;
+}
+
+.xfaValignMiddle {
+  display: flex;
+  align-items: center;
+}
+
+.xfaTable {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.xfaTable > div {
+  flex: 1 1 auto;
+}
+
+.xfaTable .xfaRow {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.xfaTable .xfaRow > div {
+  flex: 1 1 auto;
+}
+
+.xfaTable .xfaRlRow {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  flex: 1;
+}
+
+.xfaTable .xfaRlRow > div {
+  flex: 1;
+}
+
+.xfaDisabled input,
+.xfaDisabled textarea,
+.xfaReadOnly input,
+.xfaReadOnly textarea {
+  background: initial;
+}
+
+@media print {
+  .xfaTextfield,
+  .xfaSelect {
+    background-color: transparent;
+  }
+
+  .xfaSelect {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    text-indent: 1px;
+    text-overflow: "";
+  }
+}
+
+:root {
+  --pdfViewer-padding-bottom: none;
+  --page-margin: 1px auto -8px;
+  --page-border: 9px solid transparent;
+  --spreadHorizontalWrapped-margin-LR: -3.5px;
+}
+
+@media screen and (forced-colors: active) {
+  :root {
+    --pdfViewer-padding-bottom: 9px;
+    --page-margin: 9px auto 0;
+    --page-border: none;
+    --spreadHorizontalWrapped-margin-LR: 4.5px;
+  }
+}
+
+.pdfViewer {
+  padding-bottom: var(--pdfViewer-padding-bottom);
+}
+
+.pdfViewer .canvasWrapper {
+  overflow: hidden;
+}
+
+.pdfViewer .page {
+  direction: ltr;
+  width: 816px;
+  height: 1056px;
+  margin: var(--page-margin);
+  position: relative;
+  overflow: visible;
+  border: var(--page-border);
+  background-clip: content-box;
+  -o-border-image: url(images/shadow.png) 9 9 repeat;
+     border-image: url(images/shadow.png) 9 9 repeat;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.pdfViewer.removePageBorders .page {
+  margin: 0 auto 10px;
+  border: none;
+}
+
+.pdfViewer.singlePageView {
+  display: inline-block;
+}
+
+.pdfViewer.singlePageView .page {
+  margin: 0;
+  border: none;
+}
+
+.pdfViewer.scrollHorizontal,
+.pdfViewer.scrollWrapped,
+.spread {
+  margin-left: 3.5px;
+  margin-right: 3.5px;
+  text-align: center;
+}
+
+.pdfViewer.scrollHorizontal,
+.spread {
+  white-space: nowrap;
+}
+
+.pdfViewer.removePageBorders,
+.pdfViewer.scrollHorizontal .spread,
+.pdfViewer.scrollWrapped .spread {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.spread .page,
+.pdfViewer.scrollHorizontal .page,
+.pdfViewer.scrollWrapped .page,
+.pdfViewer.scrollHorizontal .spread,
+.pdfViewer.scrollWrapped .spread {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.spread .page,
+.pdfViewer.scrollHorizontal .page,
+.pdfViewer.scrollWrapped .page {
+  margin-left: var(--spreadHorizontalWrapped-margin-LR);
+  margin-right: var(--spreadHorizontalWrapped-margin-LR);
+}
+
+.pdfViewer.removePageBorders .spread .page,
+.pdfViewer.removePageBorders.scrollHorizontal .page,
+.pdfViewer.removePageBorders.scrollWrapped .page {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.pdfViewer .page canvas {
+  margin: 0;
+  display: block;
+}
+
+.pdfViewer .page canvas[hidden] {
+  display: none;
+}
+
+.pdfViewer .page .loadingIcon {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: url("images/loading-icon.gif") center no-repeat;
+}
+
+.pdfPresentationMode .pdfViewer {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.pdfPresentationMode .pdfViewer .page,
+.pdfPresentationMode .pdfViewer .spread {
+  display: block;
+}
+
+.pdfPresentationMode .pdfViewer .page,
+.pdfPresentationMode .pdfViewer.removePageBorders .page {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pdfPresentationMode:-webkit-full-screen .pdfViewer .page {
+  margin-bottom: 100%;
+  border: 0;
+}
+
+.pdfPresentationMode:fullscreen .pdfViewer .page {
+  margin-bottom: 100%;
+  border: 0;
+}
 
 :root {
   --sidebar-width: 200px;
@@ -203,8 +894,22 @@ select {
 }
 
 .pdfViewer.enablePermissions .textLayer span {
-  user-select: none !important;
+  -webkit-user-select: none !important;
+     -moz-user-select: none !important;
+          user-select: none !important;
   cursor: not-allowed;
+}
+
+#viewerContainer.pdfPresentationMode:-webkit-full-screen {
+  top: 0;
+  border-top: 2px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 1);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: none;
+  -webkit-user-select: none;
+          user-select: none;
 }
 
 #viewerContainer.pdfPresentationMode:fullscreen {
@@ -215,11 +920,21 @@ select {
   height: 100%;
   overflow: hidden;
   cursor: none;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.pdfPresentationMode:-webkit-full-screen a:not(.internalLink) {
+  display: none;
 }
 
 .pdfPresentationMode:fullscreen a:not(.internalLink) {
   display: none;
+}
+
+.pdfPresentationMode:-webkit-full-screen .textLayer span {
+  cursor: none;
 }
 
 .pdfPresentationMode:fullscreen .textLayer span {
@@ -263,7 +978,9 @@ html[dir="rtl"] #sidebarContainer {
   /* Improve responsiveness and avoid visual glitches when the sidebar is resized. */
   transition-duration: 0s;
   /* Prevent e.g. the thumbnails being selected when the sidebar is resized. */
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 #outerContainer.sidebarMoving #sidebarContainer,
@@ -448,6 +1165,15 @@ html[dir="rtl"] #outerContainer.sidebarOpen #loadingBar {
   transition: width 200ms;
 }
 
+@-webkit-keyframes progressIndeterminate {
+  0% {
+    left: -142px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
 @keyframes progressIndeterminate {
   0% {
     left: -142px;
@@ -477,7 +1203,8 @@ html[dir="rtl"] #outerContainer.sidebarOpen #loadingBar {
     var(--progressBar-color) 95px,
     var(--progressBar-indeterminate-blend-color) 100px
   );
-  animation: progressIndeterminate 1s linear infinite;
+  -webkit-animation: progressIndeterminate 1s linear infinite;
+          animation: progressIndeterminate 1s linear infinite;
 }
 
 .findbar,
@@ -559,7 +1286,9 @@ html[dir="rtl"] .findbar .splitToolbarButton > .findNext {
 }
 
 .findbar label {
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .findbar label:hover,
@@ -585,8 +1314,8 @@ html[dir="rtl"] #findInput {
 #findInput {
   width: 200px;
 }
-#findInput::-webkit-input-placeholder {
-  color: rgba(191, 191, 191, 1);
+#findInput::-moz-placeholder {
+  font-style: normal;
 }
 #findInput::placeholder {
   font-style: normal;
@@ -841,7 +1570,9 @@ html[dir="rtl"] .splitToolbarButtonSeparator {
   color: var(--main-color);
   font-size: 12px;
   line-height: 14px;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   cursor: default;
   box-sizing: border-box;
 }
@@ -1312,7 +2043,9 @@ html[dir="rtl"] .toolbarField[type="checkbox"] {
   font-size: 12px;
   line-height: 14px;
   text-align: left;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   cursor: default;
 }
 
@@ -1407,7 +2140,9 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
   padding: 4px 4px 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 html[dir="ltr"] .treeWithDeepNesting > .treeItem,
@@ -1432,7 +2167,9 @@ html[dir="rtl"] .treeItem > .treeItems {
   color: var(--treeitem-color);
   font-size: 13px;
   line-height: 15px;
-  user-select: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   white-space: normal;
   cursor: pointer;
 }
@@ -1504,6 +2241,9 @@ html[dir="rtl"] .treeItemToggler::before {
 /* TODO: file FF bug to support ::-moz-selection:window-inactive
    so we can override the opaque grey background when the window is inactive;
    see https://bugzilla.mozilla.org/show_bug.cgi?id=706209 */
+::-moz-selection {
+  background: rgba(0, 0, 255, 0.3);
+}
 ::selection {
   background: rgba(0, 0, 255, 0.3);
 }
@@ -1699,6 +2439,19 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 #PDFBug table {
   font-size: 10px;
 }
+#PDFBug table.showText {
+  border-collapse: collapse;
+  text-align: center;
+}
+#PDFBug table.showText,
+#PDFBug table.showText tr,
+#PDFBug table.showText td {
+  border: 1px solid black;
+  padding: 1px;
+}
+#PDFBug table.showText td.advance {
+  color: grey;
+}
 
 #viewer.textLayer-visible .textLayer {
   opacity: 1;
@@ -1731,6 +2484,7 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 
 .grab-to-pan-grab {
   cursor: url("images/grab.cur"), move !important;
+  cursor: -webkit-grab !important;
   cursor: grab !important;
 }
 .grab-to-pan-grab
@@ -1740,6 +2494,7 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
 .grab-to-pan-grab:active,
 .grab-to-pan-grabbing {
   cursor: url("images/grabbing.cur"), move !important;
+  cursor: -webkit-grabbing !important;
   cursor: grabbing !important;
   position: fixed;
   background: rgba(0, 0, 0, 0);
@@ -1839,8 +2594,8 @@ html[dir="rtl"] #documentPropertiesOverlay .row > * {
     position: relative;
   }
 
-  .printedPage canvas,
-  .printedPage img {
+  #printContainer > .printedPage canvas,
+  #printContainer > .printedPage img {
     /* The intrinsic canvas / image size will make sure that we fit the page. */
     max-width: 100%;
     max-height: 100%;

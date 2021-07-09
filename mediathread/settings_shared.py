@@ -10,6 +10,7 @@ import sys
 import djcelery
 
 from ccnmtlsettings.shared import common
+from mediathread.assetmgr.sligen import sligen_streaming_processor
 
 
 project = 'mediathread'
@@ -248,3 +249,5 @@ BLOCKED_EMAIL_DOMAINS = []
 # django-tagging
 MAX_TAG_LENGTH = 255
 SURELINK_URL = ''
+
+ASSET_URL_PROCESSOR = sligen_streaming_processor

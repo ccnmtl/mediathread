@@ -30,6 +30,17 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 
     <link rel="stylesheet" href="/media/css/pdfjs/viewer.css">
+    <link rel="stylesheet" href="/media/css/pdfjs/annotation_layer_builder.css">
+    <style type="text/css">
+    .page {
+        cursor: crosshair;
+    }
+    .page>svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    </style>
 
 
 <!-- This snippet is used in production (included from viewer.html) -->
@@ -37,20 +48,33 @@ See https://github.com/adobe-type-tools/cmap-resources
 <script src="/media/js/pdfjs/pdf.js"></script>
 <script>
 // TODO: this doesn't work, and is hard-coded in the pdf.js source file.
-window.pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdfjs/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdfjs/pdf.worker.js';
 </script>
 
 <script>
 window.ASSET_URL = '{{object.primary.url}}';
 </script>
+
 <script src="/media/js/pdfjs/viewer.js"></script>
+<script src="/media/js/pdfjs/svg.min.js"></script>
 <script>
-var loadingTask = pdfjsLib.getDocument(ASSET_URL);
-loadingTask.promise.then(function(pdf) {
-    console.log('pdf', pdf);
+window.PDFViewerApplication.baseUrl = window.ASSET_URL;
+</script>
+<script src="/media/js/pdfjs/PdfJsAnnotationInterface.js"></script>
+<script src="/media/js/pdfjs/AnnotationController.js"></script>
+<script>
+const annotationController = new AnnotationController();
+const annotationInterface = new PdfJsAnnotationInterface(annotationController);
+
+// https://stackoverflow.com/a/64465323/173630
+window.addEventListener('load', function () {
+    if (typeof PDFViewerApplication !== 'null' && PDFViewerApplication.eventBus) {
+        PDFViewerApplication.eventBus.on('pagerendered', function (e) {
+            annotationInterface.onPageRendered(e);
+        });
+    }
 });
 </script>
-
   </head>
 
   <body tabindex="1">

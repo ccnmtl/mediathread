@@ -193,6 +193,10 @@ const defaultOptions = {
     value: false,
     kind: OptionKind.API
   },
+  standardFontDataUrl: {
+    value: "../web/standard_fonts/",
+    kind: OptionKind.API
+  },
   verbosity: {
     value: 1,
     kind: OptionKind.API
@@ -959,6 +963,7 @@ const PDFViewerApplication = {
     }
 
     webViewerResetPermissions();
+    this.pdfLinkService.externalLinkEnabled = true;
     this._fellback = false;
     this.store = null;
     this.isInitialViewSet = false;
@@ -3247,7 +3252,7 @@ function getOutputScale(ctx) {
   };
 }
 
-function scrollIntoView(element, spot, skipOverflowHiddenElements = false) {
+function scrollIntoView(element, spot, scrollMatches = false) {
   let parent = element.offsetParent;
 
   if (!parent) {
@@ -3258,12 +3263,7 @@ function scrollIntoView(element, spot, skipOverflowHiddenElements = false) {
   let offsetY = element.offsetTop + element.clientTop;
   let offsetX = element.offsetLeft + element.clientLeft;
 
-  while (parent.clientHeight === parent.scrollHeight && parent.clientWidth === parent.scrollWidth || skipOverflowHiddenElements && getComputedStyle(parent).overflow === "hidden") {
-    if (parent.dataset._scaleY) {
-      offsetY /= parent.dataset._scaleY;
-      offsetX /= parent.dataset._scaleX;
-    }
-
+  while (parent.clientHeight === parent.scrollHeight && parent.clientWidth === parent.scrollWidth || scrollMatches && (parent.classList.contains("markedContent") || getComputedStyle(parent).overflow === "hidden")) {
     offsetY += parent.offsetTop;
     offsetX += parent.offsetLeft;
     parent = parent.offsetParent;
@@ -5292,6 +5292,7 @@ const FIND_TIMEOUT = 250;
 const MATCH_SCROLL_OFFSET_TOP = -50;
 const MATCH_SCROLL_OFFSET_LEFT = -400;
 const CHARACTERS_TO_NORMALIZE = {
+  "\u2010": "-",
   "\u2018": "'",
   "\u2019": "'",
   "\u201A": "'",
@@ -6902,13 +6903,12 @@ class PDFLinkService {
     eventBus,
     externalLinkTarget = null,
     externalLinkRel = null,
-    externalLinkEnabled = true,
     ignoreDestinationZoom = false
   } = {}) {
     this.eventBus = eventBus;
     this.externalLinkTarget = externalLinkTarget;
     this.externalLinkRel = externalLinkRel;
-    this.externalLinkEnabled = externalLinkEnabled;
+    this.externalLinkEnabled = true;
     this._ignoreDestinationZoom = ignoreDestinationZoom;
     this.baseUrl = null;
     this.pdfDocument = null;
@@ -8076,7 +8076,6 @@ class PDFScriptingManager {
     this._destroyCapability = null;
     this._scripting = null;
     this._mouseState = Object.create(null);
-    this._pageEventsReady = false;
     this._ready = false;
     this._eventBus = eventBus;
     this._sandboxBundleSrc = sandboxBundleSrc;
@@ -8110,7 +8109,13 @@ class PDFScriptingManager {
       return;
     }
 
-    this._scripting = this._createScripting();
+    try {
+      this._scripting = this._createScripting();
+    } catch (error) {
+      console.error(`PDFScriptingManager.setDocument: "${error?.message}".`);
+      await this._destroyScripting();
+      return;
+    }
 
     this._internalEvents.set("updatefromsandbox", event => {
       if (event?.source !== window) {
@@ -8353,10 +8358,9 @@ class PDFScriptingManager {
 
     if (initialize) {
       this._closeCapability = (0, _pdfjsLib.createPromiseCapability)();
-      this._pageEventsReady = true;
     }
 
-    if (!this._pageEventsReady) {
+    if (!this._closeCapability) {
       return;
     }
 
@@ -8392,7 +8396,7 @@ class PDFScriptingManager {
     const pdfDocument = this._pdfDocument,
           visitedPages = this._visitedPages;
 
-    if (!this._pageEventsReady) {
+    if (!this._closeCapability) {
       return;
     }
 
@@ -8482,7 +8486,6 @@ class PDFScriptingManager {
 
     this._scripting = null;
     delete this._mouseState.isDown;
-    this._pageEventsReady = false;
     this._ready = false;
     this._destroyCapability?.resolve();
   }
@@ -9846,7 +9849,7 @@ class BaseViewer {
       throw new Error("Cannot initialize BaseViewer.");
     }
 
-    const viewerVersion = '2.9.359';
+    const viewerVersion = '2.10.199';
 
     if (_pdfjsLib.version !== viewerVersion) {
       throw new Error(`The API version "${_pdfjsLib.version}" does not match the Viewer version "${viewerVersion}".`);
@@ -12441,7 +12444,7 @@ class TextLayerBuilder {
 
       if (className) {
         const span = document.createElement("span");
-        span.className = className;
+        span.className = `${className} appended`;
         span.appendChild(node);
         div.appendChild(span);
         return;
@@ -12634,16 +12637,38 @@ class XfaLayerBuilder {
   constructor({
     pageDiv,
     pdfPage,
+    xfaHtml,
     annotationStorage
   }) {
     this.pageDiv = pageDiv;
     this.pdfPage = pdfPage;
+    this.xfaHtml = xfaHtml;
     this.annotationStorage = annotationStorage;
     this.div = null;
     this._cancelled = false;
   }
 
   render(viewport, intent = "display") {
+    if (intent === "print") {
+      const parameters = {
+        viewport: viewport.clone({
+          dontFlip: true
+        }),
+        div: this.div,
+        xfa: this.xfaHtml,
+        page: null,
+        annotationStorage: this.annotationStorage,
+        intent
+      };
+      const div = document.createElement("div");
+      this.pageDiv.appendChild(div);
+      parameters.div = div;
+
+      _pdfjsLib.XfaLayer.render(parameters);
+
+      return Promise.resolve();
+    }
+
     return this.pdfPage.getXfa().then(xfa => {
       if (this._cancelled) {
         return;
@@ -12656,7 +12681,8 @@ class XfaLayerBuilder {
         div: this.div,
         xfa,
         page: this.pdfPage,
-        annotationStorage: this.annotationStorage
+        annotationStorage: this.annotationStorage,
+        intent
       };
 
       if (this.div) {
@@ -12690,11 +12716,12 @@ class XfaLayerBuilder {
 exports.XfaLayerBuilder = XfaLayerBuilder;
 
 class DefaultXfaLayerFactory {
-  createXfaLayerBuilder(pageDiv, pdfPage, annotationStorage = null) {
+  createXfaLayerBuilder(pageDiv, pdfPage, annotationStorage = null, xfaHtml = null) {
     return new XfaLayerBuilder({
       pageDiv,
       pdfPage,
-      annotationStorage
+      annotationStorage,
+      xfaHtml
     });
   }
 
@@ -14769,6 +14796,8 @@ exports.PDFPrintService = PDFPrintService;
 
 var _app = __webpack_require__(3);
 
+var _print_utils = __webpack_require__(46);
+
 var _viewer_compatibility = __webpack_require__(2);
 
 let activeService = null;
@@ -14857,6 +14886,11 @@ PDFPrintService.prototype = {
   },
 
   renderPages() {
+    if (this.pdfDocument.isPureXfa) {
+      (0, _print_utils.getXfaHtmlForPrinting)(this.printContainer, this.pdfDocument);
+      return Promise.resolve();
+    }
+
     const pageCount = this.pagesOverview.length;
 
     const renderNextPage = (resolve, reject) => {
@@ -14892,6 +14926,7 @@ PDFPrintService.prototype = {
     }
 
     const wrapper = document.createElement("div");
+    wrapper.className = "printedPage";
     wrapper.appendChild(img);
     this.printContainer.appendChild(wrapper);
     return new Promise(function (resolve, reject) {
@@ -15045,6 +15080,40 @@ _app.PDFPrintServiceFactory.instance = {
 
 };
 
+/***/ }),
+/* 46 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.getXfaHtmlForPrinting = getXfaHtmlForPrinting;
+
+var _ui_utils = __webpack_require__(4);
+
+var _xfa_layer_builder = __webpack_require__(34);
+
+var _pdfjsLib = __webpack_require__(5);
+
+function getXfaHtmlForPrinting(printContainer, pdfDocument) {
+  const xfaHtml = pdfDocument.allXfaHtml;
+  const factory = new _xfa_layer_builder.DefaultXfaLayerFactory();
+  const scale = Math.round(_ui_utils.CSS_UNITS * 100) / 100;
+
+  for (const xfaPage of xfaHtml.children) {
+    const page = document.createElement("div");
+    page.className = "xfaPrintedPage";
+    printContainer.appendChild(page);
+    const builder = factory.createXfaLayerBuilder(page, null, pdfDocument.annotationStorage, xfaPage);
+    const viewport = (0, _pdfjsLib.getXfaPageViewport)(xfaPage, {
+      scale
+    });
+    builder.render(viewport, "print");
+  }
+}
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -15099,8 +15168,8 @@ var _app_options = __webpack_require__(1);
 
 var _app = __webpack_require__(3);
 
-const pdfjsVersion = '2.9.359';
-const pdfjsBuild = 'e667c8cbc';
+const pdfjsVersion = '2.10.199';
+const pdfjsBuild = 'dc7faa213';
 window.PDFViewerApplication = _app.PDFViewerApplication;
 window.PDFViewerApplicationOptions = _app_options.AppOptions;
 ;

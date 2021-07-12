@@ -63,6 +63,8 @@ function djangosherd_adaptAsset(asset) {
     } else if ((asset.image_fpx || asset.image_fpxid) && asset.fsiviewer) {
         asset.type = 'fsiviewer';
         asset.thumbable = true;
+    } else if (asset.pdf) {
+        asset.type = 'pdf';        
     } else if (asset.archive) {
         asset.type = "NONE";
     }

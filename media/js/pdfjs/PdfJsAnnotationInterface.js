@@ -81,9 +81,5 @@ class PdfJsAnnotationInterface {
 
         const draw = SVG().addTo('#pdfjs-page-' + pageNumber)
               .size('100%', '100%');
-
-        pageEl.addEventListener('mousemove', this.onMouseMove);
-        pageEl.addEventListener('mouseup', this.onMouseUp);
-        pageEl.addEventListener('mousedown', this.onMouseDown);
     }
 }

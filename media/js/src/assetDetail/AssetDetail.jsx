@@ -867,7 +867,7 @@ export default class AssetDetail extends React.Component {
             media = (
                 <div className="d-flex">
                     <iframe
-                        className="flex-fill"
+                        className="flex-fill pdfjs"
                         src={`/asset/pdfjs/${this.asset.asset.id}`}
                         style={{height: '600px'}}>
                     </iframe>
@@ -1014,7 +1014,14 @@ export default class AssetDetail extends React.Component {
         ) {
             if (this.type === 'video') {
                 this.startButtonRef.current.focus();
+            } else if (this.type == 'pdf') {
+                // Turn on PDF annotation tools
+                const iframe = window.jQuery('iframe.pdfjs')[0];
+                iframe.contentWindow.postMessage('onShowCreate', '*');
             }
+        } else if (prevState.tab !== this.state.tab) {
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+            iframe.contentWindow.postMessage('onLeaveCreate', '*');
         }
 
         if (prevState.isDrawing !== this.state.isDrawing) {

@@ -32,9 +32,6 @@ See https://github.com/adobe-type-tools/cmap-resources
     <link rel="stylesheet" href="/media/css/pdfjs/viewer.css">
     <link rel="stylesheet" href="/media/css/pdfjs/annotation_layer_builder.css">
     <style type="text/css">
-    .page {
-        cursor: crosshair;
-    }
     .page>svg {
         position: absolute;
         left: 0;
@@ -74,6 +71,34 @@ window.addEventListener('load', function () {
         });
     }
 });
+
+// iframe parent interaction
+window.onmessage = function(e){
+    if (e.data === 'onShowCreate') {
+        const svgEls = document.querySelectorAll('svg');
+        svgEls.forEach(function(el) {
+            el.style.cursor = 'crosshair';
+            el.addEventListener(
+                'mousemove', annotationInterface.onMouseMove);
+            el.addEventListener(
+                'mouseup', annotationInterface.onMouseUp);
+            el.addEventListener(
+                'mousedown', annotationInterface.onMouseDown);
+        });
+    } else if (e.data === 'onLeaveCreate') {
+        const svgEls = document.querySelectorAll('svg');
+        svgEls.forEach(function(el) {
+            el.style.cursor = 'default';
+
+            el.removeEventListener(
+                'mousemove', annotationInterface.onMouseMove);
+            el.removeEventListener(
+                'mouseup', annotationInterface.onMouseUp);
+            el.removeEventListener(
+                'mousedown', annotationInterface.onMouseDown);
+        });
+    }
+};
 </script>
   </head>
 

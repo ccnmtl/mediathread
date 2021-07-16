@@ -13,6 +13,8 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible, smart_text
 from tagging.models import Tag
 
+from mediathread.assetmgr.custom_storage import private_storage
+
 
 METADATA_ORIGINAL_OWNER = 'Original Owner'
 
@@ -319,6 +321,22 @@ class Asset(models.Model):
         return count
 
 
+class S3PrivateFileField(models.FileField):
+    """
+    A FileField that gives the 'private' ACL to the files it uploads
+    to S3, instead of the default ACL.
+    """
+    def __init__(
+            self, verbose_name=None, name=None,
+            upload_to='', storage=None, **kwargs
+    ):
+        super(S3PrivateFileField, self).__init__(
+            verbose_name=verbose_name, name=name,
+            upload_to=upload_to, storage=private_storage,
+            **kwargs
+        )
+
+
 @python_2_unicode_compatible
 class Source(models.Model):
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE)
@@ -330,6 +348,8 @@ class Source(models.Model):
     # should this support URI fragments?
     # file:/// for local files?
     url = models.CharField(max_length=4096)
+
+    upload = S3PrivateFileField(upload_to='uploads/', blank=True)
 
     # only one Source per asset should have primary=True
     # This should help indicate what 'kind' of thing

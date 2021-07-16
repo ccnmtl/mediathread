@@ -59,6 +59,9 @@ class AssetResource(ModelResource):
         bundle.data['thumb_url'] = bundle.obj.thumb_url
         bundle.data['primary_type'] = bundle.obj.primary.label
 
+        if bundle.obj.primary.upload:
+            bundle.data['primary_upload_url'] = bundle.obj.primary.upload.url
+
         bundle.data['local_url'] = reverse(
             'react_asset_detail', kwargs={
                 'course_pk': bundle.obj.course.pk,

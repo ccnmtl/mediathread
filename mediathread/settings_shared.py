@@ -7,7 +7,6 @@
 import os.path
 import re
 import sys
-import djcelery
 
 from ccnmtlsettings.shared import common
 from mediathread.assetmgr.sligen import sligen_streaming_processor
@@ -57,7 +56,6 @@ TEMPLATES[0]['DIRS'].insert(0, os.path.join(base, "deploy_specific/templates")) 
 
 
 INSTALLED_APPS += [  # noqa
-    'djcelery',
     'courseaffils',
     'tagging',
     'structuredcollaboration',
@@ -79,7 +77,8 @@ INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'bootstrap4',
     'django_extensions',
-    'rest_framework'
+    'rest_framework',
+    'django_celery_results',
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"
@@ -89,9 +88,10 @@ DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-djcelery.setup_loader()
-BROKER_URL = "amqp://guest:guest@localhost:5672//mediathread"
-CELERYD_CONCURRENCY = 1
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+broker_url = 'amqp://guest:guest@localhost:5672//mediathread'
+worker_concurrency = 1
 
 
 # for AuthRequirementMiddleware. this should be a list of
@@ -224,8 +224,7 @@ if 'test' in sys.argv or \
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
-    BROKER_BACKEND = 'memory'
-    CELERY_ALWAYS_EAGER = True
+    broker_url = 'memory://localhost/'
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     if 'integrationserver' in sys.argv:

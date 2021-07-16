@@ -1,5 +1,4 @@
 from celery.schedules import crontab
-from celery.task.base import periodic_task
 from courseaffils.columbia import CanvasTemplate, WindTemplate
 from courseaffils.models import Course
 from django.conf import settings
@@ -12,6 +11,7 @@ from mediathread.main.course_details import get_upload_folder
 from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.util import user_display_name, send_template_email
 from panopto.session import PanoptoSessionManager
+from mediathread.main.celery import app
 
 
 class PanoptoIngester(object):
@@ -229,6 +229,10 @@ class PanoptoIngester(object):
                 self.add_session_status(course, session, item, author, created)
 
 
-@periodic_task(run_every=crontab(hour="*", minute='0'))
-def panopto_ingest():
-    PanoptoIngester().automated_ingest()
+@app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Hourly Panopto Ingest
+    sender.add_periodic_task(
+        crontab(hour='*', minute=0),
+        PanoptoIngester().automated_ingest()
+    )

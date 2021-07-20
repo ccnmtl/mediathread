@@ -150,6 +150,7 @@ export default class AssetDetail extends React.Component {
         this.onCancel = this.onCancel.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
+        this.onRectangleClicked = this.onRectangleClicked.bind(this);
     }
 
     onUpdateIsEditing(newVal, activeSelection=null) {
@@ -639,6 +640,18 @@ export default class AssetDetail extends React.Component {
         this.setState({annotationTool: null, toolType: null});
     }
 
+    onRectangleClicked() {
+        this.setState({
+            toolType: 'rect',
+            cancel: true
+        });
+
+        const iframe = window.jQuery('iframe.pdfjs')[0];
+        if (iframe) {
+            iframe.contentWindow.postMessage('enableRectangleTool', '*');
+        }
+    }
+
     render() {
         let media = null;
 
@@ -859,6 +872,47 @@ export default class AssetDetail extends React.Component {
                 </React.Fragment>
             );
         } else if (this.type === 'pdf') {
+            const annotationTools = (
+                <div className="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">
+                    <form>
+                        <div className="form-row align-items-center">
+                            {invisibleEl}
+                            {this.state.tab === 'createSelection' && (
+                                <React.Fragment>
+                                    <p className="av-selections">Draw Selection</p>
+                                    <button
+                                        type="button"
+                                        onClick={this.onRectangleClicked}
+                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.toolType === 'rectangle' ? 'bg-warning' : '')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-square" viewBox="0 0 16 16">
+                                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                        </svg> Rectangle
+                                    </button>
+                                    {(this.state.cancel) && (
+                                        <button
+                                            type="button"
+                                            id='cancel-btn'
+                                            className="btn btn-danger btn-sm ml-auto"
+                                            onClick={this.onCancel}>
+                                            Cancel
+                                        </button>
+                                    )}
+                                    {(this.state.clear && !this.state.isEditing) && (
+                                        <button
+                                            type="button"
+                                            id="clear-btn"
+                                            className="btn btn-danger btn-sm ml-auto"
+                                            onClick={this.onClear}>
+                                            Clear
+                                        </button>
+                                    )}
+                                </React.Fragment>
+                            )}
+                        </div>
+                    </form>
+                </div>
+            );
+
             let url = null;
             if (this.props.asset.sources && this.props.asset.sources.pdf) {
                 url = this.props.asset.sources.pdf.url;
@@ -868,13 +922,16 @@ export default class AssetDetail extends React.Component {
             }
 
             media = (
-                <div className="d-flex">
-                    <iframe
-                        className="flex-fill pdfjs"
-                        src={`/asset/pdfjs/${this.asset.asset.id}`}
-                        style={{height: '600px'}}>
-                    </iframe>
-                </div>
+                <>
+                    {annotationTools}
+                    <div className="d-flex">
+                        <iframe
+                            className="flex-fill pdfjs"
+                            src={`/asset/pdfjs/${this.asset.asset.id}`}
+                            style={{height: '600px'}}>
+                        </iframe>
+                    </div>
+                </>
             );
         }
 
@@ -1017,12 +1074,6 @@ export default class AssetDetail extends React.Component {
         ) {
             if (this.type === 'video') {
                 this.startButtonRef.current.focus();
-            } else if (this.type === 'pdf') {
-                // Turn on PDF annotation tools
-                const iframe = window.jQuery('iframe.pdfjs')[0];
-                if (iframe) {
-                    iframe.contentWindow.postMessage('onShowCreate', '*');
-                }
             }
         } else if (
             this.type === 'pdf' &&
@@ -1031,7 +1082,7 @@ export default class AssetDetail extends React.Component {
         ) {
             const iframe = window.jQuery('iframe.pdfjs')[0];
             if (iframe) {
-                iframe.contentWindow.postMessage('onLeaveCreate', '*');
+                iframe.contentWindow.postMessage('disableRectangleTool', '*');
             }
         }
 

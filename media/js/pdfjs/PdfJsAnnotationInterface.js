@@ -38,7 +38,6 @@ class PdfJsAnnotationInterface {
 
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
     }
 
     // Given an event.target, return the page number it happened on.
@@ -56,21 +55,10 @@ class PdfJsAnnotationInterface {
 
     // The layerY co-ordinates are off in this event for some reason,
     // so use the latest layerX/Y co-ordinates from onMouseMove.
-    onMouseDown(e) {
-        e.preventDefault();
-        this.page = this.getPage(e.target),
-        this.annotationController.onMouseDown(
-            this.x, this.y, this.page);
-    }
-
     onMouseUp(e) {
         e.preventDefault();
         const pageEl = e.target.closest('.page');
-        const canvas = pageEl.querySelector('.canvasWrapper>canvas');
-        this.annotationController.onMouseUp(
-            this.x, this.y, this.page,
-            canvas
-        );
+        this.annotationController.onMouseUp(this.x, this.y, this.page);
     }
 
     onPageRendered(e) {

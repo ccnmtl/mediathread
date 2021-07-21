@@ -73,7 +73,7 @@ window.addEventListener('load', function () {
 
 // iframe parent interaction
 window.onmessage = function(e){
-    if (e.data === 'onShowCreate') {
+    if (e.data === 'enableRectangleTool') {
         const svgEls = document.querySelectorAll('svg');
         svgEls.forEach(function(el) {
             el.style.cursor = 'crosshair';
@@ -81,10 +81,8 @@ window.onmessage = function(e){
                 'mousemove', annotationInterface.onMouseMove);
             el.addEventListener(
                 'mouseup', annotationInterface.onMouseUp);
-            el.addEventListener(
-                'mousedown', annotationInterface.onMouseDown);
         });
-    } else if (e.data === 'onLeaveCreate') {
+    } else if (e.data === 'disableRectangleTool') {
         const svgEls = document.querySelectorAll('svg');
         svgEls.forEach(function(el) {
             el.style.cursor = 'default';
@@ -93,8 +91,6 @@ window.onmessage = function(e){
                 'mousemove', annotationInterface.onMouseMove);
             el.removeEventListener(
                 'mouseup', annotationInterface.onMouseUp);
-            el.removeEventListener(
-                'mousedown', annotationInterface.onMouseDown);
         });
     }
 };
@@ -209,12 +205,11 @@ window.onmessage = function(e){
               <span data-l10n-id="last_page_label">Go to Last Page</span>
             </button>
 
-            <div class="horizontalToolbarSeparator"></div>
 
-            <button id="pageRotateCw" class="secondaryToolbarButton rotateCw" title="Rotate Clockwise" tabindex="58" data-l10n-id="page_rotate_cw">
+            <button style="display: none;" id="pageRotateCw" class="secondaryToolbarButton rotateCw" title="Rotate Clockwise" tabindex="58" data-l10n-id="page_rotate_cw">
               <span data-l10n-id="page_rotate_cw_label">Rotate Clockwise</span>
             </button>
-            <button id="pageRotateCcw" class="secondaryToolbarButton rotateCcw" title="Rotate Counterclockwise" tabindex="59" data-l10n-id="page_rotate_ccw">
+            <button style="display: none;" id="pageRotateCcw" class="secondaryToolbarButton rotateCcw" title="Rotate Counterclockwise" tabindex="59" data-l10n-id="page_rotate_ccw">
               <span data-l10n-id="page_rotate_ccw_label">Rotate Counterclockwise</span>
             </button>
 

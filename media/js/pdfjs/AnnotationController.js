@@ -36,50 +36,80 @@ const getCanvasCoords = function(x1, y1, x2, y2) {
  */
 class AnnotationController {
     constructor() {
-        this.isMakingRectangle = false;
-
         this.rect = {
             page: 1,
             coords: []
         };
+
+        this.state = {
+            isMakingRect: false,
+            x: 0,
+            y: 0
+        };
     }
 
     onMouseMove(x, y) {
+        this.state.x = x;
+        this.state.y = y;
+
+        if (this.state.isMakingRect) {
+            this.updateRect();
+        }
     }
 
-    onMouseDown(x, y, page) {
-        this.startRectangle(x, y, page);
-        this.isMakingRectangle = true;
+    onMouseUp(x, y, page) {
+        if (!this.state.isMakingRect) {
+            this.state.isMakingRect = true;
+            this.startRect(x, y, page);
+        } else {
+            this.state.isMakingRect = false;
+            this.closeRect(x, y, page);
+        }
     }
 
-    onMouseUp(x, y, page, canvas) {
-        this.closeRectangle(x, y, page);
-        this.isMakingRectangle = false;
-
+    makeRect(x, y, width, height) {
         const pageEl = document.querySelector(
-            '.page[data-page-number="' + page + '"]');
+            '.page[data-page-number="' + this.rect.page + '"]');
         const svg = pageEl.querySelector('svg');
 
-        const draw = SVG(svg).addTo('#pdfjs-page-' + page);
+        const draw = SVG(svg).addTo('#pdfjs-page-' + this.rect.page);
 
-        const coords = getCanvasCoords(
-            this.rect.coords[0][0], this.rect.coords[0][1],
-            this.rect.coords[1][0], this.rect.coords[1][1]
-        );
+        draw.clear();
 
-        draw.rect(coords[2], coords[3])
-            .move(coords[0], coords[1])
-            .stroke('#f06').fill('none')
+        const rect = draw.rect(width, height)
+              .move(x, y)
+              .stroke({color: '#22f', width: 3})
+              .fill('none');
+
+        return rect;
     }
 
-    startRectangle(x, y, page=1) {
+    updateRect() {
+        const coords = getCanvasCoords(
+            this.rect.coords[0][0],
+            this.rect.coords[0][1],
+            this.state.x, this.state.y);
+
+        this.state.svgRect.attr({
+            x: coords[0],
+            y: coords[1],
+            width: coords[2],
+            height: coords[3]
+        });
+    }
+
+    startRect(x, y, page=1) {
         this.rect = {
             page: page,
             coords: [[x, y]]
         };
+
+        const coords = getCanvasCoords(x, y, this.state.x, this.state.y);
+
+        this.state.svgRect = this.makeRect(...coords);
     }
 
-    closeRectangle(x, y) {
+    closeRect(x, y) {
         this.rect.coords.push([x, y]);
     }
 }

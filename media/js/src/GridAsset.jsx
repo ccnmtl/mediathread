@@ -67,6 +67,7 @@ export default class GridAsset extends React.Component {
             }
         }
     }
+
     render() {
         const type = this.asset.getType();
 

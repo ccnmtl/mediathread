@@ -100,10 +100,22 @@ export default class CollectionTab extends React.Component {
     }
 
     followLink(e) {
-        // If this was an <a> link, prevent default behavior.
         if (e) {
             e.preventDefault();
-            window.history.pushState(null, null, e.target.href);
+
+            let href = null;
+            if (e.target.href) {
+                href = e.target.href;
+            } else if (e.currentTarget && e.currentTarget.href) {
+                // If the <a> tag is surrounding an <img> tag,
+                // currentTarget will be the correct element with the
+                // href, as a.target will be the image.
+                href = e.currentTarget.href;
+            }
+
+            if (href) {
+                window.history.pushState(null, null, href);
+            }
         }
     }
 

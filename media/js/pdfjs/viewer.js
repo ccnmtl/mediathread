@@ -1307,7 +1307,7 @@ const PDFViewerApplication = {
     } = pdfViewer;
     const pdfThumbnailViewer = this.pdfThumbnailViewer;
     pdfThumbnailViewer.setDocument(pdfDocument);
-    const storedPromise = (this.store = new _view_history.ViewHistory(pdfDocument.fingerprint)).getMultiple({
+    const storedPromise = (this.store = new _view_history.ViewHistory(pdfDocument.fingerprints[0])).getMultiple({
       page: null,
       zoom: _ui_utils.DEFAULT_SCALE_VALUE,
       scrollLeft: "0",
@@ -1328,7 +1328,7 @@ const PDFViewerApplication = {
         const viewOnLoad = _app_options.AppOptions.get("viewOnLoad");
 
         this._initializePdfHistory({
-          fingerprint: pdfDocument.fingerprint,
+          fingerprint: pdfDocument.fingerprints[0],
           viewOnLoad,
           initialDest: openAction?.dest
         });
@@ -1567,7 +1567,7 @@ const PDFViewerApplication = {
     this.metadata = metadata;
     this._contentDispositionFilename ?? (this._contentDispositionFilename = contentDispositionFilename);
     this._contentLength ?? (this._contentLength = contentLength);
-    console.log(`PDF ${pdfDocument.fingerprint} [${info.PDFFormatVersion} ` + `${(info.Producer || "-").trim()} / ${(info.Creator || "-").trim()}] ` + `(PDF.js: ${_pdfjsLib.version || "-"})`);
+    console.log(`PDF ${pdfDocument.fingerprints[0]} [${info.PDFFormatVersion} ` + `${(info.Producer || "-").trim()} / ${(info.Creator || "-").trim()}] ` + `(PDF.js: ${_pdfjsLib.version || "-"})`);
     let pdfTitle = info?.Title;
     const metadataTitle = metadata?.get("dc:title");
 
@@ -1584,7 +1584,7 @@ const PDFViewerApplication = {
     }
 
     if (info.IsXFAPresent && !info.IsAcroFormPresent && !pdfDocument.isPureXfa) {
-      console.warn("Warning: XFA is not enabled");
+      console.warn("Warning: XFA support is not enabled");
       this.fallback(_pdfjsLib.UNSUPPORTED_FEATURES.forms);
     } else if ((info.IsAcroFormPresent || info.IsXFAPresent) && !this.pdfViewer.renderInteractiveForms) {
       console.warn("Warning: Interactive form support is not enabled");
@@ -5461,6 +5461,7 @@ class PDFFindController {
 
   scrollMatchIntoView({
     element = null,
+    selectedLeft = 0,
     pageIndex = -1,
     matchIndex = -1
   }) {
@@ -5475,7 +5476,7 @@ class PDFFindController {
     this._scrollMatches = false;
     const spot = {
       top: MATCH_SCROLL_OFFSET_TOP,
-      left: MATCH_SCROLL_OFFSET_LEFT
+      left: selectedLeft + MATCH_SCROLL_OFFSET_LEFT
     };
     (0, _ui_utils.scrollIntoView)(element, spot, true);
   }
@@ -6955,7 +6956,7 @@ class PDFLinkService {
     const destRef = explicitDest[0];
     let pageNumber;
 
-    if (destRef instanceof Object) {
+    if (typeof destRef === "object" && destRef !== null) {
       pageNumber = this._cachedPageNumber(destRef);
 
       if (pageNumber === null) {
@@ -7644,7 +7645,7 @@ class PDFOutlineViewer extends _base_tree_viewer.BaseTreeViewer {
         if (Array.isArray(explicitDest)) {
           const [destRef] = explicitDest;
 
-          if (destRef instanceof Object) {
+          if (typeof destRef === "object" && destRef !== null) {
             pageNumber = this.linkService._cachedPageNumber(destRef);
 
             if (!pageNumber) {
@@ -9849,7 +9850,7 @@ class BaseViewer {
       throw new Error("Cannot initialize BaseViewer.");
     }
 
-    const viewerVersion = '2.10.199';
+    const viewerVersion = '2.10.349';
 
     if (_pdfjsLib.version !== viewerVersion) {
       throw new Error(`The API version "${_pdfjsLib.version}" does not match the Viewer version "${viewerVersion}".`);
@@ -11323,6 +11324,7 @@ exports.DefaultAnnotationLayerFactory = DefaultAnnotationLayerFactory;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
+exports.fixupLangCode = fixupLangCode;
 exports.getL10nFallback = getL10nFallback;
 exports.NullL10n = void 0;
 const DEFAULT_L10N_STRINGS = {
@@ -11390,6 +11392,27 @@ function getL10nFallback(key, args) {
   }
 
   return DEFAULT_L10N_STRINGS[key] || "";
+}
+
+const PARTIAL_LANG_CODES = {
+  en: "en-US",
+  es: "es-ES",
+  fy: "fy-NL",
+  ga: "ga-IE",
+  gu: "gu-IN",
+  hi: "hi-IN",
+  hy: "hy-AM",
+  nb: "nb-NO",
+  ne: "ne-NP",
+  nn: "nn-NO",
+  pa: "pa-IN",
+  pt: "pt-PT",
+  sv: "sv-SE",
+  zh: "zh-CN"
+};
+
+function fixupLangCode(langCode) {
+  return PARTIAL_LANG_CODES[langCode?.toLowerCase()] || langCode;
 }
 
 function formatL10nValue(text, args) {
@@ -11841,6 +11864,11 @@ class PDFPageView {
     }
 
     this.textLayer = textLayer;
+
+    if (this.xfaLayer?.div) {
+      div.appendChild(this.xfaLayer.div);
+    }
+
     let renderContinueCallback = null;
 
     if (this.renderingQueue) {
@@ -12434,7 +12462,7 @@ class TextLayerBuilder {
     function beginText(begin, className) {
       const divIdx = begin.divIdx;
       textDivs[divIdx].textContent = "";
-      appendTextToDiv(divIdx, 0, begin.offset, className);
+      return appendTextToDiv(divIdx, 0, begin.offset, className);
     }
 
     function appendTextToDiv(divIdx, fromOffset, toOffset, className) {
@@ -12447,10 +12475,11 @@ class TextLayerBuilder {
         span.className = `${className} appended`;
         span.appendChild(node);
         div.appendChild(span);
-        return;
+        return className.includes("selected") ? span.offsetLeft : 0;
       }
 
       div.appendChild(node);
+      return 0;
     }
 
     let i0 = selectedMatchIdx,
@@ -12469,14 +12498,7 @@ class TextLayerBuilder {
       const end = match.end;
       const isSelected = isSelectedPage && i === selectedMatchIdx;
       const highlightSuffix = isSelected ? " selected" : "";
-
-      if (isSelected) {
-        findController.scrollMatchIntoView({
-          element: textDivs[begin.divIdx],
-          pageIndex: pageIdx,
-          matchIndex: selectedMatchIdx
-        });
-      }
+      let selectedLeft = 0;
 
       if (!prevEnd || begin.divIdx !== prevEnd.divIdx) {
         if (prevEnd !== null) {
@@ -12489,9 +12511,9 @@ class TextLayerBuilder {
       }
 
       if (begin.divIdx === end.divIdx) {
-        appendTextToDiv(begin.divIdx, begin.offset, end.offset, "highlight" + highlightSuffix);
+        selectedLeft = appendTextToDiv(begin.divIdx, begin.offset, end.offset, "highlight" + highlightSuffix);
       } else {
-        appendTextToDiv(begin.divIdx, begin.offset, infinity.offset, "highlight begin" + highlightSuffix);
+        selectedLeft = appendTextToDiv(begin.divIdx, begin.offset, infinity.offset, "highlight begin" + highlightSuffix);
 
         for (let n0 = begin.divIdx + 1, n1 = end.divIdx; n0 < n1; n0++) {
           textDivs[n0].className = "highlight middle" + highlightSuffix;
@@ -12501,6 +12523,15 @@ class TextLayerBuilder {
       }
 
       prevEnd = end;
+
+      if (isSelected) {
+        findController.scrollMatchIntoView({
+          element: textDivs[begin.divIdx],
+          selectedLeft,
+          pageIndex: pageIdx,
+          matchIndex: selectedMatchIdx
+        });
+      }
     }
 
     if (prevEnd) {
@@ -13863,7 +13894,7 @@ class GenericL10n {
   constructor(lang) {
     this._lang = lang;
     this._ready = new Promise((resolve, reject) => {
-      webL10n.setLanguage(lang, () => {
+      webL10n.setLanguage((0, _l10n_utils.fixupLangCode)(lang), () => {
         resolve(webL10n);
       });
     });
@@ -15168,8 +15199,8 @@ var _app_options = __webpack_require__(1);
 
 var _app = __webpack_require__(3);
 
-const pdfjsVersion = '2.10.199';
-const pdfjsBuild = 'dc7faa213';
+const pdfjsVersion = '2.10.349';
+const pdfjsBuild = '2cf90cd9a';
 window.PDFViewerApplication = _app.PDFViewerApplication;
 window.PDFViewerApplicationOptions = _app_options.AppOptions;
 ;

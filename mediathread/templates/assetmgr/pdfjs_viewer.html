@@ -58,45 +58,7 @@ window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
 <script src="/media/js/pdf/PdfJsAnnotationInterface.js"></script>
 <script src="/media/js/pdf/AnnotationController.js"></script>
-<script defer>
-const annotationController = new AnnotationController();
-const annotationInterface = new PdfJsAnnotationInterface(annotationController);
-
-// https://stackoverflow.com/a/64465323/173630
-window.addEventListener('load', function () {
-    if (typeof PDFViewerApplication !== 'null' && PDFViewerApplication.eventBus) {
-        PDFViewerApplication.eventBus.on('pagerendered', function (e) {
-            annotationInterface.onPageRendered(e);
-        });
-    } else {
-        console.log('failed loading!', PDFViewerApplication);
-    }
-});
-
-// iframe parent interaction
-window.onmessage = function(e){
-    if (e.data === 'enableRectangleTool') {
-        const svgEls = document.querySelectorAll('svg');
-        svgEls.forEach(function(el) {
-            el.style.cursor = 'crosshair';
-            el.addEventListener(
-                'mousemove', annotationInterface.onMouseMove);
-            el.addEventListener(
-                'mouseup', annotationInterface.onMouseUp);
-        });
-    } else if (e.data === 'disableRectangleTool') {
-        const svgEls = document.querySelectorAll('svg');
-        svgEls.forEach(function(el) {
-            el.style.cursor = 'default';
-
-            el.removeEventListener(
-                'mousemove', annotationInterface.onMouseMove);
-            el.removeEventListener(
-                'mouseup', annotationInterface.onMouseUp);
-        });
-    }
-};
-</script>
+<script src="/media/js/pdf/main.js"></script>
   </head>
 
   <body tabindex="1">

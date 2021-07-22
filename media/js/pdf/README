@@ -1,0 +1,2 @@
+This directory contains all the JS code for PDF display and annotation
+in Mediathread. Mozilla's PDF.js library ang SVG.js are also included.

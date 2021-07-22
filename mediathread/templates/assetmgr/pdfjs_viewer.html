@@ -41,24 +41,24 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="/media/locale/locale.properties">
-<script src="/media/js/pdfjs/pdf.js"></script>
+<script src="/media/js/pdf/pdfjs/pdf.js"></script>
 <script>
 // TODO: this doesn't work, and is hard-coded in the pdf.js source file.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdfjs/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdf/pdfjs/pdf.worker.js';
 </script>
 
 <script>
 window.ASSET_URL = '{{object.primary.url}}';
 </script>
 
-<script src="/media/js/pdfjs/viewer.js"></script>
-<script src="/media/js/pdfjs/svg.min.js"></script>
+<script src="/media/js/pdf/pdfjs/viewer.js"></script>
+<script src="/media/js/pdf/svg/svg.min.js"></script>
 <script>
 window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
-<script src="/media/js/pdfjs/PdfJsAnnotationInterface.js"></script>
-<script src="/media/js/pdfjs/AnnotationController.js"></script>
-<script>
+<script src="/media/js/pdf/PdfJsAnnotationInterface.js"></script>
+<script src="/media/js/pdf/AnnotationController.js"></script>
+<script defer>
 const annotationController = new AnnotationController();
 const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 
@@ -68,6 +68,8 @@ window.addEventListener('load', function () {
         PDFViewerApplication.eventBus.on('pagerendered', function (e) {
             annotationInterface.onPageRendered(e);
         });
+    } else {
+        console.log('failed loading!', PDFViewerApplication);
     }
 });
 

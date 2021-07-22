@@ -57,6 +57,10 @@ class PdfJsAnnotationInterface {
     // so use the latest layerX/Y co-ordinates from onMouseMove.
     onMouseUp(e) {
         e.preventDefault();
+
+        const pageNumber = this.getPage(e.target);
+        this.page = pageNumber;
+
         this.annotationController.onMouseUp(this.x, this.y, this.page);
     }
 

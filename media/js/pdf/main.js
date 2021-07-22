@@ -29,7 +29,7 @@ const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 // Wait for the PDFViewerApplication to initialize
 // https://stackoverflow.com/a/68489111/173630
 PDFViewerApplication.initializedPromise.then(function() {
-    PDFViewerApplication.eventBus.on('pagerendered', function (e) {
+    PDFViewerApplication.eventBus.on('pagerendered', function(e) {
         annotationInterface.onPageRendered(e);
     });
 });

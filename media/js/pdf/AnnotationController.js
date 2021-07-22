@@ -77,9 +77,9 @@ class AnnotationController {
         draw.clear();
 
         const rect = draw.rect(width, height)
-              .move(x, y)
-              .stroke({color: '#22f', width: 3})
-              .fill('none');
+            .move(x, y)
+            .stroke({color: '#22f', width: 3})
+            .fill('none');
 
         return rect;
     }

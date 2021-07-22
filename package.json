@@ -14,7 +14,7 @@
     "cypress:ffhead": "cypress run --browser firefox",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:ffhead",
     "dev": "webpack --mode development --watch",
-    "eslint": "eslint media/js/src media/js/src/*.jsx media/js/src/**/*.jsx *.js",
+    "eslint": "eslint media/js/src media/js/src/*.jsx media/js/src/**/*.jsx media/js/pdf/*.js *.js",
     "build": "webpack"
   },
   "repository": {

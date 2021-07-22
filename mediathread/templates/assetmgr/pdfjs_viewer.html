@@ -48,7 +48,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdf/pdfjs/pdf.worker.js';
 </script>
 
 <script>
-window.ASSET_URL = '{{object.primary.url}}';
+window.ASSET_URL = '{{object.primary.upload.url|safe}}';
 </script>
 
 <script src="/media/js/pdf/pdfjs/viewer.js"></script>

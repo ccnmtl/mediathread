@@ -913,14 +913,6 @@ export default class AssetDetail extends React.Component {
                 </div>
             );
 
-            let url = null;
-            if (this.props.asset.sources && this.props.asset.sources.pdf) {
-                url = this.props.asset.sources.pdf.url;
-            }
-            if (this.props.asset.primary_upload_url) {
-                url = this.props.asset.primary_upload_url;
-            }
-
             media = (
                 <>
                     {annotationTools}

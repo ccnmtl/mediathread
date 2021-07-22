@@ -57,7 +57,6 @@ class PdfJsAnnotationInterface {
     // so use the latest layerX/Y co-ordinates from onMouseMove.
     onMouseUp(e) {
         e.preventDefault();
-        const pageEl = e.target.closest('.page');
         this.annotationController.onMouseUp(this.x, this.y, this.page);
     }
 
@@ -67,7 +66,7 @@ class PdfJsAnnotationInterface {
             '.page[data-page-number="' + pageNumber + '"]');
         pageEl.setAttribute('id', 'pdfjs-page-' + pageNumber);
 
-        const draw = SVG().addTo('#pdfjs-page-' + pageNumber)
-              .size('100%', '100%');
+        SVG().addTo('#pdfjs-page-' + pageNumber)
+            .size('100%', '100%');
     }
 }

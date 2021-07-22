@@ -41,60 +41,24 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="/media/locale/locale.properties">
-<script src="/media/js/pdfjs/pdf.js"></script>
+<script src="/media/js/pdf/pdfjs/pdf.js"></script>
 <script>
 // TODO: this doesn't work, and is hard-coded in the pdf.js source file.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdfjs/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdf/pdfjs/pdf.worker.js';
 </script>
 
 <script>
-window.ASSET_URL = '{{object.primary.url}}';
+window.ASSET_URL = '{{object.primary.upload.url|safe}}';
 </script>
 
-<script src="/media/js/pdfjs/viewer.js"></script>
-<script src="/media/js/pdfjs/svg.min.js"></script>
+<script src="/media/js/pdf/pdfjs/viewer.js"></script>
+<script src="/media/js/pdf/svg/svg.min.js"></script>
 <script>
 window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
-<script src="/media/js/pdfjs/PdfJsAnnotationInterface.js"></script>
-<script src="/media/js/pdfjs/AnnotationController.js"></script>
-<script>
-const annotationController = new AnnotationController();
-const annotationInterface = new PdfJsAnnotationInterface(annotationController);
-
-// https://stackoverflow.com/a/64465323/173630
-window.addEventListener('load', function () {
-    if (typeof PDFViewerApplication !== 'null' && PDFViewerApplication.eventBus) {
-        PDFViewerApplication.eventBus.on('pagerendered', function (e) {
-            annotationInterface.onPageRendered(e);
-        });
-    }
-});
-
-// iframe parent interaction
-window.onmessage = function(e){
-    if (e.data === 'enableRectangleTool') {
-        const svgEls = document.querySelectorAll('svg');
-        svgEls.forEach(function(el) {
-            el.style.cursor = 'crosshair';
-            el.addEventListener(
-                'mousemove', annotationInterface.onMouseMove);
-            el.addEventListener(
-                'mouseup', annotationInterface.onMouseUp);
-        });
-    } else if (e.data === 'disableRectangleTool') {
-        const svgEls = document.querySelectorAll('svg');
-        svgEls.forEach(function(el) {
-            el.style.cursor = 'default';
-
-            el.removeEventListener(
-                'mousemove', annotationInterface.onMouseMove);
-            el.removeEventListener(
-                'mouseup', annotationInterface.onMouseUp);
-        });
-    }
-};
-</script>
+<script src="/media/js/pdf/PdfJsAnnotationInterface.js"></script>
+<script src="/media/js/pdf/AnnotationController.js"></script>
+<script src="/media/js/pdf/main.js"></script>
   </head>
 
   <body tabindex="1">

@@ -620,7 +620,7 @@ class ScalarExportView(LoggedInSuperuserMixin, RestrictedMaterialsMixin, View):
         username = data['annotations'][n]['author']['username']
         author_user = User.objects.get(username=username)
         author_email = author_user.email
-        hash_or_username = hashlib.sha1(author_email).hexdigest()
+        hash_or_username = hashlib.sha1(smart_bytes(author_email)).hexdigest()
 
         user_node['http://xmlns.com/foaf/0.1/name'] = [{"value": data.get(
             'annotations')[n]['author']['public_name'], "type": "literal"}]

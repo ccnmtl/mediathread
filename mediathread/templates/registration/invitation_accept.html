@@ -67,6 +67,7 @@
     <p>Log in to <a href="/">Mediathread</a></p>
 {% else %}
     <form method="post" action="." class="register-form">
+        {% csrf_token %}
         <p>Your instructor has invited you to join {{invite.course.title}}. Please create a username and password to use with Mediathread.</p>
         <br />
 

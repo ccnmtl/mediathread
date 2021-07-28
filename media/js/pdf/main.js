@@ -31,6 +31,11 @@ const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 PDFViewerApplication.initializedPromise.then(function() {
     PDFViewerApplication.eventBus.on('pagerendered', function(e) {
         annotationInterface.onPageRendered(e);
+        annotationController.onPageRendered();
+    });
+
+    PDFViewerApplication.eventBus.on('scalechanging', function(e) {
+        annotationController.onZoomChange(e.scale);
     });
 });
 

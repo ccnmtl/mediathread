@@ -22,7 +22,12 @@
  * Given co-ordinates for two points, return the canvas API
  * co-ordinates: top-left point x/y, then width/height.
  */
-const getCanvasCoords = function(x1, y1, x2, y2) {
+const getCanvasCoords = function(x1, y1, x2, y2, scale=1) {
+    x1 = x1 * scale;
+    y1 = y1 * scale;
+    x2 = x2 * scale;
+    y2 = y2 * scale;
+
     return [
         Math.min(x1, x2), Math.min(y1, y2),
         Math.abs(x2 - x1), Math.abs(y2 - y1)
@@ -36,21 +41,19 @@ const getCanvasCoords = function(x1, y1, x2, y2) {
  */
 class AnnotationController {
     constructor() {
-        this.rect = {
-            page: 1,
-            coords: []
-        };
+        this.rect = null;
 
         this.state = {
             isMakingRect: false,
             x: 0,
-            y: 0
+            y: 0,
+            scale: 1
         };
     }
 
     onMouseMove(x, y) {
-        this.state.x = x;
-        this.state.y = y;
+        this.state.x = x / this.state.scale;
+        this.state.y = y / this.state.scale;
 
         if (this.state.isMakingRect) {
             this.updateRect();
@@ -60,10 +63,18 @@ class AnnotationController {
     onMouseUp(x, y, page) {
         if (!this.state.isMakingRect) {
             this.state.isMakingRect = true;
-            this.startRect(x, y, page);
+            this.startRect(
+                x / this.state.scale,
+                y / this.state.scale,
+                page
+            );
         } else {
             this.state.isMakingRect = false;
-            this.closeRect(x, y, page);
+            this.closeRect(
+                x / this.state.scale,
+                y / this.state.scale,
+                page
+            );
         }
     }
 
@@ -88,7 +99,9 @@ class AnnotationController {
         const coords = getCanvasCoords(
             this.rect.coords[0][0],
             this.rect.coords[0][1],
-            this.state.x, this.state.y);
+            this.state.x, this.state.y,
+            this.state.scale
+        );
 
         this.state.svgRect.attr({
             x: coords[0],
@@ -104,12 +117,38 @@ class AnnotationController {
             coords: [[x, y]]
         };
 
-        const coords = getCanvasCoords(x, y, this.state.x, this.state.y);
-
-        this.state.svgRect = this.makeRect(...coords);
+        this.displayRect(
+            x, y, this.state.x, this.state.y,
+            this.state.scale);
     }
 
     closeRect(x, y) {
         this.rect.coords.push([x, y]);
+    }
+
+    displayRect(x1, y1, x2, y2, scale=1) {
+        const coords = getCanvasCoords(x1, y1, x2, y2, scale);
+
+        this.state.svgRect = this.makeRect(...coords);
+    }
+
+    onPageRendered() {
+        if (!this.rect) {
+            return;
+        }
+
+        const coords = getCanvasCoords(
+            this.rect.coords[0][0],
+            this.rect.coords[0][1],
+            this.rect.coords[1][0],
+            this.rect.coords[1][1],
+            this.state.scale
+        );
+
+        this.state.svgRect = this.makeRect(...coords);
+    }
+
+    onZoomChange(scale) {
+        this.state.scale = scale;
     }
 }

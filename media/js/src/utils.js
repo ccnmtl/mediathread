@@ -160,6 +160,13 @@ const createSelection = function(assetId, data) {
 };
 
 const createSherdNote = function(assetId, data) {
+    // TODO: remove these hard-coded ranges when removing global
+    // annotation stuff.
+    if (!data.range1 || !data.range2) {
+        data.range1 = -2;
+        data.range2 = -1;
+    }
+
     return authedFetch(
         `/asset/${assetId}/sherdnote/create/`,
         'post',

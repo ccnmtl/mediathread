@@ -100,7 +100,9 @@ export default class AssetDetail extends React.Component {
             annotationTool: null,
             cancel: false,
             clear: false,
-            toolType: null
+            toolType: null,
+
+            pdfRect: null
         };
 
         this.draw = null;
@@ -188,7 +190,13 @@ export default class AssetDetail extends React.Component {
         const me = this;
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
-        let selectionData = {};
+        let selectionData = {
+            title: selectionTitle,
+            tags: tags,
+            terms: terms,
+            body: document.getElementById('newSelectionNotes').value
+        };
+        let annotationData = {};
 
         if (this.type === 'image') {
             // Only allow one feature per selection
@@ -197,90 +205,75 @@ export default class AssetDetail extends React.Component {
             const geometry = feature.getGeometry();
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
-            if(this.state.annotationTool === 'polygon'){
-                selectionData = {
-                    title: selectionTitle,
-                    tags: tags,
-                    terms: terms,
-                    body: document.getElementById('newSelectionNotes').value,
-                    range1: -2,
-                    range2: -1,
-                    annotation_data: {
-                        geometry: {
-                            type: 'Polygon',
-                            coordinates: coords
-                        },
-                        default: false,
-                        x: -2,
-                        y: -1,
-                        zoom: 1,
-                        extent: extent,
-                        tool: 'polygon',
-                    }
+
+            selectionData.range1 = -2;
+            selectionData.range2 = -1;
+
+            if (this.state.annotationTool === 'polygon'){
+                annotationData = {
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'polygon',
                 };
             } else if (this.state.annotationTool === 'freeformShape'){
-                selectionData = {
-                    title: selectionTitle,
-                    tags: tags,
-                    terms: terms,
-                    body: document.getElementById('newSelectionNotes').value,
-                    range1: -2,
-                    range2: -1,
-                    annotation_data: {
-                        geometry: {
-                            type: 'Polygon',
-                            coordinates: coords
-                        },
-                        default: false,
-                        x: -2,
-                        y: -1,
-                        zoom: 1,
-                        extent: extent,
-                        tool: 'freeformShape'
-                    }
+                annotationData = {
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'freeformShape'
                 };
             }
             else if (this.state.annotationTool === 'drawline'){
-                selectionData = {
-                    title: selectionTitle,
-                    tags: tags,
-                    terms: terms,
-                    body: document.getElementById('newSelectionNotes').value,
-                    range1: -2,
-                    range2: -1,
-                    annotation_data: {
-                        geometry: {
-                            type: 'LineString',
-                            coordinates: coords
-                        },
-                        default: false,
-                        x: -2,
-                        y: -1,
-                        zoom: 1,
-                        extent: extent,
-                        tool: 'drawline'
-                    }
+                annotationData = {
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: coords
+                    },
+                    default: false,
+                    x: -2,
+                    y: -1,
+                    zoom: 1,
+                    extent: extent,
+                    tool: 'drawline'
                 };
             }
         } else if (this.type === 'video') {
-            selectionData = {
-                title: selectionTitle,
-                tags: tags,
-                terms: terms,
-                body: document.getElementById('newSelectionNotes').value,
-                range1: this.state.selectionStartTime || 0,
-                range2: this.state.selectionEndTime,
-                annotation_data: {
-                    startCode: formatTimecode(this.state.selectionStartTime || 0),
-                    endCode: formatTimecode(this.state.selectionEndTime),
-                    duration: this.state.selectionEndTime -
-                        (this.state.selectionStartTime || 0),
-                    timeScale: 1,
-                    start: this.state.selectionStartTime || 0,
-                    end: this.state.selectionEndTime
+            selectionData.range1 = this.state.selectionStartTime || 0;
+            selectionData.range2 = this.state.selectionEndTime;
+
+            annotationData = {
+                startCode: formatTimecode(this.state.selectionStartTime || 0),
+                endCode: formatTimecode(this.state.selectionEndTime),
+                duration: this.state.selectionEndTime -
+                    (this.state.selectionStartTime || 0),
+                timeScale: 1,
+                start: this.state.selectionStartTime || 0,
+                end: this.state.selectionEndTime
+            };
+        } else if (this.type === 'pdf') {
+            annotationData = {
+                geometry: {
+                    type: 'Rectangle',
+                    page: this.state.pdfRect.page,
+                    coordinates: this.state.pdfRect.coords
                 }
             };
         }
+
+        selectionData.annotation_data = annotationData;
 
         return createSherdNote(this.asset.asset.id, selectionData)
             .then(function(createdSelection) {
@@ -371,7 +364,6 @@ export default class AssetDetail extends React.Component {
                     tool: 'drawline'
                 };
             }
-
         } else if (this.type === 'video') {
             newData = {
                 title: selectionTitle,
@@ -389,6 +381,13 @@ export default class AssetDetail extends React.Component {
                 timeScale: 1,
                 start: this.state.selectionStartTime || 0,
                 end: this.state.selectionEndTime
+            };
+        } else if (this.type === 'pdf') {
+            annotationData = {
+                geometry: {
+                    type: 'Rectangle',
+                    coordinates: this.state.pdfRect.coords
+                }
             };
         }
 
@@ -1100,6 +1099,8 @@ export default class AssetDetail extends React.Component {
     }
 
     componentDidMount() {
+        const me = this;
+
         // If the path contains a selection ID, open the appropriate
         // selection accordion item.
         const match = window.location.pathname.match(/annotations\/(\d+)\//);
@@ -1157,6 +1158,15 @@ export default class AssetDetail extends React.Component {
                 });
                 this.onViewSelection(null, selection);
             }
+        } else if (this.type === 'pdf') {
+            window.onmessage = function(e) {
+                if (
+                    e.data.message &&
+                        e.data.message === 'pdfAnnotationRectCreated'
+                ) {
+                    me.setState({pdfRect: e.data.rect});
+                }
+            };
         }
     }
 

@@ -124,6 +124,12 @@ class AnnotationController {
 
     closeRect(x, y) {
         this.rect.coords.push([x, y]);
+
+        // Tell the parent application about the new rectangle.
+        window.top.postMessage({
+            message: 'pdfAnnotationRectCreated',
+            rect: this.rect
+        }, '*');
     }
 
     displayRect(x1, y1, x2, y2, scale=1) {

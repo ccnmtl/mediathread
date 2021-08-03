@@ -29,7 +29,7 @@ import {
 } from '../utils';
 import {CenterControl} from '../centercontrol';
 import {
-    objectProportioned, displaySelection, clearSource, resetMap,
+    objectProportioned, displayImageSelection, clearSource, resetMap,
     getdisplayStyle
 } from '../openlayersUtils';
 import CreateSelection from './CreateSelection';
@@ -209,7 +209,7 @@ export default class AssetDetail extends React.Component {
             selectionData.range1 = -2;
             selectionData.range2 = -1;
 
-            if (this.state.annotationTool === 'polygon'){
+            if (this.state.annotationTool === 'polygon') {
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -222,7 +222,7 @@ export default class AssetDetail extends React.Component {
                     extent: extent,
                     tool: 'polygon',
                 };
-            } else if (this.state.annotationTool === 'freeformShape'){
+            } else if (this.state.annotationTool === 'freeformShape') {
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -236,7 +236,7 @@ export default class AssetDetail extends React.Component {
                     tool: 'freeformShape'
                 };
             }
-            else if (this.state.annotationTool === 'drawline'){
+            else if (this.state.annotationTool === 'drawline') {
                 annotationData = {
                     geometry: {
                         type: 'LineString',
@@ -323,7 +323,7 @@ export default class AssetDetail extends React.Component {
                 terms: terms,
                 body: document.getElementById('newSelectionNotes').value
             };
-            if (this.state.annotationTool === 'polygon'){
+            if (this.state.annotationTool === 'polygon') {
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -336,7 +336,7 @@ export default class AssetDetail extends React.Component {
                     extent: extent,
                     tool: 'polygon'
                 };
-            } else if (this.state.annotationTool === 'freeformShape'){
+            } else if (this.state.annotationTool === 'freeformShape') {
                 annotationData = {
                     geometry: {
                         type: 'Polygon',
@@ -350,7 +350,7 @@ export default class AssetDetail extends React.Component {
                     tool: 'freeformShape'
                 };
             }
-            else if (this.state.annotationTool === 'drawline'){
+            else if (this.state.annotationTool === 'drawline') {
                 annotationData = {
                     geometry: {
                         type: 'LineString',
@@ -537,14 +537,11 @@ export default class AssetDetail extends React.Component {
     }
 
     onSelectSelection(selectionTitle, selectionId=null) {
-        if(selectionTitle === null && selectionId === null){
+        if (selectionTitle === null && selectionId === null) {
             this.onClearActiveSelection();
-            this.setState({activeSelection: selectionTitle});
-            updateSelectionUrl(selectionId);
-        } else {
-            this.setState({activeSelection: selectionTitle});
-            updateSelectionUrl(selectionId);
         }
+        this.setState({activeSelection: selectionTitle});
+        updateSelectionUrl(selectionId);
     }
 
     onClearActiveSelection() {
@@ -565,6 +562,12 @@ export default class AssetDetail extends React.Component {
         } else if (this.type === 'video') {
             newState.selectionStartTime = null;
             newState.selectionEndTime = null;
+        } else if (this.type === 'pdf') {
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+
+            if (iframe) {
+                iframe.contentWindow.postMessage('onClearSelection', '*');
+            }
         }
 
         this.setState(newState);
@@ -575,7 +578,7 @@ export default class AssetDetail extends React.Component {
             if (this.selectionLayer) {
                 this.map.removeLayer(this.selectionLayer);
             }
-            const newLayer = displaySelection(a, this.map);
+            const newLayer = displayImageSelection(a, this.map);
             this.selectionLayer = newLayer;
         } else if (this.type === 'video') {
             const player = this.playerRef.current;
@@ -584,6 +587,15 @@ export default class AssetDetail extends React.Component {
                 selectionStartTime: a.range1,
                 selectionEndTime: a.range2
             });
+        } else if (this.type === 'pdf') {
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+
+            const data = a.annotation.geometry;
+            data.message = 'onViewSelection';
+
+            if (iframe) {
+                iframe.contentWindow.postMessage(data, '*');
+            }
         }
     }
 
@@ -605,7 +617,7 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onClear(){
+    onClear() {
         this.onClearVectorLayer();
         this.setState({
             isDrawing: false,
@@ -1122,7 +1134,7 @@ export default class AssetDetail extends React.Component {
                 extent: extent
             });
 
-            CenterControl.prototype.handleCenter = function handleCenter(){
+            CenterControl.prototype.handleCenter = function handleCenter() {
                 this.getMap().getView().setCenter(getCenter(extent));
                 this.getMap().getView().setZoom(1);
             };
@@ -1152,7 +1164,7 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
-            if(sId) {
+            if (sId) {
                 const selection = find(this.props.asset.annotations, {
                     id: sId
                 });

@@ -40,7 +40,7 @@ PDFViewerApplication.initializedPromise.then(function() {
 });
 
 // iframe parent interaction
-window.onmessage = function(e){
+window.onmessage = function(e) {
     if (e.data === 'enableRectangleTool') {
         const svgEls = document.querySelectorAll('svg');
         svgEls.forEach(function(el) {
@@ -60,5 +60,33 @@ window.onmessage = function(e){
             el.removeEventListener(
                 'mouseup', annotationInterface.onMouseUp);
         });
+    } else if (e.data === 'onClearSelection') {
+        annotationController.clearRect();
+    } else if (e.data.message && e.data.message === 'onViewSelection') {
+        if (e.data.coordinates.length < 2) {
+            return;
+        }
+
+        const page = parseInt(e.data.page);
+        annotationController.page = page;
+        annotationController.rect = {
+            coords: e.data.coordinates
+        };
+
+        annotationController.displayRect(
+            e.data.coordinates[0][0],
+            e.data.coordinates[0][1],
+            e.data.coordinates[1][0],
+            e.data.coordinates[1][1],
+            annotationController.state.scale
+        );
+
+        // Scroll selection into view.
+        const pageDiv = document.getElementById('pdfjs-page-' + (page || 1));
+        if (pageDiv) {
+            PDFViewerApplication.pdfViewer._scrollIntoView({
+                pageDiv: pageDiv
+            });
+        }
     }
 };

@@ -43,6 +43,8 @@ class AnnotationController {
     constructor() {
         this.rect = null;
 
+        this.page = 1;
+
         this.state = {
             isMakingRect: false,
             x: 0,
@@ -78,12 +80,18 @@ class AnnotationController {
         }
     }
 
-    makeRect(x, y, width, height) {
+    getSVG() {
         const pageEl = document.querySelector(
-            '.page[data-page-number="' + this.rect.page + '"]');
+            '.page[data-page-number="' + this.page + '"]');
         const svg = pageEl.querySelector('svg');
 
-        const draw = SVG(svg).addTo('#pdfjs-page-' + this.rect.page);
+        const draw = SVG(svg).addTo('#pdfjs-page-' + this.page);
+
+        return draw;
+    }
+
+    makeRect(x, y, width, height) {
+        const draw = this.getSVG();
 
         draw.clear();
 
@@ -93,6 +101,12 @@ class AnnotationController {
             .fill('none');
 
         return rect;
+    }
+
+    clearRect() {
+        const draw = this.getSVG();
+
+        draw.clear();
     }
 
     updateRect() {
@@ -112,8 +126,8 @@ class AnnotationController {
     }
 
     startRect(x, y, page=1) {
+        this.page = page;
         this.rect = {
-            page: page,
             coords: [[x, y]]
         };
 
@@ -143,15 +157,13 @@ class AnnotationController {
             return;
         }
 
-        const coords = getCanvasCoords(
+        this.displayRect(
             this.rect.coords[0][0],
             this.rect.coords[0][1],
             this.rect.coords[1][0],
             this.rect.coords[1][1],
             this.state.scale
         );
-
-        this.state.svgRect = this.makeRect(...coords);
     }
 
     onZoomChange(scale) {

@@ -5,6 +5,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 class S3PrivateStorage(S3Boto3Storage):
     default_acl = 'private'
     location = 'private'
+    file_overwrite = False
 
     def __init__(self):
         super(S3PrivateStorage, self).__init__()

@@ -140,7 +140,7 @@ const getdisplayStyle = function() {
  *
  * Returns the new VectorLayer.
  */
-const displaySelection = function(a, map) {
+const displayImageSelection = function(a, map) {
     let styles = null;
     const tool = a.annotation.tool;
     if(tool === 'polygon') {
@@ -222,5 +222,6 @@ const resetMap = function(map, source, img) {
 
 export {
     objectProportioned, getpolygonStyles, getfreeformShapeStyles,
-    displaySelection, clearSource, hasSelection, resetMap, getdisplayStyle
+    displayImageSelection, clearSource, hasSelection, resetMap,
+    getdisplayStyle
 };

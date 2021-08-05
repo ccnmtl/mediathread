@@ -19,7 +19,7 @@ import {
     capitalizeFirstLetter, handleBrokenImage, getAssetUrl
 } from './utils';
 import {
-    objectProportioned, displaySelection, resetMap
+    objectProportioned, displayImageSelection, resetMap
 } from './openlayersUtils';
 
 export default class GridAsset extends React.Component {
@@ -57,7 +57,7 @@ export default class GridAsset extends React.Component {
             }
 
             if (a) {
-                const newLayer = displaySelection(a, this.map);
+                const newLayer = displayImageSelection(a, this.map);
                 this.selectionLayer = newLayer;
             } else {
                 resetMap(

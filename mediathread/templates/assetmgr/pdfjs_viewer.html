@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
@@ -29,7 +30,7 @@ See https://github.com/adobe-type-tools/cmap-resources
     <title>PDF.js viewer</title>
 
 
-    <link rel="stylesheet" href="/media/css/pdfjs/viewer.css">
+    <link rel="stylesheet" href="{% static 'css/pdfjs/viewer.css' %}">
     <style type="text/css">
     .page>svg {
         position: absolute;
@@ -40,25 +41,25 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 
 <!-- This snippet is used in production (included from viewer.html) -->
-<link rel="resource" type="application/l10n" href="/media/locale/locale.properties">
-<script src="/media/js/pdf/pdfjs/pdf.js"></script>
+<link rel="resource" type="application/l10n" href="{% static 'locale/locale.properties' %}">
+<script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
 <script>
 // TODO: this doesn't work, and is hard-coded in the pdf.js source file.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/media/js/pdf/pdfjs/pdf.worker.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
 </script>
 
 <script>
 window.ASSET_URL = '{{object.primary.upload.url|safe}}';
 </script>
 
-<script src="/media/js/pdf/pdfjs/viewer.js"></script>
-<script src="/media/js/pdf/svg/svg.min.js"></script>
+<script src="{% static 'js/pdf/pdfjs/viewer.js' %}"></script>
+<script src="{% static 'js/pdf/svg/svg.min.js' %}"></script>
 <script>
 window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
-<script src="/media/js/pdf/PdfJsAnnotationInterface.js"></script>
-<script src="/media/js/pdf/AnnotationController.js"></script>
-<script src="/media/js/pdf/main.js"></script>
+<script src="{% static 'js/pdf/PdfJsAnnotationInterface.js' %}"></script>
+<script src="{% static 'js/pdf/AnnotationController.js' %}"></script>
+<script src="{% static 'js/pdf/main.js' %}"></script>
   </head>
 
   <body tabindex="1">

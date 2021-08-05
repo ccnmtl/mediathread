@@ -7,7 +7,7 @@ class S3PrivateStorage(S3Boto3Storage):
     location = 'private'
     file_overwrite = False
     querystring_auth = True
-    
+
     # Don't set an ACL - use the bucket settings.
     object_parameters = {}
 

@@ -42,11 +42,12 @@ See https://github.com/adobe-type-tools/cmap-resources
 
 <!-- This snippet is used in production (included from viewer.html) -->
 <link rel="resource" type="application/l10n" href="{% static 'locale/locale.properties' %}">
-<script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
+
 <script>
-// TODO: this doesn't work, and is hard-coded in the pdf.js source file.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
+window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
 </script>
+
+<script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
 
 <script>
 window.ASSET_URL = '{{object.primary.upload.url|safe}}';

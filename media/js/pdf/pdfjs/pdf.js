@@ -2836,7 +2836,9 @@ const PDFWorker = function PDFWorkerClosure() {
   }
 
     function getWorkerSrc() {
-      return '/media/js/pdf/pdfjs/pdf.worker.js';
+      if (window.WORKER_SRC) {
+        return window.WORKER_SRC;
+      }
 
     if (_worker_options.GlobalWorkerOptions.workerSrc) {
       return _worker_options.GlobalWorkerOptions.workerSrc;

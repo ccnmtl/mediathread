@@ -58,9 +58,7 @@ window.ASSET_URL = '{{object.primary.upload.url|safe}}';
 <script>
 window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
-<script src="{% static 'js/pdf/PdfJsAnnotationInterface.js' %}"></script>
-<script src="{% static 'js/pdf/AnnotationController.js' %}"></script>
-<script src="{% static 'js/pdf/main.js' %}"></script>
+<script type="module" src="{% static 'js/pdf/main.js' %}"></script>
   </head>
 
   <body tabindex="1">

@@ -1,3 +1,4 @@
+/* global SVG */
 /*
  * PdfJsAnnotationInterface
  * Copyright (C) 2021 Nik Nyby
@@ -29,7 +30,7 @@
  * This class handles co-ordinate translation from the DOM into PDF
  * annotation co-ordinates ready for the database.
  */
-class PdfJsAnnotationInterface {
+export default class PdfJsAnnotationInterface {
     constructor(annotationController) {
         this.annotationController = annotationController;
         this.x = 0;

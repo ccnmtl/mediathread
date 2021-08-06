@@ -1,3 +1,4 @@
+/* global PDFViewerApplication */
 /*
  * main.js
  * Copyright (C) 2021 Nik Nyby
@@ -17,6 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with Mediathread.  If not, see <https://www.gnu.org/licenses/>.
  */
+import AnnotationController from './AnnotationController.js';
+import PdfJsAnnotationInterface from './PdfJsAnnotationInterface.js';
 
 /**
  * This is the startup script for PDF annotation - all setup and

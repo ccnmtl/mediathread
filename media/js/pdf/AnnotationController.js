@@ -63,14 +63,7 @@ class AnnotationController {
     }
 
     onMouseUp(x, y, page) {
-        if (!this.state.isMakingRect) {
-            this.state.isMakingRect = true;
-            this.startRect(
-                x / this.state.scale,
-                y / this.state.scale,
-                page
-            );
-        } else {
+        if (this.state.isMakingRect) {
             this.state.isMakingRect = false;
             this.closeRect(
                 x / this.state.scale,
@@ -78,6 +71,15 @@ class AnnotationController {
                 page
             );
         }
+    }
+
+    onMouseDown(x, y, page) {
+        this.state.isMakingRect = true;
+        this.startRect(
+            x / this.state.scale,
+            y / this.state.scale,
+            page
+        );
     }
 
     getSVG() {

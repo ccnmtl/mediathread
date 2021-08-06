@@ -49,6 +49,8 @@ window.onmessage = function(e) {
                 'mousemove', annotationInterface.onMouseMove);
             el.addEventListener(
                 'mouseup', annotationInterface.onMouseUp);
+            el.addEventListener(
+                'mousedown', annotationInterface.onMouseDown);
         });
     } else if (e.data === 'disableRectangleTool') {
         const svgEls = document.querySelectorAll('svg');
@@ -59,6 +61,8 @@ window.onmessage = function(e) {
                 'mousemove', annotationInterface.onMouseMove);
             el.removeEventListener(
                 'mouseup', annotationInterface.onMouseUp);
+            el.removeEventListener(
+                'mousedown', annotationInterface.onMouseDown);
         });
     } else if (e.data === 'onClearSelection') {
         annotationController.clearRect();

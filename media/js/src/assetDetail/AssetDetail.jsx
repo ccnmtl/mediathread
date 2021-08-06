@@ -149,7 +149,7 @@ export default class AssetDetail extends React.Component {
         this.addFreeformInteraction = this.addFreeformInteraction.bind(this);
         this.addDrawlineInteraction = this.addDrawlineInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
-        this.onCancel = this.onCancel.bind(this);
+        this.onDrawCancel = this.onDrawCancel.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onRectangleClicked = this.onRectangleClicked.bind(this);
@@ -719,7 +719,7 @@ export default class AssetDetail extends React.Component {
                                             type="button"
                                             id='cancel-btn'
                                             className="btn btn-danger btn-sm ml-auto"
-                                            onClick={this.onCancel}>
+                                            onClick={this.onDrawCancel}>
                                             Cancel
                                         </button>
                                     )}
@@ -894,7 +894,7 @@ export default class AssetDetail extends React.Component {
                                     <button
                                         type="button"
                                         onClick={this.onRectangleClicked}
-                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.toolType === 'rectangle' ? 'bg-warning' : '')}>
+                                        className={'btn btn-light btn-sm mr-2 polygon-button ' + (this.state.toolType === 'rect' ? 'bg-warning' : '')}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-square" viewBox="0 0 16 16">
                                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                         </svg> Rectangle
@@ -904,7 +904,7 @@ export default class AssetDetail extends React.Component {
                                             type="button"
                                             id='cancel-btn'
                                             className="btn btn-danger btn-sm ml-auto"
-                                            onClick={this.onCancel}>
+                                            onClick={this.onDrawCancel}>
                                             Cancel
                                         </button>
                                     )}
@@ -1195,7 +1195,7 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onCancel() {
+    onDrawCancel() {
         this.setState({
             cancel: false,
             isDrawing: false,
@@ -1205,6 +1205,13 @@ export default class AssetDetail extends React.Component {
 
         if (this.draw) {
             this.map.removeInteraction(this.draw);
+        }
+
+        if (this.type === 'pdf') {
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+            if (iframe) {
+                iframe.contentWindow.postMessage('disableRectangleTool', '*');
+            }
         }
     }
 

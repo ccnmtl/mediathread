@@ -66,6 +66,8 @@ window.onmessage = function(e) {
                 'mouseup', annotationInterface.onMouseUp);
             el.removeEventListener(
                 'mousedown', annotationInterface.onMouseDown);
+
+            annotationController.clearRect();
         });
     } else if (e.data === 'onClearSelection') {
         annotationController.clearRect();

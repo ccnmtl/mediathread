@@ -75,7 +75,7 @@ window.onmessage = function(e) {
         }
 
         const page = parseInt(e.data.page);
-        annotationController.page = page;
+        annotationController.page = page || 1;
         annotationController.rect = {
             coords: e.data.coordinates
         };

@@ -306,7 +306,12 @@ export default class AssetDetail extends React.Component {
         const selectionTitle = document.getElementById('newSelectionTitle').value;
 
         let annotationData = null;
-        let newData = null;
+        let newData = {
+            title: selectionTitle,
+            tags: tags,
+            terms: terms,
+            body: document.getElementById('newSelectionNotes').value
+        };
         if (
             this.type === 'image' &&
                 this.selectionSource &&
@@ -317,12 +322,6 @@ export default class AssetDetail extends React.Component {
             const geometry = feature.getGeometry();
             const coords = geometry.getCoordinates();
             const extent = geometry.getExtent();
-            newData = {
-                title: selectionTitle,
-                tags: tags,
-                terms: terms,
-                body: document.getElementById('newSelectionNotes').value
-            };
             if (this.state.annotationTool === 'polygon') {
                 annotationData = {
                     geometry: {
@@ -365,14 +364,9 @@ export default class AssetDetail extends React.Component {
                 };
             }
         } else if (this.type === 'video') {
-            newData = {
-                title: selectionTitle,
-                tags: tags,
-                terms: terms,
-                body: document.getElementById('newSelectionNotes').value,
-                range1: this.state.selectionStartTime || 0,
-                range2: this.state.selectionEndTime
-            };
+            newData.range1 = this.state.selectionStartTime || 0;
+            newData.range2 = this.state.selectionEndTime;
+
             annotationData = {
                 startCode: formatTimecode(this.state.selectionStartTime || 0),
                 endCode: formatTimecode(this.state.selectionEndTime),
@@ -386,6 +380,7 @@ export default class AssetDetail extends React.Component {
             annotationData = {
                 geometry: {
                     type: 'Rectangle',
+                    page: this.state.pdfRect.page,
                     coordinates: this.state.pdfRect.coords
                 }
             };
@@ -888,7 +883,8 @@ export default class AssetDetail extends React.Component {
                     <form>
                         <div className="form-row align-items-center">
                             {invisibleEl}
-                            {this.state.tab === 'createSelection' && (
+                            {(this.state.tab === 'createSelection' ||
+                              (this.state.tab === 'viewSelections' && this.state.isEditing)) && (
                                 <React.Fragment>
                                     <p className="av-selections">Draw Selection</p>
                                     <button

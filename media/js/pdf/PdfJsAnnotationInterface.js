@@ -39,6 +39,7 @@ export default class PdfJsAnnotationInterface {
 
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
     }
 
     // Given an event.target, return the page number it happened on.
@@ -63,6 +64,15 @@ export default class PdfJsAnnotationInterface {
         this.page = pageNumber;
 
         this.annotationController.onMouseUp(this.x, this.y, this.page);
+    }
+
+    onMouseDown(e) {
+        e.preventDefault();
+
+        const pageNumber = this.getPage(e.target);
+        this.page = pageNumber;
+
+        this.annotationController.onMouseDown(this.x, this.y, this.page);
     }
 
     onPageRendered(e) {

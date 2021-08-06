@@ -1,3 +1,4 @@
+/* global SVG */
 /*
  * AnnotationController
  * Copyright (C) 2021 Nik Nyby
@@ -39,7 +40,7 @@ const getCanvasCoords = function(x1, y1, x2, y2, scale=1) {
  *
  * Handle creating an annotation.
  */
-class AnnotationController {
+export default class AnnotationController {
     constructor() {
         this.rect = null;
 

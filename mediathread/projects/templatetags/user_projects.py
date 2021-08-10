@@ -32,12 +32,15 @@ def assignment_responses(project, request):
 def published_assignment_responses(assignment):
     if assignment.is_discussion_assignment():
         discussion = assignment.course_discussion()
-        qs = ThreadedComment.objects.filter(
-            content_type__model='collaboration',
-            object_pk=discussion.content_object.pk,
-            site__pk=settings.SITE_ID)
-        qs = qs.exclude(user__groups=assignment.course.faculty_group)
-        return qs.values('user').distinct().count()
+        if discussion and discussion.content_object:
+            qs = ThreadedComment.objects.filter(
+                content_type__model='collaboration',
+                object_pk=discussion.content_object.pk,
+                site__pk=settings.SITE_ID)
+            qs = qs.exclude(user__groups=assignment.course.faculty_group)
+            return qs.values('user').distinct().count()
+        else:
+            return 0
     else:
         # Assumes the requester is an instructor
         return assignment.collaboration.first().children.filter(

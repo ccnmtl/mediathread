@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import CollectionListView from './CollectionListView';
 import GridAsset from './GridAsset';
 import AssetFilter from './filters/AssetFilter';

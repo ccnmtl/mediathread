@@ -129,7 +129,10 @@ export default class AnnotationController {
     }
 
     startRect(x, y, page=1) {
-        this.page = page;
+        if (!isNaN(page)) {
+            this.page = page;
+        }
+
         this.rect = {
             coords: [[x, y]]
         };

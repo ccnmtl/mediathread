@@ -134,12 +134,14 @@ export default class AnnotationController {
         }
 
         this.rect = {
-            coords: [[x, y]]
+            coords: [[x, y]],
+            page: parseInt(this.page)
         };
 
         this.displayRect(
             x, y, this.state.x, this.state.y,
-            this.state.scale);
+            this.state.scale
+        );
     }
 
     closeRect(x, y) {

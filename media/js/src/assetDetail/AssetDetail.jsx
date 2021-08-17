@@ -98,8 +98,8 @@ export default class AssetDetail extends React.Component {
             isEditing: null,
 
             annotationTool: null,
-            cancel: false,
-            clear: false,
+            showCancel: false,
+            showClear: false,
             toolType: null,
 
             pdfRect: null
@@ -150,7 +150,7 @@ export default class AssetDetail extends React.Component {
         this.addDrawlineInteraction = this.addDrawlineInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
         this.onDrawCancel = this.onDrawCancel.bind(this);
-        this.onClear = this.onClear.bind(this);
+        this.onClickClear = this.onClickClear.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onRectangleClicked = this.onRectangleClicked.bind(this);
     }
@@ -185,7 +185,13 @@ export default class AssetDetail extends React.Component {
     onCreateSelection(e, tags, terms) {
         // Clear the validation errors here since apparently the form
         // passed validation.
-        this.setState({validationError: null});
+        this.setState({
+            validationError: null,
+            showCancel: false,
+            showClear: false,
+            toolType: null
+        });
+
         e.preventDefault();
         const me = this;
         const selectionTitle = document.getElementById('newSelectionTitle').value;
@@ -299,7 +305,13 @@ export default class AssetDetail extends React.Component {
     onSaveSelection(e, selectionId, tags, terms) {
         // Clear the validation errors here since apparently the form
         // passed validation.
-        this.setState({validationError: null});
+        this.setState({
+            validationError: null,
+            showCancel: false,
+            showClear: false,
+            toolType: null
+        });
+
         e.preventDefault();
         const me = this;
 
@@ -312,6 +324,7 @@ export default class AssetDetail extends React.Component {
             terms: terms,
             body: document.getElementById('newSelectionNotes').value
         };
+
         if (
             this.type === 'image' &&
                 this.selectionSource &&
@@ -612,13 +625,15 @@ export default class AssetDetail extends React.Component {
         }
     }
 
-    onClear() {
+    onClickClear() {
         this.onClearVectorLayer();
+        this.onClearActiveSelection();
         this.setState({
             isDrawing: false,
-            clear: false,
+            showClear: false,
             annotationTool: null,
-            toolType: null});
+            toolType: null
+        });
     }
 
     onPlaySelection(e) {
@@ -649,7 +664,8 @@ export default class AssetDetail extends React.Component {
     onRectangleClicked() {
         this.setState({
             toolType: 'rect',
-            cancel: true
+            showCancel: true,
+            showClear: false
         });
 
         const iframe = window.jQuery('iframe.pdfjs')[0];
@@ -709,7 +725,7 @@ export default class AssetDetail extends React.Component {
                                             <path d="M15.825.12a.5.5 0 0 1 .132.584c-1.53 3.43-4.743 8.17-7.095 10.64a6.067 6.067 0 0 1-2.373 1.534c-.018.227-.06.538-.16.868-.201.659-.667 1.479-1.708 1.74a8.118 8.118 0 0 1-3.078.132 3.659 3.659 0 0 1-.562-.135 1.382 1.382 0 0 1-.466-.247.714.714 0 0 1-.204-.288.622.622 0 0 1 .004-.443c.095-.245.316-.38.461-.452.394-.197.625-.453.867-.826.095-.144.184-.297.287-.472l.117-.198c.151-.255.326-.54.546-.848.528-.739 1.201-.925 1.746-.896.126.007.243.025.348.048.062-.172.142-.38.238-.608.261-.619.658-1.419 1.187-2.069 2.176-2.67 6.18-6.206 9.117-8.104a.5.5 0 0 1 .596.04zM4.705 11.912a1.23 1.23 0 0 0-.419-.1c-.246-.013-.573.05-.879.479-.197.275-.355.532-.5.777l-.105.177c-.106.181-.213.362-.32.528a3.39 3.39 0 0 1-.76.861c.69.112 1.736.111 2.657-.12.559-.139.843-.569.993-1.06a3.122 3.122 0 0 0 .126-.75l-.793-.792zm1.44.026c.12-.04.277-.1.458-.183a5.068 5.068 0 0 0 1.535-1.1c1.9-1.996 4.412-5.57 6.052-8.631-2.59 1.927-5.566 4.66-7.302 6.792-.442.543-.795 1.243-1.042 1.826-.121.288-.214.54-.275.72v.001l.575.575zm-4.973 3.04.007-.005a.031.031 0 0 1-.007.004zm3.582-3.043.002.001h-.002z"/>
                                         </svg> Line
                                     </button>
-                                    {(this.state.cancel) && (
+                                    {(this.state.showCancel) && (
                                         <button
                                             type="button"
                                             id='cancel-btn'
@@ -718,12 +734,12 @@ export default class AssetDetail extends React.Component {
                                             Cancel
                                         </button>
                                     )}
-                                    {(this.state.clear && !this.state.isEditing) && (
+                                    {(this.state.showClear && !this.state.isEditing) && (
                                         <button
                                             type="button"
                                             id="clear-btn"
                                             className="btn btn-danger btn-sm ml-auto"
-                                            onClick={this.onClear}>
+                                            onClick={this.onClickClear}>
                                             Clear
                                         </button>
                                     )}
@@ -895,7 +911,7 @@ export default class AssetDetail extends React.Component {
                                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                         </svg> Rectangle
                                     </button>
-                                    {(this.state.cancel) && (
+                                    {(this.state.showCancel) && (
                                         <button
                                             type="button"
                                             id='cancel-btn'
@@ -904,12 +920,12 @@ export default class AssetDetail extends React.Component {
                                             Cancel
                                         </button>
                                     )}
-                                    {(this.state.clear && !this.state.isEditing) && (
+                                    {(this.state.showClear && !this.state.isEditing) && (
                                         <button
                                             type="button"
                                             id="clear-btn"
                                             className="btn btn-danger btn-sm ml-auto"
-                                            onClick={this.onClear}>
+                                            onClick={this.onClickClear}>
                                             Clear
                                         </button>
                                     )}
@@ -1172,7 +1188,12 @@ export default class AssetDetail extends React.Component {
                     e.data.message &&
                         e.data.message === 'pdfAnnotationRectCreated'
                 ) {
-                    me.setState({pdfRect: e.data.rect});
+                    me.setState({
+                        pdfRect: e.data.rect,
+                        toolType: null,
+                        showCancel: false,
+                        showClear: true
+                    });
                 }
             };
         }
@@ -1180,9 +1201,10 @@ export default class AssetDetail extends React.Component {
 
     onDrawEnd(event) {
         this.setState({
-            cancel: false,
+            showCancel: false,
             isDrawing: false,
-            toolType: null});
+            toolType: null
+        });
 
         const feat = event.feature;
         feat.setStyle(getdisplayStyle);
@@ -1193,7 +1215,7 @@ export default class AssetDetail extends React.Component {
 
     onDrawCancel() {
         this.setState({
-            cancel: false,
+            showCancel: false,
             isDrawing: false,
             annotationTool: null,
             toolType: null
@@ -1214,8 +1236,9 @@ export default class AssetDetail extends React.Component {
     onDrawStart() {
         this.setState({
             isDrawing: true,
-            cancel: false,
-            clear: true});
+            showCancel: false,
+            showClear: true
+        });
         this.onClearVectorLayer();
     }
 
@@ -1223,10 +1246,11 @@ export default class AssetDetail extends React.Component {
     addInteraction() {
         this.setState({
             annotationTool: 'polygon',
-            cancel: true,
-            toolType: 'polygon',
-            clear: false
+            showCancel: true,
+            showClear: false,
+            toolType: 'polygon'
         });
+
         this.onClearVectorLayer();
 
         if (this.draw) {
@@ -1253,9 +1277,9 @@ export default class AssetDetail extends React.Component {
     addFreeformInteraction() {
         this.setState({
             annotationTool: 'freeformShape',
-            cancel: true,
-            toolType: 'freeformShape',
-            clear: false
+            showCancel: true,
+            showClear: false,
+            toolType: 'freeformShape'
         });
         this.onClearVectorLayer();
 
@@ -1283,9 +1307,9 @@ export default class AssetDetail extends React.Component {
     addDrawlineInteraction() {
         this.setState({
             annotationTool: 'drawline',
-            cancel: true,
-            toolType: 'drawline',
-            clear: false
+            showCancel: true,
+            showClear: false,
+            toolType: 'drawline'
         });
         this.onClearVectorLayer();
 

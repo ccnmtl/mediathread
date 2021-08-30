@@ -4119,6 +4119,14 @@ ul.section-tabs>li>a.active {
     margin: 0 auto;
 }
 
+.react-pdf-page-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 #skip a {
     position: absolute;
     left: -10000px;
@@ -4154,8 +4162,9 @@ ul.section-tabs>li>a.active {
     position: relative;
 }
 
-.card-thumbnail img, .ol-map {
-    height: 12em;
+.card-thumbnail img,
+.card-thumbnail .ol-map {
+    height: 192px;
 }
 
 .asset-detail .sticky-top .ol-map {

@@ -13,6 +13,9 @@ import ImageStatic from 'ol/source/ImageStatic';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
+import {SVG} from '@svgdotjs/svg.js';
+
+import {convertPointsToXYWH} from '../pdf/utils';
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
 import {
@@ -34,6 +37,9 @@ export default class GridAsset extends React.Component {
             thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png'
         };
 
+        this.pdfLeftMargin = 0;
+        this.pdfScale = 1;
+
         this.selectionSource = new VectorSource();
         this.selectionLayer = new VectorLayer({
             source: this.selectionSource
@@ -41,8 +47,12 @@ export default class GridAsset extends React.Component {
 
         this.asset = new Asset(this.props.asset);
 
+        this.svgContainerRef = React.createRef();
+        this.pdfPageRef = React.createRef();
+
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);
+        this.onPDFPageRenderSuccess = this.onPDFPageRenderSuccess.bind(this);
     }
 
     onSelectedAnnotationUpdate(annotation) {
@@ -65,6 +75,31 @@ export default class GridAsset extends React.Component {
                     this.selectionSource,
                     this.asset.getImage());
             }
+        } else if (type === 'pdf') {
+            if (!this.svgDraw) {
+                console.error('Error: SVG element not found.');
+                return;
+            }
+
+            this.svgDraw.clear();
+
+            if (!a || !a.annotation) {
+                // No annotation, so return after clearing the SVG.
+                return;
+            }
+
+            const [x, y, width, height] = convertPointsToXYWH(
+                a.annotation.geometry.coordinates[0][0],
+                a.annotation.geometry.coordinates[0][1],
+                a.annotation.geometry.coordinates[1][0],
+                a.annotation.geometry.coordinates[1][1],
+                this.pdfScale
+            );
+
+            this.svgDraw.rect(width, height)
+                .move(x + this.pdfLeftMargin, y)
+                .stroke({color: '#22f', width: 2})
+                .fill('none');
         }
     }
 
@@ -144,12 +179,16 @@ export default class GridAsset extends React.Component {
                                 )}
                                 {type === 'pdf' && (
                                     <div className="mx-auto d-block img-fluid text-center">
-                                        <Document file={this.state.thumbnailUrl}>
-                                            <Page
-                                                pageNumber={1}
-                                                width={192}
-                                                height={192}
-                                            />
+                                        <Document
+                                            file={this.state.thumbnailUrl}>
+                                            <div ref={this.pdfPageRef}
+                                                 className="react-pdf-page-container">
+                                                <Page
+                                                    pageNumber={1}
+                                                    height={192}
+                                                    onRenderSuccess={this.onPDFPageRenderSuccess}
+                                                />
+                                            </div>
                                         </Document>
                                     </div>
                                 )}
@@ -190,7 +229,9 @@ export default class GridAsset extends React.Component {
             });
         }
 
-        if (this.asset.getType() === 'image') {
+        const type = this.asset.getType();
+
+        if (type === 'image') {
             const img = this.asset.getImage();
             const extent = objectProportioned(img.width, img.height);
 
@@ -220,16 +261,24 @@ export default class GridAsset extends React.Component {
                 })
             });
         }
+
         const mediaPrefix = typeof MediaThread !== 'undefined' ?
             window.MediaThread.staticUrl : '/media/';
 
-        if(this.asset.getType() === 'unknown'){
+        if (type === 'unknown') {
             this.setState({thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png'});
         }
 
-        if(this.asset.getType() === 'audio'){
+        if (type === 'audio') {
             this.setState({thumbnailUrl: mediaPrefix + 'img/thumb_audio.png'});
         }
+    }
+    onPDFPageRenderSuccess(e) {
+        this.pdfScale = e.width / e.originalWidth;
+        const el = this.pdfPageRef.current.querySelector('.react-pdf__Page');
+        const leftMargin = (el.clientWidth / 2) - (e.width / 2);
+        this.pdfLeftMargin = leftMargin;
+        this.svgDraw = SVG().addTo(el);
     }
 }
 

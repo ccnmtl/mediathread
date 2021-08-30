@@ -18,22 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Mediathread.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-/**
- * Given co-ordinates for two points, return the canvas API
- * co-ordinates: top-left point x/y, then width/height.
- */
-const getCanvasCoords = function(x1, y1, x2, y2, scale=1) {
-    x1 = x1 * scale;
-    y1 = y1 * scale;
-    x2 = x2 * scale;
-    y2 = y2 * scale;
-
-    return [
-        Math.min(x1, x2), Math.min(y1, y2),
-        Math.abs(x2 - x1), Math.abs(y2 - y1)
-    ];
-};
+import {convertPointsToXYWH} from './utils.js';
 
 /**
  * AnnotationController
@@ -113,7 +98,7 @@ export default class AnnotationController {
     }
 
     updateRect() {
-        const coords = getCanvasCoords(
+        const coords = convertPointsToXYWH(
             this.rect.coords[0][0],
             this.rect.coords[0][1],
             this.state.x, this.state.y,
@@ -155,7 +140,7 @@ export default class AnnotationController {
     }
 
     displayRect(x1, y1, x2, y2, scale=1) {
-        const coords = getCanvasCoords(x1, y1, x2, y2, scale);
+        const coords = convertPointsToXYWH(x1, y1, x2, y2, scale);
 
         this.state.svgRect = this.makeRect(...coords);
     }

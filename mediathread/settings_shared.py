@@ -79,6 +79,7 @@ INSTALLED_APPS += [  # noqa
     'django_extensions',
     'rest_framework',
     'django_celery_results',
+    's3sign',
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"

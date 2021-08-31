@@ -20,11 +20,14 @@ from mediathread.assetmgr.views import (
     RedirectToExternalCollectionView,
     RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
     _parse_domain, AssetEmbedView, annotation_delete,
-    annotation_create_global, annotation_create, AssetUpdateView)
+    annotation_create_global, annotation_create, AssetUpdateView
+)
 from mediathread.djangosherd.models import SherdNote
-from mediathread.factories import MediathreadTestMixin, AssetFactory, \
-    SherdNoteFactory, UserFactory, ExternalCollectionFactory, \
+from mediathread.factories import (
+    MediathreadTestMixin, AssetFactory,
+    SherdNoteFactory, UserFactory, ExternalCollectionFactory,
     SuggestedExternalCollectionFactory, SourceFactory
+)
 from mediathread.main.course_details import UPLOAD_FOLDER_KEY
 
 
@@ -995,3 +998,82 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
             self.assertEquals(s.url, self.params['mp4_pseudo'])
 
             self.assertEquals(self.asset.thumb_url, 'new thumb')
+
+
+class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
+    def setUp(self):
+        self.setup_sample_course()
+        self.setup_alternate_course()
+
+        self.superuser = UserFactory(is_staff=True, is_superuser=True)
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+        self.add_as_faculty(self.alt_course, self.instructor_three)
+
+    def tearDown(self):
+        cache.clear()
+
+    def test_post_as_student(self):
+        self.client.login(username=self.student_one.username, password='test')
+        r = self.client.post(
+            reverse('asset-create'), {
+                'title': '',
+                'url': ''
+            }, format='json', follow=True)
+        self.assertEqual(r.status_code, 403)
+
+    def test_post_empty_as_instructor(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': '',
+                'url': ''
+            }, format='json', follow=True)
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(
+            r.content, b'Title and URL are required to make an asset.')
+
+    def test_post_empty_as_superuser(self):
+        self.client.login(username=self.superuser.username, password='test')
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': '',
+                'url': ''
+            }, format='json', follow=True)
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(
+            r.content, b'Title and URL are required to make an asset.')
+
+    def test_post_asset(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+
+        url = 'https://ctl-mediathread-private-dev.s3.amazonaws.com' + \
+            '/private/2021/09/03/86bfdaae-8e1a-4768-8d04-83052ea97f62.jpg'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': 'Test asset 1 ',
+                'url': url,
+                'width': 200,
+                'height': 100,
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'Asset created')
+        self.assertContains(r, 'Test asset 1')
+
+        asset = Asset.objects.get(title='Test asset 1')
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertTrue(primary_source.is_image())
+        self.assertEqual(primary_source.width, 200)
+        self.assertEqual(primary_source.height, 100)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)

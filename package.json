@@ -54,7 +54,7 @@
     "ol": "^6.3.1",
     "react": "~17.0.2",
     "react-bootstrap": "^1.0.1",
-    "react-data-table-component": "^6.9.2",
+    "react-data-table-component": "^7.0.0",
     "react-dom": "~17.0.2",
     "react-pdf": "^5.3.0",
     "react-player": "^2.2.0",

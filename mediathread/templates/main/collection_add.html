@@ -207,6 +207,8 @@
                 jQuery('#upload-status').hide();
 
                 const urlObj = new URL(privateUrl);
+                // Save the URL without security credentials to the
+                // database.
                 jQuery('#uploaded-url').val(
                     urlObj.origin + urlObj.pathname);
 
@@ -216,7 +218,17 @@
                     jQuery('#newAssetWidth').val(this.naturalWidth);
                     jQuery('#newAssetHeight').val(this.naturalHeight);
                 });
-                $uploadedThumbnail.attr('src', privateUrl);
+                if (urlObj.pathname.endsWith('.pdf')) {
+                    $uploadedThumbnail.attr({
+                        src: "{% static 'img/file-earmark-pdf.svg' %}",
+                        width: 64,
+                        height: 64
+                    });
+                } else {
+                    $uploadedThumbnail.removeAttr('width');
+                    $uploadedThumbnail.removeAttr('height');
+                    $uploadedThumbnail.attr('src', privateUrl);
+                }
                 $uploadedThumbnail.closest('.asset-creation-area').show();
             },
             onError: function(status) {

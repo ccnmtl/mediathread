@@ -392,6 +392,22 @@ class Source(models.Model):
     def is_panopto(self):
         return self.label == 'mp4_panopto'
 
+    def signed_url(self):
+        s3_private_bucket = getattr(
+            settings,
+            'S3_PRIVATE_STORAGE_BUCKET_NAME',
+            'mediathread-private-uploads')
+        if s3_private_bucket in self.url:
+            return get_signed_s3_url(
+                self.url, s3_private_bucket,
+                settings.AWS_ACCESS_KEY,
+                settings.AWS_SECRET_KEY)
+
+        if self.upload:
+            return self.upload.url
+
+        return self.url
+
     def url_processed(self, request):
         s3_private_bucket = getattr(
             settings,

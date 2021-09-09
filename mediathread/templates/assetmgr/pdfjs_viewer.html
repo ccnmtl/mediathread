@@ -50,7 +50,7 @@ window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
 <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
 
 <script>
-window.ASSET_URL = '{{object.primary.upload.url|safe}}';
+window.ASSET_URL = '{{object.primary.signed_url|safe}}';
 </script>
 
 <script src="{% static 'js/pdf/pdfjs/viewer.js' %}"></script>

@@ -367,8 +367,8 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
         if url.endswith('.pdf'):
             label = 'pdf'
             # Dimensions are not needed for PDF display.
-            width = None
-            height = None
+            width = 0
+            height = 0
         else:
             width = request.POST.get('width')
             height = request.POST.get('height')

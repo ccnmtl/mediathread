@@ -1051,7 +1051,7 @@ class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
         self.client.login(
             username=self.instructor_three.username, password='test')
 
-        url = 'https://ctl-mediathread-private-dev.s3.amazonaws.com' + \
+        url = 'https://private-dev-bucket.s3.amazonaws.com' + \
             '/private/2021/09/03/86bfdaae-8e1a-4768-8d04-83052ea97f62.jpg'
 
         r = self.client.post(
@@ -1063,10 +1063,87 @@ class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
             }, format='json', follow=True)
 
         self.assertEqual(r.status_code, 200)
-        self.assertContains(r, 'Asset created')
+        self.assertContains(r, 'item has been added to your collection.')
         self.assertContains(r, 'Test asset 1')
 
         asset = Asset.objects.get(title='Test asset 1')
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertTrue(primary_source.is_image())
+        self.assertEqual(primary_source.width, 200)
+        self.assertEqual(primary_source.height, 100)
+        self.assertEqual(asset.author, self.instructor_three)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)
+
+    def test_staff_post_as(self):
+        self.client.login(
+            username=self.superuser.username, password='test')
+
+        url = 'https://private-dev-bucket.s3.amazonaws.com' + \
+            '/private/2021/09/03/86bfdaae-8e1a-4768-8d04-83052ea97f62.jpg'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': 'Test asset 2',
+                'url': url,
+                'width': 200,
+                'height': 100,
+                'as': 'instructor_three',
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'item has been added to your collection.')
+        self.assertContains(r, 'Test asset 2')
+
+        asset = Asset.objects.get(title='Test asset 2')
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertTrue(primary_source.is_image())
+        self.assertEqual(primary_source.width, 200)
+        self.assertEqual(primary_source.height, 100)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)
+
+    def test_instructor_post_as(self):
+        self.client.login(
+            username=self.instructor_three, password='test')
+
+        url = 'https://private-dev-bucket.s3.amazonaws.com' + \
+            '/private/2021/09/03/86bfdaae-8e1a-4768-8d04-83052ea97f62.jpg'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': 'Test asset 4',
+                'url': url,
+                'width': 200,
+                'height': 100,
+                'as': 'admin',
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'item has been added to your collection.')
+        self.assertContains(r, 'Test asset 4')
+
+        asset = Asset.objects.get(title='Test asset 4')
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+
         primary_source = asset.primary
         self.assertEqual(primary_source.url, url)
         self.assertTrue(primary_source.is_image())

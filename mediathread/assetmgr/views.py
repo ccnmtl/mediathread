@@ -337,6 +337,8 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
 
+        # This view is only enabled for staff and instructors right
+        # now.
         if not (request.user.is_staff or
                 request.course.is_faculty(request.user)):
             raise PermissionDenied
@@ -352,8 +354,13 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
         title = request.POST.get('title').strip()
         url = request.POST.get('url')
 
+        author = request.user
+        if (request.user.is_staff):
+            upload_as = request.POST.get('as')
+            author = get_object_or_404(User, username=upload_as)
+
         asset = Asset.objects.create(
-            course=request.course, title=title, author=request.user)
+            course=request.course, title=title, author=author)
         asset.global_annotation(request.user, True)
 
         label = 'image'
@@ -378,8 +385,9 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
 
         messages.success(
             request,
-            'Asset created: <strong><a href="{}">{}</a></strong>'.format(
-                asset_url, asset.title))
+            'The <a href="{}"><strong>{}</strong></a> item '.format(
+                asset_url, asset.title
+            ) + 'has been added to your collection.')
 
         return redirect('course_detail', pk=request.course.pk)
 

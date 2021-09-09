@@ -79,21 +79,25 @@
                                <div class="card-text">
                                    {% csrf_token %}
                                    <div class="form-row align-items-center">
-                                       {% if owners %}
-                                           <div class="input-group mb-3">
-                                               <div class="input-group-prepend">
-                                                   <label class="input-group-text" for="media_owners">Upload as:</label>
-                                               </div>
-                                               <select class="custom-select mr-sm-2" id="media_owners" name="as">
-                                                   {% for owner in owners %}
-                                                       <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                   {% endfor %}
-                                               </select>
-                                           </div>
-                                       {% endif %}
-
                                        <form method="post" action="asset/create/">
                                            {% csrf_token %}
+
+                                           {% if owners %}
+                                               <div class="input-group mb-3">
+                                                   <div class="input-group-prepend">
+                                                       <label class="input-group-text" for="media_owners">Upload as:</label>
+                                                   </div>
+                                                   <select class="custom-select mr-sm-2" id="media_owners" name="as">
+                                                       {% for owner in owners %}
+                                                           <option value="{{owner.username}}"
+                                                                   {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>
+                                                               {{owner.public_name}}
+                                                           </option>
+                                                       {% endfor %}
+                                                   </select>
+                                               </div>
+                                           {% endif %}
+
                                            <div class="input-group mb-3">
                                                <img src="{% static 'img/step-1.png' %}"
                                                     class="mr-1"

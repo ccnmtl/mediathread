@@ -66,6 +66,11 @@ export default class AnnotationController {
             y / this.state.scale,
             page
         );
+
+        // Tell the parent application that drawing has started.
+        window.top.postMessage({
+            message: 'pdfAnnotationRectStarted'
+        }, '*');
     }
 
     getSVG() {

@@ -7,7 +7,8 @@ from mediathread.assetmgr.views import (
     AssetEmbedView, AssetEmbedListView, ScalarExportView,
     MostRecentView, annotation_create, annotation_create_global,
     annotation_save, annotation_delete, asset_delete, final_cut_pro_xml,
-    AnnotationCopyView, PDFViewerDetailView
+    AnnotationCopyView, PDFViewerDetailView, S3SignView,
+    UploadedAssetCreateView
 )
 from mediathread.djangosherd.apiviews import SherdNoteCreate
 from mediathread.assetmgr.apiviews import AssetUpdate
@@ -33,6 +34,8 @@ urlpatterns = [
 
     path('<int:asset_id>/annotations/<int:annot_id>/',
          AssetWorkspaceView.as_view(), {}, 'annotation-view'),
+
+    path('create/', UploadedAssetCreateView.as_view(), name='asset-create'),
 
     path('create/<int:asset_id>/annotations/', annotation_create),
 
@@ -73,6 +76,8 @@ urlpatterns = [
 
     path('pdfjs/<int:pk>/', PDFViewerDetailView.as_view(), {},
          name='pdfjs'),
+
+    path('sign_s3/', S3SignView.as_view()),
 
     # Asset workspace variations
     path('', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

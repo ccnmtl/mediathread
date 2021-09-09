@@ -4342,3 +4342,7 @@ ul.selection-spinner {
     top: 65px;
     left: .5em;
 }
+
+#uploaded-thumbnail.img-thumbnail {
+    max-height: 200px;
+}

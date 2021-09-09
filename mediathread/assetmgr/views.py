@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models.functions import Lower
 from django.db.models.query_utils import Q
@@ -16,7 +17,7 @@ from django.http import (
     HttpResponseRedirect, Http404
 )
 from django.http.response import HttpResponseNotFound, HttpResponseBadRequest
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import loader
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -30,8 +31,10 @@ import hmac
 import json
 from mediathread.api import UserResource, TagResource
 from mediathread.assetmgr.api import AssetResource
-from mediathread.assetmgr.models import Asset, Source, ExternalCollection, \
+from mediathread.assetmgr.models import (
+    Asset, Source, ExternalCollection,
     SuggestedExternalCollection
+)
 from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -47,6 +50,7 @@ from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
 import re
 from sentry_sdk import capture_exception
+from s3sign.views import SignS3View
 
 
 try:
@@ -322,6 +326,70 @@ class AssetCreateView(View):
         else:
             # server2server create (wardenclyffe)
             return HttpResponseRedirect(asset_url)
+
+
+class UploadedAssetCreateView(LoggedInCourseMixin, View):
+    """
+    View for creating an Asset via an uploaded media object.
+    """
+    http_method_names = ['post']
+
+    def dispatch(self, request, *args, **kwargs):
+        r = super().dispatch(request, *args, **kwargs)
+
+        # This view is only enabled for staff and instructors right
+        # now.
+        if not (request.user.is_staff or
+                request.course.is_faculty(request.user)):
+            raise PermissionDenied
+
+        return r
+
+    def post(self, request, *args, **kwargs):
+        if (not request.POST.get('title')) or \
+           (not request.POST.get('url')):
+            return HttpResponseBadRequest(
+                'Title and URL are required to make an asset.')
+
+        title = request.POST.get('title').strip()
+        url = request.POST.get('url')
+
+        author = request.user
+        if (request.user.is_staff):
+            upload_as = request.POST.get('as')
+            author = get_object_or_404(User, username=upload_as)
+
+        asset = Asset.objects.create(
+            course=request.course, title=title, author=author)
+        asset.global_annotation(request.user, True)
+
+        label = 'image'
+        if url.endswith('.pdf'):
+            label = 'pdf'
+            # Dimensions are not needed for PDF display.
+            width = 0
+            height = 0
+        else:
+            width = request.POST.get('width')
+            height = request.POST.get('height')
+
+        Source.objects.create(
+            asset=asset, url=url,
+            primary=True,
+            width=width, height=height,
+            label=label)
+
+        asset_url = reverse('asset-view', args=[
+            request.course.pk, asset.pk
+        ])
+
+        messages.success(
+            request,
+            'The <a href="{}"><strong>{}</strong></a> item '.format(
+                asset_url, asset.title
+            ) + 'has been added to your collection.')
+
+        return redirect('course_detail', pk=request.course.pk)
 
 
 class AssetUpdateView(View):
@@ -1265,3 +1333,16 @@ class BookmarkletMigrationView(TemplateView):
 class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
     template_name = 'assetmgr/pdfjs_viewer.html'
     model = Asset
+
+
+class S3SignView(SignS3View):
+    private = True
+    root = 'private/'
+    amz_headers = ''
+    expiration_time = 3600
+
+    def get_bucket(self):
+        return getattr(
+            settings,
+            'S3_PRIVATE_STORAGE_BUCKET_NAME',
+            'mediathread-private-uploads')

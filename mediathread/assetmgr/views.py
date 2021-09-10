@@ -1338,7 +1338,7 @@ class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
 class S3SignView(SignS3View):
     private = True
     root = 'private/'
-    amz_headers = ''
+    acl = None
     expiration_time = 3600
 
     def get_bucket(self):

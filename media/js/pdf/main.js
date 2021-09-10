@@ -32,6 +32,14 @@ const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 // Wait for the PDFViewerApplication to initialize
 // https://stackoverflow.com/a/68489111/173630
 PDFViewerApplication.initializedPromise.then(function() {
+    PDFViewerApplication.eventBus.on('pagesloaded', function(e) {
+        // Tell the react app that the PDF is loaded, in case anything
+        // needs to happen there.
+        window.top.postMessage({
+            message: 'pdfLoaded'
+        }, '*');
+    });
+
     PDFViewerApplication.eventBus.on('pagerendered', function(e) {
         annotationInterface.onPageRendered(e);
         annotationController.onPageRendered();

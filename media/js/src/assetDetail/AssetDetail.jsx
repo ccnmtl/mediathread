@@ -1194,6 +1194,13 @@ export default class AssetDetail extends React.Component {
                         showCancel: false,
                         showClear: true
                     });
+                } else if (e.data.message && e.data.message === 'pdfLoaded') {
+                    if (sId) {
+                        const selection = find(me.props.asset.annotations, {
+                            id: sId
+                        });
+                        me.onViewSelection(null, selection);
+                    }
                 }
             };
         }

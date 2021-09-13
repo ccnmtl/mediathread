@@ -62,6 +62,8 @@ window.onmessage = function(e) {
                 'mouseup', annotationInterface.onMouseUp);
             el.addEventListener(
                 'mousedown', annotationInterface.onMouseDown);
+
+            annotationController.clearRect();
         });
     } else if (e.data === 'disableRectangleTool') {
         const svgEls = document.querySelectorAll('svg');

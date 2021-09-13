@@ -297,6 +297,12 @@ export default class AssetDetail extends React.Component {
                                 jQuery('#selectionsAccordion'),
                                 createdSelection.id,
                                 true);
+
+                            if (createdSelection.annotation_data) {
+                                createdSelection.annotation = JSON.parse(
+                                    createdSelection.annotation_data);
+                            }
+                            return me.onViewSelection(e, createdSelection);
                         });
                 });
             });
@@ -634,6 +640,11 @@ export default class AssetDetail extends React.Component {
             annotationTool: null,
             toolType: null
         });
+
+        const iframe = window.jQuery('iframe.pdfjs')[0];
+        if (iframe) {
+            iframe.contentWindow.postMessage('disableRectangleTool', '*');
+        }
     }
 
     onPlaySelection(e) {
@@ -1201,6 +1212,14 @@ export default class AssetDetail extends React.Component {
                         });
                         me.onViewSelection(null, selection);
                     }
+                } else if (
+                    e.data.message &&
+                        e.data.message === 'pdfAnnotationRectStarted'
+                ) {
+                    me.setState({
+                        showCancel: false,
+                        showClear: true
+                    });
                 }
             };
         }

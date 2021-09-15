@@ -302,6 +302,9 @@ export default class AssetDetail extends React.Component {
                                 createdSelection.annotation = JSON.parse(
                                     createdSelection.annotation_data);
                             }
+                            me.onSelectSelection(
+                                createdSelection.title,
+                                createdSelection.id);
                             return me.onViewSelection(e, createdSelection);
                         });
                 });

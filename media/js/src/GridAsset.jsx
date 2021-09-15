@@ -25,6 +25,18 @@ import {
     objectProportioned, displayImageSelection, resetMap
 } from './openlayersUtils';
 
+
+/**
+ * Calculate the left margin pixel value, given these two args for a
+ * pdf thumbnail:
+ *
+ * - el: the container DOM el
+ * - pdfPageCanvas the pdf.js object that's centered inside the container.
+ */
+const calcPdfLeftMargin = function(el, pdfPageCanvas) {
+    return (el.clientWidth / 2) - (pdfPageCanvas.width / 2);
+};
+
 export default class GridAsset extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +46,8 @@ export default class GridAsset extends React.Component {
 
         this.state = {
             selectedAnnotation: null,
-            thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png'
+            thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png',
+            pdfPageNumber: 1
         };
 
         this.pdfLeftMargin = 0;
@@ -49,10 +62,46 @@ export default class GridAsset extends React.Component {
 
         this.svgContainerRef = React.createRef();
         this.pdfPageRef = React.createRef();
+        this.pdfViewer = null;
 
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);
         this.onPDFPageRenderSuccess = this.onPDFPageRenderSuccess.bind(this);
+        this.refreshPdfAnnotation = this.refreshPdfAnnotation.bind(this);
+    }
+
+    refreshPdfAnnotation(annotation=null) {
+        if (!annotation && !this.state.selectedAnnotation) {
+            return;
+        }
+
+        if (!this.pdfPageRef || !this.pdfPageRef.current) {
+            return;
+        }
+
+        const el = this.pdfPageRef.current.querySelector('.react-pdf__Page');
+        this.pdfLeftMargin = calcPdfLeftMargin(el, this.pdfViewer);
+
+        const a = annotation || this.state.selectedAnnotation;
+        const pageNumber = a.annotation.geometry.page || 1;
+        if (pageNumber !== this.state.pdfPageNumber) {
+            this.setState({pdfPageNumber: pageNumber});
+            return;
+        }
+
+        this.svgDraw.clear();
+
+        const [x, y, width, height] = convertPointsToXYWH(
+            a.annotation.geometry.coordinates[0][0],
+            a.annotation.geometry.coordinates[0][1],
+            a.annotation.geometry.coordinates[1][0],
+            a.annotation.geometry.coordinates[1][1],
+            this.pdfScale
+        );
+        this.svgDraw.rect(width, height)
+            .move(x + this.pdfLeftMargin, y)
+            .stroke({color: '#22f', width: 2})
+            .fill('none');
     }
 
     onSelectedAnnotationUpdate(annotation) {
@@ -84,22 +133,13 @@ export default class GridAsset extends React.Component {
             this.svgDraw.clear();
 
             if (!a || !a.annotation) {
-                // No annotation, so return after clearing the SVG.
+                // No annotation, so reset page number and return
+                // after clearing the SVG.
+                this.setState({pdfPageNumber: 1});
                 return;
             }
 
-            const [x, y, width, height] = convertPointsToXYWH(
-                a.annotation.geometry.coordinates[0][0],
-                a.annotation.geometry.coordinates[0][1],
-                a.annotation.geometry.coordinates[1][0],
-                a.annotation.geometry.coordinates[1][1],
-                this.pdfScale
-            );
-
-            this.svgDraw.rect(width, height)
-                .move(x + this.pdfLeftMargin, y)
-                .stroke({color: '#22f', width: 2})
-                .fill('none');
+            this.refreshPdfAnnotation(a);
         }
     }
 
@@ -181,10 +221,13 @@ export default class GridAsset extends React.Component {
                                     <div className="mx-auto d-block img-fluid text-center">
                                         <Document
                                             file={this.state.thumbnailUrl}>
-                                            <div ref={this.pdfPageRef}
-                                                 className="react-pdf-page-container">
+                                            <div
+                                                ref={this.pdfPageRef}
+                                                className="react-pdf-page-container">
                                                 <Page
-                                                    pageNumber={1}
+                                                    pageNumber={
+                                                        this.state.pdfPageNumber
+                                                    }
                                                     height={192}
                                                     onRenderSuccess={this.onPDFPageRenderSuccess}
                                                 />
@@ -272,13 +315,32 @@ export default class GridAsset extends React.Component {
         if (type === 'audio') {
             this.setState({thumbnailUrl: mediaPrefix + 'img/thumb_audio.png'});
         }
+
+        if (type === 'pdf') {
+            window.addEventListener(
+                'resize',
+                (e) => this.refreshPdfAnnotation(this.state.selectedAnnotation)
+            );
+        }
+    }
+    componentWillUnmount() {
+        const type = this.asset.getType();
+        if (type === 'pdf') {
+            window.removeEventListener('resize', this.refreshPdfAnnotation);
+        }
     }
     onPDFPageRenderSuccess(e) {
-        this.pdfScale = e.width / e.originalWidth;
+        this.pdfViewer = e;
         const el = this.pdfPageRef.current.querySelector('.react-pdf__Page');
-        const leftMargin = (el.clientWidth / 2) - (e.width / 2);
-        this.pdfLeftMargin = leftMargin;
+        const scale = e.width / e.getViewport({scale: 1}).width;
+
+        // TODO: why is this 0.75 magic number necessary?
+        this.pdfScale = scale * 0.75;
+
+        this.pdfLeftMargin = calcPdfLeftMargin(el, e);
         this.svgDraw = SVG().addTo(el);
+
+        this.refreshPdfAnnotation(this.state.selectedAnnotation);
     }
 }
 

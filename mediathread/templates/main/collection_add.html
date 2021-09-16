@@ -117,7 +117,7 @@
                                                </div>
                                            </div>
 
-                                           <p id="upload-status"></p>
+                                           <p class="alert" id="upload-status"></p>
 
                                            <div class="asset-creation-area" style="display: none;">
 
@@ -204,11 +204,15 @@
 
             onProgress: function(percent, message) {
                 jQuery('#upload-status')
+                    .removeClass('alert-danger')
+                    .addClass('alert-primary')
                     .text('Upload progress: ' + percent + '% ' + message)
                     .show();
             },
             onFinishS3Put: function(url, privateUrl) {
-                jQuery('#upload-status').hide();
+                jQuery('#upload-status')
+                    .removeClass('alert-danger alert-primary')
+                    .hide();
 
                 const urlObj = new URL(privateUrl);
                 // Save the URL without security credentials to the
@@ -236,7 +240,10 @@
                 $uploadedThumbnail.closest('.asset-creation-area').show();
             },
             onError: function(status) {
-                jQuery('#upload-status').text(status);
+                jQuery('#upload-status')
+                    .removeClass('alert-primary')
+                    .addClass('alert-danger')
+                    .text(status);
                 var $uploadedThumbnail = jQuery('#uploaded-thumbnail');
                 $uploadedThumbnail.attr('src', 'data:,');
                 $uploadedThumbnail.closest('.asset-creation-area').hide();

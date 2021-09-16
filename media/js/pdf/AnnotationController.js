@@ -73,18 +73,22 @@ export default class AnnotationController {
         }, '*');
     }
 
-    getSVG() {
+    getSVG(page) {
         const pageEl = document.querySelector(
-            '.page[data-page-number="' + this.page + '"]');
+            '.page[data-page-number="' + page + '"]');
         const svg = pageEl.querySelector('svg');
 
-        const draw = SVG(svg).addTo('#pdfjs-page-' + this.page);
+        if (svg) {
+            const draw = SVG(svg).addTo('#pdfjs-page-' + page);
 
-        return draw;
+            return draw;
+        }
+
+        return null;
     }
 
     makeRect(x, y, width, height) {
-        const draw = this.getSVG();
+        const draw = this.getSVG(this.page);
 
         draw.clear();
 
@@ -97,9 +101,13 @@ export default class AnnotationController {
     }
 
     clearRect() {
-        const draw = this.getSVG();
+        const draw = this.getSVG(this.page);
 
-        draw.clear();
+        if (draw) {
+            draw.clear();
+        } else {
+            console.error('draw.clear() failed, couldn\'t find SVG.');
+        }
     }
 
     updateRect() {

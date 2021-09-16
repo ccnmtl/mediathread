@@ -92,6 +92,13 @@ window.onmessage = function(e) {
             coords: e.data.coordinates
         };
 
+        // Scroll selection into view.
+        PDFViewerApplication.page = (page || 1);
+        const pageDiv = document.getElementById('pdfjs-page-' + (page || 1));
+        PDFViewerApplication.pdfViewer._scrollIntoView({
+            pageDiv: pageDiv
+        });
+
         annotationController.displayRect(
             e.data.coordinates[0][0],
             e.data.coordinates[0][1],
@@ -99,13 +106,5 @@ window.onmessage = function(e) {
             e.data.coordinates[1][1],
             annotationController.state.scale
         );
-
-        // Scroll selection into view.
-        const pageDiv = document.getElementById('pdfjs-page-' + (page || 1));
-        if (pageDiv) {
-            PDFViewerApplication.pdfViewer._scrollIntoView({
-                pageDiv: pageDiv
-            });
-        }
     }
 };

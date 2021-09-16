@@ -183,9 +183,7 @@ export default class CollectionTab extends React.Component {
                     d.active_tags, d.active_vocabulary
                 );
 
-                if (me.filterRef && me.filterRef.current) {
-                    me.filterRef.current.updatePageCount(d.asset_count);
-                }
+                me.updatePageCount(d.asset_count);
             }, function(e) {
                 console.error('asset get error!', e);
             });

@@ -11,7 +11,7 @@ from mediathread.main.course_details import get_upload_folder
 from mediathread.main.models import PanoptoIngestLogEntry
 from mediathread.main.util import user_display_name, send_template_email
 from panopto.session import PanoptoSessionManager
-from mediathread.main.celery import app
+from mediathread.celery import app
 
 
 class PanoptoIngester(object):
@@ -229,10 +229,15 @@ class PanoptoIngester(object):
                 self.add_session_status(course, session, item, author, created)
 
 
-@app.on_after_configure.connect
+@app.task
+def panopto_ingest_task():
+    PanoptoIngester().automated_ingest()
+
+
+@app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     # Hourly Panopto Ingest
     sender.add_periodic_task(
         crontab(hour='*', minute=0),
-        PanoptoIngester().automated_ingest()
+        panopto_ingest_task.s()
     )

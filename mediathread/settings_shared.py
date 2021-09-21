@@ -91,9 +91,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
-broker_url = 'amqp://guest:guest@localhost:5672//mediathread'
-worker_concurrency = 1
-
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//mediathread'
+CELERY_WORKER_CONCURRENCY = 1
 
 # for AuthRequirementMiddleware. this should be a list of
 # url prefixes for paths that can be accessed by anonymous

@@ -224,7 +224,6 @@ if 'test' in sys.argv or \
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
-    broker_url = 'memory://localhost/'
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     if 'integrationserver' in sys.argv:
@@ -242,6 +241,12 @@ if 'test' in sys.argv or \
 
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
+
+    from celery.contrib.testing.app import DEFAULT_TEST_CONFIG
+
+    CELERY_BROKER_URL = DEFAULT_TEST_CONFIG.get('broker_url')
+    CELERY_RESULT_BACKEND = DEFAULT_TEST_CONFIG.get('result_backend')
+    CELERY_BROKER_HEARTBEAT = DEFAULT_TEST_CONFIG.get('broker_heartbeat')
 
 BLOCKED_EMAIL_DOMAINS = []
 

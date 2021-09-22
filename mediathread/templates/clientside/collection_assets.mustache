@@ -69,6 +69,13 @@
                             <img class="mx-auto d-block img-fluid" alt="Item Thumbnail" src="{{image}}" style="max-width: 100%;" />
                         </div>
                     {{/image}}
+                    {{^image}}
+                        {{#pdf}}
+                            <div id="pdf-container-{{id}}" class="pdf-container">
+                                <canvas class="mx-auto d-block"></canvas>
+                            </div>
+                        {{/pdf}}
+                    {{/image}}
                 {{/thumb}}
             </div>
 

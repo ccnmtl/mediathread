@@ -1,6 +1,7 @@
 /* global _propertyCount: true, ajaxDelete: true, djangosherd: true */
 /* global djangosherd_adaptAsset: true, MediaThread: true */
 /* global Mustache: true, Sherd: true, urlWithCourse */
+/* global pdfjsLib: true */
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 /**
@@ -16,6 +17,8 @@
  * annotation.create > when create selection is clicked
  * annotation.edit > when edit in place is clicked
  */
+
+import {renderPage} from '../../pdf/utils.js';
 
 var CollectionList = function(config) {
     var self = this;
@@ -542,7 +545,7 @@ CollectionList.prototype.createThumbs = function(assets) {
                     view.html.push(objDiv, ann);
                     view.setState(ann.annotation);
                 } catch (err) {
-                    console.log(err);
+                    console.error(err);
                 }
             }
         }
@@ -677,6 +680,28 @@ CollectionList.prototype.updateAssets = function(the_records) {
 };
 
 CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
+    // Initialize PDF views
+    the_records.assets.forEach(function(asset) {
+        if (asset.primary_type === 'pdf' && asset.pdf) {
+            // Get pdf DOM container
+            const containerEl = document.getElementById(
+                'pdf-container-' + asset.id);
+            if (!containerEl) {
+                return;
+            }
+
+            const canvasEl = containerEl.querySelector('canvas');
+
+            // https://mozilla.github.io/pdf.js/examples/
+            const loadingTask = pdfjsLib.getDocument(asset.pdf);
+            loadingTask.promise.then(function(pdf) {
+                pdf.getPage(1).then(function(page) {
+                    renderPage(page, canvasEl, 192);
+                });
+            });
+        }
+    });
+
     var self = this;
 
     if (self.create_annotation_thumbs) {
@@ -719,3 +744,8 @@ CollectionList.prototype.appendAssets = function(the_records) {
         jQuery(window).trigger('assets.refresh', [html]);
     }
 };
+
+// TODO: Remove the window export when fully converted to ES modules.
+window.CollectionList = CollectionList;
+
+export {CollectionList};

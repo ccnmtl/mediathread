@@ -23,10 +23,10 @@
  * Canvas or SVG expects:: top-left point x/y, then width/height.
  */
 const convertPointsToXYWH = function(x1, y1, x2, y2, scale=1) {
-    x1 = x1 * scale;
-    y1 = y1 * scale;
-    x2 = x2 * scale;
-    y2 = y2 * scale;
+    x1 *= scale;
+    y1 *= scale;
+    x2 *= scale;
+    y2 *= scale;
 
     return [
         Math.min(x1, x2), Math.min(y1, y2),

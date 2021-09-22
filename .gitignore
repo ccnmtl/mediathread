@@ -29,3 +29,4 @@ geckodriver.log
 cypress/videos
 cypress/screenshots
 cypress/fixtures
+celerybeat-schedule

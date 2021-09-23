@@ -52,6 +52,9 @@
                     ).then(function() {
                         self.loadContent();
                     });
+                },
+                error: function(e) {
+                    console.error('Error fetching panel data:', e);
                 }
             });
         };

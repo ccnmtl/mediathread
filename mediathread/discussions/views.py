@@ -10,10 +10,11 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_text
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_POST
 from django.views.generic.base import View
 import django_comments
 from django_comments.models import COMMENT_MAX_LENGTH
-from djangohelpers.lib import rendered_with, allow_http
+from djangohelpers.lib import rendered_with
 import json
 from mediathread.api import UserResource
 from mediathread.assetmgr.api import AssetResource
@@ -210,7 +211,7 @@ class DiscussionView(LoggedInCourseMixin, View):
                                 content_type='application/json')
 
 
-@allow_http("POST")
+@require_POST
 @login_required
 @rendered_with('comments/posted.html')
 def comment_save(request, comment_id, next_url=None):

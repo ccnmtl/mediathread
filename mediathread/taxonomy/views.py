@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
-from djangohelpers.lib import allow_http, rendered_with
+from django.views.decorators.http import require_GET
+from djangohelpers.lib import rendered_with
 from mediathread.mixins import attach_course_request, faculty_only
 from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
     Term, TermRelationship
@@ -7,7 +8,7 @@ from mediathread.taxonomy.models import VocabularyForm, Vocabulary, TermForm, \
 
 @login_required
 @attach_course_request
-@allow_http("GET")
+@require_GET
 @rendered_with('taxonomy/taxonomy.html')
 @faculty_only
 def taxonomy_workspace(request):

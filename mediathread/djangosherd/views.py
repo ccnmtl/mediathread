@@ -4,8 +4,8 @@ from json import JSONDecodeError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden, \
     HttpResponseRedirect
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
-from djangohelpers.lib import allow_http
 
 from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
 from mediathread.projects.models import ProjectNote, Project
@@ -25,7 +25,7 @@ def is_clipping(data):
 
 
 @login_required
-@allow_http("POST")
+@require_POST
 def create_annotation(request):
     asset = get_object_or_404(Asset,
                               pk=request.POST['annotation-context_pk'])

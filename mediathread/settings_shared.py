@@ -166,16 +166,6 @@ FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.13.swf'
 
 DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
-
-# this gets around Django 1.2's stupidity for commenting
-# we're already checking that the request is from someone in the class
-def no_reject(request, reason):
-    request.csrf_processing_done = True
-    return None
-
-
-CSRF_FAILURE_VIEW = no_reject
-
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 ACCOUNT_ACTIVATION_DAYS = 7

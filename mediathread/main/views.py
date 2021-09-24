@@ -25,11 +25,11 @@ from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
 from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView, UpdateView
 from django.views.generic.list import ListView
-from djangohelpers.lib import allow_http
 import hmac
 import json
 from lti_auth.models import LTICourseContext
@@ -190,7 +190,7 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             reverse('course-manage-sources', args=[request.course.pk]))
 
 
-@allow_http("POST")
+@require_POST
 @ajax_required
 def set_user_setting(request, user_name):
     user = get_object_or_404(User, username=user_name)

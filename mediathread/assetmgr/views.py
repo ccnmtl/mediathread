@@ -24,9 +24,9 @@ from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
+from django.views.decorators.http import require_http_methods, require_POST
 from django.views.generic import DetailView
 from django.views.generic.base import View, TemplateView
-from djangohelpers.lib import allow_http
 import hmac
 import json
 from mediathread.api import UserResource, TagResource
@@ -436,7 +436,7 @@ class AssetUpdateView(View):
 
 
 @login_required
-@allow_http("GET", "POST")
+@require_http_methods(["GET", "POST"])
 @ajax_required
 def asset_delete(request, asset_id):
     in_course_or_404(request.user.username, request.course)
@@ -453,7 +453,7 @@ def asset_delete(request, asset_id):
 
 
 @login_required
-@allow_http("POST")
+@require_POST
 def annotation_create(request, asset_id):
     """
     delegate to djangosherd view and redirect back to asset workspace
@@ -486,7 +486,7 @@ def annotation_create(request, asset_id):
 
 
 @login_required
-@allow_http("POST")
+@require_POST
 @ajax_required
 def annotation_create_global(request, asset_id):
     asset = get_object_or_404(Asset, pk=asset_id, course=request.course)
@@ -504,7 +504,7 @@ def annotation_create_global(request, asset_id):
 
 
 @login_required
-@allow_http("POST")
+@require_POST
 def annotation_save(request, asset_id, annot_id):
     try:
         # Verify annotation exists
@@ -527,7 +527,7 @@ def annotation_save(request, asset_id, annot_id):
 
 
 @login_required
-@allow_http("POST")
+@require_POST
 def annotation_delete(request, asset_id, annot_id):
     try:
         # Verify annotation exists

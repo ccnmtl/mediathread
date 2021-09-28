@@ -1334,6 +1334,20 @@ class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
     template_name = 'assetmgr/pdfjs_viewer.html'
     model = Asset
 
+    def dispatch(self, request, *args, **kwargs):
+        r = super().dispatch(request, *args, **kwargs)
+
+        if request.user.is_superuser or \
+           request.course.is_faculty(request.user):
+            return r
+
+        if not course_details.all_items_are_visible(request.course) and \
+           not request.course.is_faculty(self.object.author) and \
+           self.object.author != request.user:
+            return HttpResponseForbidden('You can\'t view this asset.')
+
+        return r
+
 
 class S3SignView(SignS3View):
     private = True

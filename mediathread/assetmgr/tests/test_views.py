@@ -28,7 +28,9 @@ from mediathread.factories import (
     SherdNoteFactory, UserFactory, ExternalCollectionFactory,
     SuggestedExternalCollectionFactory, SourceFactory
 )
-from mediathread.main.course_details import UPLOAD_FOLDER_KEY
+from mediathread.main.course_details import (
+    all_items_are_visible, UPLOAD_FOLDER_KEY
+)
 
 
 class AssetViewTest(MediathreadTestMixin, TestCase):
@@ -1154,3 +1156,81 @@ class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
             self.sample_course.pk, asset.pk
         ])
         self.assertContains(r, asset_url)
+
+
+class PDFViewerDetailViewTest(MediathreadTestMixin, TestCase):
+    def setUp(self):
+        self.setup_sample_course()
+
+        self.superuser = UserFactory(is_staff=True, is_superuser=True)
+
+        # instructor that sees both Sample Course & Alternate Course
+        self.instructor_three = UserFactory(username='instructor_three')
+        self.add_as_faculty(self.sample_course, self.instructor_three)
+
+        self.asset = AssetFactory.create(
+            course=self.sample_course,
+            primary_source='pdf'
+        )
+
+    def test_get_as_student(self):
+        self.client.login(username=self.student_one.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[self.asset.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_get_as_student_non_author(self):
+        # Make sure students can't see each others' items if the
+        # settings is False.
+        self.sample_course.add_detail('item_visibility', 0)
+        asset = AssetFactory.create(
+            author=self.student_one,
+            course=self.sample_course,
+            primary_source='pdf'
+        )
+
+        self.assertEqual(all_items_are_visible(self.sample_course), False)
+
+        self.client.login(username=self.student_two.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[asset.pk]))
+        self.assertEqual(r.status_code, 403)
+
+    def test_get_as_student_instructor_asset(self):
+        # Make sure students can't see each others' items if the
+        # settings is False.
+        self.sample_course.add_detail('item_visibility', 0)
+        asset = AssetFactory.create(
+            author=self.instructor_one,
+            course=self.sample_course,
+            primary_source='pdf'
+        )
+
+        self.assertEqual(all_items_are_visible(self.sample_course), False)
+
+        self.client.login(username=self.student_one.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[asset.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_get_as_staff(self):
+        self.client.login(username=self.superuser.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[self.asset.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_get_as_instructor(self):
+        self.client.login(
+            username=self.instructor_one.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[self.asset.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_get_as_user_outside_course(self):
+        # Student not in course
+        self.student_four = UserFactory(
+            username='student_four', email='student_four@example.com',
+            first_name='Student', last_name='Four')
+
+        self.client.login(username=self.student_four.username, password='test')
+        r = self.client.get(reverse('pdfjs', args=[self.asset.pk]))
+        self.assertEqual(r.status_code, 200)
+
+        # redirects to My Courses page
+        self.assertContains(r, 'My Courses')
+        self.assertNotContains(r, self.asset.title)

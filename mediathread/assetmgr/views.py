@@ -379,9 +379,7 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
             width=width, height=height,
             label=label)
 
-        asset_url = reverse('asset-view', args=[
-            request.course.pk, asset.pk
-        ])
+        asset_url = reverse('asset-view', args=[request.course.pk, asset.pk])
 
         messages.success(
             request,
@@ -389,7 +387,7 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
                 asset_url, asset.title
             ) + 'has been added to your collection.')
 
-        return redirect('course_detail', pk=request.course.pk)
+        return redirect('asset-view', request.course.pk, asset.pk)
 
 
 class AssetUpdateView(View):

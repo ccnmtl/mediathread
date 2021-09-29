@@ -62,7 +62,7 @@ django-threadedcomments==1.2
 django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0
 sentry-sdk==1.4.2
-django-appconf==1.0.4
+django-appconf==1.0.5
 django-compressor==2.4.1
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0

@@ -72,6 +72,7 @@
                                {% endifequal %}
                                {% endflag %}
 
+                               {% if is_faculty or is_staff %}
                                <hr />
 
                                <h6 class="card-title mt-2">IMAGE</h6>
@@ -151,9 +152,11 @@
 
                                    </div>
                                </div>
+                               {% endif %}<!-- is_faculty -->
                            </div>
                        </div>
                    {% endif %}
+
 
                    <div class="card">
                        <div class="card-body">

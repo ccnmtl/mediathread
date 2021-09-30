@@ -48,6 +48,9 @@ window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
 </script>
 
 <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = window.WORKER_SRC;
+</script>
 
 <script>
 window.ASSET_URL = '{{object.primary.signed_url|safe}}';

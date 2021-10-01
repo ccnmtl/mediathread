@@ -1,4 +1,5 @@
 {% extends "base_new.html" %}
+{% load static %}
 
 {% block title %}
     {% if project.title %}{{project.title}}{% else %}New Composition{% endif %}
@@ -50,6 +51,11 @@
     <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/lib/tinymce/tinymce.min.js"></script>
     <script type="text/javascript" src="{{STATIC_URL}}js/app/tinymce_init.js"></script>
+
+    <script>
+    window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
+    </script>
+    <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
 
     <!--  Generic Functionality -->
     <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>

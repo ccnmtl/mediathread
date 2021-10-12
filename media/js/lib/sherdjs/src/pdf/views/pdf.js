@@ -1,6 +1,8 @@
 /* global Sherd: true*/
 
-import {renderPage} from '../../../../../pdf/utils.js';
+import {
+    convertPointsToXYWH, renderPage
+} from '../../../../../pdf/utils.js';
 
 const PdfJS = function() {
     var self = this;
@@ -152,7 +154,24 @@ const PdfJS = function() {
 
         self.pdfLoadingTask.promise.then(function(pdf) {
             pdf.getPage(pageNumber).then(function(page) {
-                renderPage(page, canvasEl, presentation.height());
+                const [renderTask, scale] =
+                      renderPage(page, canvasEl, presentation.height());
+
+                self.svgDraw = SVG().addTo('.sherd-pdfjs-view')
+                    .size(canvasEl.width, canvasEl.height);
+
+                const [x, y, width, height] = convertPointsToXYWH(
+                    obj.geometry.coordinates[0][0],
+                    obj.geometry.coordinates[0][1],
+                    obj.geometry.coordinates[1][0],
+                    obj.geometry.coordinates[1][1],
+                    0.75 * scale
+                );
+
+                self.svgDraw.rect(width, height)
+                    .move(x, y)
+                    .stroke({color: '#22f', width: 2})
+                    .fill('none');
             });
         });
     };
@@ -168,8 +187,11 @@ const PdfJS = function() {
         return {
             object: obj,
             htmlID: wrapperID,
-            text: '<div id="' + wrapperID
-                + '" class="sherd-pdfjs-view"><canvas></canvas></div>',
+            text: '<div id="' + wrapperID +
+                '" class="sherd-pdfjs-view">' +
+                //'<svg class="pdf-svg"></svg>' +
+                '<canvas></canvas>' +
+                '</div>',
             winHeight: options &&
                 options.functions &&
                 options.functions.winHeight ?

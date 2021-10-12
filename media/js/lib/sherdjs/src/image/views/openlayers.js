@@ -78,6 +78,7 @@ if (!Sherd.Image.OpenLayers) {
                 //return x.write(self.openlayers.vectorLayer.v.renderer.rendererRoot);
             },
             'frag2feature': function(obj, map) {
+                console.log('frag2feature', obj, map);
                 var extent = self.openlayers.map.getMaxExtent().toArray(); //left,?bottom,right,top
                 var geow = extent[2] - extent[0],
                     geoh = extent[3] - extent[1];

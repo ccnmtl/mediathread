@@ -4127,6 +4127,18 @@ ul.section-tabs>li>a.active {
     height: 100%;
 }
 
+.sherd-pdfjs-view {
+    position: relative;
+    text-align: left;
+}
+
+.sherd-pdfjs-view svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
 #skip a {
     position: absolute;
     left: -10000px;

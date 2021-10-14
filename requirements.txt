@@ -128,7 +128,7 @@ attrs==21.2.0  # zeep
 zeep==4.1.0
 
 stevedore==3.4.0
-pyyaml==5.4.1
+pyyaml==6.0
 bandit==1.7.0
 funcsigs==1.0.2
 pypanopto==0.2.0

@@ -82,7 +82,7 @@ django-cors-headers==3.10.0
 # Until then, we'll need to use this.
 django-cookies-samesite==0.9.0
 
-httplib2==0.19.1
+httplib2==0.20.1
 oauth==1.0.1
 oauth2==1.9.0.post1
 oauthlib==3.1.1

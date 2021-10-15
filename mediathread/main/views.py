@@ -1169,11 +1169,12 @@ Faculty: {} <{}>
         if created:
             self.init_created_course(self.course, self.affil)
         else:
-            capture_exception(
-                u'Attempted to create duplicate course for affil: ' +
-                u'{} - {}  Course: {}'.format(
+            capture_exception(Exception(
+                'Attempted to create duplicate course for affil: ' +
+                '{} - {}  Course: {}'.format(
                     self.affil.pk, self.affil.name,
-                    self.course.title))
+                    self.course.title)
+            ))
             messages.error(
                 self.request,
                 u'There was an error activating your course. The ' +
@@ -1187,13 +1188,13 @@ Faculty: {} <{}>
             self.send_faculty_email(form, self.request.user)
         except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send faculty email.')
-            capture_exception(str(e))
+            capture_exception(e)
 
         try:
             self.send_staff_email(form, self.request.user)
         except (SMTPDataError, SMTPRecipientsRefused) as e:
             messages.error(self.request, 'Failed to send staff email.')
-            capture_exception(str(e))
+            capture_exception(e)
 
         messages.success(self.request, 'You\'ve activated your course.')
         self.make_pmt_activation_item(form, self.request.user)

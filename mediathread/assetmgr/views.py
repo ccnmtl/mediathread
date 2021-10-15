@@ -276,8 +276,8 @@ class AssetCreateView(View):
             d, asset__course=request.course)
 
         if success is False:
-            capture_exception(
-                'Asset creation failed with request data: ' + str(d))
+            capture_exception(Exception(
+                'Asset creation failed with request data: ' + str(d)))
             return HttpResponseBadRequest(
                 'The selected asset didn\'t have the correct data to be ' +
                 'imported into Mediathread.')

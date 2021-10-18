@@ -3,261 +3,148 @@
 {% block title %}{{block.super}}&mdash; Manage Sources{% endblock %}
 
 {% block dashboard_content %}
-    <div class="well">
-    <h3>Mediathread Video Uploader</h3>
-    <p>Mediathread supports direct uploading of videos from a user's desktop. By default this direct upload feature is turned off.
-    You may enable it for just yourself, or enable it for all members of your class.</p>
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <h3 class="card-title">Add Recommended Sources</h3>
 
-<div class="well">
-    <h3>Add<!--/Remove--> Supported Sources</h3>
+        <p class="card-text">Mediathread allows users to import videos and images from a variety of supported websites via the Mediathread extension.
+        To select a source for your class, click the "Add to Class" button.
+        To designate a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source".</p>
 
-    <p>Mediathread allows users to import videos and images from a variety of supported websites via the Mediathread bookmarklet.
-    To select a source for your class, click the "Add to Class" button.
-    To designate a source not listed here, scroll down to the bottom of this page and follow instructions to "Add Your Own Source".</p>
-
-    {% for suggested in suggested_collections %}
-        {% map_course_collection request.course suggested as course_collection %}
-        <div class="suggested-collection">
-            <form action="{% url 'collection-add-or-remove' %}" method="POST">
-                {% csrf_token %}
-                <table>
-                    <tr>
-                        <td class="thumb">
-                            {% if suggested.thumb_url %}
-                                <a href="{{suggested.url}}">
-                                    <img src="{{STATIC_URL}}{{suggested.thumb_url}}" alt="thumbnail image" />
+        {% for suggested in suggested_collections %}
+            {% map_course_collection request.course suggested as course_collection %}
+            <div class="suggested-collection">
+                <form action="{% url 'collection-add-or-remove' %}" method="POST">
+                    {% csrf_token %}
+                    <table>
+                        <tr>
+                            <td class="thumb">
+                                {% if suggested.thumb_url %}
+                                    <a href="{{suggested.url}}">
+                                        <img src="{{STATIC_URL}}{{suggested.thumb_url}}" alt="thumbnail image" />
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{suggested.url}}" class="collection-link">
+                                    {{suggested.title}}
                                 </a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{{suggested.url}}" class="collection-link">
-                                {{suggested.title}}
-                            </a>
-                            <br />
-                            {{suggested.description|safe|linebreaks}}
-                        </td>
-                        <td>&nbsp;&nbsp;</td>
-                        <td style="text-align: right">
-                            {% if course_collection %}
-                                <input class="btn btn-default" name="remove" type="submit" value="Remove" id="{{suggested.title|slugify}}" />
-                                <input type="hidden" name="collection_id" value="{{course_collection.id}}" />
-                            {% else %}
-                                <input class="btn btn-default" name="add" type="submit" value="Add to Class" id="{{suggested.title|slugify}}" />
-                                <input type="hidden" name="suggested_id" value="{{suggested.id}}" />
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-    {% endfor %}
+                                <br />
+                                {{suggested.description|safe|linebreaks}}
+                            </td>
+                            <td>&nbsp;&nbsp;</td>
+                            <td style="text-align: right">
+                                {% if course_collection %}
+                                    <input class="btn btn-dark btn-sm" name="remove" type="submit" value="Remove" id="{{suggested.title|slugify}}" />
+                                    <input type="hidden" name="collection_id" value="{{course_collection.id}}" />
+                                {% else %}
+                                    <input class="btn btn-dark btn-sm" name="add" type="submit" value="Add to Class" id="{{suggested.title|slugify}}" />
+                                    <input type="hidden" name="suggested_id" value="{{suggested.id}}" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
 </div>
 
-<div class="well">
-    <h3>Add External Collection</h3>
-    <p>Feel free to experiment with the Mediathread bookmarklet to see if it imports items from an 'unsupported' website;
-    if it does, you may add this source to your class here. To request bookmarklet compatibility with an unsupported source,
-    please email ccnmtl-mediathread@columbia.edu.
-    To upload individual items to Mediathread, use the Mediathread Uploader at the top of this page.
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <h3 card-title>Add Your Own Source</h3>
+        <p class="card-text">Feel free to experiment with the Mediathread extension to see if it imports items from an "unsupported" website;
+        if it does, you may add this source to your class here. To request extension compatibility with an unsupported source,
+        please email {{settings.SERVER_EMAIL}}.
 
-    <form action="{% url 'collection-add-or-remove' %}" method="POST">
-        <div class="form-group">
-            <label>Collection Title</label>
-            <input class="form-control" type="text" name="title" value="" />
-        </div>
-        <div class="form-group">
-            <label>Collection URL</label>
-            <input class="form-control" type="text" name="url" value="" />
-        </div>
-        <div class="form-group">
-            <label>Thumb URL</label>
-            <input class="form-control" type="text" name="thumb" value="" />
-        </div>
-        <div class="form-group">
-            <label>Description</label><br />
-            <textarea class="form-control" cols="55" rows="5" name="description"></textarea>
-        </div>
-        <br /><br />
-        <input class="btn btn-default right" type="submit" value="Add Source to Class" />
-        <div class="visualclear"></div>
-    </form>
+        <form action="{% url 'collection-add-or-remove' %}" method="POST">
+            <div class="form-group">
+                <label>Collection Title</label>
+                <input class="form-control" type="text" name="title" value="" />
+            </div>
+            <div class="form-group">
+                <label>Collection URL</label>
+                <input class="form-control" type="text" name="url" value="" />
+            </div>
+            <div class="form-group">
+                <label>Thumb URL</label>
+                <input class="form-control" type="text" name="thumb" value="" />
+            </div>
+            <div class="form-group">
+                <label>Description</label><br />
+                <textarea class="form-control" cols="55" rows="5" name="description"></textarea>
+            </div>
+            <br /><br />
+            <input class="btn btn-dark right" type="submit" value="Add Source to Class" />
+            <div class="visualclear"></div>
+        </form>
+    </div>
 </div>
 
 {% if is_staff %}
-    <div class="well">
-        <h3>Specific Internet Resources</h3>
-        <ul>
+<div class="card bg-light mb-3">
+    <div class="card-body">
+        <h3>Specific Internet Resources (Staff Only)</h3>
+        <ul style="list-style-type: none" class="p-0">
             <li class="suggested-collection">
-                <h3>Local Quicktime Streaming Video</h3>
+                <h3 class="font-weight-bold">YouTube Video</h3>
                 <form action="{% url 'asset-save' %}" method="POST">
+                    {% csrf_token %}
                     {% include "assetmgr/pretender_select.html" %}
-
-                    <div class="form-row">
-                        <label>
-                            Asset QT Stream:
-                            <input class="form-control form-control-sm"
-                                   type="text" name="quicktime" value="" />
-                        </label>
-                    </div>
-
-                    <div class="form-row">
-                        <label>
-                            Asset Title:
-                            <input class="form-control form-control-sm"
-                                   type="text" name="title" value="" />
-                        </label>
-                    </div>
-
-                    <div class="form-row">
-                        <label>
-                            Dimensions
-                            <input class="form-control form-control-sm"
-                                   type="text" name="quicktime-metadata"
-                                   value="w480h360" />
-                            <small class="form-text text-muted">
-                                (as w{width}h{height} do not include controller height)
-                            </small>
-                        </label>
-                    </div>
-
-                    <div class="form-row">
-                        <label>
-                            Final Cut Pro XML url:
-                            <input class="form-control form-control-sm"
-                                   type="text" name="xmeml" value="" />
-                        </label>
-                    </div>
-
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-            <li class="suggested-collection">
-                <h3>YouTube Video</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    YouTube View (Watch) URL: <input type="text" name="url" value="" /> (example: https://www.youtube.com/watch?v=MjdEEwzskck)
+                    <label>YouTube View (Watch) URL: <input type="text" name="url" value="" class="mb-2" /></label>
+                        <small class="form-text text-dark">example: https://www.youtube.com/watch?v=MjdEEwzskck</small>
                     <br/>
-                    YouTube Video URL: <input type="text" name="youtube" value="" /> (example: https://www.youtube.com/v/MjdEEwzskck&hl=en_US&fs=1)
+                    <label>YouTube Video URL: <input type="text" name="youtube" value="" class="mb-2" /></label>
+                        <small class="form-text text-dark">example: https://www.youtube.com/v/MjdEEwzskck&hl=en_US&fs=1</small>
                     <br/>
-                    YouTube Title: <input type="text" name="title" value="" />
+                    <label>YouTube Title: <input type="text" name="title" value="" class="mb-2" /> </label>
                     <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
+                    <input class="btn btn-dark btn-sm mb-2" type="submit" />
                 </form>
             </li>
 
             <li class="suggested-collection">
-                <h3>Vimeo</h3>
+                <h3 class="font-weight-bold">Vimeo</h3>
                 <form action="{% url 'asset-save' %}" method="POST">
+                    {% csrf_token %}
                     {% include "assetmgr/pretender_select.html" %}
 
-                    <div class="form-row">
-                        <label>
-                            Vimeo URL
-                            <input class="form-control form-control-sm"
-                                   type="text" name="url" value="" />
-                            <small class="form-text text-muted">
-                                example: https://vimeo.com/12345678
-                            </small>
-                        </label>
-                    </div>
+                    <label>
+                        Vimeo URL
+                        <input class="form-control form-control-sm mb-2"
+                               type="text" name="url" value="" />
+                        <small class="form-text text-dark">
+                            example: https://vimeo.com/12345678
+                        </small>
+                    </label><br />
 
-                    <div class="form-row">
-                        <label>
-                            Title
-                            <input class="form-control form-control-sm"
-                                   type="text" name="title" value="" />
-                        </label>
-                    </div>
+                    <label>
+                        Title
+                        <input class="form-control form-control-sm mb-3"
+                               type="text" name="title" value="" />
+                    </label><br />
 
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-
-            <li class="suggested-collection">
-                <h3>Kaltura .kdp</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    Kaltura Video Remote Page: <input type="text" name="url" value="" /> (the remote page containing the video)
-                    <br/>
-                    Kaltura Video URL: <input type="text" name="kaltura" value="" /> (the actual video URL)
-                    <br/>
-                    Title: <input type="text" name="title" value="" />
-                    <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
+                    <input class="btn btn-dark btn-sm mb-2" type="submit" />
                 </form>
             </li>
             <li class="suggested-collection">
-                <h3>MP4 (.mp4)</h3>
+                <h3 class="font-weight-bold">Panopto</h3>
                 <form action="{% url 'asset-save' %}" method="POST">
+                    {% csrf_token %}
                     {% include "assetmgr/pretender_select.html" %}
-                    View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
+                    <label>View (Watch) URL: <input type="text" name="url" value="" class="mb-2" /></label>
+                    <small class="form-text text-dark">the remote page containing the video</small>
                     <br/>
-                    Video URL: <input type="text" name="mp4" value="" /> (the actual video URL)
+                    <label>Video URL: <input type="text" name="mp4_panopto" value="" class="mb-2" /></label>
+                    <small class="form-text text-dark">the actual video URL</small>
                     <br/>
-                    Title: <input type="text" name="title" value="" />
+                    <label>Title: <input type="text" name="title" value="" class="mb-3" /></label>
                     <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-            <li class="suggested-collection">
-                <h3>MP3 Audio (.mp3)</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the audio clip)
-                    <br/>
-                    Audio URL: <input type="text" name="mp3" value="" /> (the actual audio URL)
-                    <br/>
-                    Cover Image URL: <input type="text" name="poster" value="" />
-                    <br/>
-                    Title: <input type="text" name="title" value="" />
-                    <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-            <li class="suggested-collection">
-                <h3>MP3 Audio (.mp3) as MP4</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the audio clip)
-                    <br/>
-                    Audio as MP4 URL: <input type="text" name="mp4_audio" value="" /> (the actual audio URL)
-                    <br/>
-                    Cover Image URL: <input type="text" name="poster" value="" />
-                    <br/>
-                    Title: <input type="text" name="title" value="" />
-                    <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-            <li class="suggested-collection">
-                <h3>MP4 Pseudo Streaming (.mp4)</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
-                    <br/>
-                    Video URL: <input type="text" name="mp4_pseudo" value="" /> (the actual video URL)
-                    <br/>
-                    Title: <input type="text" name="title" value="" />
-                    <br/>
-                    QueryString: <input type="text" name="querystring" value="" />
-                    <br />
-                    <input class="btn btn-sm btn-primary" type="submit" />
-                </form>
-            </li>
-            <li class="suggested-collection">
-                <h3>Panopto</h3>
-                <form action="{% url 'asset-save' %}" method="POST">
-                    {% include "assetmgr/pretender_select.html" %}
-                    View (Watch) URL: <input type="text" name="url" value="" /> (the remote page containing the video)
-                    <br/>
-                    Video URL: <input type="text" name="mp4_panopto" value="" /> (the actual video URL)
-                    <br/>
-                    Title: <input type="text" name="title" value="" />
-                    <br/>
-                    <input class="btn btn-sm btn-primary" type="submit" />
+                    <input class="btn btn-dark btn-sm mb-2" type="submit" />
                 </form>
             </li>
         </ul>
     </div>
+</div>
 {% endif %}
 {% endblock %}

@@ -1,8 +1,6 @@
 {% load static %}
 {% load waffle_tags %}
 
-
-
 <div class="accordion bg-light" id="upload-import-accordion">
   <div class="card border-0 bg-light">
        <div id="collapseOne" class="collapse bg-light collectionAdd"
@@ -76,7 +74,10 @@
                                <hr />
 
                                <h6 class="card-title mt-2">IMAGE</h6>
-
+                               <p class="card-text">
+                                   Mediathread supports image files that end in .bmp, .gif, .jpg, .jpeg, .png, .svg and .webp.
+                                   Submitted files must be less than 10MB.
+                               </p>
                                <div class="card-text">
                                    {% csrf_token %}
                                    <div class="form-row align-items-center">

@@ -54,7 +54,7 @@ INSTALLATION
 4. Build the virtual environment
    Bootstrap uses virtualenv to build a contained library in `ve/`. `django.mk` specifies the build target for creating the virtualenv, and running any of the targets specified in that file will automatically set this up.
 
-    make check
+    make
 
 The rest of the instructions work like standard Django.  See: https://docs.djangoproject.com/ for more details.
 
@@ -69,8 +69,10 @@ Go to your site in a web browser.
 
 7. The default database is not very useful. You'll need to create a course and some users. Login with the superuser you
    created in Step #5.
+   
+8. Navigate to /admin/. Click Courses.
 
-8. Click the 'Create a Course' link.
+9. Click the 'Add Course +' link.
     - Click the "+" to make a group.  Name it something like "test_course"
     - Click the "+" to make a faculty group.  Name it something like "test_course_faculty"
         - In the "Add users to group" field...
@@ -80,7 +82,7 @@ Go to your site in a web browser.
               (read the instructions under the textarea)
         - Click "Save" and then click the upper-right link "Django administration" to get back to the regular site (yeah, not the most intuitive).
 
-9. Experiment with saving assets by visiting:
+10. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
 

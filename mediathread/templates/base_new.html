@@ -195,7 +195,6 @@ A new base.html without the course context overwritten in the template.
             })();
             </script>
 
-            {% compress js %}
             <script src='{% static "js/lib/json2.js" %}'></script>
             <script src='{% static "js/app/util.js" %}'></script>
             <script src='{% static "js/app/ajaxDelete.js" %}'></script>
@@ -250,7 +249,6 @@ A new base.html without the course context overwritten in the template.
             </script>
 
             {% block js %}{% endblock %}
-    {% endcompress %}
 
     {% if not debug %}
         <script>

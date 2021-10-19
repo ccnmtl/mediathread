@@ -4127,6 +4127,10 @@ ul.section-tabs>li>a.active {
     height: 100%;
 }
 
+.react-pdf-page-container .annotationLayer {
+    display: none;
+}
+
 .sherd-pdfjs-view {
     position: relative;
     text-align: left;

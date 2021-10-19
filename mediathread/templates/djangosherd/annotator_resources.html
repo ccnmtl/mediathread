@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
     OpenLayers.ImgPath = '{{STATIC_URL}}js/lib/sherdjs/lib/openlayers/openlayers/img/';
     OpenLayers._getScriptLocation = function() {
        return "{{STATIC_URL}}js/lib/sherdjs/lib/openlayers/openlayers/";
@@ -7,8 +7,9 @@
 
 <script src="{{STATIC_URL}}js/lib/sherdjs/lib/get-youtube-id.js"></script>
 <script src="{{STATIC_URL}}js/lib/sherdjs/lib/froogaloop.min.js"></script>
+<script src="{{STATIC_URL}}js/lib/svg.min.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/base.js"></script>
-<script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/assets.js"></script>
+
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/video/views/video.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/video/views/videotag.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/video/views/youtube.js"></script>
@@ -26,4 +27,7 @@
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/image/views/fsiviewer.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/image/annotators/fsiviewer.js"></script>
 
-<script type="text/javascript" src="{{STATIC_URL}}js/lib/sherdjs/src/configs/djangosherd.js"></script>
+<script type="module" src="{{STATIC_URL}}js/lib/sherdjs/src/pdf/views/pdf.js"></script>
+
+<script src="{{STATIC_URL}}js/lib/sherdjs/src/assets.js"></script>
+<script src="{{STATIC_URL}}js/lib/sherdjs/src/configs/djangosherd.js"></script>

@@ -30,12 +30,13 @@ function DjangoSherd_NoteForm() {
     };
 }
 
-
 // requires jQuery
-if (typeof djangosherd === 'undefined') {
-    djangosherd = {};
-    djangosherd.storage = new DjangoSherd_Storage();
-    djangosherd.noteform = new DjangoSherd_NoteForm();
+if (typeof window.djangosherd === 'undefined') {
+    const djangosherd = {
+        storage: new DjangoSherd_Storage(),
+        noteform: new DjangoSherd_NoteForm()
+    };
+    window.djangosherd = djangosherd;
 }
 
 // /assetview: html.pull,html.push,html.remove,setState,getState,&OPTIONAL:play
@@ -64,7 +65,7 @@ function djangosherd_adaptAsset(asset) {
         asset.type = 'fsiviewer';
         asset.thumbable = true;
     } else if (asset.pdf) {
-        asset.type = 'pdf';        
+        asset.type = 'pdf';
     } else if (asset.archive) {
         asset.type = "NONE";
     }
@@ -86,7 +87,6 @@ function DjangoSherd_AssetMicroFormat() {
     };
     this.create = function (obj, doc) {
         var wrapperID = Sherd.Base.newID('djangoasset');
-        ///TODO: make the creamy content filling
         return {
             object: obj,
             htmlID: wrapperID,
@@ -188,9 +188,6 @@ function DjangoSherd_AnnotationMicroFormat() {
         return rv;
     };
 }
-
-
-
 
 function DjangoSherd_Asset_Config() {
     var ds = djangosherd;
@@ -349,29 +346,35 @@ CitationView.prototype.openCitationById = function (anchor, asset_id, annotation
         type = "asset";
     }
 
-    djangosherd.storage.get({id: id, type: type},
-    function (ann_obj) {
+    djangosherd.storage.get({
+        id: id, type: type
+    }, function (ann_obj) {
         self.options.deleted = false;
         return_value = self.displayCitation(anchor, ann_obj, id);
-    },
-    null,
-    function (error) {
+    }, null, function (error) {
+        console.error(error);
         if (type === "annotations") {
             // attempt to get asset level
-            djangosherd.storage.get({id: asset_id, type: 'asset' }, function (asset_obj) {
-                    self.options.deleted = true;
-                    return_value = self.displayCitation(anchor, asset_obj, id);
-                },
-                null,
-                function (error) {
-                    var obj = { 'asset': null, 'metadata': { 'title': 'Item Deleted' } };
-                    return_value = self.displayCitation(anchor, obj, null);
-                });
+            djangosherd.storage.get({
+                id: asset_id, type: 'asset'
+            }, function (asset_obj) {
+                self.options.deleted = true;
+                return_value = self.displayCitation(anchor, asset_obj, id);
+            }, null, function (error) {
+                var obj = { 'asset': null, 'metadata': { 'title': 'Item Deleted' } };
+                return_value = self.displayCitation(anchor, obj, null);
+            });
         } else {
-            var obj = { 'asset': null, 'metadata': { 'title': 'Item Deleted' } };
+            var obj = {
+                asset: null,
+                metadata: {
+                    title: 'Item Deleted'
+                }
+            };
             return_value = self.displayCitation(anchor, obj, null);
         }
     });
+
     return return_value;
 };
 
@@ -422,19 +425,17 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
         } else {
             targets.annotation_title.innerHTML =
                 ((ann_obj.metadata && ann_obj.metadata.title) ?
-                        '' + ann_obj.metadata.title + ''
-                        : '');
+                        '' + ann_obj.metadata.title + '' : '');
             if (ann_obj.annotation.startCode) {
                 var duration = new Date(ann_obj.annotation.duration * 1000)
                     .toISOString().substr(11, 8);
-                targets.annotation_title.innerHTML += 
+                targets.annotation_title.innerHTML +=
                     '<br />' + ann_obj.annotation.startCode + ' - ' +
                      ann_obj.annotation.endCode +
                     ' (' + duration + ')';
             }
         }
     }
-
 
     var asset_obj = ann_obj.hasOwnProperty("asset") ? ann_obj.asset : ann_obj;
     if (asset_obj) {
@@ -469,9 +470,16 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
             if (!ann_data.hasOwnProperty("start")) {
                 ann_data.start = 0;
             }
-            djangosherd.assetview.setState(ann_data, {autoplay: self.options.autoplay});
+            djangosherd.assetview.setState(
+                ann_data, {
+                    autoplay: self.options.autoplay
+                });
         } else {
-            djangosherd.assetview.setState({start: 0}, {autoplay: self.options.autoplay});
+            djangosherd.assetview.setState({
+                start: 0
+            }, {
+                autoplay: self.options.autoplay
+            });
         }
     } else {
         djangosherd.assetview.html.remove();
@@ -673,3 +681,5 @@ window.DjangoSherd_Colors = {
 };
 
 window.DjangoSherd_Colors.reset();
+
+window.CitationView = CitationView;

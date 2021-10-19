@@ -59,7 +59,7 @@ const renderPage = function(page, canvas, height) {
         viewport: scaledViewport
     };
 
-    return page.render(renderContext);
+    return [page.render(renderContext), scale];
 };
 
 export {convertPointsToXYWH, renderPage};

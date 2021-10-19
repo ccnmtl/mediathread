@@ -152,9 +152,6 @@ function setCookie(name, value, expires, path, domain, secure) {
         ((secure) ? '; secure' : '');
 }
 
-/* eslint-disable  scanjs-rules/property_localStorage */
-/* eslint-disable scanjs-rules/identifier_localStorage */
-
 // eslint-disable-next-line no-unused-vars
 function storeData(name, value, expires, path, domain, secure) {
     if (window.localStorage) {
@@ -172,9 +169,6 @@ function retrieveData(name) {
         return getCookie(name);
     }
 }
-
-/* eslint-enable scanjs-rules/property_localStorage */
-/* eslint-enable scanjs-rules/identifier_localStorage */
 
 // eslint-disable-next-line no-unused-vars
 function showMessage(msg, onclose, customTitle, position) {

@@ -358,9 +358,7 @@ DiscussionPanelHandler.prototype.oncomplete = function(responseText,
                 var ul = this.info.target = document.createElement('ul');
                 ul.setAttribute('class', 'comment-thread');
                 parentHtml.appendChild(ul);
-                /* eslint-disable no-unsafe-innerhtml/no-unsafe-innerhtml */
                 ul.innerHTML = self.create(newObj).text;
-                /* eslint-enable no-unsafe-innerhtml/no-unsafe-innerhtml */
 
                 // decorate respond listener
                 jQuery('.respond_prompt', ul).click(function(evt) {

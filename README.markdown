@@ -40,7 +40,7 @@ INSTALLATION
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
 3. Customize settings
-    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary.
+    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary. An [example local_settings.py](https://github.com/ccnmtl/mediathread/blob/master/mediathread/local_settings.py.example) is available in our repository.
 
      For more extensive customization and template overrides, you can create a deploy_specific directory to house a site-specific settings.py file:
 
@@ -50,6 +50,7 @@ INSTALLATION
 
     Edit the `deploy_specific/settings.py` and override values in `settings_shared.py` like the `DATABASES` dictionary.
     This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution.
+    An [example deploy_specific setup](https://github.com/ccnmtl/mediathread/blob/master/docs/deploy_specific_example) is available in our repository.
 
 4. Build the virtual environment
    Bootstrap uses virtualenv to build a contained library in `ve/`. `django.mk` specifies the build target for creating the virtualenv, and running any of the targets specified in that file will automatically set this up.

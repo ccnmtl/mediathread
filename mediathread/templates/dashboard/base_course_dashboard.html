@@ -65,7 +65,7 @@
                             {% if '/ingest/' in request.path %}class="active"{% endif %}
                             href="{% url 'course-manage-sources' request.course.pk %}">Sources</a>
                     </li>
-                    {% if user.is_staff %}
+                    {% if user.is_staff and settings.PANOPTO_SERVER %}
                     <li>
                         <a
                             {% if '/panopto/' in request.path %}class="active"{% endif %}

@@ -1,0 +1,36 @@
+# flake8: noqa
+
+from mediathread.settings_shared import *  # noqa
+
+
+DEBUG = True
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+# These settings control how static media is served in a debug environment.
+COMPRESS_ROOT = "<development directory>/mediathread/media/"
+STATIC_ROOT = "<development directory>/mediathread/media/"
+STATICFILES_DIRS = ()
+
+# Configure local developer database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'mediathread',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'USER': '<username>',
+        'PASSWORD': '<password>',
+    }
+}
+
+# Send email to the console by default
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Or send them to /dev/null
+#EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+
+# Remove security settings for http://localhost:800
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+MIDDLEWARE.remove('django_cookies_samesite.middleware.CookiesSameSite')

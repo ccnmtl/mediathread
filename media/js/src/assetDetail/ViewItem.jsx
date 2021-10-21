@@ -229,7 +229,7 @@ export default class ViewItem extends React.Component {
                         </tr>
                         {this.props.asset && this.props.asset.sources && this.props.asset.sources.url && (
                             <tr>
-                               <th scope="row">Link</th>
+                                <th scope="row">Link</th>
                                 <td>
                                     <a href={this.props.asset.sources.url.url} target="_blank" rel="noopener noreferrer">
                                        Original Source

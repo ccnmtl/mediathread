@@ -205,8 +205,8 @@ export default class ViewItem extends React.Component {
                                             <button
                                                 type="submit"
                                                 onClick={this.onClickRename}
-                                                className="btn btn-secondary btn-sm">
-                                                Rename
+                                                className="btn btn-secondary btn-sm d-block my-1">
+                                                Rename this item
                                             </button>
                                         )}
                                     </>
@@ -227,12 +227,27 @@ export default class ViewItem extends React.Component {
                                 {this.props.asset.author.public_name} ({this.props.asset.author.username})
                             </td>
                         </tr>
+                        {this.props.asset && this.props.asset.sources && this.props.asset.sources.url && (
+                            <tr>
+                               <th scope="row">Link</th>
+                                <td>
+                                    <a href={this.props.asset.sources.url.url} target="_blank" rel="noopener noreferrer">
+                                       Original Source
+                                    </a>
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
 
-                <p>
-                    {description}
-                </p>
+                {description && (
+                    <div>
+                        <div className="font-weight-bold">Description</div>
+                        <p className="description">
+                            {description}
+                        </p>
+                    </div>
+                )}
 
                 {this.props.asset && this.props.asset.editable && (
                     <button

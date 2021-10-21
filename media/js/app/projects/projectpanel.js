@@ -103,7 +103,6 @@ var ProjectPanelHandler = function(el, $parent, panel, space_owner) {
         self.setDirty(true);
     });
 
-    // eslint-disable-next-line  scanjs-rules/call_addEventListener
     document.addEventListener('asset.select', function(event) {
         self.insertCitation(event.detail);
     });
@@ -247,7 +246,6 @@ ProjectPanelHandler.prototype.createAssignmentResponse = function(evt) {
 
 
     context.callback = function(json) {
-        // eslint-disable-next-line scanjs-rules/assign_to_location
         window.location = json.context.project.url;
     };
 
@@ -312,7 +310,6 @@ ProjectPanelHandler.prototype.showResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
-                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -370,7 +367,6 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
                     return false;
                 } else {
                     var val = jQuery(opts[0]).val();
-                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = val;
                 }
             }
@@ -395,7 +391,6 @@ ProjectPanelHandler.prototype.showMyResponses = function(evt) {
 // A single response
 ProjectPanelHandler.prototype.showMyResponse = function(evt) {
     var srcElement = evt.srcElement || evt.target || evt.originalTarget;
-    // eslint-disable-next-line scanjs-rules/assign_to_location
     window.location = jQuery(srcElement).data('url');
 };
 
@@ -587,7 +582,6 @@ ProjectPanelHandler.prototype.setDirty = function(isDirty) {
         // If the timer is already active, don't set another one
         // Clear the timer variable at the end
         if (self.dirtyTimer === undefined) {
-            // eslint-disable-next-line scanjs-rules/call_setTimeout
             self.dirtyTimer = window.setTimeout(function() {
                 self.saveProject();
                 self.dirtyTimer = undefined;

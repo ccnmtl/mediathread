@@ -167,7 +167,6 @@
                 data: jQuery(frm).serializeArray(),
                 success: function(json) {
                     jQuery(window).unbind('beforeunload');
-                    // eslint-disable-next-line scanjs-rules/assign_to_location
                     window.location = json.context.project.url;
                 },
                 error: function() {

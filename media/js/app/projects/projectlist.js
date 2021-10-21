@@ -52,7 +52,6 @@ ProjectList.prototype.createAssignmentResponse = function(evt) {
         dataType: 'json',
         data: {'parent': $elt.data('id')},
         success: function(json) {
-            // eslint-disable-next-line  scanjs-rules/assign_to_location
             window.location = json.context.project.url;
         }
     });

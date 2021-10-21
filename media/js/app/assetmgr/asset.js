@@ -749,7 +749,6 @@
                 jQuery(group).siblings().find('.accordion')
                     .accordion('option', 'active', false);
 
-                // eslint-disable-next-line scanjs-rules/call_setTimeout
                 setTimeout(function() {
                     var list = jQuery(ui.newHeader).offsetParent()[0];
                     jQuery(list).scrollTop(

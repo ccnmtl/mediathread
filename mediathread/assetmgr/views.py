@@ -1351,7 +1351,7 @@ class S3SignView(SignS3View):
     private = True
     root = 'private/'
     acl = None
-    expiration_time = 3600
+    expiration_time = 3600 * 8  # 8 hours
     max_file_size = 10000000  # 10mb
 
     def get_bucket(self):

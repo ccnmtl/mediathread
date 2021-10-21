@@ -40,7 +40,7 @@ INSTALLATION
     echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
 3. Customize settings
-    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary.
+    Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary. An [example local_settings.py](https://github.com/ccnmtl/mediathread/blob/master/mediathread/local_settings.py.example) is available in our repository.
 
      For more extensive customization and template overrides, you can create a deploy_specific directory to house a site-specific settings.py file:
 
@@ -50,11 +50,12 @@ INSTALLATION
 
     Edit the `deploy_specific/settings.py` and override values in `settings_shared.py` like the `DATABASES` dictionary.
     This is where we add custom settings and templates for our deployment that will not be included in the open-sourced distribution.
+    An [example deploy_specific setup](https://github.com/ccnmtl/mediathread/blob/master/docs/deploy_specific_example) is available in our repository.
 
 4. Build the virtual environment
    Bootstrap uses virtualenv to build a contained library in `ve/`. `django.mk` specifies the build target for creating the virtualenv, and running any of the targets specified in that file will automatically set this up.
 
-    make check
+    make
 
 The rest of the instructions work like standard Django.  See: https://docs.djangoproject.com/ for more details.
 
@@ -69,8 +70,10 @@ Go to your site in a web browser.
 
 7. The default database is not very useful. You'll need to create a course and some users. Login with the superuser you
    created in Step #5.
+   
+8. Navigate to /admin/. Click Courses.
 
-8. Click the 'Create a Course' link.
+9. Click the 'Add Course +' link.
     - Click the "+" to make a group.  Name it something like "test_course"
     - Click the "+" to make a faculty group.  Name it something like "test_course_faculty"
         - In the "Add users to group" field...
@@ -80,7 +83,7 @@ Go to your site in a web browser.
               (read the instructions under the textarea)
         - Click "Save" and then click the upper-right link "Django administration" to get back to the regular site (yeah, not the most intuitive).
 
-9. Experiment with saving assets by visiting:
+10. Experiment with saving assets by visiting:
    http://myhost.example.com:8000/save/
 
 

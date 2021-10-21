@@ -198,8 +198,7 @@ LTI_TOOL_CONFIGURATION = {
     'embed_url': 'asset/embed/',
     'embed_icon_url': 'img/icons/icon-16.png',
     'embed_tool_id': 'mediathread',
-    'landing_url': '{}://{}/course/lti/{}/',
-    'autocreate_course': []
+    'landing_url': '{}://{}/course/lti/{}/'
 }
 
 LTI_EXTRA_PARAMETERS = ['custom_course_context']

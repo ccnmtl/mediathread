@@ -81,7 +81,9 @@ def django_settings(request):
         'FLOWPLAYER_RTMP_PLUGIN',
         'GOOGLE_ANALYTICS_ID',
         'JIRA_CONFIGURATION',
-        'REVISION'
+        'REVISION',
+        'SERVER_EMAIL',
+        'PANOPTO_SERVER'
     ]
 
     return {'settings': dict([(k, getattr(settings, k, None))

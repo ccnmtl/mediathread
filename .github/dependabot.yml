@@ -7,6 +7,8 @@ updates:
     time: "10:00"
   open-pull-requests-limit: 10
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: pylint
     versions:
     - 2.6.1
@@ -70,6 +72,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: "@babel/runtime"
     versions:
     - 7.12.17

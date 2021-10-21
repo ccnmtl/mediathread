@@ -4192,8 +4192,12 @@ ul.section-tabs>li>a.active {
     padding: .5em 0 .25em 0;
 }
 
+.asset-detail p.description {
+    white-space: pre-wrap;
+}
+
 .asset-detail .table-metadata th {
-    font-weight: normal;
+    padding-left: 0;
 }
 
 .course-collection .card-title, .course-collection .card-text {

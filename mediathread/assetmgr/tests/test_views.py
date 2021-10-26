@@ -184,6 +184,22 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         ExternalCollection.objects.get(course=self.sample_course,
                                        title='YouTube')
 
+    def test_manage_external_collection_add_custom_corner_case(self):
+        ExternalCollectionFactory(course=self.sample_course, title='YouTube')
+        data = {
+            'title': 'YouTube',
+            'url': 'https://www.youtube.com/',
+            'thumb_url': '/site_media/img/thumbs/youtube.png',
+            'description': 'https://www.youtube.com/'}
+
+        self.client.login(username=self.instructor_one.username,
+                          password='test')
+        self.switch_course(self.client, self.sample_course)
+        self.client.post('/asset/archive/', data)
+
+        ExternalCollection.objects.get(course=self.sample_course,
+                                       title='YouTube')
+
     def test_manage_external_collection_add_suggested(self):
         suggested = SuggestedExternalCollectionFactory()
         data = {'suggested_id': suggested.id}

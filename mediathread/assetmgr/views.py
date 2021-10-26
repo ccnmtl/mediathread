@@ -92,12 +92,12 @@ class ManageExternalCollectionView(
             exc.save()
             msg = '%s has been enabled for your class.' % exc.title
         else:
-            exc = ExternalCollection()
-            exc.title = request.POST.get('title')
+            exc, created = ExternalCollection.objects.get_or_create(
+                title=request.POST.get('title'),
+                course=request.course)
             exc.url = request.POST.get('url')
             exc.thumb_url = request.POST.get('thumb')
             exc.description = request.POST.get('description')
-            exc.course = request.course
             exc.uploader = request.POST.get('uploader', False)
             exc.save()
 

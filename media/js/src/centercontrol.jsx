@@ -19,7 +19,8 @@ const CenterControl = /*@__PURE__*/(function(Control) {
             target: options.target,
         });
         if(this.handleCenter){
-            button.addEventListener('click', this.handleCenter.bind(this), false);
+            button.addEventListener(
+                'click', this.handleCenter.bind(this), false);
         }
     }
 

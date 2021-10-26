@@ -9,24 +9,27 @@ jQuery(document).ready(function() {
                     command: 'updatesettings'
                 }, function(response) {
                     var $el = jQuery('.update-chrome-extension-feedback');
-                    var defaultResponse = 'Error Updating Settings.';
-                    var msg = response ? response : defaultResponse;
+
+                    if (!response) {
+                        $el.addClass('alert alert-danger')
+                            .text('Error updating settings.')
+                            .fadeIn();
+                        return;
+                    }
+
+                    var msg = response;
                     var oldmsg = 'Mediathread URL updated to:';
 
-                    $el.hide();
-                    if(msg === defaultResponse) {
-                        $el.addClass('alert alert-danger');
-                        $el.text(msg);
-                    } else if (msg.includes(oldmsg)) {
-                        $el.addClass('alert alert-info');
+                    if (msg.includes(oldmsg)) {
                         msg = 'The extension will now collect to ' +
                                 window.location.origin;
                         $el.text(msg);
-                    } else {
-                        $el.text(msg);
-                        $el.addClass('alert alert-info');
                     }
-                    $el.fadeIn();
+
+                    $el.hide();
+                    $el.addClass('alert alert-info')
+                        .text(msg)
+                        .fadeIn();
                 });
         }
     });

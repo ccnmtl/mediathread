@@ -157,9 +157,11 @@ const PdfJS = function() {
                 const [renderTask, scale] =
                       renderPage(page, canvasEl, presentation.height());
 
-                self.svgDraw = SVG().addTo('.sherd-pdfjs-view')
-                    .size(canvasEl.width, canvasEl.height);
+                const selector = self.wrapperID ?
+                    '#' + self.wrapperID : '.sherd-pdfjs-view';
 
+                self.svgDraw = SVG().addTo(selector)
+                    .size(canvasEl.width, canvasEl.height);
                 const [x, y, width, height] = convertPointsToXYWH(
                     obj.geometry.coordinates[0][0],
                     obj.geometry.coordinates[0][1],
@@ -179,7 +181,11 @@ const PdfJS = function() {
     this.microformat = {};
     this.microformat.create = function(obj, doc, options) {
         var wrapperID = Sherd.Base.newID('pdfjs-wrapper');
-        ///TODO:zoom-levels might be something more direct on the object?
+        self.wrapperID = wrapperID;
+
+        ///TODO:zoom-levels might be something more direct on the
+        ///object?
+
         if (!obj.options) {
             obj.options = {};
         }

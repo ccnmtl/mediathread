@@ -145,4 +145,4 @@ django-celery-results==2.2.0
 pylibmc==1.6.1; sys_platform == 'linux'
 requests-file==1.5.1
 typing_extensions==3.10.0.2
-pyparsing==2.4.7
+pyparsing==3.0.3

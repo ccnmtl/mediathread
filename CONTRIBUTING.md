@@ -65,16 +65,12 @@ always necessary to create a new github issue or sign a contributor agreement.
 * Make sure your commit messages are in the proper format.
 
 ## <a name="submit"></a>Submitting Changes
-
-* Sign the Contributor License Agreement (coming soon).
-  * Please sign our Contributor License Agreement (CLA) before sending pull requests. For any code changes to be accepted, the CLA must be signed. It's a quick process, we promise!
-  * Email your signed copy of the CLA to [ccnmt-mediathread@columbia.edu](mailto:ccnmtl-mediathread@columbia.edu)
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the ccnmtl organization.
 * The core team reviews Pull Requests on a regular basis, and will provide feedback
 
 ## <a name="info"></a> Further Information
 For more information, see:
-* [Mediathread's Web Site](https://mediathread.info)
+* [Mediathread's Web Site](https://mediathread.ctl.columbia.edu)
 * [GitHub Wiki](https://github.com/ccnmtl/mediathread/wiki)
 * [Knowledge Base](https://mediathread.ctl.columbia.edu/kb/)

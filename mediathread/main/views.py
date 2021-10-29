@@ -86,10 +86,17 @@ def django_settings(request):
         'PANOPTO_SERVER'
     ]
 
-    return {'settings': dict([(k, getattr(settings, k, None))
-                              for k in whitelist]),
-            'allow_item_download': allow_item_download(request.course),
-            'EXPERIMENTAL': 'experimental' in request.COOKIES}
+    ctx = {
+        'settings': dict([(k, getattr(settings, k, None))
+                          for k in whitelist]),
+        'allow_item_download': False,
+        'EXPERIMENTAL': 'experimental' in request.COOKIES
+    }
+
+    if hasattr(request, 'course'):
+        ctx['allow_item_download'] = allow_item_download(request.course)
+
+    return ctx
 
 
 class SplashView(TemplateView):

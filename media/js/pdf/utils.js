@@ -34,7 +34,13 @@ const convertPointsToXYWH = function(x1, y1, x2, y2, scale=1) {
     ];
 };
 
-const renderPage = function(page, canvas, height) {
+/**
+ * Render a PDF page, given the pdf.js page object, a canvas, height,
+ * and optionally an annotation.
+ *
+ * If an annotation is passed in, focus in on that annotation.
+ */
+const renderPage = function(page, canvas, height, annotation=null) {
     const viewport = page.getViewport({scale: 1});
     const scale = height / viewport.height;
     const scaledViewport = page.getViewport({scale: scale});

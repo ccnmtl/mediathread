@@ -143,28 +143,33 @@ const PdfJS = function() {
     };
 
     // Called on initialization
-    this.setState = function(obj) {
+    this.setState = function(annotation) {
         const top = document.getElementById(self.current_obj.htmlID);
         const canvasEl = top.querySelector('canvas');
         const presentation = self.getPresentation(self.current_obj);
 
         // If page number isn't present, fall back to page 1.
-        const pageNumber = (obj.geometry && obj.geometry.page) ?
-              obj.geometry.page : 1;
+        const pageNumber =
+              (annotation && annotation.geometry && annotation.geometry.page) ?
+              annotation.geometry.page : 1;
 
         self.pdfLoadingTask.promise.then(function(pdf) {
             pdf.getPage(pageNumber).then(function(page) {
+                window.myPage = page;
                 const [renderTask, scale] =
                       renderPage(page, canvasEl, presentation.height());
 
-                self.svgDraw = SVG().addTo('.sherd-pdfjs-view')
-                    .size(canvasEl.width, canvasEl.height);
+                const selector = self.wrapperID ?
+                    '#' + self.wrapperID : '.sherd-pdfjs-view';
 
+                // Append <svg> element next to the <canvas>
+                self.svgDraw = SVG().addTo(selector)
+                    .size(canvasEl.width, canvasEl.height);
                 const [x, y, width, height] = convertPointsToXYWH(
-                    obj.geometry.coordinates[0][0],
-                    obj.geometry.coordinates[0][1],
-                    obj.geometry.coordinates[1][0],
-                    obj.geometry.coordinates[1][1],
+                    annotation.geometry.coordinates[0][0],
+                    annotation.geometry.coordinates[0][1],
+                    annotation.geometry.coordinates[1][0],
+                    annotation.geometry.coordinates[1][1],
                     0.75 * scale
                 );
 
@@ -179,7 +184,11 @@ const PdfJS = function() {
     this.microformat = {};
     this.microformat.create = function(obj, doc, options) {
         var wrapperID = Sherd.Base.newID('pdfjs-wrapper');
-        ///TODO:zoom-levels might be something more direct on the object?
+        self.wrapperID = wrapperID;
+
+        ///TODO:zoom-levels might be something more direct on the
+        ///object?
+
         if (!obj.options) {
             obj.options = {};
         }

@@ -66,6 +66,7 @@ function djangosherd_adaptAsset(asset) {
         asset.thumbable = true;
     } else if (asset.pdf) {
         asset.type = 'pdf';
+        asset.thumbable = true;
     } else if (asset.archive) {
         asset.type = "NONE";
     }

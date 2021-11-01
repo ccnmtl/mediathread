@@ -500,6 +500,7 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
                 view.html.push(objDiv, {asset: asset});
                 view.setState(asset);
             } catch (e) {
+                console.error(e);
             }
             /* eslint-enable no-empty */
         }
@@ -515,7 +516,7 @@ CollectionList.prototype.createThumbs = function(assets) {
         if (asset.thumbable && asset.annotations.length > 0) {
             for (var j = 0; j < asset.annotations.length; j++) {
                 try {
-                    var ann = asset.annotations[j];
+                    var annotation = asset.annotations[j];
 
                     var view;
                     switch (asset.type) {
@@ -525,12 +526,16 @@ CollectionList.prototype.createThumbs = function(assets) {
                     case 'fsiviewer':
                         view = new Sherd.Image.FSIViewer();
                         break;
+                    case 'pdf':
+                        view = new Sherd.Pdf.PdfJS();
+                        break;
                     }
                     djangosherd.thumbs.push(view);
                     var objDiv = document.createElement('div');
                     objDiv.setAttribute('class', 'annotation-thumb');
 
-                    var t = self.$el.find('.annotation-thumb-' + ann.id);
+                    var t = self.$el.find(
+                        '.annotation-thumb-' + annotation.id);
                     if (t.length > 0) {
                         t[0].appendChild(objDiv);
                     } else {
@@ -541,9 +546,9 @@ CollectionList.prototype.createThumbs = function(assets) {
                     // should probably be in .view
                     asset.presentation = 'thumb';
 
-                    ann.asset = asset;
-                    view.html.push(objDiv, ann);
-                    view.setState(ann.annotation);
+                    annotation.asset = asset;
+                    view.html.push(objDiv, annotation);
+                    view.setState(annotation.annotation);
                 } catch (err) {
                     console.error(err);
                 }

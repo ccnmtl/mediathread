@@ -477,6 +477,9 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
             case 'fsiviewer':
                 view = new Sherd.Image.FSIViewer();
                 break;
+            case 'pdf':
+                view = new Sherd.Pdf.PdfJS();
+                break;
             }
             djangosherd.thumbs.push(view);
 
@@ -701,7 +704,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
             const loadingTask = pdfjsLib.getDocument(asset.pdf);
             loadingTask.promise.then(function(pdf) {
                 pdf.getPage(1).then(function(page) {
-                    renderPage(page, canvasEl, 192);
+                    renderPage(page, canvasEl, null, 192);
                 });
             });
         }

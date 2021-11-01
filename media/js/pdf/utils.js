@@ -35,15 +35,61 @@ const convertPointsToXYWH = function(x1, y1, x2, y2, scale=1) {
 };
 
 /**
- * Render a PDF page, given the pdf.js page object, a canvas, height,
- * and optionally an annotation.
+ * Render a PDF page, given the pdf.js page object, a canvas, width
+ * and/or height, and optionally an annotation.
  *
  * If an annotation is passed in, focus in on that annotation.
  */
-const renderPage = function(page, canvas, height, annotation=null) {
+const renderPage = function(page, canvas, width, height, annotation=null) {
+    // Get unmodified viewport for reference
     const viewport = page.getViewport({scale: 1});
-    const scale = height / viewport.height;
-    const scaledViewport = page.getViewport({scale: scale});
+
+    // Scale to the provided width or height, whichever is provided
+    // and is smaller.
+    let scale = (height / viewport.height);
+    if (typeof width === 'number' && width) {
+        const xScale = width / viewport.width;
+        scale = Math.min(xScale, scale);
+    }
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Center in on annotation co-ordinates, if provided.
+    if (annotation) {
+        const [ax, ay, aWidth, aHeight] = convertPointsToXYWH(
+            annotation.geometry.coordinates[0][0],
+            annotation.geometry.coordinates[0][1],
+            annotation.geometry.coordinates[1][0],
+            annotation.geometry.coordinates[1][1],
+            1
+        );
+
+        // Amount of space between the zoomed view and the annotation
+        // rect.
+        const margin = 80;
+
+        // Scale the view based on the annotation's width and height
+        let scaleX = (viewport.width) / (aWidth + margin);
+        let scaleY = (viewport.height) / (aHeight + margin);
+
+        // Use either the annotation's width or its height to scale,
+        // whichever is more zoomed-out, so we don't cut off portions
+        // of it.
+        //
+        // Also, apply the existing scale that was set by the width
+        // and height parameters.
+        scale = Math.min(scaleX, scaleY) * scale;
+
+        offsetX = (ax - margin) * scale;
+        offsetY = (ay - margin) * scale;
+    }
+
+    const scaledViewport = page.getViewport({
+        scale: scale,
+        offsetX: -offsetX,
+        offsetY: -offsetY
+    });
 
     // Support HiDPI-screens.
     const outputScale = window.devicePixelRatio || 1;
@@ -65,7 +111,7 @@ const renderPage = function(page, canvas, height, annotation=null) {
         viewport: scaledViewport
     };
 
-    return [page.render(renderContext), scale];
+    return [page.render(renderContext), scale, offsetX, offsetY];
 };
 
 export {convertPointsToXYWH, renderPage};

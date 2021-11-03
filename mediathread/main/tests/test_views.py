@@ -110,12 +110,12 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_global,',
             body='instructor one global note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
         self.instructor_two_ga = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_two,
             tags=',instructor_two_global,',
             body='instructor two global note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
     def test_as_student(self):
         self.assertTrue(
@@ -252,7 +252,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
         self.assertEquals(note.tags, '')
         self.assertIsNone(note.body)
-        self.assertFalse(note.is_global_annotation())
+        self.assertFalse(note.is_global_annotation)
 
     def test_migrate_with_tags(self):
         data = {
@@ -407,7 +407,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         new_note = new_asset.sherdnote_set.get(title=None)
         self.assertEquals(new_note.author, self.instructor_three)
-        self.assertTrue(new_note.is_global_annotation())
+        self.assertTrue(new_note.is_global_annotation)
 
         new_project = Project.objects.get(
             course=self.alt_course, title=self.project1.title)

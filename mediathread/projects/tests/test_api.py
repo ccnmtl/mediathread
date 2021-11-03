@@ -43,7 +43,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.student_one,
             tags=',student_one_item',
             body='student one item note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
         self.instructor_note = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_selection,',
@@ -52,7 +52,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_item,',
             body='instructor one item note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
         # Sample Course Projects
         self.project_private = ProjectFactory.create(

@@ -22,17 +22,17 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         self.asset1 = AssetFactory(course=self.sample_course)
         global_annotation, created = SherdNote.objects.global_annotation(
             self.asset1, self.student_three, auto_create=True)
-        self.assertTrue(global_annotation.is_global_annotation())
+        self.assertTrue(global_annotation.is_global_annotation)
 
         whole_item_annotation = SherdNoteFactory(
             asset=self.asset1, author=self.student_three,
             title="Whole Item Selection", range1=0, range2=0)
-        self.assertFalse(whole_item_annotation.is_global_annotation())
+        self.assertFalse(whole_item_annotation.is_global_annotation)
 
         real_annotation = SherdNoteFactory(
             asset=self.asset1, author=self.student_three,
             title="Selection", range1=116.25, range2=6.75)
-        self.assertFalse(real_annotation.is_global_annotation())
+        self.assertFalse(real_annotation.is_global_annotation)
 
         self.assignment1 = ProjectFactory.create(
             title='Alpha', course=self.sample_course,

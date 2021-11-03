@@ -20,14 +20,14 @@ from mediathread.assetmgr.models import Asset
 from structuredcollaboration.models import Collaboration
 
 
-NULL_FIELDS = dict((i, None) for i in
-                   'range1 range2 title'.split())
+NULL_FIELDS = {'title': None}
 
 
 class Annotation(models.Model):
     range1 = models.FloatField(default=None, null=True)
     range2 = models.FloatField(default=None, null=True)
     annotation_data = models.TextField(blank=True, null=True)
+    is_global_annotation = models.BooleanField(default=False)
 
     def annotation(self):
         if self.annotation_data:
@@ -39,13 +39,8 @@ class Annotation(models.Model):
                 # an exception, completely breaking the asset
                 # view. Just display an empty annotation.
                 return {}
-        else:
-            return None
 
-    # Null ranges indicate this is a "global annotation"
-    # Global annotations are used to store tag & note level data on an item
-    def is_global_annotation(self):
-        return self.is_null()
+        return None
 
     def is_null(self):
         return self.range1 is None and self.range2 is None
@@ -160,7 +155,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
                 # return everyone's global annotations (item-level) &
                 # regular selections authored by certain people
                 self = self.filter(Q(author__id__in=visible_authors) |
-                                   Q(range1__isnull=True))
+                                   Q(is_global_annotation=True))
 
         # filter by tag string, date, vocabulary
         self = self.filter_by_tags(tag_string)
@@ -216,15 +211,23 @@ class SherdNoteManager(models.Manager):
         """
         args = NULL_FIELDS.copy()
         args.update(asset=asset, author=author)
+        created = False
 
         if auto_create:
-            return self.get_or_create(**args)
+            gannotation, created = self.get_or_create(**args)
         else:
             try:
                 gannotation = self.get(**args)
             except SherdNote.DoesNotExist:
                 gannotation = None
+
             return gannotation, False
+
+        if gannotation and not gannotation.is_global_annotation:
+            gannotation.is_global_annotation = True
+            gannotation.save()
+
+        return gannotation, created
 
     def fully_qualify_references(self, text, host, course):
         """
@@ -297,7 +300,7 @@ class SherdNoteManager(models.Manager):
                     include_tags, include_notes):
         new_note = None
 
-        if (old_note.is_global_annotation() and
+        if (old_note.is_global_annotation and
                 new_asset.global_annotation(user, False)):
             # A global annotation already exists
             # from this user
@@ -309,16 +312,19 @@ class SherdNoteManager(models.Manager):
                     asset=new_asset,
                     range1=old_note.range1,
                     range2=old_note.range2,
+                    is_global_annotation=old_note.is_global_annotation,
                     annotation_data=old_note.annotation_data,
                     title=old_note.title,
                     author=user)
             except SherdNote.DoesNotExist:
-                new_note = SherdNote(asset=new_asset,
-                                     range1=old_note.range1,
-                                     range2=old_note.range2,
-                                     annotation_data=old_note.annotation_data,
-                                     title=old_note.title,
-                                     author=user)
+                new_note = SherdNote(
+                    asset=new_asset,
+                    range1=old_note.range1,
+                    range2=old_note.range2,
+                    is_global_annotation=old_note.is_global_annotation,
+                    annotation_data=old_note.annotation_data,
+                    title=old_note.title,
+                    author=user)
 
         if include_tags:
             new_note.tags = (new_note.tags or '') + (old_note.tags or '')
@@ -415,7 +421,7 @@ class SherdNote(Annotation):
         return re.sub(regex_string, sub, text)
 
     def display_title(self):
-        if self.is_global_annotation():
+        if self.is_global_annotation:
             return self.asset.title
         else:
             return self.title

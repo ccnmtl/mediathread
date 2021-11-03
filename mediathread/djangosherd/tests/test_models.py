@@ -23,20 +23,20 @@ class SherdNoteTest(MediathreadTestMixin, TestCase):
         asset = AssetFactory(course=self.sample_course)
         global_annotation, created = SherdNote.objects.global_annotation(
             asset, self.student_three, auto_create=True)
-        self.assertTrue(global_annotation.is_global_annotation())
+        self.assertTrue(global_annotation.is_global_annotation)
         self.assertEquals(global_annotation.display_title(), asset.title)
 
         whole_item_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
             title="Whole Item Selection", range1=0, range2=0)
-        self.assertFalse(whole_item_annotation.is_global_annotation())
+        self.assertFalse(whole_item_annotation.is_global_annotation)
         self.assertEquals(whole_item_annotation.display_title(),
                           'Whole Item Selection')
 
         real_annotation = SherdNoteFactory(
             asset=asset, author=self.student_three,
             title="Selection", range1=116.25, range2=6.75)
-        self.assertFalse(real_annotation.is_global_annotation())
+        self.assertFalse(real_annotation.is_global_annotation)
         self.assertEquals(real_annotation.display_title(), 'Selection')
 
     def test_seconds_to_code(self):
@@ -288,22 +288,22 @@ class SherdNoteFilterTest(MediathreadTestMixin, TestCase):
 
         self.student_one_ga = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
-            tags=',student_one_item', title=None, range1=None, range2=None)
-        self.assertTrue(self.student_one_ga.is_global_annotation())
+            tags=',student_one_item', title=None, is_global_annotation=True)
+        self.assertTrue(self.student_one_ga.is_global_annotation)
         self.student_one_note = SherdNoteFactory(
             asset=self.asset, author=self.student_one,
             tags=',student_one_selection', range1=0, range2=1)
 
         self.student_two_ga = SherdNoteFactory(
             asset=self.asset, author=self.student_two,
-            tags=',student_two_item', title=None, range1=None, range2=None)
+            tags=',student_two_item', title=None, is_global_annotation=True)
         self.student_two_note = SherdNoteFactory(
             asset=self.asset, author=self.student_two,
             tags=',student_two_selection', range1=0, range2=1)
 
         self.instructor_one_ga = SherdNoteFactory(
             asset=self.asset, author=self.instructor_one,
-            tags=',instructor_one_item', title=None, range1=None, range2=None)
+            tags=',instructor_one_item', title=None, is_global_annotation=True)
         self.instructor_one_note = SherdNoteFactory(
             asset=self.asset, author=self.instructor_one,
             tags=',image,instructor_one_selection,', range1=0, range2=1)

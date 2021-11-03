@@ -136,8 +136,7 @@ class AssetResource(ModelResource):
             ctx[asset.id] = asset_ctx
 
     def update_note_context(self, request, ctx, note_res, note, owner, viewer):
-        is_global = note.is_global_annotation()
-        if not is_global:
+        if not note.is_global_annotation:
             ctx[note.asset.id]['annotation_count'] += 1
             if note.author == viewer:
                 ctx[note.asset.id]['my_annotation_count'] += 1
@@ -148,7 +147,7 @@ class AssetResource(ModelResource):
         if self.include_annotations:
             note_ctx = note_res.render_one(request, note, "")
 
-            if is_global:
+            if note.is_global_annotation:
                 if note.author == owner:
                     ctx[note.asset.id]['global_annotation'] = note_ctx
             else:

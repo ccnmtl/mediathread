@@ -365,7 +365,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         student_ga = SherdNoteFactory(
             asset=asset1, author=self.student_one,
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
         # Update as the asset's non-original author with ga. This should fail
         self.assert_(self.client.login(username=self.student_one.username,
@@ -408,7 +408,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
 
         gann = SherdNoteFactory(
             asset=asset1, author=self.instructor_one,
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
         self.assert_(self.client.login(username=self.instructor_one.username,
                                        password="test"))
@@ -724,9 +724,10 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
                                     author=self.instructor_one)
         gann = SherdNoteFactory(
             asset=asset, author=self.instructor_one,
-            title=None, range1=None, range2=None)
-        note = SherdNoteFactory(asset=asset, author=self.instructor_one,
-                                title='Selection')
+            title=None, is_global_annotation=True)
+        note = SherdNoteFactory(
+            asset=asset, author=self.instructor_one,
+            title='Selection')
 
         view = AssetEmbedListView()
 
@@ -741,13 +742,17 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
             keys = ['selection-666']
             view.get_selection(keys, self.instructor_one)
 
-        keys = ['item-%s' % asset.id]
+        keys = ['item-{}'.format(asset.pk)]
         view = AssetEmbedListView()
-        self.assertEquals(view.get_selection(keys, self.instructor_one), gann)
+        self.assertEqual(
+            view.get_selection(keys, self.instructor_one),
+            gann)
 
-        keys = ['selection-%s' % note.id]
+        keys = ['selection-{}'.format(note.pk)]
         view = AssetEmbedListView()
-        self.assertEquals(view.get_selection(keys, self.instructor_one), note)
+        self.assertEqual(
+            view.get_selection(keys, self.instructor_one),
+            note)
 
     def test_get_dimensions_image(self):
         asset = AssetFactory.create(course=self.sample_course,
@@ -861,7 +866,8 @@ class AssetReferenceViewTest(MediathreadTestMixin, TestCase):
             tags=',student_one_selection', range1=0, range2=1)
         SherdNoteFactory(
             asset=asset, author=self.student_one,
-            tags=',student_one_item', title=None, range1=None, range2=None)
+            tags=',student_one_item',
+            title=None, is_global_annotation=True)
 
         url = reverse('asset-references', args=[asset.id])
 
@@ -929,7 +935,8 @@ class TagCollectionViewTest(MediathreadTestMixin, TestCase):
             tags=',student_one_selection', range1=0, range2=1)
         SherdNoteFactory(
             asset=asset, author=self.student_one,
-            tags=',student_one_item', title=None, range1=None, range2=None)
+            tags=',student_one_item', title=None,
+            is_global_annotation=True)
 
         response = self.client.get(self.url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')

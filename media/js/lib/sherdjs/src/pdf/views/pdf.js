@@ -156,8 +156,11 @@ const PdfJS = function() {
         self.pdfLoadingTask.promise.then(function(pdf) {
             pdf.getPage(pageNumber).then(function(page) {
                 window.myPage = page;
-                const [renderTask, scale] =
-                      renderPage(page, canvasEl, presentation.height());
+                const [renderTask, scale, offsetX, offsetY] = renderPage(
+                    page, canvasEl,
+                    presentation.width(), presentation.height(),
+                    annotation
+                );
 
                 const selector = self.wrapperID ?
                     '#' + self.wrapperID : '.sherd-pdfjs-view';
@@ -174,7 +177,7 @@ const PdfJS = function() {
                 );
 
                 self.svgDraw.rect(width, height)
-                    .move(x, y)
+                    .move(x - offsetX, y - offsetY)
                     .stroke({color: '#22f', width: 2})
                     .fill('none');
             });

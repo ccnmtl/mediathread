@@ -1,22 +1,16 @@
-div.mce_editorwindow
-{ 
-  display:block;
-  position:absolute;
-  /*
-  width:400px;
-  height:300px;
-     */
-  /*begin init defaults (before pos is called)*/
-  top:0px;
-  left:0px;
-  width:auto;
-  height:auto;
-  /*end init defaults*/
+div.mce_editorwindow {
+    display: block;
+    position: absolute;
 
-  background-color: white;
-  border: 1px solid rgba(0,0,0,0.2);
-  background-color: white;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
 
-  padding:0 1em 0 0 0;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.2);
+    background-color: white;
 
- }
+    padding: 0 1em 0 0 0;
+    z-index: 9;
+}

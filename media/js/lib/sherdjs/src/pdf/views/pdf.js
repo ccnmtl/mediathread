@@ -1,7 +1,7 @@
 /* global Sherd: true*/
 
 import {
-    renderPage, drawAnnotation
+    pdfjsScale, drawAnnotation, renderPage
 } from '../../../../../pdf/utils.js';
 
 const PdfJS = function() {
@@ -80,7 +80,9 @@ const PdfJS = function() {
             height: function(obj, presenter) {
                 return Sherd.winHeight();
             },
-            width: function(obj, presenter) { return '100%'; },
+            width: function(obj, presenter) {
+                return '100%';
+            },
             initialize: function(obj, presenter) {
                 console.log('pdf default init');
             },
@@ -155,7 +157,6 @@ const PdfJS = function() {
 
         self.pdfLoadingTask.promise.then(function(pdf) {
             pdf.getPage(pageNumber).then(function(page) {
-                window.myPage = page;
                 const [renderTask, scale, offsetX, offsetY] = renderPage(
                     page, canvasEl,
                     presentation.width(), presentation.height(),
@@ -194,7 +195,6 @@ const PdfJS = function() {
             htmlID: wrapperID,
             text: '<div id="' + wrapperID +
                 '" class="sherd-pdfjs-view">' +
-                //'<svg class="pdf-svg"></svg>' +
                 '<canvas></canvas>' +
                 '</div>',
             winHeight: options &&
@@ -240,7 +240,6 @@ const PdfJS = function() {
 
     this.queryformat = {
         find: function(str) {
-            console.log('queryformat find', str);
             var xywh = String(str).match(/xywh=((\w+):)?([.\d]+),([.\d]+),([.\d]+),([.\d]+)/);
             if (xywh !== null) {
                 var ann = {

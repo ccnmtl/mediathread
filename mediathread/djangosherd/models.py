@@ -202,11 +202,17 @@ class SherdNoteManager(models.Manager):
 
     def global_annotation(self, asset, author, auto_create=True):
         """
-        for non-clip-like annotations, we'll just use a
-        single annotation per (asset, author)
-        and store tags and an annotation body on it.
+        Get the global annotation for the given asset and author.
+
+        If auto_create is False, never create the global
+        annotation. Otherwise, create it if necessary.
         """
-        args = {'title': None, 'asset': asset, 'author': author}
+        args = {
+            'is_global_annotation': True,
+            'title': None,
+            'asset': asset,
+            'author': author
+        }
         created = False
 
         if auto_create:
@@ -218,10 +224,6 @@ class SherdNoteManager(models.Manager):
                 gannotation = None
 
             return gannotation, False
-
-        if gannotation and not gannotation.is_global_annotation:
-            gannotation.is_global_annotation = True
-            gannotation.save()
 
         return gannotation, created
 

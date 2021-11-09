@@ -20,9 +20,6 @@ from mediathread.assetmgr.models import Asset
 from structuredcollaboration.models import Collaboration
 
 
-NULL_FIELDS = {'title': None}
-
-
 class Annotation(models.Model):
     range1 = models.FloatField(default=None, null=True)
     range2 = models.FloatField(default=None, null=True)
@@ -209,8 +206,7 @@ class SherdNoteManager(models.Manager):
         single annotation per (asset, author)
         and store tags and an annotation body on it.
         """
-        args = NULL_FIELDS.copy()
-        args.update(asset=asset, author=author)
+        args = {'title': None, 'asset': asset, 'author': author}
         created = False
 
         if auto_create:

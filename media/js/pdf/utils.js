@@ -56,7 +56,7 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
     let offsetY = 0;
 
     // Center in on annotation co-ordinates, if provided.
-    if (annotation) {
+    if (annotation && annotation.geometry && annotation.geometry.coordinates) {
         const [ax, ay, aWidth, aHeight] = convertPointsToXYWH(
             annotation.geometry.coordinates[0][0],
             annotation.geometry.coordinates[0][1],
@@ -114,4 +114,25 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
     return [page.render(renderContext), scale, offsetX, offsetY];
 };
 
-export {convertPointsToXYWH, renderPage};
+/**
+ * Draw a rectangle annotation on the provided svgDraw surface, given
+ * the annotation data.
+ */
+const drawAnnotation = function(
+    svgDraw, annotation, scale=1, offsetX=0, offsetY=0
+) {
+    const [x, y, width, height] = convertPointsToXYWH(
+        annotation.geometry.coordinates[0][0],
+        annotation.geometry.coordinates[0][1],
+        annotation.geometry.coordinates[1][0],
+        annotation.geometry.coordinates[1][1],
+        0.75 * scale
+    );
+
+    return svgDraw.rect(width, height)
+        .move(x - offsetX, y - offsetY)
+        .stroke({color: '#22f', width: 2})
+        .fill('none');
+};
+
+export {convertPointsToXYWH, renderPage, drawAnnotation};

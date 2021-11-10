@@ -1,7 +1,7 @@
 /* global Sherd: true*/
 
 import {
-    convertPointsToXYWH, renderPage
+    renderPage, drawAnnotation
 } from '../../../../../pdf/utils.js';
 
 const PdfJS = function() {
@@ -143,7 +143,7 @@ const PdfJS = function() {
     };
 
     // Called on initialization
-    this.setState = function(annotation) {
+    this.setState = function(annotation=null) {
         const top = document.getElementById(self.current_obj.htmlID);
         const canvasEl = top.querySelector('canvas');
         const presentation = self.getPresentation(self.current_obj);
@@ -165,21 +165,14 @@ const PdfJS = function() {
                 const selector = self.wrapperID ?
                     '#' + self.wrapperID : '.sherd-pdfjs-view';
 
-                // Append <svg> element next to the <canvas>
-                self.svgDraw = SVG().addTo(selector)
-                    .size(canvasEl.width, canvasEl.height);
-                const [x, y, width, height] = convertPointsToXYWH(
-                    annotation.geometry.coordinates[0][0],
-                    annotation.geometry.coordinates[0][1],
-                    annotation.geometry.coordinates[1][0],
-                    annotation.geometry.coordinates[1][1],
-                    0.75 * scale
-                );
+                if (annotation) {
+                    // Append <svg> element next to the <canvas>
+                    self.svgDraw = SVG().addTo(selector)
+                        .size(canvasEl.width, canvasEl.height);
 
-                self.svgDraw.rect(width, height)
-                    .move(x - offsetX, y - offsetY)
-                    .stroke({color: '#22f', width: 2})
-                    .fill('none');
+                    drawAnnotation(
+                        self.svgDraw, annotation, scale, offsetX, offsetY);
+                }
             });
         });
     };

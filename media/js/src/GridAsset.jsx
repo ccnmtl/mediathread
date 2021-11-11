@@ -15,7 +15,7 @@ import VectorSource from 'ol/source/Vector';
 
 import {SVG} from '@svgdotjs/svg.js';
 
-import {convertPointsToXYWH} from '../pdf/utils';
+import {drawAnnotation} from '../pdf/utils';
 import AnnotationScroller from './AnnotationScroller';
 import Asset from './Asset';
 import {
@@ -91,17 +91,8 @@ export default class GridAsset extends React.Component {
 
         this.svgDraw.clear();
 
-        const [x, y, width, height] = convertPointsToXYWH(
-            a.annotation.geometry.coordinates[0][0],
-            a.annotation.geometry.coordinates[0][1],
-            a.annotation.geometry.coordinates[1][0],
-            a.annotation.geometry.coordinates[1][1],
-            this.pdfScale
-        );
-        this.svgDraw.rect(width, height)
-            .move(x + this.pdfLeftMargin, y)
-            .stroke({color: '#22f', width: 2})
-            .fill('none');
+        drawAnnotation(
+            self.svgDraw, a, this.pdfScale, -this.pdfLeftMargin, 0);
     }
 
     onSelectedAnnotationUpdate(annotation) {

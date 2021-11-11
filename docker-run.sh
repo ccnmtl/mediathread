@@ -3,9 +3,9 @@
 cd /app/
 
 if [[ "$SETTINGS" ]]; then
-		export DJANGO_SETTINGS_MODULE="$APP.$SETTINGS"
+		export DJANGO_SETTINGS_MODULE="mediathread.$SETTINGS"
 else
-		export DJANGO_SETTINGS_MODULE="$APP.settings_docker"
+		export DJANGO_SETTINGS_MODULE="mediathread.settings_docker"
 fi
 
 if [ "$1" == "migrate" ]; then

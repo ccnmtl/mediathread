@@ -38,7 +38,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.student_one,
             tags=',student_one_item',
             body='student one item note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
         self.instructor_note = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_selection,',
@@ -47,7 +47,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_item,',
             body='instructor one item note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
     def tearDown(self):
         cache.clear()
@@ -197,7 +197,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEqual(asset.sherdnote_set.count(), 1)
 
         gann = asset.sherdnote_set.all()[0]
-        self.assertTrue(gann.is_global_annotation())
+        self.assertTrue(gann.is_global_annotation)
         self.assertEqual(gann.tags, '')
         self.assertEqual(gann.body, None)
 
@@ -218,7 +218,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         # migrate a global annotation
         global_note = SherdNote.objects.migrate_one(
             self.instructor_ga, alt_asset, self.instructor_three, True, True)
-        self.assertTrue(global_note.is_global_annotation())
+        self.assertTrue(global_note.is_global_annotation)
         self.assertEqual(global_note.author, self.instructor_three)
         self.assertEqual(global_note.title, None)
         self.assertEqual(global_note.tags, self.instructor_ga.tags)
@@ -237,7 +237,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
         # migrate a regular annotation
         new_note = SherdNote.objects.migrate_one(
             self.instructor_note, alt_asset, self.instructor_three, True, True)
-        self.assertFalse(new_note.is_global_annotation())
+        self.assertFalse(new_note.is_global_annotation)
         self.assertEqual(new_note.author, self.instructor_three)
         self.assertEqual(new_note.title, self.instructor_note.title)
         self.assertEqual(new_note.tags, self.instructor_note.tags)
@@ -259,7 +259,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
 
         new_note = SherdNote.objects.migrate_one(
             self.instructor_note, new_asset, self.alt_instructor, True, True)
-        self.assertFalse(new_note.is_global_annotation())
+        self.assertFalse(new_note.is_global_annotation)
         self.assertEqual(new_note.author, self.alt_instructor)
         self.assertEqual(new_note.title, self.instructor_note.title)
 
@@ -313,15 +313,18 @@ class AssetTest(MediathreadTestMixin, TestCase):
         SherdNoteFactory(
             asset=self.asset1, author=self.student_two,
             tags=',student_two_item',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
         # global notes y/n + global tag count + annotation count
-        self.assertEqual(0,
-                         self.asset1.user_analysis_count(self.instructor_two))
-        self.assertEqual(1,
-                         self.asset1.user_analysis_count(self.student_two))
-        self.assertEqual(4,
-                         self.asset1.user_analysis_count(self.instructor_one))
+        self.assertEqual(
+            0,
+            self.asset1.user_analysis_count(self.instructor_two))
+        self.assertEqual(
+            1,
+            self.asset1.user_analysis_count(self.student_two))
+        self.assertEqual(
+            4,
+            self.asset1.user_analysis_count(self.instructor_one))
 
     def test_assets_by_course(self):
         assets = Asset.objects.by_course(course=self.sample_course)

@@ -43,7 +43,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.student_one,
             tags=',image, student_one_global,',
             body='student one global note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
         self.instructor_note = SherdNoteFactory(
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_selection,',
@@ -52,7 +52,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             asset=self.asset1, author=self.instructor_one,
             tags=',image, instructor_one_global,',
             body='instructor one global note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
         self.asset2 = AssetFactory.create(
             title='Test Asset 2',
@@ -67,7 +67,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             asset=self.asset2, author=self.instructor_one,
             tags=',video, instructor_one_global,',
             body='instructor one global note',
-            title=None, range1=None, range2=None)
+            title=None, is_global_annotation=True)
 
     def tearDown(self):
         cache.clear()

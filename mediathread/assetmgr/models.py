@@ -47,9 +47,11 @@ class AssetManager(models.Manager):
 
     def by_course_and_user(self, course, user):
         # returns the assets in a user's "collection"
-        assets = Asset.objects.filter(course=course,
-                                      sherdnote_set__author=user,
-                                      sherdnote_set__range1=None).distinct()
+        assets = Asset.objects.filter(
+            course=course,
+            sherdnote_set__author=user,
+            sherdnote_set__is_global_annotation=True
+        ).distinct()
         return assets.select_related('course', 'author')
 
     def by_course(self, course):
@@ -266,8 +268,9 @@ class Asset(models.Model):
 
     def global_annotation(self, user, auto_create=True):
         from mediathread.djangosherd.models import SherdNote
-        return SherdNote.objects.global_annotation(self, user,
-                                                   auto_create=auto_create)[0]
+        return SherdNote.objects.global_annotation(
+            self, user,
+            auto_create=auto_create)[0]
 
     def media_type(self):
         label = 'video'
@@ -318,7 +321,7 @@ class Asset(models.Model):
 
             annotations = annotations.exclude(id=gann.id)
 
-        count += len(annotations)
+        count += annotations.count()
         return count
 
 

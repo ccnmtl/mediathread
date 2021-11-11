@@ -39,7 +39,7 @@ class SherdNoteResource(ModelResource):
     def dehydrate(self, bundle):
         try:
             bundle.data['is_global_annotation'] = \
-                bundle.obj.is_global_annotation()
+                bundle.obj.is_global_annotation
             bundle.data['asset_id'] = str(bundle.obj.asset.id)
             bundle.data['is_null'] = bundle.obj.is_null()
             bundle.data['annotation'] = bundle.obj.annotation()

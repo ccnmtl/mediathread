@@ -367,7 +367,7 @@ class MediathreadTestMixin(object):
             response_view_policy='always', date_submitted=datetime.now())
 
         note = SherdNoteFactory.create(
-            asset=ai.asset, author=self.student_one, range1=0, range2=1)
+            asset=ai.asset, author=self.student_one)
         ProjectNoteFactory(project=response, annotation=note)
 
     def setup_sample_assets(self):
@@ -397,7 +397,7 @@ class MediathreadTestMixin(object):
                 SherdNoteFactory(asset=item, author=user,
                                  tags=',{}_item'.format(user.username),
                                  body='{} item note'.format(user.username),
-                                 title=None, range1=None, range2=None)
+                                 title=None, is_global_annotation=True)
 
         # instructor one selections
         SherdNoteFactory(

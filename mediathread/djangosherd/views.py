@@ -7,13 +7,14 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 
-from mediathread.djangosherd.models import Asset, SherdNote, NULL_FIELDS
+from mediathread.djangosherd.models import Asset, SherdNote
 from mediathread.projects.models import ProjectNote, Project
 from mediathread.taxonomy.views import update_vocabulary_terms
 
 
 formfields = "tags title range1 range2 body annotation_data".split()
 annotationfields = set("title range1 range2".split())
+NULL_FIELDS = dict((i, None) for i in 'range1 range2 title'.split())
 
 
 def is_clipping(data):

@@ -83,7 +83,8 @@ def django_settings(request):
         'JIRA_CONFIGURATION',
         'REVISION',
         'SERVER_EMAIL',
-        'PANOPTO_SERVER'
+        'PANOPTO_SERVER',
+        'IMAGE_UPLOAD_AVAILABLE'
     ]
 
     ctx = {
@@ -148,6 +149,11 @@ class CourseDetailView(LoggedInMixin, DetailView):
              self.request.user.has_perm('assetmgr.can_upload_for'))):
             owners = UserResource().render_list(self.request, course.members)
 
+        can_upload = course_details.can_upload(
+            self.request.user, self.request.course) and uploader is not None
+        can_upload_image = course_details.can_upload_image(
+            self.request.user, self.request.course)
+
         context.update({
             'course': course,
             'classwork_owner': self.request.user,
@@ -159,8 +165,8 @@ class CourseDetailView(LoggedInMixin, DetailView):
             'collections': collections,
             'uploader': uploader,
             'msg': self.request.GET.get('msg', ''),
-            'can_upload': course_details.can_upload(self.request.user,
-                                                    self.request.course),
+            'can_upload': can_upload,
+            'can_upload_image': can_upload_image,
         })
         return context
 
@@ -177,6 +183,10 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             course_details.UPLOAD_PERMISSION_KEY,
             course_details.UPLOAD_PERMISSION_DEFAULT))
 
+        upload_image_permission = int(course.get_detail(
+            course_details.UPLOAD_IMAGE_PERMISSION_KEY,
+            course_details.UPLOAD_PERMISSION_DEFAULT))
+
         return {
             'course': course,
             'suggested_collections': suggested,
@@ -184,13 +194,22 @@ class CourseManageSourcesView(LoggedInFacultyMixin, TemplateView):
             'is_staff': self.request.user.is_staff,
             'uploader': uploader,
             'permission_levels': course_details.UPLOAD_PERMISSION_LEVELS,
-            course_details.UPLOAD_PERMISSION_KEY: upload_permission
+            course_details.UPLOAD_PERMISSION_KEY: upload_permission,
+            course_details.UPLOAD_IMAGE_PERMISSION_KEY: upload_image_permission
         }
 
     def post(self, request, *args, **kwargs):
         kwargs.pop('course_pk')
-        perm = request.POST.get(course_details.UPLOAD_PERMISSION_KEY)
-        request.course.add_detail(course_details.UPLOAD_PERMISSION_KEY, perm)
+
+        if course_details.UPLOAD_PERMISSION_KEY in request.POST:
+            perm = request.POST.get(course_details.UPLOAD_PERMISSION_KEY)
+            request.course.add_detail(
+                course_details.UPLOAD_PERMISSION_KEY, perm)
+
+        if course_details.UPLOAD_IMAGE_PERMISSION_KEY in request.POST:
+            perm = request.POST.get(course_details.UPLOAD_IMAGE_PERMISSION_KEY)
+            request.course.add_detail(
+                course_details.UPLOAD_IMAGE_PERMISSION_KEY, perm)
 
         messages.add_message(request, messages.INFO,
                              'Your changes were saved.')

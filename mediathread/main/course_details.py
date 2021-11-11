@@ -7,17 +7,21 @@ from mediathread.assetmgr.models import ExternalCollection
 from structuredcollaboration.models import Collaboration
 
 
+UPLOAD_IMAGE_PERMISSION_KEY = "upload_image_permission"
 UPLOAD_PERMISSION_KEY = "upload_permission"
+
 UPLOAD_PERMISSION_ADMINISTRATOR = 0
 UPLOAD_PERMISSION_INSTRUCTOR = 1
 UPLOAD_PERMISSION_STUDENT = 2
+UPLOAD_PERMISSION_DISABLE = 3
 
 UPLOAD_PERMISSION_LEVELS = [(UPLOAD_PERMISSION_ADMINISTRATOR,
                             'Administrators Only'),
                             (UPLOAD_PERMISSION_INSTRUCTOR,
                             'Instructors and Administrators'),
                             (UPLOAD_PERMISSION_STUDENT,
-                            'Students, Instructors and Administrators (All)')]
+                            'Students, Instructors and Administrators (All)'),
+                            (UPLOAD_PERMISSION_DISABLE, 'Disable Upload')]
 
 UPLOAD_PERMISSION_DEFAULT = UPLOAD_PERMISSION_INSTRUCTOR
 
@@ -25,7 +29,25 @@ UPLOAD_PERMISSION_DEFAULT = UPLOAD_PERMISSION_INSTRUCTOR
 def can_upload(user, course):
     value = int(course.get_detail(UPLOAD_PERMISSION_KEY,
                                   UPLOAD_PERMISSION_DEFAULT))
-    if user.is_staff:
+    if value == UPLOAD_PERMISSION_DISABLE:
+        return False
+    elif user.is_staff:
+        return True
+    elif (cached_course_is_faculty(course, user) and
+            value >= UPLOAD_PERMISSION_INSTRUCTOR):
+        return True
+    elif value == UPLOAD_PERMISSION_STUDENT:
+        return True
+    else:
+        return False
+
+
+def can_upload_image(user, course):
+    value = int(course.get_detail(UPLOAD_IMAGE_PERMISSION_KEY,
+                                  UPLOAD_PERMISSION_DEFAULT))
+    if value == UPLOAD_PERMISSION_DISABLE:
+        return False
+    elif user.is_staff:
         return True
     elif (cached_course_is_faculty(course, user) and
             value >= UPLOAD_PERMISSION_INSTRUCTOR):

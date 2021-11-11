@@ -3,6 +3,31 @@
 {% block title %}{{block.super}}&mdash; Manage Sources{% endblock %}
 
 {% block dashboard_content %}
+
+{% if settings.IMAGE_UPLOAD_AVAILABLE %}
+    <div class="card bg-light mb-3">
+        <div class="card-body">
+            <h3 class="card-title">Image Uploader</h3>
+            <p class="card-text">Mediathread supports direct uploading of images from a user's desktop. By default this direct upload feature is available to instructors.
+            You may enable it for all members of your class or disable it.</p>
+
+            <form name="form-image-upload-permission" action="{% url 'course-manage-sources' request.course.pk %}" method="POST">
+                {% csrf_token %}
+                <div class="card-body">
+                    <label class="card-subtitle font-weight-bold mb-2" for="upload_image_permission">Set Image Upload Permission Settings</label>: &nbsp;
+                    <select name="upload_image_permission" class="form-control" id="upload_image_permission">
+                        {% for level in permission_levels %}
+                            <option value="{{level.0}}" {% ifequal upload_image_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
+                        {% endfor %}
+                    </select>
+                    <br />
+                    <input class="btn btn-primary btn-sm float-right" type="submit" value="Save"></input>
+                </div>
+             </form>
+        </div>
+    </div>
+{% endif %}
+
 <div class="card bg-light mb-3">
     <div class="card-body">
         <h3 class="card-title">Add Recommended Sources</h3>
@@ -58,6 +83,7 @@
         please email {{settings.SERVER_EMAIL}}.
 
         <form action="{% url 'collection-add-or-remove' %}" method="POST">
+            {% csrf_token %}
             <div class="form-group">
                 <label>Collection Title</label>
                 <input class="form-control" type="text" name="title" value="" />

@@ -244,3 +244,5 @@ MAX_TAG_LENGTH = 255
 SURELINK_URL = ''
 
 ASSET_URL_PROCESSOR = sligen_streaming_processor
+
+IMAGE_UPLOAD_AVAILABLE = False

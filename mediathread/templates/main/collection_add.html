@@ -2,77 +2,81 @@
 {% load waffle_tags %}
 
 <div class="accordion bg-light" id="upload-import-accordion">
-  <div class="card border-0 bg-light">
-       <div id="collapseOne" class="collapse bg-light collectionAdd"
+    <div class="card border-0 bg-light">
+        <div id="collapseOne" class="collapse bg-light collectionAdd"
            aria-labelledby="btn-add-to-collection"
            data-parent="#upload-import-accordion">
 
-           <h4 class="text-center pt-3">Add To Collection</h4>
-           <div class="card-body">
-               <div class="card-deck">
-                   {% if can_upload and uploader %}
-                       <div class="card">
-                           <div class="card-body">
-
-                               <h5 class="card-title text-center">Upload Media</h5>
-                               <p class="card-text">
-                                   Contribute media to this
-                                   course directly from your desktop
-                                   into Mediathread.
-                               </p>
-
+            <h4 class="text-center pt-3">Add To Collection</h4>
+            <div class="card-body">
+                <div class="card-deck">
+                    {% if can_upload or can_upload_image %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Upload Media</h5>
+                            <!--  Video Upload -->
+                            {% if can_upload and uploader %}
+                                <p class="card-text">
+                                    Contribute media to this
+                                    course directly from your desktop
+                                    into Mediathread.
+                                </p>
 
                                {% flag "uploads_offline" %}
-                               <p class="card-text">The upload feature is currently down for maintenance. We will return shortly.</p>
-                   {% else %}
-                               {% ifequal role_in_course "non-member" %}
-                                   <p class="card-text">You must be a course member to upload media files.</p>
+                                    <p class="card-text">The upload feature is currently down for maintenance. We will return shortly.</p>
                                {% else %}
-                                   <h6 class="card-title">Video</h6>
-                                   <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                       {% csrf_token %}
-                                       <div class="form-row align-items-center">
-                                           {% if owners %}
+                                   {% ifequal role_in_course "non-member" %}
+                                       <p class="card-text">You must be a course member to upload media files.</p>
+                                   {% else %}
+                                       <h6 class="card-title">Video</h6>
+                                       <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                           {% csrf_token %}
+                                           <div class="form-row align-items-center">
+                                               {% if owners %}
+                                                   <div class="col-auto my-1">
+                                                       <label class="mr-sm-2 sr-only" for="video_owners"></label>
+                                                       <select class="custom-select mr-sm-2" id="video_owners" name="as">
+                                                           {% for owner in owners %}
+                                                               <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                           {% endfor %}
+                                                       </select>
+                                                   </div>
+                                               {% endif %}
                                                <div class="col-auto my-1">
-                                                   <label class="mr-sm-2 sr-only" for="video_owners"></label>
-                                                   <select class="custom-select mr-sm-2" id="video_owners" name="as">
-                                                       {% for owner in owners %}
-                                                           <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                       {% endfor %}
-                                                   </select>
+                                                   <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
                                                </div>
-                                           {% endif %}
-                                           <div class="col-auto my-1">
-                                               <button type="submit" class="btn btn-secondary upload_button video">Upload Video</button>
                                            </div>
-                                       </div>
-                                   </form>
-                                   <h6 class="card-title mt-2">Audio</h6>
-                                   <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                       {% csrf_token %}
-                                       <div class="form-row align-items-center">
-                                           {% if owners %}
+                                       </form>
+                                       <h6 class="card-title mt-2">Audio</h6>
+                                       <form class="card-text" action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                           {% csrf_token %}
+                                           <div class="form-row align-items-center">
+                                               {% if owners %}
+                                                   <div class="col-auto my-1">
+                                                       <label class="mr-sm-2 sr-only" for="audio_owners"></label>
+                                                       <select class="custom-select mr-sm-2" id="audio_owners" name="as">
+                                                           {% for owner in owners %}
+                                                               <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                           {% endfor %}
+                                                       </select>
+                                                   </div>
+                                               {% endif %}
+                                               <input type="hidden" name="audio" value="mp4"></input>
                                                <div class="col-auto my-1">
-                                                   <label class="mr-sm-2 sr-only" for="audio_owners"></label>
-                                                   <select class="custom-select mr-sm-2" id="audio_owners" name="as">
-                                                       {% for owner in owners %}
-                                                           <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                                       {% endfor %}
-                                                   </select>
+                                                   <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
                                                </div>
-                                           {% endif %}
-                                           <input type="hidden" name="audio" value="mp4"></input>
-                                           <div class="col-auto my-1">
-                                               <button type="submit" class="btn btn-secondary upload_button video" value="mp4">Upload Audio</button>
                                            </div>
-                                       </div>
-                                   </form>
-                               {% endifequal %}
+                                       </form>
+                                   {% endifequal %}
                                {% endflag %}
+                            {% endif %}
+                            <!--  End Video Upload -->
 
-                               {% if is_faculty or is_staff %}
-                               <hr />
+                            {% if can_upload and can_upload_image %}
+                                <hr />
+                            {% endif %}
 
+                            {% if can_upload_image %}
                                <h6 class="card-title mt-2">IMAGE</h6>
                                <p class="card-text">
                                    Mediathread supports image files that end in .bmp, .gif, .jpg, .jpeg, .png, .svg and .webp.
@@ -153,11 +157,10 @@
 
                                    </div>
                                </div>
-                               {% endif %}<!-- is_faculty -->
+                              {% endif %}
                            </div>
                        </div>
                    {% endif %}
-
 
                    <div class="card">
                        <div class="card-body">

@@ -5,7 +5,7 @@ from mediathread.settings_shared import *
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # optional/defaulted settings
-DB_NAME = os.environ.get('DB_NAME', app)
+DB_NAME = os.environ.get('DB_NAME', 'mediathread')
 DB_HOST = os.environ.get(
     'DB_HOST',
     os.environ.get('POSTGRESQL_PORT_5432_TCP_ADDR', ''))

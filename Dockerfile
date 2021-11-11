@@ -10,6 +10,6 @@ COPY . /app/
 #RUN /ve/bin/python manage.py test
 EXPOSE 8000
 ADD docker-run.sh /run.sh
-ENV APP mediathread
+# ENV APP mediathread
 ENTRYPOINT ["/run.sh"]
 CMD ["run"]

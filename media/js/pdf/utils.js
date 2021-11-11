@@ -18,6 +18,11 @@
  * along with Mediathread.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// This is a magic number required by some scaling operations. This
+// can be removed or renamed once we figure out what it is / why it's
+// necessary.
+const pdfjsScale = 0.75;
+
 /**
  * Given co-ordinates for two points, return the co-ordinates that
  * Canvas or SVG expects:: top-left point x/y, then width/height.
@@ -47,8 +52,8 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
     // Scale to the provided width or height, whichever is provided
     // and is smaller.
     let scale = (height / viewport.height);
-    if (typeof width === 'number' && width) {
-        const xScale = width / viewport.width;
+    if (width && typeof width === 'number') {
+        let xScale = width / viewport.width;
         scale = Math.min(xScale, scale);
     }
 
@@ -62,24 +67,21 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
             annotation.geometry.coordinates[0][1],
             annotation.geometry.coordinates[1][0],
             annotation.geometry.coordinates[1][1],
-            1
+            pdfjsScale
         );
 
         // Amount of space between the zoomed view and the annotation
         // rect.
-        const margin = 80;
-
-        // Scale the view based on the annotation's width and height
-        let scaleX = (viewport.width) / (aWidth + margin);
-        let scaleY = (viewport.height) / (aHeight + margin);
+        const margin = 10;
 
         // Use either the annotation's width or its height to scale,
         // whichever is more zoomed-out, so we don't cut off portions
         // of it.
-        //
-        // Also, apply the existing scale that was set by the width
-        // and height parameters.
-        scale = Math.min(scaleX, scaleY) * scale;
+        scale = height / (aHeight + (margin * 2));
+        if (width && typeof width === 'number') {
+            let scaleX = width / (aWidth + (margin * 2));
+            scale = Math.min(scaleX, scale);
+        }
 
         offsetX = (ax - margin) * scale;
         offsetY = (ay - margin) * scale;
@@ -126,7 +128,7 @@ const drawAnnotation = function(
         annotation.geometry.coordinates[0][1],
         annotation.geometry.coordinates[1][0],
         annotation.geometry.coordinates[1][1],
-        0.75 * scale
+        pdfjsScale * scale
     );
 
     return svgDraw.rect(width, height)
@@ -135,4 +137,4 @@ const drawAnnotation = function(
         .fill('none');
 };
 
-export {convertPointsToXYWH, renderPage, drawAnnotation};
+export {pdfjsScale, convertPointsToXYWH, renderPage, drawAnnotation};

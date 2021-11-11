@@ -4134,6 +4134,7 @@ ul.section-tabs>li>a.active {
 .sherd-pdfjs-view {
     position: relative;
     text-align: left;
+    overflow: hidden;
 }
 
 .sherd-pdfjs-view svg {

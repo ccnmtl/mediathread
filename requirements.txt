@@ -1,5 +1,5 @@
 Django>=2.2.13,<3
-psycopg2==2.8.6
+psycopg2==2.9.2
 #for MySQL: MySQL-python==1.2.5
 statsd==3.3.0
 pep8==1.7.1

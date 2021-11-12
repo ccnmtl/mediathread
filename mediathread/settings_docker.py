@@ -1,11 +1,13 @@
 # flake8: noqa
 from mediathread.settings_shared import *
 
+app ="mediathread"
+
 # required settings:
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # optional/defaulted settings
-DB_NAME = os.environ.get('DB_NAME', 'mediathread')
+DB_NAME = os.environ.get('DB_NAME', app)
 DB_HOST = os.environ.get(
     'DB_HOST',
     os.environ.get('POSTGRESQL_PORT_5432_TCP_ADDR', ''))
@@ -43,7 +45,8 @@ SERVER_EMAIL = os.environ.get('SERVER_EMAIL',
 # -------------------------------------------
 
 DEBUG = False
-TEMPLATES[0]['DEBUG'] = DEBUG
+
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 TEMPLATES[0]['DIRS'] = (
     os.path.join(base, "templates"),

@@ -46,16 +46,22 @@ const convertPointsToXYWH = function(x1, y1, x2, y2, scale=1) {
  * If an annotation is passed in, focus in on that annotation.
  */
 const renderPage = function(page, canvas, width, height, annotation=null) {
+    // The 'width' argument may come in as null, or the string "100%",
+    // if this view doesn't have a set width. In those cases, find the
+    // canvas container's width and use that to constrain the PDF
+    // view.
+    if (!width || typeof width !== 'number') {
+        width = jQuery(canvas).closest('.sherd-pdfjs-view').width();
+    }
+
     // Get unmodified viewport for reference
     const viewport = page.getViewport({scale: 1});
 
     // Scale to the provided width or height, whichever is provided
     // and is smaller.
     let scale = (height / viewport.height);
-    if (width && typeof width === 'number') {
-        let xScale = width / viewport.width;
-        scale = Math.min(xScale, scale);
-    }
+    let xScale = width / viewport.width;
+    scale = Math.min(xScale, scale);
 
     let offsetX = 0;
     let offsetY = 0;
@@ -78,10 +84,8 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
         // whichever is more zoomed-out, so we don't cut off portions
         // of it.
         scale = height / (aHeight + (margin * 2));
-        if (width && typeof width === 'number') {
-            let scaleX = width / (aWidth + (margin * 2));
-            scale = Math.min(scaleX, scale);
-        }
+        let scaleX = width / (aWidth + (margin * 2));
+        scale = Math.min(scaleX, scale);
 
         offsetX = (ax - margin) * scale;
         offsetY = (ay - margin) * scale;

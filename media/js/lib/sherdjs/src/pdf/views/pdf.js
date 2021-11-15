@@ -146,6 +146,12 @@ const PdfJS = function() {
 
     // Called on initialization
     this.setState = function(annotation=null) {
+        // Handle weird case where annotation is passed in, but not at
+        // the right level.
+        if (annotation && annotation.annotation) {
+            annotation = annotation.annotation;
+        }
+
         const top = document.getElementById(self.current_obj.htmlID);
         const canvasEl = top.querySelector('canvas');
         const presentation = self.getPresentation(self.current_obj);

@@ -123,6 +123,16 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
 const drawAnnotation = function(
     svgDraw, annotation, scale=1, offsetX=0, offsetY=0
 ) {
+    if (
+        !annotation || !annotation.geometry ||
+            !annotation.geometry.coordinates
+    ) {
+        console.error(
+            'drawAnnotation error: coordinates not present',
+            annotation);
+        return;
+    }
+
     const [x, y, width, height] = convertPointsToXYWH(
         annotation.geometry.coordinates[0][0],
         annotation.geometry.coordinates[0][1],

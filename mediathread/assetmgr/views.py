@@ -1158,8 +1158,23 @@ class ReactAssetDetailView(LoggedInCourseMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ReactAssetDetailView, self).get_context_data(**kwargs)
+
+        # From main.views.CourseDetailView.get_context_data()
+        qs = ExternalCollection.objects.filter(course=self.request.course)
+        collections = qs.filter(uploader=False).order_by('title')
+        uploader = qs.filter(uploader=True).first()
+
+        can_upload = course_details.can_upload(
+            self.request.user, self.request.course) and uploader is not None
+        can_upload_image = course_details.can_upload_image(
+            self.request.user, self.request.course)
+
         context.update({
-            'course': self.request.course
+            'course': self.request.course,
+            'collections': collections,
+            'uploader': uploader,
+            'can_upload': can_upload,
+            'can_upload_image': can_upload_image,
         })
         return context
 

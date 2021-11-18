@@ -16,7 +16,7 @@ export default class EditSelectionForm extends SelectionForm {
     onSaveSelection(e) {
         // Get the tags and terms values from the react-select
         // components.
-        const rawTags = this.tagsRef.current.state.value;
+        const rawTags = this.tagsRef.current.state.selectValue;
 
         // Tags are handled as a comma-separated CharField, while
         // Terms are handled with primary keys.
@@ -29,7 +29,7 @@ export default class EditSelectionForm extends SelectionForm {
 
         let terms = null;
         if (this.termsRef && this.termsRef.current) {
-            const rawTerms = this.termsRef.current.state.value;
+            const rawTerms = this.termsRef.current.state.selectValue;
 
             terms = [];
             if (rawTerms) {

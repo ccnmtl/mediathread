@@ -14,9 +14,10 @@ TODO list:
 
 All values in [values.yaml](values.yaml) will be treated as default values. They can be overridden during deploy with helm's `--set` parameter. Subsequent Helm upgrades will carry over previous `--set` parameters unless `--reset-values` is also specified, which will then default to values in values.yaml.
 
-ALLOWED\_HOSTS value **must contain** the `kube-healthcheck.cluster.local` value as one of its entries. This host header is used by kubernetes' internal liveness/readiness probes as defined further within this chart. 
+ALLOWED\_HOSTS value **must contain** the `kube-healthcheck.cluster.local` value as one of its entries. This host header is used by Kubernetes' internal liveness/readiness probes as defined further within this chart. 
 
 A database is **NOT** included in this chart. A PostgreSQL or compatible database is required.
+Therefore the `env.DB\_*` parameters are required to be populated and resolves to an actively running instance of PostgreSQL (or compatible DB like AWS Redshift)
 
 ## Deployment:
 
@@ -31,7 +32,9 @@ On a system with `kubectl` and `helm` installed and configured for your running 
 
 **There is a cost optimization for AWS EKS clusters.**
 
-Namespaces ending in "-qa" will be placed onto SPOT nodes. It is highly recommended to utilize SPOT nodes for hosted K8s platforms to minimize cost. SPOT instances are highly discounted, but the tradeoff is that AWS can reclaim/terminate the machines if capacity is low. Doing such for non-production namespaces are a great cost savings measure, as non-production is more tolerant to partial downtime that results from nodes cycling in and out.
+Namespaces ending in "-qa" will be placed onto [SPOT](https://aws.amazon.com/ec2/spot/) nodes. It is highly recommended to utilize SPOT nodes for [AWS EKS](https://aws.amazon.com/eks/) (hosted Kubernetes cluster) to minimize cost. SPOT instances are highly discounted, but the tradeoff is that AWS can reclaim/terminate the machines if capacity is low, giving them to on-demand users. Doing such for non-production namespaces are a great cost savings measure, as non-production is more tolerant to partial downtime that results from nodes cycling in and out. Choosing multiple instance types in multiple Availability Zones for your EKS SPOT nodes would ensure there's adequate overall capacity to serve your cluster.
+
+Tip: t3 vs t3a families are effectively identical in the big picture, but draws from vastly different pools of available machines.
 
 **The deployed MediaThread service is not exposed.**
 

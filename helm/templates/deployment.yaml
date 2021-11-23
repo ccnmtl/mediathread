@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediathread
+  namespace: {{ .Values.namespace}}
+  labels:
+    app: mediathread
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mediathread
+  template:
+    metadata:
+      labels:
+        app: mediathread
+    spec:
+      {{ if regexMatch "^.*-qa" .Values.namespace }} 
+      nodeSelector:
+        eks.amazonaws.com/capacityType: SPOT
+      {{ else }}
+      nodeSelector:
+        eks.amazonaws.com/capacityType: ON_DEMAND
+      {{ end }}
+      initContainers:
+      - name: createdb
+        image: postgres:alpine
+        command: [ 'sh', '-c', 'createdb -h $DB_HOST -p $DB_PORT -U $DB_USER -w $DB_NAME  || echo "Database $DB_NAME already created"']
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: secrets
+        envFrom:
+          secretRef:
+            name: secrets
+            optional: false
+      - name: initdjango
+        image: {{ .Values.repo }}/{{ .Values.image }}:{{ .Values.tag }}
+        imagePullPolicy: Always
+        command: ['sh','-c','/run.sh migrate && /run.sh collectstatic && if [ "$AWS_S3_CUSTOM_DOMAIN" ];then /run.sh compress; fi']
+        envFrom:
+          secretRef:
+            name: secrets
+            optional: false
+      containers:
+      - name: mediathread
+        image: {{ .Values.repo }}/{{ .Values.image }}:{{ .Values.tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          httpHeaders:
+          - name: Host
+            value: mediathread.stanford.edu
+          initialDelaySeconds: 10
+          failureThreshold: 10
+          periodSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          httpHeaders:
+          - name: Host
+            value: mediathread.stanford.edu
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        envFrom:
+          secretRef:
+            name: secrets
+            optional: false

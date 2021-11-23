@@ -5,15 +5,15 @@ db:
 web:
   image: ccnmtl/mediathread
   environment:
-    - SETTINGS="settings_docker"
-    - DB_HOST="db"
-    - DB_USER="postgres"
-    - DB_NAME="postgres"
-    - DB_PORT="5432"
-    - SECRET_KEY="CHANGEME"
-    - EMAIL_BACKEND="django.core.mail.backends.dummy.EmailBackend"
-    - SESSION_SERIALIZER="django.contrib.sessions.serializers.JSONSerializer"
-    - DEBUG="True"
+    - SETTINGS=settings_docker
+    - DB_HOST=db
+    - DB_USER=postgres
+    - DB_NAME=postgres
+    - DB_PORT=5432
+    - SECRET_KEY=CHANGEME
+    - EMAIL_BACKEND=django.core.mail.backends.dummy.EmailBackend
+    - SESSION_SERIALIZER=django.contrib.sessions.serializers.JSONSerializer
+    - DEBUG=True
   command: manage runserver 0.0.0.0:8000
   volumes:
     - .:/app/

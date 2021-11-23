@@ -44,7 +44,7 @@ SERVER_EMAIL = os.environ.get('SERVER_EMAIL',
 
 # -------------------------------------------
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG',False)
 
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 

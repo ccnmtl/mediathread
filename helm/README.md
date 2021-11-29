@@ -32,7 +32,9 @@ On a system with `kubectl` and `helm` installed and configured for your running 
 
 **There is a cost optimization for AWS EKS clusters.**
 
-Namespaces ending in "-qa" will be placed onto [SPOT](https://aws.amazon.com/ec2/spot/) nodes. It is highly recommended to utilize SPOT nodes for [AWS EKS](https://aws.amazon.com/eks/) (hosted Kubernetes cluster) to minimize cost. SPOT instances are highly discounted, but the tradeoff is that AWS can reclaim/terminate the machines if capacity is low, giving them to on-demand users. Doing such for non-production namespaces are a great cost savings measure, as non-production is more tolerant to partial downtime that results from nodes cycling in and out. Choosing multiple instance types in multiple Availability Zones for your EKS SPOT nodes would ensure there's adequate overall capacity to serve your cluster.
+In [values.yaml](values.yaml), there is the `eks` boolean variable. This value indicates if the Kubernetes cluster is running in [AWS EKS](https://aws.amazon.com/eks/). Do NOT set this value if the cluster is not running in EKS, else pods will not be schedulable. This mechanism uses the [nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) field, along with pre-assigned labels from AWS EKS. 
+
+Namespaces ending in "-qa" will be placed onto [SPOT](https://aws.amazon.com/ec2/spot/) nodes. It is highly recommended to utilize SPOT nodes for EKS to minimize cost. SPOT instances are highly discounted, but the tradeoff is that AWS can reclaim/terminate the machines if capacity is low, giving them to on-demand users. Doing such for non-production namespaces are a great cost savings measure, as non-production is more tolerant to partial downtime that results from nodes cycling in and out. Choosing multiple instance types in multiple Availability Zones for your EKS SPOT nodes would ensure there's adequate overall capacity to serve your cluster.
 
 Tip: t3 vs t3a families are effectively identical in the big picture, but draws from vastly different pools of available machines. So choose both when setting up compute nodes in EKS.
 

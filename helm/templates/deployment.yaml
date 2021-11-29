@@ -15,17 +15,19 @@ spec:
       labels:
         app: mediathread
     spec:
-      {{ if regexMatch "^.*-qa" .Values.namespace }} 
+      {{ if .Values.eks }}
+      {{   if regexMatch "^.*-qa" .Values.namespace }} 
       nodeSelector:
         eks.amazonaws.com/capacityType: SPOT
-      {{ else }}
+      {{   else }}
       nodeSelector:
         eks.amazonaws.com/capacityType: ON_DEMAND
+      {{   end }}
       {{ end }}
       initContainers:
       - name: createdb
         image: postgres:alpine
-        command: [ 'sh', '-c', 'createdb -h $DB_HOST -p $DB_PORT -U $DB_USER -w $DB_NAME  || echo "Database $DB_NAME already created"']
+        command: [ 'sh', '-c', 'createdb -h $DB_HOST -p $DB_PORT -U $DB_USER -w $DB_NAME || echo "Database $DB_NAME already created"']
         env:
         - name: PGPASSWORD
           valueFrom:

@@ -6,6 +6,8 @@ namespace: "mediathread"
 repo:      "ccnmtl"
 image:     "mediathread"
 tag:       "latest"
+# boolean value indicate whether to optimize for AWS EKS
+eks:       False
 
 env:
     # Required parameters

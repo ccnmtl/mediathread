@@ -56,7 +56,7 @@ spec:
             port: 8000
           httpHeaders:
           - name: Host
-            value: mediathread.stanford.edu
+            value: kube-healthcheck.cluster.local
           initialDelaySeconds: 10
           failureThreshold: 10
           periodSeconds: 2
@@ -66,7 +66,7 @@ spec:
             port: 8000
           httpHeaders:
           - name: Host
-            value: mediathread.stanford.edu
+            value: kube-healthcheck.cluster.local
           initialDelaySeconds: 30
           periodSeconds: 30
         envFrom:

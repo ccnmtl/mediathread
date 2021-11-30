@@ -173,7 +173,7 @@ export default class ViewItem extends React.Component {
                                         noValidate
                                         validated={this.state.validated}
                                         onSubmit={this.handleSubmit}>
-                                        <Form.Group>
+                                        <Form.Group className="mb-3">
                                             <Form.Control
                                                 required
                                                 type="text"

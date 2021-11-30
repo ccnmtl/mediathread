@@ -143,7 +143,7 @@ export default class SelectionForm extends React.Component {
                 noValidate
                 validated={this.state.validated}
                 onSubmit={this.handleSubmit}>
-                <Form.Group controlId="newSelectionTitle">
+                <Form.Group className="mb-3" controlId="newSelectionTitle">
                     <Form.Label>
                         Title
                     </Form.Label>
@@ -156,7 +156,7 @@ export default class SelectionForm extends React.Component {
                     />
                 </Form.Group>
 
-                <Form.Group>
+                <Form.Group className="mb-3">
                     <label htmlFor="react-select-6-input">Tags</label>
                     <Creatable
                         id="newSelectionTags"
@@ -171,7 +171,7 @@ export default class SelectionForm extends React.Component {
                 </Form.Group>
 
                 {hasVocab && (
-                    <Form.Group>
+                    <Form.Group className="mb-3">
                         <label htmlFor="react-select-7-input">
                             Course Vocabulary</label>
                         <Select
@@ -188,7 +188,7 @@ export default class SelectionForm extends React.Component {
                     </Form.Group>
                 )}
 
-                <Form.Group>
+                <Form.Group className="mb-3">
                     <label
                         htmlFor="newSelectionNotes">
                         Notes

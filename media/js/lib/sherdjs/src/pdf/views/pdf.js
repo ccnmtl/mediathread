@@ -170,7 +170,7 @@ const PdfJS = function() {
                 );
 
                 const selector = self.wrapperID ?
-                    '#' + self.wrapperID : '.sherd-pdfjs-view';
+                      '#' + self.wrapperID : '.sherd-pdfjs-view';
 
                 if (annotation) {
                     // Append <svg> element next to the <canvas>

@@ -8,7 +8,7 @@ Original Authors
 * Eddie Rubeiz (eddierubeiz)
 * Liz Day
 * Susan Dreher (sdreher)
-* Nikols Nyby (nikolas)
+* Nikolas Nyby (nikolas)
 
 Contributors
 ----------------

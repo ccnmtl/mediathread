@@ -3,9 +3,9 @@
 cd /app/
 
 if [[ "$SETTINGS" ]]; then
-		export DJANGO_SETTINGS_MODULE="$APP.$SETTINGS"
+		export DJANGO_SETTINGS_MODULE="mediathread.$SETTINGS"
 else
-		export DJANGO_SETTINGS_MODULE="$APP.settings_docker"
+		export DJANGO_SETTINGS_MODULE="mediathread.settings_docker"
 fi
 
 if [ "$1" == "migrate" ]; then
@@ -46,6 +46,6 @@ fi
 if [ "$1" == "run" ]; then
 		exec /ve/bin/gunicorn --env \
 				 DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE \
-				 $APP.wsgi:application -b 0.0.0.0:8000 -w 3 \
+				 mediathread.wsgi:application -b 0.0.0.0:8000 -w 3 \
 				 --access-logfile=- --error-logfile=-
 fi

@@ -1,6 +1,8 @@
 # flake8: noqa
 from mediathread.settings_shared import *
 
+app ="mediathread"
+
 # required settings:
 SECRET_KEY = os.environ['SECRET_KEY']
 
@@ -42,8 +44,9 @@ SERVER_EMAIL = os.environ.get('SERVER_EMAIL',
 
 # -------------------------------------------
 
-DEBUG = False
-TEMPLATES[0]['DEBUG'] = DEBUG
+DEBUG = os.environ.get('DEBUG',False)
+
+TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
 TEMPLATES[0]['DIRS'] = (
     os.path.join(base, "templates"),

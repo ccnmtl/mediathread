@@ -121,6 +121,14 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
     return [page.render(renderContext), scale, offsetX, offsetY];
 };
 
+const isValidAnnotation = function(annotation) {
+    return (
+        annotation &&
+            annotation.geometry &&
+            annotation.geometry.coordinates
+    );
+};
+
 /**
  * Draw a rectangle annotation on the provided svgDraw surface, given
  * the annotation data.
@@ -128,12 +136,6 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
 const drawAnnotation = function(
     svgDraw, annotation, scale=1, offsetX=0, offsetY=0
 ) {
-    // Handle weird case where annotation is passed in, but not at
-    // the right level.
-    if (annotation && annotation.annotation) {
-        annotation = annotation.annotation;
-    }
-
     if (
         !annotation || !annotation.geometry ||
             !annotation.geometry.coordinates
@@ -158,4 +160,7 @@ const drawAnnotation = function(
         .fill('none');
 };
 
-export {pdfjsScale, convertPointsToXYWH, renderPage, drawAnnotation};
+export {
+    pdfjsScale, convertPointsToXYWH, renderPage,
+    isValidAnnotation, drawAnnotation
+};

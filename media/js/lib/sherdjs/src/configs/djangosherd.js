@@ -217,7 +217,8 @@ function DjangoSherd_Asset_Config() {
         });
 
     // /# load asset into note-form
-    var clipform = $('clipform-display');
+    var clipform = jQuery('#clipform-display');
+
     if (clipform) {
         ds.assetview.clipform.html.push('clipform-display', {
             asset : {}
@@ -442,6 +443,7 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
     if (asset_obj) {
         asset_obj.autoplay = (self.options.autoplay) ? self.options.autoplay : false;
         asset_obj.presentation = self.options.presentation || 'small';
+        asset_obj.iframe = self.options.iframe || false;
 
         if (targets.asset_title) {
             if (targets.annotation_title.innerHTML === "") {

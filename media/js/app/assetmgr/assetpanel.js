@@ -66,7 +66,8 @@ AssetPanelHandler.prototype.dialog = function(
         },
         'presentation': 'small',
         'clipform': true,
-        'autoplay': false
+        'autoplay': false,
+        'iframe': true
     });
 
     // Setup the edit view

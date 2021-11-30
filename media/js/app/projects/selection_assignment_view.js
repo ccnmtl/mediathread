@@ -40,7 +40,8 @@
                 'default_target': 'asset-workspace-videoclipbox',
                 'presentation': 'medium',
                 'clipform': true,
-                'autoplay': false
+                'autoplay': false,
+                'iframe': true
             });
 
             this.citationView.openCitationById(null, options.itemId, null);

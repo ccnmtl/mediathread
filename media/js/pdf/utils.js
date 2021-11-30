@@ -51,7 +51,8 @@ const renderPage = function(page, canvas, width, height, annotation=null) {
     // canvas container's width and use that to constrain the PDF
     // view.
     if (!width || typeof width !== 'number') {
-        width = jQuery(canvas).closest('.sherd-pdfjs-view').width();
+        width = jQuery(canvas).closest(
+            '.sherd-pdfjs-view,.pdf-container').width();
     }
 
     // Get unmodified viewport for reference

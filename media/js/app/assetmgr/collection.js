@@ -695,6 +695,7 @@ CollectionList.prototype.assetPostUpdate = function($elt, the_records) {
             const containerEl = document.getElementById(
                 'pdf-container-' + asset.id);
             if (!containerEl) {
+                console.error('collection error: No pdf DOM element found!');
                 return;
             }
 

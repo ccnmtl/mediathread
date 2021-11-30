@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediathread
+  namespace: {{ .Values.namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: mediathread
+  sessionAffinity: ClientIP
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      name: http
+

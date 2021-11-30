@@ -92,6 +92,8 @@ const GenericAssetView = function(options) {
         };
 
         this.settings.pdf = pdf;
+    } else {
+        console.error('Error loading Sherd.Pdf view!');
     }
 
     this.settings.NONE = {
@@ -162,8 +164,8 @@ const GenericAssetView = function(options) {
                 }
             } else {
                 if (window.console) {
-                    window.console.log(options);
-                    window.console.log(self.settings);
+                    window.console.error(options);
+                    window.console.error(self.settings);
                 }
                 throw new Error(
                     'Your asset does not have a (supported) type marked.');

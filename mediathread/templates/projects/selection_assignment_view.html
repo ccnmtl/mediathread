@@ -1,5 +1,5 @@
 {% extends "base_new.html" %}
-{% load user_projects coursetags %}
+{% load user_projects coursetags static %}
 
 {% block title %}
     {% if assignment.title %}{{assignment.title}}{% else %}New Assignment{% endif %}
@@ -37,16 +37,22 @@
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
 
-    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js" type="text/javascript"></script>
-    <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js" type="text/javascript"></script>
+    <script src="{{STATIC_URL}}jquery/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js"></script>
+    <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
-    {% include "djangosherd/player_resources.html" %}
-    <script type="text/javascript" src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+    <script>
+    window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
+    </script>
+    <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
 
-    <script type="text/javascript">
+    {% include "djangosherd/player_resources.html" %}
+
+    <script src="{{STATIC_URL}}jquery/js/masonry.pkgd.min.js"></script>
+
+    <script type="module">
         var view = new SelectionAssignmentView({
             el: jQuery('.selection-assignment').first(),
             viewer: '{{request.user.username}}',

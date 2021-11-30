@@ -395,7 +395,7 @@ CollectionWidget.prototype.createThumbs = function(assets) {
             for (var j = 0; j < asset.annotations.length; j++) {
                 var ann = asset.annotations[j];
 
-                var view;
+                let view = null;
                 switch (asset.type) {
                 case 'image':
                     view = new Sherd.Image.OpenLayers();
@@ -403,6 +403,13 @@ CollectionWidget.prototype.createThumbs = function(assets) {
                 case 'fsiviewer':
                     view = new Sherd.Image.FSIViewer();
                     break;
+                case 'pdf':
+                    view = new Sherd.Pdf.PdfJS();
+                    break;
+                default:
+                    console.error(
+                        'collectionwidget error: unrecognized asset type: ' +
+                            asset.type) ;
                 }
                 djangosherd.thumbs.push(view);
                 var objDiv = document.createElement('div');
@@ -568,17 +575,14 @@ CollectionWidget.prototype.updateAssets = function(the_records) {
 
 CollectionWidget.prototype.updateAssetsPost = function($elt, the_records) {
     this.createThumbs(the_records.assets);
-
     this.updateSwitcher();
-
-    var self = this;
 
     jQuery('.filter-widget').show();
 
     $elt.fadeIn('slow');
 
     jQuery(window).trigger('resize');
-    self.setLoading(false);
+    this.setLoading(false);
     jQuery(window).trigger('collection.ready');
 };
 
@@ -598,8 +602,9 @@ CollectionWidget.prototype.initCitationView = function() {
     }
 };
 
-CollectionWidget.prototype.quickEdit = function(title, evtType,
-    assetId, annotationId) {
+CollectionWidget.prototype.quickEdit = function(
+    title, evtType, assetId, annotationId
+) {
     this.initCitationView();
 
     this.$quickEditView.find('.asset-view-title').html(title);

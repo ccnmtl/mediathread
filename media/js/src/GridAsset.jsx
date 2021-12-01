@@ -92,7 +92,7 @@ export default class GridAsset extends React.Component {
         this.svgDraw.clear();
 
         drawAnnotation(
-            self.svgDraw, a, this.pdfScale, -this.pdfLeftMargin, 0);
+            this.svgDraw, a, this.pdfScale, -this.pdfLeftMargin, 0);
     }
 
     onSelectedAnnotationUpdate(annotation) {

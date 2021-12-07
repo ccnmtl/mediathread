@@ -1,4 +1,4 @@
-Django>=2.2.13,<3
+Django>=2.2.13,<5
 psycopg2<2.9
 #for MySQL: MySQL-python==1.2.5
 statsd==3.3.0

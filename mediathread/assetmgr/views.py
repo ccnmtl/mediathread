@@ -337,10 +337,8 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
 
-        # This view is only enabled for staff and instructors right
-        # now.
-        if not (request.user.is_staff or
-                request.course.is_faculty(request.user)):
+        # @todo - update for pdf permissions when that's ready to go
+        if not course_details.can_upload_image(request.user, request.course):
             raise PermissionDenied
 
         return r

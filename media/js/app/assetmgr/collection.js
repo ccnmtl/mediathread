@@ -184,12 +184,15 @@ var CollectionList = function(config) {
         });
 
     self.$el.on(
-        'click', 'a.collection-choice.create-annotation', function(evt) {
+        'click', 'a.collection-choice.create-annotation',
+        function(evt) {
             var src = evt.srcElement || evt.target || evt.originalTarget;
             var bits = src.href.split('/');
             var asset_id = bits[bits.length - 1];
-            jQuery(window).trigger('annotation.create',
-                [evt.currentTarget, asset_id]);
+
+            jQuery(window).trigger(
+                'annotation.create', [evt.currentTarget, asset_id]);
+
             return false;
         });
 

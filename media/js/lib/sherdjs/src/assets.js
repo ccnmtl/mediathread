@@ -91,6 +91,15 @@ const GenericAssetView = function(options) {
             'view': new Sherd.Pdf.PdfJS()
         };
 
+        if (options.clipform) {
+            pdf.clipform = new Sherd.Pdf.Annotators.Pdf();
+            pdf.clipform.attachView(pdf.view);
+
+            if (options.storage) {
+                pdf.clipform.addStorage(options.storage);
+            }
+        }
+
         this.settings.pdf = pdf;
     } else {
         console.error('Error loading Sherd.Pdf view!');

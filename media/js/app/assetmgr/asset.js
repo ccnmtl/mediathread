@@ -790,8 +790,8 @@
                     }, 'asset-annotation-current', false);
 
                     if (self.active_annotation) {
-                        var active = self.$parent.find('#accordion-' +
-                                         self.active_annotation.id)[0];
+                        var active = self.$parent.find(
+                            '#accordion-' + self.active_annotation.id)[0];
                         var parent = jQuery(active).parents('.accordion');
                         var idx = jQuery(parent).find('h3').index(active);
                         jQuery(parent).accordion('option', 'active', idx);
@@ -931,8 +931,14 @@
 
             // Push clipform or assetview state into 'local storage',
             //  i.e. the form that is posted to the server.
-            // @todo -- Unsure if this is the best spot for this...
+
+            // Get the annotation's data from the sherd annotator,
+            // based on media type.
+            //
+            // For video, this is the "clipform".
+            //
             var obj = djangosherd.assetview.clipform.getState();
+
             if (_propertyCount(obj) > 0) {
                 djangosherd.assetview.clipform.storage.update(obj, true);
             } else {
@@ -957,6 +963,8 @@
                 } else if (obj.start > obj.end) {
                     msg = 'The start time is greater than the end time.';
                 }
+            } else if (obj === 'missing pdfRect') {
+                msg = 'Select an annotation on the PDF.';
             }
 
             if (msg) {

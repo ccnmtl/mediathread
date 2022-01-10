@@ -77,30 +77,35 @@
           <br />
             {{#annotation}}
               <label for="annotation-tags">Tags</label>
-              <div><input data-label="Selection Tags" type="text"
-                name="annotation-tags" data-placeholder="select or create tags"
-                value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}"/></div>
-                  <div class="helptext">Use commas to separate tags. Example: tag 1, tag 2, tag 3</div>
+              <div>
+                  <input data-label="Selection Tags" type="text"
+                  name="annotation-tags" data-placeholder="select or create tags"
+                  value="{{#metadata.tags}}{{name}}{{^last}}, {{/last}}{{/metadata.tags}}" />
+              </div>
+              <div class="helptext">
+                  Use commas to separate tags. Example: tag 1, tag 2, tag 3
+              </div>
 
-                  <label for="annotation_body">Note</label>
-                  <textarea data-label="Selection Notes" rows="7" cols="44" id="annotation_body" name="annotation-body">{{metadata.body}}</textarea>
+              <label for="annotation_body">Note</label>
+              <textarea data-label="Selection Notes" rows="7" cols="44" id="annotation_body"
+                  name="annotation-body">{{metadata.body}}</textarea>
 
-                  <input type="hidden" name="annotation-range1" value="{{range1}}" />
-                  <input type="hidden" name="annotation-range2" value="{{range2}}" />
-                  <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
+              <input type="hidden" name="annotation-range1" value="{{range1}}" />
+              <input type="hidden" name="annotation-range2" value="{{range2}}" />
+              <input type="hidden" name="annotation-annotation_data" value="{{annotation_data}}" />
 
-                  {{#id}} <!-- Editing existing annotation -->
-                    <input type="hidden" name="annotation-id" value="{{id}}" />
-                  {{/id}}
+              {{#id}} <!-- Editing existing annotation -->
+                  <input type="hidden" name="annotation-id" value="{{id}}" />
+              {{/id}}
 
-                  <div class="row no-gutters">
-                    <div class="col text-right">
+              <div class="row no-gutters">
+                  <div class="col text-right">
                       <input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"
                       onclick="javascript:annotationList.cancelAnnotation()" />
                       <input class="btn btn-primary" type="button" name="Save" value="Save Selection"
                       onclick="javascript:annotationList.saveAnnotation(this)" />
-                    </div>
                   </div>
+              </div>
             {{/annotation}}
           </div>
         </form>

@@ -1,7 +1,7 @@
 /* global Sherd: true*/
 
 import {
-    pdfjsScale, drawAnnotation, renderPage
+    pdfjsScale, isValidAnnotation, drawAnnotation, renderPage
 } from '../../../../../pdf/utils.js';
 
 const PdfJS = function() {
@@ -69,12 +69,7 @@ const PdfJS = function() {
             },
             width: function(obj, presenter) {
                 return 200;
-            },
-            initialize: function(obj, presenter) {
-                console.log('pdf gallery init');
-            },
-            resize: function() {},
-            controls: false
+            }
         },
         'default': {
             height: function(obj, presenter) {
@@ -82,13 +77,7 @@ const PdfJS = function() {
             },
             width: function(obj, presenter) {
                 return '100%';
-            },
-            initialize: function(obj, presenter) {
-                console.log('pdf default init');
-            },
-            resize: function() {
-            },
-            controls: false
+            }
         },
         'medium': {
             height: function(obj, presenter) {
@@ -97,27 +86,15 @@ const PdfJS = function() {
             },
             width: function(obj, presenter) {
                 return '100%';
-            },
-            initialize: function(obj, presenter) {
-                console.log('pdf medium init');
-            },
-            resize: function() {
-
-            },
-            controls: true
+            }
         },
         'small': {
             height: function() {
                 return 390;
             },
             width: function() {
-                return 320;
-            },
-            initialize: function(obj, presenter) {
-                console.log('pdf small init');
-            },
-            resize: function() {},
-            controls: false
+                return '100%';
+            }
         }
     };
 
@@ -146,10 +123,30 @@ const PdfJS = function() {
 
     // Called on initialization
     this.setState = function(annotation=null) {
-        // Handle weird case where annotation is passed in, but not at
-        // the right level.
-        if (annotation && annotation.annotation) {
-            annotation = annotation.annotation;
+        if (
+            this.current_obj &&
+                this.current_obj.object &&
+                this.current_obj.object.iframe
+        ) {
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+            if (isValidAnnotation(annotation)) {
+                // Render the PDF view and possible annotation in the
+                // iframe instead.
+                //
+                // In this case, all that needs to be done is send a
+                // message to the iframe.
+                const data = annotation.geometry;
+                data.message = 'onViewSelection';
+
+                if (iframe) {
+                    iframe.contentWindow.postMessage(data, '*');
+                }
+            } else {
+                if (iframe) {
+                    iframe.contentWindow.postMessage('onClearSelection', '*');
+                }
+            }
+            return;
         }
 
         const top = document.getElementById(self.current_obj.htmlID);
@@ -172,7 +169,7 @@ const PdfJS = function() {
                 const selector = self.wrapperID ?
                       '#' + self.wrapperID : '.sherd-pdfjs-view';
 
-                if (annotation) {
+                if (isValidAnnotation(annotation)) {
                     // Append <svg> element next to the <canvas>
                     self.svgDraw = SVG().addTo(selector)
                         .size(canvasEl.width, canvasEl.height);
@@ -196,13 +193,24 @@ const PdfJS = function() {
             obj.options = {};
         }
 
+        let renderedText = '<div id="' + wrapperID +
+            '" class="sherd-pdfjs-view">' +
+            '<canvas></canvas>' +
+            '</div>';
+
+        if (obj.iframe) {
+            // render iframe
+            renderedText = '<div id="' + wrapperID +
+                '" class="d-flex sherd-pdfjs-view">' +
+                '<iframe class="flex-fill pdfjs" src="/asset/pdfjs/' + obj.id +
+                '"></iframe>' +
+            '</div>';
+        }
+
         return {
             object: obj,
             htmlID: wrapperID,
-            text: '<div id="' + wrapperID +
-                '" class="sherd-pdfjs-view">' +
-                '<canvas></canvas>' +
-                '</div>',
+            text: renderedText,
             winHeight: options &&
                 options.functions &&
                 options.functions.winHeight ?
@@ -232,8 +240,10 @@ const PdfJS = function() {
         const loadingTask = pdfjsLib.getDocument(create_obj.object.pdf);
         self.pdfLoadingTask = loadingTask;
 
-        top.style.width = presentation.width(create_obj.object, self) + 'px';
-        top.style.height = presentation.height(create_obj.object, self) + 'px';
+        top.style.width =
+            presentation.width(create_obj.object, self) + 'px';
+        top.style.height =
+            presentation.height(create_obj.object, self) + 'px';
 
         self.current_obj = create_obj;
     };

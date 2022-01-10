@@ -964,7 +964,7 @@
                     msg = 'The start time is greater than the end time.';
                 }
             } else if (obj === 'missing pdfRect') {
-                msg = 'Select an annotation on the PDF.';
+                msg = 'Select a rectangle on the PDF.';
             }
 
             if (msg) {

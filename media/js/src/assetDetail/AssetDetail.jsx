@@ -52,6 +52,16 @@ const updateSelectionUrl = function(selectionId) {
     window.history.pushState(null, null, newPath);
 };
 
+/**
+ * Send the disableRectangleTool message to the PDF iframe.
+ */
+const disableRectangleTool = function() {
+    const iframe = window.jQuery('iframe.pdfjs')[0];
+    if (iframe) {
+        iframe.contentWindow.postMessage('disableRectangleTool', '*');
+    }
+};
+
 export default class AssetDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -320,6 +330,8 @@ export default class AssetDetail extends React.Component {
             showClear: false,
             toolType: null
         });
+
+        disableRectangleTool();
 
         e.preventDefault();
         const me = this;
@@ -644,10 +656,7 @@ export default class AssetDetail extends React.Component {
             toolType: null
         });
 
-        const iframe = window.jQuery('iframe.pdfjs')[0];
-        if (iframe) {
-            iframe.contentWindow.postMessage('disableRectangleTool', '*');
-        }
+        disableRectangleTool();
     }
 
     onPlaySelection(e) {
@@ -1109,10 +1118,7 @@ export default class AssetDetail extends React.Component {
                 prevState.tab === 'createSelection' &&
                 prevState.tab !== this.state.tab
         ) {
-            const iframe = window.jQuery('iframe.pdfjs')[0];
-            if (iframe) {
-                iframe.contentWindow.postMessage('disableRectangleTool', '*');
-            }
+            disableRectangleTool();
         }
 
         if (prevState.isDrawing !== this.state.isDrawing) {
@@ -1255,10 +1261,7 @@ export default class AssetDetail extends React.Component {
         }
 
         if (this.type === 'pdf') {
-            const iframe = window.jQuery('iframe.pdfjs')[0];
-            if (iframe) {
-                iframe.contentWindow.postMessage('disableRectangleTool', '*');
-            }
+            disableRectangleTool();
         }
     }
 

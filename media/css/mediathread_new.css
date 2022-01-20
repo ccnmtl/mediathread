@@ -4115,7 +4115,8 @@ ul.section-tabs>li>a.active {
     color: yellow;
 }
 
-.card-thumbnail .react-pdf__Page canvas {
+.card-thumbnail .react-pdf__Page canvas,
+.jux-media-display .react-pdf__Page canvas {
     margin: 0 auto;
 }
 

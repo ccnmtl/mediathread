@@ -443,7 +443,7 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
     if (asset_obj) {
         asset_obj.autoplay = (self.options.autoplay) ? self.options.autoplay : false;
         asset_obj.presentation = self.options.presentation || 'small';
-        asset_obj.iframe = self.options.iframe || false;
+        asset_obj.pdf_iframe = self.options.pdf_iframe || false;
 
         if (targets.asset_title) {
             if (targets.annotation_title.innerHTML === "") {

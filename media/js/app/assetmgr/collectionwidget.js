@@ -595,6 +595,7 @@ CollectionWidget.prototype.initCitationView = function() {
             'presentation': 'small',
             'clipform': true,
             'autoplay': false,
+            'pdf_iframe': true,
             'winHeight': function() {
                 return 250;
             }

@@ -126,7 +126,7 @@ const PdfJS = function() {
         if (
             this.current_obj &&
                 this.current_obj.object &&
-                this.current_obj.object.iframe
+                this.current_obj.object.pdf_iframe
         ) {
             const iframe = window.jQuery('iframe.pdfjs')[0];
             if (isValidAnnotation(annotation)) {
@@ -198,7 +198,7 @@ const PdfJS = function() {
             '<canvas></canvas>' +
             '</div>';
 
-        if (obj.iframe) {
+        if (obj.pdf_iframe) {
             // render iframe
             renderedText = '<div id="' + wrapperID +
                 '" class="d-flex sherd-pdfjs-view">' +

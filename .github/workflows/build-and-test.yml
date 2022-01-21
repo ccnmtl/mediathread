@@ -2,11 +2,11 @@ name: build-and-test
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         python-version: [3.6]
-        node-version: [14.x]
+        node-version: [16.x]
     services:
       postgres:
         image: postgres:11
@@ -22,6 +22,8 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v2
+      - name: install memcached headers
+        run: sudo apt install -y libmemcached-dev
       - name: Build with Makefile
         run: make
       - name: Run Integration Tests

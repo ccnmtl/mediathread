@@ -827,9 +827,12 @@
                         MediaThread.templates.asset_annotation_current,
                         context);
                     self.$parent.find('#annotation-current').html(rendered);
-                    djangosherd.assetview.clipform
-                        .setState({'start': 0, 'end': 0},
-                            {'mode': 'create'});
+                    djangosherd.assetview.clipform.setState({
+                        'start': 0,
+                        'end': 0
+                    }, {
+                        'mode': 'create'
+                    });
                     self._initTags();
                     self._initReferences();
                     self._initConcepts();

@@ -29,7 +29,8 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             return {
                 type: 'Rectangle',
                 geometry: {
-                    coordinates: this.state.pdfRect.coords,
+                    coordinates: this.state.pdfRect.coords ||
+                        this.state.pdfRect.coordinates,
                     page: this.state.pdfRect.page
                 }
             };
@@ -41,6 +42,10 @@ if (!Sherd.Pdf.Annotators.Pdf) {
         this.setState = function (obj, options) {
             if (typeof obj === 'object') {
                 self.current_state = obj;
+
+                if (obj.geometry) {
+                    self.state.pdfRect = obj.geometry;
+                }
 
                 self.mode = null;
             }

@@ -41,7 +41,7 @@
                 'presentation': 'medium',
                 'clipform': true,
                 'autoplay': false,
-                'iframe': true
+                'pdf_iframe': true
             });
 
             this.citationView.openCitationById(null, options.itemId, null);

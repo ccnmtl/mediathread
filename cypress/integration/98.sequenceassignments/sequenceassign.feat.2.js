@@ -48,28 +48,37 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
         cy.get('input[name="annotation-title"]').type('Example Selection');
         cy.get('#clipStart').clear().type('00:00:02');
         cy.get('#clipEnd').clear().type('00:00:05');
-        cy.get('.col > .btn-primary').click();
-        cy.get('.selection-citation-title')
-            .should('contain', 'Example Selection');
-        cy.contains('Edit Selection').should('exist');
-        cy.get('.selection-citation-title').click({force: true});
-        cy.get('#insert-selection').click({force: true});
+        cy.get('.col > .btn-primary[value="Save Selection"]').click();
+        cy.get('div.collection-modal').should('not.exist');
+
+        // Verify the selection was created
+        cy.get('.selection-citation-title').contains('Example Selection')
+            .should('be.visible');
+
+        // Add it to the spine
+        cy.get('.selection-citation-title').contains('Example Selection')
+            .first().click();
+        cy.get('.collapse.show').within(() => {
+            cy.contains('Edit Selection').should('exist');
+            cy.contains('Insert').should('exist');
+            cy.get('#insert-selection').click({force: true});
+        });
+        cy.get('button.add-spine').should('not.exist');
 
         cy.log('Add secondary elements');
-        cy.wait(500);
-        cy.get('.jux-media > .jux-track > :nth-child(3)').click({force: true});
-        cy.contains('Example Selection').should('exist');
-        cy.get('#annotation-12 > .card-header > .btn').click({force: true});
-        cy.get('#selectionCollapse-12 > .card-body > .row > .col-md-auto > div > #insert-selection')
-            .click({force: true});
-        cy.get('.jux-txt > .jux-track > :nth-child(3)').click({force: true});
-        // cy.contains('Add text annoatation').should('exist');
-        cy.get('form > .form-control').type('Example annotation');
-        cy.get('.modal-body > form > .btn').click();
-        cy.get('.project-title').clear({force: true}).type('Example response');
-        cy.get('.nav-link').should('have.attr', 'href');
-        //TODO: for some reasone cy.contains('Reflection') doesn't work
-        cy.get('.nav > :nth-child(2) > .nav-link').click();
+        cy.get('.jux-track-container.jux-txt .jux-track .jux-snap-column')
+            .first().click({force: true});
+        cy.get('.modal-title').contains('Add text annotation')
+            .should('be.visible');
+        cy.get('.modal-body > form > textarea').type('Example annotation');
+        cy.get('.modal-body > form > .btn-primary').click();
+        cy.get('.modal-title').contains('Add text annotation')
+            .should('not.exist');
+
+        cy.get('#response-title').clear({force: true}).type('Example response');
+
+        // Add a reflection
+        cy.get('.nav .nav-link').contains('Reflection').click();
         cy.getIframeBody().find('p').click({force: true})
             .type('Example reflection');
         cy.get('.btn-save').click();

@@ -18,9 +18,9 @@ describe('Instructor Course Sources', () => {
         cy.url().should('match', /course\/1\/dashboard\/sources\/$/);
 
         cy.log('should add YouTube as a source to the class');
-        cy.get('#youtube').scrollIntoView().should('be.visible');
+        cy.get('#youtube').contains('Add to Class').should('be.visible');
         cy.get('#youtube').click();
-        cy.get('#youtube').should('have.value', 'Remove');
+        cy.get('#youtube').contains('Remove').should('be.visible');
     });
 });
 

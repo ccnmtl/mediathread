@@ -11,7 +11,7 @@
     "cypress:run": "cypress run",
     "cypress:ffrun": "cypress run --headless --browser firefox",
     "cypress:ffopen": "cypress open --browser firefox",
-    "cypress:ffhead": "cypress run --browser firefox",
+    "cypress:ffhead": "cypress run --browser firefox --spec './cypress/integration/1.course/*.js'",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:ffhead",
     "dev": "webpack --mode development --watch",
     "eslint": "eslint media/js/app media/js/src media/js/src/*.jsx media/js/src/**/*.jsx media/js/pdf/*.js *.js",

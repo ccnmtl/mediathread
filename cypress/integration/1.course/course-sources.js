@@ -28,12 +28,17 @@ describe('Removing Course Source', () => {
     before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/dashboard/settings/');
+        cy.get('a[href*="sources"]').should('be.visible');
         cy.get('a[href*="sources"]').click();
     });
 
     it('should remove YouTube as a source to the class', () => {
+        cy.get('#cu-privacy-notice-button').click();
+        cy.get('.collection-link').contains('YouTube')
+            .scrollIntoView().should('be.visible');
+        cy.get('#youtube').scrollIntoView().should('be.visible');
         cy.get('#youtube').should('have.value', 'Remove')
             .click();
-        cy.contains('Remove').should('not.exist');
+        cy.get('#youtube').should('not.exist');
     });
 });

@@ -52,7 +52,10 @@ export default class PdfJsAnnotationInterface {
     onMouseMove(e) {
         this.x = e.layerX;
         this.y = e.layerY;
-        this.annotationController.onMouseMove(this.x, this.y);
+
+        const pageNumber = this.getPage(e.target);
+
+        this.annotationController.onMouseMove(this.x, this.y, pageNumber);
     }
 
     // The layerY co-ordinates are off in this event for some reason,

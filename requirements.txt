@@ -57,7 +57,7 @@ django-tagging==0.5.0
 django-reversion==4.0.0
 
 requirements/src/djangohelpers-0.22-py2.py3-none-any.whl
-django-contrib-comments==2.1.0
+django-contrib-comments==2.2.0
 django-threadedcomments==1.2
 django-courseaffils==2.2.5
 django-statsd-mozilla==0.4.0

@@ -12,8 +12,13 @@
                     {% if collection.thumb_url %}
                         <div class="source_thumb">
                             <a href="/explore/redirect/{{collection.id}}/">
-                                <img src="{{STATIC_URL}}{{collection.thumb_url}}" alt="{{collection.title}} icon"
-                                    class="collection-link" />
+                                {% if collection.thumb_url|slice:":4" == "http" %}
+                                    <img src="{{collection.thumb_url}}" alt="{{collection.title}} icon"
+                                        class="collection-link" />
+                                {% else %}
+                                    <img src="{{STATIC_URL}}{{collection.thumb_url}}" alt="{{collection.title}} icon"
+                                        class="collection-link" />
+                                {% endif %}
                                 <span class="sr-only">{{collection.title}} icon</span>
                             </a>
                         </div>

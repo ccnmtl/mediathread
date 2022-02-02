@@ -4,7 +4,7 @@ psycopg2<2.9
 statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.4.0
-mccabe==0.6.1
+mccabe==0.7.0
 pycodestyle==2.8.0
 configparser==5.2.0
 importlib-metadata<4.11 # for flake8

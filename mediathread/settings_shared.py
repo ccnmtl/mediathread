@@ -230,6 +230,7 @@ if 'test' in sys.argv or \
 
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
+    MIDDLEWARE.remove('django_cookies_samesite.middleware.CookiesSameSite')
 
     from celery.contrib.testing.app import DEFAULT_TEST_CONFIG
 

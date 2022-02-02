@@ -18,8 +18,9 @@ describe('Instructor Course Sources', () => {
         cy.url().should('match', /course\/1\/dashboard\/sources\/$/);
 
         cy.log('should add YouTube as a source to the class');
+        cy.get('#youtube').contains('Add to Class').should('be.visible');
         cy.get('#youtube').click();
-        cy.get('#youtube').should('have.value', 'Remove');
+        cy.get('#youtube').contains('Remove').should('be.visible');
     });
 });
 
@@ -28,12 +29,16 @@ describe('Removing Course Source', () => {
     before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/dashboard/settings/');
+        cy.get('a[href*="sources"]').should('be.visible');
         cy.get('a[href*="sources"]').click();
     });
 
     it('should remove YouTube as a source to the class', () => {
+        cy.get('.collection-link').contains('YouTube')
+            .scrollIntoView().should('be.visible');
+        cy.get('#youtube').scrollIntoView().should('be.visible');
         cy.get('#youtube').should('have.value', 'Remove')
             .click();
-        cy.contains('Remove').should('not.exist');
+        cy.get('#youtube').should('not.exist');
     });
 });

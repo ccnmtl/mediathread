@@ -315,6 +315,11 @@ export default class AssetDetail extends React.Component {
                             me.onSelectSelection(
                                 createdSelection.title,
                                 createdSelection.id);
+
+                            // Clear pdfRect state, we don't need it
+                            // anymore.
+                            me.setState({pdfRect: null});
+
                             return me.onViewSelection(e, createdSelection);
                         });
                 });

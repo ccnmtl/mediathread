@@ -45,9 +45,15 @@
                         <tr>
                             <td class="thumb">
                                 {% if suggested.thumb_url %}
-                                    <a href="{{suggested.url}}">
-                                        <img src="{{STATIC_URL}}{{suggested.thumb_url}}" alt="thumbnail image" />
-                                    </a>
+                                    {% if request.path|slice:":5" == '/test' %}
+                                        <a href="{{suggested.url}}">
+                                            {% if suggested.thumb_url|slice:":4" == "http" %}
+                                                <img src="{{suggested.thumb_url}}" alt="thumbnail image" />
+                                            {% else %}
+                                                <img src="{{STATIC_URL}}{{suggested.thumb_url}}" alt="thumbnail image" />
+                                            {% endif %}
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
                             </td>
                             <td>

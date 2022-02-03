@@ -4,7 +4,7 @@ psycopg2<2.9
 statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.4.0
-mccabe==0.6.1
+mccabe==0.7.0
 pycodestyle==2.8.0
 configparser==5.2.0
 importlib-metadata<4.11 # for flake8
@@ -43,7 +43,7 @@ idna==3.3
 urllib3==1.26.7  # sentry-sdk
 certifi==2021.10.8  # sentry-sdk
 cryptography==36.0.0
-pyOpenSSL==21.0.0
+pyOpenSSL==22.0.0
 asn1crypto==1.4.0  # for pyOpenSSL
 cffi==1.15.0  # for pyOpenSSL
 
@@ -71,7 +71,7 @@ django-smoketest==1.1.2
 django-markwhat==1.6.2
 ipaddress==1.0.23
 text-unidecode==1.3  # for faker
-Faker==11.3.0
+Faker==12.0.0
 factory_boy==3.2.0
 django-impersonate==1.7.3
 django-registration-redux==2.9
@@ -85,7 +85,7 @@ django-cookies-samesite==0.9.0
 httplib2==0.20.2
 oauth==1.0.1
 oauth2==1.9.0.post1
-oauthlib==3.1.1
+oauthlib==3.2.0
 pylti==0.7.0
 nameparser==1.1.0
 django-bootstrap3==21.1
@@ -114,7 +114,7 @@ jmespath==0.10.0
 botocore>=1.16.0,<1.24.0
 boto3[crt]>=1.13.0,<1.21.0
 
-entrypoints==0.3
+entrypoints==0.4
 django-storages==1.12.2
 django-cacheds3storage==0.2.2
 
@@ -132,7 +132,7 @@ pyyaml==6.0
 bandit==1.7.0
 funcsigs==1.0.2
 pypanopto==0.2.0
-entrypoints==0.3
+entrypoints==0.4
 
 billiard==3.6.4.0
 vine==1.3.0

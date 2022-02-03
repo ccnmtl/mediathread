@@ -39,11 +39,12 @@ export default class AnnotationController {
         };
     }
 
-    onMouseMove(x, y) {
+    onMouseMove(x, y, page=1) {
         this.state.x = x / this.state.scale;
         this.state.y = y / this.state.scale;
 
-        if (this.state.isMakingRect) {
+        // Don't allow multi-page annotations
+        if (this.state.isMakingRect && this.page === page) {
             this.updateRect();
         }
     }
@@ -61,6 +62,12 @@ export default class AnnotationController {
 
     onMouseDown(x, y, page) {
         this.state.isMakingRect = true;
+
+        if (page !== this.page) {
+            // Clear the old page
+            this.clearRect(this.page);
+        }
+
         this.startRect(
             x / this.state.scale,
             y / this.state.scale,
@@ -100,8 +107,12 @@ export default class AnnotationController {
         return rect;
     }
 
-    clearRect() {
-        const draw = this.getSVG(this.page);
+    clearRect(page=null) {
+        if (!page) {
+            page = this.page;
+        }
+
+        const draw = this.getSVG(page);
 
         if (draw) {
             draw.clear();

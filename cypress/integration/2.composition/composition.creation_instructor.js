@@ -9,8 +9,8 @@ describe('Instructor Creates Composition', () => {
 
         cy.log('creates a project');
         cy.visit('/course/1/projects');
-        cy.get('.page-title').contains('Projects');
         cy.get('#cu-privacy-notice-button').click();
+        cy.get('.page-title').contains('Projects').should('be.visible');
         cy.get('button#add-composition-button').click();
 
         cy.log('should check composition panel features');

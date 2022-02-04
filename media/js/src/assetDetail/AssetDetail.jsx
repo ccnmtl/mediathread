@@ -280,6 +280,12 @@ export default class AssetDetail extends React.Component {
                 end: this.state.selectionEndTime
             };
         } else if (this.type === 'pdf') {
+            if (!this.state.pdfRect) {
+                this.onShowValidationError(
+                    'Please make a selection on the PDF.');
+                return;
+            }
+
             annotationData = {
                 geometry: {
                     type: 'Rectangle',

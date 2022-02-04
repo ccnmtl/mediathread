@@ -92,7 +92,8 @@ export default class GridAsset extends React.Component {
         this.svgDraw.clear();
 
         drawAnnotation(
-            this.svgDraw, a, this.pdfScale, -this.pdfLeftMargin, 0);
+            this.svgDraw, a.annotation,
+            this.pdfScale, -this.pdfLeftMargin, 0);
     }
 
     onSelectedAnnotationUpdate(annotation) {
@@ -323,10 +324,7 @@ export default class GridAsset extends React.Component {
     onPDFPageRenderSuccess(e) {
         this.pdfViewer = e;
         const el = this.pdfPageRef.current.querySelector('.react-pdf__Page');
-        const scale = e.width / e.getViewport({scale: 1}).width;
-
-        // TODO: why is this 0.75 magic number necessary?
-        this.pdfScale = scale * 0.75;
+        this.pdfScale = e.width / e.getViewport({scale: 1}).width;
 
         this.pdfLeftMargin = calcPdfLeftMargin(el, e);
         this.svgDraw = SVG().addTo(el);

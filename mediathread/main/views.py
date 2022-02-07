@@ -407,7 +407,7 @@ class ContactUsView(FormView):
 
         # send to server email instead
         send_mail('Mediathread Support Request', form_data['description'],
-                  settings.SERVER_EMAIL, (settings.SERVER_EMAIL,))
+                  settings.SERVER_EMAIL, (settings.CONTACT_US_EMAIL,))
 
         # send a follow-up to the user requesting help
         support_email = getattr(settings, 'SUPPORT_DESTINATION', None)
@@ -1038,7 +1038,7 @@ If you are new to Mediathread, a CTL learning designer or your
 department specialist will check in with you in the coming days to
 make sure all is going well. If you have any pressing questions in the
 meantime, please feel free to contact us at
-ccnmtl-mediathread@ccnmtl.columbia.edu.
+ctl-mediathread@columbia.edu.
 
 Thanks,
 The Mediathread Team
@@ -1084,7 +1084,7 @@ Faculty: {} <{}>
             subject,
             body,
             settings.SERVER_EMAIL,
-            [settings.SERVER_EMAIL])
+            [settings.CONTACT_US_EMAIL])
 
     def create_course(self, form, affil):
         """Creates a Course for this form.

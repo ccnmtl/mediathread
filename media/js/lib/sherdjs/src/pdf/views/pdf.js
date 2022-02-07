@@ -130,7 +130,7 @@ const PdfJS = function() {
         ) {
             const iframe = window.jQuery('iframe.pdfjs')[0];
             if (isValidAnnotation(annotation)) {
-                // Render the PDF view and possible annotation in the
+                // Render the PDF view and possibly annotation in the
                 // iframe instead.
                 //
                 // In this case, all that needs to be done is send a

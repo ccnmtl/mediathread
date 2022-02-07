@@ -280,6 +280,12 @@ export default class AssetDetail extends React.Component {
                 end: this.state.selectionEndTime
             };
         } else if (this.type === 'pdf') {
+            if (!this.state.pdfRect) {
+                this.onShowValidationError(
+                    'Please make a selection on the PDF.');
+                return;
+            }
+
             annotationData = {
                 geometry: {
                     type: 'Rectangle',
@@ -315,6 +321,11 @@ export default class AssetDetail extends React.Component {
                             me.onSelectSelection(
                                 createdSelection.title,
                                 createdSelection.id);
+
+                            // Clear pdfRect state, we don't need it
+                            // anymore.
+                            me.setState({pdfRect: null});
+
                             return me.onViewSelection(e, createdSelection);
                         });
                 });

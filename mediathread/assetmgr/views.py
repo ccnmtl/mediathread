@@ -1349,8 +1349,9 @@ class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
 
-        if request.user.is_superuser or \
-           request.course.is_faculty(request.user):
+        if request.user and (
+                request.user.is_superuser or
+                request.course.is_faculty(request.user)):
             return r
 
         if not course_details.all_items_are_visible(request.course) and \

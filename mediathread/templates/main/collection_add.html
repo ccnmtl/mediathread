@@ -77,11 +77,21 @@
                             {% endif %}
 
                             {% if can_upload_image %}
-                               <h6 class="card-title mt-2">IMAGE</h6>
-                               <p class="card-text">
-                                   Mediathread supports image files that end in .bmp, .gif, .jpg, .jpeg, .png, .svg and .webp.
-                                   Submitted files must be less than 10MB.
-                               </p>
+                                {% flag "pdf_upload" %}
+                                <h6 class="card-title mt-2">IMAGE / PDF</h6>
+                                <p class="card-text">
+                                    Mediathread supports image files
+                                    that end in .bmp, .gif, .jpg,
+                                    .jpeg, .png, .svg, .webp, and also PDF files.
+                                    Submitted files must be less than 10MB.
+                                </p>
+                                {% else %}
+                                <h6 class="card-title mt-2">IMAGE</h6>
+                                <p class="card-text">
+                                    Mediathread supports image files that end in .bmp, .gif, .jpg, .jpeg, .png, .svg and .webp.
+                                    Submitted files must be less than 10MB.
+                                </p>
+                                {% endflag %}
                                <div class="card-text">
                                    {% csrf_token %}
                                    <div class="form-row align-items-center">

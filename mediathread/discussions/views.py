@@ -13,7 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.views.generic.base import View
 import django_comments
-from django_comments.models import COMMENT_MAX_LENGTH
+from django_comments.forms import COMMENT_MAX_LENGTH
 from djangohelpers.lib import rendered_with
 import json
 from mediathread.api import UserResource

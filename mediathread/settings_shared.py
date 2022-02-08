@@ -83,7 +83,8 @@ INSTALLED_APPS += [  # noqa
 ]
 
 THUMBNAIL_SUBDIR = "thumbs"
-SERVER_EMAIL = "mediathread@example.com"
+SERVER_EMAIL = "mediathread-noreply@example.com"
+CONTACT_US_EMAIL = "mediathread-support@example.com"
 
 DATE_FORMAT = DATETIME_FORMAT = "g:i a, m/d/y"
 LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = '/'

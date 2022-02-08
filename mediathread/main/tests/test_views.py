@@ -542,7 +542,7 @@ class ContactUsViewTest(TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               settings.SERVER_EMAIL)
             self.assertEquals(mail.outbox[0].to,
-                              [settings.SERVER_EMAIL])
+                              [settings.CONTACT_US_EMAIL])
 
             self.assertEqual(mail.outbox[1].subject,
                              'Mediathread Contact Us Request')
@@ -573,7 +573,7 @@ class ContactUsViewTest(TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               settings.SERVER_EMAIL)
             self.assertEquals(mail.outbox[0].to,
-                              [settings.SERVER_EMAIL])
+                              [settings.CONTACT_US_EMAIL])
 
             self.assertEqual(mail.outbox[1].subject,
                              'Mediathread Contact Us Request')
@@ -1425,7 +1425,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
             settings.SERVER_EMAIL)
         self.assertEquals(
             mail.outbox[0].to,
-            [settings.SERVER_EMAIL])
+            [settings.CONTACT_US_EMAIL])
         self.assertIn(
             'Course Title: {}'.format('English for Cats'),
             mail.outbox[0].body)

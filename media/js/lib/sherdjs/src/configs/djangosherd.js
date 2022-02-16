@@ -211,9 +211,9 @@ function DjangoSherd_Asset_Config() {
     });
 
     ds.assetview.html.push(
-        jQuery('div.asset-display').get(0), // id=videoclip
-        {
-            asset : ds.assetMicroFormat.read(ds.dom_assets[0])
+        // id=videoclip
+        jQuery('div.asset-display').get(0), {
+            asset: ds.assetMicroFormat.read(ds.dom_assets[0])
         });
 
     // /# load asset into note-form
@@ -383,9 +383,9 @@ CitationView.prototype.openCitationById = function (anchor, asset_id, annotation
 CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
     var self = this;
 
-    var asset_target = ((self.options.targets && self.options.targets.asset) ?
-            self.options.targets.asset
-            : document.getElementById("videoclipbox"));
+    var asset_target =
+        ((self.options.targets && self.options.targets.asset) ?
+         self.options.targets.asset : document.getElementById("videoclipbox"));
 
     if (typeof self.options.onPrepareCitation === 'function') {
         self.options.onPrepareCitation(asset_target);

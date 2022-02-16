@@ -1225,6 +1225,14 @@
                 rendered = Mustache.render(
                     MediaThread.templates.asset_view_details_quick_edit,
                     context);
+
+                // PDF hack
+                if (self.active_asset.type === 'pdf') {
+                    const $clipform = jQuery(rendered).find(
+                        '#clipform-display');
+                    jQuery('.asset-view-container').before($clipform);
+                }
+
                 var $el = self.$parent.find('#asset-view-details-quick-edit');
                 $el.html(rendered);
             } else if (template_label === 'asset-annotation-current') {

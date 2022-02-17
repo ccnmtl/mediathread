@@ -29,15 +29,70 @@ import PdfJsAnnotationInterface from './PdfJsAnnotationInterface.js';
 const annotationController = new AnnotationController();
 const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 
+const state = {
+    pagesLoaded: false,
+    pageNumber: null
+};
+
+const scrollToPage = function(page=1) {
+    // Scroll page into view.
+    PDFViewerApplication.page = page;
+    const pageDiv = document.querySelector(
+        `.page[data-page-number="${page}"]`);
+    PDFViewerApplication.pdfViewer._scrollIntoView({
+        pageDiv: pageDiv
+    });
+};
+
+const viewSelection = function(e) {
+    if (e.data.coordinates.length < 2) {
+        return;
+    }
+
+    const page = parseInt(e.data.page) || 1;
+    annotationController.page = page;
+    annotationController.rect = {
+        coords: e.data.coordinates
+    };
+
+    // Scroll to the right page if the pages are loaded
+    if (state.pagesLoaded) {
+        scrollToPage(page);
+    } else {
+        // Otherwise, set state so this can be handled in the
+        // pagesloaded event handler.
+        state.pageNumber = page;
+    }
+
+    annotationController.displayRect(
+        e.data.coordinates[0][0],
+        e.data.coordinates[0][1],
+        e.data.coordinates[1][0],
+        e.data.coordinates[1][1],
+        annotationController.state.scale
+    );
+};
+
 // Wait for the PDFViewerApplication to initialize
 // https://stackoverflow.com/a/68489111/173630
 PDFViewerApplication.initializedPromise.then(function() {
     PDFViewerApplication.eventBus.on('pagesloaded', function(e) {
+        state.pagesLoaded = true;
         // Tell the react app that the PDF is loaded, in case anything
         // needs to happen there.
         window.top.postMessage({
             message: 'pdfLoaded'
         }, '*');
+
+        if (state.pageNumber) {
+            // This 200-millisecond setTimeout before scroll prevents
+            // a pdf.js viewer debounce timing error. It's necessary
+            // until I sort out a more elegant way to execute this at
+            // the right time.
+            setTimeout(function() {
+                scrollToPage(state.pageNumber);
+            }, 200);
+        }
     });
 
     PDFViewerApplication.eventBus.on('pagerendered', function(e) {
@@ -82,29 +137,6 @@ window.onmessage = function(e) {
     } else if (e.data === 'onClearSelection') {
         annotationController.clearRect();
     } else if (e.data.message && e.data.message === 'onViewSelection') {
-        if (e.data.coordinates.length < 2) {
-            return;
-        }
-
-        const page = parseInt(e.data.page);
-        annotationController.page = page || 1;
-        annotationController.rect = {
-            coords: e.data.coordinates
-        };
-
-        // Scroll selection into view.
-        PDFViewerApplication.page = (page || 1);
-        const pageDiv = document.getElementById('pdfjs-page-' + (page || 1));
-        PDFViewerApplication.pdfViewer._scrollIntoView({
-            pageDiv: pageDiv
-        });
-
-        annotationController.displayRect(
-            e.data.coordinates[0][0],
-            e.data.coordinates[0][1],
-            e.data.coordinates[1][0],
-            e.data.coordinates[1][1],
-            annotationController.state.scale
-        );
+        viewSelection(e);
     }
 };

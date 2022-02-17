@@ -1,4 +1,9 @@
 /* global Sherd: true */
+
+import {
+    pdfjsScale, isValidAnnotation, drawAnnotation, renderPage
+} from '../../../../../pdf/utils.js';
+
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Pdf) { Sherd.Pdf = {}; }
 if (!Sherd.Pdf.Annotators) { Sherd.Pdf.Annotators = {}; }
@@ -48,6 +53,18 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                 }
 
                 self.mode = null;
+
+                if (isValidAnnotation(obj)) {
+                    const data = obj.geometry;
+                    data.message = 'onViewSelection';
+
+                    const iframe = window.jQuery('iframe.pdfjs')[0];
+                    if (iframe) {
+                        iframe.addEventListener('load', function(e) {
+                            e.target.contentWindow.postMessage(data, '*');
+                        });
+                    }
+                }
             }
         };
 

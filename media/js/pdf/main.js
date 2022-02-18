@@ -31,16 +31,26 @@ const annotationInterface = new PdfJsAnnotationInterface(annotationController);
 
 const state = {
     pagesLoaded: false,
-    pageNumber: null
+    pageNumber: null,
+    annotationTop: null,
+    annotationLeft: null
 };
 
-const scrollToPage = function(page=1) {
+const scrollToPage = function(page=1, top=0, left=0) {
+    const margin = 40;
+    const scale = annotationController.state.scale;
+
     // Scroll page into view.
     PDFViewerApplication.page = page;
     const pageDiv = document.querySelector(
         `.page[data-page-number="${page}"]`);
     PDFViewerApplication.pdfViewer._scrollIntoView({
-        pageDiv: pageDiv
+        pageDiv: pageDiv,
+        pageNumber: page,
+        pageSpot: {
+            top: (top - margin) * scale,
+            left: left * scale
+        }
     });
 };
 
@@ -60,13 +70,18 @@ const viewSelection = function(e) {
         coords: e.data.coordinates
     };
 
+    const top = Math.min(e.data.coordinates[0][1], e.data.coordinates[1][1]);
+    const left = Math.min(e.data.coordinates[0][0], e.data.coordinates[1][0]);
+
     // Scroll to the right page if the pages are loaded
     if (state.pagesLoaded) {
-        scrollToPage(page);
+        scrollToPage(page, top, left);
     } else {
         // Otherwise, set state so this can be handled in the
         // pagesloaded event handler.
         state.pageNumber = page;
+        state.annotationTop = top;
+        state.annotationLeft = left;
     }
 
     annotationController.displayRect(
@@ -95,7 +110,10 @@ PDFViewerApplication.initializedPromise.then(function() {
             // until I sort out a more elegant way to execute this at
             // the right time.
             setTimeout(function() {
-                scrollToPage(state.pageNumber);
+                scrollToPage(
+                    state.pageNumber,
+                    state.annotationTop,
+                    state.annotationLeft);
             }, 200);
         }
     });

@@ -49,6 +49,11 @@ const viewSelection = function(e) {
         return;
     }
 
+    // Clear the page of the current selection, if there is one.
+    if (annotationController.page) {
+        annotationController.clearRect(annotationController.page);
+    }
+
     const page = parseInt(e.data.page) || 1;
     annotationController.page = page;
     annotationController.rect = {

@@ -1,89 +1,27 @@
-* { font-family: 'Open Sans', sans-serif; }
+/* Splash page css */
 
-/*accessible blue*/
-a, a.page-link { color: #0056b3; }
-
-.page-item.active .page-link
+#identity
 {
-	background-color: #0056b3;
-	border-color: #0056b3;
+	background-image: url(../../img/promo/tails-up.svg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #000;
 }
 
-.btn-outline-primary:not(:disabled):not(.disabled).active
-{
-	background-color: #0056b3;
-	border-color: #0056b3;
+#audience {
+	background-image: url(../../img/promo/tails-right.svg);
+	background-size: 1920px;
+	background-repeat: no-repeat;
+	background-position: right top;
+	background-color: #666;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
-h1.page-title { padding: 0em 0em .5em 0em; }
-
-h6.course-title
+#features
 {
-	text-transform: uppercase;
-	padding: 1em 0em 1em 0em;
-}
-
-#title-addition { margin-top: 1em; }
-
-/*bottom border fix*/
-nav#three-section-tabs a.active { margin-bottom: -1px; }
-
-#search-well
-{
-	border-radius: .25em;
-	background-color: #f6f6f6;
-	padding: .5em .5em 0em .5em;
-	margin-bottom: 1em;
-}
-
-#search-well label { font-size: .8em; }
-#title-addition { margin-top: 1em; }
-#view-pagination { margin-bottom: 1em; }
-
-/* query pulls right-aligned user link back into left-aligned mobile vertical navigation menu */
-
-@media only screen and (max-width: 991px)
-{
-	li.ml-auto { margin-left: 0!important; }
-}
-
-/* query formats responsive tabs for mobile viewport */
-
-@media only screen and (max-width: 575px)
-{
-	nav#three-section-tabs { border: 0; }
-	nav#three-section-tabs .nav-link { border-radius: .25rem; }
-	nav#three-section-tabs .active { border: 1px solid #dee2e6; }
-	#add-button { margin-bottom: 1em; }
-}
-
-
-@media (min-width: 768px)
-{
-	.carousel-caption .display-3 {
-		font-size: 2rem;
-	}
-	.carousel-caption .lead {
-		display: none;
-	}
-}
-
-
-@media (min-width: 992px)
-{
-	.carousel-caption .display-3 {
-		font-size: 2.7rem;
-	}
-	.carousel-caption .lead {
-		display: block;
-	}
-}
-
-
-@media (min-width: 1200px)
-{
-	.carousel-caption .display-3 {
-		font-size: 3.70rem;
-	}
+	background-image: url(../../img/promo/tails-left.svg);
+	background-size: 1920px;
+	background-repeat: no-repeat;
+	background-position: left bottom;
+	background-color: #fff;
 }

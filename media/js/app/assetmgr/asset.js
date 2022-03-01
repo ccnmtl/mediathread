@@ -245,6 +245,22 @@
             } else {
                 self.layers[self.grouping].hide();
             }
+
+            // If this asset is a pdf, tell the sherd annotator what happened.
+            if (
+                djangosherd.assetview.clipform &&
+                    djangosherd.assetview.clipform.viewAllSelections
+            ) {
+                if (show) {
+                    djangosherd.assetview.clipform.viewAllSelections(
+                        self.active_asset.annotations
+                    );
+                } else {
+                    djangosherd.assetview.clipform.clearAllSelections(
+                        self.active_asset.annotations
+                    );
+                }
+            }
         };
 
         ///Groupby('author')

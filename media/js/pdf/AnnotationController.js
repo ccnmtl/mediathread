@@ -94,10 +94,17 @@ export default class AnnotationController {
         return null;
     }
 
-    makeRect(x, y, width, height) {
-        const draw = this.getSVG(this.page);
+    makeRect(x, y, width, height, page=1, clear=true) {
+        const draw = this.getSVG(page || this.page);
 
-        draw.clear();
+        if (clear) {
+            draw.clear();
+        }
+
+        if (!draw) {
+            console.error('couldn\'t find SVG!');
+            return;
+        }
 
         const rect = draw.rect(width, height)
             .move(x, y)
@@ -119,6 +126,20 @@ export default class AnnotationController {
         } else {
             console.error('draw.clear() failed, couldn\'t find SVG.');
         }
+    }
+
+    /**
+     * Given an array of numbers, clear the corresponding pages.
+     */
+    clearPages(pages=[]) {
+        if (!pages.includes(this.page)) {
+            pages.push(this.page);
+        }
+
+        const me = this;
+        pages.forEach(function(i) {
+            me.clearRect(i);
+        });
     }
 
     updateRect() {
@@ -149,7 +170,7 @@ export default class AnnotationController {
 
         this.displayRect(
             x, y, this.state.x, this.state.y,
-            this.state.scale
+            this.state.scale, this.page
         );
     }
 
@@ -163,24 +184,43 @@ export default class AnnotationController {
         }, '*');
     }
 
-    displayRect(x1, y1, x2, y2, scale=1) {
+    displayRect(x1, y1, x2, y2, scale=1, page=1, clear=true) {
         const coords = convertPointsToXYWH(x1, y1, x2, y2, scale);
 
-        this.state.svgRect = this.makeRect(...coords);
+        this.state.svgRect = this.makeRect(...coords, page, clear);
     }
 
-    onPageRendered() {
-        if (!this.rect) {
-            return;
+    /**
+     * If allSelections is passed in, these need to be displayed
+     * rather than this.state.
+     */
+    onPageRendered(e, allSelections=null) {
+        if (allSelections && allSelections.length > 0) {
+            const me = this;
+            allSelections.forEach(function(selection) {
+                if (e.pageNumber === selection.page) {
+                    me.displayRect(
+                        selection.coordinates[0][0],
+                        selection.coordinates[0][1],
+                        selection.coordinates[1][0],
+                        selection.coordinates[1][1],
+                        me.state.scale,
+                        selection.page,
+                        false
+                    );
+                }
+            });
+        } else if (this.rect) {
+            this.displayRect(
+                this.rect.coords[0][0],
+                this.rect.coords[0][1],
+                this.rect.coords[1][0],
+                this.rect.coords[1][1],
+                this.state.scale,
+                this.page,
+                false
+            );
         }
-
-        this.displayRect(
-            this.rect.coords[0][0],
-            this.rect.coords[0][1],
-            this.rect.coords[1][0],
-            this.rect.coords[1][1],
-            this.state.scale
-        );
     }
 
     onZoomChange(scale) {

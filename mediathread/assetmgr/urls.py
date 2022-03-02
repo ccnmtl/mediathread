@@ -1,6 +1,7 @@
 import os.path
 
 from django.urls import path
+from django.views.generic import TemplateView
 
 from mediathread.assetmgr.views import (
     AssetWorkspaceView, AssetReferenceView, ManageExternalCollectionView,
@@ -78,6 +79,13 @@ urlpatterns = [
          name='pdfjs'),
 
     path('sign_s3/', S3SignView.as_view()),
+
+    # Load this CSS asset as a TemplateView so we can use the static
+    # template tag.
+    # https://stackoverflow.com/a/55225412/173630
+    path('css/viewer.css', TemplateView.as_view(
+        template_name='assetmgr/css/viewer.css',
+        content_type='text/css')),
 
     # Asset workspace variations
     path('', AssetWorkspaceView.as_view(), {}, 'asset-collection-view'),

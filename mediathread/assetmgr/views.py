@@ -1351,12 +1351,16 @@ class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
 
         if request.user and (
                 request.user.is_superuser or
-                request.course.is_faculty(request.user)):
+                (request.course and
+                 request.course.is_faculty(request.user))
+        ):
             return r
 
-        if not course_details.all_items_are_visible(request.course) and \
-           not request.course.is_faculty(self.object.author) and \
-           self.object.author != request.user:
+        if (request.course is None) or (
+                not course_details.all_items_are_visible(request.course) and
+                not request.course.is_faculty(self.object.author) and
+                self.object.author != request.user
+        ):
             return HttpResponseForbidden('You can\'t view this asset.')
 
         return r

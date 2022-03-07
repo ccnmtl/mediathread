@@ -95,7 +95,7 @@
                                <div class="card-text">
                                    {% csrf_token %}
                                    <div class="form-row align-items-center">
-                                       <form method="post" action="asset/create/">
+                                       <form method="post" action="{% url 'asset-create' %}">
                                            {% csrf_token %}
 
                                            {% if owners %}

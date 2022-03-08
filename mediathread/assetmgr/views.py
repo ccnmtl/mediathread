@@ -353,7 +353,7 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
         url = request.POST.get('url')
 
         author = request.user
-        if (request.user.is_staff):
+        if request.user.is_staff and request.POST.get('as'):
             upload_as = request.POST.get('as')
             author = get_object_or_404(User, username=upload_as)
 

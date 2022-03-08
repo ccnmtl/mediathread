@@ -137,6 +137,10 @@ const PdfJS = function() {
                 // message to the iframe.
                 const data = annotation.geometry;
                 data.message = 'onViewSelection';
+                if (document.forms['annotation-list-filter']) {
+                    data.showall = document.forms['annotation-list-filter']
+                        .elements.showall.checked;
+                }
 
                 if (iframe) {
                     iframe.contentWindow.postMessage(data, '*');

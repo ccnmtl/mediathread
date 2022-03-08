@@ -57,6 +57,10 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                 if (isValidAnnotation(obj)) {
                     const data = obj.geometry;
                     data.message = 'onViewSelection';
+                    if (document.forms['annotation-list-filter']) {
+                        data.showall = document.forms['annotation-list-filter']
+                            .elements.showall.checked;
+                    }
 
                     const iframe = window.jQuery('iframe.pdfjs')[0];
                     if (iframe) {
@@ -193,6 +197,41 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                         '.quickedit-cancel-button'),
                     'clear': document.querySelector('.quickedit-clear-button')
                 };
+            }
+        }
+
+        this.viewAllSelections = function(selections) {
+            const data = {
+                selections: selections.map(x => x.annotation.geometry)
+            };
+            data.message = 'onViewAllSelections';
+
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+            if (iframe) {
+                iframe.contentWindow.postMessage(data, '*');
+            }
+        };
+
+        this.clearAllSelections = function(selections) {
+            let pages = [];
+
+            selections.forEach(function(e) {
+                if (
+                    e.annotation.geometry.page &&
+                        !pages.includes(e.annotation.geometry.page)
+                ) {
+                    pages.push(e.annotation.geometry.page);
+                }
+            });
+
+            const data = {
+                pages: pages
+            }
+            data.message = 'onClearAllSelections';
+
+            const iframe = window.jQuery('iframe.pdfjs')[0];
+            if (iframe) {
+                iframe.contentWindow.postMessage(data, '*');
             }
         };
     };

@@ -33,7 +33,9 @@ const state = {
     pagesLoaded: false,
     pageNumber: null,
     annotationTop: null,
-    annotationLeft: null
+    annotationLeft: null,
+    dirtyPages: [],
+    allSelections: null
 };
 
 const scrollToPage = function(page=1, top=0, left=0) {
@@ -54,28 +56,41 @@ const scrollToPage = function(page=1, top=0, left=0) {
     });
 };
 
-const viewSelection = function(e) {
-    if (e.data.coordinates.length < 2) {
+const viewSelection = function(s, multiple=false, scroll=true) {
+    let selection = s;
+    if (s.data) {
+        selection = s.data;
+    }
+
+    if (selection.coordinates.length < 2) {
         return;
     }
 
     // Clear the page of the current selection, if there is one.
-    if (annotationController.page) {
+    if (!multiple && annotationController.page) {
         annotationController.clearRect(annotationController.page);
     }
 
-    const page = parseInt(e.data.page) || 1;
+    const page = parseInt(selection.page) || 1;
     annotationController.page = page;
     annotationController.rect = {
-        coords: e.data.coordinates
+        coords: selection.coordinates
     };
 
-    const top = Math.min(e.data.coordinates[0][1], e.data.coordinates[1][1]);
-    const left = Math.min(e.data.coordinates[0][0], e.data.coordinates[1][0]);
+    const top = Math.min(
+        selection.coordinates[0][1],
+        selection.coordinates[1][1]);
+    const left = Math.min(
+        selection.coordinates[0][0],
+        selection.coordinates[1][0]);
 
     // Scroll to the right page if the pages are loaded
     if (state.pagesLoaded) {
-        scrollToPage(page, top, left);
+        if (scroll) {
+            // Don't scroll if we're viewing
+            // multiple selections here.
+            scrollToPage(page, top, left);
+        }
     } else {
         // Otherwise, set state so this can be handled in the
         // pagesloaded event handler.
@@ -85,11 +100,13 @@ const viewSelection = function(e) {
     }
 
     annotationController.displayRect(
-        e.data.coordinates[0][0],
-        e.data.coordinates[0][1],
-        e.data.coordinates[1][0],
-        e.data.coordinates[1][1],
-        annotationController.state.scale
+        selection.coordinates[0][0],
+        selection.coordinates[0][1],
+        selection.coordinates[1][0],
+        selection.coordinates[1][1],
+        annotationController.state.scale,
+        selection.page,
+        !multiple
     );
 };
 
@@ -120,7 +137,7 @@ PDFViewerApplication.initializedPromise.then(function() {
 
     PDFViewerApplication.eventBus.on('pagerendered', function(e) {
         annotationInterface.onPageRendered(e);
-        annotationController.onPageRendered();
+        annotationController.onPageRendered(e, state.allSelections);
     });
 
     PDFViewerApplication.eventBus.on('scalechanging', function(e) {
@@ -160,6 +177,31 @@ window.onmessage = function(e) {
     } else if (e.data === 'onClearSelection') {
         annotationController.clearRect();
     } else if (e.data.message && e.data.message === 'onViewSelection') {
-        viewSelection(e);
+        const showall = e.data.showall;
+
+        // If showall is not checked, clear all selections.
+        if (!showall) {
+            state.allSelections = null;
+            if (state.dirtyPages.length > 0) {
+                annotationController.clearPages(state.dirtyPages);
+                state.dirtyPages = [];
+            }
+        }
+
+        viewSelection(e, showall);
+    } else if (e.data.message && e.data.message === 'onClearAllSelections') {
+        state.allSelections = null;
+        annotationController.clearPages(e.data.pages);
+    } else if (e.data.message && e.data.message === 'onViewAllSelections') {
+        // Set allSelections state, to display on re-render.
+        state.allSelections = e.data.selections;
+
+        e.data.selections.forEach(function(selection) {
+            viewSelection(selection, true, false);
+
+            if (!state.dirtyPages.includes(selection.page)) {
+                state.dirtyPages.push(selection.page);
+            }
+        });
     }
 };

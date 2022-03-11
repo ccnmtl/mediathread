@@ -24,7 +24,7 @@ django-tastypie==0.14.3
 coverage==6.2
 logilab-common==1.8.1
 lazy-object-proxy==1.7.1
-wrapt==1.13.2
+wrapt==1.14.0
 unicodecsv==0.14.1
 
 editdistance==0.6.0

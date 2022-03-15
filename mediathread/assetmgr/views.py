@@ -1167,10 +1167,18 @@ class ReactAssetDetailView(LoggedInCourseMixin, DetailView):
         can_upload_image = course_details.can_upload_image(
             self.request.user, self.request.course)
 
+        owners = []
+        if (self.request.course.is_member(self.request.user) and
+            (self.request.user.is_staff or
+             self.request.user.has_perm('assetmgr.can_upload_for'))):
+            owners = UserResource().render_list(
+                self.request, self.request.course.members)
+
         context.update({
             'course': self.request.course,
             'collections': collections,
             'uploader': uploader,
+            'owners': owners,
             'can_upload': can_upload,
             'can_upload_image': can_upload_image,
         })

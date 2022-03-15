@@ -821,6 +821,17 @@
         //  - author === current_user
         this.newAnnotation = function() {
             this.active_annotation = null;
+
+            // If this asset is a pdf, clear all selections.
+            if (
+                djangosherd.assetview.clipform &&
+                    djangosherd.assetview.clipform.clearAllSelections
+            ) {
+                djangosherd.assetview.clipform.clearAllSelections(
+                    self.active_asset.annotations
+                );
+            }
+
             var context = {
                 'vocabulary': self.vocabulary,
                 'annotation': {

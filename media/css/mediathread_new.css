@@ -3881,6 +3881,10 @@ div.ui-dialog div.asset-view-details h2 {
     }
 }
 
+.navbar .nav-item .btn-outline-secondary {
+    color: #727B83;
+}
+
 a.btn.btn-default {
     color: #333;
     font-weight: normal;

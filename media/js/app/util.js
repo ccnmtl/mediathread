@@ -172,26 +172,35 @@ function retrieveData(name) {
 
 // eslint-disable-next-line no-unused-vars
 function showMessage(msg, onclose, customTitle, position) {
-    var title = customTitle ? customTitle : 'Success';
-    var $dialogConfirm = jQuery('#dialog-confirm');
+    const title = customTitle ? customTitle : 'Success';
+
+    let buttons = {
+        'OK': function(evt, ui) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            jQuery(this).dialog('close');
+            if (onclose) {
+                onclose(evt, ui);
+            }
+        }
+    };
+
+    // If this is an error dialog, we don't need both OK and Cancel
+    // buttons.
+    if (customTitle !== 'Error') {
+        buttons['Cancel'] = function() {
+            jQuery(this).dialog('close');
+        };
+    }
+
+    const $dialogConfirm = jQuery('#dialog-confirm');
+
     $dialogConfirm.html(msg);
     $dialogConfirm.dialog({
         resizable: false,
         modal: true,
         title: title,
-        buttons: {
-            'Cancel': function() {
-                jQuery(this).dialog('close');
-            },
-            'OK': function(evt, ui) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                jQuery(this).dialog('close');
-                if (onclose) {
-                    onclose(evt, ui);
-                }
-            }
-        }
+        buttons: buttons
     });
     // position newly opened dialog (using its parent container) below $div.
     if (position) {

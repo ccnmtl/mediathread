@@ -4185,6 +4185,7 @@ ul.section-tabs>li>a.active {
 }
 
 .card-thumbnail img,
+.card-thumbnail .image-overlay,
 .card-thumbnail .ol-map,
 .card-thumbnail canvas {
     height: 192px;

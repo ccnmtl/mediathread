@@ -213,6 +213,8 @@ if (!Sherd.Pdf.Annotators.Pdf) {
         };
 
         this.clearAllSelections = function(selections) {
+            self.state.pdfRect = null;
+
             let pages = [];
 
             selections.forEach(function(e) {

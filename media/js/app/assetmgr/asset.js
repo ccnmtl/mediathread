@@ -821,6 +821,17 @@
         //  - author === current_user
         this.newAnnotation = function() {
             this.active_annotation = null;
+
+            // If this asset is a pdf, clear all selections.
+            if (
+                djangosherd.assetview.clipform &&
+                    djangosherd.assetview.clipform.clearAllSelections
+            ) {
+                djangosherd.assetview.clipform.clearAllSelections(
+                    self.active_asset.annotations
+                );
+            }
+
             var context = {
                 'vocabulary': self.vocabulary,
                 'annotation': {
@@ -943,8 +954,10 @@
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function(saveButton) {
-            jQuery(saveButton).attr('disabled', 'disabled')
-                .attr('value', 'Saving...').addClass('saving');
+            jQuery(saveButton)
+                .attr('disabled', 'disabled')
+                .attr('value', 'Saving...')
+                .addClass('saving');
 
             var frm = document.forms['edit-annotation-form'];
 
@@ -987,11 +1000,13 @@
             }
 
             if (msg) {
-                showMessage(msg,
+                showMessage(
+                    msg,
                     function() {
-                        jQuery(saveButton).removeAttr('disabled');
-                        jQuery(saveButton).removeClass('saving');
-                        jQuery(saveButton).attr('value', 'Save Selection');
+                        jQuery(saveButton)
+                            .removeAttr('disabled')
+                            .removeClass('saving')
+                            .attr('value', 'Save Selection');
                     },
                     'Error',
                     {

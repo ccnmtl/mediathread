@@ -280,6 +280,7 @@ export default class GridAsset extends React.Component {
                 target: `map-${this.props.asset.id}`,
                 controls: [],
                 interactions: [],
+                pixelRatio: 1,
                 layers: [
                     new ImageLayer({
                         source: new ImageStatic({

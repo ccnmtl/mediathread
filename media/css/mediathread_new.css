@@ -4332,7 +4332,7 @@ ul.section-tabs>li>a.active {
 }
 
 .toolbar-annotations .rectangle-button:focus {
-    background-color: orange;
+    background-color: #ffc107!important;
     color: #212529;
 }
 

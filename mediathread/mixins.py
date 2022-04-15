@@ -125,6 +125,13 @@ class RestrictedMaterialsMixin(object):
         if request.GET.getlist('primary_type[]'):
             filtered_types = request.GET.getlist('primary_type[]')
             visible_notes = visible_notes.exclude_primary_types(filtered_types)
+        elif request.GET.get('primary_type'):
+            # If primary_type is passed in as a string, use that
+            # instead of the list.
+
+            filtered_type = request.GET.get('primary_type')
+            visible_notes = visible_notes.exclude_primary_types(
+                [filtered_type])
 
         search_text = request.GET.get('search_text', '').strip().lower()
         if len(search_text) > 0:

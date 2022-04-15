@@ -80,8 +80,10 @@ CollectionWidget.prototype.mapSignals = function() {
             self.onSave(event, params);
         });
 
-    jQuery(window).on('collection.open', {'self': this},
-        function(event, params) {
+    jQuery(window).on(
+        'collection.open', {
+            'self': this
+        }, function(event, params) {
             self.$quickEditView.hide();
             self.$el.show();
             self.open('gallery', params);
@@ -682,7 +684,10 @@ CollectionWidget.prototype.baseUrl = function() {
 };
 
 CollectionWidget.prototype.isValidFilter = function(filter) {
-    var filters = ['tag', 'modified', 'search_text', 'media_type'];
+    var filters = [
+        'tag', 'modified', 'search_text',
+        'media_type', 'primary_type'
+    ];
     return filters.indexOf(filter) > -1 || filter.startsWith('vocabulary-');
 };
 

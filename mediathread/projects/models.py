@@ -7,7 +7,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
-from django.utils.encoding import python_2_unicode_compatible
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty
@@ -346,7 +345,6 @@ class ProjectManager(models.Manager):
         projects.update(response_view_policy=RESPONSE_VIEW_NEVER[0])
 
 
-@python_2_unicode_compatible
 class Project(models.Model):
     """The Project model handles assignments and responses.
 

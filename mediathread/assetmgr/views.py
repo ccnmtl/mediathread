@@ -923,7 +923,7 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             'height': EMBED_HEIGHT
         }
 
-        return self.render_to_response(data)
+        return render(request, self.template_name, data)
 
     def get_selection(self, keys, user):
         for k in keys:

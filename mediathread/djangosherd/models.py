@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.db import models
 from django.db.models.query_utils import Q
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.encoding import smart_text
 from django_comments.models import Comment
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
@@ -333,7 +333,6 @@ class SherdNoteManager(models.Manager):
         return new_note
 
 
-@python_2_unicode_compatible
 class SherdNote(Annotation):
     """
     SherdNote extends Annotation, and is generally used for what you
@@ -425,7 +424,6 @@ class SherdNote(Annotation):
             return self.title
 
 
-@python_2_unicode_compatible
 class DiscussionIndex(models.Model):
     """table to index discussions to assets and participants
     helpful in answering:

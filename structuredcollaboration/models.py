@@ -7,10 +7,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.encoding import smart_text
 
 
-@python_2_unicode_compatible
 class CollaborationPolicyRecord(models.Model):
     policy_name = models.CharField(max_length=512)
 
@@ -52,7 +51,6 @@ class CollaborationManager(models.Manager):
             content_type__model=model_name, object_pk=obj.pk)
 
 
-@python_2_unicode_compatible
 class Collaboration(models.Model):
     objects = CollaborationManager()
     user = models.ForeignKey(

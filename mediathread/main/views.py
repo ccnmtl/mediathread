@@ -17,7 +17,7 @@ from django.core.mail import send_mail
 from django.core.validators import validate_email
 from django.http import (
     HttpResponse, HttpResponseRedirect, Http404)
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -898,7 +898,7 @@ class CourseAcceptInvitationView(FormView):
 
         form = self.get_form()
         ctx = self.get_context_data(form=form, invite=invite)
-        return self.render_to_response(ctx)
+        return render(request, self.template_name, ctx)
 
     def form_valid(self, form):
         invite = self.get_invite(self.kwargs.get('uidb64', None))

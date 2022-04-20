@@ -50,6 +50,7 @@ MIDDLEWARE += [  # noqa
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
 TEMPLATES[0]['DIRS'].insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa

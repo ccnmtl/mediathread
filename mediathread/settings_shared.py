@@ -39,10 +39,6 @@ CACHES = {
 TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
     'mediathread.main.views.django_settings')
 
-# Prepend the CookiesSameSite middleware to the beginning of
-# MIDDLEWARE. It needs to be first to work correctly.
-MIDDLEWARE = ['django_cookies_samesite.middleware.CookiesSameSite'] + \
-    MIDDLEWARE  # noqa
 
 MIDDLEWARE += [  # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -232,7 +228,6 @@ if 'test' in sys.argv or \
 
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
-    MIDDLEWARE.remove('django_cookies_samesite.middleware.CookiesSameSite')
 
     from celery.contrib.testing.app import DEFAULT_TEST_CONFIG
 

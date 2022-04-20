@@ -4331,6 +4331,11 @@ ul.section-tabs>li>a.active {
     padding: inherit;
 }
 
+.toolbar-annotations .rectangle-button:focus {
+    background-color: #ffc107!important;
+    color: #212529;
+}
+
 input#annotationFilter {
     max-width: 140px;
 }

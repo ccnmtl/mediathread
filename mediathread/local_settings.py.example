@@ -33,4 +33,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Remove security settings for http://localhost:800
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
-MIDDLEWARE.remove('django_cookies_samesite.middleware.CookiesSameSite')

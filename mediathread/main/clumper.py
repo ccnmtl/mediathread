@@ -1,6 +1,6 @@
 from functools import total_ordering, cmp_to_key
 
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.encoding import smart_text
 from django_comments.models import Comment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
@@ -40,7 +40,6 @@ class Clumper(object):
         return iter(sorted(self.items.values()))
 
     @total_ordering
-    @python_2_unicode_compatible
     class ClumpItem(object):
         things = None
         primary_thing = None

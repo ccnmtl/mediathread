@@ -2,12 +2,10 @@ from courseaffils.models import Course
 from django import forms
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
 
 from mediathread.djangosherd.models import SherdNote
 
 
-@python_2_unicode_compatible
 class Vocabulary(models.Model):
     name = models.SlugField(max_length=100)
     display_name = models.CharField(max_length=100)
@@ -34,7 +32,6 @@ class VocabularyForm(forms.ModelForm):
         exclude = []
 
 
-@python_2_unicode_compatible
 class Term(models.Model):
     name = models.SlugField(max_length=100)
     vocabulary = models.ForeignKey(Vocabulary, on_delete=models.CASCADE)

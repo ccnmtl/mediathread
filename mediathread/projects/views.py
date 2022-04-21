@@ -12,7 +12,7 @@ from django.db.models.functions import Lower
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseRedirect, \
     HttpResponseForbidden
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.template.defaultfilters import slugify
 from django.urls import reverse
@@ -345,7 +345,7 @@ class ProjectReadOnlyView(ProjectReadableMixin,
 
     template_name = 'projects/composition_readonly.html'
 
-    def get(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         """
         A single panel read-only view of the specified project/version combo.
         No assignment, response or feedback access/links.
@@ -379,7 +379,7 @@ class ProjectReadOnlyView(ProjectReadableMixin,
             data['version'] = version_number
             data['public_url'] = project_url
             data['readonly'] = True
-            return self.render_to_response(data)
+            return render(request, self.template_name, data)
 
         # ajax view
         resource = ProjectResource(record_viewer=self.request.user,
@@ -490,7 +490,7 @@ class SequenceEditView(LoggedInCourseMixin, ProjectReadableMixin,
                 self.request.course)
         }
 
-        return self.render_to_response(data)
+        return render(request, self.template_name, data)
 
 
 class ProjectDispatchView(LoggedInCourseMixin, ProjectReadableMixin, View):
@@ -652,7 +652,7 @@ class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
         if not request.is_ajax():
             self.template_name = 'projects/composition.html'
             data['project'] = project
-            return self.render_to_response(data)
+            return render(request, self.template_name, data)
         else:
             panels = []
 

@@ -714,9 +714,9 @@ class AssetEmbedViewsTest(MediathreadTestMixin, TestCase):
         response = self.client.get(self.url, {'return_url': return_url})
         self.assertEquals(response.status_code, 200)
 
-        the_owners = loads(response.context_data['owners'])
+        the_owners = loads(response.context['owners'])
         self.assertEquals(len(the_owners), 5)
-        self.assertEquals(response.context_data['return_url'], return_url)
+        self.assertEquals(response.context['return_url'], return_url)
 
     def test_get_selection(self):
         asset = AssetFactory.create(course=self.sample_course,

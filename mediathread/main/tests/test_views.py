@@ -55,6 +55,7 @@ from mediathread.main.views import (
     unis_list, CourseConvertMaterialsView)
 from mediathread.projects.models import Project
 from structuredcollaboration.models import Collaboration
+from django.contrib.messages import get_messages
 
 
 class SimpleViewTest(TestCase):
@@ -829,8 +830,8 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post(url, data)
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('All requested materials were deleted'
-                        in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('All requested materials were deleted', messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
         self.assertEquals(assets.count(), 0)
@@ -858,8 +859,8 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post(url, data)
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('All requested materials were deleted'
-                        in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('All requested materials were deleted', messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
         self.assertEquals(assets.count(), 1)
@@ -896,8 +897,9 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post(url, data)
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('Sample Course and requested materials were deleted'
-                        in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('Sample Course and requested materials were deleted',
+                      messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
         self.assertEquals(assets.count(), 0)
@@ -1001,9 +1003,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-add-uni')
         response = self.client.post(url, {})
         self.assertEquals(response.status_code, 302)
-        self.assertTrue('Please enter a comma-separated list of UNIs'
-                        in response.cookies['messages'].value)
-        response.delete_cookie('messages')
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('Please enter a comma-separated list of UNIs',
+                      messages[0])
 
         response = self.client.post(url, {'unis': 'abc123'})
         self.assertEquals(response.status_code, 302)
@@ -1024,16 +1026,13 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         user = User.objects.get(username='abc123')
         self.assertTrue(self.sample_course.is_true_member(user))
 
-        self.assertTrue('John Smith (abc123) is already a course member'
-                        in response.cookies['messages'].value)
-        self.assertTrue('efg456 is now a course member'
-                        in response.cookies['messages'].value)
-        self.assertTrue('az4@columbia.edu is not a valid UNI'
-                        in response.cookies['messages'].value)
-        self.assertTrue('1234 is not a valid UNI'
-                        in response.cookies['messages'].value)
-        self.assertTrue('56 is not a valid UNI'
-                        in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('John Smith (abc123) is already a course member',
+                      messages[2])
+        self.assertIn('efg456 is now a course member', messages[3])
+        self.assertIn('az4@columbia.edu is not a valid UNI', messages[4])
+        self.assertIn('1234 is not a valid UNI', messages[5])
+        self.assertIn('56 is not a valid UNI', messages[6])
 
     def test_uni_invite_post_newlines(self):
         self.client.login(username=self.instructor_one.username,
@@ -1047,8 +1046,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         user = User.objects.get(username='efg456')
         self.assertTrue(self.sample_course.is_true_member(user))
-        self.assertTrue('efg456 is now a course member'
-                        in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('efg456 is now a course member', messages[1])
 
     def test_email_invite_existing_course_member(self):
         url = reverse('course-roster-invite-email')
@@ -1057,9 +1056,10 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': self.student_one.email})
         self.assertEquals(response.status_code, 302)
-        self.assertTrue(
-            'Student One (student_one@example.com) is already a course member'
-            in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(
+            'Student One (student_one@example.com) is already a course member',
+            messages[0])
 
     def test_email_invite_existing_user(self):
         with self.settings(SERVER_EMAIL='mediathread@example.com'):
@@ -1072,8 +1072,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             response = self.client.post(url,
                                         {'emails': self.alt_student.email})
             self.assertEquals(response.status_code, 302)
-            self.assertTrue('Student Alternate is now a course member'
-                            in response.cookies['messages'].value)
+            messages = [m.message for m in get_messages(response.wsgi_request)]
+            self.assertIn('Student Alternate is now a course member',
+                          messages[0])
             self.assertTrue(
                 self.sample_course.is_true_member(self.alt_student))
 
@@ -1094,9 +1095,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             response = self.client.post(url, {'emails': 'foo@example.com'})
 
             self.assertEquals(response.status_code, 302)
-            self.assertTrue(
-                'An email was sent to foo@example.com inviting this user to '
-                'join the course.' in response.cookies['messages'].value)
+            messages = [m.message for m in get_messages(response.wsgi_request)]
+            self.assertIn('An email was sent to foo@example.com inviting this '
+                          'user to join the course.', messages[0])
 
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,
@@ -1122,9 +1123,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {})
 
         self.assertEquals(response.status_code, 302)
-        self.assertTrue(
-            'Please enter a comma-separated list of email addresses.'
-            in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('Please enter a comma-separated list of email '
+                      'addresses.', messages[0])
 
     def test_email_invite_invalid_email(self):
         url = reverse('course-roster-invite-email')
@@ -1134,13 +1135,10 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         response = self.client.post(url, {'emails': '#$%^,foo@example.com'})
 
         self.assertEquals(response.status_code, 302)
-        self.assertTrue(
-            '#$%^ is not a valid email address.'
-            in response.cookies['messages'].value)
-        self.assertTrue(
-            'An email was sent to foo@example.com inviting '
-            'this user to join the course.'
-            in response.cookies['messages'].value)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn('#$%^ is not a valid email address.', messages[0])
+        self.assertIn('An email was sent to foo@example.com inviting '
+                      'this user to join the course.', messages[1])
 
     def test_accept_invite_invalid_uuid(self):
         # random new uuid
@@ -1214,7 +1212,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEquals(response.status_code, 302)
 
             msg = 'A course invitation was resent to {}'.format(invite.email)
-            self.assertTrue(msg in response.cookies['messages'].value)
+            messages = [m.message for m in get_messages(response.wsgi_request)]
+            self.assertIn(msg, messages[0])
 
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,

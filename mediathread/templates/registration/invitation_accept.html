@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n admin_static %}
+{% load i18n static %}
 {% block title %}&mdash; Course Invitation{% endblock %}
 
 {% block css %}
@@ -86,7 +86,7 @@
                     value="{% if invite %}{{invite.email}}{% else %}{{form.data.email}}{% endif %}" readonly="readonly" />
             </div>
         </div>
-        <br />    
+        <br />
         <div class="form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
             <label for="id_first_name"><b>Your name is:</b></label>
             <div>
@@ -106,7 +106,7 @@
                 {% endif %}
             </div>
         </div>
-        <br />        
+        <br />
         <div class="form-group {% if form.username.errors %}has-error{% endif %}" >
             <label>Username:</label>
             <div>
@@ -140,5 +140,5 @@
          id="submit-id" value="{% trans 'Register' %}" />
         </div>
     </form>
-{% endif %}    
+{% endif %}
 {% endblock %}

@@ -144,5 +144,5 @@ django-celery-results<2.4.0
 # memcached
 pylibmc==1.6.1; sys_platform == 'linux'
 requests-file==1.5.1
-typing_extensions==4.1.1
+typing_extensions==4.2.0
 pyparsing==3.0.5

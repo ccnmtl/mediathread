@@ -15,6 +15,10 @@ describe('Selection Assignment Feat: Instructor adds & edits feedback', () => {
         cy.get('.btn-edit-assignment').contains('Edit Assignment')
             .should('be.visible');
         cy.get('span.feedback-count').should('contain', '0');
+
+        // wait for the responses to load
+        cy.get('[data-username="student_one"]').should('be.visible');
+        cy.get('#addFeedback').should('be.visible');
         cy.get('#addFeedback').should('contain', 'add feedback')
             .click({force: true});
         cy.get('#annotation-feedback-student_one > form > .form-control')

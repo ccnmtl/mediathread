@@ -172,8 +172,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_METHODS = ('GET',)
 CORS_ALLOW_CREDENTIALS = True
 
-DCS_SESSION_COOKIE_SAMESITE = 'None'
-
 
 def default_url_processor(url, label=None, request=None):
     return url
@@ -234,6 +232,10 @@ if 'test' in sys.argv or \
     CELERY_BROKER_URL = DEFAULT_TEST_CONFIG.get('broker_url')
     CELERY_RESULT_BACKEND = DEFAULT_TEST_CONFIG.get('result_backend')
     CELERY_BROKER_HEARTBEAT = DEFAULT_TEST_CONFIG.get('broker_heartbeat')
+else:
+    SESSION_COOKIE_SAMESITE = 'None'
+    DCS_SESSION_COOKIE_SAMESITE = 'None'
+
 
 BLOCKED_EMAIL_DOMAINS = []
 

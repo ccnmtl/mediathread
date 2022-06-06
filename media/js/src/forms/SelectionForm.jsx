@@ -167,6 +167,7 @@ export default class SelectionForm extends React.Component {
                         onChange={this.handleTagsChange}
                         isMulti
                         defaultValue={selectedTags}
+                        noOptionsMessage={({inputValue}) => !inputValue ? "" : "No tags found"}
                         options={tagsOptions} />
                 </Form.Group>
 

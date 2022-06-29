@@ -91,7 +91,7 @@ nameparser==1.1.0
 django-bootstrap3==21.1
 django-bootstrap4==21.1
 beautifulsoup4==4.11.0
-ua_parser==0.10.0
+ua_parser==0.15.0
 user_agents==2.2.0
 django_user_agents==0.4.0
 gunicorn==20.1.0

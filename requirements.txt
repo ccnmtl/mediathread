@@ -1,4 +1,4 @@
-Django==3.2.13
+Django>=3.2.14,<4
 asgiref==3.5.0
 psycopg2<2.9
 #for MySQL: MySQL-python==1.2.5

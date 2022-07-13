@@ -43,15 +43,11 @@
         <div class="clipstrip-display" style="display: none"></div>
     </div>
 
-    {% compress js %}
-        <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
-        <!--All the annotation javascript -->
-        {% include "djangosherd/annotator_resources.html" %}
-    {% endcompress %}
+    <script type="text/javascript" src='{% static "js/app/analytics.js" %}'></script>
 
-    {% block uncompressable_js %}
-        {% include "djangosherd/player_resources.html" %}
-    {% endblock %}
+    <!--All the annotation javascript -->
+    {% include "djangosherd/annotator_resources.html" %}
+    {% include "djangosherd/player_resources.html" %}
 
     <script type="text/javascript">
         jQuery(document).ready(function () {

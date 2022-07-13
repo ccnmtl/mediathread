@@ -140,7 +140,7 @@ amqp==2.6.1
 amqplib==1.0.2
 kombu==4.6.11 # pyup: <5.0.0
 celery==4.4.7 # pyup: <5.0.0
-django-celery-results<2.4.0
+django-celery-results<2.5.0
 # memcached
 pylibmc==1.6.1; sys_platform == 'linux'
 requests-file==1.5.1

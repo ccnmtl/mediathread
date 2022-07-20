@@ -60,3 +60,42 @@ Cypress.Commands.add('getIframeBody', () => {
     // https://on.cypress.io/wrap
         .then(cy.wrap);
 });
+
+// Lifted this pattern from https://github.com/jonoliver/cypress-axe-demo
+
+const severityIndicators = {
+    minor: '⚪️',
+    moderate: '🟡',
+    serious: '🟠',
+    critical: '🔴',
+};
+
+function callback(violations) {
+    violations.forEach(violation => {
+        const nodes =
+            Cypress.$(violation.nodes.map(node => node.target).join(','));
+
+        Cypress.log({
+            name: `${severityIndicators[violation.impact]} A11Y`,
+            consoleProps: () => violation,
+            $el: nodes,
+            message: `[${violation.help}](${violation.helpUrl})`
+        });
+
+        violation.nodes.forEach(({ target }) => {
+            Cypress.log({
+                name: '🔧',
+                consoleProps: () => violation,
+                $el: Cypress.$(target.join(',')),
+                message: target
+            });
+        });
+    });
+}
+
+Cypress.Commands.add('checkPageA11y', () => {
+    cy.injectAxe();
+
+    const ctx = {runOnly: {type: 'tag', values: ['wcag2a']}};
+    cy.checkA11y('html', ctx, callback, true);
+});

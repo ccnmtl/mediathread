@@ -169,7 +169,7 @@ def then_i_remember_the_title_link(step, title):
 def i_navigate_to_the_title_link(step, title):
     link = world.memory[title]
     world.browser.get(link)
-    del(world.memory[title])
+    del (world.memory[title])
 
 
 @step(u'I click the "([^"]*)" citation in the ([^"]*) panel')

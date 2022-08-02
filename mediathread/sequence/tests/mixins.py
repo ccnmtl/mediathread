@@ -8,4 +8,4 @@ class LoggedInTestMixin(object):
         self.u.save()
         login = self.client.login(username='test_user',
                                   password='test')
-        assert(login is True)
+        assert (login is True)

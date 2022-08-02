@@ -8,7 +8,7 @@ class LoggedInUserTestMixin(object):
         self.u.set_password('test')
         self.u.save()
         login = self.client.login(username='test_user', password='test')
-        assert(login is True)
+        assert (login is True)
 
 
 class LoggedInSuperuserTestMixin(object):
@@ -18,4 +18,4 @@ class LoggedInSuperuserTestMixin(object):
             email='abc@example.com',
             password='test')
         login = self.client.login(username='test_admin', password='test')
-        assert(login is True)
+        assert (login is True)

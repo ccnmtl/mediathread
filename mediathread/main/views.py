@@ -1258,7 +1258,7 @@ class LTICourseCreate(LoggedInMixin, View):
         send_template_email(
             'Mediathread Course Connected',
             'main/notify_lti_course_connect.txt',
-            data, settings.SERVER_EMAIL)
+            data, settings.CONTACT_US_EMAIL)
 
     def thank_faculty(self, course):
         send_template_email(

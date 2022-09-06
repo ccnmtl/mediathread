@@ -1232,16 +1232,22 @@ Faculty: {} <{}>
 class LTICourseSelector(LoggedInMixin, View):
 
     def get(self, request, context):
-        try:
-            messages.add_message(
-                request, messages.INFO,
-                'Reminder: please log out of Mediathread '
-                'after you log out of Courseworks.')
+        messages.add_message(
+            request, messages.INFO,
+            'Reminder: please log out of Mediathread '
+            'after you log out of Courseworks.')
 
+        url = '/'
+        try:
             ctx = LTICourseContext.objects.get(lms_course_context=context)
-            url = reverse('course_detail', args=[ctx.group.course.id])
         except LTICourseContext.DoesNotExist:
-            url = '/'
+            pass
+
+        try:
+            url = reverse('course_detail', args=[ctx.group.course.pk])
+        except Group.course.RelatedObjectDoesNotExist:
+            # Don't fail when we don't find a course
+            pass
 
         return HttpResponseRedirect(url)
 

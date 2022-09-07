@@ -1648,6 +1648,22 @@ class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['course'], self.sample_course)
 
+    def test_get_without_course(self):
+        ctx = LTICourseContextFactory(
+            group=self.sample_course.group,
+            faculty_group=self.sample_course.faculty_group)
+
+        self.sample_course.delete()
+        ctx.refresh_from_db()
+
+        url = reverse('lti-course-select', args=[ctx.lms_course_context])
+
+        self.client.login(
+            username=self.instructor_one.username, password='test')
+        response = self.client.get(url, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue('course' not in response.context)
+
 
 class LTICourseCreateTest(TestCase):
 

@@ -1,6 +1,7 @@
-# VERSION=1.3.0
+# VERSION=1.3.1
 
 # CHANGES:
+# 1.3.1 - conditionally install npm deps based on ENVIRONMENT var
 # 1.3.0 - restore eslint
 # 1.2.0 - restore jshint/jscs
 
@@ -22,9 +23,18 @@ NODE_MODULES ?= ./node_modules
 JS_SENTINAL ?= $(NODE_MODULES)/sentinal
 ESLINT ?= $(NODE_MODULES)/.bin/eslint
 
+NPM_OPTS = --also=dev
+
+ifeq ($(ENVIRONMENT),production)
+	NPM_OPTS = --only=prod
+endif
+ifeq ($(ENVIRONMENT),staging)
+	NPM_OPTS = --only=prod
+endif
+
 $(JS_SENTINAL): package.json
 	rm -rf $(NODE_MODULES)
-	npm install
+	npm install $(NPM_OPTS)
 	touch $(JS_SENTINAL)
 
 eslint: $(JS_SENTINAL)

@@ -10,6 +10,7 @@ export default class GridListSwitcher extends React.Component {
                     role="group" aria-label="View Toggle">
                     <button
                         type="button"
+                        id="viewtoggle-grid"
                         data-testid="viewtoggle-grid"
                         onClick={() => this.props.setViewMode('grid')}
                         className={'btn btn-outline-primary btn-sm ' + (
@@ -19,6 +20,7 @@ export default class GridListSwitcher extends React.Component {
                     </button>
                     <button
                         type="button"
+                        id="viewtoggle-list"
                         data-testid="viewtoggle-list"
                         onClick={() => this.props.setViewMode('list')}
                         className={'btn btn-outline-primary btn-sm ' + (

@@ -186,28 +186,28 @@ export default class ViewSelections extends React.Component {
                 if (idx === 0) {
                     if (me.state.groupBy === 'author') {
                         groupedSelections.push(
-                            <h5 key={'title-' + reactKey}>
+                            <h4 key={'title-' + reactKey}>
                                 {s.author.public_name}
-                            </h5>);
+                            </h4>);
                     } else if (me.state.groupBy === 'term') {
                         if(groupName != 'No Vocabulary'){
                             s.vocabulary.forEach(function(vocab) {
                                 groupedSelections.push(
-                                    <h5 key={'title-' + reactKey}>
+                                    <h4 key={'title-' + reactKey}>
                                         {capitalizeFirstLetter(vocab.display_name)}: {groupName}
-                                    </h5>);
+                                    </h4>);
                             });
                         } else {
                             groupedSelections.push(
-                                <h5 key={'title-' + reactKey}>
+                                <h4 key={'title-' + reactKey}>
                                     {groupName}
-                                </h5>);
+                                </h4>);
                         }
                     } else {
                         groupedSelections.push(
-                            <h5 key={'title-' + reactKey}>
+                            <h4 key={'title-' + reactKey}>
                                 {groupName}
-                            </h5>);
+                            </h4>);
                     }
                 }
 
@@ -317,9 +317,9 @@ export default class ViewSelections extends React.Component {
 
         return (
             <React.Fragment>
-                <h4>
+                <h3>
                     Selections
-                </h4>
+                </h3>
 
                 <div className="d-flex">
                     <div

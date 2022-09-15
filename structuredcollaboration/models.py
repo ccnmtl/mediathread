@@ -62,6 +62,9 @@ class Collaboration(models.Model):
     slug = models.SlugField(
         max_length=1024, null=True, default=None, blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     # Content-object field
     content_type = models.ForeignKey(
         ContentType, related_name="collaboration_set_for_%(class)s",
@@ -158,6 +161,8 @@ class Collaboration(models.Model):
             self.policy_record, created = \
                 CollaborationPolicyRecord.objects.get_or_create(
                     policy_name=policy_name)
+
+        self.save()
 
     def __str__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,

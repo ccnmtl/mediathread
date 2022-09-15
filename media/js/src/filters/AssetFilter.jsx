@@ -215,11 +215,13 @@ export default class AssetFilter extends React.Component {
         const tagsOptions = tagsToReactSelect(this.props.allTags);
         const termsOptions = termsToReactSelect(this.props.allTerms);
 
-        const ownerFilterId = `ownerFilter-${(Math.random() + 1).toString(36).substring(7)}`;
-        const termFilterId = `termFilter-${(Math.random() + 1).toString(36).substring(7)}`;
-        const tagFilterId = `tagFilter-${(Math.random() + 1).toString(36).substring(7)}`;
-        const dateFilterId = `dateFilter-${(Math.random() + 1).toString(36).substring(7)}`;
-        const searchFilterId = `searchFilter-${(Math.random() + 1).toString(36).substring(7)}`;
+        const uniqueId = (Math.random() + 1).toString(36).substring(7);
+
+        const ownerFilterId = `ownerFilter-${uniqueId}`;
+        const termFilterId = `termFilter-${uniqueId}`;
+        const tagFilterId = `tagFilter-${uniqueId}`;
+        const dateFilterId = `dateFilter-${uniqueId}`;
+        const searchFilterId = `searchFilter-${uniqueId}`;
 
         const termGroupLabel = function(data) {
 

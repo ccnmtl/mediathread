@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 import factory
 from factory.django import DjangoModelFactory
+from factory.fuzzy import FuzzyText
 import json
 from mediathread.assetmgr.models import (
     Asset, Source, ExternalCollection,
@@ -171,6 +172,8 @@ class ProjectFactory(DjangoModelFactory):
 
     course = factory.SubFactory(CourseFactory)
     title = factory.Sequence(lambda n: 'Project %d' % n)
+    body = ''
+    summary = FuzzyText()
     author = factory.SubFactory(UserFactory)
     project_type = 'composition'
 

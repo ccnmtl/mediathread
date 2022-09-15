@@ -148,8 +148,12 @@ class ProjectManager(models.Manager):
         Returns the new Project.
         """
         new_project = Project.objects.create(
-            title=project.title, project_type=project.project_type,
-            course=course, author=user,
+            title=project.title,
+            project_type=project.project_type,
+            course=course,
+            author=user,
+            body=project.body,
+            summary=project.summary,
             response_view_policy=project.response_view_policy)
 
         collaboration_context = Collaboration.objects.get_for_object(course)

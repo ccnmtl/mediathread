@@ -62,6 +62,9 @@ class Collaboration(models.Model):
     slug = models.SlugField(
         max_length=1024, null=True, default=None, blank=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     # Content-object field
     content_type = models.ForeignKey(
         ContentType, related_name="collaboration_set_for_%(class)s",

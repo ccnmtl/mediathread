@@ -59,8 +59,8 @@
 
           {{#vocabulary.length}}
             <div class="vocabulary">
-              <label>Terms</label>
-              <select class="vocabulary" class="w-100"
+              <label for="annotation-vocabulary">Course Vocabulary</label>
+              <select class="vocabulary" class="w-100" id="annotation-vocabulary"
                 data-placeholder="select {{display_name?lower()}}"
                 name="vocabulary" multiple="multiple">
 
@@ -86,7 +86,7 @@
                   Use commas to separate tags. Example: tag 1, tag 2, tag 3
               </div>
 
-              <label for="annotation_body">Note</label>
+              <label for="annotation_body">Notes</label>
               <textarea data-label="Selection Notes" rows="7" cols="44" id="annotation_body"
                   name="annotation-body">{{metadata.body}}</textarea>
 

@@ -215,6 +215,14 @@ export default class AssetFilter extends React.Component {
         const tagsOptions = tagsToReactSelect(this.props.allTags);
         const termsOptions = termsToReactSelect(this.props.allTerms);
 
+        const uniqueId = (Math.random() + 1).toString(36).substring(7);
+
+        const ownerFilterId = `ownerFilter-${uniqueId}`;
+        const termFilterId = `termFilter-${uniqueId}`;
+        const tagFilterId = `tagFilter-${uniqueId}`;
+        const dateFilterId = `dateFilter-${uniqueId}`;
+        const searchFilterId = `searchFilter-${uniqueId}`;
+
         const termGroupLabel = function(data) {
 
             return (
@@ -229,10 +237,10 @@ export default class AssetFilter extends React.Component {
                 <form id="search-well">
                     <div className="form-row">
                         <div className="form-group col-md-3">
-                            <label htmlFor="filter-search">Title</label>
+                            <label htmlFor={searchFilterId}>Title</label>
                             <div className="input-group mb-3">
                                 <input
-                                    id="filter-search"
+                                    id={searchFilterId}
                                     type="text"
                                     className="form-control form-control-sm"
                                     placeholder="Search for..."
@@ -252,10 +260,10 @@ export default class AssetFilter extends React.Component {
                             </div>
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="ownerFilter">Owner</label>
+                            <label htmlFor={ownerFilterId}>Owner</label>
                             <Select
-                                id="owner-filter"
-                                inputId='ownerFilter'
+                                id="ownerFilter"
+                                inputId={ownerFilterId}
                                 menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 menuContainerStyle={{ zIndex: 5 }}
@@ -268,10 +276,10 @@ export default class AssetFilter extends React.Component {
                                 options={this.getOwnersOptions()} />
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="tagFilter">Tag</label>
+                            <label htmlFor={tagFilterId}>Tag</label>
                             <Select
-                                id="tag-filter"
-                                inputId='tagFilter'
+                                id="tagFilter"
+                                inputId={tagFilterId}
                                 menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 className={
@@ -285,10 +293,10 @@ export default class AssetFilter extends React.Component {
 
                         {window.MediaThread && window.MediaThread.current_course_has_vocab && (
                             <div className="form-group col-md-2">
-                                <label htmlFor="termFilter">Course Vocabulary</label>
+                                <label htmlFor={termFilterId}>Course Vocabulary</label>
                                 <Select
-                                    id="term-filter"
-                                    inputId='termFilter'
+                                    id="termFilter"
+                                    inputId={termFilterId}
                                     menuPortalTarget={document.body}
                                     styles={reactSelectStyles}
                                     className={
@@ -303,10 +311,10 @@ export default class AssetFilter extends React.Component {
                         )}
 
                         <div className="form-group col-md-2">
-                            <label htmlFor="filterDate">Date</label>
+                            <label htmlFor={dateFilterId}>Date</label>
                             <Select
-                                id="filter-date"
-                                inputId='filterDate'
+                                id="filterDate"
+                                inputId={dateFilterId}
                                 menuPortalTarget={document.body}
                                 styles={reactSelectStyles}
                                 className={

@@ -4,6 +4,7 @@ from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -134,7 +135,8 @@ class ProjectManager(models.Manager):
 
         return object_map
 
-    def migrate_one(self, project, course, user):
+    @staticmethod
+    def migrate_one(project, course, user):
         new_project = Project.objects.create(
             title=project.title, project_type=project.project_type,
             course=course, author=user,
@@ -144,15 +146,36 @@ class ProjectManager(models.Manager):
 
         policy_record = project.get_collaboration().policy_record
 
-        Collaboration.objects.create(
+        new_collab = Collaboration.objects.create(
             user=new_project.author, title=new_project.title,
             content_object=new_project,
             context=collaboration_context,
             policy_record=policy_record)
 
+        comment_type = ContentType.objects.get_for_model(ThreadedComment)
+        if project.get_collaboration():
+            for child in project.get_collaboration().children.all():
+                # The collaboration has children - this is probably a
+                # discussion assignment. Clone those too.
+                if child.content_type == comment_type:
+                    comment = ThreadedComment.objects.get(pk=child.object_pk)
+                    new_comment = ThreadedComment.objects.create(
+                        title=comment.title,
+                        comment=comment.comment,
+                        content_type=comment_type,
+                        site=Site.objects.first()
+                    )
+
+                    new_collab.append_child(new_comment)
+
+                    if child.policy_record:
+                        new_collab.children.first().set_policy(
+                            child.policy_record.policy_name)
+
         return new_project
 
-    def migrate_assignment_item(self, course, user,
+    @staticmethod
+    def migrate_assignment_item(course, user,
                                 old_project, new_project, object_map):
         aItem = AssignmentItem.objects.filter(project=old_project).first()
         if aItem is not None:
@@ -167,7 +190,8 @@ class ProjectManager(models.Manager):
             AssignmentItem.objects.create(project=new_project,
                                           asset=new_asset)
 
-    def visible_by_course(self, course, viewer):
+    @staticmethod
+    def visible_by_course(course, viewer):
         projects = Project.objects.filter(course=course)
 
         visible = []
@@ -180,7 +204,8 @@ class ProjectManager(models.Manager):
         visible.sort(reverse=True, key=lambda project: project.modified)
         return visible
 
-    def visible_by_course_and_user(self, course, viewer, user, is_faculty):
+    @staticmethod
+    def visible_by_course_and_user(course, viewer, user, is_faculty):
         """
             Retrieve all assignments, responses and projects authored or
             co-authored by the user.

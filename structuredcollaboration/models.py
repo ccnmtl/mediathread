@@ -159,6 +159,8 @@ class Collaboration(models.Model):
                 CollaborationPolicyRecord.objects.get_or_create(
                     policy_name=policy_name)
 
+        self.save()
+
     def __str__(self):
         return u'%s %r <%s %s> [%s]' % (self.title, self.pk, self.content_type,
                                         self.object_pk, self.slug)

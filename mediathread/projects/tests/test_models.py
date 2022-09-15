@@ -86,6 +86,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.discussion_assignment = ProjectFactory.create(
             course=self.sample_course,
             author=self.instructor_one,
+            body='Discussion Assignment Body',
             policy=PUBLISH_WHOLE_CLASS[0],
             project_type='discussion-assignment'
         )
@@ -195,6 +196,8 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                                   self.alt_instructor)
 
         self.assertEquals(new_project.title, self.assignment.title)
+        self.assertEquals(new_project.summary, self.assignment.summary)
+        self.assertEquals(new_project.body, self.assignment.body)
         self.assertEquals(new_project.author, self.alt_instructor)
         self.assertEquals(new_project.course, self.alt_course)
         self.assertEquals(new_project.description(), 'Composition Assignment')
@@ -213,6 +216,12 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             self.alt_instructor)
 
         self.assertEqual(new_project.title, self.discussion_assignment.title)
+        self.assertEqual(
+            new_project.summary,
+            self.discussion_assignment.summary)
+        self.assertEqual(
+            new_project.body,
+            self.discussion_assignment.body)
         self.assertEqual(new_project.author, self.alt_instructor)
         self.assertEqual(new_project.course, self.alt_course)
         self.assertEqual(
@@ -224,6 +233,11 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertIsNotNone(new_discussion)
         self.assertEqual(discussion.title, new_discussion.title)
         self.assertEqual(discussion.comment, new_discussion.comment)
+
+        # Assert that the original discussion's body text made it through
+        # to the ThreadedComment's comment attribute.
+        self.assertEqual(discussion.comment, self.discussion_assignment.body)
+
         self.assertEqual(discussion.user, self.instructor_one)
         self.assertEqual(new_discussion.user, self.alt_instructor)
 

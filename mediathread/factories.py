@@ -158,6 +158,7 @@ class ThreadedCommentFactory(DjangoModelFactory):
 
     title = 'Comment Title'
     comment = 'comment content'
+    user = factory.SubFactory(UserFactory)
     site = factory.LazyAttribute(
         lambda _: Site.objects.all().first())
     content_type = factory.LazyAttribute(

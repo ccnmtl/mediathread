@@ -1420,12 +1420,19 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):
         self.setup_sample_course()
+        self.setup_alternate_course()
 
-        self.discussion = ProjectFactory.create(
-            title='keep talking', course=self.sample_course,
-            author=self.instructor_one, due_date=datetime.today(),
+        self.discussion_assignment = ProjectFactory.create(
+            title='keep talking',
+            course=self.sample_course,
+            author=self.instructor_one,
+            due_date=datetime.today(),
             policy=PUBLISH_WHOLE_CLASS[0],
             project_type='discussion-assignment')
+        Project.objects.make_discussion_assignment(
+            self.discussion_assignment,
+            self.discussion_assignment.course,
+            self.discussion_assignment.author)
 
     def test_create_wizard(self):
         url = reverse('discussion-assignment-create-wizard')
@@ -1445,7 +1452,8 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
 
     def test_edit_wizard(self):
         url = reverse('discussion-assignment-edit-wizard',
-                      args=[self.sample_course.id, self.discussion.id])
+                      args=[self.sample_course.id,
+                            self.discussion_assignment.id])
 
         # anonymous
         self.assertEqual(self.client.get(url).status_code, 302)
@@ -1462,10 +1470,35 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
 
     def test_view(self):
         url = reverse('project-workspace',
-                      args=[self.sample_course.id, self.discussion.id])
+                      args=[self.sample_course.id,
+                            self.discussion_assignment.id])
 
         # anonymous
         self.assertEqual(self.client.get(url).status_code, 302)
+
+    def test_view_migrated_assignment(self):
+        alt_discussion_assignment = Project.objects.migrate_one(
+            self.discussion_assignment,
+            self.alt_course,
+            self.alt_instructor)
+
+        url = reverse(
+            'project-workspace',
+            args=[self.alt_course.pk,
+                  alt_discussion_assignment.pk]
+        )
+
+        r = self.client.get(url, follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        threadedcomment = alt_discussion_assignment.course_discussion()
+        self.assertIsNotNone(threadedcomment)
+        self.assertEqual(
+            threadedcomment.title,
+            alt_discussion_assignment.title)
+        self.assertEqual(
+            threadedcomment.comment,
+            alt_discussion_assignment.body)
 
     def test_create(self):
         self.client.login(username=self.instructor_one.username,
@@ -1498,4 +1531,5 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
         self.assertEqual(self.client.get(url).status_code, 200)
 
     def test_save(self):
+        # TODO
         pass

@@ -157,10 +157,10 @@ export default class SelectionForm extends React.Component {
                 </Form.Group>
 
                 <Form.Group className="mb-3">
-                    <label htmlFor="newSelectionTags">Tags</label>
+                    <label htmlFor="newSelectionTagsInput">Tags</label>
                     <Creatable
-                        id="new-selection-tags"
-                        inputId='newSelectionTags'
+                        id="newSelectionTagsContainer"
+                        inputId='newSelectionTagsInput'
                         ref={this.tagsRef}
                         menuPortalTarget={document.body}
                         styles={reactSelectStyles}
@@ -174,11 +174,11 @@ export default class SelectionForm extends React.Component {
 
                 {hasVocab && (
                     <Form.Group className="mb-3">
-                        <label htmlFor="newSelectionTerms">
+                        <label htmlFor="newSelectionTermsInput">
                             Course Vocabulary</label>
                         <Select
-                            id="new-Selection-Terms"
-                            inputId='newSelectionTerms'
+                            id="newSelectionTermsContainer"
+                            inputId='newSelectionTermsInput'
                             ref={this.termsRef}
                             menuPortalTarget={document.body}
                             styles={reactSelectStyles}

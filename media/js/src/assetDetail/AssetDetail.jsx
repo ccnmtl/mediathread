@@ -1048,7 +1048,7 @@ export default class AssetDetail extends React.Component {
 
                 <div className="row">
                     <div className="col-sm-7">
-                        <h4>{leftColumnHeader}</h4>
+                        <h3>{leftColumnHeader}</h3>
                         <div className="sticky-top">
                             {media}
                         </div>
@@ -1082,7 +1082,7 @@ export default class AssetDetail extends React.Component {
                         )}
                         {this.state.tab === 'createSelection' && (
                             <>
-                                <h4>2. Add Details</h4>
+                                <h3>2. Add Details</h3>
                                 <CreateSelection
                                     type={this.type}
                                     tags={this.props.tags}

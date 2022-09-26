@@ -189,13 +189,15 @@ export default class GridAsset extends React.Component {
                                         className={
                                             'ol-map mx-auto d-block img-fluid'
                                         }
+                                        aria-label={'Image thumbnail for asset: ' +
+                                                    this.props.asset.title}
                                         id={`map-${this.props.asset.id}`}></div>
                                 )}
                                 {type === 'video' && (
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'Video thumbnail for: ' +
+                                        alt={'Video thumbnail for asset: ' +
                                              this.props.asset.title}
                                         src={this.state.thumbnailUrl}
                                         onError={() => handleBrokenImage(type)} />
@@ -204,7 +206,7 @@ export default class GridAsset extends React.Component {
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'audio thumbnail for: ' +
+                                        alt={'audio thumbnail for asset: ' +
                                              this.props.asset.title}
                                         src={this.state.thumbnailUrl}
                                         onError={() => handleBrokenImage(type)} />

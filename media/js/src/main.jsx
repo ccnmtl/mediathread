@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {getAsset, getAssets} from './utils';
 import CollectionTab from './CollectionTab';
 import {defineTimecodeSpinner} from './timecodeSpinner.js';
@@ -141,5 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadingMsg.remove();
 
     const domContainer = document.querySelector('#react-container');
-    ReactDOM.render(<Main />, domContainer);
+    const root = createRoot(domContainer);
+    root.render(<Main />);
 });

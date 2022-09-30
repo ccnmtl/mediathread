@@ -29,7 +29,3 @@ DATABASES = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Or send them to /dev/null
 #EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
-
-# Remove security settings for http://localhost:800
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False

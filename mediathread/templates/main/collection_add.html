@@ -179,16 +179,83 @@
                    <div class="card">
                        <div class="card-body">
                            <h5 class="card-title text-center">Import Media</h5>
+
+                           <form method="POST" action="{% url 'asset-create' %}">
+                               {% csrf_token %}
+                               <div class="form-group">
+                                   <label for="import-source-url">
+                                       Source URL
+                                   </label>
+                                   <input type="text"
+                                          required
+                                          id="import-source-url"
+                                          class="form-control"
+                                          name="url" />
+                                   <small class="form-text text-muted">
+                                       Link to an image or a YouTube video.
+                                   </small>
+                                   <div id="validationServer03Feedback"
+                                        class="invalid-feedback">
+                                       Please provide a valid media link.
+                                   </div>
+                               </div>
+                               <img id="imported-thumbnail"
+                                    style="display: none;"
+                                    class="img-thumbnail mb-2"
+                                    alt="Imported image thumbnail" />
+                               <div class="form-group">
+                                   <label for="import-form-title">
+                                       Asset Title
+                                   </label>
+                                   <input type="text"
+                                          required
+                                          class="form-control"
+                                          id="import-form-title"
+                                          name="title" />
+
+                                   <input type="hidden" id="import-form-label"
+                                          name="label" />
+                                   <input type="hidden" id="import-form-width"
+                                          name="width" />
+                                   <input type="hidden" id="import-form-height"
+                                          name="height" />
+                               </div>
+                               <button type="submit"
+                                       id="import-submit-button"
+                                       class="btn btn-primary"
+                                       disabled>
+                                   Import
+                               </button>
+                           </form>
+
+                           <hr />
+
                            <p class="card-text">
-                               Install Mediathread’s Google Chrome
-                               extension to import assets like video, audio, and
+                               Alternatively, you can install
+                               Mediathread’s Google Chrome extension
+                               to import assets like video, audio, and
                                images into this course from various
                                sites across the web.
 
-                               <ul><li>Visit the Chrome Web Store and make sure to click Add To Chrome.</li>
-                               <li>Once added to your browser, you can click on the Extension icon next
-                               to the Address Bar to pin the Mediathread extension for easier access.</li>
-                               <li>You can click the extension to collect single media items from sites like Flickr, YouTube, and Google Images.</li>
+                               <ul>
+                                   <li>
+                                       Visit the Chrome Web Store and
+                                       make sure to click Add To
+                                       Chrome.
+                                   </li>
+                                   <li>
+                                       Once added to your browser, you
+                                       can click on the Extension icon
+                                       next to the Address Bar to pin
+                                       the Mediathread extension for
+                                       easier access.
+                                   </li>
+                                   <li>
+                                       You can click the extension to
+                                       collect single media items from
+                                       sites like Flickr, YouTube, and
+                                       Google Images.
+                                   </li>
                                </ul>
 
                                You must be using a browser in the <a href="https://en.wikipedia.org/wiki/Chromium_(web_browser)#Browsers_based_on_Chromium">Chrome family</a>
@@ -213,6 +280,7 @@
 </div>
 
 {% block js %}
+    <!-- Media upload form -->
     <script src="{% static 's3sign/js/s3upload.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     <script>
@@ -283,6 +351,29 @@
 
         jQuery("a.upload_button").click(function(evt) {
             jQuery(this).parent().submit();
+        });
+    });
+    </script>
+
+    <!-- Media import form -->
+    <script src="{% static '/js/lib/get-youtube-id/index.js' %}"></script>
+    <script type="module">
+    import {
+        isYouTubeURL, isImgUrl, getMediaType, refreshImportForm
+    } from "{% static '/js/utils.js' %}";
+
+    jQuery(document).ready(function() {
+        // In media import form, listen for image URL.
+        const urlInput = document.getElementById('import-source-url');
+        urlInput.addEventListener('change', function(e) {
+            const mediaLabel = getMediaType(e.target.value);
+            if (mediaLabel === 'youtube') {
+                refreshImportForm(urlInput, e.target.value, mediaLabel);
+            } else if (mediaLabel.then) {
+                mediaLabel.then(function(mt) {
+                    refreshImportForm(urlInput, e.target.value, mt);
+                });
+            }
         });
     });
     </script>

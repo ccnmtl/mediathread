@@ -26,5 +26,7 @@ jobs:
         run: sudo apt install -y libmemcached-dev
       - name: Build with Makefile
         run: make
+      - name: Run eslint
+        run: npm run eslint
       - name: Run Integration Tests
         run: make cypress  

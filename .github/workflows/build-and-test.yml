@@ -2,6 +2,7 @@ name: build-and-test
 on: [push, workflow_dispatch]
 jobs:
   build:
+    name: Django tests
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -28,5 +29,30 @@ jobs:
         run: make
       - name: Run eslint
         run: npm run eslint
+  cypress:
+    name: Cypress run
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        firefox: [ 'latest-esr' ]
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v2
+      - name: install memcached headers
+        run: sudo apt install -y libmemcached-dev
+      - uses: browser-actions/setup-firefox@latest
+        with:
+          firefox-version: ${{ matrix.firefox }}
       - name: Run Integration Tests
-        run: make cypress  
+        uses: cypress-io/github-action@v4
+        with:
+          command: npm run cypress:test
+          browser: firefox
+          headed: true

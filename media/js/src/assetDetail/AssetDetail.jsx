@@ -789,7 +789,8 @@ export default class AssetDetail extends React.Component {
                     {annotationTools}
                     <div
                         id={`map-${this.props.asset.id}`}
-                        className="ol-map"></div>
+                        className="ol-map"
+                        aria-label={`Asset titled ${this.props.asset.title}`}></div>
                 </React.Fragment>
             );
         } else if (this.type === 'video') {

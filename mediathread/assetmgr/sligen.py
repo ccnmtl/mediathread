@@ -44,7 +44,7 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
     elif label == 'mp4_panopto':
         panopto_id = url
         panopto_url = cache.get(panopto_id)
-        if panopto_url is not None:
+        if panopto_url:
             return panopto_url
 
         session_mgr = PanoptoSessionManager(
@@ -54,7 +54,11 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
             password=getattr(settings, 'PANOPTO_API_PASSWORD', None),
             cache_dir=getattr(settings, 'ZEEP_CACHE_DIR', None))
         panopto_url = session_mgr.get_session_url(url)
-        cache.set(panopto_id, panopto_url, timeout=None)  # cache forever
+
+        if panopto_url:
+            # cache forever
+            cache.set(panopto_id, panopto_url, timeout=None)
+
         return panopto_url
     elif url.startswith('https://cdn.jwplayer.com/'):
         jw_url = cache.get(url)

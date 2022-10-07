@@ -18,7 +18,7 @@ from mediathread.assetmgr.views import (
     EMBED_WIDTH, EMBED_HEIGHT,
     asset_workspace_courselookup,
     RedirectToExternalCollectionView,
-    RedirectToUploaderView, AssetCreateView, AssetEmbedListView,
+    RedirectToUploaderView, ExternalAssetCreateView, AssetEmbedListView,
     _parse_domain, AssetEmbedView, annotation_delete,
     annotation_create_global, annotation_create, AssetUpdateView
 )
@@ -86,7 +86,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
                 'image': 'x' * 5000,  # too long
                 'url': 'https://www.youtube.com/abcdefghi'}
         request = RequestFactory().post('/save/', data)
-        sources = AssetCreateView.sources_from_args(request)
+        sources = ExternalAssetCreateView.sources_from_args(request)
 
         self.assertEquals(len(sources.keys()), 0)
 
@@ -95,7 +95,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
                 'image': 'https://www.flickr.com/',
                 'image-metadata': ['w720h526;text/html']}
         request = RequestFactory().post('/save/', data)
-        sources = AssetCreateView.sources_from_args(request)
+        sources = ExternalAssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
         self.assertEquals(sources['image'].url, 'https://www.flickr.com/')
         self.assertTrue(sources['image'].primary)
@@ -111,7 +111,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
             'metadata-description': 'Video description',
         }
         request = RequestFactory().post('/save/', data)
-        sources = AssetCreateView.sources_from_args(request)
+        sources = ExternalAssetCreateView.sources_from_args(request)
         self.assertEquals(len(sources.keys()), 2)
         self.assertEquals(sources['video'].url,
                           'http://www.example.com/video.mp4')
@@ -120,7 +120,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         self.assertEquals(sources['video'].height, 358)
 
     def test_parse_user(self):
-        view = AssetCreateView()
+        view = ExternalAssetCreateView()
         request = RequestFactory().get('/')
         request.course = self.sample_course
 
@@ -213,7 +213,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         ExternalCollection.objects.get(course=self.sample_course,
                                        title=suggested.title)
 
-    def test_asset_create_via_bookmarklet(self):
+    def test_asset_create_via_browser_extension(self):
         data = {'title': 'YouTube Asset',
                 'youtube': 'https://www.youtube.com/abcdefghi',
                 'asset-source': 'bookmarklet'}
@@ -222,7 +222,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        view = AssetCreateView()
+        view = ExternalAssetCreateView()
         view.request = request
         response = view.post(request)
 
@@ -240,7 +240,7 @@ class AssetViewTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         request.course = self.sample_course
 
-        view = AssetCreateView()
+        view = ExternalAssetCreateView()
         view.request = request
         response = view.post(request)
 
@@ -1025,7 +1025,7 @@ class AssetUpdateViewTest(MediathreadTestMixin, TestCase):
             self.assertEquals(self.asset.thumb_url, 'new thumb')
 
 
-class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
+class AssetCreateViewTest(MediathreadTestMixin, TestCase):
     def setUp(self):
         self.setup_sample_course()
         self.setup_alternate_course()
@@ -1107,6 +1107,62 @@ class UploadedAssetCreateViewTest(MediathreadTestMixin, TestCase):
             self.sample_course.pk, asset.pk
         ])
         self.assertContains(r, asset_url)
+
+    def test_post_youtube_asset(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+
+        url = 'https://www.youtube.com/watch?v=SoOyaDWIoMA'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': 'Mixing sodium with mercury',
+                'url': url,
+                'width': 200,
+                'height': 100,
+                'label': 'youtube',
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'item has been added to your collection.')
+        self.assertContains(r, 'Mixing sodium with mercury')
+
+        asset = Asset.objects.get(title='Mixing sodium with mercury')
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+        self.assertEqual(asset.media_type(), 'video')
+
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertEqual(primary_source.label, 'youtube')
+        self.assertEqual(primary_source.width, 200)
+        self.assertEqual(primary_source.height, 100)
+        self.assertEqual(asset.author, self.instructor_three)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)
+
+    def test_post_bad_asset(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+
+        url = 'https://private-dev-bucket.s3.amazonaws.com' + \
+            '/private/2021/09/03/86bfdaae-8e1a-4768-8d04-83052ea97f62.jpg'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': '',
+                'url': url,
+                'width': 200,
+                'height': 100,
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(
+            'Title and URL are required to make an asset.' in str(r.content))
 
     def test_staff_post_as(self):
         self.client.login(

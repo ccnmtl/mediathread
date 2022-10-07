@@ -23,7 +23,8 @@ from mediathread.assetmgr.views import (
     AssetDetailView, ReactAssetDetailView,
     TagCollectionView,
     RedirectToExternalCollectionView, RedirectToUploaderView,
-    AssetCreateView, BookmarkletMigrationView, AssetUpdateView)
+    ExternalAssetCreateView, BookmarkletMigrationView, AssetUpdateView
+)
 from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     error_500,
@@ -284,8 +285,8 @@ urlpatterns = [
     path('course/<int:course_pk>/reports/',
          include('mediathread.reports.urls')),
 
-    # Bookmarklet, Wardenclyffe, Staff custom asset entry
-    path('save/', AssetCreateView.as_view(), name='asset-save'),
+    # Browser Extension, Wardenclyffe, Staff custom asset entry
+    path('save/', ExternalAssetCreateView.as_view(), name='asset-save'),
     path('update/', AssetUpdateView.as_view(), name='asset-update-view'),
 
     path('setting/<slug:user_name>/', set_user_setting),

@@ -1,0 +1,9 @@
+{
+  "name": "get-youtube-id",
+  "version": "1.0.0",
+  "main": "./index.js",
+  "dependencies": {},
+  "ignore": [
+    "test/"
+  ]
+}

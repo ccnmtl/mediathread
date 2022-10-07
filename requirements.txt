@@ -118,7 +118,7 @@ entrypoints==0.4
 django-storages==1.13.1
 django-cacheds3storage==0.2.2
 
-requests-toolbelt==0.9.1
+requests-toolbelt==0.10.0
 pytz==2022.4
 isodate==0.6.0
 cached-property==1.5.2
@@ -142,7 +142,7 @@ kombu==4.6.11 # pyup: <5.0.0
 celery==4.4.7 # pyup: <5.0.0
 django-celery-results<2.5.0
 # memcached
-pylibmc==1.6.1; sys_platform == 'linux'
+pylibmc==1.6.3; sys_platform == 'linux'
 requests-file==1.5.1
 typing_extensions==4.3.0
 pyparsing==3.0.5

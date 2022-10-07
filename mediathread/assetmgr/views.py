@@ -155,7 +155,7 @@ class MostRecentView(LoggedInCourseMixin, View):
 # This view is used by Mediathread's browser extension, so disable CSRF
 # until we implement this in the extension.
 @method_decorator(csrf_exempt, name='dispatch')
-class AssetCreateView(View):
+class ExternalAssetCreateView(View):
     OPERATION_TAGS = ('jump', 'title', 'noui', 'v', 'share',
                       'as', 'set_course', 'secret')
 
@@ -328,9 +328,10 @@ class AssetCreateView(View):
             return HttpResponseRedirect(asset_url)
 
 
-class UploadedAssetCreateView(LoggedInCourseMixin, View):
+class AssetCreateView(LoggedInCourseMixin, View):
     """
-    View for creating an Asset via an uploaded media object.
+    View for creating an Asset via an uploaded media object, or
+    a piece of media imported via the import form.
     """
     http_method_names = ['post']
 
@@ -362,14 +363,19 @@ class UploadedAssetCreateView(LoggedInCourseMixin, View):
         asset.global_annotation(request.user, True)
 
         label = 'image'
+        width = 0
+        height = 0
+
         if url.endswith('.pdf'):
             label = 'pdf'
-            # Dimensions are not needed for PDF display.
-            width = 0
-            height = 0
-        else:
+        elif request.POST.get('width') and request.POST.get('height'):
             width = request.POST.get('width')
             height = request.POST.get('height')
+
+        # If the form passed in a valid label, use it.
+        lbl = request.POST.get('label')
+        if lbl and lbl in Asset.primary_labels:
+            label = lbl
 
         Source.objects.create(
             asset=asset, url=url,

@@ -356,11 +356,11 @@
     </script>
 
     <!-- Media import form -->
-    <script src="{% static '/js/lib/get-youtube-id/index.js' %}"></script>
+    <script src="{% static 'js/lib/get-youtube-id/index.js' %}"></script>
     <script type="module">
     import {
         isYouTubeURL, isImgUrl, getMediaType, refreshImportForm
-    } from "{% static '/js/utils.js' %}";
+    } from "{% static 'js/utils.js' %}";
 
     jQuery(document).ready(function() {
         // In media import form, listen for image URL.

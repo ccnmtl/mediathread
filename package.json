@@ -9,9 +9,12 @@
   "scripts": {
     "test": "jest",
     "cypress:run": "cypress run",
+    "cypress:chromerun": "cypress run --headless --browser chrome",
+    "cypress:chromeopen": "cypress open --browser chrome",
+    "cypress:chromehead": "cypress run --headed --browser chrome",
     "cypress:ffrun": "cypress run --headless --browser firefox",
     "cypress:ffopen": "cypress open --browser firefox",
-    "cypress:ffhead": "cypress run --browser firefox",
+    "cypress:ffhead": "cypress run --headed --browser firefox",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:ffhead",
     "dev": "webpack --mode development --watch",
     "eslint": "eslint media/js/app media/js/src media/js/src/*.jsx media/js/src/**/*.jsx media/js/pdf/*.js *.js",

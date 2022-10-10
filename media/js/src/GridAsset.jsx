@@ -189,6 +189,7 @@ export default class GridAsset extends React.Component {
                                         className={
                                             'ol-map mx-auto d-block img-fluid'
                                         }
+                                        role={'img'}
                                         aria-label={'Image thumbnail for asset: ' +
                                                     this.props.asset.title}
                                         id={`map-${this.props.asset.id}`}></div>

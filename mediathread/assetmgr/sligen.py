@@ -53,7 +53,7 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
             instance_name=getattr(settings, 'PANOPTO_INSTANCE_NAME', None),
             password=getattr(settings, 'PANOPTO_API_PASSWORD', None),
             cache_dir=getattr(settings, 'ZEEP_CACHE_DIR', None))
-        panopto_url = session_mgr.get_session_url(url)
+        panopto_url = session_mgr.get_session_url(panopto_id)
 
         if panopto_url:
             # cache forever

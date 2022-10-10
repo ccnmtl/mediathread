@@ -22,15 +22,11 @@ export default class AnnotationScroller extends React.Component {
             this.setState({
                 currentAnnotation: newAnnotation
             });
-            let annotationTitle = this.props.asset.annotations[newAnnotation].metadata.title;
-            document.getElementById(`map-${this.props.asset.id}`).setAttribute(
-                'aria-label', `Annotation titled ${annotationTitle}`);
+
             this.props.onSelectedAnnotationUpdate(newAnnotation);
         } else {
             this.setState({currentAnnotation: -1});
             this.props.onSelectedAnnotationUpdate(null);
-            document.getElementById(`map-${this.props.asset.id}`).setAttribute(
-                'aria-label', `Image thumbnail for asset: ${this.props.asset.title}`);
         }
     }
     onNextClick(e) {
@@ -40,9 +36,7 @@ export default class AnnotationScroller extends React.Component {
             this.setState({
                 currentAnnotation: newAnnotation
             });
-            let annotationTitle = this.props.asset.annotations[newAnnotation].metadata.title;
-            document.getElementById(`map-${this.props.asset.id}`).setAttribute(
-                'aria-label', `Annotation titled ${annotationTitle}`);
+
             this.props.onSelectedAnnotationUpdate(newAnnotation);
         }
     }

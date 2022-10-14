@@ -1,11 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DataTable, { createTheme } from 'react-data-table-component';
-import LoadingAssets from './alerts/LoadingAssets';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses }  from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import NoAssetsFound from './alerts/NoAssetsFound';
 import {
-    formatDay, getAssets, getAssetType, getAssetUrl, getTerms
+    formatDay, getAssetType, getAssetUrl, getTerms
 } from './utils';
+
+function createDate(name, selection, tags, vocabulary, media, owner, date) {
+    return { name, selection, tags, vocabulary, media, owner, date };
+}
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: '#cacbcc',
+        color: theme.palette.common.black,
+        fontSize: 16
+    }
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 1,
+        margin: 1
+    },
+}));
 
 export default class CollectionListView extends React.Component {
     constructor(props) {
@@ -13,30 +42,6 @@ export default class CollectionListView extends React.Component {
         this.state = {
             loading: false
         };
-
-        this.handleSort = this.handleSort.bind(this);
-    }
-    handleSort(column, sortDirection) {
-        this.setState({loading: true});
-
-        let sortField = column.name.toLowerCase();
-        if (sortField === 'owner') {
-            sortField = 'author';
-        } else if (sortField === 'date') {
-            sortField = 'added';
-        }
-
-        const orderBy = sortDirection === 'asc' ? sortField : '-' + sortField;
-
-        const me = this;
-        getAssets(
-            this.props.title, this.props.owner, this.props.tags,
-            this.props.terms, this.props.date,
-            0, orderBy
-        ).then(function(d) {
-            me.props.onUpdateAssets(d.assets, d.asset_count);
-            me.setState({loading: false});
-        });
     }
     render() {
         if (this.props.assets.length === 0) {
@@ -45,132 +50,82 @@ export default class CollectionListView extends React.Component {
 
         const me = this;
 
-        const columns = [
-            {
-                name: 'Title',
-                selector: 'title',
-                sortable: true,
-                wrap: true,
-                format: function(row) {
-                    return (
-                        <a
-                            href={getAssetUrl(row.id)}
-                            onClick={
-                                (e) => me.props.enterAssetDetailView(e, row)
-                            }>
-                            {row.title}
-                        </a>
-                    );
-                }
-            },
-            {
-                name: 'Selections',
-                selector: 'annotation_count',
-                sortable: false
-            },
-            {
-                name: 'Tags',
-                selector: 'tags',
-                sortable: false,
-                wrap: true,
-                format: function(row) {
-                    if (row && row.tags) {
-                        return row.tags.join(', ');
-                    }
+        const rows = [];
 
-                    return row.tags;
-                }
-            },
-            {
-                name: 'Course Vocabulary',
-                selector: 'terms',
-                sortable: false,
-                wrap: true,
-                format: function(row) {
-                    if (row && row.annotations) {
-                        return getTerms(row.annotations).join(', ');
-                    }
-
-                    return '';
-                }
-            },
-            {
-                name: 'Media',
-                selector: 'primary_type',
-                sortable: false,
-                format: function(row) {
-                    return getAssetType(row.primary_type);
-                }
-            },
-            {
-                name: 'Owner',
-                selector: 'author.public_name',
-                sortable: true,
-                wrap: true
-            },
-            {
-                name: 'Date',
-                format: formatDay,
-                selector: 'added',
-                sortable: true
-            }
-        ];
-
-        createTheme('mediathread', {
-            striped: {
-                default: 'rgba(0, 0, 0, 0.05)'
-            }
+        me.props.assets.map((asset, index) => {
+            let name = <a
+                href={getAssetUrl(asset.id)}
+                key={index}
+                onClick={(e) => me.props.enterAssetDetailView(e, asset)}>
+                {asset.title}
+            </a>;
+            let selection = asset.annotation_count;
+            let tags = asset.tags.join(', ');
+            let media = getAssetType(asset.primary_type);
+            let owner = asset.author.public_name;
+            let date = formatDay(asset);
+            let vocabulary = getTerms(asset.annotations).join(', ');
+            rows.push(createDate(
+                name, selection, tags, vocabulary, media, owner, date));
         });
 
-        const styles = {
-            header: {
-                style: {
-                    minHeight: 0
-                }
-            },
-            headRow: {
-                style: {
-                    minHeight: '34px'
-                }
-            },
-            headCells: {
-                style: {
-                    color: 'rgba(33, 37, 41)',
-                    fontSize: '16px',
-                    fontWeight: 700,
-                    backgroundColor: '#ccc',
-                    borderColor: '#ccc',
-                    padding: '0.3rem'
-                }
-            },
-            rows: {
-                style: {
-                    fontSize: '16px',
-                    minHeight: '33px'
-                }
-            },
-            cells: {
-                style: {
-                    padding: '0.3rem'
-                }
-            }
-        };
-
         return (
-            <DataTable
-                theme="mediathread"
-                customStyles={styles}
-                className="react-data-table"
-                columns={columns}
-                dense
-                highlightOnHover
-                striped
-                progressPending={this.state.loading}
-                progressComponent={<LoadingAssets />}
-                sortServer
-                defaultSortField="title"
-                onSort={this.handleSort}
-                data={this.props.assets} />
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell>Title</StyledTableCell>
+                            <StyledTableCell align="right">
+                                Selections
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                                Tags
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                                Course Vocabulary
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                                Media
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                                Owner
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                                Date
+                            </StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <StyledTableRow
+                                key={row.name}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {row.name}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.selection}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.tags}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.vocabulary}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.media}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.owner}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {row.date}
+                                </TableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         );
     }
 }

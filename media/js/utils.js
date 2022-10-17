@@ -8,6 +8,24 @@ const isYouTubeURL = function(s) {
     return s.match(re);
 };
 
+const isVimeoURL = function(s) {
+    const re = /^(?:http|https)?:?\/?\/?(?:www\.)?(?:player\.)?vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|video\/|)(\d+)(?:|\/\?)$/;
+    return s.match(re);
+};
+
+const getVimeoIdFromUrl = function(url) {
+    // Look for a string with 'vimeo', then whatever, then a
+    // forward slash and a group of digits.
+    const match = /vimeo.*\/(\d+)/i.exec(url);
+    // If the match isn't null (i.e. it matched)
+    if (match) {
+        // The grouped/matched digits from the regex
+        return match[1];
+    }
+
+    return null;
+};
+
 const isImgUrl = function(url) {
     const img = new Image();
     img.src = url;
@@ -20,6 +38,8 @@ const isImgUrl = function(url) {
 const getMediaType = function(url) {
     if (isYouTubeURL(url)) {
         return 'youtube';
+    } else if (isVimeoURL(url)) {
+        return 'vimeo';
     }
 
     return isImgUrl(url).then(function(result) {
@@ -38,7 +58,11 @@ const refreshImportForm = function(urlInput, sourceUrl, mediaLabel='image') {
     if (mediaLabel === 'youtube') {
         const youtubeId = getYouTubeID(sourceUrl);
         sourceUrl = `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+    } else if (mediaLabel === 'vimeo') {
+        const vimeoId = getVimeoIdFromUrl(sourceUrl);
+        sourceUrl = `https://vumbnail.com/${vimeoId}.jpg`;
     }
+
     const submitButton = document.getElementById('import-submit-button');
     document.getElementById('import-form-label').value = mediaLabel;
 
@@ -48,7 +72,6 @@ const refreshImportForm = function(urlInput, sourceUrl, mediaLabel='image') {
 
     thumbnailEl.src = sourceUrl;
     jQuery(thumbnailEl).on('load', function() {
-        console.log('load');
         thumbnailEl.style.display = 'block';
         jQuery(urlInput)
             .removeClass('is-invalid')
@@ -57,7 +80,6 @@ const refreshImportForm = function(urlInput, sourceUrl, mediaLabel='image') {
     });
 
     jQuery(thumbnailEl).on('error', function() {
-        console.log('error');
         thumbnailEl.style.display = 'none';
         jQuery(urlInput)
             .removeClass('is-valid')
@@ -81,5 +103,5 @@ const refreshImportForm = function(urlInput, sourceUrl, mediaLabel='image') {
 };
 
 export {
-    isYouTubeURL, isImgUrl, getMediaType, refreshImportForm
+    getMediaType, refreshImportForm
 };

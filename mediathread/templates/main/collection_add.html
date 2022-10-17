@@ -359,7 +359,7 @@
     <script src="{% static 'js/lib/get-youtube-id/index.js' %}"></script>
     <script type="module">
     import {
-        isYouTubeURL, isImgUrl, getMediaType, refreshImportForm
+        getMediaType, refreshImportForm
     } from "{% static 'js/utils.js' %}";
 
     jQuery(document).ready(function() {
@@ -367,7 +367,7 @@
         const urlInput = document.getElementById('import-source-url');
         urlInput.addEventListener('change', function(e) {
             const mediaLabel = getMediaType(e.target.value);
-            if (mediaLabel === 'youtube') {
+            if (mediaLabel === 'youtube' || mediaLabel === 'vimeo') {
                 refreshImportForm(urlInput, e.target.value, mediaLabel);
             } else if (mediaLabel.then) {
                 mediaLabel.then(function(mt) {

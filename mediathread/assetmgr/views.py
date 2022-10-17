@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db import DataError
 from django.db.models.functions import Lower
 from django.db.models.query_utils import Q
 from django.http import (
@@ -351,7 +352,7 @@ class AssetCreateView(LoggedInCourseMixin, View):
                 'Title and URL are required to make an asset.')
 
         title = request.POST.get('title').strip()
-        url = request.POST.get('url')
+        url = request.POST.get('url').strip()
 
         author = request.user
         if request.user.is_staff and request.POST.get('as'):
@@ -377,11 +378,22 @@ class AssetCreateView(LoggedInCourseMixin, View):
         if lbl and lbl in Asset.primary_labels:
             label = lbl
 
-        Source.objects.create(
-            asset=asset, url=url,
-            primary=True,
-            width=width, height=height,
-            label=label)
+        try:
+            Source.objects.create(
+                asset=asset,
+                url=url,
+                primary=True,
+                width=width, height=height,
+                label=label)
+        except DataError:
+            asset.delete()
+            messages.error(
+                request,
+                'There was an error creating the ' +
+                '<strong>{}</strong> asset.'.format(
+                    title
+                ))
+            return redirect('course_detail', request.course.pk)
 
         asset_url = reverse('asset-view', args=[request.course.pk, asset.pk])
 

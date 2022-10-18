@@ -99,7 +99,6 @@ export default class GridAsset extends React.Component {
     onSelectedAnnotationUpdate(annotation) {
         const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
-
         this.setState({selectedAnnotation: a});
 
         if (type === 'image') {
@@ -158,6 +157,12 @@ export default class GridAsset extends React.Component {
             );
         }
 
+        let label = `asset: ${this.props.asset.title}`;
+
+        if (this.state.selectedAnnotation) {
+            label = `annotation: ${this.state.selectedAnnotation.title}`;
+        }
+
         const assetUrl = getAssetUrl(this.props.asset.id);
 
         return (
@@ -173,7 +178,7 @@ export default class GridAsset extends React.Component {
                     </a>
                 </h5>
                 <div key={this.props.asset.id}>
-                    <div className="card-thumbnail">
+                    <div className="card-thumbnail" aria-live="polite">
                         <div className="media-type">
                             <span className="badge badge-light">
                                 {displayedType}
@@ -189,26 +194,26 @@ export default class GridAsset extends React.Component {
                                         className={
                                             'ol-map mx-auto d-block img-fluid'
                                         }
-                                        aria-label={'Image thumbnail for asset: ' +
-                                                    this.props.asset.title}
+                                        role={'img'}
+                                        aria-label={'Image thumbnail for ' + label}
                                         id={`map-${this.props.asset.id}`}></div>
                                 )}
                                 {type === 'video' && (
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'Video thumbnail for asset: ' +
-                                             this.props.asset.title}
+                                        alt={'Video thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
+                                        id={`video-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />
                                 )}
                                 {type === 'audio' && (
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'audio thumbnail for asset: ' +
-                                             this.props.asset.title}
+                                        alt={'Audio thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
+                                        id={`audio-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />
                                 )}
                                 {type === 'pdf' && (
@@ -233,9 +238,9 @@ export default class GridAsset extends React.Component {
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'thumbnail for: ' +
-                                             this.props.asset.title}
+                                        alt={'thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
+                                        id={`unknown-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />
                                 )}
                             </a>

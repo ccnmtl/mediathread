@@ -47,8 +47,7 @@ export default class GridAsset extends React.Component {
         this.state = {
             selectedAnnotation: null,
             thumbnailUrl: mediaPrefix + 'img/thumb_unknown.png',
-            pdfPageNumber: 1,
-            label: `asset: ${this.props.asset.title}`
+            pdfPageNumber: 1
         };
 
         this.pdfLeftMargin = 0;
@@ -100,12 +99,7 @@ export default class GridAsset extends React.Component {
     onSelectedAnnotationUpdate(annotation) {
         const type = this.asset.getType();
         const a = this.props.asset.annotations[annotation];
-        let label = `asset: ${this.props.asset.title}`;
-
-        if (a) {
-            label = `annotation: ${a.title}`;
-        }
-        this.setState({selectedAnnotation: a, label: label});
+        this.setState({selectedAnnotation: a});
 
         if (type === 'image') {
             if (this.selectionLayer) {
@@ -163,6 +157,12 @@ export default class GridAsset extends React.Component {
             );
         }
 
+        let label = `asset: ${this.props.asset.title}`;
+
+        if (this.state.selectedAnnotation) {
+            label = `annotation: ${this.state.selectedAnnotation.title}`;
+        }
+
         const assetUrl = getAssetUrl(this.props.asset.id);
 
         return (
@@ -195,16 +195,14 @@ export default class GridAsset extends React.Component {
                                             'ol-map mx-auto d-block img-fluid'
                                         }
                                         role={'img'}
-                                        aria-label={'Image thumbnail for ' +
-                                                    this.state.label}
+                                        aria-label={'Image thumbnail for ' + label}
                                         id={`map-${this.props.asset.id}`}></div>
                                 )}
                                 {type === 'video' && (
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'Video thumbnail for ' +
-                                            this.state.label}
+                                        alt={'Video thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
                                         id={`video-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />
@@ -213,8 +211,7 @@ export default class GridAsset extends React.Component {
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'Audio thumbnail for ' +
-                                            this.state.label}
+                                        alt={'Audio thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
                                         id={`audio-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />
@@ -241,8 +238,7 @@ export default class GridAsset extends React.Component {
                                     <img
                                         className="mx-auto d-block img-fluid"
                                         style={{'maxWidth': '100%'}}
-                                        alt={'thumbnail for ' +
-                                            this.state.label}
+                                        alt={'thumbnail for ' + label}
                                         src={this.state.thumbnailUrl}
                                         id={`unknown-${this.props.asset.id}`}
                                         onError={() => handleBrokenImage(type)} />

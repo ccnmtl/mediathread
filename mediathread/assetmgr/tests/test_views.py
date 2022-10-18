@@ -1145,6 +1145,73 @@ class AssetCreateViewTest(MediathreadTestMixin, TestCase):
         ])
         self.assertContains(r, asset_url)
 
+    def test_post_vimeo_asset(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+
+        url = 'https://vimeo.com/432266262'
+        title = 'Cassandra - Thank You For The Many Things You\'ve Done'
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': title,
+                'url': url,
+                'label': 'vimeo',
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, 'item has been added to your collection.')
+        self.assertContains(r, title)
+
+        asset = Asset.objects.get(title=title)
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+        self.assertEqual(asset.media_type(), 'video')
+
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertEqual(primary_source.label, 'vimeo')
+        self.assertEqual(asset.author, self.instructor_three)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)
+
+    def test_post_valid_data_url_asset(self):
+        self.client.login(
+            username=self.instructor_three.username, password='test')
+
+        f = open('./mediathread/assetmgr/tests/dataurl.txt', 'r')
+        url = f.read().strip()
+
+        r = self.client.post(
+            reverse('asset-create', args=[self.sample_course.pk]), {
+                'title': 'Cat image - Data URL',
+                'url': url,
+                'width': 1200,
+                'height': 600,
+                'label': 'image',
+            }, format='json', follow=True)
+
+        self.assertEqual(r.status_code, 200)
+        asset = Asset.objects.get(title='Cat image - Data URL')
+        self.assertContains(
+            r, reverse('asset-view', kwargs={'asset_id': asset.pk}))
+        self.assertEqual(asset.author, self.instructor_three)
+
+        primary_source = asset.primary
+        self.assertEqual(primary_source.url, url)
+        self.assertTrue(primary_source.is_image())
+        self.assertEqual(primary_source.width, 1200)
+        self.assertEqual(primary_source.height, 600)
+
+        asset_url = reverse('asset-view', args=[
+            self.sample_course.pk, asset.pk
+        ])
+        self.assertContains(r, asset_url)
+
     def test_post_bad_asset(self):
         self.client.login(
             username=self.instructor_three.username, password='test')

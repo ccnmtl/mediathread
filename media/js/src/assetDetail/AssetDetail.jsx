@@ -712,6 +712,11 @@ export default class AssetDetail extends React.Component {
         let media = null;
 
         let invisibleEl = null;
+        let label = `asset: ${this.props.asset.title}`;
+        if (this.state.activeSelection) {
+            label = `annotation: ${this.state.activeSelection}`;
+        }
+
         if (this.state.tab === 'viewMetadata') {
             invisibleEl = (
                 <div className="input-group">
@@ -789,8 +794,9 @@ export default class AssetDetail extends React.Component {
                     {annotationTools}
                     <div
                         id={`map-${this.props.asset.id}`}
-                        className="ol-map"
-                        aria-label={`Asset titled ${this.props.asset.title}`}></div>
+                        className="ol-map target"
+                        aria-live="polite"
+                        aria-label={'Image for ' + label}></div>
                 </React.Fragment>
             );
         } else if (this.type === 'video') {
@@ -913,7 +919,8 @@ export default class AssetDetail extends React.Component {
             media = (
                 <React.Fragment>
                     {annotationTools}
-                    <div className="embed-responsive embed-responsive-16by9">
+                    <div className="embed-responsive embed-responsive-16by9" aria-live="polite"
+                        aria-label={'Video for ' + label}>
                         <ReactPlayer
                             className="react-player embed-responsive-item"
                             width="100%"
@@ -974,7 +981,8 @@ export default class AssetDetail extends React.Component {
             media = (
                 <>
                     {annotationTools}
-                    <div className="d-flex">
+                    <div className="d-flex" aria-live="polite"
+                        aria-label={'PDF for ' + label}>
                         <iframe
                             className="flex-fill pdfjs"
                             src={`/asset/pdfjs/${this.asset.asset.id}`}

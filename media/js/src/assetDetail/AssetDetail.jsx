@@ -794,7 +794,7 @@ export default class AssetDetail extends React.Component {
                     {annotationTools}
                     <div
                         id={`map-${this.props.asset.id}`}
-                        className="ol-map target"
+                        className="ol-map"
                         aria-live="polite"
                         aria-label={'Image for ' + label}></div>
                 </React.Fragment>

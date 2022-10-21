@@ -9,7 +9,7 @@ try:
     from mediathread.deploy_specific.settings import *  # noqa
     if 'EXTRA_INSTALLED_APPS' in locals():
         INSTALLED_APPS = INSTALLED_APPS + EXTRA_INSTALLED_APPS  # noqa
-except:  # nosec
+except ImportError:
     pass
 
 # local_settings overrides everything

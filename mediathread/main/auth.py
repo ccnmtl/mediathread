@@ -45,16 +45,16 @@ class CourseGroupMapper(object):
     @staticmethod
     def map(user, affils):
         # we also make a "pseudo" affil group ALL_CU
-        # that contains *anyone* who's logged in through WIND
+        # that contains *anyone* who's logged in through CAS
         affils.append('ALL_CU')
 
-        # by default, WIND affils include a group named for
+        # by default, CAS affils include a group named for
         # the uni for each user. This is not usually desirable
         # so we strip it out, but there's a setting that lets
         # you turn it back on.
         remove_uni = True
-        if hasattr(settings, 'WIND_AFFIL_GROUP_INCLUDE_UNI_GROUP'):
-            if settings.WIND_AFFIL_GROUP_INCLUDE_UNI_GROUP is True:
+        if hasattr(settings, 'CAS_AFFIL_GROUP_INCLUDE_UNI_GROUP'):
+            if settings.CAS_AFFIL_GROUP_INCLUDE_UNI_GROUP is True:
                 remove_uni = False
 
         year = timezone.now().year

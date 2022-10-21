@@ -359,7 +359,8 @@ class Source(models.Model):
     # is a movie, even though it might have image urls for thumbs, etc
     primary = models.BooleanField(default=False, db_index=True)
 
-    media_type = models.CharField(default=None, null=True, max_length=64)
+    media_type = models.CharField(
+        default=None, null=True, blank=True, max_length=64)
 
     # in bytes (like FileField)
     size = models.PositiveIntegerField(default=0)

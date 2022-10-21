@@ -109,7 +109,12 @@ class PanoptoIngester(object):
         Source.objects.create(
             asset=asset, primary=True, label='mp4_panopto', url=session_id)
 
-        turl = 'https://{}{}'.format(settings.PANOPTO_SERVER, thumb_url)
+        turl = thumb_url
+        # If the thumb_url is already an absolute URI, don't do
+        # further processing.
+        if not thumb_url.startswith('https://'):
+            turl = 'https://{}{}'.format(settings.PANOPTO_SERVER, thumb_url)
+
         Source.objects.create(
             asset=asset, primary=False, label='thumb', url=turl)
         asset.global_annotation(author, auto_create=True)

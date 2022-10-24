@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages.constants import ERROR, INFO, WARNING
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from mediathread.assetmgr.models import Source, Asset
 from mediathread.main.course_details import get_upload_folder
 from mediathread.main.models import PanoptoIngestLogEntry
@@ -169,10 +170,15 @@ class PanoptoIngester(object):
         email_address = (author.email or
                          '{}@columbia.edu'.format(author.username))
 
-        send_template_email(
-            'Mediathread submission now available',
-            'main/mediathread_submission.txt',
-            data, email_address)
+        try:
+            send_template_email(
+                'Mediathread submission now available',
+                'main/mediathread_submission.txt',
+                data, email_address)
+        except ValidationError:
+            self.log_message(
+                course, None, WARNING,
+                'Couldn\'t send email to {}'.format(email_address))
 
     def folder_ingest(self, course, author, ingest_folder_id):
         '''

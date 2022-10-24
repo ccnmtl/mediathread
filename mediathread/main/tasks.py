@@ -31,8 +31,12 @@ class PanoptoIngester(object):
         if self.request is not None:
             messages.add_message(self.request, level, msg)
         else:
+            session_id = None
+            if session:
+                session_id = session.get('Id')
+
             PanoptoIngestLogEntry.objects.create(
-                course=course, session_id=session['Id'],
+                course=course, session_id=session_id,
                 level=level, message=msg)
 
     def is_session_complete(self, course, session):

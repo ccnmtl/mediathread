@@ -49,6 +49,18 @@ class PanoptoIngesterTest(MediathreadTestMixin, TestCase):
         self.assertEqual(log_entry.level, INFO)
         self.assertEqual(log_entry.message, 'foo')
 
+        # Allow null session
+        ingester.log_message(self.sample_course, None, ERROR, 'foo2')
+        messages = [m.message for m in get_messages(self.request)]
+        self.assertFalse('foo2' in messages)
+
+        log_entry = PanoptoIngestLogEntry.objects.first()
+        self.assertIsNotNone(log_entry)
+        self.assertEqual(log_entry.session_id, None)
+        self.assertEqual(log_entry.course, self.sample_course)
+        self.assertEqual(log_entry.level, ERROR)
+        self.assertEqual(log_entry.message, 'foo2')
+
     def test_is_already_imported(self):
         session = {'Name': 'The Name', 'Id': 'source url'}
         self.assertFalse(self.ingester.is_already_imported(

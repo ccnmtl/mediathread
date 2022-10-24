@@ -145,7 +145,10 @@ class PanoptoIngester(object):
             course, session['Name'], author, session_id, session['ThumbUrl'])
 
         # Move the item to this course's folder
-        mgr.move_sessions([session_id], course_folder_id)
+        if not mgr.move_sessions([session_id], course_folder_id):
+            self.log_message(
+                course, session, ERROR,
+                'PanoptoSessionManager.move_sessions() failed!')
 
         # Send an email to the student letting them know the video is ready
         self.send_email(course, author, item)

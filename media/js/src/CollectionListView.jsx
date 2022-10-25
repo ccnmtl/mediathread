@@ -24,7 +24,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: '#cacbcc',
         color: theme.palette.common.black,
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingLeft: '8px',
+        paddingRight: '8px',
     }
 }));
 
@@ -68,38 +71,38 @@ function getComparator(order, orderBy) {
 const headCells = [
     {
         id: 'title',
-        disablePadding: false,
         label: 'Title',
+        sortable: true
     },
     {
         id: 'selections',
-        disablePadding: true,
         label: 'Selections',
+        sortable: false
     },
     {
         id: 'tags',
-        disablePadding: false,
         label: 'Tags',
+        sortable: false
     },
     {
         id: 'vocabulary',
-        disablePadding: true,
         label: 'Course Vocabulary',
+        sortable: false
     },
     {
         id: 'media',
-        disablePadding: false,
         label: 'Media',
+        sortable: false
     },
     {
         id: 'owner',
-        disablePadding: false,
         label: 'Owner',
+        sortable: true
     },
     {
         id: 'date',
-        disablePadding: false,
         label: 'Date',
+        sortable: true
     },
 ];
 
@@ -117,23 +120,34 @@ function EnhancedTableHead(props) {
                     <StyledTableCell
                         key={headCell.id}
                         align="left"
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ?
-                                        'sorted descending' :
-                                        'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
+                        padding="none"
+                        sortDirection={
+                            headCell.sortable && orderBy === headCell.id ?
+                                order :
+                                false}>
+                        {headCell.sortable && (
+                            <TableSortLabel
+                                active={orderBy === headCell.id}
+                                direction={
+                                    orderBy === headCell.id ?
+                                        order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}>
+                                {headCell.label}
+                                {orderBy === headCell.id ? (
+                                    <Box
+                                        component="span"
+                                        sx={visuallyHidden}>
+                                        {
+                                            order === 'desc' ?
+                                                'sorted descending' :
+                                                'sorted ascending'}
+                                    </Box>
+                                ) : null}
+                            </TableSortLabel>
+                        )}
+                        {!headCell.sortable && (
+                            <span>{headCell.label}</span>
+                        )}
                     </StyledTableCell>
                 ))}
             </TableRow>

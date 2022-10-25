@@ -68,43 +68,36 @@ function getComparator(order, orderBy) {
 const headCells = [
     {
         id: 'title',
-        align: 'left',
         disablePadding: false,
         label: 'Title',
     },
     {
         id: 'selections',
-        align: 'right',
         disablePadding: true,
         label: 'Selections',
     },
     {
         id: 'tags',
-        align: 'right',
         disablePadding: false,
         label: 'Tags',
     },
     {
         id: 'vocabulary',
-        align: 'right',
         disablePadding: true,
         label: 'Course Vocabulary',
     },
     {
         id: 'media',
-        align: 'right',
         disablePadding: false,
         label: 'Media',
     },
     {
         id: 'owner',
-        align: 'right',
         disablePadding: false,
         label: 'Owner',
     },
     {
         id: 'date',
-        align: 'right',
         disablePadding: false,
         label: 'Date',
     },
@@ -123,7 +116,7 @@ function EnhancedTableHead(props) {
                 {headCells.map((headCell) => (
                     <StyledTableCell
                         key={headCell.id}
-                        align={headCell.align}
+                        align="left"
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -215,32 +208,29 @@ export default class CollectionListView extends React.Component {
                                 return (
                                     <StyledTableRow
                                         tabIndex={-1}
-                                        key={index}
-                                    >
+                                        key={index} >
                                         <TableCell
                                             component="th"
                                             id={labelId}
-                                            scope="row"
-                                            padding="none"
-                                        >
+                                            scope="row" >
                                             {row.title}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.selections}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.tags}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.vocabulary}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.media}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.owner}
                                         </TableCell>
-                                        <TableCell align="right">
+                                        <TableCell align="left">
                                             {row.date}
                                         </TableCell>
                                     </StyledTableRow>

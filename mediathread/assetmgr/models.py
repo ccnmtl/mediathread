@@ -145,6 +145,10 @@ class Asset(models.Model):
 
     title = models.CharField(max_length=1024)
 
+    transcript = models.TextField(
+        null=True, blank=True,
+        help_text='Transcript for audio/video media')
+
     # make it json or somethin
     metadata_blob = models.TextField(
         blank=True,

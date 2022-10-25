@@ -93,6 +93,8 @@ export default class AssetDetail extends React.Component {
             selectionEndTime: activeSelection ? activeSelection.range2 : 0,
 
             assetTitle: this.props.asset ? this.props.asset.title : null,
+            assetTranscript: this.props.asset ?
+                this.props.asset.transcript : null,
 
             deletingSelectionId: null,
             showDeleteDialog: false,
@@ -159,6 +161,7 @@ export default class AssetDetail extends React.Component {
         this.addFreeformInteraction = this.addFreeformInteraction.bind(this);
         this.addDrawlineInteraction = this.addDrawlineInteraction.bind(this);
         this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
+        this.onUpdateAssetTranscript = this.onUpdateAssetTranscript.bind(this);
         this.onDrawCancel = this.onDrawCancel.bind(this);
         this.onClickClear = this.onClickClear.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
@@ -190,6 +193,10 @@ export default class AssetDetail extends React.Component {
 
     onUpdateAssetTitle(newTitle) {
         this.setState({assetTitle: newTitle});
+    }
+
+    onUpdateAssetTranscript(transcript) {
+        this.setState({assetTranscript: transcript});
     }
 
     onCreateSelection(e, tags, terms) {
@@ -1060,6 +1067,12 @@ export default class AssetDetail extends React.Component {
                         <h3>{leftColumnHeader}</h3>
                         <div className="sticky-top">
                             {media}
+
+                            {this.state.assetTranscript && (
+                                <div className="mediathread-transcript">
+                                    {this.state.assetTranscript}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -1108,8 +1121,10 @@ export default class AssetDetail extends React.Component {
                         )}
                         {this.state.tab === 'viewMetadata' && (
                             <ViewItem
+                                assetInstance={this.asset}
                                 asset={this.props.asset}
                                 onUpdateAssetTitle={this.onUpdateAssetTitle}
+                                onUpdateAssetTranscript={this.onUpdateAssetTranscript}
                                 onShowValidationError={this.onShowValidationError}
                                 leaveAssetDetailView={this.props.leaveAssetDetailView}
                             />

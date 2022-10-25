@@ -1,7 +1,6 @@
 import isFinite from 'lodash/isFinite';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
 import {groupBy, sortBy} from 'lodash';
 
 const ASSETS_PER_PAGE = 20;
@@ -114,6 +113,26 @@ const updateAssetTitle = function(assetId, newTitle) {
                 `(${response.status}) ${response.statusText}`;
         }
     });
+};
+
+/**
+ * updateAsset()
+ *
+ * Given an asset ID and an arbitrary object of data, save the object
+ * data to this asset.
+ */
+const updateAsset = function(assetId, newData) {
+    const url = `/asset/${assetId}/save/`;
+
+    return authedFetch(url, 'put', JSON.stringify(newData))
+        .then(function(response) {
+            if (response.status === 200) {
+                return response.json();
+            } else {
+                throw 'Error updating asset: ' +
+                    `(${response.status}) ${response.statusText}`;
+            }
+        });
 };
 
 const getAssetReferences = function(id=null) {
@@ -702,17 +721,6 @@ const openSelectionAccordionItem = function(
 };
 
 /**
- * Given an array of assets and a new asset, put the new one in the
- * array. Return the new array.
- */
-const updateAsset = function(assets, asset) {
-    const newAssets = assets.slice(0);
-    const idx = findIndex(newAssets, {id: asset.id});
-    newAssets.splice(idx, 1, asset);
-    return newAssets;
-};
-
-/**
  * Given an asset, apply the given search filters to its selections.
  *
  * Returns the asset, with possibly less selections than were given.
@@ -814,10 +822,21 @@ const getTerms = function(annotations) {
     return terms;
 };
 
+const truncateString = function(str, n) {
+    if (!str) {
+        return '';
+    }
+
+    return str.length > n ?
+        str.substring(0, n - 3) + '...' :
+        str;
+};
+
 export {
     ASSETS_PER_PAGE,
     getAssets, getAsset, getAssetReferences,
     removeAsset,
+    updateAsset,
     updateAssetTitle,
     createSelection,
     createSherdNote, updateSherdNote,
@@ -831,7 +850,8 @@ export {
     groupByAuthor, groupByTag, groupByTerm, getTagName,
     tagsToReactSelect, termsToReactSelect, termsToReactSelectValues,
     openSelectionAccordionItem,
-    updateAsset, filterSelections,
+    filterSelections,
     getFilters,
-    getTags, getTerms
+    getTags, getTerms,
+    truncateString
 };

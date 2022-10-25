@@ -4379,3 +4379,8 @@ ul.selection-spinner {
 #uploaded-thumbnail.img-thumbnail {
     max-height: 200px;
 }
+
+.mediathread-transcript {
+    /* Interpret newline character properly in the transcript view. */
+    white-space: pre-line;
+}

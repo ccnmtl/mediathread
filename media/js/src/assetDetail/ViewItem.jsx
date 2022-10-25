@@ -7,6 +7,7 @@ import Form from 'react-bootstrap/Form';
 
 import find from 'lodash/find';
 
+import TranscriptForm from './TranscriptForm';
 import {
     getAssetReferences, removeAsset, getTags, getTerms, updateAssetTitle
 } from '../utils';
@@ -32,7 +33,7 @@ export default class ViewItem extends React.Component {
         this.onClickRename = this.onClickRename.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
         this.onClickRemove = this.onClickRemove.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSubmitRename = this.handleSubmitRename.bind(this);
         this.onChangeTitle = this.onChangeTitle.bind(this);
     }
 
@@ -60,7 +61,7 @@ export default class ViewItem extends React.Component {
         return null;
     }
 
-    handleSubmit(e) {
+    handleSubmitRename(e) {
         e.preventDefault();
 
         const form = e.currentTarget;
@@ -134,6 +135,9 @@ export default class ViewItem extends React.Component {
         }
 
         const permalink = window.location.href;
+        const assetType = this.props.assetInstance.getType();
+        const showTranscriptForm = userIsAuthor &&
+              (assetType === 'video' || assetType === 'audio');
 
         return (
             <div className="tab-content" id="pills-tabContent">
@@ -174,7 +178,7 @@ export default class ViewItem extends React.Component {
                                     <Form
                                         noValidate
                                         validated={this.state.validated}
-                                        onSubmit={this.handleSubmit}>
+                                        onSubmit={this.handleSubmitRename}>
                                         <Form.Group className="mb-3">
                                             <Form.Control
                                                 required
@@ -215,6 +219,12 @@ export default class ViewItem extends React.Component {
                                 )}
                             </td>
                         </tr>
+                        {showTranscriptForm && (
+                            <TranscriptForm
+                                asset={this.props.asset}
+                                onUpdateAssetTranscript={this.props.onUpdateAssetTranscript}
+                            />
+                        )}
                         <tr>
                             <th scope="row">Permalink</th>
                             <td className="text-break">
@@ -266,8 +276,12 @@ export default class ViewItem extends React.Component {
 }
 
 ViewItem.propTypes = {
+    // The instantiated Asset class
+    assetInstance: PropTypes.object,
+
     asset: PropTypes.object,
     onUpdateAssetTitle: PropTypes.func.isRequired,
+    onUpdateAssetTranscript: PropTypes.func.isRequired,
     onShowValidationError: PropTypes.func.isRequired,
     leaveAssetDetailView: PropTypes.func.isRequired
 };

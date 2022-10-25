@@ -84,7 +84,8 @@ def django_settings(request):
         'REVISION',
         'SERVER_EMAIL',
         'PANOPTO_SERVER',
-        'IMAGE_UPLOAD_AVAILABLE'
+        'IMAGE_UPLOAD_AVAILABLE',
+        'SENTRY_DSN',
     ]
 
     ctx = {

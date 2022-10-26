@@ -19,30 +19,29 @@
         <script type="text/javascript" src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
         <script type="text/javascript" src="/jsi18n"></script>
 
-        {% if not debug %}
+        {% if settings.SENTRY_DSN and not debug %}
             <script
-                src="https://browser.sentry-cdn.com/6.13.2/bundle.min.js"
-                integrity="sha384-fcgCrdIqrZ6d6fA8EfCAfdjgN9wXDp0EOkueSo3bKyI3WM4tQCE0pOA/kJoqHYoI"
+                src="https://browser.sentry-cdn.com/7.16.0/bundle.min.js"
+                integrity="sha384-70hBom53vQV6XVoqnEzSlfP8AYzEm6CSuti85YyRLtmm/jbx0GryCQ1z5StcQwsz"
                 crossorigin="anonymous"></script>
-        <script>
-        if (typeof Sentry !== 'undefined') {
-            Sentry.init({
-                dsn: 'https://a22770cb4ac744bbaf2b1ec76281e7ed@sentry.io/102468',
-                whitelistUrls: [/mediathread\.stage\.ctl\.columbia\.edu/]
-            });
-            {% if user.is_anonymous %}
-            Sentry.setUser({
-                email: 'none',
-                id: 'anonymous'
-            });
-            {% else %}
-            Sentry.setUser({
-                email: '{{user.email}}',
-                id: '{{user.username}}'
-            });
-            {% endif %}
-        }
-        </script>
+            <script>
+                if (typeof Sentry !== 'undefined') {
+                    Sentry.init({
+                        dsn: '{{settings.SENTRY_DSN}}'
+                    });
+                    {% if request.user.is_anonymous %}
+                    Sentry.setUser({
+                        email: 'none',
+                        id: 'anonymous'
+                    });
+                    {% else %}
+                    Sentry.setUser({
+                        email: '{{request.user.email}}',
+                        id: '{{request.user.username}}'
+                    });
+                    {% endif %}
+                }
+            </script>
         {% endif %}
 
         <script src='{% static 'js/app/extension_updater.js' %}'></script>

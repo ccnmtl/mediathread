@@ -133,6 +133,8 @@ export default class ViewItem extends React.Component {
             }
         }
 
+        const permalink = window.location.href;
+
         return (
             <div className="tab-content" id="pills-tabContent">
                 <h3>Tags</h3>
@@ -215,9 +217,9 @@ export default class ViewItem extends React.Component {
                         </tr>
                         <tr>
                             <th scope="row">Permalink</th>
-                            <td>
-                                <a href="">
-                                    {window.location.href}
+                            <td className="text-break">
+                                <a href={permalink}>
+                                    {permalink}
                                 </a>
                             </td>
                         </tr>

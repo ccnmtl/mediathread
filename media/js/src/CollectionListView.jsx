@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import NoAssetsFound from './alerts/NoAssetsFound';
 import {
-    formatDay, getAssetType, getAssetUrl, getTerms
+    formatDay, getAssets, getAssetType, getAssetUrl, getTerms
 } from './utils';
 import Box from '@mui/material/Box';
 import TableSortLabel from '@mui/material/TableSortLabel';
@@ -41,32 +41,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         margin: 1
     }
 }));
-
-function descendingComparator(a, b, orderBy) {
-    if(orderBy === 'title') {
-        if (b[orderBy].props.children < a[orderBy].props.children) {
-            return -1;
-        }
-        if (b[orderBy].props.children > a[orderBy].props.children) {
-            return 1;
-        }
-    } else {
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
-        return 0;
-    }
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
 
 const headCells = [
     {
@@ -170,6 +144,7 @@ export default class CollectionListView extends React.Component {
             orderBy: 'title',
         };
         this.handleRequestSort = this.handleRequestSort.bind(this);
+        this.handleSort = this.handleSort.bind(this);
     }
     handleRequestSort(event, property) {
         const isAsc =
@@ -177,6 +152,27 @@ export default class CollectionListView extends React.Component {
         this.setState({
             order: isAsc ? 'desc' : 'asc',
             orderBy: property
+        });
+    }
+
+    handleSort(sortBy, sortDirection) {
+
+        let sortField = sortBy;
+        if (sortField === 'owner') {
+            sortField = 'author';
+        } else if (sortField === 'date') {
+            sortField = 'added';
+        }
+
+        const orderBy = sortDirection === 'asc' ? sortField : '-' + sortField;
+
+        const me = this;
+        getAssets(
+            this.props.title, this.props.owner, this.props.tags,
+            this.props.terms, this.props.date,
+            0, orderBy
+        ).then(function(d) {
+            me.props.onUpdateAssets(d.assets, d.asset_count);
         });
     }
 
@@ -214,8 +210,8 @@ export default class CollectionListView extends React.Component {
                         onRequestSort={this.handleRequestSort}
                     />
                     <TableBody>
-                        {rows.slice().sort(getComparator(
-                            this.state.order, this.state.orderBy))
+                        {rows.slice().sort(this.handleSort(
+                            this.state.orderBy, this.state.order))
                             .map((row, index) => {
                                 const labelId =
                                 `enhanced-table-checkbox-${index}`;

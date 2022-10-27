@@ -28,11 +28,22 @@ class AssetUpdate(UpdateAPIView):
         data = request.data.copy()
         serializer = AssetSerializer(asset)
 
-        if data.get('title') is None:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        title = data.get('title')
+        transcript = data.get('transcript')
 
-        asset.title = data.get('title')
+        if title is None and transcript is None:
+            return Response({
+                'error': 'Bad Request: missing asset data'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update title
+        if title is not None:
+            asset.title = title
+
+        # Update transcript
+        if transcript is not None:
+            asset.transcript = transcript
+
         asset.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)

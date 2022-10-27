@@ -3,7 +3,8 @@
 import {
     formatTimecode, pad2,
     getSeparatedTimeUnits, parseTimecode,
-    groupByTag, getTagName
+    groupByTag, getTagName,
+    truncateString
 } from './utils';
 
 
@@ -94,5 +95,13 @@ describe('getTagName', () => {
     it('accepts an empty array', () => {
         expect(getTagName(123, [])).toBe('No Tags');
         expect(getTagName(0, [])).toBe('No Tags');
+    });
+});
+
+describe('truncateString', () => {
+    it('truncates various inputs', () => {
+        expect(truncateString('abcdefg', 5)).toBe('ab...');
+        expect(truncateString(null, 10)).toBe('');
+        expect(truncateString('', 10)).toBe('');
     });
 });

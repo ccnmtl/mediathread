@@ -10,5 +10,8 @@ all: jenkins
 
 include *.mk
 
+jsbuild: $(JS_SENTINAL)
+	npm run build
+
 integrationserver: $(PY_SENTINAL)
 	$(MANAGE) integrationserver

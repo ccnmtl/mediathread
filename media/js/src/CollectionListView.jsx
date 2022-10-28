@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+/* material-ui includes */
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,17 +10,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import NoAssetsFound from './alerts/NoAssetsFound';
-import {
-    formatDay, getAssets, getAssetType, getAssetUrl, getTerms
-} from './utils';
 import Box from '@mui/material/Box';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 
-function createData(title, selections, tags, vocabulary, media, owner, date) {
-    return { title, selections, tags, vocabulary, media, owner, date };
-}
+import NoAssetsFound from './alerts/NoAssetsFound';
+import LoadingAssets from './alerts/LoadingAssets';
+import {
+    formatDay, getAssets, getAssetType, getAssetUrl, getTerms
+} from './utils';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -135,11 +135,45 @@ EnhancedTableHead.propTypes = {
     orderBy: PropTypes.string.isRequired
 };
 
+const makeRow = function(data, idx) {
+    console.log('makeRow', data);
+    return (
+        <StyledTableRow
+            tabIndex={-1}
+            key={idx}>
+            <TableCell
+                component="th"
+                id={`enhanced-table-checkbox-${idx}`}
+                scope="row" >
+                {data.title}
+            </TableCell>
+            <TableCell align="left">
+                {data.selections}
+            </TableCell>
+            <TableCell align="left">
+                {data.tags}
+            </TableCell>
+            <TableCell align="left">
+                {data.vocabulary}
+            </TableCell>
+            <TableCell align="left">
+                {data.media}
+            </TableCell>
+            <TableCell align="left">
+                {data.owner}
+            </TableCell>
+            <TableCell align="left">
+                {data.date}
+            </TableCell>
+        </StyledTableRow>
+    );
+};
+
 export default class CollectionListView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading: false,
+            isLoading: false,
             order: 'asc',
             orderBy: 'title',
         };
@@ -156,6 +190,8 @@ export default class CollectionListView extends React.Component {
     }
 
     handleSort(sortBy, sortDirection) {
+        console.log('handleSort', sortBy, sortDirection);
+        //this.setState({isLoading: true});
 
         let sortField = sortBy;
         if (sortField === 'owner') {
@@ -167,39 +203,59 @@ export default class CollectionListView extends React.Component {
         const orderBy = sortDirection === 'asc' ? sortField : '-' + sortField;
 
         const me = this;
-        getAssets(
+        return getAssets(
             this.props.title, this.props.owner, this.props.tags,
             this.props.terms, this.props.date,
             0, orderBy
         ).then(function(d) {
             me.props.onUpdateAssets(d.assets, d.asset_count);
+            //me.setState({isLoading: false});
         });
     }
 
     render() {
         if (this.props.assets.length === 0) {
             return <NoAssetsFound />;
+        } else if (this.state.isLoading) {
+            return <LoadingAssets />;
         }
 
         const me = this;
 
         const rows = [];
-        me.props.assets.map((asset, index) => {
-            let title = <a
-                href={getAssetUrl(asset.id)}
-                key={index}
-                onClick={(e) => me.props.enterAssetDetailView(e, asset)}>
-                {asset.title}
-            </a>;
+        me.props.assets.forEach((asset, idx) => {
+            let title = (
+                <a
+                    href={getAssetUrl(asset.id)}
+                    key={idx}
+                    onClick={(e) => me.props.enterAssetDetailView(e, asset)}>
+                    {asset.title}
+                </a>
+            );
+
             let selections = asset.annotation_count;
             let tags = asset.tags.join(', ');
             let media = getAssetType(asset.primary_type);
             let owner = asset.author.public_name;
             let date = formatDay(asset);
             let vocabulary = getTerms(asset.annotations).join(', ');
-            rows.push(createData(
-                title, selections, tags, vocabulary, media, owner, date));
+
+            rows.push({
+                title: title,
+                selections: selections,
+                tags: tags,
+                vocabulary: vocabulary,
+                media: media,
+                owner: owner,
+                date: date
+            });
         });
+
+        console.log('rows', rows);
+        const renderedRows = rows.map((row, idx) => {
+            return makeRow(row, idx);
+        });
+        console.log('renderedRows', renderedRows);
 
         return (
             <TableContainer component={Paper}>
@@ -210,43 +266,7 @@ export default class CollectionListView extends React.Component {
                         onRequestSort={this.handleRequestSort}
                     />
                     <TableBody>
-                        {rows.slice().sort(this.handleSort(
-                            this.state.orderBy, this.state.order))
-                            .map((row, index) => {
-                                const labelId =
-                                `enhanced-table-checkbox-${index}`;
-                                return (
-                                    <StyledTableRow
-                                        tabIndex={-1}
-                                        key={index} >
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row" >
-                                            {row.title}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.selections}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.tags}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.vocabulary}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.media}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.owner}
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            {row.date}
-                                        </TableCell>
-                                    </StyledTableRow>
-                                );
-                            })
-                        }
+                        {renderedRows}
                     </TableBody>
                 </Table>
             </TableContainer>

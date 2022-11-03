@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
-        node-version: [16.x]
+        node-version: [18.x]
     services:
       postgres:
         image: postgres:13

@@ -11,7 +11,7 @@ class CourseGroupMapper(object):
     """
 
     @staticmethod
-    def create_activatable_affil(user, affil, year):
+    def create_activatable_affil(user, affil_name, year):
         """Create an Affil for the affil/user.
 
         The required conditions are:
@@ -21,7 +21,7 @@ class CourseGroupMapper(object):
         Returns the Affil if created, otherwise returns None.
         """
         if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER'):
-            d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(affil)
+            d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(affil_name)
         else:
             return None
 
@@ -37,7 +37,7 @@ class CourseGroupMapper(object):
 
         if conditions:
             return Affil.objects.get_or_create(
-                name=affil, user=user)[0]
+                name=affil_name, user=user)[0]
 
         return None
 

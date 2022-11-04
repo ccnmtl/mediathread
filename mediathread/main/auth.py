@@ -11,7 +11,7 @@ class CourseGroupMapper(object):
     """
 
     @staticmethod
-    def create_activatable_affil(user, affil, year):
+    def create_activatable_affil(user, course_string, year):
         """Create an Affil for the affil/user.
 
         The required conditions are:
@@ -21,7 +21,8 @@ class CourseGroupMapper(object):
         Returns the Affil if created, otherwise returns None.
         """
         if hasattr(settings, 'COURSEAFFILS_COURSESTRING_MAPPER'):
-            d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(affil)
+            d = settings.COURSEAFFILS_COURSESTRING_MAPPER.to_dict(
+                course_string)
         else:
             return None
 
@@ -37,7 +38,7 @@ class CourseGroupMapper(object):
 
         if conditions:
             return Affil.objects.get_or_create(
-                name=affil, user=user)[0]
+                name=course_string, user=user)[0]
 
         return None
 
@@ -45,7 +46,7 @@ class CourseGroupMapper(object):
     def map(user, affils):
         # we also make a "pseudo" affil group ALL_CU
         # that contains *anyone* who's logged in through WIND
-        affils.append("ALL_CU")
+        affils.append('ALL_CU')
 
         # by default, WIND affils include a group named for
         # the uni for each user. This is not usually desirable
@@ -58,12 +59,13 @@ class CourseGroupMapper(object):
 
         year = timezone.now().year
 
-        for affil in affils:
-            if remove_uni and (affil == user.username):
+        for course_string in affils:
+            if remove_uni and (course_string == user.username):
                 continue
             try:
-                group = Group.objects.get(name=affil)
+                group = Group.objects.get(name=course_string)
                 user.groups.add(group)
                 user.save()
             except Group.DoesNotExist:
-                CourseGroupMapper.create_activatable_affil(user, affil, year)
+                CourseGroupMapper.create_activatable_affil(
+                    user, course_string, year)

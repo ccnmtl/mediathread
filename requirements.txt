@@ -2,7 +2,7 @@ Django>=3.2.14,<4
 asgiref==3.5.0
 psycopg2==2.9.3
 #for MySQL: MySQL-python==1.2.5
-statsd==3.3.0
+statsd==4.0.1
 pep8==1.7.1
 pyflakes==2.5.0
 mccabe==0.7.0

@@ -351,9 +351,7 @@ class Source(models.Model):
     # should be generally human readable
     label = models.CharField(max_length=64)
 
-    # should this support URI fragments?
-    # file:/// for local files?
-    url = models.CharField(max_length=4096)
+    url = models.TextField()
 
     upload = S3PrivateFileField(upload_to='uploads/', blank=True)
 

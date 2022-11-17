@@ -50,7 +50,7 @@
     "jsdom": "^20.0.0",
     "start-server-and-test": "^1.11.0",
     "webpack": "^5.0.0",
-    "webpack-cli": "^4.0.0"
+    "webpack-cli": "^5.0.0"
   },
   "dependencies": {
     "@svgdotjs/svg.js": "^3.1.1",

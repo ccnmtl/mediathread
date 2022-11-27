@@ -4,7 +4,7 @@ psycopg2==2.9.5
 #for MySQL: MySQL-python==1.2.5
 statsd==4.0.1
 pep8==1.7.1
-pyflakes==2.5.0
+pyflakes==3.0.1
 mccabe==0.7.0
 pycodestyle==2.9.0
 configparser==5.3.0

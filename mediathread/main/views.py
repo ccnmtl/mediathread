@@ -73,7 +73,9 @@ from threadedcomments.models import ThreadedComment
 # returns important setting information for all web pages.
 def django_settings(request):
     whitelist = [
-        'CAS_BASE',
+        'CAS_SERVER_URL',
+        'CAS_VERSION',
+        'CAS_ADMIN_REDIRECT',
         'FLOWPLAYER_SWF_LOCATION',
         'FLOWPLAYER_HTML5_SWF_LOCATION',
         'FLOWPLAYER_AUDIO_PLUGIN',

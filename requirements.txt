@@ -53,7 +53,8 @@ contextlib2==21.6.0
 rcssmin==1.1.0
 rjsmin==1.2.0
 
-djangowind==1.2.5
+python-cas==1.6.0
+git+https://github.com/django-cas-ng/django-cas-ng.git
 django-tagging==0.5.0
 django-reversion==5.0.1
 

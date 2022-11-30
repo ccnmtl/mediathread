@@ -1,7 +1,6 @@
 import os.path
 
 import courseaffils
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import (
     PasswordChangeView, PasswordChangeDoneView,
@@ -9,14 +8,15 @@ from django.contrib.auth.views import (
     PasswordResetCompleteView,
     PasswordResetConfirmView
 )
-from django.contrib.auth.views import LogoutView, LoginView
+from django.contrib.auth.views import LoginView
 import django.contrib.auth.views
 from django.urls import include, path
 from django.views.generic.base import TemplateView
 from django.views.i18n import JavaScriptCatalog
 import django.views.i18n
 import django.views.static
-import djangowind.views
+from django_cas_ng import views as cas_views
+
 from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
     AssetCollectionView,
@@ -58,34 +58,16 @@ bookmarklet_root = os.path.join(os.path.dirname(__file__),
                                 '../media/',
                                 'bookmarklets')
 
-redirect_after_logout = getattr(settings, 'LOGOUT_REDIRECT_URL', None)
-
-auth_urls = path('accounts/', include('django.contrib.auth.urls'))
-
-logout_page = path('accounts/logout/',
-                   LogoutView.as_view(),
-                   {'next_page': redirect_after_logout})
-admin_logout_page = path('accounts/logout/',
-                         LogoutView.as_view(),
-                         {'next_page': '/admin/'})
-
-if hasattr(settings, 'CAS_BASE'):
-    auth_urls = path('accounts/', include('djangowind.urls'))
-    logout_page = path('accounts/logout/',
-                       djangowind.views.logout,
-                       {'next_page': redirect_after_logout})
-    admin_logout_page = path('admin/logout/',
-                             djangowind.views.logout,
-                             {'next_page': redirect_after_logout})
-
-
 urlpatterns = [
     path('', SplashView.as_view(), name='splash'),
     path('500', error_500, name='error_500'),
-    admin_logout_page,
-    logout_page,
-    path('admin/', admin.site.urls),
 
+    # Auth urls
+    path('cas/login', cas_views.LoginView.as_view(),
+         name='cas_ng_login'),
+    path('cas/logout', cas_views.LogoutView.as_view(),
+         name='cas_ng_logout'),
+    path('admin/', admin.site.urls),
     path('accounts/login/',
          LoginView.as_view(template_name='registration/login_darkmode.html'),
          name='login'),
@@ -147,7 +129,7 @@ urlpatterns = [
 
     path('sequence/', include('mediathread.sequence.urls')),
 
-    auth_urls,  # see above
+    path('accounts/', include('django.contrib.auth.urls')),
 
     # Bookmarklet + cache defeating
     path('bookmarklets/<path:path>analyze.js', django.views.static.serve,

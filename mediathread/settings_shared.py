@@ -36,20 +36,49 @@ CACHES = {
     }
 }
 
-TEMPLATES[0]['OPTIONS']['context_processors'].append(  # noqa
-    'mediathread.main.views.django_settings')
+# Set CAS_SERVER_URL in deploy_specific
+CAS_VERSION = '3'
+CAS_ADMIN_REDIRECT = False
+CAS_MAP_AFFILIATIONS = True
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(base, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
+                'stagingcontext.staging_processor',
+                'gacontext.ga_processor',
+                'mediathread.main.views.django_settings',
+            ],
+        },
+    },
+]
 
 
 MIDDLEWARE += [  # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django_cas_ng.middleware.CASMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 
-TEMPLATES[0]['DIRS'].insert(0, os.path.join(base, "deploy_specific/templates"))  # noqa
+TEMPLATES[0]['DIRS'].insert(0, os.path.join(
+    base, 'deploy_specific/templates'))
 
 
 INSTALLED_APPS += [  # noqa
@@ -74,10 +103,13 @@ INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'bootstrap4',
     'django_extensions',
+    'django_cas_ng',
     'rest_framework',
     'django_celery_results',
     's3sign',
 ]
+
+INSTALLED_APPS.remove('djangowind')
 
 THUMBNAIL_SUBDIR = "thumbs"
 SERVER_EMAIL = "mediathread-noreply@example.com"
@@ -181,6 +213,7 @@ ASSET_URL_PROCESSOR = default_url_processor
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',
     'lti_auth.auth.LTIBackend',
 ]
 

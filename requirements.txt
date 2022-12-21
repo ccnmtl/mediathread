@@ -1,5 +1,5 @@
 Django>=3.2.14,<4
-asgiref==3.5.0
+asgiref==3.6.0
 psycopg2==2.9.5
 #for MySQL: MySQL-python==1.2.5
 statsd==4.0.1

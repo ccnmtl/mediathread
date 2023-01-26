@@ -197,7 +197,6 @@ A new base.html without the course context overwritten in the template.
             <script src='{% static "js/lib/json2.js" %}'></script>
             <script src='{% static "js/app/util.js" %}'></script>
             <script src='{% static "js/app/ajaxDelete.js" %}'></script>
-            <script src='{% static "js/app/analytics.js" %}'></script>
             <script src='{% static "js/app/mediathread_setup.js" %}'></script>
             <script src='{% static "js/app/panel.js" %}'></script>
 
@@ -249,27 +248,18 @@ A new base.html without the course context overwritten in the template.
 
             {% block js %}{% endblock %}
 
-    {% if not debug %}
-        <script>
-        {% if settings.GOOGLE_ANALYTICS_ID %}
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '{{settings.GOOGLE_ANALYTICS_ID}}']);
-        _gaq.push (['_gat._anonymizeIp']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-
-        var analytics = new MediathreadAnalytics(_gaq);
-        {% endif %}
-        </script>
-    {% endif %}
+        {% comment %} {% if not debug %} {% endcomment %}
+            {% if settings.GOOGLE_ANALYTICS_ID %}
+                <!-- Global site tag (gtag.js) - Google Analytics -->
+                <script async src="https://www.googletagmanager.com/gtag/js?id={{settings.GOOGLE_ANALYTICS_ID}}"></script>
+                <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '{{settings.GOOGLE_ANALYTICS_ID}}', { 'anonymize_ip': true });
+                </script>
+            {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
 
     {% if settings.JIRA_CONFIGURATION %}
         <script type="text/javascript" src="{{settings.JIRA_CONFIGURATION}}"></script>

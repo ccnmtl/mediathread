@@ -27,7 +27,7 @@ import {
     formatTimecode, parseTimecode, getDuration,
     getPlayerTime, openSelectionAccordionItem
 } from '../utils';
-import {CenterControl} from '../centercontrol';
+import CenterControl from '../CenterControl';
 import {
     objectProportioned, displayImageSelection, clearSource, resetMap,
     getdisplayStyle
@@ -1201,11 +1201,6 @@ export default class AssetDetail extends React.Component {
                 extent: extent
             });
 
-            CenterControl.prototype.handleCenter = function handleCenter() {
-                this.getMap().getView().setCenter(getCenter(extent));
-                this.getMap().getView().setZoom(1);
-            };
-
             this.selectionSource = new VectorSource({wrapX: false});
             const selectionLayer = new VectorLayer({
                 source: this.selectionSource
@@ -1213,7 +1208,10 @@ export default class AssetDetail extends React.Component {
 
             this.map = new Map({
                 target: `map-${this.props.asset.id}`,
-                controls: [new Zoom(), new CenterControl()],
+                controls: [
+                    new Zoom(),
+                    new CenterControl({extent: extent})
+                ],
                 keyboardEventTarget: document,
                 layers: [
                     new ImageLayer({

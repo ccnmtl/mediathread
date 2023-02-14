@@ -18,6 +18,28 @@ import {
     getAsset, getAssets, getCourseUrl
 } from './utils';
 
+const followLink = function(e) {
+    if (e) {
+        e.preventDefault();
+
+        let href = null;
+        if (e.target.href) {
+            href = e.target.href;
+        } else if (e.currentTarget && e.currentTarget.href) {
+            // If the <a> tag is surrounding an <img> tag,
+            // currentTarget will be the correct element with the
+            // href, as a.target will be the image.
+            href = e.currentTarget.href;
+        }
+
+        if (href) {
+            const oldState = {url: location.pathname};
+            window.history.pushState(oldState, null, location.pathname);
+            window.history.pushState({url: href}, null, href);
+        }
+    }
+};
+
 export default class CollectionTab extends React.Component {
     constructor(props) {
         super(props);
@@ -96,32 +118,23 @@ export default class CollectionTab extends React.Component {
         }
     }
 
+    componentDidMount() {
+        window.addEventListener('popstate', (e) => {
+            // When the browser's Back button is pressed, read the
+            // state's url data and use that to navigate to the
+            // appropriate page, if possible.
+            if (e.state && e.state.url) {
+                window.location.href = e.state.url;
+            }
+        });
+    }
+
     setViewMode(mode) {
         this.setState({viewMode: mode});
     }
 
-    followLink(e) {
-        if (e) {
-            e.preventDefault();
-
-            let href = null;
-            if (e.target.href) {
-                href = e.target.href;
-            } else if (e.currentTarget && e.currentTarget.href) {
-                // If the <a> tag is surrounding an <img> tag,
-                // currentTarget will be the correct element with the
-                // href, as a.target will be the image.
-                href = e.currentTarget.href;
-            }
-
-            if (href) {
-                window.history.pushState(null, null, href);
-            }
-        }
-    }
-
     enterAssetDetailView(e, asset) {
-        this.followLink(e);
+        followLink(e);
 
         jQuery('.collection-header')
             .removeClass('d-flex')
@@ -152,7 +165,7 @@ export default class CollectionTab extends React.Component {
             .removeClass('d-none')
             .addClass('d-flex');
 
-        this.followLink(e);
+        followLink(e);
 
         // If the collection's assets haven't been fetched yet (if the
         // user navigated directly to the item detail page), we need

@@ -1138,8 +1138,6 @@ export default class AssetDetail extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         const me = this;
-        const centerControl = new CenterControl();
-        const zoomControl = new Zoom();
 
         if (
             prevState.tab !== this.state.tab &&
@@ -1166,9 +1164,11 @@ export default class AssetDetail extends React.Component {
                 this.map.addInteraction(this.draw);
 
             } else {
+                this.map.addControl(new Zoom());
 
-                this.map.addControl(zoomControl);
-                this.map.addControl(centerControl);
+                const img = this.asset.getImage();
+                const extent = objectProportioned(img.width, img.height);
+                this.map.addControl(new CenterControl({extent: extent}));
 
                 defaultInteractions().forEach(function(interaction) {
                     me.map.addInteraction(interaction);

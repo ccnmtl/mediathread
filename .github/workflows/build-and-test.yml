@@ -22,7 +22,7 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: install memcached headers
         run: sudo apt install -y libmemcached-dev
       - name: Build with Makefile

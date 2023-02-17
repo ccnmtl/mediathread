@@ -24,7 +24,6 @@ export default class TimecodeEditor extends React.Component {
                     required
                     id="juxTimecode"
                     ref={this.spinnerRef}
-                    min={this.props.min}
                     defaultValue={timecode} />
             </div>
         );
@@ -87,7 +86,6 @@ export default class TimecodeEditor extends React.Component {
 }
 
 TimecodeEditor.propTypes = {
-    min: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
     timecode: PropTypes.number
 };

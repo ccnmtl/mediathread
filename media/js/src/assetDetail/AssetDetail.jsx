@@ -849,7 +849,6 @@ export default class AssetDetail extends React.Component {
                                                         Start
                                                     </button>
                                                     <TimecodeEditor
-                                                        min={0}
                                                         onChange={this.onStartTimeUpdate}
                                                         timecode={this.state.selectionStartTime}
                                                     />
@@ -861,7 +860,6 @@ export default class AssetDetail extends React.Component {
                                                         Stop
                                                     </button>
                                                     <TimecodeEditor
-                                                        min={0}
                                                         onChange={this.onEndTimeUpdate}
                                                         timecode={this.state.selectionEndTime}
                                                     />

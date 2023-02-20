@@ -1,7 +1,7 @@
 from datetime import datetime
 import hashlib
 
-from courseaffils.columbia import CanvasTemplate, WindTemplate
+from courseaffils.columbia import CanvasTemplate, CourseStringTemplate
 from courseaffils.lib import in_course, get_public_name
 from courseaffils.middleware import SESSION_KEY
 from courseaffils.models import Affil, Course
@@ -1282,12 +1282,12 @@ class LTICourseCreate(LoggedInMixin, View):
         return (group, faculty_group)
 
     def groups_from_sis_course_id(self, attrs):
-        st_affil = WindTemplate.to_string(attrs)
+        st_affil = CourseStringTemplate.to_string(attrs)
         group, created = Group.objects.get_or_create(name=st_affil)
         self.request.user.groups.add(group)
 
         attrs['member'] = 'fc'
-        fc_affil = WindTemplate.to_string(attrs)
+        fc_affil = CourseStringTemplate.to_string(attrs)
         faculty_group, created = Group.objects.get_or_create(name=fc_affil)
         self.request.user.groups.add(faculty_group)
         return (group, faculty_group)

@@ -1,5 +1,5 @@
 from celery.schedules import crontab
-from courseaffils.columbia import CanvasTemplate, WindTemplate
+from courseaffils.columbia import CanvasTemplate, CourseStringTemplate
 from courseaffils.models import Course
 from django.conf import settings
 from django.contrib import messages
@@ -62,7 +62,7 @@ class PanoptoIngester(object):
         course_string = course_string.strip()
         d = CanvasTemplate.to_dict(course_string)
         try:
-            s = WindTemplate.to_string(d)
+            s = CourseStringTemplate.to_string(d)
         except AttributeError:
             self.log_message(
                 None, session, ERROR,

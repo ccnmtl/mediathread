@@ -60,13 +60,13 @@ class SequenceTextElementSerializer(serializers.ModelSerializer):
 
 class CurrentProjectDefault(object):
     """This is based on djangorestframework's CurrentUserDefault."""
-    def set_context(self, serializer_field):
+    requires_context = True
+
+    def __call__(self, serializer_field):
         pid = serializer_field.context['request'].data.get('project')
         if pid:
             pid = int(pid)
         self.project = pid
-
-    def __call__(self):
         return self.project
 
 

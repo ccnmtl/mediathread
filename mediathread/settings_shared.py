@@ -107,6 +107,7 @@ INSTALLED_APPS += [  # noqa
     'rest_framework',
     'django_celery_results',
     's3sign',
+    'waffle',
 ]
 
 INSTALLED_APPS.remove('djangowind')

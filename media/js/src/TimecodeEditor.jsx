@@ -18,13 +18,15 @@ export default class TimecodeEditor extends React.Component {
         if (this.props.timecode) {
             timecode = formatTimecode(this.props.timecode, true);
         }
+
         return (
             <div className="jux-timecode-editor">
                 <input
                     required
                     id="juxTimecode"
                     ref={this.spinnerRef}
-                    min={this.props.min}
+                    min={formatTimecode(this.props.min)}
+                    max="99:00:00"
                     defaultValue={timecode} />
             </div>
         );

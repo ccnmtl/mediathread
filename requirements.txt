@@ -117,7 +117,7 @@ boto3[crt]>=1.13.0,<1.27.0
 
 entrypoints==0.4
 django-storages==1.13.1
-django-cacheds3storage==0.2.2
+django-cacheds3storage==0.3.0
 
 requests-toolbelt==0.10.0
 pytz==2022.7

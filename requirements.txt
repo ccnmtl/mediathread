@@ -124,7 +124,7 @@ pytz==2022.7
 isodate==0.6.0
 cached-property==1.5.2
 
-platformdirs==3.0.0  # zeep
+platformdirs==3.1.0  # zeep
 attrs==22.2.0  # zeep
 zeep==4.2.0
 

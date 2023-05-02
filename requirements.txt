@@ -119,7 +119,7 @@ entrypoints==0.4
 django-storages==1.13.1
 django-cacheds3storage==0.3.0
 
-requests-toolbelt==0.10.0
+requests-toolbelt==1.0.0
 pytz==2023.3
 isodate==0.6.0
 cached-property==1.5.2

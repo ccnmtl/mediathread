@@ -3,7 +3,7 @@
 
 /**
  * Listens For:
- * assets.refresh > trigger a resize/masonry event
+ * assets.refresh > trigger a resize event
  * asset.edit > open asset edit dialog
  *
  * annotation.edit > open annotation edit dialog

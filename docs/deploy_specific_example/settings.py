@@ -57,11 +57,6 @@ LANGUAGE_CODE = 'en-us'
 # Support Flickr in the extension
 # DJANGOSHERD_FLICKR_APIKEY = ''
 
-# Flowplayer configuration, path to main javascript file & the plugins
-FLOWPLAYER_HTML5_LOCATION = 'path to flowplayer.min.js'
-FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.11.swf'
-FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.13.swf'
-
 # For LTI integration
 PYLTI_CONFIG = {
     'consumers': {

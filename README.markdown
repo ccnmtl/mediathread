@@ -175,31 +175,6 @@ SSL
 ----------------
 To support bookmarking assets from a variety of external sites, Mediathread instances must be accessible via http:// and https://
 
-
-FLOWPLAYER
-----------------
-Mediathread instantiates a Flowplayer .swf or HTML5 player to play many video flavors.
-Flowplayer requires you to have a local installation and will not
-allow you to serve the player off their site. Free versions exist for both players.
-Here are the basic instructions to install Flowplayer on your systems and point Mediathread at it.
-
-1. Both versions are available here. https://flowplayer.org/pricing/#downloads.
-2. Install both versions on a public server on your site.
-3. In the same directory as the Flash player, also install:
-    http://flash.flowplayer.org/plugins/streaming/rtmp.html - flowplayer.rtmp-3.2.13.swf
-    http://flash.flowplayer.org/plugins/streaming/pseudostreaming.html - flowplayer.pseudostreaming-3.2.13.swf
-    http://flash.flowplayer.org/plugins/streaming/audio.html - flowplayer.audio-3.2.11.swf
-
-4. In your local_settings.py or (better) deploy_specific/settings.py set FLOWPLAYER_SWF_LOCATION, like so:
-FLOWPLAYER_SWF_LOCATION= 'http://servername/directory/flowplayer-3.2.15.swf'
-FLOWPLAYER_HTML5_LOCATION = 'http://<servername>/flowplayer-5.5.0/flowplayer.min.js'
-FLOWPLAYER_AUDIO_PLUGIN = 'flowplayer.audio-3.2.10.swf'
-FLOWPLAYER_PSEUDOSTREAMING_PLUGIN = 'flowplayer.pseudostreaming-3.2.11.swf'
-FLOWPLAYER_RTMP_PLUGIN = 'flowplayer.rtmp-3.2.11.swf'
-
-* For Flash, the plugins are picked up automatically from the same directory, so don't need the full path.
-* These are the versions we are currently using in production here at CU.
-
 FLICKR
 ----------------
 In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.

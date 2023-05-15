@@ -128,7 +128,7 @@ platformdirs==3.5.0  # zeep
 attrs==23.1.0  # zeep
 zeep==4.2.0
 
-stevedore==5.0.0
+stevedore==5.1.0
 pyyaml==6.0
 bandit==1.7.0
 funcsigs==1.0.2

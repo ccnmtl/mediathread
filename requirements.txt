@@ -13,7 +13,7 @@ zipp==3.15.0
 flake8==6.0.0
 lxml==4.9.1
 extras==1.0.0
-fixtures==4.0.0
+fixtures==4.1.0
 pbr>=0.11
 
 six==1.16.0

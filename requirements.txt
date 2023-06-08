@@ -28,7 +28,7 @@ lazy-object-proxy==1.9.0
 wrapt==1.15.0
 unicodecsv==0.14.1
 
-editdistance==0.6.0
+editdistance==0.6.2
 
 pylint==2.17.0
 

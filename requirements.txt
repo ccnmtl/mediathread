@@ -73,7 +73,7 @@ django-smoketest==1.2.0
 django-markwhat==1.6.2
 ipaddress==1.0.23
 text-unidecode==1.3  # for faker
-Faker==18.11.1
+Faker==18.12.0
 factory_boy==3.2.0
 django-impersonate==1.9.1
 django-registration-redux==2.12
@@ -96,7 +96,7 @@ ua_parser==0.16.0
 user_agents==2.2.0
 django_user_agents==0.4.0
 gunicorn==20.1.0
-path==16.6.0
+path==16.7.1
 simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.6
@@ -112,7 +112,7 @@ django-s3sign==0.3.2
 s3transfer==0.6.0
 jmespath==1.0.1
 
-botocore>=1.16.0,<1.31.0
+botocore>=1.16.0,<1.32.0
 boto3[crt]>=1.13.0,<1.28.0
 
 entrypoints==0.4
@@ -124,7 +124,7 @@ pytz==2023.3
 isodate==0.6.0
 cached-property==1.5.2
 
-platformdirs==3.5.0  # zeep
+platformdirs==3.8.1  # zeep
 attrs==23.1.0  # zeep
 zeep==4.2.1
 

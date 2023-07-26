@@ -77,7 +77,7 @@ Faker==19.2.0
 factory_boy==3.3.0
 django-impersonate==1.9.1
 django-registration-redux==2.12
-django-waffle==3.0.0
+django-waffle==4.0.0
 django-cors-headers==4.2.0
 
 # Django >= 3.1 has full support for samesite cookies.

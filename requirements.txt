@@ -6,7 +6,7 @@ statsd==4.0.1
 pep8==1.7.1
 pyflakes==3.0.1
 mccabe==0.7.0
-pycodestyle==2.10.0
+pycodestyle==2.11.0
 configparser==6.0.0
 importlib-metadata==6.8.0
 zipp==3.16.0

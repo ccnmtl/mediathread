@@ -253,7 +253,7 @@ class DashboardSettingsForm(forms.ModelForm):
             allow_roster_changes(self.instance)
         return r
 
-    def reset(self):
+    def reset(self): # noqa F811
         return self.initial_data
 
     def clean(self):

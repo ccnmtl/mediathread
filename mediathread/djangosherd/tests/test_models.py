@@ -6,10 +6,10 @@ from threadedcomments.models import ThreadedComment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.factories import AssetFactory, \
-    SherdNoteFactory, MediathreadTestMixin, ProjectFactory,\
+    SherdNoteFactory, MediathreadTestMixin, ProjectFactory, \
     AssignmentItemFactory, ProjectNoteFactory
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
-from mediathread.sequence.tests.factories import SequenceAssetFactory,\
+from mediathread.sequence.tests.factories import SequenceAssetFactory, \
     SequenceMediaElementFactory
 from mediathread.taxonomy.models import Vocabulary, Term
 

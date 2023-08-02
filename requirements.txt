@@ -4,13 +4,13 @@ psycopg2==2.9.6
 #for MySQL: MySQL-python==1.2.5
 statsd==4.0.1
 pep8==1.7.1
-pyflakes==3.0.1
+pyflakes==3.1.0
 mccabe==0.7.0
-pycodestyle==2.10.0
+pycodestyle==2.11.0
 configparser==6.0.0
 importlib-metadata==6.8.0
 zipp==3.16.0
-flake8==6.0.0
+flake8==6.1.0
 lxml==4.9.1
 extras==1.0.0
 fixtures==4.1.0

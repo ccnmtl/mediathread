@@ -3,13 +3,13 @@ from datetime import datetime
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 
-from mediathread.djangosherd.api import DiscussionIndexResource,\
+from mediathread.djangosherd.api import DiscussionIndexResource, \
     SherdNoteResource
 from mediathread.djangosherd.models import DiscussionIndex
-from mediathread.factories import MediathreadTestMixin, AssetFactory,\
+from mediathread.factories import MediathreadTestMixin, AssetFactory, \
     SherdNoteFactory, ProjectNoteFactory
 from mediathread.projects.tests.factories import ProjectSequenceAssetFactory
-from mediathread.sequence.tests.factories import SequenceAssetFactory,\
+from mediathread.sequence.tests.factories import SequenceAssetFactory, \
     SequenceMediaElementFactory
 from mediathread.taxonomy.models import Term
 

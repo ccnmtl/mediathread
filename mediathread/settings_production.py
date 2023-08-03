@@ -1,4 +1,6 @@
 # flake8: noqa
+import sys
+from django.conf import settings
 from mediathread.settings_shared import *
 from ccnmtlsettings.production import common
 import sentry_sdk
@@ -43,7 +45,10 @@ try:
 except ImportError:
     pass
 
-sentry_sdk.init(
-    dsn=SENTRY_DSN,
-    integrations=[DjangoIntegration()]
-)
+if ('migrate' not in sys.argv) and \
+   ('collectstatic' not in sys.argv) and \
+   hasattr(settings, 'SENTRY_DSN'):
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+    )

@@ -29,6 +29,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Build with Makefile
         run: make
+      - name: Install npm dependencies
+        run: npm install
       - name: Run eslint
         run: npm run eslint
   cypress:

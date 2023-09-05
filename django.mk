@@ -34,7 +34,7 @@ FLAKE8 ?= $(VE)/bin/flake8
 PIP ?= $(VE)/bin/pip
 COVERAGE ?= $(VE)/bin/coverage
 
-jenkins: check flake8 test bandit eslint
+jenkins: check flake8 test bandit
 
 $(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)
@@ -79,26 +79,4 @@ clean:
 	rm -rf node_modules
 	find . -name '*.pyc' -exec rm {} \;
 
-pull:
-	git pull
-	make check
-	make test
-	make migrate
-	make flake8
-
-rebase:
-	git pull --rebase
-	make check
-	make test
-	make migrate
-	make flake8
-
-# run this one the very first time you check
-# this out on a new machine to set up dev
-# database, etc. You probably *DON'T* want
-# to run it after that, though.
-install: jenkins
-	createdb $(APP)
-	make migrate
-
-.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install
+.PHONY: jenkins test flake8 runserver migrate check shell clean

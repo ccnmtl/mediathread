@@ -9,7 +9,7 @@ mccabe==0.7.0
 pycodestyle==2.11.0
 configparser==6.0.0
 importlib-metadata==6.8.0
-zipp==3.16.0
+zipp==3.17.0
 flake8==6.1.0
 lxml==4.9.1
 extras==1.0.0

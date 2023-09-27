@@ -109,7 +109,7 @@ ccnmtlsettings==1.9.5
 django-extensions==3.2.0
 
 django-s3sign==0.3.2
-s3transfer==0.6.0
+s3transfer==0.7.0
 jmespath==1.0.1
 
 botocore>=1.16.0,<1.32.0

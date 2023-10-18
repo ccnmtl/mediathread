@@ -41,7 +41,7 @@ chardet==5.2.0
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==3.4
-urllib3==2.0.6  # sentry-sdk
+urllib3==2.0.7  # sentry-sdk
 certifi==2023.7.22  # sentry-sdk
 cryptography==41.0.4
 pyOpenSSL==23.2.0

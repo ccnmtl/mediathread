@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_text
+from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
 from django.views.generic.base import View
@@ -222,7 +221,7 @@ def comment_save(request, comment_id, next_url=None):
             'manage', request.course, request.user):
         comment.comment = request.POST['comment']
     elif comment.user == request.user:
-        now = datetime.now()
+        now = timezone.now()
         comment.comment = '<div class="postupdate">[Post updated at \
             <time datetime="%s">%s</time>]</div>%s' % \
             (now.isoformat(),

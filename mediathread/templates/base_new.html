@@ -2,7 +2,7 @@
 A new base.html without the course context overwritten in the template.
 {% endcomment %}
 
-{% load user_projects coursetags compress static %}
+{% load user_projects coursetags static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -60,11 +60,9 @@ A new base.html without the course context overwritten in the template.
         <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.min.css' %}" media="screen" />
         <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
 
-        {% compress css %}
         <link rel="stylesheet" href='{% static "css/mediathread_new.css" %}' media="screen" />
         <link rel="stylesheet" href='{% static "css/ol.css" %}' media="screen" />
         {% block css %}{% endblock %}
-        {% endcompress %}
 
         {% block uncompressable_css %}
         {% endblock %}

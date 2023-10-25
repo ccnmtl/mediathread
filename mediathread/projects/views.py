@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -15,6 +14,7 @@ from django.http import HttpResponse, HttpResponseRedirect, \
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.template.defaultfilters import slugify
+from django.utils import timezone
 from django.urls import reverse
 from django.views.generic.base import View, TemplateView
 from django.views.generic.list import ListView
@@ -127,7 +127,7 @@ class ProjectSaveView(LoggedInCourseMixin, JSONResponseMixin,
             if policy == PUBLISH_DRAFT[0]:
                 frm.instance.date_submitted = None
             else:
-                frm.instance.date_submitted = datetime.now()
+                frm.instance.date_submitted = timezone.now()
 
             frm.instance.author = request.user
             project = frm.save()
@@ -742,7 +742,7 @@ class ProjectListView(LoggedInCourseMixin, ListView):
         ctx['owner'] = self.get_project_owner()
         ctx['sortby'] = self.request.GET.get('sortby', 'title')
         ctx['direction'] = self.request.GET.get('direction', 'asc')
-        ctx['today'] = datetime.now()
+        ctx['today'] = timezone.now()
         ctx['course_members'] = self.request.course.members.order_by(
             'last_name', 'first_name', 'username')
 
@@ -829,7 +829,7 @@ class AssignmentListView(ProjectListView):
             # * timedelta between today and the due_date desc with nulls last
 
             # annotate with the timedelta between today and the due_date
-            qs = qs.annotate(due_delta=datetime.now() - F('due_date'))
+            qs = qs.annotate(due_delta=timezone.now() - F('due_date'))
 
             # use a subquery to retrieve the date of the user's response
             # and annotate the date_submitted

@@ -2,7 +2,7 @@
 import sys
 from django.conf import settings
 from mediathread.settings_shared import *
-from ccnmtlsettings.production import common
+from ctlsettings.production import common
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -13,6 +13,7 @@ locals().update(
         INSTALLED_APPS=INSTALLED_APPS,
         STATIC_ROOT=STATIC_ROOT,
         s3static=True,
+        s3prefix="ccnmtl",
     ))
 
 CACHES = {

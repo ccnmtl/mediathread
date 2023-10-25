@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load tagging_tags user_projects helpful_tags coursetags comments static %}
-{% load waffle_tags %}
 
 {% block title %}
     Home
@@ -200,52 +199,46 @@
                         <div class="arrowIcon left"></div>
                     </a>
                     <div class="arrowContent" id="upload_desktop" style="display: none">
-                        {% flag "uploads_offline" %}
+                        {% ifequal role_in_course "non-member" %}
                             <div class="instructions">
-                                <p>The upload feature is currently down for maintenance. We will return shortly.</p>
+                                <p>You must be a course member to upload media files.</p>
                             </div>
                         {% else %}
-                            {% ifequal role_in_course "non-member" %}
-                                <div class="instructions">
-                                    <p>You must be a course member to upload media files.</p>
-                                </div>
-                            {% else %}
-                                    <p>
-                                        This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
-                                    </p>
-                                    <div>
-                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                        {% if owners %}
-                                            <div class="upload_for">
+                            <p>
+                                This tool supports direct uploading of videos and audio from your desktop into Mediathread.<br />
+                            </p>
+                            <div>
+                                <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                    {% if owners %}
+                                        <div class="upload_for">
                                             <label for="video_owners">For:</label>
                                             <select id="video_owners" name="as">
-                                            {% for owner in owners %}
-                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                            {% endfor %}
+                                                {% for owner in owners %}
+                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                {% endfor %}
                                             </select>
-                                            </div>
-                                        {% endif %}
-                                        <a class="btn btn-primary upload_button video">
-                                            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>&nbsp;&nbsp;Upload video</a>
-                                    </form>
-                                    <hr class="divideLinks" />
-                                    <form action="/upload/redirect/{{uploader.id}}/" method="POST">
-                                        {% if owners %}
-                                            <div class="upload_for">
+                                        </div>
+                                    {% endif %}
+                                    <a class="btn btn-primary upload_button video">
+                                        <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>&nbsp;&nbsp;Upload video</a>
+                                </form>
+                                <hr class="divideLinks" />
+                                <form action="/upload/redirect/{{uploader.id}}/" method="POST">
+                                    {% if owners %}
+                                        <div class="upload_for">
                                             <label for="audio_owners">For:</label>
                                             <select id="audio_owners" name="as">
-                                            {% for owner in owners %}
-                                                <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
-                                            {% endfor %}
+                                                {% for owner in owners %}
+                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                {% endfor %}
                                             </select>
-                                            </div>
-                                        {% endif %}
-                                        <input type="hidden" name="audio" value="mp4"></input>
-                                        <a class="btn btn-primary upload_button video">
-                                            <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>
-                                    </form>
-                            {% endifequal %}
-                       {% endflag %}
+                                        </div>
+                                    {% endif %}
+                                    <input type="hidden" name="audio" value="mp4"></input>
+                                    <a class="btn btn-primary upload_button video">
+                                        <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>
+                                </form>
+                        {% endifequal %}
                 </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
             {% endif %}

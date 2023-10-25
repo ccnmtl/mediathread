@@ -1,5 +1,7 @@
 from courseaffils.models import Course
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+from django.utils.timezone import is_aware, make_aware
 from threadedcomments.models import ThreadedComment
 
 from structuredcollaboration.models import Collaboration
@@ -28,8 +30,10 @@ def pretty_date(timestamp):
     pretty string like 'an hour ago', 'Yesterday', '3 months ago',
     'just now', etc
     """
-    from datetime import datetime
-    now = datetime.now()
+    if not is_aware(timestamp):
+        timestamp = make_aware(timestamp)
+
+    now = timezone.now()
     diff = now - timestamp
 
     second_diff = diff.seconds

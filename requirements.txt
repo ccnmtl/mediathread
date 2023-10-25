@@ -50,11 +50,9 @@ cffi==1.16.0  # for pyOpenSSL
 
 requests==2.31.0
 contextlib2==21.6.0
-rcssmin==1.1.0
-rjsmin==1.2.0
 
 python-cas==1.6.0
-git+https://github.com/django-cas-ng/django-cas-ng.git
+django-cas-ng==5.0.1
 django-tagging==0.5.0
 django-reversion==5.0.1
 
@@ -65,7 +63,6 @@ django-courseaffils==2.4.0
 django-statsd-mozilla==0.4.0
 sentry-sdk==1.33.1
 django-appconf==1.0.5
-django-compressor>=3.1,<4.0
 django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-smoketest==1.2.0
@@ -77,7 +74,6 @@ Faker==19.13.0
 factory_boy==3.3.0
 django-impersonate==1.9.1
 django-registration-redux==2.12
-django-waffle==4.0.0
 django-cors-headers==4.3.0
 
 # Django >= 3.1 has full support for samesite cookies.
@@ -105,7 +101,7 @@ freezegun==1.2.0
 django-smtp-ssl==1.0
 djangorestframework==3.14.0
 
-ccnmtlsettings==1.9.5
+ctlsettings==0.2.0
 django-extensions==3.2.0
 
 django-s3sign==0.3.2
@@ -117,7 +113,6 @@ boto3[crt]>=1.13.0,<1.29.0
 
 entrypoints==0.4
 django-storages==1.13.2
-django-cacheds3storage==0.3.0
 
 requests-toolbelt==1.0.0
 pytz==2023.3

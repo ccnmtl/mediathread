@@ -1,4 +1,4 @@
-{% load cache user_projects coursetags compress static bootstrap3 %}
+{% load cache user_projects coursetags static bootstrap3 %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -50,11 +50,9 @@
         <link rel="stylesheet" href="{% static 'jquery/css/jquery-ui.min.css' %}" media="screen" />
         <link rel="shortcut icon" href="{% static 'img/mediathread_favicon.ico' %}" type="image/x-icon"/>
 
-        {% compress css %}
-            <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
-            <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
-            {% block css %}{% endblock %}
-        {% endcompress %}
+        <link rel="stylesheet" href='{% static "css/print.css" %}' media="print" />
+        <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
+        {% block css %}{% endblock %}
 
         {% block uncompressable_css %}
         {% endblock %}

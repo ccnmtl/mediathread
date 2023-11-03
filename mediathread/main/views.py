@@ -1,4 +1,3 @@
-from datetime import datetime
 import hashlib
 
 from courseaffils.columbia import CanvasTemplate, CourseStringTemplate
@@ -24,6 +23,7 @@ from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
@@ -390,7 +390,7 @@ class ContactUsView(FormView):
             initial['email'] = self.request.user.email
             initial['username'] = self.request.user.username
 
-        initial['issue_date'] = datetime.now()
+        initial['issue_date'] = timezone.now()
 
         if SESSION_KEY in self.request.session:
             initial['course'] = self.request.session[SESSION_KEY].title
@@ -504,7 +504,7 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
 
     def delete_uploaded_media(self, url, secret, asset):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
-        nonce = '%smthc' % datetime.now().isoformat()
+        nonce = '%smthc' % timezone.now().isoformat()
         digest = hmac.new(
             smart_bytes(secret),
             smart_bytes('{}:{}:{}'.format(
@@ -595,7 +595,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
     def convert_media(self, user, course, url, secret, asset, folder):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
-        nonce = '%smthc' % datetime.now().isoformat()
+        nonce = '%smthc' % timezone.now().isoformat()
         digest = hmac.new(
             smart_bytes(secret),
             smart_bytes('{}:{}:{}'.format(
@@ -910,7 +910,7 @@ class CourseAcceptInvitationView(FormView):
         user.save()
 
         invite.course.group.user_set.add(user)
-        invite.accepted_at = datetime.now()
+        invite.accepted_at = timezone.now()
         invite.accepted_user = user
         invite.save()
 

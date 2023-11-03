@@ -1,5 +1,4 @@
 # pylint: disable-msg=C0302
-import datetime
 import hashlib
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT
@@ -23,6 +22,7 @@ from django.template import loader
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import smart_bytes
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_http_methods, require_POST
@@ -616,7 +616,7 @@ class RedirectToUploaderView(LoggedInCourseMixin, View):
         url = reverse('course_detail', args=[self.request.course.id])
         redirect_back = '{}?msg=upload'.format(request.build_absolute_uri(url))
 
-        nonce = '%smthc' % datetime.datetime.now().isoformat()
+        nonce = '%smthc' % timezone.now().isoformat()
 
         digest = hmac.new(
             smart_bytes(special[exc.url]),
@@ -974,7 +974,7 @@ class AssetEmbedListView(LoggedInCourseMixin, RestrictedMaterialsMixin,
                            kwargs={'course_id': self.request.course.id,
                                    'annot_id': selection.id})
 
-        nonce = '%smthc' % datetime.datetime.now().isoformat()
+        nonce = '%smthc' % timezone.now().isoformat()
         digest = hmac.new(
             smart_bytes(secret),
             smart_bytes(

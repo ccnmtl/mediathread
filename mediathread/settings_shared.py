@@ -8,7 +8,7 @@ import os.path
 import re
 import sys
 
-from ccnmtlsettings.shared import common
+from ctlsettings.shared import common
 from mediathread.assetmgr.sligen import sligen_streaming_processor
 
 
@@ -35,11 +35,6 @@ CACHES = {
         'TIMEOUT': 3600  # One Hour
     }
 }
-
-# Set CAS_SERVER_URL in deploy_specific
-CAS_VERSION = '3'
-CAS_ADMIN_REDIRECT = False
-CAS_MAP_AFFILIATIONS = True
 
 TEMPLATES = [
     {
@@ -69,7 +64,6 @@ TEMPLATES = [
 MIDDLEWARE += [  # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django_cas_ng.middleware.CASMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
 ]
@@ -103,14 +97,10 @@ INSTALLED_APPS += [  # noqa
     'bootstrap3',
     'bootstrap4',
     'django_extensions',
-    'django_cas_ng',
     'rest_framework',
     'django_celery_results',
     's3sign',
-    'waffle',
 ]
-
-INSTALLED_APPS.remove('djangowind')
 
 THUMBNAIL_SUBDIR = "thumbs"
 SERVER_EMAIL = "mediathread-noreply@example.com"

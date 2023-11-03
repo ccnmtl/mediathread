@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
@@ -8,6 +6,8 @@ from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.timezone import is_aware, make_naive
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.main.course_details import (
@@ -748,7 +748,11 @@ class Project(models.Model):
             return True
 
         if parent.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:
-            if parent.due_date and parent.due_date < datetime.today():
+            due_date = parent.due_date
+            if is_aware(due_date):
+                due_date = make_naive(due_date)
+
+            if due_date and due_date < timezone.now().today():
                 return True
 
             # a bit hacky and very SLOW

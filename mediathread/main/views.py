@@ -24,6 +24,7 @@ from django.utils.encoding import smart_bytes, smart_text
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.utils import timezone
+from django.utils.timezone import make_naive
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView
@@ -504,7 +505,7 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
 
     def delete_uploaded_media(self, url, secret, asset):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
-        nonce = '%smthc' % timezone.now().isoformat()
+        nonce = '%smthc' % make_naive(timezone.now()).isoformat()
         digest = hmac.new(
             smart_bytes(secret),
             smart_bytes('{}:{}:{}'.format(
@@ -595,7 +596,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
 
     def convert_media(self, user, course, url, secret, asset, folder):
         redirect_to = asset.get_metadata('wardenclyffe-id')[0]
-        nonce = '%smthc' % timezone.now().isoformat()
+        nonce = '%smthc' % make_naive(timezone.now()).isoformat()
         digest = hmac.new(
             smart_bytes(secret),
             smart_bytes('{}:{}:{}'.format(

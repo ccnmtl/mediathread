@@ -41,7 +41,7 @@
     "babel-loader": "^9.0.0",
     "cypress": "13.4.0",
     "cypress-axe": "^1.5.0",
-    "eslint": "~8.52.0",
+    "eslint": "~8.53.0",
     "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-security": "^1.4.0",

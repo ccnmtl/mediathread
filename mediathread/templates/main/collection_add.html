@@ -269,7 +269,7 @@
     <script>
     const s3_upload = function() {
         const s3upload = new S3Upload({
-            file_dom_selector: 'mediaUploadFilename',
+            file_dom_selector: '#mediaUploadFilename',
             x_amz_acl: '',
             s3_sign_put_url: '/asset/sign_s3/',
             s3_object_name: jQuery('#mediaUploadFilename')[0].value,

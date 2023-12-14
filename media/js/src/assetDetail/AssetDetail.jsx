@@ -802,6 +802,7 @@ export default class AssetDetail extends React.Component {
                     <div
                         id={`map-${this.props.asset.id}`}
                         className="ol-map"
+                        role="img"
                         aria-live="polite"
                         aria-label={'Image for ' + label}></div>
                 </React.Fragment>

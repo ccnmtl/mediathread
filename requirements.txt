@@ -109,7 +109,7 @@ s3transfer==0.9.0
 jmespath==1.0.1
 
 botocore>=1.16.0,<1.35.0
-boto3[crt]>=1.13.0,<1.34.0
+boto3[crt]>=1.13.0,<1.35.0
 
 entrypoints==0.4
 django-storages==1.14.2

@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block title %}
-    {% if project.title %}&mdash; {{project.title}}{% else %}&mdash; Sequence{% endif %}
+    {% if project.title %}{{project.title}}{% else %}Sequence{% endif %} |
 {% endblock %}
 
 {% block css %}

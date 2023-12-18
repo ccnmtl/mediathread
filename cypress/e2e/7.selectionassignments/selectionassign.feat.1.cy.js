@@ -11,7 +11,7 @@ describe('Selection Assignment Feat: Instructor Creation', () => {
         cy.visit('/course/1/project/create/sa/');
         cy.get('#cu-privacy-notice-button').click();
         //TODO: test selection creation from homepage
-        cy.title().should('eq', 'Mediathread Create Assignment');
+        cy.title().should('eq', 'Create Assignment | Mediathread');
         cy.contains('Next').click();
         cy.contains('Choose an item from the course collection')
             .should('exist');

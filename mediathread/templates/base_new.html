@@ -9,7 +9,7 @@ A new base.html without the course context overwritten in the template.
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Mediathread {% block title %}{% endblock %}</title>
+        <title>{% block title %}{% endblock %} Mediathread</title>
 
         <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
 
@@ -178,6 +178,7 @@ A new base.html without the course context overwritten in the template.
 
                 {% if request.course %}
                 this.current_course = {{ request.course.pk }};
+                this.current_course_title = '{{ request.course.title }}';
                 this.current_course_has_vocab = {% if request.course.vocabulary_set.count > 0 %}true{% else %}false{% endif %};
                 this.allow_item_download = {% if allow_item_download %}true{% else %}false{% endif %};
                 {% endif %}

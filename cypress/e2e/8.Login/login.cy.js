@@ -18,7 +18,7 @@ describe('Log In Feature: Test Instructor Login', () => {
         cy.get('#sandboxes_link').click();
         cy.get('.choose-course').should('contain', 'Sample Course');
         cy.get('.choose-course').click();
-        cy.title().should('contain', 'Home');
+        cy.title().should('contain', 'Sample Course');
         cy.visit('/accounts/logout/?next=/');
         cy.title().should('contain', 'Splash');
     });
@@ -48,7 +48,7 @@ describe('Log In Feature: Test Student Login', () => {
         cy.get('#id_username').type('student_one').blur();
         cy.get('#id_password').type('test').blur();
         cy.get('#login-local input[type="submit"]').click();
-        cy.title().should('contain', 'Home');
+        cy.title().should('contain', 'Sample Course');
         cy.visit('/accounts/logout/?next=/');
         cy.title().should('contain', 'Splash');
     });

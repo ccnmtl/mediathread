@@ -16,7 +16,7 @@ describe('Discussion View: Create Discussion', () => {
             .contains('Add Assignment').click();
 
         cy.log('create discussion wizard');
-        cy.title().should('eq', 'Mediathread Create Assignment');
+        cy.title().should('eq', 'Create Assignment | Mediathread');
         cy.wait(500);
         cy.get('a.nav-link.active').contains('Assignments');
         cy.get('.breadcrumb-item').contains('Back to all assignments');
@@ -51,7 +51,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('#save-assignment').click();
 
         cy.log('View discussion as an instructor');
-        cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
+        cy.title().should('eq', 'Discussion: Scenario 1 | Mediathread');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('.project-visibility-description')
             .contains('Shared with Class');
@@ -91,7 +91,7 @@ describe('Discussion View: Create Discussion', () => {
         cy.get('a').contains('Add Comments').click();
 
         cy.log('View discussion as a student');
-        cy.title().should('eq', 'Mediathread Discussion: Scenario 1');
+        cy.title().should('eq', 'Discussion: Scenario 1 | Mediathread');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('.project-visibility-description').should('not.exist');
         cy.contains('Due').should('be.visible');

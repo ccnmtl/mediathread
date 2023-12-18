@@ -13,7 +13,7 @@ describe('Sequence Assignment Feat: Instructor Creation', () => {
         cy.contains('Add an assignment').click({force: true});
         cy.get('#addSequenceAssignment').click({force: true});
         cy.contains('Next').click();
-        cy.title().should('eq', 'Mediathread Create Sequence Assignment');
+        cy.title().should('eq', 'Create Sequence Assignment | Mediathread');
         cy.contains('Next').click({force: true});
         cy.contains('Write title & instructions').should('exist');
         cy.contains('Next').click({force: true});

@@ -8,7 +8,7 @@ describe('Assignment Feature: Student Response', () => {
     it('creates a response as a Student', () => {
         cy.log('respond as a student');
         cy.get('#cu-privacy-notice-button').click();
-        cy.title().should('eq', 'Mediathread Sample Assignment');
+        cy.title().should('eq', 'Sample Assignment | Mediathread');
         cy.get('.page-title').should('contain', 'Sample Assignment');
         cy.get('[data-cy="assignment-visibility"]').should('not.exist');
         cy.get('.project-revisionbutton').should('not.exist');

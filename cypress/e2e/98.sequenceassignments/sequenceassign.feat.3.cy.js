@@ -12,7 +12,7 @@ describe('Sequence Assignment Feat: Instructor adds feedback', () => {
         cy.contains('Test Sequence Assignment').click();
         cy.get('#student-response-dropdown').click();
         cy.contains('Student One').click();
-        cy.title().should('contain', 'Mediathread Test Sequence Assignment');
+        cy.title().should('contain', 'Test Sequence Assignment | Mediathread');
         cy.contains('Feedback').click();
         cy.getIframeBody().find('p').click().type('Example feedback');
         cy.get('.save-feedback').click({force: true});

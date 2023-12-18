@@ -136,12 +136,17 @@ export default class CollectionTab extends React.Component {
     enterAssetDetailView(e, asset) {
         followLink(e);
 
+        if (asset && asset.title) {
+            jQuery('title').text(asset.title + ' | Mediathread');
+        }
+
         jQuery('.collection-header')
             .removeClass('d-flex')
             .addClass('d-none');
 
         jQuery('.collectionAdd')
             .removeClass('show');
+
 
         // Need to fetch the asset to get all the selections. The
         // collection view's selections are filtered by AssetFilter.
@@ -166,6 +171,11 @@ export default class CollectionTab extends React.Component {
             .addClass('d-flex');
 
         followLink(e);
+
+        if (window.MediaThread && window.MediaThread.current_course_title) {
+            jQuery('title').text(
+                window.MediaThread.current_course_title + ' | Mediathread');
+        }
 
         // If the collection's assets haven't been fetched yet (if the
         // user navigated directly to the item detail page), we need

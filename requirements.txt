@@ -92,7 +92,7 @@ ua_parser==0.18.0
 user_agents==2.2.0
 django_user_agents==0.4.0
 gunicorn==21.2.0
-path==16.7.1
+path==16.9.0
 simplegeneric==0.8.1
 scandir==1.10.0
 pathlib2==2.3.6

@@ -1230,6 +1230,16 @@ export default class AssetDetail extends React.Component {
                     zoom: 1
                 })
             });
+
+            this.map.on('loadend', function() {
+                window.jQuery('.ol-zoom-in').attr('aria-label', 'Zoom in');
+                window.jQuery('.ol-zoom-out').attr('aria-label', 'Zoom out');
+                window.jQuery('.ol-layer>canvas')
+                    .attr(
+                        'aria-label',
+                        'Image for asset: ' + me.props.asset.title);
+            });
+
             if (sId) {
                 const selection = find(this.props.asset.annotations, {
                     id: sId

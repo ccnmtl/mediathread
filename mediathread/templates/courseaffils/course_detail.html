@@ -3,7 +3,9 @@
 {% load static %}
 
 {% block title %}
-    Home
+    {% if object %}
+        {{ object.title }} |
+    {% endif %}
 {% endblock %}
 
 {% block masthead %}

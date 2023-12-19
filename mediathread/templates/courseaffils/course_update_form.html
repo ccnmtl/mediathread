@@ -1,8 +1,6 @@
 {% extends 'dashboard/base_course_dashboard.html' %}
 {% load bootstrap4 %}
 
-{% block title %}{{block.super}}&mdash; Manage Course{% endblock %}
-
 {% block dashboard_content %}
     {{ form.media }}
     <form action="" method="post">{% csrf_token %}

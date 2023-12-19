@@ -23,7 +23,7 @@ describe('Assignment Feature: Instructor Creation', () => {
             .contains('Add Assignment').click();
 
         cy.log('Go through the wizard');
-        cy.title().should('eq', 'Mediathread Create Assignment');
+        cy.title().should('eq', 'Create Assignment | Mediathread');
         cy.wait(500);
         cy.get('a.nav-link.active').contains('Assignments');
         cy.get('.breadcrumb-item').contains('Back to all assignments');
@@ -59,7 +59,7 @@ describe('Assignment Feature: Instructor Creation', () => {
         cy.get('#id_publish_1').click();
         cy.get('#save-assignment').click();
 
-        cy.title().should('eq', 'Mediathread Assignment: Scenario 1');
+        cy.title().should('eq', 'Assignment: Scenario 1 | Mediathread');
         cy.get('.btn-edit-assignment').should('exist');
         cy.get('#student-response-dropdown')
             .contains('0 of 3 Students Responded').should('be.visible');

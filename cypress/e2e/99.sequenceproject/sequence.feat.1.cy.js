@@ -16,7 +16,7 @@ describe('Sequence Project Feat: Student Creation', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#projects-list').click();
         cy.get('#add-sequence-button').click({force: true});
-        cy.title().should('contain', 'Mediathread — Untitled');
+        cy.title().should('contain', 'Untitled | Mediathread');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.get('button.btn-show-submit').should('not.exist');
         cy.contains('Place secondary elements').should('be.visible');

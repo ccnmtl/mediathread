@@ -1,4 +1,4 @@
-{% load compress static bootstrap3 %}
+{% load static bootstrap3 %}
 <!DOCTYPE html>
 <html lang="en" style="height: auto;">
 <head>
@@ -9,11 +9,9 @@
 
     {% bootstrap_css %}
 
-    {% compress css %}
-        <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
-        <!--All the annotation css -->
-        {% include "djangosherd/annotator_resources_css.html" %}
-    {% endcompress %}
+    <link rel="stylesheet" href='{% static "css/mediathread.css" %}' media="screen" />
+    <!--All the annotation css -->
+    {% include "djangosherd/annotator_resources_css.html" %}
 </head>
 
 <body class="lti-asset-view" style="height: 100%; width: 100%;">

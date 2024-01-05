@@ -10,7 +10,7 @@ pycodestyle==2.11.0
 configparser==6.0.0
 importlib-metadata==7.0.0
 zipp==3.17.0
-flake8==6.1.0
+flake8==7.0.0
 lxml==5.0.0
 extras==1.0.0
 fixtures==4.1.0

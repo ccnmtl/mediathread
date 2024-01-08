@@ -61,7 +61,7 @@
     "react-bootstrap": "~2.9.0",
     "react-data-table-component": "^7.0.0",
     "react-dom": "~18.2.0",
-    "react-pdf": "^6.2.0",
+    "react-pdf": "^7.6.0",
     "react-player": "~2.14.1",
     "react-select": "^5.0.0",
     "styled-components": "^5.0.1",

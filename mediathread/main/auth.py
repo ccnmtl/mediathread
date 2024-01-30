@@ -11,7 +11,8 @@ class CourseGroupMapper(object):
     """
 
     @staticmethod
-    def create_activatable_affil(user, course_string, year):
+    def create_activatable_affil(
+            user: object, course_string: str, year: int) -> Affil:
         """Create an Affil for the affil/user.
 
         The required conditions are:
@@ -43,7 +44,7 @@ class CourseGroupMapper(object):
         return None
 
     @staticmethod
-    def map(user, affils):
+    def map(user: object, affils: list):
         # we also make a "pseudo" affil group ALL_CU
         # that contains *anyone* who's logged in through CAS
         affils.append('ALL_CU')

@@ -1,6 +1,7 @@
 from django.test import TestCase, override_settings
 from django.contrib.auth.models import AnonymousUser
 from courseaffils.columbia import CourseStringMapper
+from courseaffils.models import Affil
 
 from mediathread.factories import UserFactory, CourseFactory
 from mediathread.main.auth import CourseGroupMapper
@@ -47,6 +48,17 @@ class TestCourseGroupMapper(TestCase):
         self.assertEqual(self.user.groups.count(), 2)
         self.assertTrue(self.course.group in self.user.groups.all())
         self.assertTrue(self.course.faculty_group in self.user.groups.all())
+
+    def test_map_affil_string_bug(self):
+        affils = 'user.cunix.local:columbia.edu'
+
+        self.assertEqual(self.user.groups.count(), 0)
+
+        CourseGroupMapper.map(self.user, affils)
+
+        # Nothing special created in this case.
+        self.assertEqual(self.user.groups.count(), 0)
+        self.assertEqual(Affil.objects.filter(user=self.user).count(), 0)
 
     def test_create_activatable_affil_empty_course_string(self):
         self.assertIsNone(

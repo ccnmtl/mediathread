@@ -45,6 +45,11 @@ class CourseGroupMapper(object):
 
     @staticmethod
     def map(user: object, affils: list):
+        # If affils is a string for some reason, convert it into a
+        # list.
+        if isinstance(affils, str):
+            affils = [affils]
+
         # we also make a "pseudo" affil group ALL_CU
         # that contains *anyone* who's logged in through CAS
         affils.append('ALL_CU')

@@ -30,14 +30,16 @@
     "url": "https://github.com/ccnmtl/mediathread/issues"
   },
   "devDependencies": {
-    "axe-core": "^4.1.4",
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
+    "@babel/eslint-parser": "^7.15.8",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.7.4",
     "@babel/runtime": "^7.12.5",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
+    "axe-core": "^4.1.4",
     "babel-jest": "^29.0.1",
-    "@babel/eslint-parser": "^7.15.8",
     "babel-loader": "^9.0.0",
     "cypress": "13.6.0",
     "cypress-axe": "^1.5.0",

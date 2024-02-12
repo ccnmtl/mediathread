@@ -15,7 +15,7 @@ module.exports = {
         'node_modules'
     ],
     moduleNameMapper: {
-        '^react-pdf.*$': 'react-pdf/dist/umd/entry.jest'
+        '^react-pdf.*$': 'react-pdf/dist/cjs/entry.jest'
     },
     'transformIgnorePatterns': [
         // OpenLayers is distributed with es6 and needs to be
@@ -23,6 +23,6 @@ module.exports = {
         //
         // See: https://github.com/openlayers/openlayers/issues/7401
         //
-        '/node_modules/(?!ol/)'
+        '/node_modules/(?!ol|color-space|color-rgba|color-parse/)'
     ]
 };

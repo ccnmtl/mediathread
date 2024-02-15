@@ -124,7 +124,10 @@ zeep==4.2.1
 
 stevedore==5.1.0
 pyyaml==6.0.1
-bandit==1.7.0
+
+rich==13.7.0  # bandit
+bandit==1.7.7
+
 funcsigs==1.0.2
 pypanopto==0.2.0
 entrypoints==0.4

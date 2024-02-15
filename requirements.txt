@@ -132,7 +132,7 @@ entrypoints==0.4
 billiard==4.2.0
 vine==5.1.0
 amqp==5.2.0
-kombu==5.3.2
+kombu==5.3.5
 prompt-toolkit==3.0.32
 backports.zoneinfo;python_version<"3.9"
 celery==5.3.6

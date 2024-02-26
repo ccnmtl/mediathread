@@ -30,7 +30,7 @@ unicodecsv==0.14.1
 
 git+https://github.com/roy-ht/editdistance.git@v0.6.2
 
-pylint==3.0.0
+pylint==3.1.0
 
 astroid==3.0.0
 

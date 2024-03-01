@@ -64,7 +64,7 @@
     "react-data-table-component": "^7.0.0",
     "react-dom": "~18.2.0",
     "react-pdf": "^6.2.0",
-    "react-player": "~2.14.1",
+    "react-player": "~2.15.0",
     "react-select": "^5.0.0",
     "styled-components": "^5.0.1",
     "whatwg-fetch": "^3.0.0"

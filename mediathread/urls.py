@@ -16,6 +16,7 @@ from django.views.i18n import JavaScriptCatalog
 import django.views.i18n
 import django.views.static
 from django_cas_ng import views as cas_views
+from lti_tool.views import jwks, OIDCLoginInitView
 
 from mediathread.api import CourseResource
 from mediathread.assetmgr.views import (
@@ -284,4 +285,8 @@ urlpatterns = [
     # Public To World Access ###
     path('s/<slug:context_slug>/<slug:obj_type>/<int:obj_id>/',
          ProjectPublicView.as_view(), name='collaboration-obj-view'),
+
+    path('.well-known/jwks.json', jwks, name='jwks'),
+    path('init/<uuid:registration_uuid>/', OIDCLoginInitView.as_view(),
+         name='init'),
 ]

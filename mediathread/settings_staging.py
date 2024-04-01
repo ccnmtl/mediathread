@@ -40,6 +40,20 @@ try:
 except:  # nosec
     pass
 
+# Override deploy_specific LTI config just for staging
+LTI_TOOL_CONFIGURATION = {
+    'title': 'Mediathread Staging',
+    'description': 'View and filter your Mediathread selections. '
+    'A new icon will show up in your course rich editor letting you '
+    'search and filter your Mediathread selections and click to '
+    'embed selections in your course material.',
+    'launch_url': 'lti/',
+    'embed_url': 'asset/embed/',
+    'embed_icon_url': 'img/icons/icon-16.png',
+    'embed_tool_id': 'mediathread',
+    'landing_url': '{}://{}/course/lti/{}/'
+}
+
 # local_settings overrides everything
 try:
     from mediathread.local_settings import *

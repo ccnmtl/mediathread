@@ -166,3 +166,16 @@ class LTICourseEnableView(View):
 
         url = reverse('lti-landing-page', args=[course_context])
         return HttpResponseRedirect(url)
+
+
+# LTI 1.3 stuff for the new pylti1p3 library below.
+
+def login(request):
+    tool_conf = get_tool_conf()
+    launch_data_storage = get_launch_data_storage()
+
+    oidc_login = DjangoOIDCLogin(
+        request, tool_conf,
+        launch_data_storage=launch_data_storage)
+    target_link_uri = get_launch_url(request)
+    return oidc_login.enable_check_cookies().redirect(target_link_uri)

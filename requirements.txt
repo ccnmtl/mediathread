@@ -75,8 +75,9 @@ django-impersonate==1.9.1
 django-registration-redux==2.13
 django-cors-headers==4.3.0
 
-# Django >= 3.1 has full support for samesite cookies.
-# Until then, we'll need to use this.
+pyjwt==2.8.0  # pylti1p3
+jwcrypto==1.5.6  # pylti1p3
+pylti1p3==2.0.0
 
 httplib2==0.22.0
 oauth==1.0.1

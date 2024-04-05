@@ -211,8 +211,6 @@ LTI_TOOL_CONFIGURATION = {
 
 LTI_EXTRA_PARAMETERS = ['custom_course_context']
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 if 'test' in sys.argv or \
    'jenkins' in sys.argv or \
    'integrationserver' in sys.argv:

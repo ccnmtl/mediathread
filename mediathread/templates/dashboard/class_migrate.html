@@ -202,13 +202,13 @@
     <script type="text/javascript">
         var courses =
         [{% for c in available_courses %}
-            {% ifnotequal c.id request.course.id %}
+            {% if c.id != request.course.id %}
                 { label: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
                   value: "{{c.title}}{% if c.info.termyear %} - {{c.info.termyear}}{% endif %}",
                   id: "{{c.id}}",
                 }
                 {% if forloop.last %}{% else %},{% endif %}
-            {% endifnotequal %}
+            {% endif %}
         {% endfor %}];
 
         jQuery(document).ready(function () {
@@ -252,7 +252,7 @@
                             <h5>Migrate As</h5>
                             <select id="on_behalf_of" class="form-control">
                                 {% for faculty in current_course_faculty %}
-                                    {% ifequal user.id faculty.id %}
+                                    {% if user.id == faculty.id %}
                                         <option value="{{faculty.id}}" selected="selected">
                                             {% public_name for faculty %} (Me)
                                         </option>
@@ -260,16 +260,16 @@
                                         <option value="{{faculty.id}}">
                                             {% public_name for faculty %}
                                         </option>
-                                    {% endifequal %}
+                                    {% endif %}
                                 {% endfor %}
                             </select>
 
-                            {% ifequal role_in_course "non-member" %}
+                            {% if role_in_course == "non-member" %}
                                 <div class="helptext">
                                     You are not a member of this course.<br />
                                     You must migrate on behalf of an instructor.
                                 </div>
-                            {% endifequal %}
+                            {% endif %}
 
                             <br />
                             <h5>Include</h5>

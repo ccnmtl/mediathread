@@ -195,9 +195,9 @@
                                         <div class="small">
                                             <span class="metadata-label"><strong>Response Visibility</strong>:</span>
                                             {% for key, value in response_view_policies %}
-                                                {% ifequal key assignment.response_view_policy %}
+                                                {% if key == assignment.response_view_policy %}
                                                     <span class="metadata-value">{{value}}</span>
-                                                {% endifequal %}
+                                                {% endif %}
                                             {% endfor %}
                                         </div>
                                         <div class="small">

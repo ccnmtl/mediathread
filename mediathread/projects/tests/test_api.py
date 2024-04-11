@@ -14,13 +14,13 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         return None
 
     def assertProjectEquals(self, project, title, author, selection_ids=None):
-        self.assertEquals(project['title'], title)
-        self.assertEquals(project['attribution'], author)
+        self.assertEqual(project['title'], title)
+        self.assertEqual(project['attribution'], author)
 
     def assertSelectionsEqual(self, selections, selection_ids):
-        self.assertEquals(len(selections), len(selection_ids))
+        self.assertEqual(len(selections), len(selection_ids))
         for idx, selection in enumerate(selections):
-            self.assertEquals(int(selection['id']), selection_ids[idx])
+            self.assertEqual(int(selection['id']), selection_ids[idx])
 
     def setUp(self):
         self.setup_sample_course()
@@ -95,7 +95,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         projects = the_json['projects']
-        self.assertEquals(len(projects), 4)
+        self.assertEqual(len(projects), 4)
 
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One')
@@ -117,11 +117,11 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get('/api/project/', {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
         projects = the_json['projects']
-        self.assertEquals(len(projects), 2)
+        self.assertEqual(len(projects), 2)
 
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One')
@@ -137,11 +137,11 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/user/%s/' % self.student_two.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
         projects = the_json['projects']
-        self.assertEquals(len(projects), 0)
+        self.assertEqual(len(projects), 0)
 
     def test_instructor_getlist(self):
         self.assertTrue(
@@ -151,11 +151,11 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get('/api/project/', {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
         projects = the_json['projects']
-        self.assertEquals(len(projects), 3)
+        self.assertEqual(len(projects), 3)
 
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One')
@@ -175,7 +175,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/%s/' % self.project_private.id
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
 
@@ -216,7 +216,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/%s/' % self.project_class_shared.id
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
         self.assertProjectEquals(the_json['project'],
                                  self.project_class_shared.title,
@@ -246,12 +246,12 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/%s/' % self.project_instructor_shared.id
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
         self.assertProjectEquals(the_json['project'],
                                  self.project_instructor_shared.title,
                                  'Student One')
-        self.assertEquals(len(the_json['annotations']), 2)
+        self.assertEqual(len(the_json['annotations']), 2)
         self.assertSelectionsEqual(the_json['annotations'],
                                    [self.student_note.id, self.student_ga.id])
 
@@ -259,7 +259,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/%s/' % self.project_class_shared.id
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
         self.assertProjectEquals(the_json['project'],
                                  self.project_class_shared.title,
@@ -280,7 +280,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post('/api/project/', {},
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_put_detail(self):
         self.assertTrue(
@@ -291,7 +291,7 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         response = self.client.put(url, data={},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_delete(self):
         self.assertTrue(
@@ -300,4 +300,4 @@ class ProjectApiTest(MediathreadTestMixin, TestCase):
         url = '/api/project/%s/' % self.project_class_shared.id
         response = self.client.delete(url, data={},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)

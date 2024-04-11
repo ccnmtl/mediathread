@@ -21,7 +21,7 @@
                                     into Mediathread.
                                 </p>
 
-                                {% ifequal role_in_course "non-member" %}
+                                {% if role_in_course == "non-member" %}
                                     <p class="card-text">You must be a course member to upload media files.</p>
                                 {% else %}
                                     <h6 class="card-title">Video</h6>
@@ -33,7 +33,7 @@
                                                     <label class="mr-sm-2 sr-only" for="video_owners"></label>
                                                     <select class="custom-select mr-sm-2" id="video_owners" name="as">
                                                         {% for owner in owners %}
-                                                            <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                            <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
@@ -52,7 +52,7 @@
                                                     <label class="mr-sm-2 sr-only" for="audio_owners"></label>
                                                     <select class="custom-select mr-sm-2" id="audio_owners" name="as">
                                                         {% for owner in owners %}
-                                                            <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                            <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </div>
@@ -63,7 +63,7 @@
                                             </div>
                                         </div>
                                     </form>
-                                {% endifequal %}
+                                {% endif %}
                             {% endif %}
                             <!--  End Video Upload -->
 
@@ -93,7 +93,7 @@
                                                    <select class="custom-select mr-sm-2" id="media_owners" name="as">
                                                        {% for owner in owners %}
                                                            <option value="{{owner.username}}"
-                                                                   {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>
+                                                                   {% if owner.username == user.username %} selected="selected"{% endif %}>
                                                                {{owner.public_name}}
                                                            </option>
                                                        {% endfor %}
@@ -324,10 +324,10 @@
     };
 
     jQuery(document).ready(function() {
-        {% ifequal msg "upload" %}
+        {% if msg == "upload" %}
         var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
         showMessage(msg);
-        {% endifequal %}
+        {% endif %}
 
         // https://www.npmjs.com/package/bs-custom-file-input
         bsCustomFileInput.init();

@@ -1,9 +1,9 @@
 {% load coursetags %}
     <li>
       <div class="asset_title type-{{clump.type}}
-                      {%ifequal clump.type "asset"%}
+                      {%if clump.type == "asset"%}
                       asset-{{clump.content_object.primary.label}}
-                      {%endifequal%}
+                      {%endif%}
                       ">
         <a href="{{clump.href}}" class="title">{{clump.title|striptags|safe|default:"(Untitled)"}}</a>
       </div>

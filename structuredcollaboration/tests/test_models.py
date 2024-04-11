@@ -33,7 +33,7 @@ class ModelsTest(MediathreadTestMixin, TestCase):
         parent.get_collaboration().append_child(response)
 
         collaboration = response.get_collaboration()
-        self.assertEquals(collaboration.get_parent().content_object, parent)
+        self.assertEqual(collaboration.get_parent().content_object, parent)
 
         parent.get_collaboration().remove_children()
         collaboration.refresh_from_db()

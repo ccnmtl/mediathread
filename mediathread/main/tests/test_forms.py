@@ -17,7 +17,7 @@ class TestForms(TestCase):
         }
 
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 2)
+        self.assertEqual(len(form._errors.keys()), 2)
         self.assertTrue('decoy' in form._errors)
         self.assertTrue('category' in form._errors)
 
@@ -34,7 +34,7 @@ class TestForms(TestCase):
         }
 
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 1)
+        self.assertEqual(len(form._errors.keys()), 1)
         self.assertTrue('username' in form._errors)
 
         form = CourseDeleteMaterialsForm(request=request)
@@ -45,7 +45,7 @@ class TestForms(TestCase):
         }
 
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 0)
+        self.assertEqual(len(form._errors.keys()), 0)
 
     def test_accept_invitation_form(self):
         form = AcceptInvitationForm()
@@ -57,7 +57,7 @@ class TestForms(TestCase):
             'password2': 'test', 'username': 'testname'
         }
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 0)
+        self.assertEqual(len(form._errors.keys()), 0)
 
     def test_accept_invitation_form_duplicate_username(self):
         user = UserFactory()
@@ -70,7 +70,7 @@ class TestForms(TestCase):
             'password2': 'test', 'username': user.username
         }
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 1)
+        self.assertEqual(len(form._errors.keys()), 1)
         self.assertTrue('username' in form._errors)
 
     def test_accept_invitation_form_invalid_passwords(self):
@@ -86,6 +86,6 @@ class TestForms(TestCase):
             'username': 'testname'
         }
         form.clean()
-        self.assertEquals(len(form._errors.keys()), 2)
+        self.assertEqual(len(form._errors.keys()), 2)
         self.assertTrue('password1' in form._errors)
         self.assertTrue('password2' in form._errors)

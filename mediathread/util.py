@@ -21,3 +21,7 @@ def attach_course_to_request(request, **kwargs):
             request.course = course
 
     return request
+
+
+def is_ajax(request):
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'

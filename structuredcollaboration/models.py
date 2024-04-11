@@ -6,8 +6,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_text
+from django.utils.translation import gettext_lazy
+from django.utils.encoding import smart_bytes
 
 
 class CollaborationPolicyRecord(models.Model):
@@ -71,7 +71,7 @@ class Collaboration(models.Model):
         null=True, blank=True, on_delete=models.CASCADE)
 
     object_pk = models.IntegerField(
-        _('object ID'), null=True, blank=True)
+        gettext_lazy('object ID'), null=True, blank=True)
 
     content_object = GenericForeignKey(ct_field="content_type",
                                        fk_field="object_pk")
@@ -90,8 +90,8 @@ class Collaboration(models.Model):
 
     def get_or_create_group(self):
         if not self.group:
-            name = smart_text('Collaboration %s: %s' %
-                              (self.pk, self.title))[0:80]
+            name = smart_bytes('Collaboration %s: %s' %
+                               (self.pk, self.title))[0:80]
             self.group = Group.objects.create(name=name)
             self.save()
         return self.group

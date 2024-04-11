@@ -110,7 +110,7 @@
                                 <div class="form-group">
                                     <label for="assignment-title"><strong>Discussion Title</strong></label><br />
                                     <input id="assignment-title" type="text" name="title" class="form-control"
-                                        value="{% ifnotequal form.instance.title form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endifnotequal %}"/>
+                                        value="{% if form.instance.title != form.instance.DEFAULT_TITLE %}{{form.instance.title}}{% endif %}"/>
                                     <div class="help-inline">Title is a required field</div>
                                 </div>
                                 <div class="form-group mt-3">

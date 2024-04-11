@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.core.cache import cache
 from django.test import TestCase
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 
 from mediathread.assetmgr.models import Asset, Source, METADATA_ORIGINAL_OWNER
 from mediathread.djangosherd.models import SherdNote
@@ -57,7 +57,7 @@ class AssetTest(MediathreadTestMixin, TestCase):
                                      primary_source='image',
                                      author=self.instructor_one,
                                      title="Item Title")
-        self.assertEqual(smart_text(asset1),
+        self.assertEqual(smart_str(asset1),
                          'Item Title <%s> (Sample Course)' % asset1.id)
 
     def test_get_by_args(self):
@@ -357,17 +357,17 @@ class AssetTest(MediathreadTestMixin, TestCase):
         self.assertEqual(assets.count(), 0)
 
     def test_source_unicode(self):
-        desc = smart_text(self.asset1.primary)
+        desc = smart_str(self.asset1.primary)
         self.assertTrue('[image]' in desc)
         self.assertTrue('Sample Course' in desc)
 
     def test_external_collection_unicode(self):
         collection = ExternalCollectionFactory()
-        self.assertEqual(smart_text(collection), 'collection')
+        self.assertEqual(smart_str(collection), 'collection')
 
     def test_suggested_external_collection_unicode(self):
         collection = SuggestedExternalCollectionFactory()
-        self.assertEqual(smart_text(collection), 'collection')
+        self.assertEqual(smart_str(collection), 'collection')
 
     def test_html_source(self):
         with self.assertRaises(Source.DoesNotExist):

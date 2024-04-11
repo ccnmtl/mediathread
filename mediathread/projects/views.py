@@ -43,7 +43,7 @@ from mediathread.projects.models import (
     PUBLISHED)
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
-from mediathread.util import attach_course_to_request
+from mediathread.util import attach_course_to_request, is_ajax
 from reversion.models import Version
 from structuredcollaboration.models import Collaboration
 
@@ -175,7 +175,7 @@ class ProjectSaveView(LoggedInCourseMixin, JSONResponseMixin,
                          frm.fields[key].label,
                          value[0].lower())
 
-        if request.is_ajax():
+        if is_ajax(request):
             return self.render_to_json_response(ctx)
         else:
             return HttpResponseRedirect(
@@ -365,7 +365,7 @@ class ProjectReadOnlyView(ProjectReadableMixin,
         data = {'space_owner': self.request.user.username}
         version_number = self.kwargs.get('version_number', None)
 
-        if not self.request.is_ajax():
+        if not is_ajax(self.request):
             if version_number:
                 # versioned view
                 ctx = {'course_pk': self.project.course.pk,
@@ -620,7 +620,7 @@ class CompositionView(LoggedInCourseMixin, ProjectReadableMixin,
             'space_owner': request.user.username
         }
 
-        if not request.is_ajax():
+        if not is_ajax(request):
             self.template_name = 'projects/composition.html'
             data['project'] = project
             return render(request, self.template_name, data)

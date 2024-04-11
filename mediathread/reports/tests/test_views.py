@@ -68,7 +68,7 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         url = reverse('class-assignment-report',
                       args=[self.sample_course.id, self.assignment1.id])
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_class_assignment_report(self):
         url = reverse('class-assignment-report',
@@ -77,23 +77,23 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context_data['assignment'],
-                          self.assignment1)
-        self.assertEquals(len(response.context_data['responses']), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data['assignment'],
+                         self.assignment1)
+        self.assertEqual(len(response.context_data['responses']), 2)
 
         # not an assignment
         url = reverse('class-assignment-report',
                       args=[self.sample_course.id, 1232])
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_class_assignments(self):
         url = reverse('class-assignments', args=[self.sample_course.id])
@@ -101,20 +101,20 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context_data['num_students'], 3)
-        self.assertEquals(len(response.context_data['assignments']), 2)
-        self.assertEquals(response.context_data['assignments'][0],
-                          self.assignment1)
-        self.assertEquals(response.context_data['assignments'][1],
-                          self.assignment2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context_data['num_students'], 3)
+        self.assertEqual(len(response.context_data['assignments']), 2)
+        self.assertEqual(response.context_data['assignments'][0],
+                         self.assignment1)
+        self.assertEqual(response.context_data['assignments'][1],
+                         self.assignment2)
 
     def test_class_summary(self):
         url = reverse('class-summary', args=[self.sample_course.id])
@@ -122,15 +122,15 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.context_data['students']), 5)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context_data['students']), 5)
 
     def test_class_activity_report(self):
         url = reverse('class-activity', args=[self.sample_course.id])
@@ -139,23 +139,23 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue('my_feed' in response.context_data)
         self.assertIsNone(response.context_data['my_feed'].stuff)
 
         items = list(response.context_data['my_feed'].items.values())
 
-        self.assertEquals(len(items), 3)
-        self.assertEquals(items[0].content_object, self.asset1)
-        self.assertEquals(items[1].content_object, self.response2)
-        self.assertEquals(items[2].title, "Sample Course Discussion")
+        self.assertEqual(len(items), 3)
+        self.assertEqual(items[0].content_object, self.asset1)
+        self.assertEqual(items[1].content_object, self.response2)
+        self.assertEqual(items[2].title, "Sample Course Discussion")
 
     def test_class_summary_graph(self):
         self.create_discussion(self.sample_course, self.instructor_one)
@@ -165,18 +165,18 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = loads(response.content)
 
-        self.assertEquals(len(the_json['links']), 0)
-        self.assertEquals(len(the_json['nodes']), 6)
+        self.assertEqual(len(the_json['links']), 0)
+        self.assertEqual(len(the_json['nodes']), 6)
 
         node_names = []
         for node in the_json['nodes']:
@@ -196,14 +196,14 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_mediathread_activity_report_staff(self):
         url = reverse('mediathread-activity-by-course',
@@ -217,10 +217,10 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         set_course_url = '/?set_course=%s&next=/' % \
             self.sample_course.group.name
         response = self.client.get(set_course_url, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_self_registration_report(self):
         UserProfileFactory(user=self.student_one)
@@ -231,14 +231,14 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         # as superuser
         staff = UserFactory(is_staff=True, is_superuser=True)
@@ -248,10 +248,10 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
         set_course_url = '/?set_course=%s&next=/' % \
             self.sample_course.group.name
         response = self.client.get(set_course_url, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         header = ("First Name,Last Name,Email,Title,Institution,"
                   "Referred_By,User Story,Created")
@@ -297,7 +297,7 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
     def test_citation_analysis(self):
         view = AssignmentDetailReport()
         items, selections = view.citation_analysis(self.response1.citations())
-        self.assertEquals(items[0], self.asset)
+        self.assertEqual(items[0], self.asset)
         self.assertTrue(self.student_one_selection1 in selections)
         self.assertTrue(self.student_two_selection in selections)
 
@@ -305,7 +305,7 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         selections = SherdNote.objects.filter(author=self.student_one)
         view = AssignmentDetailReport()
 
-        self.assertAlmostEquals(view.tag_usage(selections), 33.33, 2)
+        self.assertAlmostEqual(view.tag_usage(selections), 33.33, 2)
 
     def test_vocab_usage(self):
         taxonomy = {'Colors': ['Red', 'Blue', 'Green']}
@@ -319,14 +319,14 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         view.request = RequestFactory().get('/')
         view.request.course = self.sample_course
 
-        self.assertAlmostEquals(view.vocabulary_usage(selections), 33.33, 2)
+        self.assertAlmostEqual(view.vocabulary_usage(selections), 33.33, 2)
 
     def test_percent_used(self):
         selections = SherdNote.objects.filter(author=self.student_one)
         view = AssignmentDetailReport()
 
-        self.assertEquals(view.percent_used(selections, 0), 0.0)
-        self.assertEquals(view.percent_used(selections, 3), 100.0)
+        self.assertEqual(view.percent_used(selections, 0), 0.0)
+        self.assertEqual(view.percent_used(selections, 3), 100.0)
 
     def test_report_rows(self):
         view = AssignmentDetailReport()
@@ -339,22 +339,22 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
 
         next(rows)  # header
         row = next(rows)
-        self.assertEquals(row[0], 'Student One')
-        self.assertEquals(row[1], 'student_one')
-        self.assertEquals(row[2], 'Response 1')
-        self.assertEquals(row[3], 'Shared with Instructor')
+        self.assertEqual(row[0], 'Student One')
+        self.assertEqual(row[1], 'student_one')
+        self.assertEqual(row[2], 'Response 1')
+        self.assertEqual(row[3], 'Shared with Instructor')
         self.assertIsNone(row[4])
         # row[5] modified date
         self.assertFalse(row[6])
-        self.assertEquals(row[7], 2)  # selections
-        self.assertEquals(row[8], 1)  # items
-        self.assertEquals(row[9], 1)  # author selections
-        self.assertEquals(row[10], 1)  # author items
+        self.assertEqual(row[7], 2)  # selections
+        self.assertEqual(row[8], 1)  # items
+        self.assertEqual(row[9], 1)  # author selections
+        self.assertEqual(row[10], 1)  # author items
         self.assertAlmostEqual(row[11], 33.33, 2)  # % author selections used
         self.assertAlmostEqual(row[12], 100.00)  # tag usage
-        self.assertEquals(row[13], 0.0)  # vocab usage
-        self.assertEquals(row[14], 3)  # all author selections
-        self.assertEquals(row[15], 1)  # author collection
+        self.assertEqual(row[13], 0.0)  # vocab usage
+        self.assertEqual(row[14], 3)  # all author selections
+        self.assertEqual(row[15], 1)  # author collection
 
         with self.assertRaises(StopIteration):
             next(rows)
@@ -366,11 +366,11 @@ class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):
         # as student
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # as instructor
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)

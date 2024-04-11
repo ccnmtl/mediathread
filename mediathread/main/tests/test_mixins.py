@@ -54,7 +54,7 @@ class RestrictedMaterialsMixinTest(MediathreadTestMixin, TestCase):
             self.mixin.visible_assets_and_notes(self.mixin.request,
                                                 self.assets)
 
-        self.assertEquals(notes.count(), len(expected_notes))
+        self.assertEqual(notes.count(), len(expected_notes))
         for n in expected_notes:
             self.assertTrue(n in notes)
 

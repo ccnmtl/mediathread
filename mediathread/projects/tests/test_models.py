@@ -147,62 +147,62 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
     def test_description(self):
         project = Project.objects.get(id=self.project_private.id)
-        self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(), 'Draft')
+        self.assertEqual(project.description(), 'Composition')
+        self.assertEqual(project.visibility_short(), 'Draft')
 
         project = Project.objects.get(id=self.project_class_shared.id)
-        self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(), 'Shared with Class')
+        self.assertEqual(project.description(), 'Composition')
+        self.assertEqual(project.visibility_short(), 'Shared with Class')
 
         project = Project.objects.get(id=self.project_instructor_shared.id)
-        self.assertEquals(project.description(), 'Composition')
-        self.assertEquals(project.visibility_short(),
-                          'Shared with Instructor')
+        self.assertEqual(project.description(), 'Composition')
+        self.assertEqual(project.visibility_short(),
+                         'Shared with Instructor')
 
         assignment = Project.objects.get(id=self.assignment.id)
-        self.assertEquals(assignment.description(), 'Composition Assignment')
-        self.assertEquals(assignment.visibility_short(), 'Shared with Class')
+        self.assertEqual(assignment.description(), 'Composition Assignment')
+        self.assertEqual(assignment.visibility_short(), 'Shared with Class')
 
         sassignment = Project.objects.get(id=self.selection_assignment.id)
-        self.assertEquals(sassignment.description(), 'Selection Assignment')
+        self.assertEqual(sassignment.description(), 'Selection Assignment')
 
         r = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             parent=self.selection_assignment)
-        self.assertEquals(r.description(), 'Selection Assignment Response')
+        self.assertEqual(r.description(), 'Selection Assignment Response')
 
         r = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             parent=self.assignment)
-        self.assertEquals(r.description(), 'Composition Assignment Response')
+        self.assertEqual(r.description(), 'Composition Assignment Response')
 
         r = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             parent=self.sequence_assignment)
-        self.assertEquals(r.description(), 'Sequence Assignment Response')
+        self.assertEqual(r.description(), 'Sequence Assignment Response')
 
     def test_migrate_one(self):
         new_project = Project.objects.migrate_one(self.project_private,
                                                   self.alt_course,
                                                   self.alt_instructor)
 
-        self.assertEquals(new_project.title, self.project_private.title)
-        self.assertEquals(new_project.author, self.alt_instructor)
-        self.assertEquals(new_project.course, self.alt_course)
-        self.assertEquals(new_project.visibility_short(), "Draft")
+        self.assertEqual(new_project.title, self.project_private.title)
+        self.assertEqual(new_project.author, self.alt_instructor)
+        self.assertEqual(new_project.course, self.alt_course)
+        self.assertEqual(new_project.visibility_short(), "Draft")
 
         new_project = Project.objects.migrate_one(self.assignment,
                                                   self.alt_course,
                                                   self.alt_instructor)
 
-        self.assertEquals(new_project.title, self.assignment.title)
-        self.assertEquals(new_project.summary, self.assignment.summary)
-        self.assertEquals(new_project.body, self.assignment.body)
-        self.assertEquals(new_project.author, self.alt_instructor)
-        self.assertEquals(new_project.course, self.alt_course)
-        self.assertEquals(new_project.description(), 'Composition Assignment')
-        self.assertEquals(new_project.visibility_short(), 'Shared with Class')
-        self.assertEquals(AssignmentItem.objects.count(), 0)
+        self.assertEqual(new_project.title, self.assignment.title)
+        self.assertEqual(new_project.summary, self.assignment.summary)
+        self.assertEqual(new_project.body, self.assignment.body)
+        self.assertEqual(new_project.author, self.alt_instructor)
+        self.assertEqual(new_project.course, self.alt_course)
+        self.assertEqual(new_project.description(), 'Composition Assignment')
+        self.assertEqual(new_project.visibility_short(), 'Shared with Class')
+        self.assertEqual(AssignmentItem.objects.count(), 0)
 
     def test_migrate_one_discussion_assignment(self):
         self.assertIsNotNone(self.discussion_assignment.get_collaboration())
@@ -264,25 +264,25 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             projects, self.alt_course, self.alt_instructor,
             object_map, True, True)
 
-        self.assertEquals(self.alt_course.asset_set.count(), 1)
+        self.assertEqual(self.alt_course.asset_set.count(), 1)
         alt_asset = self.alt_course.asset_set.first()
         self.assertTrue(alt_asset.title, 'Sample')
         self.assertNotEqual(alt_asset.id, asset.id)
 
-        self.assertEquals(self.alt_course.project_set.count(), 2)
+        self.assertEqual(self.alt_course.project_set.count(), 2)
 
         a = Project.objects.get(course=self.alt_course, title='Assignment 1')
-        self.assertEquals(a.response_view_policy, RESPONSE_VIEW_NEVER[0])
+        self.assertEqual(a.response_view_policy, RESPONSE_VIEW_NEVER[0])
         ai = AssignmentItem.objects.get(project=a)
-        self.assertEquals(ai.asset, alt_asset)
+        self.assertEqual(ai.asset, alt_asset)
 
         a = Project.objects.get(course=self.alt_course, title='Assignment 2')
         ai = AssignmentItem.objects.get(project=a)
-        self.assertEquals(ai.asset, alt_asset)
+        self.assertEqual(ai.asset, alt_asset)
 
     def test_migrate_projects_to_alt_course(self):
-        self.assertEquals(len(self.alt_course.asset_set.all()), 0)
-        self.assertEquals(len(self.alt_course.project_set.all()), 0)
+        self.assertEqual(len(self.alt_course.asset_set.all()), 0)
+        self.assertEqual(len(self.alt_course.project_set.all()), 0)
 
         projects = Project.objects.filter(id=self.assignment.id)
 
@@ -293,47 +293,47 @@ class ProjectTest(MediathreadTestMixin, TestCase):
                                              True, True)
 
         assets = self.alt_course.asset_set
-        self.assertEquals(assets.count(), 1)
+        self.assertEqual(assets.count(), 1)
         asset = assets.all()[0]
-        self.assertEquals(asset.title, self.asset1.title)
+        self.assertEqual(asset.title, self.asset1.title)
 
-        self.assertEquals(asset.sherdnote_set.count(), 3)
+        self.assertEqual(asset.sherdnote_set.count(), 3)
 
         ga = asset.global_annotation(self.alt_instructor, auto_create=False)
         self.assertIsNotNone(asset.global_annotation(self.alt_instructor,
                                                      auto_create=False))
-        self.assertEquals(ga.tags,
-                          ',student_one_item,image, instructor_one_item,')
-        self.assertEquals(ga.body,
-                          'student one item noteinstructor one item note')
+        self.assertEqual(ga.tags,
+                         ',student_one_item,image, instructor_one_item,')
+        self.assertEqual(ga.body,
+                         'student one item noteinstructor one item note')
 
         asset.sherdnote_set.get(title=self.student_note.title)
         asset.sherdnote_set.get(title=self.instructor_note.title)
 
-        self.assertEquals(self.alt_course.project_set.count(), 1)
+        self.assertEqual(self.alt_course.project_set.count(), 1)
         project = self.alt_course.project_set.all()[0]
-        self.assertEquals(project.title, self.assignment.title)
-        self.assertEquals(project.description(), 'Composition Assignment')
-        self.assertEquals(project.visibility_short(), 'Shared with Class')
-        self.assertEquals(project.author, self.alt_instructor)
+        self.assertEqual(project.title, self.assignment.title)
+        self.assertEqual(project.description(), 'Composition Assignment')
+        self.assertEqual(project.visibility_short(), 'Shared with Class')
+        self.assertEqual(project.author, self.alt_instructor)
 
         citations = SherdNote.objects.references_in_string(project.body,
                                                            self.alt_instructor)
-        self.assertEquals(len(citations), 4)
+        self.assertEqual(len(citations), 4)
 
-        self.assertEquals(citations[0].title, self.student_note.title)
-        self.assertEquals(citations[0].author, self.alt_instructor)
+        self.assertEqual(citations[0].title, self.student_note.title)
+        self.assertEqual(citations[0].author, self.alt_instructor)
 
-        self.assertEquals(citations[1].title, self.instructor_note.title)
-        self.assertEquals(citations[1].author, self.alt_instructor)
+        self.assertEqual(citations[1].title, self.instructor_note.title)
+        self.assertEqual(citations[1].author, self.alt_instructor)
 
-        self.assertEquals(citations[2].id, ga.id)
-        self.assertEquals(citations[3].id, ga.id)
+        self.assertEqual(citations[2].id, ga.id)
+        self.assertEqual(citations[3].id, ga.id)
 
     def test_visible_by_course(self):
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_one)
-        self.assertEquals(len(visible_projects), 7)
+        self.assertEqual(len(visible_projects), 7)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
         self.assertTrue(self.sequence_assignment in visible_projects)
@@ -344,7 +344,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.student_two)
 
-        self.assertEquals(len(visible_projects), 5)
+        self.assertEqual(len(visible_projects), 5)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
         self.assertTrue(self.sequence_assignment in visible_projects)
@@ -352,7 +352,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         visible_projects = Project.objects.visible_by_course(
             self.sample_course, self.instructor_one)
-        self.assertEquals(len(visible_projects), 7)
+        self.assertEqual(len(visible_projects), 7)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.draft_assignment in visible_projects)
         self.assertTrue(self.project_class_shared in visible_projects)
@@ -363,49 +363,49 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_visible_by_course_and_user(self):
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_one, self.student_one, False)
-        self.assertEquals(len(visible_projects), 3)
-        self.assertEquals(visible_projects[0], self.project_class_shared)
-        self.assertEquals(visible_projects[1], self.project_instructor_shared)
-        self.assertEquals(visible_projects[2], self.project_private)
+        self.assertEqual(len(visible_projects), 3)
+        self.assertEqual(visible_projects[0], self.project_class_shared)
+        self.assertEqual(visible_projects[1], self.project_instructor_shared)
+        self.assertEqual(visible_projects[2], self.project_private)
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_one, self.instructor_one, True)
-        self.assertEquals(len(visible_projects), 4)
+        self.assertEqual(len(visible_projects), 4)
         self.assertTrue(self.assignment in visible_projects)
         self.assertTrue(self.selection_assignment in visible_projects)
         self.assertTrue(self.sequence_assignment in visible_projects)
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.student_two, self.student_one, False)
-        self.assertEquals(len(visible_projects), 1)
-        self.assertEquals(visible_projects[0], self.project_class_shared)
+        self.assertEqual(len(visible_projects), 1)
+        self.assertEqual(visible_projects[0], self.project_class_shared)
 
         visible_projects = Project.objects.visible_by_course_and_user(
             self.sample_course, self.instructor_one, self.student_one, False)
-        self.assertEquals(len(visible_projects), 2)
-        self.assertEquals(visible_projects[0], self.project_class_shared)
-        self.assertEquals(visible_projects[1], self.project_instructor_shared)
+        self.assertEqual(len(visible_projects), 2)
+        self.assertEqual(visible_projects[0], self.project_class_shared)
+        self.assertEqual(visible_projects[1], self.project_instructor_shared)
 
     def test_projects_visible_by_course_and_owner(self):
         visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_one, self.student_one)
-        self.assertEquals(len(visible), 3)
+        self.assertEqual(len(visible), 3)
         self.assertTrue(self.project_class_shared in visible)
         self.assertTrue(self.project_instructor_shared in visible)
         self.assertTrue(self.project_private in visible)
 
         visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_one, self.instructor_one)
-        self.assertEquals(len(visible), 0)
+        self.assertEqual(len(visible), 0)
 
         visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.student_two, self.student_one)
-        self.assertEquals(len(visible), 1)
-        self.assertEquals(visible[0], self.project_class_shared)
+        self.assertEqual(len(visible), 1)
+        self.assertEqual(visible[0], self.project_class_shared)
 
         visible = Project.objects.projects_visible_by_course_and_owner(
             self.sample_course, self.instructor_one, self.student_one)
-        self.assertEquals(len(visible), 2)
+        self.assertEqual(len(visible), 2)
         self.assertTrue(self.project_class_shared in visible)
         self.assertTrue(self.project_instructor_shared in visible)
 
@@ -506,7 +506,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_faculty_compositions(self):
         compositions = Project.objects.faculty_compositions(
             self.sample_course, self.student_one)
-        self.assertEquals(len(compositions), 0)
+        self.assertEqual(len(compositions), 0)
 
         # instructor composition
         beta = ProjectFactory.create(
@@ -521,10 +521,10 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         compositions = Project.objects.faculty_compositions(
             self.sample_course, self.student_one)
-        self.assertEquals(len(compositions), 3)
-        self.assertEquals(compositions[0], alpha)
-        self.assertEquals(compositions[1], beta)
-        self.assertEquals(compositions[2], gamma)
+        self.assertEqual(len(compositions), 3)
+        self.assertEqual(compositions[0], alpha)
+        self.assertEqual(compositions[1], beta)
+        self.assertEqual(compositions[2], gamma)
 
     def test_responses(self):
         response1 = ProjectFactory.create(
@@ -535,15 +535,15 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             policy=PUBLISH_INSTRUCTOR_SHARED[0], parent=self.assignment)
 
         r = self.assignment.responses(self.sample_course, self.instructor_one)
-        self.assertEquals(len(r), 2)
+        self.assertEqual(len(r), 2)
 
         r = self.assignment.responses(self.sample_course, self.instructor_one,
                                       self.student_one)
-        self.assertEquals(r[0], response1)
+        self.assertEqual(r[0], response1)
 
         r = self.assignment.responses(self.sample_course, self.instructor_one,
                                       self.student_two)
-        self.assertEquals(r[0], response2)
+        self.assertEqual(r[0], response2)
 
     def test_responses_for_bad_assignment_state(self):
         ProjectFactory.create(
@@ -552,13 +552,13 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assignment.get_collaboration().delete()
 
         r = self.assignment.responses(self.sample_course, self.instructor_one)
-        self.assertEquals(len(r), 0)
+        self.assertEqual(len(r), 0)
 
     def test_reset_publish_to_world(self):
         public = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_WORLD[0])
-        self.assertEquals(
+        self.assertEqual(
             public.public_url(),
             '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
 
@@ -566,31 +566,31 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertIsNone(public.public_url())
 
     def test_limit_response_policy(self):
-        self.assertEquals(self.assignment.response_view_policy,
-                          RESPONSE_VIEW_ALWAYS[0])
-        self.assertEquals(self.selection_assignment.response_view_policy,
-                          RESPONSE_VIEW_ALWAYS[0])
+        self.assertEqual(self.assignment.response_view_policy,
+                         RESPONSE_VIEW_ALWAYS[0])
+        self.assertEqual(self.selection_assignment.response_view_policy,
+                         RESPONSE_VIEW_ALWAYS[0])
         Project.objects.limit_response_policy(self.sample_course)
 
         assignment = Project.objects.get(id=self.assignment.id)
-        self.assertEquals(assignment.response_view_policy,
-                          RESPONSE_VIEW_NEVER[0])
+        self.assertEqual(assignment.response_view_policy,
+                         RESPONSE_VIEW_NEVER[0])
         assignment = Project.objects.get(id=self.selection_assignment.id)
-        self.assertEquals(assignment.response_view_policy,
-                          RESPONSE_VIEW_NEVER[0])
+        self.assertEqual(assignment.response_view_policy,
+                         RESPONSE_VIEW_NEVER[0])
 
     def test_collaboration_sync_model(self):
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one)
 
         collaboration = project.get_collaboration()
-        self.assertEquals(collaboration.policy_record.policy_name,
-                          PUBLISH_DRAFT[0])
+        self.assertEqual(collaboration.policy_record.policy_name,
+                         PUBLISH_DRAFT[0])
 
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
         users = collaboration.group.user_set.all()
-        self.assertEquals(users.count(), 1)
+        self.assertEqual(users.count(), 1)
         self.assertTrue(self.student_one in users)
 
         # add some participants
@@ -598,7 +598,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
         users = collaboration.group.user_set.all()
-        self.assertEquals(users.count(), 2)
+        self.assertEqual(users.count(), 2)
         self.assertTrue(self.student_one in users)
         self.assertTrue(self.student_two in users)
 
@@ -607,7 +607,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         project.collaboration_sync_group(collaboration)
         self.assertIsNotNone(collaboration.group)
         users = collaboration.group.user_set.all()
-        self.assertEquals(users.count(), 1)
+        self.assertEqual(users.count(), 1)
         self.assertTrue(self.student_one in users)
         self.assertFalse(self.student_two in users)
 
@@ -619,27 +619,27 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         project.create_or_update_collaboration(PUBLISH_DRAFT[0])
         collaboration = project.get_collaboration()
-        self.assertEquals(collaboration.policy_record.policy_name,
-                          PUBLISH_DRAFT[0])
+        self.assertEqual(collaboration.policy_record.policy_name,
+                         PUBLISH_DRAFT[0])
 
         project.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
         collaboration = project.get_collaboration()
-        self.assertEquals(collaboration.policy_record.policy_name,
-                          PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(collaboration.policy_record.policy_name,
+                         PUBLISH_WHOLE_CLASS[0])
 
     def test_create_or_update_item(self):
         project = ProjectFactory.create(
             course=self.sample_course, author=self.student_one)
 
         project.create_or_update_item(self.asset1.id)
-        self.assertEquals(project.assignmentitem_set.first().asset,
-                          self.asset1)
+        self.assertEqual(project.assignmentitem_set.first().asset,
+                         self.asset1)
 
         asset2 = AssetFactory.create(course=self.sample_course,
                                      primary_source='youtube')
 
         project.create_or_update_item(asset2.id)
-        self.assertEquals(project.assignmentitem_set.first().asset, asset2)
+        self.assertEqual(project.assignmentitem_set.first().asset, asset2)
 
     def test_set_parent(self):
         project = ProjectFactory.create(
@@ -647,7 +647,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.assertIsNone(project.assignment())
 
         project.set_parent(self.assignment.id)
-        self.assertEquals(project.assignment(), self.assignment)
+        self.assertEqual(project.assignment(), self.assignment)
 
     def test_can_read(self):
         self.assertTrue(self.project_private.can_read(
@@ -738,7 +738,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_visible_assignments_by_course_student(self):
         lst = Project.objects.visible_assignments_by_course(
             self.sample_course, self.student_one)
-        self.assertEquals(len(lst), 4)
+        self.assertEqual(len(lst), 4)
         self.assertTrue(self.selection_assignment in lst)
         self.assertTrue(self.sequence_assignment in lst)
         self.assertTrue(self.assignment in lst)
@@ -746,7 +746,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_visible_assignments_by_course_faculty(self):
         lst = Project.objects.visible_assignments_by_course(
             self.sample_course, self.instructor_one)
-        self.assertEquals(len(lst), 5)
+        self.assertEqual(len(lst), 5)
         self.assertTrue(self.selection_assignment in lst)
         self.assertTrue(self.sequence_assignment in lst)
         self.assertTrue(self.assignment in lst)
@@ -755,7 +755,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
     def test_unresponded_assignments(self):
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 4)
+        self.assertEqual(len(lst), 4)
         self.assertTrue(self.selection_assignment in lst)
         self.assertTrue(self.sequence_assignment in lst)
         self.assertTrue(self.assignment in lst)
@@ -768,7 +768,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 3)
+        self.assertEqual(len(lst), 3)
         self.assertTrue(self.assignment in lst)
         self.assertTrue(self.sequence_assignment in lst)
 
@@ -780,7 +780,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         lst = Project.objects.unresponded_assignments(self.sample_course,
                                                       self.student_one)
-        self.assertEquals(len(lst), 2)
+        self.assertEqual(len(lst), 2)
         self.assertTrue(self.sequence_assignment in lst)
 
     def test_is_participant(self):

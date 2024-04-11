@@ -27,9 +27,9 @@ class DiscussionIndexResourcesTest(MediathreadTestMixin, TestCase):
         request.user = self.instructor_one
         ctx = DiscussionIndexResource().render_list(request, indicies)
         self.assertTrue('references' in ctx)
-        self.assertEquals(ctx['references'][0]['title'],
-                          'Sample Course Discussion')
-        self.assertEquals(ctx['references'][0]['type'], 'discussion')
+        self.assertEqual(ctx['references'][0]['title'],
+                         'Sample Course Discussion')
+        self.assertEqual(ctx['references'][0]['type'], 'discussion')
 
 
 class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
@@ -62,8 +62,8 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
         bundle = SherdNoteResource().build_bundle(
             obj=self.note1, request=request)
         res.dehydrate(bundle)
-        self.assertEquals(bundle.data['editable'], False)
-        self.assertEquals(bundle.data['citable'], True)
+        self.assertEqual(bundle.data['editable'], False)
+        self.assertEqual(bundle.data['citable'], True)
 
     def test_in_sequence_assignment_response(self):
         res = SherdNoteResource()
@@ -87,8 +87,8 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
         bundle = SherdNoteResource().build_bundle(
             obj=self.note1, request=request)
         res.dehydrate(bundle)
-        self.assertEquals(bundle.data['editable'], False)
-        self.assertEquals(bundle.data['citable'], True)
+        self.assertEqual(bundle.data['editable'], False)
+        self.assertEqual(bundle.data['citable'], True)
 
     def test_render_related_terms(self):
         taxonomy = {
@@ -110,10 +110,10 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
             obj=self.note1, request=request)
 
         values = res.render_related_terms(bundle)
-        self.assertEquals(len(values), 2)
-        self.assertEquals(values[0]['terms'][0]['display_name'], 'Square')
-        self.assertEquals(values[0]['terms'][1]['display_name'], 'Triangle')
-        self.assertEquals(values[1]['terms'][0]['display_name'], 'Red')
+        self.assertEqual(len(values), 2)
+        self.assertEqual(values[0]['terms'][0]['display_name'], 'Square')
+        self.assertEqual(values[0]['terms'][1]['display_name'], 'Triangle')
+        self.assertEqual(values[1]['terms'][0]['display_name'], 'Red')
 
     def test_dehydrate(self):
         res = SherdNoteResource()
@@ -123,8 +123,8 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
             obj=self.note1, request=request)
 
         res.dehydrate(bundle)
-        self.assertEquals(bundle.data['vocabulary'], [])
-        self.assertEquals(bundle.data['is_null'], False)
-        self.assertEquals(bundle.data['editable'], True)
-        self.assertEquals(bundle.data['is_global_annotation'], False)
-        self.assertEquals(bundle.data['citable'], True)
+        self.assertEqual(bundle.data['vocabulary'], [])
+        self.assertEqual(bundle.data['is_null'], False)
+        self.assertEqual(bundle.data['editable'], True)
+        self.assertEqual(bundle.data['is_global_annotation'], False)
+        self.assertEqual(bundle.data['citable'], True)

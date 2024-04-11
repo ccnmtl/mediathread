@@ -21,7 +21,7 @@ from django.urls import reverse
 from django.http.response import Http404
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils.html import escape
 from django.utils.text import slugify
 import factory
@@ -62,7 +62,7 @@ class SimpleViewTest(TestCase):
     def test_index(self):
         # Mediathread splash page should appear
         response = self.client.get('/')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_500(self):
         with self.assertRaises(Exception):
@@ -124,12 +124,12 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
                               password='test'))
         response = self.client.get(
             reverse('dashboard-migrate', args=[self.sample_course.pk]))
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_not_logged_in(self):
         response = self.client.get(
             reverse('dashboard-migrate', args=[self.sample_course.pk]))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_get_context_data(self):
         request = RequestFactory().get(
@@ -142,27 +142,27 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         ctx = view.get_context_data()
 
-        self.assertEquals(len(ctx['current_course_faculty']), 3)
-        self.assertEquals(ctx['current_course_faculty'][0].username,
-                          'instructor_one')
-        self.assertEquals(ctx['current_course_faculty'][1].username,
-                          'instructor_three')
-        self.assertEquals(ctx['current_course_faculty'][2].username,
-                          'instructor_two')
+        self.assertEqual(len(ctx['current_course_faculty']), 3)
+        self.assertEqual(ctx['current_course_faculty'][0].username,
+                         'instructor_one')
+        self.assertEqual(ctx['current_course_faculty'][1].username,
+                         'instructor_three')
+        self.assertEqual(ctx['current_course_faculty'][2].username,
+                         'instructor_two')
 
-        self.assertEquals(len(ctx['available_courses']), 2)
-        self.assertEquals(ctx['available_courses'][0].title,
-                          'Alternate Course')
-        self.assertEquals(ctx['available_courses'][1].title,
-                          'Sample Course')
+        self.assertEqual(len(ctx['available_courses']), 2)
+        self.assertEqual(ctx['available_courses'][0].title,
+                         'Alternate Course')
+        self.assertEqual(ctx['available_courses'][1].title,
+                         'Sample Course')
 
         request.user = self.superuser
         ctx = view.get_context_data()
-        self.assertEquals(len(ctx['available_courses']), 2)
-        self.assertEquals(ctx['available_courses'][0].title,
-                          'Alternate Course')
-        self.assertEquals(ctx['available_courses'][1].title,
-                          'Sample Course')
+        self.assertEqual(len(ctx['available_courses']), 2)
+        self.assertEqual(ctx['available_courses'][0].title,
+                         'Alternate Course')
+        self.assertEqual(ctx['available_courses'][1].title,
+                         'Sample Course')
 
     def test_post_invalidcourse(self):
         data = {'fromCourse': 42}
@@ -235,23 +235,23 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         self.assertTrue(the_json['success'])
-        self.assertEquals(the_json['asset_count'], 1)
-        self.assertEquals(the_json['project_count'], 0)
-        self.assertEquals(the_json['note_count'], 3)
+        self.assertEqual(the_json['asset_count'], 1)
+        self.assertEqual(the_json['project_count'], 0)
+        self.assertEqual(the_json['note_count'], 3)
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
-        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        self.assertEqual(new_asset.sherdnote_set.count(), 2)
 
         # verify there is a global annotation for instructor three
         ga = new_asset.global_annotation(self.instructor_three, False)
         self.assertIsNone(ga.title)
-        self.assertEquals(ga.tags, '')
+        self.assertEqual(ga.tags, '')
         self.assertIsNone(ga.body)
 
         # verify there is a selection annotation for instructor three
         note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
-        self.assertEquals(note.tags, '')
+        self.assertEqual(note.tags, '')
         self.assertIsNone(note.body)
         self.assertFalse(note.is_global_annotation)
 
@@ -278,14 +278,14 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
-        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        self.assertEqual(new_asset.sherdnote_set.count(), 2)
 
         note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
-        self.assertEquals(note.tags, self.instructor_note.tags)
+        self.assertEqual(note.tags, self.instructor_note.tags)
         self.assertIsNone(note.body)
 
         note = new_asset.global_annotation(self.instructor_three, False)
-        self.assertEquals(
+        self.assertEqual(
             note.tags,
             ',image, instructor_one_global,,instructor_two_global,')
         self.assertIsNone(note.body)
@@ -313,15 +313,15 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
-        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        self.assertEqual(new_asset.sherdnote_set.count(), 2)
 
         note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
-        self.assertEquals(note.tags, '')
-        self.assertEquals(note.body, self.instructor_note.body)
+        self.assertEqual(note.tags, '')
+        self.assertEqual(note.body, self.instructor_note.body)
 
         note = new_asset.global_annotation(self.instructor_three, False)
-        self.assertEquals(note.tags, '')
-        self.assertEquals(
+        self.assertEqual(note.tags, '')
+        self.assertEqual(
             note.body,
             'instructor one global noteinstructor two global note')
 
@@ -348,17 +348,17 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
-        self.assertEquals(new_asset.sherdnote_set.count(), 2)
+        self.assertEqual(new_asset.sherdnote_set.count(), 2)
 
         note = new_asset.sherdnote_set.get(title=self.instructor_note.title)
-        self.assertEquals(note.tags, self.instructor_note.tags)
-        self.assertEquals(note.body, self.instructor_note.body)
+        self.assertEqual(note.tags, self.instructor_note.tags)
+        self.assertEqual(note.body, self.instructor_note.body)
 
         note = new_asset.global_annotation(self.instructor_three, False)
-        self.assertEquals(
+        self.assertEqual(
             note.tags,
             ',image, instructor_one_global,,instructor_two_global,')
-        self.assertEquals(
+        self.assertEqual(
             note.body,
             'instructor one global noteinstructor two global note')
 
@@ -369,7 +369,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         self.add_citation(self.project1, self.instructor_note)
         self.add_citation(self.project1, self.student_note)
-        self.assertEquals(len(self.project1.citations()), 2)
+        self.assertEqual(len(self.project1.citations()), 2)
 
         data = {
             'fromCourse': self.sample_course.id,
@@ -391,28 +391,28 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         self.assertTrue(the_json['success'])
-        self.assertEquals(the_json['asset_count'], 1)
-        self.assertEquals(the_json['project_count'], 1)
-        self.assertEquals(the_json['note_count'], 2)
+        self.assertEqual(the_json['asset_count'], 1)
+        self.assertEqual(the_json['project_count'], 1)
+        self.assertEqual(the_json['note_count'], 2)
 
         new_asset = Asset.objects.get(course=self.alt_course,
                                       title=self.asset1.title)
-        self.assertEquals(new_asset.sherdnote_set.count(), 3)
+        self.assertEqual(new_asset.sherdnote_set.count(), 3)
 
         new_note = new_asset.sherdnote_set.get(title=self.student_note.title)
-        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEqual(new_note.author, self.instructor_three)
 
         new_note = new_asset.sherdnote_set.get(
             title=self.instructor_note.title)
-        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEqual(new_note.author, self.instructor_three)
 
         new_note = new_asset.sherdnote_set.get(title=None)
-        self.assertEquals(new_note.author, self.instructor_three)
+        self.assertEqual(new_note.author, self.instructor_three)
         self.assertTrue(new_note.is_global_annotation)
 
         new_project = Project.objects.get(
             course=self.alt_course, title=self.project1.title)
-        self.assertEquals(len(new_project.citations()), 2)
+        self.assertEqual(len(new_project.citations()), 2)
 
     def test_migrate_materials_view_student(self):
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -421,7 +421,7 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/dashboard/migrate/materials/%s/' %
                                    self.sample_course.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_migrate_materials_sample_course(self):
         flv = AssetFactory.create(course=self.sample_course,
@@ -443,25 +443,25 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         set_course_url = '/?set_course=%s&next=/' % \
             self.sample_course.group.name
         response = self.client.get(set_course_url, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         url = '/dashboard/migrate/materials/%s/' % self.sample_course.id
 
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['course']['title'], 'Sample Course')
-        self.assertEquals(len(the_json['assets']), 1)
+        self.assertEqual(the_json['course']['title'], 'Sample Course')
+        self.assertEqual(len(the_json['assets']), 1)
 
-        self.assertEquals(the_json['assets'][0]['title'],
-                          self.asset1.title)
-        self.assertEquals(the_json['assets'][0]['annotation_count'], 1)
+        self.assertEqual(the_json['assets'][0]['title'],
+                         self.asset1.title)
+        self.assertEqual(the_json['assets'][0]['annotation_count'], 1)
 
-        self.assertEquals(len(the_json['projects']), 1)
-        self.assertEquals(the_json['projects'][0]['title'],
-                          self.project2.title)
+        self.assertEqual(len(the_json['projects']), 1)
+        self.assertEqual(the_json['projects'][0]['title'],
+                         self.project2.title)
 
     def test_migrate_materials_alternate_course(self):
         self.assertTrue(self.client.login(
@@ -470,18 +470,18 @@ class MigrateCourseViewTest(MediathreadTestMixin, TestCase):
         set_course_url = '/?set_course=%s&next=/' % \
             self.alt_course.group.name
         response = self.client.get(set_course_url, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         url = '/dashboard/migrate/materials/%s/' % self.alt_course.id
 
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['course']['title'], 'Alternate Course')
-        self.assertEquals(len(the_json['assets']), 0)
-        self.assertEquals(len(the_json['projects']), 0)
+        self.assertEqual(the_json['course']['title'], 'Alternate Course')
+        self.assertEqual(len(the_json['assets']), 0)
+        self.assertEqual(len(the_json['projects']), 0)
 
 
 class ContactUsViewTest(TestCase):
@@ -508,9 +508,9 @@ class ContactUsViewTest(TestCase):
 
         initial = view.get_initial()
         self.assertIsNotNone(initial['issue_date'])
-        self.assertEquals(initial['name'], 'Foo Bar')
-        self.assertEquals(initial['email'], 'foo@bar.com')
-        self.assertEquals(initial['username'], view.request.user.username)
+        self.assertEqual(initial['name'], 'Foo Bar')
+        self.assertEqual(initial['email'], 'foo@bar.com')
+        self.assertEqual(initial['username'], view.request.user.username)
 
         # a subsequent call using an anonymous session returns a clean initial
         view.request.session = {}
@@ -540,17 +540,17 @@ class ContactUsViewTest(TestCase):
 
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Support Request')
-            self.assertEquals(mail.outbox[0].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[0].to,
-                              [settings.CONTACT_US_EMAIL])
+            self.assertEqual(mail.outbox[0].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[0].to,
+                             [settings.CONTACT_US_EMAIL])
 
             self.assertEqual(mail.outbox[1].subject,
                              'Mediathread Contact Us Request')
-            self.assertEquals(mail.outbox[1].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[1].to,
-                              ['sender@ccnmtl.columbia.edu'])
+            self.assertEqual(mail.outbox[1].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[1].to,
+                             ['sender@ccnmtl.columbia.edu'])
 
     def test_form_valid_with_support_destination(self):
         view = ContactUsView()
@@ -571,17 +571,17 @@ class ContactUsViewTest(TestCase):
 
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Support Request')
-            self.assertEquals(mail.outbox[0].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[0].to,
-                              [settings.CONTACT_US_EMAIL])
+            self.assertEqual(mail.outbox[0].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[0].to,
+                             [settings.CONTACT_US_EMAIL])
 
             self.assertEqual(mail.outbox[1].subject,
                              'Mediathread Contact Us Request')
-            self.assertEquals(mail.outbox[1].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[1].to,
-                              [settings.SUPPORT_DESTINATION])
+            self.assertEqual(mail.outbox[1].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[1].to,
+                             [settings.SUPPORT_DESTINATION])
 
 
 class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
@@ -594,7 +594,7 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
     def test_not_logged_in(self):
         response = self.client.get(
             reverse('course-manage-sources', args=[self.sample_course.pk]))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_as_student(self):
         self.assertTrue(
@@ -602,7 +602,7 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
                               password='test'))
         response = self.client.get(
             reverse('course-manage-sources', args=[self.sample_course.pk]))
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_get_context(self):
         request = RequestFactory().get(
@@ -614,9 +614,9 @@ class CourseManageSourcesViewTest(MediathreadTestMixin, TestCase):
         view.request = request
 
         ctx = view.get_context_data()
-        self.assertEquals(ctx['course'], self.sample_course)
-        self.assertEquals(list(ctx['suggested_collections']), [])
-        self.assertEquals(ctx['space_viewer'], self.instructor_one)
+        self.assertEqual(ctx['course'], self.sample_course)
+        self.assertEqual(list(ctx['suggested_collections']), [])
+        self.assertEqual(ctx['space_viewer'], self.instructor_one)
         self.assertFalse(ctx['is_staff'])
         self.assertIsNotNone(ctx['uploader'])
 
@@ -656,7 +656,7 @@ class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
 
     def test_not_logged_in(self):
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, '"current": false')
         self.assertContains(response, '"logged_in": false')
@@ -670,7 +670,7 @@ class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
                           password='test')
 
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, '"current": false')
         self.assertContains(response, '"logged_in": true')
@@ -688,7 +688,7 @@ class IsLoggedInViewTest(MediathreadTestMixin, TestCase):
                            DJANGOSHERD_FLICKR_APIKEY="456",
                            BOOKMARKLET_VERSION="2"):
             response = self.client.get(self.url, {'version': 2})
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
 
             self.assertContains(response, '"current": true')
             self.assertContains(response, '"logged_in": true')
@@ -802,16 +802,16 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
     def verify_alt_course_materials(self):
         # alt course assets, notes & projects are intact
         assets = Asset.objects.filter(course=self.alt_course)
-        self.assertEquals(self.alt_asset, assets.first())
+        self.assertEqual(self.alt_asset, assets.first())
         notes = SherdNote.objects.filter(asset__course=self.alt_course)
-        self.assertEquals(self.alt_note, notes.first())
+        self.assertEqual(self.alt_note, notes.first())
         projects = Project.objects.filter(course=self.alt_course)
-        self.assertEquals(self.alt_composition, projects.first())
+        self.assertEqual(self.alt_composition, projects.first())
 
-        self.assertEquals(get_course_discussions(self.alt_course),
-                          [self.alt_discussion])
+        self.assertEqual(get_course_discussions(self.alt_course),
+                         [self.alt_discussion])
         comments = ThreadedComment.objects.filter(parent=self.alt_discussion)
-        self.assertEquals(self.alt_comment, comments.first())
+        self.assertEqual(self.alt_comment, comments.first())
 
     def test_access(self):
         url = reverse('course-delete-materials', args=[self.sample_course.pk])
@@ -819,7 +819,7 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
 
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_clear_all(self):
         url = reverse('course-delete-materials', args=[self.sample_course.pk])
@@ -829,21 +829,21 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
 
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('All requested materials were deleted', messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
-        self.assertEquals(assets.count(), 0)
+        self.assertEqual(assets.count(), 0)
         notes = SherdNote.objects.filter(asset__course=self.sample_course)
-        self.assertEquals(notes.count(), 0)
+        self.assertEqual(notes.count(), 0)
         projects = Project.objects.filter(course=self.sample_course)
-        self.assertEquals(projects.count(), 0)
+        self.assertEqual(projects.count(), 0)
 
-        self.assertEquals(get_course_discussions(self.sample_course),
-                          [self.discussion])
+        self.assertEqual(get_course_discussions(self.sample_course),
+                         [self.discussion])
         comments = ThreadedComment.objects.filter(parent=self.discussion)
-        self.assertEquals(comments.count(), 0)
+        self.assertEqual(comments.count(), 0)
 
         self.verify_alt_course_materials()
 
@@ -858,27 +858,27 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
 
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('All requested materials were deleted', messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
-        self.assertEquals(assets.count(), 1)
-        self.assertEquals(assets.first(), self.faculty_asset)
+        self.assertEqual(assets.count(), 1)
+        self.assertEqual(assets.first(), self.faculty_asset)
 
         notes = SherdNote.objects.filter(asset__course=self.sample_course)
-        self.assertEquals(notes.count(), 1)
-        self.assertEquals(notes.first(), self.faculty_note1)
+        self.assertEqual(notes.count(), 1)
+        self.assertEqual(notes.first(), self.faculty_note1)
 
         projects = Project.objects.filter(course=self.sample_course)
-        self.assertEquals(projects.count(), 2)
+        self.assertEqual(projects.count(), 2)
         self.assertTrue(self.faculty_composition in projects.all())
         self.assertTrue(self.assignment in projects.all())
 
-        self.assertEquals(get_course_discussions(self.sample_course),
-                          [self.discussion])
+        self.assertEqual(get_course_discussions(self.sample_course),
+                         [self.discussion])
         comments = ThreadedComment.objects.filter(parent=self.discussion)
-        self.assertEquals(comments.count(), 0)
+        self.assertEqual(comments.count(), 0)
 
         self.verify_alt_course_materials()
 
@@ -896,22 +896,22 @@ class CourseDeleteMaterialsViewTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
 
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('Sample Course and requested materials were deleted',
                       messages[0])
 
         assets = Asset.objects.filter(course=self.sample_course)
-        self.assertEquals(assets.count(), 0)
+        self.assertEqual(assets.count(), 0)
         notes = SherdNote.objects.filter(asset__course=self.sample_course)
-        self.assertEquals(notes.count(), 0)
+        self.assertEqual(notes.count(), 0)
         projects = Project.objects.filter(course=self.sample_course)
-        self.assertEquals(projects.count(), 0)
+        self.assertEqual(projects.count(), 0)
 
-        self.assertEquals(get_course_discussions(self.sample_course),
-                          [self.discussion])
+        self.assertEqual(get_course_discussions(self.sample_course),
+                         [self.discussion])
         comments = ThreadedComment.objects.filter(parent=self.discussion)
-        self.assertEquals(comments.count(), 0)
+        self.assertEqual(comments.count(), 0)
 
         self.verify_alt_course_materials()
         self.assertFalse(
@@ -935,7 +935,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.client.login(username=self.instructor_one.username,
                           password='test')
         response = self.client.get(self.url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_roster_view_get_queryset(self):
         request = RequestFactory().get(self.url)
@@ -946,7 +946,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         view.request = request
 
         qs = view.get_queryset()
-        self.assertEquals(qs.count(), self.sample_course.members.count())
+        self.assertEqual(qs.count(), self.sample_course.members.count())
 
     def test_promote_demote_users(self):
         self.client.login(username=self.instructor_one.username,
@@ -957,13 +957,13 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         data = {'student_id': self.student_one.id}
         response = self.client.post(url, data)
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(self.sample_course.is_faculty(self.student_one))
 
         url = reverse('course-roster-demote')
         data = {'faculty_id': self.student_one.id}
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(self.sample_course.is_faculty(self.student_one))
 
     def test_remove_user(self):
@@ -974,12 +974,12 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-remove')
         data = {'user_id': self.student_one.id}
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(self.sample_course.is_member(self.student_one))
 
         data = {'user_id': self.instructor_two.id}
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(self.sample_course.is_faculty(self.instructor_two))
         self.assertFalse(self.sample_course.is_member(self.instructor_two))
 
@@ -993,7 +993,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         user = view.get_or_create_user('abc123')
         self.assertFalse(user.has_usable_password())
-        self.assertEquals(user, view.get_or_create_user('abc123'))
+        self.assertEqual(user, view.get_or_create_user('abc123'))
 
     def test_uni_invite_post(self):
         self.client.login(username=self.instructor_one.username,
@@ -1002,13 +1002,13 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         url = reverse('course-roster-add-uni')
         response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('Please enter a comma-separated list of UNIs',
                       messages[0])
 
         response = self.client.post(url, {'unis': 'abc123'})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         user = User.objects.get(username='abc123')
         self.assertTrue(self.sample_course.is_true_member(user))
 
@@ -1019,7 +1019,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         response = self.client.post(
             url, {'unis': ' abc123 ,efg456,az4@columbia.edu,1234 56'})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         user = User.objects.get(username='efg456')
         self.assertTrue(self.sample_course.is_true_member(user))
@@ -1042,7 +1042,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         url = reverse('course-roster-add-uni')
         # sometimes they enter a newline instead of a comma
         response = self.client.post(url, {'unis': ' abc123\nefg456,'})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         user = User.objects.get(username='efg456')
         self.assertTrue(self.sample_course.is_true_member(user))
@@ -1055,7 +1055,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': self.student_one.email})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn(
             'Student One (student_one@example.com) is already a course member',
@@ -1071,7 +1071,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.switch_course(self.client, self.sample_course)
             response = self.client.post(url,
                                         {'emails': self.alt_student.email})
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             messages = [m.message for m in get_messages(response.wsgi_request)]
             self.assertIn('Student Alternate is now a course member',
                           messages[0])
@@ -1081,8 +1081,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread: Sample Course')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'mediathread@example.com')
+            self.assertEqual(mail.outbox[0].from_email,
+                             'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, [self.alt_student.email])
             self.assertTrue(CourseInvitation.objects.count() == 0)
 
@@ -1094,7 +1094,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.switch_course(self.client, self.sample_course)
             response = self.client.post(url, {'emails': 'foo@example.com'})
 
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
             messages = [m.message for m in get_messages(response.wsgi_request)]
             self.assertIn('An email was sent to foo@example.com inviting this '
                           'user to join the course.', messages[0])
@@ -1102,8 +1102,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Course Invitation: Sample Course')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'mediathread@example.com')
+            self.assertEqual(mail.outbox[0].from_email,
+                             'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, ['foo@example.com'])
             self.assertTrue(CourseInvitation.objects.count() == 1)
 
@@ -1122,7 +1122,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('Please enter a comma-separated list of email '
                       'addresses.', messages[0])
@@ -1134,7 +1134,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'emails': '#$%^,foo@example.com'})
 
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn('#$%^ is not a valid email address.', messages[0])
         self.assertIn('An email was sent to foo@example.com inviting '
@@ -1146,7 +1146,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             'course-invite-accept',
             kwargs={'uidb64': uuid.uuid4()})
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
         # already accepted invitation
         invite = CourseInvitationFactory(
@@ -1154,7 +1154,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             invited_by=self.instructor_one)
         url = reverse('course-invite-accept', kwargs={'uidb64': invite.uuid})
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(
             response, 'This invitation has already been accepted')
 
@@ -1167,7 +1167,7 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
 
         invite = CourseInvitationFactory(
             course=self.sample_course, invited_by=self.instructor_one)
-        self.assertEquals(view.get_invite(invite.uuid), invite)
+        self.assertEqual(view.get_invite(invite.uuid), invite)
 
     def test_accept_invite_form_valid(self):
         form = AcceptInvitationForm()
@@ -1184,9 +1184,9 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
         view.form_valid(form)
 
         user = User.objects.get(username='testname')
-        self.assertEquals(user.first_name, 'Foo')
-        self.assertEquals(user.last_name, 'Bar')
-        self.assertEquals(user.email, invite.email)
+        self.assertEqual(user.first_name, 'Foo')
+        self.assertEqual(user.last_name, 'Bar')
+        self.assertEqual(user.email, invite.email)
 
         invite.refresh_from_db()
         self.assertTrue(invite.accepted())
@@ -1202,14 +1202,14 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {'invite-id': '3'})
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
         invite = CourseInvitationFactory(
             course=self.sample_course, invited_by=self.instructor_one)
 
         with self.settings(SERVER_EMAIL='mediathread@example.com'):
             response = self.client.post(url, {'invite-id': invite.id})
-            self.assertEquals(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
 
             msg = 'A course invitation was resent to {}'.format(invite.email)
             messages = [m.message for m in get_messages(response.wsgi_request)]
@@ -1218,8 +1218,8 @@ class CourseRosterViewsTest(MediathreadTestMixin, TestCase):
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Course Invitation: Sample Course')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'mediathread@example.com')
+            self.assertEqual(mail.outbox[0].from_email,
+                             'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, [invite.email])
 
 
@@ -1367,7 +1367,7 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         course = Course.objects.last()
         self.assertEqual(course.title, 'English for Cats')
         self.assertEqual(
-            smart_text(course.info),
+            smart_str(course.info),
             'English for Cats (Spring 2016) None None-None')
         self.assertEqual(course.info.term, 1)
         self.assertEqual(course.info.year, 2016)
@@ -1394,10 +1394,10 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(
             mail.outbox[0].subject,
             'Your Mediathread Course Activation: English for Cats')
-        self.assertEquals(
+        self.assertEqual(
             mail.outbox[0].from_email,
             settings.SERVER_EMAIL)
-        self.assertEquals(
+        self.assertEqual(
             mail.outbox[0].to,
             ['test_user@example.com'])
 
@@ -1419,10 +1419,10 @@ class AffilActivateViewTest(LoggedInUserTestMixin, TestCase):
         self.assertEqual(
             mail.outbox[0].subject,
             'Mediathread Course Activated: English for Cats')
-        self.assertEquals(
+        self.assertEqual(
             mail.outbox[0].from_email,
             settings.SERVER_EMAIL)
-        self.assertEquals(
+        self.assertEqual(
             mail.outbox[0].to,
             [settings.CONTACT_US_EMAIL])
         self.assertIn(
@@ -1645,8 +1645,8 @@ class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
         self.client.login(
             username=self.instructor_one.username, password='test')
         response = self.client.get(url, follow=True)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context['course'], self.sample_course)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['course'], self.sample_course)
 
     def test_get_without_course(self):
         ctx = LTICourseContextFactory(
@@ -1661,7 +1661,7 @@ class LTICourseSelectorTest(MediathreadTestMixin, TestCase):
         self.client.login(
             username=self.instructor_one.username, password='test')
         response = self.client.get(url, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue('course' not in response.context)
 
 
@@ -1682,15 +1682,15 @@ class LTICourseCreateTest(TestCase):
             self.assertEqual(response.status_code, 302)
 
             c = Course.objects.get(title='LTI Course')
-            self.assertEquals(
+            self.assertEqual(
                 c.group.name,
                 't3.y2017.s010.ct7113.socw.st.course:columbia.edu')
-            self.assertEquals(
+            self.assertEqual(
                 c.faculty_group.name,
                 't3.y2017.s010.ct7113.socw.fc.course:columbia.edu')
 
-            self.assertEquals(c.info.term, 3)
-            self.assertEquals(c.info.year, 2017)
+            self.assertEqual(c.info.term, 3)
+            self.assertEqual(c.info.year, 2017)
 
             self.assertTrue(user in c.group.user_set.all())
             self.assertTrue(user in c.faculty_group.user_set.all())
@@ -1699,17 +1699,17 @@ class LTICourseCreateTest(TestCase):
 
             self.assertEqual(mail.outbox[0].subject,
                              'Mediathread Course Connected')
-            self.assertEquals(mail.outbox[0].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[0].to,
-                              [settings.CONTACT_US_EMAIL])
+            self.assertEqual(mail.outbox[0].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[0].to,
+                             [settings.CONTACT_US_EMAIL])
 
             self.assertEqual(mail.outbox[1].subject,
                              'Mediathread Course Connected')
-            self.assertEquals(mail.outbox[1].from_email,
-                              settings.SERVER_EMAIL)
-            self.assertEquals(mail.outbox[1].to,
-                              [user.email])
+            self.assertEqual(mail.outbox[1].from_email,
+                             settings.SERVER_EMAIL)
+            self.assertEqual(mail.outbox[1].to,
+                             [user.email])
 
             LTICourseContext.objects.get(
                 lms_course_context='1234',
@@ -1742,10 +1742,10 @@ class LTICourseCreateTest(TestCase):
             self.assertEqual(response.status_code, 302)
 
             c = Course.objects.get(title='LTI Course')
-            self.assertEquals(c.group.name, '1234')
-            self.assertEquals(c.faculty_group.name, '1234_faculty')
-            self.assertEquals(c.info.term, 1)
-            self.assertEquals(c.info.year, 2017)
+            self.assertEqual(c.group.name, '1234')
+            self.assertEqual(c.faculty_group.name, '1234_faculty')
+            self.assertEqual(c.info.term, 1)
+            self.assertEqual(c.info.year, 2017)
 
             self.assertTrue(user in c.group.user_set.all())
             self.assertTrue(user in c.faculty_group.user_set.all())
@@ -1782,10 +1782,10 @@ class LTICourseCreateTest(TestCase):
 
             c = Course.objects.get(
                 title='LTI Course "Película", rødgrød med fløde')
-            self.assertEquals(c.group.name, '1234')
-            self.assertEquals(c.faculty_group.name, '1234_faculty')
-            self.assertEquals(c.info.term, 1)
-            self.assertEquals(c.info.year, 2017)
+            self.assertEqual(c.group.name, '1234')
+            self.assertEqual(c.faculty_group.name, '1234_faculty')
+            self.assertEqual(c.info.term, 1)
+            self.assertEqual(c.info.year, 2017)
 
             self.assertTrue(user in c.group.user_set.all())
             self.assertTrue(user in c.faculty_group.user_set.all())
@@ -1878,14 +1878,14 @@ class ConvertMaterialsViewTest(MediathreadTestMixin, TestCase):
         with self.settings(ASSET_CONVERT_API=None):
             ctx = view.get_context_data()
             self.assertFalse(ctx['endpoint'])
-            self.assertEquals(ctx['assets'].count(), 4)
+            self.assertEqual(ctx['assets'].count(), 4)
 
     def test_get_conversion_endpoint(self):
         view = CourseConvertMaterialsView()
         with self.settings(SERVER_ADMIN_SECRETKEYS={}):
-            self.assertEquals(view.get_conversion_endpoint(), (None, None))
+            self.assertEqual(view.get_conversion_endpoint(), (None, None))
 
         rv = ('http://something', 'foo')
         with self.settings(ASSET_CONVERT_API=rv[0],
                            SERVER_ADMIN_SECRETKEYS={rv[0]: rv[1]}):
-            self.assertEquals(view.get_conversion_endpoint(), rv)
+            self.assertEqual(view.get_conversion_endpoint(), rv)

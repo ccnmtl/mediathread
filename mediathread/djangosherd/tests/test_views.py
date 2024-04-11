@@ -28,12 +28,12 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
         request = RequestFactory().post('/', self.data)
         request.user = self.student_one
         response = create_annotation(request)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         note = SherdNote.objects.get(title='Annotation Test')
-        self.assertEquals(note.range1, -4.5)
-        self.assertEquals(note.range2, 23)
-        self.assertEquals(note.tags, 'foo,bar')
+        self.assertEqual(note.range1, -4.5)
+        self.assertEqual(note.range2, 23)
+        self.assertEqual(note.tags, 'foo,bar')
 
     def test_create_annotation_with_project(self):
         project = ProjectFactory()
@@ -42,7 +42,7 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
         request = RequestFactory().post('/', self.data)
         request.user = self.student_one
         response = create_annotation(request)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         note = SherdNote.objects.get(title='Annotation Test')
         ProjectNote.objects.get(annotation=note, project=project)
@@ -52,13 +52,13 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
                                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         request.user = self.student_one
         response = create_annotation(request)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         note = SherdNote.objects.get(title='Annotation Test')
 
         the_json = loads(response.content)
-        self.assertEquals(the_json['asset']['id'], self.asset.id)
-        self.assertEquals(the_json['annotation']['id'], note.id)
+        self.assertEqual(the_json['asset']['id'], self.asset.id)
+        self.assertEqual(the_json['annotation']['id'], note.id)
 
     def test_delete_annotation(self):
         note = SherdNoteFactory(
@@ -68,11 +68,11 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
         request = RequestFactory().post('/', {'next': 'foo'})
         request.user = self.student_two
         response = delete_annotation(request, note.id)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         request.user = self.student_one
         response = delete_annotation(request, note.id)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         with self.assertRaises(SherdNote.DoesNotExist):
             SherdNote.objects.get(title='Selection')
@@ -91,15 +91,15 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
             edit_annotation(request, 123)
 
         response = edit_annotation(request, note.id)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # via post
         request.user = self.student_one
         response = edit_annotation(request, note.id)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         note.refresh_from_db()
-        self.assertEquals(note.range1, -4.5)
-        self.assertEquals(note.tags, 'foo,bar')
+        self.assertEqual(note.range1, -4.5)
+        self.assertEqual(note.tags, 'foo,bar')
 
         # via ajax
         data = {'annotation-range2': 7}
@@ -107,9 +107,9 @@ class SherdNoteViewTest(MediathreadTestMixin, TestCase):
                                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         request.user = self.student_one
         response = edit_annotation(request, note.id)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = loads(response.content)
-        self.assertEquals(the_json['asset']['id'], self.asset.id)
-        self.assertEquals(the_json['annotation']['id'], note.id)
+        self.assertEqual(the_json['asset']['id'], self.asset.id)
+        self.assertEqual(the_json['annotation']['id'], note.id)
         note.refresh_from_db()
-        self.assertEquals(note.range2, 7)
+        self.assertEqual(note.range2, 7)

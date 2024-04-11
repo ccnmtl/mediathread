@@ -203,13 +203,13 @@
                                             <li>Directions for annotating selections with tags and notes</li>
                                         </ul>
                                         <p>
-                                            {% ifequal assignment.response_view_policy 'never' %}
+                                            {% if assignment.response_view_policy == 'never' %}
                                                 Your response will be visible to instructors.
-                                            {% else %}{% ifequal assignment.response_view_policy 'always' %}
+                                            {% else %}{% if assignment.response_view_policy == 'always' %}
                                                 Your response will be visible to the whole class.
-                                            {% else %}{% ifequal assignment.response_view_policy 'submitted' %}
+                                            {% else %}{% if assignment.response_view_policy == 'submitted' %}
                                                 Your response will be visible to the instructor and other students who have submitted.
-                                            {% endifequal %}{% endifequal %}{% endifequal %}
+                                            {% endif %}{% endif %}{% endif %}
                                         </p>
                                         <div class="alert alert-danger" role="alert">
                                             <strong>Important!</strong><br />

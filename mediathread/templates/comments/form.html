@@ -5,7 +5,7 @@
     {% if field.is_hidden %}
       {{ field }}
     {% else %}
-      {% ifnotequal field.name "comment" %}
+      {% if field.name != "comment" %}
         <!--
          CANNOT DO display:none, because then IE disables
          form-submit on Enter.
@@ -25,7 +25,7 @@
            value="Enter your comment here and press return"
            >
 
-      {% endifnotequal %}
+      {% endif %}
 
     {% endif %}
   {% endfor %}

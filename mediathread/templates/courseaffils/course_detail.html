@@ -22,10 +22,10 @@
 
     <script type="text/javascript">
         jQuery(document).ready(function() {
-            {% ifequal msg "upload" %}
+            {% if msg == "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
                 showMessage(msg);
-            {% endifequal %}
+            {% endif %}
         });
     </script>
 {% endblock %}

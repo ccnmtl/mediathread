@@ -17,7 +17,7 @@
                     <label class="card-subtitle font-weight-bold mb-2" for="upload_image_permission">Set Image Upload Permission Settings</label>: &nbsp;
                     <select name="upload_image_permission" class="form-control" id="upload_image_permission">
                         {% for level in permission_levels %}
-                            <option value="{{level.0}}" {% ifequal upload_image_permission level.0 %} selected="true" {% endifequal %}>{{level.1}}</option>
+                            <option value="{{level.0}}" {% if upload_image_permission == level.0 %} selected="true" {% endif %}>{{level.1}}</option>
                         {% endfor %}
                     </select>
                     <br />

@@ -78,14 +78,14 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
     def assertAssetEquals(self, asset, title, author,
                           primary_type, selection_ids):
 
-        self.assertEquals(asset['title'], title)
-        self.assertEquals(asset['author']['public_name'], author)
-        self.assertEquals(asset['primary_type'], primary_type)
+        self.assertEqual(asset['title'], title)
+        self.assertEqual(asset['author']['public_name'], author)
+        self.assertEqual(asset['primary_type'], primary_type)
 
-        self.assertEquals(len(asset['annotations']), len(selection_ids))
+        self.assertEqual(len(asset['annotations']), len(selection_ids))
 
         for idx, selection in enumerate(asset['annotations']):
-            self.assertEquals(int(selection['id']), selection_ids[idx])
+            self.assertEqual(int(selection['id']), selection_ids[idx])
 
     def test_getall_as_student(self):
         self.assertTrue(
@@ -98,7 +98,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         objects = the_json['assets']
-        self.assertEquals(len(objects), 2)
+        self.assertEqual(len(objects), 2)
 
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
@@ -122,11 +122,11 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         url = '/api/asset/?annotations=true'
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = json.loads(response.content)
         objects = the_json['assets']
-        self.assertEquals(len(objects), 2)
+        self.assertEqual(len(objects), 2)
 
         selections = [self.instructor_note.id]
         self.assertAssetEquals(objects[0], self.asset1.title,
@@ -150,17 +150,17 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         objects = the_json['assets']
-        self.assertEquals(len(objects), 2)
+        self.assertEqual(len(objects), 2)
 
         match = [x for x in objects if x['id'] == self.asset1.id]
-        self.assertEquals(len(match), 1)
+        self.assertEqual(len(match), 1)
         selections = [self.student_note.id, self.instructor_note.id]
         self.assertAssetEquals(match[0], self.asset1.title,
                                'One, Instructor', 'image', selections)
         self.assertFalse('global_annotation' in objects[0])
 
         match = [x for x in objects if x['id'] == self.asset2.id]
-        self.assertEquals(len(match), 1)
+        self.assertEqual(len(match), 1)
         self.assertAssetEquals(
             match[0], self.asset2.title,
             'One, Instructor', 'video', [self.asset2_instructor_note.id])
@@ -173,8 +173,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.test_getall_as_instructor()
 
     def test_getstudentlist_as_student_owner(self):
-        self.assert_(self.client.login(username=self.student_one.username,
-                                       password="test"))
+        assert self.client.login(username=self.student_one.username,
+                                 password="test")
 
         record_owner = self.student_one.username
         response = self.client.get(
@@ -182,29 +182,29 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['space_owner']['username'],
-                          self.student_one.username)
-        self.assertEquals(the_json['space_viewer']['username'],
-                          self.student_one.username)
+        self.assertEqual(the_json['space_owner']['username'],
+                         self.student_one.username)
+        self.assertEqual(the_json['space_viewer']['username'],
+                         self.student_one.username)
         self.assertTrue(the_json['editable'])
         self.assertFalse(the_json['citable'])
         self.assertFalse(the_json['is_faculty'])
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
+        self.assertEqual(len(the_json['assets']), 1)
+        self.assertEqual(len(the_json['assets'][0]['annotations']), 1)
 
         annotations = the_json['assets'][0]['annotations']
-        self.assertEquals(annotations[0]['title'], self.student_note.title)
+        self.assertEqual(annotations[0]['title'], self.student_note.title)
 
         # student one's tags
-        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
-        self.assertEquals(annotations[0]['metadata']['body'],
-                          "student one selection note")
+        self.assertEqual(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEqual(annotations[0]['metadata']['body'],
+                         "student one selection note")
 
         self.assertTrue('global_annotation' in the_json['assets'][0])
         gla = the_json['assets'][0]['global_annotation']
-        self.assertEquals(len(gla['metadata']['tags']), 2)
-        self.assertEquals(gla['metadata']['body'],
-                          "student one global note")
+        self.assertEqual(len(gla['metadata']['tags']), 2)
+        self.assertEqual(gla['metadata']['body'],
+                         "student one global note")
 
     def test_restricted_getstudentlist_as_student_owner(self):
         # Set course details to restricted
@@ -213,8 +213,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         self.test_getstudentlist_as_student_owner()
 
     def test_getstudentlist_as_student_viewer(self):
-        self.assert_(self.client.login(username=self.student_two.username,
-                                       password="test"))
+        assert self.client.login(username=self.student_two.username,
+                                 password="test")
 
         record_owner = self.student_one.username
         response = self.client.get(
@@ -222,36 +222,36 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['space_owner']['username'],
-                          self.student_one.username)
-        self.assertEquals(the_json['space_viewer']['username'],
-                          self.student_two.username)
+        self.assertEqual(the_json['space_owner']['username'],
+                         self.student_one.username)
+        self.assertEqual(the_json['space_viewer']['username'],
+                         self.student_two.username)
         self.assertFalse(the_json['editable'])
         self.assertFalse(the_json['citable'])
         self.assertFalse(the_json['is_faculty'])
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
+        self.assertEqual(len(the_json['assets']), 1)
+        self.assertEqual(len(the_json['assets'][0]['annotations']), 1)
 
         annotations = the_json['assets'][0]['annotations']
-        self.assertEquals(annotations[0]['title'], self.student_note.title)
+        self.assertEqual(annotations[0]['title'], self.student_note.title)
 
         # student two's tags
-        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
-        self.assertEquals(annotations[0]['metadata']['body'],
-                          "student one selection note")
+        self.assertEqual(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEqual(annotations[0]['metadata']['body'],
+                         "student one selection note")
 
         self.assertTrue('global_annotation' in the_json['assets'][0])
         gla = the_json['assets'][0]['global_annotation']
-        self.assertEquals(len(gla['metadata']['tags']), 2)
-        self.assertEquals(gla['metadata']['body'],
-                          "student one global note")
+        self.assertEqual(len(gla['metadata']['tags']), 2)
+        self.assertEqual(gla['metadata']['body'],
+                         "student one global note")
 
     def test_restricted_getstudentlist_as_student_viewer(self):
         self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
                                       0)
 
-        self.assert_(self.client.login(username=self.student_two.username,
-                                       password="test"))
+        assert self.client.login(username=self.student_two.username,
+                                 password="test")
 
         record_owner = self.student_one.username
         response = self.client.get(
@@ -259,19 +259,19 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['space_owner']['username'],
-                          self.student_one.username)
-        self.assertEquals(the_json['space_viewer']['username'],
-                          self.student_two.username)
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(the_json['assets'][0]['annotation_count'], 0)
+        self.assertEqual(the_json['space_owner']['username'],
+                         self.student_one.username)
+        self.assertEqual(the_json['space_viewer']['username'],
+                         self.student_two.username)
+        self.assertEqual(len(the_json['assets']), 1)
+        self.assertEqual(the_json['assets'][0]['annotation_count'], 0)
 
         ga = the_json['assets'][0]['global_annotation']
-        self.assertEquals(ga['author']['username'], 'student_one')
+        self.assertEqual(ga['author']['username'], 'student_one')
 
     def test_getstudentlist_as_instructor(self):
-        self.assert_(self.client.login(username=self.instructor_one.username,
-                                       password="test"))
+        assert self.client.login(username=self.instructor_one.username,
+                                 password="test")
         self.switch_course(self.client, self.sample_course)
 
         record_owner = self.student_one.username
@@ -280,28 +280,28 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['space_owner']['username'],
-                          self.student_one.username)
-        self.assertEquals(the_json['space_viewer']['username'],
-                          self.instructor_one.username)
+        self.assertEqual(the_json['space_owner']['username'],
+                         self.student_one.username)
+        self.assertEqual(the_json['space_viewer']['username'],
+                         self.instructor_one.username)
         self.assertFalse(the_json['editable'])
         self.assertFalse(the_json['citable'])
         self.assertTrue(the_json['is_faculty'])
-        self.assertEquals(len(the_json['assets']), 1)
-        self.assertEquals(len(the_json['assets'][0]['annotations']), 1)
+        self.assertEqual(len(the_json['assets']), 1)
+        self.assertEqual(len(the_json['assets'][0]['annotations']), 1)
 
         annotations = the_json['assets'][0]['annotations']
-        self.assertEquals(annotations[0]['title'], self.student_note.title)
+        self.assertEqual(annotations[0]['title'], self.student_note.title)
 
-        self.assertEquals(len(annotations[0]['metadata']['tags']), 1)
-        self.assertEquals(annotations[0]['metadata']['body'],
-                          "student one selection note")
+        self.assertEqual(len(annotations[0]['metadata']['tags']), 1)
+        self.assertEqual(annotations[0]['metadata']['body'],
+                         "student one selection note")
 
         self.assertTrue('global_annotation' in the_json['assets'][0])
         gla = the_json['assets'][0]['global_annotation']
-        self.assertEquals(len(gla['metadata']['tags']), 2)
-        self.assertEquals(gla['metadata']['body'],
-                          "student one global note")
+        self.assertEqual(len(gla['metadata']['tags']), 2)
+        self.assertEqual(gla['metadata']['body'],
+                         "student one global note")
 
     def test_restricted_getstudentlist_as_instructor(self):
         # Set course details to restricted
@@ -317,7 +317,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
 
         selections = [self.instructor_note.id, self.student_note.id]
@@ -328,8 +328,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
-        self.assertEquals(asset['global_annotation']['id'],
-                          self.student_ga.id)
+        self.assertEqual(asset['global_annotation']['id'],
+                         self.student_ga.id)
 
     def test_restricted_getobject_as_student_owner(self):
         self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
@@ -345,7 +345,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
 
         selections = [self.instructor_note.id, self.student_note.id]
@@ -356,8 +356,8 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             'One, Instructor', 'image', selections)
 
         self.assertTrue('global_annotation' in asset)
-        self.assertEquals(asset['global_annotation']['id'],
-                          self.instructor_ga.id)
+        self.assertEqual(asset['global_annotation']['id'],
+                         self.instructor_ga.id)
 
     def test_restricted_getobject_as_instructor_viewer(self):
         self.sample_course.add_detail(course_details.SELECTION_VISIBILITY_KEY,
@@ -372,7 +372,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
 
         selections = [self.instructor_note.id, self.student_note.id]
@@ -396,7 +396,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
 
         selections = [self.instructor_note.id]
@@ -426,7 +426,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
             self.client.login(username=self.instructor_one.username,
                               password="test"))
         response = self.client.post('/api/asset/', {})
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_put_detail(self):
         self.assertTrue(
@@ -436,7 +436,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.put('/api/asset/{}/'.format(self.asset2.id),
                                    {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_delete(self):
         self.assertTrue(
@@ -446,7 +446,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.delete('/api/asset/{}/'.format(self.asset2.id),
                                       {},
                                       HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 405)
+        self.assertEqual(response.status_code, 405)
 
     def test_getobject_multiple_class_member_nocourse(self):
         self.assertTrue(
@@ -456,9 +456,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         # No course selection yet
         response = self.client.get('/api/asset/%s/' % self.asset1.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.templates[0].name,
-                          "courseaffils/course_list.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                         "courseaffils/course_list.html")
 
     def test_getobject_multiple_class_member_wrongcourse(self):
         self.assertTrue(
@@ -469,9 +469,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
         response = self.client.get('/api/asset/%s/' % self.asset1.id,
                                    {}, follow=True,
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.templates[0].name,
-                          "assetmgr/asset_not_found.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                         "assetmgr/asset_not_found.html")
 
     def test_getobject_multiple_class_member_rightcourse(self):
         self.assertTrue(
@@ -482,7 +482,7 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get('/api/asset/%s/' % self.asset1.id, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
 
         selections = [self.instructor_note.id, self.student_note.id]
@@ -499,9 +499,9 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         # No course selected
         response = self.client.get('/api/asset/', {})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.templates[0].name,
-                          "courseaffils/course_list.html")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name,
+                         "courseaffils/course_list.html")
 
         # No dice, login to Alternate Course
         self.switch_course(self.client, self.alt_course)
@@ -513,34 +513,34 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         objects = the_json['assets']
-        self.assertEquals(len(objects), 0)
+        self.assertEqual(len(objects), 0)
 
     def test_render_tag_list(self):
         tags = Tag.objects.usage_for_queryset(self.asset1.sherdnote_set.all(),
                                               counts=True)
         resource = TagResource()
         lst = resource.render_list(None, tags)
-        self.assertEquals(len(lst), 5)
+        self.assertEqual(len(lst), 5)
 
-        self.assertEquals(lst[0]['count'], 3)
-        self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'image')
+        self.assertEqual(lst[0]['count'], 3)
+        self.assertEqual(lst[0]['last'], False)
+        self.assertEqual(lst[0]['name'], 'image')
 
-        self.assertEquals(lst[1]['count'], 1)
-        self.assertEquals(lst[1]['last'], False)
-        self.assertEquals(lst[1]['name'], 'instructor_one_global')
+        self.assertEqual(lst[1]['count'], 1)
+        self.assertEqual(lst[1]['last'], False)
+        self.assertEqual(lst[1]['name'], 'instructor_one_global')
 
-        self.assertEquals(lst[2]['count'], 1)
-        self.assertEquals(lst[2]['last'], False)
-        self.assertEquals(lst[2]['name'], 'instructor_one_selection')
+        self.assertEqual(lst[2]['count'], 1)
+        self.assertEqual(lst[2]['last'], False)
+        self.assertEqual(lst[2]['name'], 'instructor_one_selection')
 
-        self.assertEquals(lst[3]['count'], 1)
-        self.assertEquals(lst[3]['last'], False)
-        self.assertEquals(lst[3]['name'], 'student_one_global')
+        self.assertEqual(lst[3]['count'], 1)
+        self.assertEqual(lst[3]['last'], False)
+        self.assertEqual(lst[3]['name'], 'student_one_global')
 
-        self.assertEquals(lst[4]['count'], 1)
-        self.assertEquals(lst[4]['last'], True)
-        self.assertEquals(lst[4]['name'], 'student_one_selection')
+        self.assertEqual(lst[4]['count'], 1)
+        self.assertEqual(lst[4]['last'], True)
+        self.assertEqual(lst[4]['name'], 'student_one_selection')
 
     def test_render_related_tag_list(self):
         request = RequestFactory().get('')
@@ -548,19 +548,19 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         notes = SherdNote.objects.filter(author=self.student_one)
         lst = TagResource().render_related(request, notes)
-        self.assertEquals(len(lst), 3)
+        self.assertEqual(len(lst), 3)
 
-        self.assertEquals(lst[0]['count'], 1)
-        self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'image')
+        self.assertEqual(lst[0]['count'], 1)
+        self.assertEqual(lst[0]['last'], False)
+        self.assertEqual(lst[0]['name'], 'image')
 
-        self.assertEquals(lst[1]['count'], 1)
-        self.assertEquals(lst[1]['last'], False)
-        self.assertEquals(lst[1]['name'], 'student_one_global')
+        self.assertEqual(lst[1]['count'], 1)
+        self.assertEqual(lst[1]['last'], False)
+        self.assertEqual(lst[1]['name'], 'student_one_global')
 
-        self.assertEquals(lst[2]['count'], 1)
-        self.assertEquals(lst[2]['last'], True)
-        self.assertEquals(lst[2]['name'], 'student_one_selection')
+        self.assertEqual(lst[2]['count'], 1)
+        self.assertEqual(lst[2]['last'], True)
+        self.assertEqual(lst[2]['name'], 'student_one_selection')
 
     def test_render_tag_list_for_course(self):
         request = RequestFactory().get('')
@@ -568,31 +568,31 @@ class AssetApiTest(MediathreadTestMixin, TestCase):
 
         notes = SherdNote.objects.filter(author=self.student_one)
         lst = TagResource().render_for_course(request, notes)
-        self.assertEquals(len(lst), 6)
+        self.assertEqual(len(lst), 6)
 
-        self.assertEquals(lst[0]['count'], 1)
-        self.assertEquals(lst[0]['last'], False)
-        self.assertEquals(lst[0]['name'], 'image')
+        self.assertEqual(lst[0]['count'], 1)
+        self.assertEqual(lst[0]['last'], False)
+        self.assertEqual(lst[0]['name'], 'image')
 
-        self.assertEquals(lst[1]['count'], 0)
-        self.assertEquals(lst[1]['last'], False)
-        self.assertEquals(lst[1]['name'], 'instructor_one_global')
+        self.assertEqual(lst[1]['count'], 0)
+        self.assertEqual(lst[1]['last'], False)
+        self.assertEqual(lst[1]['name'], 'instructor_one_global')
 
-        self.assertEquals(lst[2]['count'], 0)
-        self.assertEquals(lst[2]['last'], False)
-        self.assertEquals(lst[2]['name'], 'instructor_one_selection')
+        self.assertEqual(lst[2]['count'], 0)
+        self.assertEqual(lst[2]['last'], False)
+        self.assertEqual(lst[2]['name'], 'instructor_one_selection')
 
-        self.assertEquals(lst[3]['count'], 1)
-        self.assertEquals(lst[3]['last'], False)
-        self.assertEquals(lst[3]['name'], 'student_one_global')
+        self.assertEqual(lst[3]['count'], 1)
+        self.assertEqual(lst[3]['last'], False)
+        self.assertEqual(lst[3]['name'], 'student_one_global')
 
-        self.assertEquals(lst[4]['count'], 1)
-        self.assertEquals(lst[4]['last'], False)
-        self.assertEquals(lst[4]['name'], 'student_one_selection')
+        self.assertEqual(lst[4]['count'], 1)
+        self.assertEqual(lst[4]['last'], False)
+        self.assertEqual(lst[4]['name'], 'student_one_selection')
 
-        self.assertEquals(lst[5]['count'], 0)
-        self.assertEquals(lst[5]['last'], True)
-        self.assertEquals(lst[5]['name'], 'video')
+        self.assertEqual(lst[5]['count'], 0)
+        self.assertEqual(lst[5]['last'], True)
+        self.assertEqual(lst[5]['name'], 'video')
 
     def test_filter_by_media_type(self):
         self.assertTrue(

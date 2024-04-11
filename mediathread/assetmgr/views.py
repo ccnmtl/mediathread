@@ -50,6 +50,7 @@ from mediathread.mixins import (
 )
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from mediathread.util import is_ajax
 import re
 from sentry_sdk import capture_exception
 from s3sign.views import SignS3View
@@ -1087,7 +1088,7 @@ class AssetWorkspaceView(LoggedInCourseMixin, RestrictedMaterialsMixin,
             except Source.DoesNotExist:
                 return render(request, '500.html', {})
 
-        if not request.is_ajax():
+        if not is_ajax(request):
             return self.redirect_to_react_views(
                 request.course.id, asset_id, annot_id)
 

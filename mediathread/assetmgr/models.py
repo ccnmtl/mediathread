@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.urls import reverse
 from django.db import models
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from tagging.models import Tag
 
 from mediathread.assetmgr.custom_storage import private_storage
@@ -378,7 +378,7 @@ class Source(models.Model):
                                     auto_now=True)
 
     def __str__(self):
-        return '[%s] %s' % (self.label, smart_text(self.asset))
+        return '[%s] %s' % (self.label, smart_str(self.asset))
 
     def is_image(self):
         return (self.label == 'poster' or

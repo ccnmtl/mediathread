@@ -23,37 +23,37 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
         self.request.user = self.instructor_one
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 2)
-        self.assertEquals(lst[0][0], PUBLISH_DRAFT[0])
-        self.assertEquals(lst[1][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(len(lst), 2)
+        self.assertEqual(lst[0][0], PUBLISH_DRAFT[0])
+        self.assertEqual(lst[1][0], PUBLISH_WHOLE_CLASS[0])
 
         # student
         self.request.user = self.student_one
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 3)
-        self.assertEquals(lst[0][0], PUBLISH_DRAFT[0])
-        self.assertEquals(lst[1][0], 'InstructorShared')
-        self.assertEquals(lst[2][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(len(lst), 3)
+        self.assertEqual(lst[0][0], PUBLISH_DRAFT[0])
+        self.assertEqual(lst[1][0], 'InstructorShared')
+        self.assertEqual(lst[2][0], PUBLISH_WHOLE_CLASS[0])
 
         # maybe public option
         self.sample_course.add_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, 1)
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 3)
-        self.assertEquals(lst[0][0], PUBLISH_DRAFT[0])
-        self.assertEquals(lst[1][0], 'InstructorShared')
-        self.assertEquals(lst[2][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(len(lst), 3)
+        self.assertEqual(lst[0][0], PUBLISH_DRAFT[0])
+        self.assertEqual(lst[1][0], 'InstructorShared')
+        self.assertEqual(lst[2][0], PUBLISH_WHOLE_CLASS[0])
 
     def test_project_form(self):
         frm = ProjectForm(self.request, instance=None, data={})
 
         lst = frm.fields['participants'].choices
-        self.assertEquals(lst[0][1], 'Instructor One')
-        self.assertEquals(lst[1][1], 'Instructor Two')
-        self.assertEquals(lst[2][1], 'Student One')
-        self.assertEquals(lst[3][1], 'Student Three')
-        self.assertEquals(lst[4][1], 'Student Two')
+        self.assertEqual(lst[0][1], 'Instructor One')
+        self.assertEqual(lst[1][1], 'Instructor Two')
+        self.assertEqual(lst[2][1], 'Student One')
+        self.assertEqual(lst[3][1], 'Student Three')
+        self.assertEqual(lst[4][1], 'Student Two')
 
         self.assertFalse(frm.fields['participants'].required)
         self.assertFalse(frm.fields['body'].required)
@@ -69,13 +69,13 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         data = {}
         frm = ProjectForm(self.request, instance=project, data=data)
-        self.assertEquals(frm.initial['publish'], PUBLISH_DRAFT[0])
+        self.assertEqual(frm.initial['publish'], PUBLISH_DRAFT[0])
 
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 3)
-        self.assertEquals(lst[0][0], PUBLISH_DRAFT[0])
-        self.assertEquals(lst[1][0], PUBLISH_WHOLE_CLASS[0])
-        self.assertEquals(lst[2][0], 'PublicEditorsAreOwners')
+        self.assertEqual(len(lst), 3)
+        self.assertEqual(lst[0][0], PUBLISH_DRAFT[0])
+        self.assertEqual(lst[1][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(lst[2][0], 'PublicEditorsAreOwners')
 
     def test_bound_assignment_form(self):
         self.sample_course.add_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, 1)
@@ -86,12 +86,12 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         data = {}
         frm = ProjectForm(self.request, instance=assignment, data=data)
-        self.assertEquals(frm.initial['publish'], PUBLISH_DRAFT[0])
+        self.assertEqual(frm.initial['publish'], PUBLISH_DRAFT[0])
 
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 2)
-        self.assertEquals(lst[0][0], PUBLISH_DRAFT[0])
-        self.assertEquals(lst[1][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(len(lst), 2)
+        self.assertEqual(lst[0][0], PUBLISH_DRAFT[0])
+        self.assertEqual(lst[1][0], PUBLISH_WHOLE_CLASS[0])
 
     def test_bound_assignment_form_with_responses(self):
         self.sample_course.add_detail(ALLOW_PUBLIC_COMPOSITIONS_KEY, 1)
@@ -106,25 +106,25 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         data = {}
         frm = ProjectForm(self.request, instance=assignment, data=data)
-        self.assertEquals(frm.initial['publish'], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(frm.initial['publish'], PUBLISH_WHOLE_CLASS[0])
 
         lst = frm.fields['publish'].choices
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0][0], PUBLISH_WHOLE_CLASS[0])
+        self.assertEqual(len(lst), 1)
+        self.assertEqual(lst[0][0], PUBLISH_WHOLE_CLASS[0])
 
     def test_response_policy_options(self):
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['response_view_policy'].choices
-        self.assertEquals(len(lst), 3)
-        self.assertEquals(lst[0], RESPONSE_VIEW_NEVER)
-        self.assertEquals(lst[1], RESPONSE_VIEW_SUBMITTED)
-        self.assertEquals(lst[2], RESPONSE_VIEW_ALWAYS)
+        self.assertEqual(len(lst), 3)
+        self.assertEqual(lst[0], RESPONSE_VIEW_NEVER)
+        self.assertEqual(lst[1], RESPONSE_VIEW_SUBMITTED)
+        self.assertEqual(lst[2], RESPONSE_VIEW_ALWAYS)
 
         self.sample_course.add_detail(SELECTION_VISIBILITY_KEY, 0)
         frm = ProjectForm(self.request, instance=None, data={})
         lst = frm.fields['response_view_policy'].choices
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0], RESPONSE_VIEW_NEVER)
+        self.assertEqual(len(lst), 1)
+        self.assertEqual(lst[0], RESPONSE_VIEW_NEVER)
 
     def test_bound_assignment_response_policy_options(self):
         self.sample_course.add_detail(SELECTION_VISIBILITY_KEY, 0)
@@ -135,8 +135,8 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         frm = ProjectForm(self.request, instance=selection_assignment, data={})
         lst = frm.fields['response_view_policy'].choices
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0], RESPONSE_VIEW_NEVER)
+        self.assertEqual(len(lst), 1)
+        self.assertEqual(lst[0], RESPONSE_VIEW_NEVER)
 
         assignment = ProjectFactory.create(
             course=self.sample_course, author=self.instructor_one,
@@ -145,5 +145,5 @@ class TestProjectForms(MediathreadTestMixin, TestCase):
 
         frm = ProjectForm(self.request, instance=assignment, data={})
         lst = frm.fields['response_view_policy'].choices
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0], RESPONSE_VIEW_NEVER)
+        self.assertEqual(len(lst), 1)
+        self.assertEqual(lst[0], RESPONSE_VIEW_NEVER)

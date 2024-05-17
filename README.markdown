@@ -177,10 +177,6 @@ APACHE
 ----------------
 For deployment to Apache, see our sample configuration in `apache/sample.conf`. This directory also contains standard `django.wsgi` file which can be used with other webservers
 
-SSL
-----------------
-To support bookmarking assets from a variety of external sites, Mediathread instances must be accessible via http:// and https://
-
 FLICKR
 ----------------
 In your local_settings.py or (better) deploy_specific/settings.py specify your Flickr api key.

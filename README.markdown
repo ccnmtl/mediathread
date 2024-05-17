@@ -13,7 +13,7 @@ FORUM: https://groups.google.com/group/mediathread
 
 REQUIREMENTS
 ------------
-* Python >=3.8, <=3.11
+* Python >=3.8
 * Postgres (or MySQL)
 * Flowplayer installation for your site (See below for detailed instructions)
 * Flickr API Key if you want to bookmark from FLICKR
@@ -143,11 +143,17 @@ configuration can be kept out of the docker image).
 
 CYPRESS
 ------------------
-Mediathread has a large set of integration tests, implemented using the [Cypress testing infrastructure](https://www.cypress.io/).
+Mediathread has a large set of integration tests, implemented using
+the [Cypress testing infrastructure](https://www.cypress.io/).
 
-To run the tests in headless mode, simply run `make cypress`.
+To run the tests, simply run `make cypress`. This command runs the
+tests in Firefox "headed" mode by default. You can configure the
+`cypress:test` npm script target in `package.json` differently to
+change this. Cypress supports a number of browser environments.
 
-To run the tests in interactive mode, first run the standalone integration server, `make integrationserver` then `npm run cypress:ffopen` to bring up the interactive test console.
+To run the tests in interactive mode, first run the standalone
+integration server, `make integrationserver` then `npm run
+cypress:ffopen` to bring up the interactive test console.
 
 DJANGO SITE INFRASTRUCTURE
 ----------------

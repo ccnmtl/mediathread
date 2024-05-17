@@ -78,7 +78,6 @@ def django_settings(request):
         'CAS_VERSION',
         'CAS_ADMIN_REDIRECT',
         'GOOGLE_ANALYTICS_ID',
-        'JIRA_CONFIGURATION',
         'REVISION',
         'SERVER_EMAIL',
         'PANOPTO_SERVER',

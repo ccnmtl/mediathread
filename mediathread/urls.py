@@ -10,7 +10,7 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.views import LoginView
 import django.contrib.auth.views
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic.base import TemplateView
 from django.views.i18n import JavaScriptCatalog
 import django.views.i18n
@@ -134,9 +134,9 @@ urlpatterns = [
     # Bookmarklet + cache defeating
     path('bookmarklets/<path:path>analyze.js', django.views.static.serve,
          {'document_root': bookmarklet_root}, name='analyze-bookmarklet'),
-    path('nocache/\w+/bookmarklets/<path:path>',
-         django.views.static.serve, {'document_root': bookmarklet_root},
-         name='nocache-analyze-bookmarklet'),
+    re_path(r'^nocache/\w+/bookmarklets/(?P<path>analyze.js)$',
+            django.views.static.serve, {'document_root': bookmarklet_root},
+            name='nocache-analyze-bookmarklet'),
 
     path('comments/', include('django_comments.urls')),
 

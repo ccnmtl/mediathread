@@ -16,7 +16,7 @@ describe('Publish To World Public Composition', () => {
 
         cy.log('create a project from the home page');
         cy.visit('/course/1/projects');
-        cy.get('.page-title').contains('Projects');
+        cy.get('.page-title').contains('Projects').should('be.visible');
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click();
         cy.get('button#add-composition-button').should('be.visible');
@@ -30,7 +30,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('.page-title').click().clear()
             .type('Composition Public: Scenario 1A');
         cy.getIframeBody().find('p').click()
-            .type('The Columbia Center for New Teaching and Learning');
+            .type('The Columbia Center for Teaching and Learning');
 
         cy.log('insert an asset');
         cy.get('div.ajaxloader').should('not.be.visible');
@@ -69,9 +69,8 @@ describe('Publish To World Public Composition', () => {
                 cy.get('.participant_list').should('not.exist');
                 cy.get('.materialCitation').click();
 
-                //TODO: figure out why clicking on the asset title logs you out.
-                //cy.get('.annotation-title > a').should('exist')
-                //.and('contain', 'MAAP Award Reception')
+                cy.get('.annotation-title')
+                    .should('contain', 'MAAP Award Reception')
             });
     });
 });

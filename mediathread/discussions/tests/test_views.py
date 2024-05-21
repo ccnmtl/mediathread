@@ -26,12 +26,12 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         self.create_discussion(self.alt_course, self.alt_instructor)
 
         discussions = get_course_discussions(self.sample_course)
-        self.assertEquals(1, len(discussions))
-        self.assertEquals(discussions[0].title, "Sample Course Discussion")
+        self.assertEqual(1, len(discussions))
+        self.assertEqual(discussions[0].title, "Sample Course Discussion")
 
         discussions = get_course_discussions(self.alt_course)
-        self.assertEquals(1, len(discussions))
-        self.assertEquals(discussions[0].title, "Alternate Course Discussion")
+        self.assertEqual(1, len(discussions))
+        self.assertEqual(discussions[0].title, "Alternate Course Discussion")
 
     def test_create_instructor_feedback(self):
         self.setup_sample_course()
@@ -65,7 +65,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
         self.create_discussion(self.sample_course, self.instructor_one)
         discussions = get_course_discussions(self.sample_course)
-        self.assertEquals(1, len(discussions))
+        self.assertEqual(1, len(discussions))
 
         discussion = discussions[0]
         discussion_id = discussions[0].id
@@ -73,27 +73,27 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
                                         app_label='threadedcomments')
         coll = Collaboration.objects.get(content_type=ctype,
                                          object_pk=discussion_id)
-        self.assertEquals(coll.content_object, discussion)
+        self.assertEqual(coll.content_object, discussion)
 
         url = reverse('discussion-delete', args=[discussion_id])
 
         # anonymous
         response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         # non-faculty
         self.client.login(username=self.student_one.username, password='test')
         response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
         # faculty
         self.client.login(username=self.instructor_one.username,
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, {})
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         discussions = get_course_discussions(self.sample_course)
-        self.assertEquals(0, len(discussions))
+        self.assertEqual(0, len(discussions))
 
         with self.assertRaises(Collaboration.DoesNotExist):
             Collaboration.objects.get(content_type=ctype,
@@ -103,7 +103,7 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         self.setup_sample_course()
         self.create_discussion(self.sample_course, self.instructor_one)
         discussions = get_course_discussions(self.sample_course)
-        self.assertEquals(1, len(discussions))
+        self.assertEqual(1, len(discussions))
 
         request = RequestFactory().get('/discussion/', {})
         request.user = self.instructor_one
@@ -116,13 +116,13 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         view = DiscussionView()
         view.request = request
         response = view.get(request, discussion_id=discussions[0].id)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_view_discussions_ajax(self):
         self.setup_sample_course()
         self.create_discussion(self.sample_course, self.instructor_one)
         discussions = get_course_discussions(self.sample_course)
-        self.assertEquals(1, len(discussions))
+        self.assertEqual(1, len(discussions))
 
         request = RequestFactory().get('/discussion/', {},
                                        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
@@ -136,11 +136,11 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
         view = DiscussionView()
         view.request = request
         response = view.get(request, discussion_id=discussions[0].id)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         the_json = loads(response.content)
-        self.assertEquals(the_json['space_owner'],
-                          self.instructor_one.username)
+        self.assertEqual(the_json['space_owner'],
+                         self.instructor_one.username)
 
     def test_comment_save(self):
         self.setup_sample_course()
@@ -159,19 +159,19 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
 
         url = reverse('comment-save', args=[discussion.id])
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)  # login required
+        self.assertEqual(response.status_code, 302)  # login required
 
         self.client.login(username=self.instructor_one.username,
                           password='test')
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 405)  # course required
+        self.assertEqual(response.status_code, 405)  # course required
 
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, data, HTTP_ACCEPT='text/html')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         discussion.refresh_from_db()
-        self.assertEquals(discussion.comment, 'update')
+        self.assertEqual(discussion.comment, 'update')
 
     def test_comments_post(self):
         self.setup_sample_course()
@@ -194,10 +194,10 @@ class DiscussionViewsTest(MediathreadTestMixin, TestCase):
                           password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
         comment_id = re.search(r'\d+', response.url).group()
         obj = Comment.objects.get(id=comment_id)
-        self.assertEquals(obj.comment, 'posted')
-        self.assertEquals(obj.content_object, discussion.content_object)
-        self.assertEquals(obj.user_name, 'Instructor One')
+        self.assertEqual(obj.comment, 'posted')
+        self.assertEqual(obj.content_object, discussion.content_object)
+        self.assertEqual(obj.user_name, 'Instructor One')

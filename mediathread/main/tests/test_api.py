@@ -23,7 +23,7 @@ class UserApiTest(TestCase):
 
         member = UserResource().render_one(None, student_one)
 
-        self.assertEquals(member['public_name'], "One, Student")
+        self.assertEqual(member['public_name'], "One, Student")
 
     def test_render_list(self):
         u = UserFactory(username='test_student_one',
@@ -50,13 +50,13 @@ class UserApiTest(TestCase):
 
         members = UserResource().render_list(None, sample_course.members)
 
-        self.assertEquals(len(members), 6)
-        self.assertEquals(members[0]['public_name'], "test_instructor_two")
-        self.assertEquals(members[1]['public_name'], "test_student_three")
-        self.assertEquals(members[2]['public_name'], "Assistant, Teacher's")
-        self.assertEquals(members[3]['public_name'], "One, Instructor")
-        self.assertEquals(members[4]['public_name'], "One, Student")
-        self.assertEquals(members[5]['public_name'], "Two, Student")
+        self.assertEqual(len(members), 6)
+        self.assertEqual(members[0]['public_name'], "test_instructor_two")
+        self.assertEqual(members[1]['public_name'], "test_student_three")
+        self.assertEqual(members[2]['public_name'], "Assistant, Teacher's")
+        self.assertEqual(members[3]['public_name'], "One, Instructor")
+        self.assertEqual(members[4]['public_name'], "One, Student")
+        self.assertEqual(members[5]['public_name'], "Two, Student")
 
     def test_get_course_list(self):
         g1 = GroupFactory(name="group1")
@@ -69,4 +69,4 @@ class UserApiTest(TestCase):
         with self.settings(SERVER_ADMIN_SECRETKEYS=secrets):
             url = '/api/user/courses?user=instructor_one&secret=foobar'
             response = self.client.get(url)
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)

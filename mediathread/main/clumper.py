@@ -1,6 +1,6 @@
 from functools import total_ordering, cmp_to_key
 
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django_comments.models import Comment
 from mediathread.assetmgr.models import Asset
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
@@ -60,7 +60,7 @@ class Clumper(object):
             return self.order_by(self.things[0], other.things[0]) < 0
 
         def __str__(self):
-            return smart_text(self.things[0])
+            return smart_str(self.things[0])
 
         def append(self, obj):
             if len(self.things) < 4:

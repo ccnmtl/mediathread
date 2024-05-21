@@ -55,8 +55,8 @@ class TestCourseDetails(MediathreadTestMixin, TestCase):
 
     def test_course_information_title(self):
         # default
-        self.assertEquals(course_information_title(self.sample_course),
-                          COURSE_INFORMATION_TITLE_DEFAULT)
+        self.assertEqual(course_information_title(self.sample_course),
+                         COURSE_INFORMATION_TITLE_DEFAULT)
 
     def test_cached_course_is_member(self):
         self.assertTrue(cached_course_is_member(self.sample_course,

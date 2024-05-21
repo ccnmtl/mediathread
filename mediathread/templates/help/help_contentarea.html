@@ -16,7 +16,7 @@
     class="ui-widget-content feature-help"
     {% if not default_help_state %}style="display: none"{% endif %}>
 
-        {% ifequal help_id "help_taxonomy" %}
+        {% if help_id == "help_taxonomy" %}
     <strong>About Course Vocabularies</strong>
     <div class="feature-help-instructions">A Mediathread course vocabulary is a set of concepts and associated terms chosen by a course instructor.
     This is a good way to designate metadata for students to apply to items they analyze in Mediathread.</div>
@@ -36,9 +36,9 @@
     <div class="feature-help-instructions">Instructors may delete concepts and terms by clicking on the trash icon. If a term is deleted, all of its
     associations with Items in Mediathread are also deleted and cannot be restored. If a concept is deleted,
     all of its associated terms are also deleted and cannot be restored.</div>
-    {% endifequal %}
+    {% endif %}
 
-    {% ifequal help_id "help_migrate_materials" %}
+    {% if help_id == "help_migrate_materials" %}
         <strong>
             How To Migrate Course Materials
         </strong>
@@ -84,9 +84,9 @@
             </ul>
         </div>
 
-    {% endifequal %}
+    {% endif %}
 
-    {% ifequal help_id "help_homepage_instructor_column" %}
+    {% if help_id == "help_homepage_instructor_column" %}
         <strong>From Your Instructor</strong>
         {% if is_faculty %}
             <div class="feature-help-instructions">
@@ -123,10 +123,10 @@
             </div>
             <br />
          {% endif %}
-    {% endifequal %}
+    {% endif %}
 
 
-    {% ifequal help_id "help_homepage_classwork_column" %}
+    {% if help_id == "help_homepage_classwork_column" %}
         <strong>
             The Composition Section
         </strong>
@@ -203,9 +203,9 @@
                 </ol>
             </div>
         {% endif %}
-    {% endifequal %}
+    {% endif %}
 
-    {% ifequal help_id "help_sequence_assignment" %}
+    {% if help_id == "help_sequence_assignment" %}
         <p>A sequence assignment allows students to line up a "primary"
         selection of video or audio against multiple "secondary" selections
         and/or annotations. The secondary selections will appear at designated
@@ -216,9 +216,9 @@
         series of thoughts (ie, textual annotations). Students may be asked to display
         correlations or contrasts in context, or to prepare a set of annotations that
         appear as a media selection plays.</p>
-    {% endifequal %}
+    {% endif %}
 
-    {% ifequal help_id "help_homepage_explore_column" %}
+    {% if help_id == "help_homepage_explore_column" %}
         <strong>The Collection Section</strong>
 
         <div class="feature-help-instructions">
@@ -272,7 +272,7 @@
         {% endif %}
 
 
-    {% endifequal %}
+    {% endif %}
 
 
     <div class="visualclear"></div>

@@ -75,9 +75,9 @@ class HomepageTest(MediathreadTestMixin, TestCase):
             policy='PrivateEditorsAreOwners')
 
     def assertProjectEquals(self, project, title, author, editable):
-        self.assertEquals(project['title'], title)
-        self.assertEquals(project['participants'][0]['public_name'], author)
-        self.assertEquals(project['editable'], editable)
+        self.assertEqual(project['title'], title)
+        self.assertEqual(project['participants'][0]['public_name'], author)
+        self.assertEqual(project['editable'], editable)
 
     def test_get_my_projectlist_as_student(self):
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -90,13 +90,13 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
 
         assignments = the_json['assignments']
-        self.assertEquals(len(assignments), 1)
-        self.assertEquals(assignments[0]['title'], self.assignment.title)
+        self.assertEqual(len(assignments), 1)
+        self.assertEqual(assignments[0]['title'], self.assignment.title)
         self.assertTrue(assignments[0]['display_as_assignment'])
         self.assertFalse(assignments[0]['is_faculty'])
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 3)
+        self.assertEqual(len(projects), 3)
 
         self.assertProjectEquals(projects[0], self.project_class_shared.title,
                                  'Student One', True)
@@ -120,10 +120,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
 
         assignments = the_json['assignments']
-        self.assertEquals(len(assignments), 0)
+        self.assertEqual(len(assignments), 0)
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 1)
+        self.assertEqual(len(projects), 1)
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One', False)
 
@@ -137,10 +137,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         assignments = the_json['assignments']
-        self.assertEquals(len(assignments), 0)
+        self.assertEqual(len(assignments), 0)
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 1)
+        self.assertEqual(len(projects), 1)
 
         self.assertProjectEquals(projects[0], self.project_class_shared.title,
                                  'Student One', False)
@@ -158,10 +158,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         the_json = json.loads(response.content)
 
         assignments = the_json['assignments']
-        self.assertEquals(len(assignments), 0)
+        self.assertEqual(len(assignments), 0)
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 1)
+        self.assertEqual(len(projects), 1)
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One', True)
 
@@ -177,10 +177,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
 
-        self.assertEquals(len(the_json['assignments']), 0)
+        self.assertEqual(len(the_json['assignments']), 0)
 
         # The assignment is viewable here.
-        self.assertEquals(len(the_json['projects']), 1)
+        self.assertEqual(len(the_json['projects']), 1)
         self.assertProjectEquals(the_json['projects'][0],
                                  self.assignment.title,
                                  'Instructor One', False)
@@ -196,10 +196,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(len(the_json['assignments']), 0)
+        self.assertEqual(len(the_json['assignments']), 0)
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 2)
+        self.assertEqual(len(projects), 2)
 
         self.assertProjectEquals(projects[0], self.project_class_shared.title,
                                  'Student One', False)
@@ -214,14 +214,14 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         url = '/api/project/user/%s/' % self.alt_student.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
         self.assertFalse('compositions' in the_json)
 
         url = '/api/project/user/%s/' % self.alt_instructor.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse('compositions' in the_json)
 
     def test_request_superuser_nonclassmember_projectlist(self):
@@ -232,7 +232,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
         url = '/api/project/user/%s/' % su.username
         response = self.client.get(url, {},
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         the_json = json.loads(response.content)
         self.assertFalse('compositions' in the_json)
 
@@ -245,10 +245,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['assignments'], [])
+        self.assertEqual(the_json['assignments'], [])
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 4)
+        self.assertEqual(len(projects), 4)
 
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One', False)
@@ -272,10 +272,10 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['assignments'], [])
+        self.assertEqual(the_json['assignments'], [])
 
         projects = the_json['projects']
-        self.assertEquals(len(projects), 2)
+        self.assertEqual(len(projects), 2)
         self.assertProjectEquals(projects[0], self.assignment.title,
                                  'Instructor One', False)
 
@@ -292,7 +292,7 @@ class HomepageTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['assignments'], [])
+        self.assertEqual(the_json['assignments'], [])
 
         projects = the_json['projects']
         self.assertProjectEquals(projects[0], self.assignment.title,

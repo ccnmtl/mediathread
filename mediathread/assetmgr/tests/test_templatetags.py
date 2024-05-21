@@ -20,6 +20,6 @@ class TestInCourse(MediathreadTestMixin, TestCase):
                                                 self.suggested))
 
     def test_is_in_course(self):
-        self.assertEquals(
+        self.assertEqual(
             map_course_collection(self.sample_course, self.suggested),
             self.collection)

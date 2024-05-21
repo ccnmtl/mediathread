@@ -70,7 +70,7 @@ def generate_lti_request(course_context=None, provider=None, use=None):
 
     request = RequestFactory().post('/lti/', params)
 
-    middleware = SessionMiddleware()
+    middleware = SessionMiddleware(request)
     middleware.process_request(request)
     request.session.save()
 

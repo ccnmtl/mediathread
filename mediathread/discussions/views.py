@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseForbidden, \
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_POST
@@ -27,6 +27,7 @@ from mediathread.mixins import (
 )
 from mediathread.taxonomy.api import VocabularyResource
 from mediathread.taxonomy.models import Vocabulary
+from mediathread.util import is_ajax
 from random import choice
 from string import ascii_letters
 from structuredcollaboration.models import Collaboration
@@ -101,7 +102,7 @@ class DiscussionCreateView(LoggedInFacultyMixin, View):
             new_threaded_comment, new_threaded_comment.content_object,
             new_threaded_comment.user)
 
-        if not request.is_ajax():
+        if not is_ajax(request):
             if model == 'project':
                 discussion_url = reverse(
                     'project-workspace',
@@ -171,7 +172,7 @@ class DiscussionView(LoggedInCourseMixin, View):
 
         data = {'space_owner': request.user.username}
 
-        if not request.is_ajax():
+        if not is_ajax(request):
             data['discussion'] = root_comment
             return render(request, 'discussions/discussion.html', data)
         else:
@@ -313,7 +314,8 @@ def threaded_comment_json(request, comment):
 
     return {
         'type': 'discussion',
-        'form': smart_text(django_comments.get_form()(comment.content_object)),
+        'form': smart_str(
+            django_comments.get_form()(comment.content_object)),
         'editing': True,
         'can_edit': True,
         'discussion': {

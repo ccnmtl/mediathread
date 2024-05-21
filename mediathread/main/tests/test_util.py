@@ -13,13 +13,13 @@ class UtilTest(TestCase):
                                 {'name': 'bar'}, 'abc123@columbia.edu')
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, 'foo')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'mediathread@example.com')
+            self.assertEqual(mail.outbox[0].from_email,
+                             'mediathread@example.com')
             self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
 
     def test_user_display_name(self):
         user = UserFactory()
-        self.assertEquals(user_display_name(user), user.username)
+        self.assertEqual(user_display_name(user), user.username)
 
         user = UserFactory(first_name='John', last_name='Smith')
-        self.assertEquals(user_display_name(user), 'John Smith')
+        self.assertEqual(user_display_name(user), 'John Smith')

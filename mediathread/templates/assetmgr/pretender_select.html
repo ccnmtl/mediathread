@@ -1,6 +1,6 @@
 {% load coursetags %}
 {% if user.is_staff %}
-   {% ifequal role_in_course "non-member" %}
+   {% if role_in_course == "non-member" %}
       <label for="as">Save as:</label>
       <select name="as">
         {%for user in request.course.faculty %}
@@ -8,5 +8,5 @@
         {%endfor%}
       </select>
       <br />
-   {% endifequal%}
+   {% endif %}
 {% endif %}

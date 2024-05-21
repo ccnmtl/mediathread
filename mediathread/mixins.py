@@ -15,7 +15,7 @@ from mediathread.djangosherd.models import SherdNote
 from mediathread.main.course_details import cached_course_is_faculty, \
     all_selections_are_visible, all_items_are_visible, cached_course_is_member
 from mediathread.projects.models import Project, ProjectNote
-from mediathread.util import attach_course_to_request
+from mediathread.util import attach_course_to_request, is_ajax
 
 
 def ajax_required(func):
@@ -29,7 +29,7 @@ def ajax_required(func):
 
     """
     def wrap(request, *args, **kwargs):
-        if not request.is_ajax():
+        if not is_ajax(request):
             return HttpResponseNotAllowed("")
         return func(request, *args, **kwargs)
 

@@ -56,7 +56,7 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         self.assertEqual(len(responses), 1)
         self.assertEqual(responses[0], visible_response)
 
-        self.assertEquals(published_assignment_responses(assignment), 1)
+        self.assertEqual(published_assignment_responses(assignment), 1)
 
         responses = my_assignment_responses(assignment, self.student_two)
         self.assertEqual(responses.count(), 1)
@@ -82,7 +82,7 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         self.client.login(username=author.username, password='test')
         self.switch_course(self.client, self.sample_course)
         response = self.client.post(url, data)
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
     def test_discussion_assignment_response_tags(self):
         self.client.login(username=self.instructor_one.username,
@@ -97,7 +97,7 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         response = self.client.post(url, data, follow=True)
         self.assertEqual(response.status_code, 200)
         assignment = Project.objects.get(title='Important Discussion')
-        self.assertEquals(published_assignment_responses(assignment), 0)
+        self.assertEqual(published_assignment_responses(assignment), 0)
         self.assertEqual(
             comment_count(assignment, self.instructor_one)[0], 1)
         self.assertEqual(
@@ -108,9 +108,9 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         # add a comment
         discussion = assignment.course_discussion()
         self._add_comment(discussion, self.instructor_two)
-        self.assertEquals(published_assignment_responses(assignment), 0)
+        self.assertEqual(published_assignment_responses(assignment), 0)
         self._add_comment(discussion, self.student_one)
-        self.assertEquals(published_assignment_responses(assignment), 1)
+        self.assertEqual(published_assignment_responses(assignment), 1)
 
         self.assertEqual(
             comment_count(assignment, self.instructor_two)[0], 1)

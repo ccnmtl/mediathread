@@ -10,16 +10,16 @@
         jQuery(document).ready(function() {
             var projectList = new ProjectList({
                 'parent': jQuery("div#classwork_table")[0],
-                'space_owner': '{% ifnotequal role_in_course "non-member" %}{{classwork_owner.username}}{% endifnotequal %}',
+                'space_owner': '{% if role_in_course != "non-member" %}{{classwork_owner.username}}{% endif %}',
                 'template': 'homepage',
                 'template_label': 'classwork_table',
                 'view': "{{request.GET.view}}"
             });
 
-            {% ifequal msg "upload" %}
+            {% if msg == "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."
                 showMessage(msg);
-            {% endifequal %}
+            {% endif %}
 
             jQuery("a.arrow").click(function(evt) {
                 jQuery(this).next("div.arrowContent").toggle();
@@ -199,7 +199,7 @@
                         <div class="arrowIcon left"></div>
                     </a>
                     <div class="arrowContent" id="upload_desktop" style="display: none">
-                        {% ifequal role_in_course "non-member" %}
+                        {% if role_in_course == "non-member" %}
                             <div class="instructions">
                                 <p>You must be a course member to upload media files.</p>
                             </div>
@@ -214,7 +214,7 @@
                                             <label for="video_owners">For:</label>
                                             <select id="video_owners" name="as">
                                                 {% for owner in owners %}
-                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                    <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -229,7 +229,7 @@
                                             <label for="audio_owners">For:</label>
                                             <select id="audio_owners" name="as">
                                                 {% for owner in owners %}
-                                                    <option value="{{owner.username}}" {% ifequal owner.username user.username %} selected="selected"{% endifequal %}>{{owner.public_name}}</option>
+                                                    <option value="{{owner.username}}" {% if owner.username == user.username %} selected="selected"{% endif %}>{{owner.public_name}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -238,7 +238,7 @@
                                     <a class="btn btn-primary upload_button video">
                                         <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;&nbsp;Upload audio</a>
                                 </form>
-                        {% endifequal %}
+                        {% endif %}
                 </div><!-- end upload from desktop -->
             </div><!-- end collection content box -->
             {% endif %}

@@ -71,8 +71,8 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
             asset__title='Asset Two').values_list('id', flat=True)
 
         lst = TermRelationship.objects.filter(sherdnote__id__in=notes)
-        self.assertEquals(len(lst), 1)
-        self.assertEquals(lst[0].term, Term.objects.get(name='paper'))
+        self.assertEqual(len(lst), 1)
+        self.assertEqual(lst[0].term, Term.objects.get(name='paper'))
 
     def test_multiple_term_relationship(self):
         notes = SherdNote.objects.filter(
@@ -80,10 +80,10 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
 
         lst = TermRelationship.objects.filter(sherdnote__id__in=notes)
 
-        self.assertEquals(len(lst), 3)
-        self.assertEquals(lst[0].term, Term.objects.get(name='red'))
-        self.assertEquals(lst[1].term, Term.objects.get(name='square'))
-        self.assertEquals(lst[2].term, Term.objects.get(name='square'))
+        self.assertEqual(len(lst), 3)
+        self.assertEqual(lst[0].term, Term.objects.get(name='red'))
+        self.assertEqual(lst[1].term, Term.objects.get(name='square'))
+        self.assertEqual(lst[2].term, Term.objects.get(name='square'))
 
     def test_vocabulary_authorization(self):
         factory = RequestFactory()
@@ -98,7 +98,7 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
                                                    request=request)
 
         lst = authorization.read_list(vocabulary, bundle)
-        self.assertEquals(len(lst), 2)
+        self.assertEqual(len(lst), 2)
 
     def test_vocabulary_get_list(self):
         self.assertTrue(self.client.login(username=self.student_one.username,
@@ -110,11 +110,11 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
 
         the_json = json.loads(response.content)
         lst = the_json['objects']
-        self.assertEquals(len(lst), 2)
-        self.assertEquals(lst[0]['display_name'], "Colors")
-        self.assertEquals(len(lst[0]['term_set']), 3)
-        self.assertEquals(lst[1]['display_name'], "Shapes")
-        self.assertEquals(len(lst[1]['term_set']), 2)
+        self.assertEqual(len(lst), 2)
+        self.assertEqual(lst[0]['display_name'], "Colors")
+        self.assertEqual(len(lst[0]['term_set']), 3)
+        self.assertEqual(lst[1]['display_name'], "Shapes")
+        self.assertEqual(len(lst[1]['term_set']), 2)
 
     def test_vocabulary_render_list(self):
         request = HttpRequest()
@@ -123,11 +123,11 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
 
         lst = VocabularyResource().render_list(request, qs)
 
-        self.assertEquals(len(lst), 2)
-        self.assertEquals(lst[0]['display_name'], "Colors")
-        self.assertEquals(len(lst[0]['term_set']), 3)
-        self.assertEquals(lst[1]['display_name'], "Shapes")
-        self.assertEquals(len(lst[1]['term_set']), 2)
+        self.assertEqual(len(lst), 2)
+        self.assertEqual(lst[0]['display_name'], "Colors")
+        self.assertEqual(len(lst[0]['term_set']), 3)
+        self.assertEqual(lst[1]['display_name'], "Shapes")
+        self.assertEqual(len(lst[1]['term_set']), 2)
 
     def test_vocabulary_get_one(self):
         self.assertTrue(
@@ -139,8 +139,8 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
                                    HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         the_json = json.loads(response.content)
-        self.assertEquals(the_json['display_name'], "Shapes")
-        self.assertEquals(len(the_json['term_set']), 2)
+        self.assertEqual(the_json['display_name'], "Shapes")
+        self.assertEqual(len(the_json['term_set']), 2)
 
     def test_vocabulary_render_one(self):
         request = HttpRequest()
@@ -148,8 +148,8 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
 
         vocabulary = Vocabulary.objects.get(name="shapes")
         detail = VocabularyResource().render_one(request, vocabulary)
-        self.assertEquals(detail['display_name'], "Shapes")
-        self.assertEquals(len(detail['term_set']), 2)
+        self.assertEqual(detail['display_name'], "Shapes")
+        self.assertEqual(len(detail['term_set']), 2)
 
     def test_vocabulary_render_related(self):
         request = HttpRequest()
@@ -158,16 +158,16 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         notes = SherdNote.objects.filter(title='Left Corner')
         ctx = VocabularyResource().render_related(request, notes)
 
-        self.assertEquals(len(ctx), 2)
-        self.assertEquals(ctx[0]['display_name'], 'Colors')
-        self.assertEquals(len(ctx[0]['term_set']), 1)
-        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Red')
-        self.assertEquals(ctx[0]['term_set'][0]['count'], 1)
+        self.assertEqual(len(ctx), 2)
+        self.assertEqual(ctx[0]['display_name'], 'Colors')
+        self.assertEqual(len(ctx[0]['term_set']), 1)
+        self.assertEqual(ctx[0]['term_set'][0]['display_name'], 'Red')
+        self.assertEqual(ctx[0]['term_set'][0]['count'], 1)
 
-        self.assertEquals(ctx[1]['display_name'], 'Shapes')
-        self.assertEquals(len(ctx[1]['term_set']), 1)
-        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
-        self.assertEquals(ctx[1]['term_set'][0]['count'], 1)
+        self.assertEqual(ctx[1]['display_name'], 'Shapes')
+        self.assertEqual(len(ctx[1]['term_set']), 1)
+        self.assertEqual(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEqual(ctx[1]['term_set'][0]['count'], 1)
 
     def test_vocabulary_render_related_multiple(self):
         request = HttpRequest()
@@ -176,16 +176,16 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         notes = SherdNote.objects.filter(title__in=['Left Corner', 'Nice Tie'])
         ctx = VocabularyResource().render_related(request, notes)
 
-        self.assertEquals(len(ctx), 2)
-        self.assertEquals(ctx[0]['display_name'], 'Colors')
-        self.assertEquals(len(ctx[0]['term_set']), 1)
-        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Red')
-        self.assertEquals(ctx[0]['term_set'][0]['count'], 1)
+        self.assertEqual(len(ctx), 2)
+        self.assertEqual(ctx[0]['display_name'], 'Colors')
+        self.assertEqual(len(ctx[0]['term_set']), 1)
+        self.assertEqual(ctx[0]['term_set'][0]['display_name'], 'Red')
+        self.assertEqual(ctx[0]['term_set'][0]['count'], 1)
 
-        self.assertEquals(ctx[1]['display_name'], 'Shapes')
-        self.assertEquals(len(ctx[1]['term_set']), 1)
-        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
-        self.assertEquals(ctx[1]['term_set'][0]['count'], 2)
+        self.assertEqual(ctx[1]['display_name'], 'Shapes')
+        self.assertEqual(len(ctx[1]['term_set']), 1)
+        self.assertEqual(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEqual(ctx[1]['term_set'][0]['count'], 2)
 
     def test_vocabulary_render_for_course(self):
         request = HttpRequest()
@@ -194,22 +194,22 @@ class TaxonomyApiTest(MediathreadTestMixin, TestCase):
         notes = SherdNote.objects.filter(title='Nice Tie')
         ctx = VocabularyResource().render_for_course(request, notes)
 
-        self.assertEquals(len(ctx), 2)
-        self.assertEquals(ctx[0]['display_name'], 'Colors')
-        self.assertEquals(len(ctx[0]['term_set']), 3)
-        self.assertEquals(ctx[0]['term_set'][0]['display_name'], 'Blue')
-        self.assertEquals(ctx[0]['term_set'][0]['count'], 0)
-        self.assertEquals(ctx[0]['term_set'][1]['display_name'], 'Green')
-        self.assertEquals(ctx[0]['term_set'][1]['count'], 0)
-        self.assertEquals(ctx[0]['term_set'][2]['display_name'], 'Red')
-        self.assertEquals(ctx[0]['term_set'][2]['count'], 0)
+        self.assertEqual(len(ctx), 2)
+        self.assertEqual(ctx[0]['display_name'], 'Colors')
+        self.assertEqual(len(ctx[0]['term_set']), 3)
+        self.assertEqual(ctx[0]['term_set'][0]['display_name'], 'Blue')
+        self.assertEqual(ctx[0]['term_set'][0]['count'], 0)
+        self.assertEqual(ctx[0]['term_set'][1]['display_name'], 'Green')
+        self.assertEqual(ctx[0]['term_set'][1]['count'], 0)
+        self.assertEqual(ctx[0]['term_set'][2]['display_name'], 'Red')
+        self.assertEqual(ctx[0]['term_set'][2]['count'], 0)
 
-        self.assertEquals(ctx[1]['display_name'], 'Shapes')
-        self.assertEquals(len(ctx[1]['term_set']), 2)
-        self.assertEquals(ctx[1]['term_set'][0]['display_name'], 'Square')
-        self.assertEquals(ctx[1]['term_set'][0]['count'], 1)
-        self.assertEquals(ctx[1]['term_set'][1]['display_name'], 'Triangle')
-        self.assertEquals(ctx[1]['term_set'][1]['count'], 0)
+        self.assertEqual(ctx[1]['display_name'], 'Shapes')
+        self.assertEqual(len(ctx[1]['term_set']), 2)
+        self.assertEqual(ctx[1]['term_set'][0]['display_name'], 'Square')
+        self.assertEqual(ctx[1]['term_set'][0]['count'], 1)
+        self.assertEqual(ctx[1]['term_set'][1]['display_name'], 'Triangle')
+        self.assertEqual(ctx[1]['term_set'][1]['count'], 0)
 
     def test_vocabulary_validation(self):
         vv = VocabularyValidation()

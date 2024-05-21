@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.db import models
 from django.db.models.query_utils import Q
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django_comments.models import Comment
 from tagging.fields import TagField
 from tagging.models import Tag, TaggedItem
@@ -444,7 +444,7 @@ class DiscussionIndex(models.Model):
     modified = models.DateTimeField(auto_now=True)  # update on save
 
     def __str__(self):
-        return smart_text(self.body)
+        return smart_str(self.body)
 
     @property
     def body(self):

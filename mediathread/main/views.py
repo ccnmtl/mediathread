@@ -20,7 +20,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template import loader
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.utils.encoding import smart_bytes, smart_text
+from django.utils.encoding import smart_bytes, smart_str
 from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.utils import timezone
@@ -401,7 +401,7 @@ class ContactUsView(FormView):
         subject = 'Mediathread Contact Us Request'
         form_data = form.cleaned_data
         tmpl = loader.get_template('main/contact_description.txt')
-        form_data['description'] = smart_text(tmpl.render(form_data))
+        form_data['description'] = smart_str(tmpl.render(form_data))
 
         # send to server email instead
         send_mail('Mediathread Support Request', form_data['description'],

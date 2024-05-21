@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from mediathread.djangosherd.models import Asset, SherdNote
 from mediathread.projects.models import ProjectNote, Project
 from mediathread.taxonomy.views import update_vocabulary_terms
+from mediathread.util import is_ajax
 
 
 formfields = "tags title range1 range2 body annotation_data".split()
@@ -63,7 +64,7 @@ def create_annotation(request):
         project = get_object_or_404(Project, id=project_id)
         ProjectNote.objects.create(project=project, annotation=annotation)
 
-    if request.is_ajax():
+    if is_ajax(request):
         response = {'asset': {'id': asset.id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),
@@ -103,7 +104,7 @@ def edit_annotation(request, annot_id):
 
     update_annotation(request, annotation)
 
-    if request.is_ajax():
+    if is_ajax(request):
         response = {'asset': {'id': annotation.asset_id},
                     'annotation': {'id': annotation.id}}
         return HttpResponse(json.dumps(response),

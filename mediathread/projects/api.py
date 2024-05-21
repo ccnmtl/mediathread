@@ -6,7 +6,7 @@ from string import ascii_letters
 from courseaffils.lib import get_public_name
 
 from django.urls import reverse
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 
 from tastypie import fields
 from tastypie.resources import ModelResource
@@ -193,9 +193,9 @@ class ProjectResource(ModelResource):
         if self.editable:
             projectform = ProjectForm(request, instance=project)
             data['form'] = {
-                'participants': smart_text(projectform['participants']),
-                'publish': smart_text(projectform['publish']),
-                'response_view_policy': smart_text(
+                'participants': smart_str(projectform['participants']),
+                'publish': smart_str(projectform['publish']),
+                'response_view_policy': smart_str(
                     projectform['response_view_policy']),
             }
 

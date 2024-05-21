@@ -38,6 +38,10 @@ class Main extends React.Component {
                     terms: d.active_vocabulary
                 });
             }, function(e) {
+                if (typeof e === 'object') {
+                    e = JSON.stringify(e);
+                }
+
                 me.setState({
                     assetError: e
                 });
@@ -55,6 +59,10 @@ class Main extends React.Component {
                     currentUser: d.space_viewer.id
                 });
             }, function(e) {
+                if (typeof e === 'object') {
+                    e = JSON.stringify(e);
+                }
+
                 me.setState({
                     assetError: e
                 });

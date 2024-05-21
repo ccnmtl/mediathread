@@ -159,6 +159,10 @@ export default class CollectionTab extends React.Component {
                 window.scrollTo(0, 0);
             });
         }, function(e) {
+            if (typeof e === 'object') {
+                e = JSON.stringify(e);
+            }
+
             me.setState({
                 assetError: e
             });

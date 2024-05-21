@@ -15,7 +15,7 @@ describe('Publish To World Public Composition', () => {
         cy.get('input#id_publish_to_world').should('be.checked');
 
         cy.log('create a project from the home page');
-        cy.visit('/course/1/projects');
+        cy.visit('/course/1/projects', {retryOnStatusCodeFailure: true});
         cy.get('.page-title').contains('Projects');
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click();
@@ -54,7 +54,7 @@ describe('Publish To World Public Composition', () => {
             .should('have.attr', 'href')
             .then((href) => {
                 cy.get('.sign-out').click({force: true});
-                cy.visit(href);
+                cy.visit(href, {retryOnStatusCodeFailure: true});
 
                 cy.get('.participants_chosen')
                     .should('contain', 'Instructor One');

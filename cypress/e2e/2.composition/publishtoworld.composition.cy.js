@@ -16,6 +16,7 @@ describe('Publish To World Public Composition', () => {
 
         cy.log('create a project from the home page');
         cy.visit('/course/1/projects');
+        cy.visit('/course/1/projects');
         cy.get('.page-title').contains('Projects');
         cy.get('button').contains('Add a project').should('be.visible');
         cy.get('button').contains('Add a project').click();

@@ -28,7 +28,7 @@ lazy-object-proxy==1.10.0
 wrapt==1.16.0
 unicodecsv==0.14.1
 
-git+https://github.com/roy-ht/editdistance.git@v0.6.2
+editdistance==0.8.1
 
 pylint==3.2.2
 

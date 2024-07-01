@@ -1,6 +1,6 @@
 Django>=4.2.11,<5
 asgiref==3.8.1
-psycopg[binary]==3.1.19
+psycopg[binary]==3.2.1
 #for MySQL: MySQL-python==1.2.5
 statsd==4.0.1
 pep8==1.7.1

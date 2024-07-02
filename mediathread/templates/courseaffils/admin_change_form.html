@@ -83,6 +83,7 @@
         {% endif %}
         </li>
 
+        {% if adminform.form.instance.id %}
         <li>Metadata (instructor, etc.): <a href="{%url 'admin:courseaffils_coursedetails_add' %}?course={{adminform.form.instance.id}}">[Add]</a>
           <ul>
             {% for d in adminform.form.instance.coursedetails_set.all %}
@@ -90,6 +91,8 @@
             {% endfor %}
           </ul>
         </li>
+        {% endif %}
+
       </ul>
       {% submit_row %}
     {% else %}

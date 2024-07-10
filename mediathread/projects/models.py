@@ -339,10 +339,13 @@ class ProjectManager(models.Manager):
         projects = projects.select_related('author')
         return projects.order_by('-modified', 'title')
 
-    def faculty_compositions(self, course, user):
-        qs = Project.objects.filter(
-            course=course,
-            author__in=course.faculty_group.user_set.all())
+    @staticmethod
+    def faculty_compositions(course, user):
+        authors = []
+        if course and course.faculty_group:
+            authors = course.faculty_group.user_set.all()
+
+        qs = Project.objects.filter(course=course, author__in=authors)
         qs = qs.select_related('author')
         qs = qs.filter(project_type=PROJECT_TYPE_COMPOSITION)
 

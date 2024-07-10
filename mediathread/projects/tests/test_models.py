@@ -18,6 +18,13 @@ from mediathread.projects.models import (
     PROJECT_TYPE_SEQUENCE_ASSIGNMENT)
 
 
+class ProjectMinimalTest(TestCase):
+    """Test with minimal db setup"""
+    def test_faculty_compositions(self):
+        compositions = Project.objects.faculty_compositions(None, None)
+        self.assertEqual(len(compositions), 0)
+
+
 class ProjectTest(MediathreadTestMixin, TestCase):
 
     def setUp(self):

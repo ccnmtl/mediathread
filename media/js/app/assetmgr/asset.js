@@ -1269,7 +1269,6 @@
             } else if (template_label === 'asset-annotation-current') {
                 self.$parent.find('#annotation-current').html(rendered);
             } else {
-                // eslint-disable-next-line no-console
                 console.error('Didn\'t attach template for:', template_label);
             }
 

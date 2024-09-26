@@ -501,14 +501,12 @@ CollectionList.prototype.createAssetThumbs = function(assets) {
             asset.y = 0;
             asset.zoom = 1;
 
-            /* eslint-disable no-empty */
             try {
                 view.html.push(objDiv, {asset: asset});
                 view.setState(asset);
             } catch (e) {
                 console.error(e);
             }
-            /* eslint-enable no-empty */
         }
     }
 };
@@ -545,7 +543,6 @@ CollectionList.prototype.createThumbs = function(assets) {
                     if (t.length > 0) {
                         t[0].appendChild(objDiv);
                     } else {
-                        // eslint-disable-next-line no-console
                         console.error('CollectionList error!');
                     }
 

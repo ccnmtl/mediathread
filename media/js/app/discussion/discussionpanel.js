@@ -147,7 +147,7 @@ DiscussionPanelHandler.prototype.set_comment_content = function(content) {
         if (self.tinymce) {
             self.tinymce.setContent(content.comment);
         }
-    } catch (e) {
+    } catch {
         /*
          * IE totally SUX: throws some object error here. probably tinymce's
          * fault

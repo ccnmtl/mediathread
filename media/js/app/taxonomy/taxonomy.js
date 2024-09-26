@@ -590,7 +590,7 @@
                         pL = data[skos_uri][
                             'http:\/\/onomy.org\/onomy-ns#parentLabel']
                             .value.trim();
-                    } catch (e) {
+                    } catch {
                         pL = undefined;
                     }
                 }
@@ -611,7 +611,7 @@
                             var re = 'http:\/\/www.w3.org\/2004' +
                                 '\/02\/skos\/core#broader';
                             parent_uri = data[skos_uri][re].value.trim();
-                        } catch (e) {
+                        } catch {
                             parent_uri = '';
                         }
 

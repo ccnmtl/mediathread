@@ -3,6 +3,7 @@ describe('Sequence Assignment Feat: Student reviews feedback', () => {
     before(() => {
         cy.login('student_one', 'test');
         cy.visit('/course/1/');
+        cy.wait(500);
     });
 
     it('should review feedback', () => {

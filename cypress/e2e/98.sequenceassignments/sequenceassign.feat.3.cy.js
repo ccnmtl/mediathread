@@ -3,6 +3,7 @@ describe('Sequence Assignment Feat: Instructor adds feedback', () => {
     before(() => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/');
+        cy.wait(500);
     });
 
     it('should add and edits feedback', () => {
@@ -14,6 +15,7 @@ describe('Sequence Assignment Feat: Instructor adds feedback', () => {
         cy.contains('Student One').click();
         cy.title().should('contain', 'Test Sequence Assignment | Mediathread');
         cy.contains('Feedback').click();
+        cy.wait(500);
         cy.getIframeBody().find('p').click().type('Example feedback');
         cy.get('.save-feedback').click({force: true});
         cy.get('.alert-success').should('contain', 'Your feedback was saved');

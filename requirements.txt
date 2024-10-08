@@ -115,7 +115,7 @@ django-storages==1.14.3
 
 requests-toolbelt==1.0.0
 pytz==2024.2
-isodate==0.6.0
+isodate==0.7.0
 cached-property==1.5.2
 
 platformdirs==4.3.2  # zeep

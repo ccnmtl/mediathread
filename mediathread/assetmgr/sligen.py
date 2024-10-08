@@ -65,10 +65,10 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
         if jw_url is not None:
             return jw_url
 
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         data = response.json()
         manifest_url = data['playlist'][0]['sources'][0]['file']
-        response = requests.get(manifest_url)
+        response = requests.get(manifest_url, timeout=60)
         lines = response.content.decode('utf-8').split('\n')
         jw_url = lines[2]
         cache.set(url, jw_url, 10800)
@@ -83,7 +83,9 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
         prefix = getattr(settings, 'CCNMTLSTREAM_PREFIX', None)
         t_hex = '%08x' % round(time.time())
         m = hashlib.md5(
-            (secret + filename + t_hex).encode('utf-8')).hexdigest()
+            (secret + filename + t_hex).encode('utf-8'),
+            usedforsecurity=False
+        ).hexdigest()
         return '%s/%s/%s/%s' % (prefix, m, t_hex, filename)
 
     flvstream_prefix = getattr(settings, 'FLVSTREAM_PREFIX', None)
@@ -102,7 +104,8 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
 
         url_slashed[5] = hashlib.sha1(
             '{}{}{}{}'.format(
-                filename, dechex, address, SECRET).encode('utf-8')
+                filename, dechex, address, SECRET).encode('utf-8'),
+            usedforsecurity=False
         ).hexdigest()
         return '%s?pos=${start}' % '/'.join(url_slashed)
 

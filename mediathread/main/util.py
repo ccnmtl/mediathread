@@ -60,6 +60,7 @@ def make_pmt_item(data):
         raise ImproperlyConfigured
 
     try:
-        return requests.post(TASK_ASSIGNMENT_DESTINATION, data=data)
+        return requests.post(
+            TASK_ASSIGNMENT_DESTINATION, data=data, timeout=60)
     except SSLError as e:
         capture_exception(e)

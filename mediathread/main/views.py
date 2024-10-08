@@ -519,7 +519,7 @@ class CourseDeleteMaterialsView(LoggedInSuperuserMixin, FormView):
             'redirect_url': redirect_to,
             'nonce': nonce,
             'hmac': digest
-        })
+        }, timeout=60)
         return response.status_code == 200
 
     def form_valid(self, form):
@@ -610,7 +610,7 @@ class CourseConvertMaterialsView(LoggedInSuperuserMixin, TemplateView):
             'folder': folder,
             'audio': asset.primary.is_audio(),
             'set_course': course.group.name
-        })
+        }, timeout=60)
         return response.status_code == 200
 
     def convert_course_media(self, user, course, url, secret, folder):

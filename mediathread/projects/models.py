@@ -365,12 +365,16 @@ class ProjectManager(models.Manager):
             their own draft assignments.
         """
 
+        users = []
+        if course.faculty_group:
+            users = course.faculty_group.user_set.all()
+
         # Retrieve all assignments authored by course faculty
         qs = Collaboration.objects.filter(
             content_type__model='project',
             project__project_type__in=PROJECT_TYPE_ASSIGNMENTS,
             project__course=course,
-            user__in=course.faculty_group.user_set.all())
+            user__in=users)
 
         # Get all published assignments or those authored by the viewer
         qs = qs.filter(

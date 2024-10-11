@@ -35,7 +35,7 @@ jobs:
         run: npm run eslint
   cypress:
     name: Cypress run
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         firefox: [ 'latest-esr' ]
@@ -53,7 +53,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt install -y libmemcached-dev
-      - uses: browser-actions/setup-firefox@latest
+      - uses: browser-actions/setup-firefox@v1
         with:
           firefox-version: ${{ matrix.firefox }}
       - name: Run Integration Tests

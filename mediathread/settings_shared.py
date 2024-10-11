@@ -53,6 +53,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
                 'stagingcontext.staging_processor',
+                'ctlsettings.context_processors.env',
                 'gacontext.ga_processor',
                 'mediathread.main.views.django_settings',
             ],
@@ -214,6 +215,7 @@ LTI_EXTRA_PARAMETERS = ['custom_course_context']
 if 'test' in sys.argv or \
    'jenkins' in sys.argv or \
    'integrationserver' in sys.argv:
+    ENVIRONMENT = 'testing'
     DEBUG = True
     TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
     PASSWORD_HASHERS = (

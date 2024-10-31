@@ -94,7 +94,8 @@ if (!Sherd.Video.YouTube) {
                     'width="' + obj.options.width + '" ' +
                     'height="' + obj.options.height + '" ' +
                     'allowfullscreen="true" ' +
-                    'allow="autoplay" ' +
+                    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+                    'referrerpolicy="strict-origin-when-cross-origin" ' +
                     'frameborder="0" ' +
                     'id="' + self.playerID + '" />' +
                     '</div>'
@@ -242,7 +243,7 @@ if (!Sherd.Video.YouTube) {
 
                 jQuery(window).trigger('video.create',
                         [self.components.itemId, self.components.primaryType]);
-                
+
                 // get out of the "loaded" function before seeking happens
                 if (self.state.starttime !== undefined) {
                     setTimeout(function () {
@@ -371,7 +372,7 @@ if (!Sherd.Video.YouTube) {
             delete self.state.starttime;
             delete self.state.endtime;
             delete self.state.autoplay;
-            
+
             var state = self.media.state();
 
             // seeking

@@ -16,7 +16,7 @@ STATICFILES_DIRS = ()
 # Configure local developer database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mediathread',
         'HOST': 'localhost',
         'PORT': '5432',

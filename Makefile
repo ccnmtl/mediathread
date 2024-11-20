@@ -12,3 +12,9 @@ include *.mk
 
 integrationserver: $(PY_SENTINAL)
 	$(MANAGE) integrationserver
+
+js-build: $(JS_SENTINAL)
+	rm media/js/bundle.*
+	npm run build
+
+.PHONY: js-build

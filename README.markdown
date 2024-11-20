@@ -14,7 +14,7 @@ FORUM: https://groups.google.com/group/mediathread
 REQUIREMENTS
 ------------
 * Python >=3.8
-* Postgres (or MySQL)
+* Postgres
 * Flowplayer installation for your site (See below for detailed instructions)
 * Flickr API Key if you want to bookmark from FLICKR
 
@@ -29,15 +29,6 @@ INSTALLATION
 2. Build the database
    For Postgres (preferred):
      A. Create the database `createdb mediathread`
-
-   For MySQL: (Note: Mediathread is not well-tested on recent version of MySQL.)
-     A. Edit the file `requirements.txt`
-        - comment out the line `psycopg2`
-        - uncomment the `MySQL-python` line.
-
-     B. Create the database
-
-    echo "CREATE DATABASE mediathread" | mysql -uroot -p mysql
 
 3. Customize settings
     Create a local_settings.py file in the mediathread subdirectory. Override the variables from `settings_shared.py` that you need to customize for your local installation. At a minimum, you will need to customize your `DATABASES` dictionary. An [example local_settings.py](https://github.com/ccnmtl/mediathread/blob/master/mediathread/local_settings.py.example) is available in our repository.

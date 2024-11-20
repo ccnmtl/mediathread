@@ -111,16 +111,24 @@ export default class ViewSelections extends React.Component {
                         )}
 
                         {tags.length > 0 && (
-                            <p className="card-text row">
-                                <span className="text-muted selection-metadatalabel">Tags </span>
-                                <span className="col text-left selection-metadatavalue">{tags}</span>
+                            <p className="row">
+                                <span className="text-muted selection-metadatalabel">
+                                    Tags
+                                </span>
+                                <div className="col text-left selection-metadatavalue">
+                                    {tags}
+                                </div>
                             </p>
                         )}
 
                         {terms.length > 0 && (
-                            <p className="card-text row">
-                                <span className="text-muted text-wrap selection-metadatalabel">Course Vocabulary </span>
-                                <span className="col text-left selection-metadatavalue">{terms}</span>
+                            <p className="row">
+                                <span className="text-muted text-wrap selection-metadatalabel">
+                                    Course Vocabulary
+                                </span>
+                                <div className="col text-left selection-metadatavalue">
+                                    {terms}
+                                </div>
                             </p>
                         )}
 
@@ -214,7 +222,7 @@ export default class ViewSelections extends React.Component {
                 const tags = [];
                 if (s.metadata && s.metadata.tags) {
                     s.metadata.tags.forEach(function(tag, idx) {
-                        const isNotLast = idx < s.metadata.tags.length - 1;
+                        const isNotLast = idx < (s.metadata.tags.length - 1);
                         tags.push(
                             <React.Fragment key={`tagfragment-${reactKey}-${tag.id}`}>
                                 <a href="#">
@@ -229,7 +237,7 @@ export default class ViewSelections extends React.Component {
                 if (s.vocabulary) {
                     s.vocabulary.forEach(function(vocab) {
                         vocab.terms.forEach(function(term, idx) {
-                            const isNotLast = idx < vocab.terms.length - 1;
+                            const isNotLast = idx < (vocab.terms.length - 1);
                             terms.push(
                                 <React.Fragment key={`termfragment-${reactKey}-${term.id}`}>
                                     <a href="#">

@@ -221,13 +221,12 @@ export default class ViewSelections extends React.Component {
 
                 const tags = [];
                 if (s.metadata && s.metadata.tags) {
-                    s.metadata.tags.forEach(function(tag, idx) {
-                        const isNotLast = idx < (s.metadata.tags.length - 1);
+                    s.metadata.tags.forEach(function(tag) {
                         tags.push(
                             <React.Fragment key={`tagfragment-${reactKey}-${tag.id}`}>
                                 <a href="#">
                                     {tag.name}
-                                </a>{isNotLast && ', '}
+                                </a>{', '}
                             </React.Fragment>
                         );
                     });
@@ -236,13 +235,12 @@ export default class ViewSelections extends React.Component {
                 const terms = [];
                 if (s.vocabulary) {
                     s.vocabulary.forEach(function(vocab) {
-                        vocab.terms.forEach(function(term, idx) {
-                            const isNotLast = idx < (vocab.terms.length - 1);
+                        vocab.terms.forEach(function(term) {
                             terms.push(
                                 <React.Fragment key={`termfragment-${reactKey}-${term.id}`}>
                                     <a href="#">
                                         {term.display_name}
-                                    </a>{isNotLast && ', '}
+                                    </a>{', '}
                                 </React.Fragment>
                             );
                         });

@@ -107,7 +107,14 @@ class SherdNoteResource(ModelResource):
         return self._meta.serializer.to_simple(dehydrated, None)
 
     def in_selection_assignment_response(self, note):
-        return note.projectnote_set.exists()
+        noteset_exists = None
+
+        try:
+            noteset_exists = note.projectnote_set.exists()
+        except ValueError:
+            noteset_exists = False
+
+        return noteset_exists
 
     def in_sequence_assignment_response(self, note):
         # For SequenceAssignmentResponses only

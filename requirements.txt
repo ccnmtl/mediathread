@@ -118,7 +118,7 @@ isodate==0.7.2
 cached-property==2.0
 
 platformdirs==4.3.2  # zeep
-attrs==24.2.0  # zeep
+attrs==24.3.0  # zeep
 zeep==4.3.0
 
 stevedore==5.4.0

@@ -20,10 +20,16 @@ class SherdNoteResource(ModelResource):
         list_allowed_methods = []
         detail_allowed_methods = []
 
-    def render_related_terms(self, bundle):
+    def render_related_terms(self, bundle) -> list:
         termResource = TermResource()
         vocabulary = {}
-        for rel in bundle.obj.termrelationship_set.all():
+
+        try:
+            terms = bundle.obj.termrelationship_set.all()
+        except ValueError:
+            return []
+
+        for rel in terms:
             if rel.term.vocabulary.id not in vocabulary:
                 vocabulary[rel.term.vocabulary.id] = {
                     'id': rel.term.vocabulary.id,

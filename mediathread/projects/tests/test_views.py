@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.http.response import Http404
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
@@ -936,6 +937,8 @@ class SequenceAssignmentViewTest(MediathreadTestMixin, TestCase):
         view.request = request
         view.project = self.assignment
 
+        cache.clear()
+
         ctx = view.get_context_data(project_id=response.id)
         self.assertEqual(ctx['assignment'], self.assignment)
         self.assertFalse(ctx['assignment_can_edit'])
@@ -1144,6 +1147,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
             'CourseProtected')
         self.response_one.date_submitted = datetime.now()
         self.response_one.save()
+        cache.clear()
 
         self.assert_visible_notes(self.student_one,
                                   [(self.note_one.id, False, True)])
@@ -1156,6 +1160,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # change assignment policy to never
         self.assignment.response_view_policy = RESPONSE_VIEW_NEVER[0]
         self.assignment.save()
+        cache.clear()
 
         self.assert_visible_notes(self.student_one,
                                   [(self.note_one.id, False, False)])
@@ -1167,6 +1172,8 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # change assignment policy to submitted
         self.assignment.response_view_policy = RESPONSE_VIEW_SUBMITTED[0]
         self.assignment.save()
+        cache.clear()
+
         self.assert_visible_notes(self.student_one,
                                   [(self.note_one.id, False, False)])
         self.assert_visible_notes(self.student_two,
@@ -1180,6 +1187,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
             'CourseProtected')
         self.response_two.date_submitted = datetime.now()
         self.response_two.save()
+        cache.clear()
 
         self.assert_visible_notes(self.student_one,
                                   [(self.note_one.id, False, True),

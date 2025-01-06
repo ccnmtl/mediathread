@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -509,6 +510,30 @@ class Project(models.Model):
             return response.content_object
         return None
 
+    @staticmethod
+    def get_cached_response_visibility(
+            response, course, viewer, child, viewer_response) -> bool:
+        viewer_response_pk = 'none'
+        if viewer_response:
+            viewer_response_pk = viewer_response.pk
+
+        viewer_pk = 'anon'
+        if viewer:
+            viewer_pk = viewer.pk
+
+        cache_key = 'response_can_read_{}_{}_{}_{}_{}'.format(
+            response.pk, course.pk, viewer_pk, child.pk,
+            viewer_response_pk)
+
+        can_read = cache.get(cache_key)
+
+        if can_read is None:
+            can_read = response.can_read(
+                course, viewer, child, viewer_response)
+            cache.set(cache_key, can_read)
+
+        return can_read
+
     def responses(self, course, viewer, author=None):
         visible = []
         collaboration = self.get_collaboration()
@@ -528,9 +553,12 @@ class Project(models.Model):
 
         for child in children:
             response = child.content_object
-            if (response and
-                    response.can_read(course, viewer, child, viewer_response)):
-                visible.append(response)
+            if response:
+                can_read = Project.get_cached_response_visibility(
+                    response, course, viewer, child, viewer_response)
+
+                if can_read:
+                    visible.append(response)
 
         visible.sort(key=lambda p: p.attribution_last_first())
         return visible
@@ -700,7 +728,7 @@ class Project(models.Model):
         return (col.permission_to('edit', course, user))
 
     def can_read(self, course, viewer,
-                 the_collaboration=None, viewer_response=None):
+                 the_collaboration=None, viewer_response=None) -> bool:
         # has the author published his work?
         collaboration = the_collaboration or self.get_collaboration()
         if (collaboration is None) or \

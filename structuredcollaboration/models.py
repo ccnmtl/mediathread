@@ -6,6 +6,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy
 from django.utils.encoding import smart_bytes
 
@@ -120,11 +121,15 @@ class Collaboration(models.Model):
     def get_parent(self):
         return self._parent
 
-    def get_children_for_object(self, obj):
+    def get_children_for_object(self, obj, author=None):
         model_name = obj._meta.model.__name__.lower()
-        return self.children.filter(
-                content_type__model=model_name
-            ).prefetch_related('content_object', 'policy_record', 'user')
+
+        queryset = self.children.filter(content_type__model=model_name)
+        if author and not author.is_anonymous:
+            queryset = queryset.filter(Q(user=author) | Q(group__user=author))
+
+        return queryset.prefetch_related(
+            'content_object', 'policy_record', 'user')
 
     def get_top_ancestor(self):  # i.e. domain
         result = self

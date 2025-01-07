@@ -133,7 +133,8 @@ class Collaboration(models.Model):
         ).prefetch_related(
             'content_object',
             'content_object__author',
-            'content_object__participants')
+            'content_object__participants',
+            'content_object__collaboration')
 
     def get_top_ancestor(self):  # i.e. domain
         result = self

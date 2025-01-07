@@ -128,8 +128,11 @@ class Collaboration(models.Model):
         if author and not author.is_anonymous:
             queryset = queryset.filter(Q(user=author) | Q(group__user=author))
 
-        return queryset.prefetch_related(
-            'content_object', 'policy_record', 'user')
+        return queryset.select_related(
+            'user', 'policy_record'
+        ).prefetch_related(
+            'content_object',
+            'content_object__author')
 
     def get_top_ancestor(self):  # i.e. domain
         result = self

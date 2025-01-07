@@ -541,8 +541,7 @@ class Project(models.Model):
         if not collaboration:
             return visible
 
-        children = collaboration.get_children_for_object(
-            self, author).prefetch_related('content_object__author')
+        children = collaboration.get_children_for_object(self, author)
 
         viewer_response = None
         if viewer and not viewer.is_anonymous:

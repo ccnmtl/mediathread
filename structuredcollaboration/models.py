@@ -129,10 +129,11 @@ class Collaboration(models.Model):
             queryset = queryset.filter(Q(user=author) | Q(group__user=author))
 
         return queryset.select_related(
-            'user', 'policy_record'
+            'user', 'group', 'policy_record'
         ).prefetch_related(
             'content_object',
-            'content_object__author')
+            'content_object__author',
+            'content_object__participants')
 
     def get_top_ancestor(self):  # i.e. domain
         result = self

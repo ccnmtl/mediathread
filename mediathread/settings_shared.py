@@ -212,9 +212,11 @@ LTI_TOOL_CONFIGURATION = {
 
 LTI_EXTRA_PARAMETERS = ['custom_course_context']
 
-if 'test' in sys.argv or \
-   'jenkins' in sys.argv or \
-   'integrationserver' in sys.argv:
+TESTING = ('test' in sys.argv or 'jenkins' in sys.argv or
+           'integrationserver' in sys.argv)
+DEVELOPMENT = 'runserver' in sys.argv
+
+if TESTING:
     ENVIRONMENT = 'testing'
     DEBUG = True
     TEMPLATES[0]['OPTIONS']['debug'] = DEBUG  # noqa
@@ -247,6 +249,16 @@ if 'test' in sys.argv or \
 else:
     SESSION_COOKIE_SAMESITE = 'None'
     DCS_SESSION_COOKIE_SAMESITE = 'None'
+
+if DEVELOPMENT:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        'debug_toolbar',
+    ]
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        *MIDDLEWARE,
+    ]
 
 CSRF_COOKIE_SAMESITE = 'None'
 

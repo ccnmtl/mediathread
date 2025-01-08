@@ -1,6 +1,7 @@
 import os.path
 
 import courseaffils
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.views import (
     PasswordChangeView, PasswordChangeDoneView,
@@ -45,6 +46,7 @@ from mediathread.projects.views import (
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 
 tastypie_api = Api('')
@@ -285,3 +287,8 @@ urlpatterns = [
     path('s/<slug:context_slug>/<slug:obj_type>/<int:obj_id>/',
          ProjectPublicView.as_view(), name='collaboration-obj-view'),
 ]
+
+if settings.DEVELOPMENT:
+    urlpatterns = [
+        *urlpatterns,
+    ] + debug_toolbar_urls()

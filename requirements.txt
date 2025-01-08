@@ -16,7 +16,7 @@ fixtures==4.2.2
 pbr>=0.11
 
 six==1.17.0
-sqlparse==0.5.0  # django-debug-toolbar
+sqlparse==0.5.3  # django-debug-toolbar
 django-debug-toolbar==4.4.6
 python-mimeparse==2.0.0  # tastypie
 python-dateutil==2.9.0  # tastypie

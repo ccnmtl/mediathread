@@ -14,7 +14,9 @@ from django.utils.encoding import smart_str
 from tagging.models import Tag
 
 from mediathread.assetmgr.custom_storage import private_storage
-from mediathread.assetmgr.utils import get_signed_s3_url
+from mediathread.assetmgr.utils import (
+    get_signed_s3_url, get_s3_private_bucket_name
+)
 
 
 METADATA_ORIGINAL_OWNER = 'Original Owner'
@@ -397,10 +399,7 @@ class Source(models.Model):
         return self.label == 'mp4_panopto'
 
     def signed_url(self):
-        s3_private_bucket = getattr(
-            settings,
-            'S3_PRIVATE_STORAGE_BUCKET_NAME',
-            'mediathread-private-uploads')
+        s3_private_bucket = get_s3_private_bucket_name()
         if s3_private_bucket in self.url:
             return get_signed_s3_url(
                 self.url, s3_private_bucket,
@@ -413,10 +412,7 @@ class Source(models.Model):
         return self.url
 
     def url_processed(self, request):
-        s3_private_bucket = getattr(
-            settings,
-            'S3_PRIVATE_STORAGE_BUCKET_NAME',
-            'mediathread-private-uploads')
+        s3_private_bucket = get_s3_private_bucket_name()
         if s3_private_bucket in self.url:
             return get_signed_s3_url(
                 self.url, s3_private_bucket,

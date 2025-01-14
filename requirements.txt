@@ -17,7 +17,7 @@ pbr>=0.11
 
 six==1.17.0
 sqlparse==0.5.3  # django-debug-toolbar
-django-debug-toolbar==4.4.6
+django-debug-toolbar==5.0.1
 python-mimeparse==2.0.0  # tastypie
 python-dateutil==2.9.0  # tastypie
 defusedxml==0.7.1  # tastypie

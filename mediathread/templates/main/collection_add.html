@@ -76,9 +76,10 @@
                                 <p class="card-text">
                                     Mediathread supports image files
                                     that end in .bmp, .gif, .jpg,
-                                    .jpeg, .png, .svg, .webp, .heic,
-                                    and also PDF files.  Submitted
-                                    files must be less than 50MB.
+                                    .jpeg, .png, .svg, .webp,
+                                    .heic/.heif, .avif, and also PDF
+                                    files.  Submitted files must be
+                                    less than 50MB.
                                 </p>
                                <div class="card-text">
                                    {% csrf_token %}
@@ -113,7 +114,7 @@
                                                        class="custom-file-input"
                                                        id="mediaUploadFilename"
                                                        aria-describedby="inputGroupFileAddon02"
-                                                       accept="image/bmp,image/gif,image/jpeg,image/png,image/svg,image/svg+xml,image/webp,image/heic,application/pdf" />
+                                                       accept="image/bmp,image/gif,image/jpeg,image/png,image/svg,image/svg+xml,image/webp,image/heic,image/heif,image/avif,application/pdf" />
                                                    <input type="hidden" name="url" id="uploaded-url" />
                                                    <label class="custom-file-label" for="mediaUploadFilename">
                                                        Choose file

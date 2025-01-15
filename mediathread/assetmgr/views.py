@@ -37,6 +37,10 @@ from mediathread.assetmgr.models import (
     Asset, Source, ExternalCollection,
     SuggestedExternalCollection
 )
+from mediathread.assetmgr.utils import (
+    s3_sign_view_settings,
+    get_signed_s3_url, get_s3_private_bucket_name, convert_heic_to_jpg
+)
 from mediathread.djangosherd.api import DiscussionIndexResource
 from mediathread.djangosherd.models import SherdNote, DiscussionIndex
 from mediathread.djangosherd.views import create_annotation, edit_annotation, \
@@ -374,6 +378,22 @@ class AssetCreateView(LoggedInCourseMixin, View):
         elif request.POST.get('width') and request.POST.get('height'):
             width = request.POST.get('width')
             height = request.POST.get('height')
+
+        if url.endswith('.heic') or url.endswith('.heif'):
+            # Convert to JPG
+            s3_private_bucket = get_s3_private_bucket_name()
+            signed_url = get_signed_s3_url(
+                url, s3_private_bucket,
+                settings.AWS_ACCESS_KEY,
+                settings.AWS_SECRET_KEY)
+
+            # Pass in the signed url because we need to download it.
+            jpg_data = convert_heic_to_jpg(
+                signed_url, request, s3_private_bucket,
+                settings.AWS_ACCESS_KEY, settings.AWS_SECRET_KEY)
+            url = jpg_data.get('url')
+            width = jpg_data.get('width')
+            height = jpg_data.get('height')
 
         # If the form passed in a valid label, use it.
         lbl = request.POST.get('label')
@@ -1395,14 +1415,11 @@ class PDFViewerDetailView(LoggedInCourseMixin, DetailView):
 
 
 class S3SignView(SignS3View):
-    private = True
-    root = 'private/'
-    acl = None
-    expiration_time = 3600 * 8  # 8 hours
-    max_file_size = 50000000  # 50mb
+    private = s3_sign_view_settings.get('private', True)
+    root = s3_sign_view_settings.get('root', 'private/')
+    acl = s3_sign_view_settings.get('acl', None)
+    expiration_time = s3_sign_view_settings.get('expiration_time', 3600 * 8)
+    max_file_size = s3_sign_view_settings.get('max_file_size', 50000000)
 
     def get_bucket(self):
-        return getattr(
-            settings,
-            'S3_PRIVATE_STORAGE_BUCKET_NAME',
-            'mediathread-private-uploads')
+        return get_s3_private_bucket_name()

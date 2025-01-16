@@ -67,6 +67,7 @@ MIDDLEWARE += [  # noqa
     'corsheaders.middleware.CorsMiddleware',
     'mediathread.main.middleware.MethCourseManagerMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
+    'lti_tool.middleware.LtiLaunchMiddleware',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
@@ -95,6 +96,7 @@ INSTALLED_APPS += [  # noqa
     'corsheaders',
     'reversion',
     'lti_auth',
+    'lti_tool',
     'bootstrap3',
     'bootstrap4',
     'django_extensions',

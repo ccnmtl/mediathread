@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.http import JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -10,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import View, TemplateView
+from urllib.parse import urljoin
+
 from lti_auth.lti import LTI
 from lti_auth.models import LTICourseContext
 
@@ -124,6 +127,90 @@ class LTIConfigView(TemplateView):
             'embed_tool_id': settings.LTI_TOOL_CONFIGURATION['embed_tool_id'],
         }
         return ctx
+
+
+class LTI1p3JSONConfigView(View):
+    """
+    JSON configuration endpoint for LTI 1.3.
+
+    In Canvas LMS, an LTI Developer Key can be created via Manual
+    Entry, or by URL. This view provides the JSON necessary for URL
+    configuration in Canvas.
+
+    https://canvas.instructure.com/doc/api/file.lti_dev_key_config.html
+    """
+    def get(self, request, *args, **kwargs):
+        domain = request.get_host()
+        title = settings.LTI_TOOL_CONFIGURATION['title']
+        icon_url = urljoin(settings.STATIC_URL,
+                           settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
+
+        json_obj = {
+            'title': title,
+            'description': settings.LTI_TOOL_CONFIGURATION['description'],
+            'oidc_initiation_url': 'https://{}.oidc_initiation_url'.format(
+                domain),
+            'target_link_uri': 'https://{}.target_link_uri'.format(domain),
+            'scopes': [
+                'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
+                'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly'
+            ],
+            'extensions': [
+                {
+                    'domain': domain,
+                    'tool_id': 'mediathread',
+                    'platform': 'canvas.instructure.com',
+                    'privacy_level': 'public',
+                    'settings': {
+                        'text': 'Launch ' + title,
+                        'labels': {
+                            'en': 'Launch ' + title,
+                        },
+                        'icon_url': icon_url,
+                        'selection_height': 800,
+                        'selection_width': 800,
+                        'placements': [
+                            {
+                                'text': 'User Navigation Placement',
+                                'icon_url': icon_url,
+                                'placement': 'user_navigation',
+                                'message_type': 'LtiResourceLinkRequest',
+                                'target_link_uri': None,
+                                'canvas_icon_class': 'icon-lti',
+                                'custom_fields': {
+                                    'foo': '$Canvas.user.id'
+                                }
+                            },
+                            {
+                                'text': 'Editor Button Placement',
+                                'icon_url': icon_url,
+                                'placement': 'editor_button',
+                                'message_type': 'LtiDeepLinkingRequest',
+                                'target_link_uri': None,
+                                'selection_height': 500,
+                                'selection_width': 500
+                            },
+                            {
+                                'text': 'Course Navigation Placement',
+                                'icon_url': icon_url,
+                                'placement': 'course_navigation',
+                                'message_type': 'LtiResourceLinkRequest',
+                                'target_link_uri': None,
+                                'required_permissions': 'manage_calendar',
+                                'selection_height': 500,
+                                'selection_width': 500
+                            }
+                        ]
+                    }
+                }
+            ],
+            'public_jwk_url': urljoin(
+                'https://{}'.format(domain), reverse('jwks')),
+            'custom_fields': {
+                'bar': '$Canvas.user.sisid'
+            }
+        }
+        return JsonResponse(json_obj)
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')

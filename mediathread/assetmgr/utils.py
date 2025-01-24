@@ -63,7 +63,7 @@ def convert_heic_to_jpg(
     * Upload jpeg to S3
     * Return new url
     """
-    response = requests.get(url, stream=True)
+    response = requests.get(url, stream=True, timeout=60)
 
     # Sort out the new filename
     parsed_url = urlparse(url)

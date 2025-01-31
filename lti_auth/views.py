@@ -16,6 +16,9 @@ from urllib.parse import urljoin
 from lti_auth.lti import LTI
 from lti_auth.models import LTICourseContext
 
+# django-lti (LTI 1.3)
+from lti_tool.views import LtiLaunchBaseView
+
 
 class LTIAuthMixin(object):
     role_type = 'any'
@@ -142,15 +145,17 @@ class LTI1p3JSONConfigView(View):
     def get(self, request, *args, **kwargs):
         domain = request.get_host()
         title = settings.LTI_TOOL_CONFIGURATION['title']
-        icon_url = urljoin(settings.STATIC_URL,
-                           settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
+        icon_url = urljoin(
+            settings.STATIC_URL,
+            settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
+        target_link_uri = urljoin(
+            'https://{}'.format(domain), reverse('lti-launch'))
 
         json_obj = {
             'title': title,
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
-            'oidc_initiation_url': 'https://{}.oidc_initiation_url'.format(
-                domain),
-            'target_link_uri': 'https://{}.target_link_uri'.format(domain),
+            'oidc_initiation_url': 'https://{}/lti/init/'.format(domain),
+            'target_link_uri': target_link_uri,
             'scopes': [
                 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
                 'https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly'
@@ -175,7 +180,7 @@ class LTI1p3JSONConfigView(View):
                                 'icon_url': icon_url,
                                 'placement': 'user_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
-                                'target_link_uri': None,
+                                'target_link_uri': target_link_uri,
                                 'canvas_icon_class': 'icon-lti',
                                 'custom_fields': {
                                     'foo': '$Canvas.user.id'
@@ -186,7 +191,7 @@ class LTI1p3JSONConfigView(View):
                                 'icon_url': icon_url,
                                 'placement': 'editor_button',
                                 'message_type': 'LtiDeepLinkingRequest',
-                                'target_link_uri': None,
+                                'target_link_uri': target_link_uri,
                                 'selection_height': 500,
                                 'selection_width': 500
                             },
@@ -195,7 +200,7 @@ class LTI1p3JSONConfigView(View):
                                 'icon_url': icon_url,
                                 'placement': 'course_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
-                                'target_link_uri': None,
+                                'target_link_uri': target_link_uri,
                                 'required_permissions': 'manage_calendar',
                                 'selection_height': 500,
                                 'selection_width': 500
@@ -211,6 +216,18 @@ class LTI1p3JSONConfigView(View):
             }
         }
         return JsonResponse(json_obj)
+
+
+class LTI1p3LaunchView(LtiLaunchBaseView):
+    """
+    https://github.com/academic-innovation/django-lti/blob/main/README.md#handling-an-lti-launch
+    """
+    def handle_resource_launch(self, request, lti_launch):
+        # Required. Typically redirects the users to the appropriate page.
+        domain = request.get_host()
+        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
+            'https', domain, '')
+        return HttpResponseRedirect(url)
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')

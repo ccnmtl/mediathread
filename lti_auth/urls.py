@@ -2,7 +2,9 @@ from django.urls import path
 
 from lti_auth.views import (
     LTIConfigView, LTILandingPage, LTIRoutingView,
-    LTICourseEnableView, LTI1p3JSONConfigView
+    LTICourseEnableView,
+
+    LTI1p3JSONConfigView, LTI1p3LaunchView
 )
 from lti_tool.views import jwks, OIDCLoginInitView
 
@@ -16,6 +18,7 @@ urlpatterns = [
     path('', LTIRoutingView.as_view(), {}, 'lti-login'),
 
     # django-lti
+    path('launch/', LTI1p3LaunchView.as_view(), name='lti-launch'),
     path('.well-known/jwks.json', jwks, name='jwks'),
     path('init/<uuid:registration_uuid>/',
          OIDCLoginInitView.as_view(), name='oidc_init'),

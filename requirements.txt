@@ -89,7 +89,7 @@ django-lti==0.7.1
 nameparser==1.1.0
 django-bootstrap3==24.3
 django-bootstrap4==24.4
-beautifulsoup4==4.12.0
+beautifulsoup4==4.13.0
 ua-parser-builtins==0.18.0.post1
 ua_parser==1.0.0
 user_agents==2.2.0

@@ -4,9 +4,9 @@ from lti_auth.views import (
     LTIConfigView, LTILandingPage, LTIRoutingView,
     LTICourseEnableView,
 
-    LTI1p3JSONConfigView, LTI1p3LaunchView
+    LTI1p3JSONConfigView, LTI1p3LaunchView, MyOIDCLoginInitView
 )
-from lti_tool.views import jwks, OIDCLoginInitView
+from lti_tool.views import jwks
 
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
     path('launch/', LTI1p3LaunchView.as_view(), name='lti-launch'),
     path('.well-known/jwks.json', jwks, name='jwks'),
     path('init/<uuid:registration_uuid>/',
-         OIDCLoginInitView.as_view(), name='oidc_init'),
+         MyOIDCLoginInitView.as_view(), name='oidc_init'),
 ]

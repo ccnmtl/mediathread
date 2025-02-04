@@ -17,7 +17,7 @@ from lti_auth.lti import LTI
 from lti_auth.models import LTICourseContext
 
 # django-lti (LTI 1.3)
-from lti_tool.views import LtiLaunchBaseView
+from lti_tool.views import LtiLaunchBaseView, OIDCLoginInitView
 
 
 class LTIAuthMixin(object):
@@ -150,11 +150,13 @@ class LTI1p3JSONConfigView(View):
             settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
         target_link_uri = urljoin(
             'https://{}'.format(domain), reverse('lti-launch'))
+        uuid = 'abc'
 
         json_obj = {
             'title': title,
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
-            'oidc_initiation_url': 'https://{}/lti/init/'.format(domain),
+            'oidc_initiation_url': 'https://{}/lti/init/{}/'.format(
+                domain, uuid),
             'target_link_uri': target_link_uri,
             'scopes': [
                 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
@@ -164,7 +166,7 @@ class LTI1p3JSONConfigView(View):
                 {
                     'domain': domain,
                     'tool_id': 'mediathread',
-                    'platform': 'canvas.instructure.com',
+                    'platform': 'canvas.ctl.columbia.edu',
                     'privacy_level': 'public',
                     'settings': {
                         'text': 'Launch ' + title,
@@ -176,7 +178,8 @@ class LTI1p3JSONConfigView(View):
                         'selection_width': 800,
                         'placements': [
                             {
-                                'text': 'User Navigation Placement',
+                                'text':
+                                'Mediathread: User Navigation Placement',
                                 'icon_url': icon_url,
                                 'placement': 'user_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
@@ -187,7 +190,7 @@ class LTI1p3JSONConfigView(View):
                                 }
                             },
                             {
-                                'text': 'Editor Button Placement',
+                                'text': 'Mediathread: Editor Button Placement',
                                 'icon_url': icon_url,
                                 'placement': 'editor_button',
                                 'message_type': 'LtiDeepLinkingRequest',
@@ -196,7 +199,8 @@ class LTI1p3JSONConfigView(View):
                                 'selection_width': 500
                             },
                             {
-                                'text': 'Course Navigation Placement',
+                                'text':
+                                'Mediathread: Course Navigation Placement',
                                 'icon_url': icon_url,
                                 'placement': 'course_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
@@ -218,6 +222,12 @@ class LTI1p3JSONConfigView(View):
         return JsonResponse(json_obj)
 
 
+@method_decorator(xframe_options_exempt, name='dispatch')
+class MyOIDCLoginInitView(OIDCLoginInitView):
+    pass
+
+
+@method_decorator(xframe_options_exempt, name='dispatch')
 class LTI1p3LaunchView(LtiLaunchBaseView):
     """
     https://github.com/academic-innovation/django-lti/blob/main/README.md#handling-an-lti-launch

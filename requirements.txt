@@ -131,7 +131,7 @@ pyyaml==6.0.2
 rich==13.9.4  # bandit
 bandit==1.8.2
 funcsigs==1.0.2
-pypanopto==0.2.1
+pypanopto==0.3.0
 entrypoints==0.4
 
 billiard==4.2.1

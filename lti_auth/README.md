@@ -47,3 +47,19 @@ Then, in Canvas, navigate to Admin -> CTL -> Developer Keys.
 4. Fill in the Key Name as Mediathread, as well as an admin email for
    Owner Email.
 5. Click Save
+
+Once the LTI Registration and the Developer Key are in place, you can
+add this LTI App to a course.
+
+1. Navigate to a course in Canvas, and go to Settings.
+2. Click the Apps tab, and click the "+ App" button to add a new app.
+3. Under Configuration Type, select "By Client ID".
+4. For the Client ID, input the ID of the Developer Key you created, which
+   should look something like "10000000000018".
+5. Click Submit.
+
+The Mediathread LTI app should now be installed in this course. You can
+click on the gear icon, then Placements to see app placements. The
+"Course Navigation" placement should be active, and this is adds a
+"Mediathread" menu item in the course sidebar. Click on Mediathread
+in the sidebar to load Mediathread's LTI Landing page from within Canvas.

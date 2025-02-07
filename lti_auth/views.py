@@ -151,10 +151,6 @@ class LTI1p3JSONConfigView(View):
         target_link_uri = urljoin(
             'https://{}'.format(domain), reverse('lti-launch'))
 
-        landing_page_uri = urljoin(
-            'https://{}'.format(domain), reverse(
-                'lti-landing-page', kwargs={'context': 'abc'}))
-
         uuid = kwargs.get('registration_uuid')
         oidc_init_uri = urljoin(
             'https://{}'.format(domain),
@@ -185,12 +181,11 @@ class LTI1p3JSONConfigView(View):
                         'selection_width': 800,
                         'placements': [
                             {
-                                'text': 'Mediathread: '
-                                'Course Navigation Placement',
+                                'text': 'Mediathread',
                                 'icon_url': icon_url,
                                 'placement': 'course_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
-                                'target_link_uri': landing_page_uri,
+                                'target_link_uri': target_link_uri,
                                 'required_permissions': 'manage_calendar',
                                 'selection_height': 500,
                                 'selection_width': 500
@@ -211,10 +206,22 @@ class MyOIDCLoginInitView(OIDCLoginInitView):
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')
-class LTI1p3LaunchView(LtiLaunchBaseView):
+class LTI1p3LaunchView(LtiLaunchBaseView, TemplateView):
     """
     https://github.com/academic-innovation/django-lti/blob/main/README.md#handling-an-lti-launch
     """
+    template_name = 'lti_auth/landing_page.html'
+
+    def get_context_data(self, **kwargs):
+        domain = self.request.get_host()
+        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
+            self.request.scheme, domain, kwargs.get('context'))
+
+        return {
+            'landing_url': url,
+            'title': settings.LTI_TOOL_CONFIGURATION['title']
+        }
+
     def handle_resource_launch(self, request, lti_launch):
         print('handle_resource_launch', lti_launch)
         # Required. Typically redirects the users to the appropriate page.

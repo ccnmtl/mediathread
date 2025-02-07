@@ -29,13 +29,13 @@ Registration in Mediathread's admin page:
 * `https://<mediathread hostname>/admin/lti_tool/ltiregistration/`
 
 1. Click "Add LTI Registration"
-2. Name: Canvas hostname, e.g. `canvas.ctl.columbia.edu`
+2. Name: Canvas instance hostname, e.g. `canvas.ctl.columbia.edu`
 3. UUID: This is filled in automatically
 4. Issuer: `https://canvas.instructure.com`
 5. Client ID: Set to 1 for now, this will be updated later
-6. Auth URL: `https://<mediathread hostname>/admin/lti_tool/ltiregistration/`
-7. Access token URL: `https://<mediathread hostname>/login/oauth2/auth`
-8. Keyset URL: `https://<mediathread hostname>/api/lti/security/jwks`
+6. Auth URL: `https://<canvas instance hostname>/admin/lti_tool/ltiregistration/`
+7. Access token URL: `https://<canvas instance hostname>/login/oauth2/auth`
+8. Keyset URL: `https://<canvas instance hostname>/api/lti/security/jwks`
 
 Then, in Canvas, navigate to Admin -> CTL -> Developer Keys.
 

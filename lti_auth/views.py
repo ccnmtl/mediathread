@@ -150,13 +150,20 @@ class LTI1p3JSONConfigView(View):
             settings.LTI_TOOL_CONFIGURATION['embed_icon_url'])
         target_link_uri = urljoin(
             'https://{}'.format(domain), reverse('lti-launch'))
-        uuid = 'abc'
+
+        landing_page_uri = urljoin(
+            'https://{}'.format(domain), reverse(
+                'lti-landing-page', kwargs={'context': 'abc'}))
+
+        uuid = kwargs.get('registration_uuid')
+        oidc_init_uri = urljoin(
+            'https://{}'.format(domain),
+            reverse('oidc_init', kwargs={'registration_uuid': uuid}))
 
         json_obj = {
             'title': title,
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
-            'oidc_initiation_url': 'https://{}/lti/init/{}/'.format(
-                domain, uuid),
+            'oidc_initiation_url': oidc_init_uri,
             'target_link_uri': target_link_uri,
             'scopes': [
                 'https://purl.imsglobal.org/spec/lti-ags/scope/lineitem',
@@ -178,33 +185,12 @@ class LTI1p3JSONConfigView(View):
                         'selection_width': 800,
                         'placements': [
                             {
-                                'text':
-                                'Mediathread: User Navigation Placement',
-                                'icon_url': icon_url,
-                                'placement': 'user_navigation',
-                                'message_type': 'LtiResourceLinkRequest',
-                                'target_link_uri': target_link_uri,
-                                'canvas_icon_class': 'icon-lti',
-                                'custom_fields': {
-                                    'foo': '$Canvas.user.id'
-                                }
-                            },
-                            {
-                                'text': 'Mediathread: Editor Button Placement',
-                                'icon_url': icon_url,
-                                'placement': 'editor_button',
-                                'message_type': 'LtiDeepLinkingRequest',
-                                'target_link_uri': target_link_uri,
-                                'selection_height': 500,
-                                'selection_width': 500
-                            },
-                            {
-                                'text':
-                                'Mediathread: Course Navigation Placement',
+                                'text': 'Mediathread: '
+                                'Course Navigation Placement',
                                 'icon_url': icon_url,
                                 'placement': 'course_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
-                                'target_link_uri': target_link_uri,
+                                'target_link_uri': landing_page_uri,
                                 'required_permissions': 'manage_calendar',
                                 'selection_height': 500,
                                 'selection_width': 500
@@ -214,10 +200,7 @@ class LTI1p3JSONConfigView(View):
                 }
             ],
             'public_jwk_url': urljoin(
-                'https://{}'.format(domain), reverse('jwks')),
-            'custom_fields': {
-                'bar': '$Canvas.user.sisid'
-            }
+                'https://{}'.format(domain), reverse('jwks'))
         }
         return JsonResponse(json_obj)
 
@@ -233,6 +216,7 @@ class LTI1p3LaunchView(LtiLaunchBaseView):
     https://github.com/academic-innovation/django-lti/blob/main/README.md#handling-an-lti-launch
     """
     def handle_resource_launch(self, request, lti_launch):
+        print('handle_resource_launch', lti_launch)
         # Required. Typically redirects the users to the appropriate page.
         domain = request.get_host()
         url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(

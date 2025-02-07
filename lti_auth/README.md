@@ -22,15 +22,28 @@ protocol (keep in mind LTI 2 is also deprecated, and is actually older
 than LTI 1.3). The most reliable method I've found here is to use "By
 Client ID".
 
-In order to add an LTI app by client ID, you must first create a
-Developer Key for this app. In Canvas, navigate to Admin -> CTL ->
-Developer Keys.
+## Mediathread / Canvas integration (LTI 1.3)
+
+To integrate Mediathread with Canvas, first we create an LTI
+Registration in Mediathread's admin page:
+* `https://<mediathread hostname>/admin/lti_tool/ltiregistration/`
+
+1. Click "Add LTI Registration"
+2. Name: Canvas hostname, e.g. `canvas.ctl.columbia.edu`
+3. UUID: This is filled in automatically
+4. Issuer: `https://canvas.instructure.com`
+5. Client ID: Set to 1 for now, this will be updated later
+6. Auth URL: `https://<mediathread hostname>/admin/lti_tool/ltiregistration/`
+7. Access token URL: `https://<mediathread hostname>/login/oauth2/auth`
+8. Keyset URL: `https://<mediathread hostname>/api/lti/security/jwks`
+
+Then, in Canvas, navigate to Admin -> CTL -> Developer Keys.
 
 1. Click the blue "+ Developer Key" button and select "LTI Key". ("API
    Key" here refers to Canvas's custom API which we don't have special
    integration for, so we definitely want to choose "LTI Key" here.)
 2. Select Method -> Enter URL
-3. Enter the URL: `https://<your mediathread hostname>/lti/config.json`
+3. Enter the URL: `https://<your mediathread hostname>/lti/<registration uuid>/config.json`
 4. Fill in the Key Name as Mediathread, as well as an admin email for
    Owner Email.
 5. Click Save

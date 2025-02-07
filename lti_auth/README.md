@@ -33,7 +33,7 @@ Registration in Mediathread's admin page:
 3. UUID: This is filled in automatically
 4. Issuer: `https://canvas.instructure.com`
 5. Client ID: Set to 1 for now, this will be updated later
-6. Auth URL: `https://<canvas instance hostname>/admin/lti_tool/ltiregistration/`
+6. Auth URL: `https://<canvas instance hostname>/api/lti/authorize_redirect`
 7. Access token URL: `https://<canvas instance hostname>/login/oauth2/auth`
 8. Keyset URL: `https://<canvas instance hostname>/api/lti/security/jwks`
 

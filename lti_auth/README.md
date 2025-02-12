@@ -48,6 +48,10 @@ Then, in Canvas, navigate to Admin -> CTL -> Developer Keys.
    Owner Email.
 5. Under Redirect URIs, add: `https://<your mediathread hostname>/lti/launch/`
 6. Click Save
+7. Under "Details", you will see an ID like "10000000000018". This is the "Client ID".
+   Go back to the LTI Registration in Mediathread and update the Client ID with this
+   value. Without doing this, the LTI launch will raise:
+   `OIDCException: Could not find registration details`
 
 Once the LTI Registration and the Developer Key are in place, you can
 add this LTI App to a course.

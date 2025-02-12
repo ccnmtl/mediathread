@@ -46,7 +46,8 @@ Then, in Canvas, navigate to Admin -> CTL -> Developer Keys.
 3. Enter the URL: `https://<your mediathread hostname>/lti/<registration uuid>/config.json`
 4. Fill in the Key Name as Mediathread, as well as an admin email for
    Owner Email.
-5. Click Save
+5. Under Redirect URIs, add: `https://<your mediathread hostname>/lti/launch/`
+6. Click Save
 
 Once the LTI Registration and the Developer Key are in place, you can
 add this LTI App to a course.

@@ -31,7 +31,7 @@ Registration in Mediathread's admin page:
 1. Click "Add LTI Registration"
 2. Name: Canvas instance hostname, e.g. `canvas.ctl.columbia.edu`
 3. UUID: This is filled in automatically
-4. Issuer: `https://canvas.instructure.com`
+4. Issuer: `https://<canvas instance hostname>`
 5. Client ID: Set to 1 for now, this will be updated later
 6. Auth URL: `https://<canvas instance hostname>/api/lti/authorize_redirect`
 7. Access token URL: `https://<canvas instance hostname>/login/oauth2/auth`

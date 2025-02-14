@@ -223,12 +223,7 @@ class LTI1p3LaunchView(LtiLaunchBaseView, TemplateView):
         }
 
     def handle_resource_launch(self, request, lti_launch):
-        print('handle_resource_launch', lti_launch)
-        # Required. Typically redirects the users to the appropriate page.
-        domain = request.get_host()
-        url = settings.LTI_TOOL_CONFIGURATION['landing_url'].format(
-            'https', domain, '')
-        return HttpResponseRedirect(url)
+        return self.get(request)
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')

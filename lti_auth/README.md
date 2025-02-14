@@ -21,6 +21,12 @@ protocol (keep in mind LTI 2 is also deprecated, and is actually older
 than LTI 1.3). The most reliable method I've found here is to use "By
 Client ID".
 
+For more context on all this, I have found
+[Canvas's LTI documentation](https://canvas.instructure.com/doc/api/file.tools_intro.html)
+to be pretty straightforward and understandable as an intro to how a lot
+of this works, in comparison to the
+[LTI 1.3 standard](https://www.imsglobal.org/spec/lti/v1p3/) itself.
+
 ## Mediathread / Canvas integration (LTI 1.3)
 
 To integrate Mediathread with Canvas, first we create an LTI

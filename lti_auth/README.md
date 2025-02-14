@@ -85,3 +85,23 @@ Now, there is still one more thing to do: the LTI Deployment must be made
    simply select the "Is Active" checkbox, and Save.
 
 Now, *finally*, the tool should successfully launch within Canvas.
+
+## Notes about LTI libraries
+
+Python support for LTI 1.3 is not in the most cohesive state right now, as
+different people have contributed their efforts at different times and in
+different places. That said, it has been possible to get things working
+building off what open source libraries have been built.
+
+[pylti1.3](https://github.com/dmitry-viskov/pylti1.3) is a good base to build
+off of. And although it is not actively maintained, it is entirely possible to
+override anything we need to, when necessary.
+
+A lot of the functionality in pylti1.3 is pretty low-level though, and a lot
+of the LTI transactions and setup can be pre-configured when working with
+Django. Fortunately a lot of this work has been done by the
+[django-lti](https://github.com/academic-innovation/django-lti) library, which
+builds off of pylti1.3. There is some overlap in functionality here, as pylti1.3
+also contains some Django-specific code. But the django-lti library fills in the
+gaps, and is under active development and open to suggestions that we might find
+helpful as we work deeper with LTI 1.3 integration.

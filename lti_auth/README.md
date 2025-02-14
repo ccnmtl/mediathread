@@ -67,3 +67,21 @@ click on the gear icon, then Placements to see app placements. The
 "Course Navigation" placement should be active, and this is adds a
 "Mediathread" menu item in the course sidebar. Click on Mediathread
 in the sidebar to load Mediathread's LTI Landing page from within Canvas.
+Sometimes the Placements aren't automatically configured on the first try.
+If you don't see the Mediathread menu item on the left, go back to the
+Developer Key and see how things are configured, and save this again
+if necessary. This should be smoothed over once we migrate to the new
+"LTI Dynamic Registration", which Canvas only recently added support for.
+See: https://github.com/academic-innovation/django-lti/pull/135#issuecomment-2644062255
+
+Now, there is still one more thing to do: the LTI Deployment must be made
+"active". To do this:
+
+1. Select the Mediathread menu item in the course. You should receive the
+   error message "This deployment is not active". This is an expected error
+   message that comes from django-lti.
+2. Navigate to your LTI Registration management admin screen in Mediathread,
+   and look under LTI Deployments. You should see one populated now, and
+   simply select the "Is Active" checkbox, and Save.
+
+Now, *finally*, the tool should successfully launch within Canvas.

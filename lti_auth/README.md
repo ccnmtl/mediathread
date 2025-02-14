@@ -9,9 +9,8 @@ code. There are two main things going on here:
   [django-lti](https://github.com/academic-innovation/django-lti)/[pylti1p3](https://github.com/dmitry-viskov/pylti1.3)
   libraries.
 
-Because LTI 1.1 is now deprecated, though still functional, we have
-been doing a focused effort to get the new LTI 1.3 configuration
-working.
+Because LTI 1.1 is now deprecated, we have been working to get the new
+LTI 1.3 configuration working.
 
 Canvas allows LTI integration in a few different ways. Within a
 course, you can select Settings, and then the Apps tab. From here, you

@@ -21,7 +21,7 @@ django-debug-toolbar==5.0.1
 python-mimeparse==2.0.0  # tastypie
 python-dateutil==2.9.0  # tastypie
 defusedxml==0.7.1  # tastypie
-django-tastypie==0.15.0
+django-tastypie==0.15.1
 coverage==7.6.0
 logilab-common==2.0.0
 lazy-object-proxy==1.10.0

@@ -22,7 +22,7 @@ python-mimeparse==2.0.0  # tastypie
 python-dateutil==2.9.0  # tastypie
 defusedxml==0.7.1  # tastypie
 django-tastypie==0.15.0
-coverage==7.6.0
+coverage==7.6.12
 logilab-common==2.0.0
 lazy-object-proxy==1.10.0
 wrapt==1.17.0

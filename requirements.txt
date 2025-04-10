@@ -145,7 +145,7 @@ click-didyoumean>=0.0.3
 click-repl>=0.2.0
 click-plugins>=1.1.1
 wcwidth==0.2.5
-django-celery-results<2.6.0
+django-celery-results<2.7.0
 
 Pillow==11.1.0
 pi-heif==0.22.0

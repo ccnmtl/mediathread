@@ -23,6 +23,8 @@ class UserProfileInline(admin.StackedInline):
 
 
 class UserProfileAdmin(UserAdmin):
+    list_display = UserAdmin.list_display + ('date_joined',)
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
     inlines = [UserProfileInline, ]
 
 

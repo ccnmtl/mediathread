@@ -84,7 +84,7 @@ pylti==0.7.0
 pyjwt==2.10.1  # pylti1p3
 jwcrypto==1.5.6  # pylti1p3
 PyLTI1p3==2.0.0  # django-lti
-django-lti==0.7.1
+django-lti==0.8.0
 
 nameparser==1.1.0
 django-bootstrap3==25.1

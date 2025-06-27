@@ -156,6 +156,11 @@ class LTI1p3JSONConfigView(View):
             'https://{}'.format(domain),
             reverse('oidc_init', kwargs={'registration_uuid': uuid}))
 
+        lti_platform = 'columbiasce.test.instructure.com'
+
+        if hasattr(settings, 'LTI_PLATFORM'):
+            lti_platform = settings.LTI_PLATFORM
+
         json_obj = {
             'title': title,
             'description': settings.LTI_TOOL_CONFIGURATION['description'],
@@ -174,7 +179,7 @@ class LTI1p3JSONConfigView(View):
                 {
                     'domain': domain,
                     'tool_id': 'mediathread',
-                    'platform': 'canvas.ctl.columbia.edu',
+                    'platform': lti_platform,
                     'privacy_level': 'public',
                     'settings': {
                         'text': 'Launch ' + title,

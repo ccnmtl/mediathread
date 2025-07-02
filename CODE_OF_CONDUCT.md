@@ -17,6 +17,6 @@ Project maintainers have the right and responsibility to remove, edit, or reject
 
 This code of conduct applies both within project spaces and in public spaces when an individual is representing the project or its community.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior should be reported by sending an email to [ctl-mediathread@columbia.edu](mailto:ctl-mediathread@columbia.edu)
+Instances of abusive, harassing, or otherwise unacceptable behavior should be reported by sending an email to [ctl-dev@columbia.edu](mailto:ctl-dev@columbia.edu)
 
 This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org), version 1.2.0, available at [http://contributor-covenant.org/version/1/2/0/](http://contributor-covenant.org/version/1/2/0/)

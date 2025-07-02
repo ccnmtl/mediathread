@@ -1036,7 +1036,7 @@ If you are new to Mediathread, a CTL learning designer or your
 department specialist will check in with you in the coming days to
 make sure all is going well. If you have any pressing questions in the
 meantime, please feel free to contact us at
-ctl-mediathread@columbia.edu.
+ctl-dev@columbia.edu.
 
 Thanks,
 The Mediathread Team

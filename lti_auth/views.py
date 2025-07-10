@@ -196,7 +196,6 @@ class LTI1p3JSONConfigView(View):
                                 'placement': 'course_navigation',
                                 'message_type': 'LtiResourceLinkRequest',
                                 'target_link_uri': target_link_uri,
-                                'required_permissions': 'manage_calendar',
                                 'selection_height': 500,
                                 'selection_width': 500
                             }

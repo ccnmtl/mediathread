@@ -129,7 +129,7 @@ class CourseDetailView(LoggedInMixin, DetailView):
         # Set the course in the session cookie. This is legacy
         # functionality, but still used by the Mediathread collection
         # browser extension.
-        request.session[SESSION_KEY] = course
+        request.session[SESSION_KEY] = course.pk
 
         return super(CourseDetailView, self).dispatch(request, *args, **kwargs)
 
@@ -393,7 +393,16 @@ class ContactUsView(FormView):
         initial['issue_date'] = timezone.now()
 
         if SESSION_KEY in self.request.session:
-            initial['course'] = self.request.session[SESSION_KEY].title
+            course_pk = self.request.session[SESSION_KEY]
+            course = None
+
+            try:
+                course = Course.objects.get(pk=course_pk)
+            except Course.DoesNotExist:
+                pass
+
+            if course:
+                initial['course'] = course.title
 
         return initial
 
@@ -467,7 +476,16 @@ class IsLoggedInDataView(View):
 
         course_name = ''
         if SESSION_KEY in request.session:
-            course_name = request.session[SESSION_KEY].title
+            course_pk = self.request.session[SESSION_KEY]
+            course = None
+
+            try:
+                course = Course.objects.get(pk=course_pk)
+            except Course.DoesNotExist:
+                pass
+
+            if course:
+                course_name = course.title
 
         d = {
             'logged_in': logged_in,

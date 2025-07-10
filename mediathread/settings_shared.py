@@ -180,8 +180,6 @@ BOOKMARKLET_VERSION = '2'
 
 DEFAULT_COLLABORATION_POLICY = 'InstructorManaged'
 
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
-
 ACCOUNT_ACTIVATION_DAYS = 7
 
 CORS_ALLOW_ALL_ORIGINS = True

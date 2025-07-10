@@ -18,13 +18,13 @@ describe('Log In Feature: Test Instructor Login', () => {
         cy.get('.choose-course').should('contain', 'Sample Course');
         cy.get('.choose-course').click();
         cy.title().should('contain', 'Sample Course');
-        cy.visit('/accounts/logout/?next=/');
+        cy.get('.sign-out').click();
         cy.title().should('contain', 'Splash');
     });
 });
 
 describe('Log In Feature: Test Invalid login', () => {
-    it('should not log in', () => {
+    it('should not log in with invalid credentials', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
         cy.get('#cu-privacy-notice-button').click();
@@ -36,7 +36,7 @@ describe('Log In Feature: Test Invalid login', () => {
 });
 
 describe('Log In Feature: Test Student Login', () => {
-    it('should test student login', () => {
+    it('should log in as student_one', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
         cy.get('#cu-privacy-notice-button').click();
@@ -45,13 +45,13 @@ describe('Log In Feature: Test Student Login', () => {
         cy.login('student_one', 'test');
         cy.visit('/');
         cy.title().should('contain', 'Sample Course');
-        cy.visit('/accounts/logout/?next=/');
+        cy.get('.sign-out').click();
         cy.title().should('contain', 'Splash');
     });
 });
 
 describe('Log In Feature: Test Switch Course feature', () => {
-    it('should test student login', () => {
+    it('should log in as student_one and see courses', () => {
         cy.visit('/accounts/login/');
         cy.title().should('contain', 'Login');
         cy.get('#cu-privacy-notice-button').click();

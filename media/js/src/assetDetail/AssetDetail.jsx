@@ -62,7 +62,15 @@ const disableRectangleTool = function() {
     }
 };
 
-export default class AssetDetail extends React.Component {
+const pause = function(player) {
+    if (player && player.pauseVideo) {
+        player.pauseVideo();
+    } else if (player && player.pause) {
+        player.pause();
+    }
+};
+
+class AssetDetailClass extends React.Component {
     constructor(props) {
         super(props);
 
@@ -487,15 +495,6 @@ export default class AssetDetail extends React.Component {
         });
     }
 
-    pause() {
-        const player = this.playerRef.current.getInternalPlayer();
-        if (player && player.pauseVideo) {
-            player.pauseVideo();
-        } else if (player && player.pause) {
-            player.pause();
-        }
-    }
-
     onPlayerProgress(d) {
         if (!this.state.selectionEndTime) {
             return;
@@ -503,7 +502,8 @@ export default class AssetDetail extends React.Component {
 
         // Compare progress to the currently playing selection
         if (d.playedSeconds > this.state.selectionEndTime) {
-            this.pause();
+            const player = this.playerRef.current.getInternalPlayer();
+            pause(player);
         }
     }
 
@@ -543,7 +543,8 @@ export default class AssetDetail extends React.Component {
 
     onEndTimeClick(e) {
         e.preventDefault();
-        const time = getPlayerTime(this.playerRef.current.getInternalPlayer());
+        const player = this.playerRef.current.getInternalPlayer();
+        const time = getPlayerTime(player);
 
         if (typeof time === 'number') {
             this.setState({selectionEndTime: time});
@@ -554,7 +555,7 @@ export default class AssetDetail extends React.Component {
             });
         }
 
-        this.pause();
+        pause(player);
     }
 
     showDeleteDialog(selectionId) {
@@ -1411,10 +1412,23 @@ export default class AssetDetail extends React.Component {
     }
 }
 
-AssetDetail.propTypes = {
+AssetDetailClass.propTypes = {
     asset: PropTypes.object,
     tags: PropTypes.array,
     terms: PropTypes.array,
     leaveAssetDetailView: PropTypes.func.isRequired,
     onUpdateAsset: PropTypes.func.isRequired
+};
+
+/**
+ * New functional React component wrapper for AssetDetailClass.
+ *
+ * TODO: Migrate all AssetDetailClass logic to this component.
+ */
+export default function AssetDetail(props) {
+    return (
+            <AssetDetailClass
+                {...props}
+            />
+    );
 };

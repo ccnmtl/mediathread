@@ -1,6 +1,6 @@
 /* eslint max-len: 0 */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import find from 'lodash/find';
 import ReactPlayer from 'react-player';
@@ -100,10 +100,6 @@ class AssetDetailClass extends React.Component {
             selectionStartTime: activeSelection ? activeSelection.range1 : 0,
             selectionEndTime: activeSelection ? activeSelection.range2 : 0,
 
-            assetTitle: this.props.asset ? this.props.asset.title : null,
-            assetTranscript: this.props.asset ?
-                this.props.asset.transcript : null,
-
             deletingSelectionId: null,
             showDeleteDialog: false,
             showDeletedDialog: false,
@@ -168,8 +164,6 @@ class AssetDetailClass extends React.Component {
         this.addInteraction = this.addInteraction.bind(this);
         this.addFreeformInteraction = this.addFreeformInteraction.bind(this);
         this.addDrawlineInteraction = this.addDrawlineInteraction.bind(this);
-        this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
-        this.onUpdateAssetTranscript = this.onUpdateAssetTranscript.bind(this);
         this.onDrawCancel = this.onDrawCancel.bind(this);
         this.onClickClear = this.onClickClear.bind(this);
         this.onClickCancel = this.onClickCancel.bind(this);
@@ -197,14 +191,6 @@ class AssetDetailClass extends React.Component {
                     true);
             }
         });
-    }
-
-    onUpdateAssetTitle(newTitle) {
-        this.setState({assetTitle: newTitle});
-    }
-
-    onUpdateAssetTranscript(transcript) {
-        this.setState({assetTranscript: transcript});
     }
 
     onCreateSelection(e, tags, terms) {
@@ -1016,7 +1002,7 @@ class AssetDetailClass extends React.Component {
             <div className="tab-content asset-detail">
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
                     <h2 className="col-md-7 asset-detail-title">
-                        {this.state.assetTitle}
+                        {this.props.assetTitle}
                     </h2>
 
                     <Nav
@@ -1070,9 +1056,9 @@ class AssetDetailClass extends React.Component {
                         <div className="sticky-top">
                             {media}
 
-                            {this.state.assetTranscript && (
+                            {this.props.assetTranscript && (
                                 <div className="mediathread-transcript">
-                                    {this.state.assetTranscript}
+                                    {this.props.assetTranscript}
                                 </div>
                             )}
                         </div>
@@ -1417,7 +1403,12 @@ AssetDetailClass.propTypes = {
     tags: PropTypes.array,
     terms: PropTypes.array,
     leaveAssetDetailView: PropTypes.func.isRequired,
-    onUpdateAsset: PropTypes.func.isRequired
+    onUpdateAsset: PropTypes.func.isRequired,
+
+    assetTitle: PropTypes.string,
+    assetTranscript: PropTypes.string,
+    onUpdateAssetTitle: PropTypes.func.isRequired,
+    onUpdateAssetTranscript: PropTypes.func.isRequired
 };
 
 /**
@@ -1426,9 +1417,26 @@ AssetDetailClass.propTypes = {
  * TODO: Migrate all AssetDetailClass logic to this component.
  */
 export default function AssetDetail(props) {
+    const [assetTitle, setAssetTitle] = useState(
+        props.asset ? props.asset.title : null);
+    const [assetTranscript, setAssetTranscript] = useState(
+        props.asset ? props.asset.transcript : null);
+
+    function onUpdateAssetTitle(newTitle) {
+        setAssetTitle(newTitle);
+    }
+
+    function onUpdateAssetTranscript(transcript) {
+        setAssetTranscript(transcript);
+    }
+
     return (
             <AssetDetailClass
                 {...props}
+                assetTitle={assetTitle}
+                assetTranscript={assetTranscript}
+                onUpdateAssetTitle={onUpdateAssetTitle}
+                onUpdateAssetTranscript={onUpdateAssetTranscript}
             />
     );
 };

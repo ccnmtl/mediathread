@@ -13,7 +13,7 @@ flake8==7.3.0
 lxml==6.0.0
 extras==1.0.0
 fixtures==4.2.2
-pbr==6.1.0
+pbr==7.0.0
 
 six==1.17.0
 sqlparse==0.5.3  # django-debug-toolbar

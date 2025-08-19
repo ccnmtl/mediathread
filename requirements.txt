@@ -87,7 +87,7 @@ PyLTI1p3==2.0.0  # django-lti
 django-lti==0.8.0
 
 nameparser==1.1.0
-django-bootstrap3==25.1
+django-bootstrap3==25.2
 django-bootstrap4==25.2
 beautifulsoup4==4.13.0
 ua-parser-builtins==0.18.0.post1

@@ -54,7 +54,7 @@ contextlib2==21.6.0
 python-cas==1.6.0
 django-cas-ng==5.0.1
 git+https://github.com/ccnmtl/django-tagging.git@0.5.1
-django-reversion==5.1.0
+django-reversion==6.0.0
 
 requirements/src/djangohelpers-0.22-py2.py3-none-any.whl
 django-contrib-comments==2.2.0

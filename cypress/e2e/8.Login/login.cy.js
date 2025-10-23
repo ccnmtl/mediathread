@@ -11,9 +11,8 @@ describe('Log In Feature: Test Instructor Login', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
-        cy.get('#id_username').type('instructor_one').blur();
-        cy.get('#id_password').type('test').blur();
-        cy.get('#login-local input[type="submit"]').click();
+        cy.login('instructor_one', 'test');
+        cy.visit('/');
         cy.get('#course-title').contains('My Courses');
         cy.get('#sandboxes_link').click();
         cy.get('.choose-course').should('contain', 'Sample Course');
@@ -31,9 +30,7 @@ describe('Log In Feature: Test Invalid login', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
-        cy.get('#id_username').type('foo').blur();
-        cy.get('#id_password').type('foo').blur();
-        cy.get('#login-local input[type="submit"]').click();
+        cy.login('foo', 'foo');
         cy.title().should('contain', 'Login');
     });
 });
@@ -45,9 +42,8 @@ describe('Log In Feature: Test Student Login', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
-        cy.get('#id_username').type('student_one').blur();
-        cy.get('#id_password').type('test').blur();
-        cy.get('#login-local input[type="submit"]').click();
+        cy.login('student_one', 'test');
+        cy.visit('/');
         cy.title().should('contain', 'Sample Course');
         cy.visit('/accounts/logout/?next=/');
         cy.title().should('contain', 'Splash');
@@ -61,9 +57,8 @@ describe('Log In Feature: Test Switch Course feature', () => {
         cy.get('#cu-privacy-notice-button').click();
         cy.get('#guest-login').click();
         cy.get('#login-local>div.login-local-form').should('be.visible');
-        cy.get('#id_username').type('student_three').blur();
-        cy.get('#id_password').type('test').blur();
-        cy.get('#login-local input[type="submit"]').click();
+        cy.login('student_three', 'test');
+        cy.visit('/');
 
         cy.title().should('contain', 'My Courses');
         cy.get('#sandboxes_link').click();

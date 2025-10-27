@@ -153,6 +153,6 @@ pi-heif==1.1.0
 requirements/src/pylibmc-1.7.0.dev0-cp312-cp312-linux_x86_64.whl;sys_platform == "linux" and python_version=="3.12"
 requirements/src/pylibmc-1.7.0.dev0-cp313-cp313-linux_x86_64.whl;sys_platform == "linux" and python_version=="3.13"
 
-requests-file==2.1.0
+requests-file==3.0.1
 typing_extensions==4.15.0
 pyparsing==3.2.0

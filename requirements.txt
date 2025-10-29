@@ -123,7 +123,7 @@ cached-property==2.0
 
 platformdirs==4.5.0  # zeep
 attrs==25.4.0  # zeep
-zeep==4.3.1
+zeep==4.3.2
 
 stevedore==5.5.0
 pyyaml==6.0.2

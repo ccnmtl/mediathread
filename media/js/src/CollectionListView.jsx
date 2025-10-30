@@ -48,7 +48,7 @@ export default class CollectionListView extends React.Component {
         const columns = [
             {
                 name: 'Title',
-                selector: 'title',
+                selector: row => row.title,
                 sortable: true,
                 wrap: true,
                 format: function(row) {
@@ -65,12 +65,12 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Selections',
-                selector: 'annotation_count',
+                selector: row => row.annotation_count,
                 sortable: false
             },
             {
                 name: 'Tags',
-                selector: 'tags',
+                selector: row => row.tags,
                 sortable: false,
                 wrap: true,
                 format: function(row) {
@@ -83,7 +83,7 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Course Vocabulary',
-                selector: 'terms',
+                selector: row => row.terms,
                 sortable: false,
                 wrap: true,
                 format: function(row) {
@@ -96,7 +96,7 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Media',
-                selector: 'primary_type',
+                selector: row => row.primary_type,
                 sortable: false,
                 format: function(row) {
                     return getAssetType(row.primary_type);
@@ -104,14 +104,14 @@ export default class CollectionListView extends React.Component {
             },
             {
                 name: 'Owner',
-                selector: 'author.public_name',
+                selector: row => row.author.public_name,
                 sortable: true,
                 wrap: true
             },
             {
                 name: 'Date',
                 format: formatDay,
-                selector: 'added',
+                selector: row => row.added,
                 sortable: true
             }
         ];

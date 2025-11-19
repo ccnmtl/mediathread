@@ -50,7 +50,7 @@ cffi==2.0.0  # for pyOpenSSL
 requests==2.32.4
 contextlib2==21.6.0
 
-python-cas==1.6.0
+python-cas==1.7.1
 django-cas-ng==5.0.1
 git+https://github.com/ccnmtl/django-tagging.git@0.5.1
 django-reversion==6.0.0

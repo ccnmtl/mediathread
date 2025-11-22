@@ -216,12 +216,18 @@ class SherdNoteManager(models.Manager):
         created = False
 
         if auto_create:
-            gannotation, created = self.get_or_create(**args)
+            try:
+                gannotation, created = self.get_or_create(**args)
+            except SherdNote.MultipleObjectsReturned:
+                gannotation = self.filter(**args).first()
+                created = False
         else:
             try:
                 gannotation = self.get(**args)
             except SherdNote.DoesNotExist:
                 gannotation = None
+            except SherdNote.MultipleObjectsReturned:
+                gannotation = self.filter(**args).first()
 
             return gannotation, False
 

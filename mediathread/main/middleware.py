@@ -8,7 +8,7 @@ from mediathread.main.views import MethCourseListView
 
 class MethCourseManagerMiddleware(CourseManagerMiddleware):
     def set_course(self, course, request):
-        request.session[SESSION_KEY] = course
+        request.session[SESSION_KEY] = course.pk
         request.course = course
         self.decorate_request(request, course)
 

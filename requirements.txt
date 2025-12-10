@@ -103,7 +103,7 @@ freezegun==1.5.5
 django-smtp-ssl==1.0
 djangorestframework==3.16.0
 
-ctlsettings==0.4.3
+ctlsettings==0.4.5
 django-extensions==4.1
 
 django-s3sign==0.5.1

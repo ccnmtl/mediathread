@@ -111,10 +111,13 @@
 
         <li class="nav-item">
             {% if request.user.is_authenticated %}
-                <a class="btn btn-outline-light btn-block sign-out" role="button"
-                   href="/accounts/logout/?next=/" title="Sign Out">
+            <form action="/accounts/logout/?next=/" method="post">
+                {% csrf_token %}
+                <button type="submit" title="Sign Out"
+                        class="btn btn-outline-light btn-block sign-out">
                     Sign Out
-                </a>
+                </button>
+            </form>
             {% else %}
                 <a href="/accounts/register/" class="btn btn-outline-secondary" style="margin-right:.25em;">Sign Up</a>
                 <a href="/accounts/login/" class="btn btn-outline-light">Sign In</a>

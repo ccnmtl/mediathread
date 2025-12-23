@@ -157,4 +157,4 @@ requirements/src/pylibmc-1.7.0.dev0-cp313-cp313-linux_x86_64.whl;sys_platform ==
 
 requests-file==3.0.1
 typing_extensions==4.15.0
-pyparsing==3.2.0
+pyparsing==3.3.1

@@ -41,7 +41,7 @@ chardet==5.2.0
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==3.11
 urllib3==2.6.0  # sentry-sdk
-certifi==2025.11.12  # sentry-sdk
+certifi==2026.1.4  # sentry-sdk
 cryptography==46.0.3
 pyOpenSSL==25.3.0
 asn1crypto==1.5.0  # for pyOpenSSL
@@ -86,8 +86,9 @@ PyLTI1p3==2.0.0  # django-lti
 django-lti==0.9.0
 
 nameparser==1.1.0
+
 django-bootstrap3==26.1
-django-bootstrap4==25.3
+django-bootstrap4==26.1
 beautifulsoup4==4.14.2
 ua-parser-builtins==202601
 ua_parser==1.0.0

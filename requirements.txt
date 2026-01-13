@@ -107,7 +107,7 @@ djangorestframework==3.16.0
 ctlsettings==0.4.5
 django-extensions==4.1
 
-django-s3sign==0.5.1
+django-s3sign==0.6.0
 s3transfer==0.16.0
 jmespath==1.0.1
 

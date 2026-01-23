@@ -150,7 +150,7 @@ wcwidth==0.2.5
 django-celery-results<2.7.0
 
 Pillow==12.1.0
-pi-heif==1.1.0
+pi-heif==1.2.0
 
 # memcached
 requirements/src/pylibmc-1.7.0.dev0-cp312-cp312-linux_x86_64.whl;sys_platform == "linux" and python_version=="3.12"

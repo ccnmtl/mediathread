@@ -46,11 +46,14 @@ if (typeof window.djangosherd === 'undefined') {
 // media.time)
 
 function djangosherd_adaptAsset(asset) {
-    if (asset.flv || asset.flv_pseudo ||
+    if (
+        asset.flv || asset.flv_pseudo ||
             asset.mp4 || asset.mp4_pseudo || asset.mp4_rtmp ||
             asset.flv_rtmp || asset.video_pseudo || asset.video_rtmp ||
             asset.video || asset.mp3 || asset.mp4_audio ||
-            asset.mp4_panopto) {
+            asset.mp4_panopto || asset.mp4_panopto === '' ||
+            asset.primary_type === 'mp4_panopto'
+    ) {
         asset.type = 'flowplayer';
     } else if (asset.youtube) {
         asset.type = 'youtube';

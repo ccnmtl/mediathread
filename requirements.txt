@@ -90,7 +90,7 @@ nameparser==1.1.0
 django-bootstrap3==26.1
 django-bootstrap4==26.1
 beautifulsoup4==4.14.2
-ua-parser-builtins==202602
+ua-parser-builtins==202603
 ua_parser==1.0.0
 user_agents==2.2.0
 django_user_agents==0.4.0

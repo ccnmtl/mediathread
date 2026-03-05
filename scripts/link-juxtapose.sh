@@ -6,6 +6,6 @@
 DEST_DIR="media/juxtapose/"
 ORIG_DIR="$HOME/public_html/juxtapose/build/"
 
-rm $DEST_DIR/bundle-k.js
+rm $DEST_DIR/bundle.js
 
-ln -s $ORIG_DIR/bundle.js $DEST_DIR/bundle-k.js
+ln -s $ORIG_DIR/bundle.js $DEST_DIR/bundle.js

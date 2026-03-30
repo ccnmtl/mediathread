@@ -1431,12 +1431,16 @@ export default function AssetDetail(props) {
     }
 
     return (
-            <AssetDetailClass
-                {...props}
-                assetTitle={assetTitle}
-                assetTranscript={assetTranscript}
-                onUpdateAssetTitle={onUpdateAssetTitle}
-                onUpdateAssetTranscript={onUpdateAssetTranscript}
-            />
+        <AssetDetailClass
+            {...props}
+            assetTitle={assetTitle}
+            assetTranscript={assetTranscript}
+            onUpdateAssetTitle={onUpdateAssetTitle}
+            onUpdateAssetTranscript={onUpdateAssetTranscript}
+        />
     );
+};
+
+AssetDetail.propTypes = {
+    asset: PropTypes.object,
 };

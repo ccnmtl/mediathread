@@ -488,7 +488,7 @@ class AssetDetailClass extends React.Component {
 
         // Compare progress to the currently playing selection
         if (d.playedSeconds > this.state.selectionEndTime) {
-            const player = this.playerRef.current.getInternalPlayer();
+            const player = this.playerRef.current;
             pause(player);
         }
     }
@@ -515,7 +515,7 @@ class AssetDetailClass extends React.Component {
 
     onStartTimeClick(e) {
         e.preventDefault();
-        const time = getPlayerTime(this.playerRef.current.getInternalPlayer());
+        const time = getPlayerTime(this.playerRef.current);
 
         if (typeof time === 'number') {
             this.setState({selectionStartTime: time});
@@ -529,7 +529,7 @@ class AssetDetailClass extends React.Component {
 
     onEndTimeClick(e) {
         e.preventDefault();
-        const player = this.playerRef.current.getInternalPlayer();
+        const player = this.playerRef.current;
         const time = getPlayerTime(player);
 
         if (typeof time === 'number') {
@@ -616,7 +616,7 @@ class AssetDetailClass extends React.Component {
             this.selectionLayer = newLayer;
         } else if (this.type === 'video') {
             const player = this.playerRef.current;
-            player.seekTo(a.range1, 'seconds');
+            player.currentTime = a.range1;
             this.setState({
                 selectionStartTime: a.range1,
                 selectionEndTime: a.range2
@@ -667,10 +667,10 @@ class AssetDetailClass extends React.Component {
     onPlaySelection(e) {
         e.preventDefault();
         // Queue the selection, if it's not queued already.
-        const internalPlayer = this.playerRef.current.getInternalPlayer();
+        const internalPlayer = this.playerRef.current;
         const currentTime = getPlayerTime(internalPlayer);
         if (Math.round(currentTime) !== Math.round(this.state.selectionStartTime)) {
-            this.playerRef.current.seekTo(this.state.selectionStartTime, 'seconds');
+            this.playerRef.current.currentTime = this.state.selectionStartTime;
         }
 
         if (internalPlayer && internalPlayer.playVideo) {
@@ -923,7 +923,7 @@ class AssetDetailClass extends React.Component {
                             style={{backgroundColor: 'black'}}
                             onProgress={this.onPlayerProgress.bind(this)}
                             ref={this.playerRef}
-                            url={vidUrl}
+                            src={vidUrl}
                             controls={true}
                             config={extraConfig}
                         />

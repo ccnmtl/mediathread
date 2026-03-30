@@ -18,8 +18,9 @@ export default [...compat.extends(
     "eslint:recommended",
     "plugin:cypress/recommended",
     "plugin:react/recommended",
-),
-{
+), {
+    files: ["**/*.{js,jsx}"],
+
     plugins: {
         react,
     },
@@ -77,5 +78,12 @@ export default [...compat.extends(
         }],
 
         "func-call-spacing": ["error", "never"],
+    },
+}, {
+    files: ["**/*.{test,spec}.{js,jsx}"],
+    languageOptions: {
+        globals: {
+            ...globals.jest,
+        },
     },
 }];

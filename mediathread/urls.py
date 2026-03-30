@@ -46,7 +46,6 @@ from mediathread.projects.views import (
 from mediathread.taxonomy.api import TermResource, VocabularyResource
 from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
-from debug_toolbar.toolbar import debug_toolbar_urls
 
 
 tastypie_api = Api('')
@@ -289,6 +288,8 @@ urlpatterns = [
 ]
 
 if settings.DEVELOPMENT:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
     urlpatterns = [
         *urlpatterns,
     ] + debug_toolbar_urls()

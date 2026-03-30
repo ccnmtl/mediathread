@@ -1,7 +1,7 @@
 /* eslint max-len: 0 */
 
 import React from 'react';
-import {Document, Page} from 'react-pdf/dist/esm/entry.webpack';
+import {Document, Page, pdfjs} from 'react-pdf';
 import PropTypes from 'prop-types';
 
 import Map from 'ol/Map';
@@ -63,6 +63,9 @@ export default class GridAsset extends React.Component {
         this.svgContainerRef = React.createRef();
         this.pdfPageRef = React.createRef();
         this.pdfViewer = null;
+
+        pdfjs.GlobalWorkerOptions.workerSrc =
+            `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
         this.onSelectedAnnotationUpdate =
             this.onSelectedAnnotationUpdate.bind(this);

@@ -318,8 +318,13 @@ CollectionList.prototype.appendItems = function(config) {
             $elt.collapse({toggle: true});
 
             $elt = jQuery('#annotation-' + self.current_annotation);
-            jQuery('html, body').animate(
-                {scrollTop: $elt.offset().top - 50}, 100);
+            let elTop = 0;
+            if ($elt && $elt.offset) {
+                elTop = $elt.offset().top;
+            }
+            jQuery('html, body').animate({
+                scrollTop: elTop - 50
+            }, 100);
             delete self.current_annotation;
         }
     });

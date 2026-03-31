@@ -156,7 +156,7 @@
                                                     <div>
                                                         {{#citable}}
                                                             <button class="btn btn-sm btn-warning materialCitation clickableCitation d-inline"
-                                                                title="-Untitled-"
+                                                                title="{{#metadata.title}}{{#unquote}}{{{metadata.title}}}{{/unquote}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
                                                                 name="{{url}}" data-type="{{metadata.primary_type}}" data-range="{{range1}}">
                                                                 Insert in Text
                                                             </button>

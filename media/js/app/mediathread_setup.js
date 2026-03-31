@@ -244,6 +244,11 @@
                 return render(text).toLowerCase();
             };
         },
+        unquote: function() {
+            return function(text, render) {
+                return render(text).replaceAll('"', '');
+            };
+        },
         getCourseId: function() {
             return MediaThread.current_course;
         }

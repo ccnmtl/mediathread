@@ -1,89 +1,84 @@
+import { defineConfig } from "eslint/config";
 import react from "eslint-plugin-react";
 import globals from "globals";
 import babelParser from "@babel/eslint-parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import pluginCypress from 'eslint-plugin-cypress';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
-
-export default [...compat.extends(
-    "eslint:recommended",
-    "plugin:cypress/recommended",
-    "plugin:react/recommended",
-), {
-    files: ["**/*.{js,jsx}"],
-
-    plugins: {
-        react,
+export default defineConfig([
+    {
+        files: ['cypress/**/*.js'],
+        extends: [pluginCypress.configs.recommended],
+        rules: {
+            'cypress/no-unnecessary-waiting': 'off',
+        },
     },
-
-    languageOptions: {
-        globals: {
-            ...globals.browser,
-            ...globals.node,
-            ...globals.jquery,
-            Backbone: true,
-            _: true,
+    {
+        files: ['**/*.{js,jsx}'],
+        extends: [react.configs.flat.recommended],
+        plugins: {
+            react,
         },
 
-        parser: babelParser,
-        ecmaVersion: 6,
-        sourceType: "module",
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                ...globals.jquery,
+                Backbone: true,
+                _: true,
+            },
 
-        parserOptions: {
-            ecmaFeatures: {
-                jsx: true,
+            parser: babelParser,
+            ecmaVersion: 6,
+            sourceType: "module",
+
+            parserOptions: {
+                ecmaFeatures: {
+                    jsx: true,
+                },
             },
         },
-    },
 
-    settings: {
-        react: {
-            version: "detect",
+        settings: {
+            react: {
+                version: "detect",
+            },
         },
-    },
 
-    rules: {
-        indent: ["error", 4],
-        "linebreak-style": ["error", "unix"],
+        rules: {
+            indent: ["error", 4],
+            "linebreak-style": ["error", "unix"],
 
-        "no-unused-vars": ["error", {
-            vars: "all",
-            args: "none",
-        }],
+            "no-unused-vars": ["error", {
+                vars: "all",
+                args: "none",
+            }],
 
-        quotes: ["error", "single"],
-        semi: ["error", "always"],
+            quotes: ["error", "single"],
+            semi: ["error", "always"],
 
-        "max-len": [2, {
-            code: 80,
-            tabWidth: 4,
-            ignoreUrls: true,
-        }],
+            "max-len": [2, {
+                code: 80,
+                tabWidth: 4,
+                ignoreUrls: true,
+            }],
 
-        "space-before-function-paren": ["error", "never"],
-        "space-in-parens": ["error", "never"],
-        "no-trailing-spaces": ["error"],
+            "space-before-function-paren": ["error", "never"],
+            "space-in-parens": ["error", "never"],
+            "no-trailing-spaces": ["error"],
 
-        "key-spacing": ["error", {
-            beforeColon: false,
-        }],
+            "key-spacing": ["error", {
+                beforeColon: false,
+            }],
 
-        "func-call-spacing": ["error", "never"],
-    },
-}, {
-    files: ["**/*.{test,spec}.{js,jsx}"],
-    languageOptions: {
-        globals: {
-            ...globals.jest,
+            "func-call-spacing": ["error", "never"],
         },
-    },
-}];
+    }, {
+        files: ["**/*.{test,spec}.{js,jsx}"],
+        languageOptions: {
+            globals: {
+                ...globals.jest,
+            },
+        },
+    }
+]);

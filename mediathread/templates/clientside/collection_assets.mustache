@@ -121,7 +121,7 @@
                                             data-target="#selectionCollapse-{{id}}"
                                             aria-expanded="false">
                                             {{#metadata.title}}
-                                                {{metadata.title}}
+                                                {{{metadata.title}}}
                                             {{/metadata.title}}
                                             {{^metadata.title}}
                                                 -Untitled-
@@ -129,7 +129,7 @@
                                         </button>
                                     </div>
                                     <div id="selectionCollapse-{{id}}" class="collapse"
-                                        data-title="{{#metadata.title}}{{metadata.title}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
+                                        data-title="{{#metadata.title}}{{{metadata.title}}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
                                         data-selectionid="{{id}}"
                                         data-parent="#selectionsAccordion-{{asset_id}}">
                                         <div class="card-body">
@@ -156,7 +156,7 @@
                                                     <div>
                                                         {{#citable}}
                                                             <button class="btn btn-sm btn-warning materialCitation clickableCitation d-inline"
-                                                                title="{{#metadata.title}}{{#unquote}}{{metadata.title}}{{/unquote}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
+                                                                title="{{#metadata.title}}{{#unquote}}{{{metadata.title}}}{{/unquote}}{{/metadata.title}}{{^metadata.title}}-Untitled-{{/metadata.title}}"
                                                                 name="{{url}}" data-type="{{metadata.primary_type}}" data-range="{{range1}}">
                                                                 Insert in Text
                                                             </button>

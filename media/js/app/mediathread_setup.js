@@ -246,7 +246,10 @@
         },
         unquote: function() {
             return function(text, render) {
-                return render(text).replaceAll('"', '');
+                return render(text)
+                    .replaceAll('"', '')
+                    .replaceAll('&quot;', '')
+                    .replaceAll('%22', '');
             };
         },
         getCourseId: function() {

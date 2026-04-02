@@ -274,7 +274,6 @@ urlpatterns = [
 
     path('setting/<slug:user_name>/', set_user_setting),
 
-    path('stats/', TemplateView.as_view(template_name='stats.html')),
     path('smoketest/', include('smoketest.urls')),
 
     path('course/<int:course_pk>/taxonomy/',

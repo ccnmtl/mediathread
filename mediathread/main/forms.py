@@ -18,7 +18,7 @@ class ContactUsForm(forms.Form):
     username = forms.CharField(required=False, max_length=512)
     course = forms.CharField(required=True, max_length=512)
 
-    issue_date = forms.DateTimeField(required=True)
+    issue_date = forms.DateTimeField(required=False)
 
     category = forms.CharField(required=True, max_length=512)
 

@@ -126,6 +126,11 @@ class SherdNoteResource(ModelResource):
         # For SequenceAssignmentResponses only
         # Do not allow editing or deleting when used as a primary video
         # or as a secondary media element
+
+        # Unsaved notes cannot be referenced by SequenceAsset relations.
+        if not note or note.pk is None:
+            return False
+
         return SequenceAsset.objects.filter(
             Q(projectsequenceasset__project__date_submitted__isnull=False),
             Q(spine=note) | Q(media_elements__media=note)).exists()

@@ -16,11 +16,11 @@ class ContactUsForm(forms.Form):
     name = forms.CharField(required=True, max_length=512)
     email = forms.EmailField(required=True)
     username = forms.CharField(required=False, max_length=512)
-    course = forms.CharField(required=True, max_length=512)
+    course = forms.CharField(required=False, max_length=512)
 
     issue_date = forms.DateTimeField(required=False)
 
-    category = forms.CharField(required=True, max_length=512)
+    category = forms.CharField(required=False, max_length=512)
 
     description = forms.CharField(widget=forms.Textarea, required=True)
 

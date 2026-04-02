@@ -159,6 +159,9 @@ class AssetDetailClass extends React.Component {
         this.onDrawStart = this.onDrawStart.bind(this);
         this.onUpdateIsEditing = this.onUpdateIsEditing.bind(this);
 
+        this.onUpdateAssetTitle = this.onUpdateAssetTitle.bind(this);
+        this.onUpdateAssetTranscript = this.onUpdateAssetTranscript.bind(this);
+
         this.onClearVectorLayer = this.onClearVectorLayer.bind(this);
 
         this.addInteraction = this.addInteraction.bind(this);
@@ -700,6 +703,14 @@ class AssetDetailClass extends React.Component {
         if (iframe) {
             iframe.contentWindow.postMessage('enableRectangleTool', '*');
         }
+    }
+
+    onUpdateAssetTitle(title) {
+        return this.props.onUpdateAssetTitle(title);
+    }
+
+    onUpdateAssetTranscript(transcript) {
+        return this.props.onUpdateAssetTranscript(transcript);
     }
 
     render() {

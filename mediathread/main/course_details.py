@@ -43,8 +43,11 @@ def can_upload(user, course):
 
 
 def can_upload_image(user, course):
-    value = int(course.get_detail(UPLOAD_IMAGE_PERMISSION_KEY,
-                                  UPLOAD_PERMISSION_DEFAULT))
+    value = None
+    if course:
+        value = int(course.get_detail(
+            UPLOAD_IMAGE_PERMISSION_KEY, UPLOAD_PERMISSION_DEFAULT))
+
     if value == UPLOAD_PERMISSION_DISABLE:
         return False
     elif user.is_staff:

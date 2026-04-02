@@ -37,11 +37,11 @@ class ContactUsForm(forms.Form):
     def clean(self):
         cleaned_data = super(ContactUsForm, self).clean()
 
-        if cleaned_data['category'] == '-----':
+        if cleaned_data.get('category') == '-----':
             self._errors["category"] = self.error_class([
                 "An issue category is required"])
 
-        if 'decoy' in cleaned_data and len(cleaned_data['decoy']) > 0:
+        if 'decoy' in cleaned_data and len(cleaned_data.get('decoy')) > 0:
             self._errors["decoy"] = self.error_class([
                 "Please leave this field blank"])
 
@@ -94,7 +94,7 @@ class CourseDeleteMaterialsForm(forms.Form):
     def clean(self):
         cleaned_data = super(CourseDeleteMaterialsForm, self).clean()
 
-        if cleaned_data['username'] != self.request.user.username:
+        if cleaned_data.get('username') != self.request.user.username:
             self._errors['username'] = self.error_class([
                 "Please enter your username"])
 

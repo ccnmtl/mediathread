@@ -292,11 +292,11 @@ if (!Sherd.Video.Annotators.ClipForm) {
                        '<tr><td span="0"><div><label for="annotation-title">Selection Times</label></div></td></tr>' +
                        '<tr class="sherd-clipform-editing">' +
                          '<td>' +
-                           '<input type="button" class="btn-primary" value="Start Time" id="btnClipStart"/> ' +
+                           '<input type="button" class="btn btn-primary btn-sm" value="Start Time" id="btnClipStart"/> ' +
                          '</td>' +
                          '<td width="10px">&nbsp;</td>' +
                          '<td>' +
-                           '<input type="button" class="btn-primary" value="End Time" id="btnClipEnd"/> ' +
+                           '<input type="button" class="btn btn-primary btn-sm" value="End Time" id="btnClipEnd"/> ' +
                          '</td>' +
                          '<td>&nbsp;</td>' +
                        '</tr>' +

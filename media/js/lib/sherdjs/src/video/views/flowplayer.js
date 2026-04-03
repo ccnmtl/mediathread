@@ -10,7 +10,7 @@ if (!Sherd) { Sherd = {}; }
 if (!Sherd.Video) { Sherd.Video = {}; }
 if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
     Sherd.Video.Flowplayer = function () {
-        var self = this;
+        let self = this;
 
         this.state = {ready: false};
 
@@ -37,12 +37,12 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         // create == asset->{html+information to make it}
         // setup the flowplayer div. will be replaced on write using the flowplayer API
         this.microformat.create = function (obj, doc) {
-            var wrapperID = Sherd.Base.newID('flowplayer-wrapper-');
-            var playerID = Sherd.Base.newID('flowplayer-player-');
-            var params = self.microformat._getPlayerParams(obj);
+            let wrapperID = Sherd.Base.newID('flowplayer-wrapper-');
+            let playerID = Sherd.Base.newID('flowplayer-player-');
+            let params = self.microformat._getPlayerParams(obj);
 
             if (!obj.options) {
-                var presentation;
+                let presentation;
                 switch (typeof obj.presentation) {
                 case 'string':
                     presentation = self.presentations[obj.presentation];
@@ -61,14 +61,14 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 };
             }
 
-            var posterUrl = "";
+            let posterUrl = "";
             if (obj.poster) {
                 posterUrl = obj.poster;
             } else if (params.provider === "audio") {
                 posterUrl = STATIC_URL + "img/poster_audio.png";
             }
 
-            var create_obj = {
+            let create_obj = {
                 object: obj,
                 htmlID: wrapperID,
                 playerID: playerID, // Used by .initialize post initialization
@@ -82,7 +82,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             };
 
             if (obj.metadata) {
-                for (var i = 0; i < obj.metadata.length; i++) {
+                for (let i = 0; i < obj.metadata.length; i++) {
                     if (obj.metadata[i].key === 'duration') {
                         create_obj.staticDuration = obj.metadata[i].value;
                     }
@@ -95,7 +95,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         // self.components -- Access to the internal player and any options needed at runtime
         this.microformat.components = function (html_dom, create_obj) {
             try {
-                var rv = {};
+                let rv = {};
                 if (html_dom) {
                     rv.wrapper = html_dom;
                 }
@@ -119,8 +119,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
         // Replace the video identifier within the rendered .html
         this.microformat.update = function (obj, html_dom) {
-            var rc = false;
-            var newUrl = self.microformat._getPlayerParams(obj);
+            let rc = false;
+            let newUrl = self.microformat._getPlayerParams(obj);
             if (newUrl.url && document.getElementById(self.components.playerID) && self.media.ready()) {
                 if (self.components.player.video.url === newUrl.url) {
                     // If the url is the same as the previous, just seek to the right spot.
@@ -134,9 +134,9 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         };
         
         this.microformat._getPlayerParams = function (obj) {
-            var rc = {};
+            let rc = {};
             if (obj.mp4_rtmp) {
-                var a = self.microformat._parseRtmpUrl(obj.mp4_rtmp);
+                let a = self.microformat._parseRtmpUrl(obj.mp4_rtmp);
                 rc.url = a.url;
                 rc.netConnectionUrl = a.netConnectionUrl;
             } else if (obj.flv_pseudo) {
@@ -150,7 +150,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             } else if (obj.video_pseudo) {
                 rc.url = obj.video_pseudo;
             } else if (obj.video_rtmp) {
-                var video_rtmp = self.microformat._parseRtmpUrl(obj.video_rtmp);
+                let video_rtmp = self.microformat._parseRtmpUrl(obj.video_rtmp);
                 rc.url = video_rtmp.url;
                 rc.netConnectionUrl = video_rtmp.netConnectionUrl;
             } else if (obj.video) {
@@ -197,7 +197,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         
         this.initialize = function (create_obj) {
             if (create_obj) {
-                var options = {
+                let options = {
                     embed: false,
                     // one video: a one-member playlist
                     playlist: [],
@@ -211,7 +211,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                      options.playlist.push([{mp4: create_obj.playerParams.url}]);
                  }
 
-                 var elt = jQuery("#" + create_obj.playerID);
+                 let elt = jQuery("#" + create_obj.playerID);
                  jQuery(elt).flowplayer(options);
 
                  jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
@@ -234,14 +234,14 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     }
 
                     if (api.video.src) {
-                        var $el = jQuery('<a />', {
+                        let $el = jQuery('<a />', {
                             'href': api.video.src,
                             'title': 'Download video',
                             'download': 'download'
                         });
                         $el.html('<span class="glyphicon glyphicon-floppy-save" ' +
                                  'aria-hidden="true"></span>');
-                        var $wrapper = jQuery('.sherd-flowplayer-download-btn');
+                        let $wrapper = jQuery('.sherd-flowplayer-download-btn');
                         $wrapper.append($el);
                         $wrapper.show();
                     }
@@ -326,7 +326,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             // The clipstrip is calibrated to the flowplayer scrubber
             // Visually, it looks a little "short", but trust, it tags along
             // with the circle shaped thumb properly.
-            var w = jQuery('#' + self.components.playerID).width();
+            let w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
                 trackX: 2,

@@ -10,16 +10,16 @@ if (!Sherd) {Sherd = {}; }
 if (!Sherd.Video) {Sherd.Video = {}; }
 if (!Sherd.Video.Annotators) {Sherd.Video.Annotators = {}; }
 if (!Sherd.Video.Annotators.ClipPlay) {
-    Sherd.Video.Annotators.ClipPlay = function () {
+    Sherd.Video.Annotators.ClipPlay = function() {
         var self = this;
 
         Sherd.Video.Base.apply(this, arguments); //inherit off video.js - base.js
 
-        this.attachView = function (view) {
+        this.attachView = function(view) {
             this.targetview = view;
         };
 
-        this.getState = function () {
+        this.getState = function() {
             var obj = {};
 
             obj.starttime = self.components.starttime;
@@ -27,7 +27,7 @@ if (!Sherd.Video.Annotators.ClipPlay) {
             return obj;
         };
 
-        this.setState = function (obj) {
+        this.setState = function(obj) {
             if (typeof obj === 'object') {
                 var c = self.components;
                 if (obj === null) {
@@ -40,8 +40,8 @@ if (!Sherd.Video.Annotators.ClipPlay) {
             }
         };
 
-        this.initialize = function (create_obj) {
-            self.events.connect(self.components.clipPlay, 'click', function (evt) {
+        this.initialize = function(create_obj) {
+            self.events.connect(self.components.clipPlay, 'click', function(evt) {
                 var obj = self.getState();
                 self.events.signal(
                     self.targetview, 'playclip',
@@ -49,7 +49,7 @@ if (!Sherd.Video.Annotators.ClipPlay) {
             });
         };
 
-        this.microformat.create = function (obj) {
+        this.microformat.create = function(obj) {
             return {
                 htmlID: 'play-selection',
                 text: '<button class="btn btn-sm btn-default"' +
@@ -61,7 +61,7 @@ if (!Sherd.Video.Annotators.ClipPlay) {
         };
 
         // self.components -- Access to the internal player and any options needed at runtime
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             try {
                 return {
                     clipPlay: document.getElementById(create_obj.htmlID),

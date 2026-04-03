@@ -8,7 +8,7 @@ if (!Sherd) { Sherd = {}; }
 if (!Sherd.Pdf) { Sherd.Pdf = {}; }
 if (!Sherd.Pdf.Annotators) { Sherd.Pdf.Annotators = {}; }
 if (!Sherd.Pdf.Annotators.Pdf) {
-    Sherd.Pdf.Annotators.Pdf = function () {
+    Sherd.Pdf.Annotators.Pdf = function() {
         var self = this;
         Sherd.Base.AssetView.apply(this, arguments);//inherit
 
@@ -18,15 +18,15 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             showCancel: false
         };
 
-        this.attachView = function (view) {
+        this.attachView = function(view) {
             self.targetview = view;
         };
         this.targetstorage = [];
-        this.addStorage = function (stor) {
+        this.addStorage = function(stor) {
             this.targetstorage.push(stor);
         };
 
-        this.getState = function () {
+        this.getState = function() {
             if (!this.state.pdfRect) {
                 return 'missing pdfRect';
             }
@@ -44,7 +44,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
         this.current_state = null;
 
         // Called by asset.js
-        this.setState = function (obj, options) {
+        this.setState = function(obj, options) {
             if (typeof obj === 'object') {
                 self.current_state = obj;
 
@@ -89,7 +89,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             }
         };
 
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             window.onmessage = function(e) {
                 if (
                     e.data.message &&
@@ -110,7 +110,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             };
 
             ///button listeners
-            self.events.connect(self.components.rect, 'click', function (evt) {
+            self.events.connect(self.components.rect, 'click', function(evt) {
                 const iframe = window.jQuery('iframe.pdfjs')[0];
                 if (iframe) {
                     iframe.contentWindow.postMessage(
@@ -122,7 +122,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                 self.refreshButtons();
             });
 
-            self.events.connect(self.components.cancel, 'click', function (evt) {
+            self.events.connect(self.components.cancel, 'click', function(evt) {
                 const iframe = window.jQuery('iframe.pdfjs')[0];
                 if (iframe) {
                     iframe.contentWindow.postMessage(
@@ -133,7 +133,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                 self.refreshButtons();
             });
 
-            self.events.connect(self.components.clear, 'click', function (evt) {
+            self.events.connect(self.components.clear, 'click', function(evt) {
                 const iframe = window.jQuery('iframe.pdfjs')[0];
                 if (iframe) {
                     iframe.contentWindow.postMessage(
@@ -145,7 +145,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             });
         };
         this.storage = {
-            'update': function (obj, just_downstream) {
+            'update': function(obj, just_downstream) {
                 if (!just_downstream) {
                     self.setState(obj);
                 }
@@ -155,7 +155,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
             }
         };
         this.microformat = {
-            'create': function () {
+            'create': function() {
                 var id = Sherd.Base.newID('pdfjs-annotator');
                 return {
                     htmlID: id,
@@ -185,7 +185,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                         '</div>'
                 };
             },
-            'components': function (html_dom, create_obj) {
+            'components': function(html_dom, create_obj) {
                 if (!html_dom) {
                     return {};
                 }

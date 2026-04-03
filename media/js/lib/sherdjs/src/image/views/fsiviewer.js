@@ -3,7 +3,7 @@
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Image) { Sherd.Image = {}; }
 if (!Sherd.Image.FSIViewer) {
-    Sherd.Image.FSIViewer = function () {
+    Sherd.Image.FSIViewer = function() {
         var self = this;
         Sherd.Base.AssetView.apply(this, arguments); //inherit
 
@@ -16,18 +16,18 @@ if (!Sherd.Image.FSIViewer) {
             'rotation': 0, 'imageUrl': '', 'scene': 0, 'set': 0, 'type': '',
             'wh_ratio': 0 };
         
-        this.events.connect(window, 'resize', function () {
+        this.events.connect(window, 'resize', function() {
             if (self.presentation) {
                 self.presentation.resize();
             }
         });
 
-        this.getState = function () {
+        this.getState = function() {
             ///see this.initialize() for function that updates current_state
             return self.current_state;
         };
 
-        this._setState = function (obj) {
+        this._setState = function(obj) {
             try {
                 if (obj && obj.set && obj.top) {
                     var clip_string = self.obj2arr(obj).join(', ');
@@ -40,7 +40,7 @@ if (!Sherd.Image.FSIViewer) {
             }
         };
 
-        this.setState = function (obj) {
+        this.setState = function(obj) {
             if (obj) {
                 for (var a in obj) {
                     if (obj.hasOwnProperty(a) &&
@@ -56,7 +56,7 @@ if (!Sherd.Image.FSIViewer) {
         };
         //called when you click on the dots-icon next to the save icon
         ///ArtStor custom button functions
-        window.saveToImageGroup = function (clip_string, maybe_name, clip_embed_url) {
+        window.saveToImageGroup = function(clip_string, maybe_name, clip_embed_url) {
             //could be: set, scene, left, top, right, bottom, rotation
             //example: asset-level: 1, 1, 0, 0, 1, 1, 0
             //example:  1,   1,     0.53, 0.43,0.711, 0.6114, 0
@@ -66,18 +66,18 @@ if (!Sherd.Image.FSIViewer) {
             console.log(clip_embed_url);
              */
         };
-        window.saveImage = function (clip_embed_url) {
+        window.saveImage = function(clip_embed_url) {
             //console.log(clip_embed_url);
         };
-        window.printImage = function (clip_embed_url) {
+        window.printImage = function(clip_embed_url) {
             //console.log(clip_embed_url);
         };
 
         ///utility functions to move from between array/obj repr
-        this.obj2arr = function (o) {
+        this.obj2arr = function(o) {
             return [o.set, o.scene, o.left, o.top, o.right, o.bottom, o.rotation];
         };
-        this.arr2obj = function (a) {
+        this.arr2obj = function(a) {
             return {
                 'set': a[0],
                 'scene': a[1],
@@ -91,38 +91,38 @@ if (!Sherd.Image.FSIViewer) {
 
         this.presentations = {
             'thumb': {
-                height: function () { return '100px'; },
-                width: function () { return '100px'; },
+                height: function() { return '100px'; },
+                width: function() { return '100px'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=true&amp;MenuAlign=TL&amp;HideUI=true',
-                resize: function () {}
+                resize: function() {}
             },
             'gallery': {
-                height: function (obj, presenter) {
+                height: function(obj, presenter) {
                     // scale the height
                     return parseInt(this.width(obj, presenter), 10) / obj.width * obj.height + 'px';
                 },
-                width: function (obj, presenter) { return '200px'; },
+                width: function(obj, presenter) { return '200px'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=true&amp;MenuAlign=TL&amp;HideUI=true',
-                resize: function () {}
+                resize: function() {}
             },
             'default': {
-                height: function (obj, presenter) { return Sherd.winHeight() + 'px'; },
-                width: function (obj, presenter) { return '100%'; },
+                height: function(obj, presenter) { return Sherd.winHeight() + 'px'; },
+                width: function(obj, presenter) { return '100%'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=undefined&amp;MenuAlign=TL&amp;HideUI=false',
-                resize: function () {
+                resize: function() {
                     var top = self.components.top;
                     top.setAttribute('height', Sherd.winHeight() + 'px');
                     self.current_state.wh_ratio = (top.offsetWidth / (top.offsetHeight - 30));
                 }
             },
             'medium': {
-                height: function (obj, presenter) {
+                height: function(obj, presenter) {
                     var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
                     return height + 'px';
                 },
-                width: function (obj, presenter) { return '100%'; },
+                width: function(obj, presenter) { return '100%'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=undefined&amp;MenuAlign=TL&amp;HideUI=false',
-                resize: function () {
+                resize: function() {
                     var top = self.components.top;
                     var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
                     top.setAttribute('height', height + 'px');
@@ -130,14 +130,14 @@ if (!Sherd.Image.FSIViewer) {
                 }
             },
             'small': {
-                height: function () { return '390px'; },
-                width: function () { return '320px'; },
+                height: function() { return '390px'; },
+                width: function() { return '320px'; },
                 extra: 'CustomButton_buttons=&amp;NoNav=undefined&amp;MenuAlign=BL&amp;HideUI=false',
-                resize: function () {/*noop*/}
+                resize: function() {/*noop*/}
             }
         };
 
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             ///copied from openlayers code:
             switch (typeof create_obj.object.presentation) {
             case 'string':
@@ -154,7 +154,7 @@ if (!Sherd.Image.FSIViewer) {
             var top = self.components.top;
             self.current_state.wh_ratio = (top.offsetWidth / (top.offsetHeight - 30));
 
-            var state_listener = function (fsi_event, params) {
+            var state_listener = function(fsi_event, params) {
                 //console.log('FSI EVENT:'+fsi_event);
                 //console.log(params);
                 switch (fsi_event) {
@@ -178,7 +178,7 @@ if (!Sherd.Image.FSIViewer) {
                     self.ready = true;
                     var s;
                     if (self.intended_states.length) {
-                        setTimeout(function () {
+                        setTimeout(function() {
                             self._setState(self.intended_states[self.intended_states.length - 1]);
                         }, 100);
                     }
@@ -208,13 +208,13 @@ if (!Sherd.Image.FSIViewer) {
             }
         };
         this.microformat = {};
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             return {
                 'top': html_dom,
                 'winHeight': create_obj.winHeight
             };
         };
-        this.microformat.create = function (obj, doc, options) {
+        this.microformat.create = function(obj, doc, options) {
             ///NOTE: we need underscores because this will become a javascript function name
             var fsi_object_id = Sherd.Base.newID('fsiviewer_wrapper');
 

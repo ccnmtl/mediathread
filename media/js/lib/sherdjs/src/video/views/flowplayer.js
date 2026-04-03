@@ -9,7 +9,7 @@
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Video) { Sherd.Video = {}; }
 if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
-    Sherd.Video.Flowplayer = function () {
+    Sherd.Video.Flowplayer = function() {
         let self = this;
 
         this.state = {ready: false};
@@ -18,16 +18,16 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
         this.presentations = {
             'small': {
-                width: function () { return 310; },
-                height: function () { return 233; }
+                width: function() { return 310; },
+                height: function() { return 233; }
             },
             'medium': {
-                width: function () { return 475; },
-                height: function () { return 375; }
+                width: function() { return 475; },
+                height: function() { return 375; }
             },
             'default': {
-                width: function () { return 620; },
-                height: function () { return 466; }
+                width: function() { return 620; },
+                height: function() { return 466; }
             }
         };
 
@@ -36,7 +36,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
         // create == asset->{html+information to make it}
         // setup the flowplayer div. will be replaced on write using the flowplayer API
-        this.microformat.create = function (obj, doc) {
+        this.microformat.create = function(obj, doc) {
             let wrapperID = Sherd.Base.newID('flowplayer-wrapper-');
             let playerID = Sherd.Base.newID('flowplayer-player-');
             let params = self.microformat._getPlayerParams(obj);
@@ -93,7 +93,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         };
 
         // self.components -- Access to the internal player and any options needed at runtime
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             try {
                 let rv = {};
                 if (html_dom) {
@@ -118,7 +118,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         };
 
         // Replace the video identifier within the rendered .html
-        this.microformat.update = function (obj, html_dom) {
+        this.microformat.update = function(obj, html_dom) {
             let rc = false;
             let newUrl = self.microformat._getPlayerParams(obj);
             if (newUrl.url && document.getElementById(self.components.playerID) && self.media.ready()) {
@@ -133,7 +133,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             return rc;
         };
         
-        this.microformat._getPlayerParams = function (obj) {
+        this.microformat._getPlayerParams = function(obj) {
             let rc = {};
             if (obj.mp4_rtmp) {
                 let a = self.microformat._parseRtmpUrl(obj.mp4_rtmp);
@@ -183,7 +183,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
         this.connect_tickcount = function() {
             self.events.queue('tick count', [{
-                test : function () {
+                test : function() {
                     self.components.elapsed.innerHTML =
                         self.secondsToCode(self.media.time());
                     
@@ -195,7 +195,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             }]);  
         };
         
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             if (create_obj) {
                 let options = {
                     embed: false,
@@ -222,7 +222,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
                 // register for notifications from clipstrip to seek to various times in the video
                 self.events.connect(self, 'seek', self.media.playAt);
-                self.events.connect(self, 'playclip', function (obj) {
+                self.events.connect(self, 'playclip', function(obj) {
                     self.media.seek(obj.start, obj.end, true);
                 });
 
@@ -263,32 +263,32 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        this.media.duration = function () {
+        this.media.duration = function() {
             return self.components.player ?
                 self.components.player.video.duration : 0;
         };
 
-        this.media.pause = function () {
+        this.media.pause = function() {
             if (self.components.player) {
                 self.components.player.pause();
             }
         };
 
-        this.media.play = function () {
+        this.media.play = function() {
             if (self.components.player) {
                 self.components.player.play();
             }
         };
 
-        this.media.isPlaying = function () {
+        this.media.isPlaying = function() {
             return self.components.player && self.components.player.playing;
         };
         
-        this.media.ready = function () {
+        this.media.ready = function() {
             return self.state.ready;
         };
 
-        this.media.seek = function (starttime, endtime, autoplay) {
+        this.media.seek = function(starttime, endtime, autoplay) {
             if (!self.media.ready()) {
                 self.state.starttime = starttime;
                 self.state.endtime = endtime;
@@ -317,12 +317,12 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             }
         };
 
-        this.media.time = function () {
+        this.media.time = function() {
             return self.components.player ? 
                 self.components.player.video.time : 0;
         };
 
-        this.media.timestrip = function () {
+        this.media.timestrip = function() {
             // The clipstrip is calibrated to the flowplayer scrubber
             // Visually, it looks a little "short", but trust, it tags along
             // with the circle shaped thumb properly.

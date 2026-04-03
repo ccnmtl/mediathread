@@ -22,7 +22,7 @@ if (!Sherd.Video) {
     Sherd.Video = {};
 }
 if (!Sherd.Video.Helpers) {
-    Sherd.Video.secondsToCode = function (seconds) {
+    Sherd.Video.secondsToCode = function(seconds) {
         // second argument is the timecode object to be modified, otherwise
         // it'll create one
         var tc = {};
@@ -45,7 +45,7 @@ if (!Sherd.Video.Helpers) {
         return tc.hr + ":" + tc.min + ":" + tc.sec;
     };
 
-    Sherd.Video.codeToSeconds = function (code) {
+    Sherd.Video.codeToSeconds = function(code) {
         if (!code) {
             return 0;
         }
@@ -66,7 +66,7 @@ if (!Sherd.Video.Helpers) {
         }
         return seconds;
     };
-    Sherd.Video.Helpers = function () {
+    Sherd.Video.Helpers = function() {
         // helper functions
         this.secondsToCode = Sherd.Video.secondsToCode;
         this.codeToSeconds = Sherd.Video.codeToSeconds;
@@ -74,19 +74,19 @@ if (!Sherd.Video.Helpers) {
 }
 
 if (!Sherd.Video.Base) {
-    var noop = function () {
+    var noop = function() {
     };
-    var unimplemented = function () {
+    var unimplemented = function() {
         throw new Error('unimplemented');
     };
 
-    Sherd.Video.Base = function (options) {
+    Sherd.Video.Base = function(options) {
         var self = this;
         Sherd.Video.Helpers.apply(this, arguments);
         Sherd.Base.AssetView.apply(this, arguments);
 
         this.queryformat = {
-            find: function (str) {
+            find: function(str) {
                 //legacy
                 var start_point = String(str).match(/start=([.\d]+)/);
                 if (start_point !== null) {
@@ -111,28 +111,28 @@ if (!Sherd.Video.Base) {
         };
 
         this.microformat = {
-            create : function (obj) { // Return the .html embed block for the embedded player
+            create : function(obj) { // Return the .html embed block for the embedded player
                 return '';
             },
             components: unimplemented, // Save the player and other necessary state for the control to be updated
-            find : function (html_dom) { // Find embedded players. Note: Not currently in use.
+            find : function(html_dom) { // Find embedded players. Note: Not currently in use.
                 return [ {
                     html : html_dom
                 } ];
             },
-            read : function (found_obj) { // Return serialized description of embedded player. Note: Not currently in use.
+            read : function(found_obj) { // Return serialized description of embedded player. Note: Not currently in use.
                 var obj;
                 return obj;
             },
-            supports: function () { return []; },  // Idea: Return list of types supported. Note: Not currently in use or implemented by anyone
-            type: function () { var type; return type; }, // Return current type of media playing. Note: Not currently in use;
-            update: function (obj, html_dom) {} // Replace the video identifier within the .html embed block
+            supports: function() { return []; },  // Idea: Return list of types supported. Note: Not currently in use or implemented by anyone
+            type: function() { var type; return type; }, // Return current type of media playing. Note: Not currently in use;
+            update: function(obj, html_dom) {} // Replace the video identifier within the .html embed block
         };
 
         // AssetView overrides to initialize and deinitialize timers/ui/etc.
-        this.initialize = function () {};
+        this.initialize = function() {};
 
-        this.deinitialize = function () {
+        this.deinitialize = function() {
             if (self.media.isPlaying()) {
                 self.media.pause();
             }
@@ -143,21 +143,21 @@ if (!Sherd.Video.Base) {
         this.media = {
             duration : unimplemented, // get duration in seconds
             pause: unimplemented,
-            pauseAt: function (endtime) {
+            pauseAt: function(endtime) {
                 if (endtime) {
                     // kill any outstanding timers for this event
                     var name = self.microformat.type() + ' pause';
                     self.events.killTimer(name);
                     self.events.queue(name, [
                         {
-                            test: function () {
+                            test: function() {
                                 var time = self.media.time();
                                 return time >= endtime;
                             },
                             poll: 500
                         },
                         {
-                            call: function () {
+                            call: function() {
                                 self.media.pause();
                             }
                         }
@@ -165,29 +165,29 @@ if (!Sherd.Video.Base) {
                 }
             },
             play: unimplemented,
-            playAt: function (starttime) {
+            playAt: function(starttime) {
                 self.media.seek(starttime, false, /*autoplay*/true);
             },
-            isPlaying : function () {
+            isPlaying : function() {
                 return false; // Used by ClipForm to determine whether the media is playing.
                 // Maybe should be one level up so that ClipForm doesn't know about media
             },
             seek: unimplemented, // (starttime, endtime)
             ready: unimplemented, // whether the player is ready to go. mostly used internally.
             time : unimplemented, // get current time in seconds
-            timescale : function () { return 1; }, // get the movie's timescale. only QT is not 1 (so far)
-            timeCode: function () { // get current time as a time code string
+            timescale : function() { return 1; }, // get the movie's timescale. only QT is not 1 (so far)
+            timeCode: function() { // get current time as a time code string
                 return self.secondsToCode(self.media.time());
             },
             timeStrip : unimplemented
         };
 
-        this.play = function () {
+        this.play = function() {
             this.media.play();
         };
 
         // tell me where you are
-        this.getState = function () {
+        this.getState = function() {
             var state = {};
             state.start = self.media.time();
             state['default'] = (!state.start);
@@ -200,7 +200,7 @@ if (!Sherd.Video.Base) {
         // did you give me an end point -- pause at that end point or jump to
         // the end point if you're past that point
         // if not loaded -- then do this as soon as you load (if ready)
-        this.setState = function (obj, options) {
+        this.setState = function(obj, options) {
             if (typeof obj === 'object') {
                 if (obj === null) {
                     //endtime is different so it doesn't start playing
@@ -216,11 +216,11 @@ if (!Sherd.Video.Base) {
         }
 
         this.events._timers = {};
-        this.events.registerTimer = function (name, timeoutID) {
+        this.events.registerTimer = function(name, timeoutID) {
             this._timers[name] = timeoutID;
         };
 
-        this.events.killTimer = function (name) {
+        this.events.killTimer = function(name) {
             if (this._timers[name]) {
                 window.clearTimeout(this._timers[name]);
                 delete this._timers[name];
@@ -230,7 +230,7 @@ if (!Sherd.Video.Base) {
             }
         };
 
-        this.events.clearTimers = function () {
+        this.events.clearTimers = function() {
             for (var name in this._timers) {
                 if (this._timers.hasOwnProperty(name)) {
                     window.clearTimeout(this._timers[name]);
@@ -243,10 +243,10 @@ if (!Sherd.Video.Base) {
          * queue() takes a plan of tasks and will perform one after another with
          * the opportunity to keep trying a step until it's ready to proceed
          * @plan array of objects of the form: {data:'Queue dispatch'//passed to
-         * all calls, but useful as a name, too ,call:function (){}//called
-         * initially in sequence-- ,check:media.GetDuration ,test:function (){}
+         * all calls, but useful as a name, too ,call:function(){}//called
+         * initially in sequence-- ,check:media.GetDuration ,test:function(){}
          * ,poll:100//msecs will keep trying until test(check()) returns true
-         * ,callback:function (){}//if test(check()) returns true, this function
+         * ,callback:function(){}//if test(check()) returns true, this function
          * will be called //UNIMPLEMENTED--need some thought on where events get
          * registered, etc. ,event:'load' //will listen for this event to call
          * test(check()), parallel to polling ,broadcast:'seek' //event sent
@@ -262,7 +262,7 @@ if (!Sherd.Video.Base) {
                 var timeoutID;
 
                 //TODO: event, broadcast attrs
-                var advance = function () {
+                var advance = function() {
                     if (pollID) {
                         window.clearTimeout(pollID);
                     }
@@ -275,7 +275,7 @@ if (!Sherd.Video.Base) {
                         next();
                     }
                 };
-                next = function () {
+                next = function() {
                     var fired = false;
                     var curself = (cur.self) ? cur.self : this;
                     try {
@@ -333,7 +333,7 @@ if (!Sherd.Video.Base) {
                         advance();
                     }
                     if (cur.timeout) {
-                        timeoutID = window.setTimeout(function () {
+                        timeoutID = window.setTimeout(function() {
                             fired = true;
                             advance();
                         }, cur.timeout);

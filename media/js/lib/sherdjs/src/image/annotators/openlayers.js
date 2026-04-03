@@ -3,24 +3,24 @@ if (!Sherd) { Sherd = {}; }
 if (!Sherd.Image) { Sherd.Image = {}; }
 if (!Sherd.Image.Annotators) { Sherd.Image.Annotators = {}; }
 if (!Sherd.Image.Annotators.OpenLayers) {
-    Sherd.Image.Annotators.OpenLayers = function () {
+    Sherd.Image.Annotators.OpenLayers = function() {
         var self = this;
 
         Sherd.Base.AssetView.apply(this, arguments);//inherit
 
-        this.attachView = function (view) {
+        this.attachView = function(view) {
             self.targetview = view;
         };
         this.targetstorage = [];
-        this.addStorage = function (stor) {
+        this.addStorage = function(stor) {
             this.targetstorage.push(stor);
         };
 
-        this.getState = function () {
+        this.getState = function() {
             return {};
         };
 
-        this.setState = function (obj, options) {
+        this.setState = function(obj, options) {
             if (typeof obj === 'object') {
                 //because only one annotation is allowed at once.
                 ///At the moment, we could do a better job of saving 'all' features
@@ -48,7 +48,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
             }
         };
 
-        this.deinitialize = function () {
+        this.deinitialize = function() {
             if (self.vectorLayer !== undefined &&
                     self.vectorLayer.id !== 
                         self.targetview.openlayers.vectorLayer.getLayer().id) {
@@ -56,7 +56,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
             }
         };
 
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             if (!self.openlayers.editingtoolbar) {
                 self.vectorLayer =
                     self.targetview.openlayers.vectorLayer.getLayer(); 
@@ -75,7 +75,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
             }
 
             //on creation of an annotation
-            self.openlayers.editingtoolbar.featureAdded = function (feature) {
+            self.openlayers.editingtoolbar.featureAdded = function(feature) {
                 var current_state = self.targetview.getState();
                 var geojson = self.targetview.openlayers.feature2json(feature);
                 //copy feature properties to current_state
@@ -91,14 +91,14 @@ if (!Sherd.Image.Annotators.OpenLayers) {
             };
 
             /// button listeners
-            self.events.connect(self.components.center, 'click', function (evt) {
+            self.events.connect(self.components.center, 'click', function(evt) {
                 self.targetview.setState({feature: self.targetview.currentfeature});
             });
         };
         this.openlayers = {
             CustomEditingToolbar: OpenLayers.Class(
             OpenLayers.Control.EditingToolbar, {
-                initialize: function (layer, options) {
+                initialize: function(layer, options) {
                     //copied, just removing Path-drawing
                     var self = this;
                     OpenLayers.Control.Panel.prototype.initialize.apply(this, [options]);
@@ -141,7 +141,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
         };//end this.openlayers
 
         this.storage = {
-            'update': function (obj, just_downstream) {
+            'update': function(obj, just_downstream) {
                 if (!just_downstream) {
                     self.setState(obj, { 'mode': self.mode });
                 }
@@ -152,7 +152,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
         };
 
         this.microformat = {
-            'create': function () {
+            'create': function() {
                 var id = Sherd.Base.newID('openlayers-annotator');
                 return {
                     htmlID: id,
@@ -166,7 +166,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
                     '</p></div>'
                 };
             },
-            'components': function (html_dom, create_obj) {
+            'components': function(html_dom, create_obj) {
                 return {
                     'top': html_dom,
                     'center': document.getElementById("btnCenter"),

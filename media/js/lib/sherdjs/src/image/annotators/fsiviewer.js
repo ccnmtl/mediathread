@@ -56,12 +56,19 @@ if (!Sherd.Image.Annotators.FSIViewer) {
                 var id = Sherd.Base.newID('openlayers-annotator');
                 return {
                     htmlID: id,
-                    text: '<div id="' + id + '"><p style="display:none;" id="instructions" class="sherd-instructions">' +
-                    'To create a selection of an ARTstor image, use tools at the top of the image to zoom into the desired region.' + 
-                    '<br /><br />' +
-                    'Add title, tags and notes. If a Course Vocabulary has been enabled by the instructor, apply vocabulary terms. ' +
-                    'Click Save when you are finished.' +
-                    '</p></div>'
+                    text:
+                    '<div id="' + id +
+                        '"><p style="display:none;" id="instructions" ' +
+                        'class="sherd-instructions">' +
+                        'To create a selection of an ARTstor image, use ' +
+                        'tools at the top of the image to zoom into the ' +
+                        'desired region.' +
+                        '<br /><br />' +
+                        'Add title, tags and notes. If a Course Vocabulary ' +
+                        'has been enabled by the instructor, ' +
+                        'apply vocabulary terms. ' +
+                        'Click Save when you are finished.' +
+                        '</p></div>'
                 };
             },
             'components': function(html_dom, create_obj) {
@@ -69,7 +76,6 @@ if (!Sherd.Image.Annotators.FSIViewer) {
                     return {};
                 }
 
-                var buttons = html_dom.getElementsByTagName('button');
                 return {
                     'top': html_dom,
                     'image': html_dom.getElementsByTagName('img')[0],
@@ -79,5 +85,3 @@ if (!Sherd.Image.Annotators.FSIViewer) {
         };
     };//END Sherd.Image.Annotators.OpenLayers
 }//END if (!Sherd.Image.Annotators.OpenLayers)
-
-

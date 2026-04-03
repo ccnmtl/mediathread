@@ -15,40 +15,51 @@ Documentation:
      2010/August/26:
      Firefox does not have .seekable implemented
      There is no 'canseek' event.
-     WebKit (Chrome) does not trigger 'progress' event, but triggers 'canplaythrough' like progress
-     Would be nice to know if a particular event is supported (maybe even per-object)
+     WebKit (Chrome) does not trigger 'progress' event, but triggers
+     'canplaythrough' like progress Would be nice to know if a
+     particular event is supported (maybe even per-object)
  */
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Video) { Sherd.Video = {}; }
 if (!Sherd.Video.Videotag) {
     Sherd.Video.Videotag = function() {
         var self = this;
-        Sherd.Video.Base.apply(this, arguments); //inherit off video.js - base.js
+        //inherit off video.js - base.js
+        Sherd.Video.Base.apply(this, arguments);
 
         ////////////////////////////////////////////////////////////////////////
         // Microformat
         this.microformat.create = function(obj, doc) {
             var wrapperID = Sherd.Base.newID('videotag-wrapper-');
             var playerID = Sherd.Base.newID('videotag-player-');
-            var controllerID = Sherd.Base.newID('videotag-controller-');
 
             var supported = self.microformat._getPlayerParams(obj);
             if (supported) {
                 if (!obj.options) {
                     obj.options = {
-                        width: (obj.presentation === 'small' ? 320 : (obj.width || 475)),
-                        height: (obj.presentation === 'small' ? 240 : (obj.height || 336))
+                        width: (
+                            obj.presentation === 'small' ? 320 :
+                                (obj.width || 475)
+                        ),
+                        height: (
+                            obj.presentation === 'small' ? 240 :
+                                (obj.height || 336)
+                        )
                     };
                 }
                 var create_obj = {
                     object: obj,
                     htmlID: wrapperID,
-                    playerID: playerID, // Used by .initialize post initialization
-                    text: '<div id="' + wrapperID + '" class="sherd-videotag-wrapper sherd-video-wrapper" ' +
+                    // Used by .initialize post initialization
+                    playerID: playerID,
+                    text: '<div id="' + wrapperID +
+                        '" class="sherd-videotag-wrapper ' +
+                        'sherd-video-wrapper" ' +
                     '     style="width:' + obj.options.width + 'px">' +
                     '<video id="' + playerID + '" controls="controls"' +
                     ((obj.poster) ? ' poster="' + obj.poster + '" ' : '') +
-                    '       height="' + obj.options.height + '" width="' + obj.options.width + '"' +
+                        '       height="' + obj.options.height + '" width="' +
+                        obj.options.width + '"' +
                     '       type=\'' + supported.mimetype + '\'' +
                     '       src="' + supported.url + '">' +
                     '</video>' +
@@ -96,27 +107,30 @@ if (!Sherd.Video.Videotag) {
                 }
                 if (create_obj) {
                     rv.player = html_dom.getElementsByTagName('video')[0];
-                    rv.width = (create_obj.options && create_obj.options.width) || rv.player.offsetWidth;
+                    rv.width = (
+                        create_obj.options && create_obj.options.width
+                    ) || rv.player.offsetWidth;
                     rv.mediaUrl = create_obj.object[create_obj.provider];
                 }
                 return rv;
-            } catch (e) {}
+            } catch {}
             return false;
         };
 
-        // Find the objects based on the individual player properties in the DOM
-        // Works in conjunction with read
+        // Find the objects based on the individual player properties
+        // in the DOM Works in conjunction with read
         this.microformat.find = function(html_dom) {
-            throw new Error("unimplemented");
+            throw new Error('unimplemented');
             //var found = [];
             //return found;
         };
 
-        // Return asset object description (parameters) in a serialized JSON format.
-        // Will be used for things like printing, or spitting out a description.
-        // works in conjunction with find
+        // Return asset object description (parameters) in a
+        // serialized JSON format.
+        // Will be used for things like printing, or spitting out a
+        // description.  works in conjunction with find
         this.microformat.read = function(found_obj) {
-            throw new Error("unimplemented");
+            throw new Error('unimplemented');
         };
 
         this.microformat.type = function() { return 'videotag'; };
@@ -130,7 +144,7 @@ if (!Sherd.Video.Videotag) {
                     self.components.player.src = supported.url;
                     self.components.mediaUrl = supported.url;
                     return true;
-                } catch (e) {}
+                } catch {}
             }
             return false;
         };
@@ -147,12 +161,16 @@ if (!Sherd.Video.Videotag) {
             });
             if (self.components.player) {
                 var signal_duration = function() {
-                    self.events.signal(self, 'duration', { duration: self.media.duration() });
+                    self.events.signal(self, 'duration', {
+                        duration: self.media.duration()
+                    });
                 };
                 if (self.media.duration() > 0) {
                     signal_duration();
                 } else {
-                    self.events.connect(self.components.player, 'loadedmetadata', signal_duration);
+                    self.events.connect(
+                        self.components.player,
+                        'loadedmetadata', signal_duration);
                 }
             }
         };
@@ -186,8 +204,11 @@ if (!Sherd.Video.Videotag) {
         };
 
         this.media.ready = function() {
-            ///http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#dom-media-have_metadata
-            return (self.components.player && self.components.player.readyState > 2);
+            ///http://www.whatwg.org/specs/web-apps/current-work/multipage/
+            ///video.html#dom-media-have_metadata
+            return (
+                self.components.player && self.components.player.readyState > 2
+            );
         };
 
         this.media.seek = function(starttime, endtime, autoplay) {
@@ -200,7 +221,7 @@ if (!Sherd.Video.Videotag) {
                             if (d.disconnect) {
                                 d.disconnect();
                             }
-                        } catch (e) {
+                        } catch {
                             return { error: true };
                         }
                     }
@@ -214,28 +235,34 @@ if (!Sherd.Video.Videotag) {
                 };
                 if (_seek().error) {
                     var progress_triggers = 0;
-                    d = self.events.connect(self.components.player, 'progress', function(evt) {
-                        progress_triggers = 1;
-                        _seek(evt);
-                    });
-                    ///WebKit(Chrome) doesn't trigger progress, but 'canplaythrough' seems to trigger enough
-                    c = self.events.connect(self.components.player, 'canplaythrough', function(evt) {
-                        if (progress_triggers === 1) {
-                            c.disconnect();
-                        } else {
-                            if (!(progress_triggers--)) {
-                                d.disconnect();
-                            }
-                            d = c;
+                    d = self.events.connect(
+                        self.components.player, 'progress', function(evt) {
+                            progress_triggers = 1;
                             _seek(evt);
-                        }
-                    });
+                        });
+                    ///WebKit(Chrome) doesn't trigger progress, but
+                    ///'canplaythrough' seems to trigger enough
+                    c = self.events.connect(
+                        self.components.player, 'canplaythrough',
+                        function(evt) {
+                            if (progress_triggers === 1) {
+                                c.disconnect();
+                            } else {
+                                if (!(progress_triggers--)) {
+                                    d.disconnect();
+                                }
+                                d = c;
+                                _seek(evt);
+                            }
+                        });
                 }
             }
         };
 
         this.media.time = function() {
-            return (!self.components.player || self.components.player.currentTime);
+            return (
+                !self.components.player || self.components.player.currentTime
+            );
         };
 
         this.media.timescale = function() {

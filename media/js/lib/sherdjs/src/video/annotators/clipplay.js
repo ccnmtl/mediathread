@@ -4,7 +4,8 @@
 //-- starttime:0, endtime:0
 
 //Signals:
-//seek: when a user clicks on the start/end time of the ClipPlay, sends a seek event out
+//seek: when a user clicks on the start/end time of the ClipPlay,
+//sends a seek event out
 
 if (!Sherd) {Sherd = {}; }
 if (!Sherd.Video) {Sherd.Video = {}; }
@@ -13,7 +14,8 @@ if (!Sherd.Video.Annotators.ClipPlay) {
     Sherd.Video.Annotators.ClipPlay = function() {
         var self = this;
 
-        Sherd.Video.Base.apply(this, arguments); //inherit off video.js - base.js
+        //inherit off video.js - base.js
+        Sherd.Video.Base.apply(this, arguments);
 
         this.attachView = function(view) {
             this.targetview = view;
@@ -41,12 +43,16 @@ if (!Sherd.Video.Annotators.ClipPlay) {
         };
 
         this.initialize = function(create_obj) {
-            self.events.connect(self.components.clipPlay, 'click', function(evt) {
-                var obj = self.getState();
-                self.events.signal(
-                    self.targetview, 'playclip',
-                    {start: obj.starttime, end: obj.endtime, autoplay: true});
-            });
+            self.events.connect(
+                self.components.clipPlay, 'click', function(evt) {
+                    var obj = self.getState();
+                    self.events.signal(
+                        self.targetview, 'playclip', {
+                            start: obj.starttime,
+                            end: obj.endtime,
+                            autoplay: true
+                        });
+                });
         };
 
         this.microformat.create = function(obj) {
@@ -60,7 +66,8 @@ if (!Sherd.Video.Annotators.ClipPlay) {
             };
         };
 
-        // self.components -- Access to the internal player and any options needed at runtime
+        // self.components -- Access to the internal player and any
+        // options needed at runtime
         this.microformat.components = function(html_dom, create_obj) {
             try {
                 return {
@@ -68,9 +75,9 @@ if (!Sherd.Video.Annotators.ClipPlay) {
                     starttime: 0,
                     endtime: 0,
                 };
-            } catch (e) {}
+            } catch {}
             return false;
         };
     };/* function Sherd.Video.Annotators.ClipPlay() */
-        
+
 }/*if !ClipPlay...*/

@@ -1,7 +1,7 @@
 /* global Sherd: true */
 
 import {
-    pdfjsScale, isValidAnnotation, drawAnnotation, renderPage
+    isValidAnnotation
 } from '../../../../../pdf/utils.js';
 
 if (!Sherd) { Sherd = {}; }
@@ -159,24 +159,37 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                 var id = Sherd.Base.newID('pdfjs-annotator');
                 return {
                     htmlID: id,
-                    text: '<div id="' + id + '" class="toolbar-annotations toolbar-annotation p-3 bg-dark text-white">' +
+                    text: '<div id="' + id +
+                        '" class="toolbar-annotations toolbar-annotation ' +
+                        'p-3 bg-dark text-white">' +
                         '<form>' +
                         '<div class="form-row align-items-center">' +
                         '<p class="av-selections">Draw Selection</p>' +
-                    '<button type="button" class="btn btn-secondary mr-1 rectangle-button">' +
-                        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path></svg>' +
+                        '<button type="button" ' +
+                        '"class="btn btn-secondary mr-1 rectangle-button">' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" ' +
+                        'width="16" height="16" ' +
+                        'fill="currentColor" class="bi bi-square" ' +
+                        'viewBox="0 0 16 16">' +
+                        '<path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 ' +
+                        '1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 ' +
+                        '2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 ' +
+                        '0-2-2H2z"></path>' +
+                        '</svg>' +
                         ' Rectangle' +
                         '</button>' +
 
                     '<button type="button" ' +
                         'style="display: none;" ' +
-                        'class="ml-auto btn btn-danger quickedit-cancel-button">' +
+                        'class="ml-auto btn btn-danger ' +
+                        'quickedit-cancel-button">' +
                         'Cancel' +
                         '</button>' +
 
                     '<button type="button" ' +
                         'style="display: none;" ' +
-                        'class="ml-auto btn btn-danger quickedit-clear-button">' +
+                        'class="ml-auto btn btn-danger ' +
+                        'quickedit-clear-button">' +
                         'Clear' +
                         '</button>' +
 
@@ -198,7 +211,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
                     'clear': document.querySelector('.quickedit-clear-button')
                 };
             }
-        }
+        };
 
         this.viewAllSelections = function(selections) {
             const data = {
@@ -228,7 +241,7 @@ if (!Sherd.Pdf.Annotators.Pdf) {
 
             const data = {
                 pages: pages
-            }
+            };
             data.message = 'onClearAllSelections';
 
             const iframe = window.jQuery('iframe.pdfjs')[0];

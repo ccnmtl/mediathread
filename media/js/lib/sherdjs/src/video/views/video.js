@@ -33,16 +33,16 @@ if (!Sherd.Video.Helpers) {
         tc.fraction = seconds - intTime;
 
         if (tc.hr < 10) {
-            tc.hr = "0" + tc.hr;
+            tc.hr = '0' + tc.hr;
         }
         if (tc.min < 10) {
-            tc.min = "0" + tc.min;
+            tc.min = '0' + tc.min;
         }
         if (tc.sec < 10) {
-            tc.sec = "0" + tc.sec;
+            tc.sec = '0' + tc.sec;
         }
 
-        return tc.hr + ":" + tc.min + ":" + tc.sec;
+        return tc.hr + ':' + tc.min + ':' + tc.sec;
     };
 
     Sherd.Video.codeToSeconds = function(code) {
@@ -74,8 +74,6 @@ if (!Sherd.Video.Helpers) {
 }
 
 if (!Sherd.Video.Base) {
-    var noop = function() {
-    };
     var unimplemented = function() {
         throw new Error('unimplemented');
     };
@@ -93,7 +91,7 @@ if (!Sherd.Video.Base) {
                     var start = Number(start_point[1]);
                     if (!isNaN(start)) {
                         return [ {
-                            start : start
+                            start: start
                         } ];
                     }
                 }
@@ -111,22 +109,33 @@ if (!Sherd.Video.Base) {
         };
 
         this.microformat = {
-            create : function(obj) { // Return the .html embed block for the embedded player
+            // Return the .html embed block for the embedded player
+            create: function(obj) {
                 return '';
             },
-            components: unimplemented, // Save the player and other necessary state for the control to be updated
-            find : function(html_dom) { // Find embedded players. Note: Not currently in use.
+            // Save the player and other necessary state for the
+            // control to be updated
+            components: unimplemented,
+            // Find embedded players. Note: Not currently in use.
+            find: function(html_dom) {
                 return [ {
-                    html : html_dom
+                    html: html_dom
                 } ];
             },
-            read : function(found_obj) { // Return serialized description of embedded player. Note: Not currently in use.
+            // Return serialized description of embedded player. Note:
+            // Not currently in use.
+            read: function(found_obj) {
                 var obj;
                 return obj;
             },
-            supports: function() { return []; },  // Idea: Return list of types supported. Note: Not currently in use or implemented by anyone
-            type: function() { var type; return type; }, // Return current type of media playing. Note: Not currently in use;
-            update: function(obj, html_dom) {} // Replace the video identifier within the .html embed block
+            // Idea: Return list of types supported. Note: Not
+            // currently in use or implemented by anyone
+            supports: function() { return []; },
+            // Return current type of media playing. Note: Not
+            // currently in use;
+            type: function() { var type; return type; },
+            // Replace the video identifier within the .html embed block
+            update: function(obj, html_dom) {}
         };
 
         // AssetView overrides to initialize and deinitialize timers/ui/etc.
@@ -141,7 +150,7 @@ if (!Sherd.Video.Base) {
 
         // Player specific controls
         this.media = {
-            duration : unimplemented, // get duration in seconds
+            duration: unimplemented, // get duration in seconds
             pause: unimplemented,
             pauseAt: function(endtime) {
                 if (endtime) {
@@ -168,18 +177,22 @@ if (!Sherd.Video.Base) {
             playAt: function(starttime) {
                 self.media.seek(starttime, false, /*autoplay*/true);
             },
-            isPlaying : function() {
-                return false; // Used by ClipForm to determine whether the media is playing.
-                // Maybe should be one level up so that ClipForm doesn't know about media
+            isPlaying: function() {
+                // Used by ClipForm to determine whether the media is playing.
+                return false;
+                // Maybe should be one level up so that ClipForm
+                // doesn't know about media
             },
             seek: unimplemented, // (starttime, endtime)
-            ready: unimplemented, // whether the player is ready to go. mostly used internally.
-            time : unimplemented, // get current time in seconds
-            timescale : function() { return 1; }, // get the movie's timescale. only QT is not 1 (so far)
+            // whether the player is ready to go. mostly used internally.
+            ready: unimplemented,
+            time: unimplemented, // get current time in seconds
+            // get the movie's timescale. only QT is not 1 (so far)
+            timescale: function() { return 1; },
             timeCode: function() { // get current time as a time code string
                 return self.secondsToCode(self.media.time());
             },
-            timeStrip : unimplemented
+            timeStrip: unimplemented
         };
 
         this.play = function() {
@@ -206,7 +219,9 @@ if (!Sherd.Video.Base) {
                     //endtime is different so it doesn't start playing
                     this.media.seek(0, 0.1);
                 } else {
-                    this.media.seek(obj.start, obj.end, (options && options.autoplay || false));
+                    this.media.seek(
+                        obj.start, obj.end,
+                        (options && options.autoplay || false));
                 }
             }
         };
@@ -294,7 +309,8 @@ if (!Sherd.Video.Base) {
                         }
                         var v = null;
                         var rv = true;
-                        var data = (typeof cur.data !== 'undefined') ? cur.data : '';
+                        var data = (typeof cur.data !== 'undefined') ?
+                            cur.data : '';
                         try {
                             if (cur.check) {
                                 v = cur.check.apply(curself, [ data ]);
@@ -312,11 +328,13 @@ if (!Sherd.Video.Base) {
                                 fired = true;
                                 advance();
                             } else if (cur.poll) {
-                                pollID = window.setTimeout(arguments.callee, cur.poll);
+                                pollID = window.setTimeout(
+                                    arguments.callee, cur.poll);
                             }
                         } catch (e) {
                             if (cur.poll) {
-                                pollID = window.setTimeout(arguments.callee, cur.poll);
+                                pollID = window.setTimeout(
+                                    arguments.callee, cur.poll);
                             }
                             if (cur.log) {
                                 cur.log.apply(curself, [ e, data ]);

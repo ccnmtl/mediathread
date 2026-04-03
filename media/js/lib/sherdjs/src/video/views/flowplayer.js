@@ -14,7 +14,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
 
         this.state = {ready: false};
 
-        Sherd.Video.Base.apply(this, arguments); // inherit -- video.js -- base.js
+        // inherit -- video.js -- base.js
+        Sherd.Video.Base.apply(this, arguments);
 
         this.presentations = {
             'small': {
@@ -35,7 +36,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         // Microformat
 
         // create == asset->{html+information to make it}
-        // setup the flowplayer div. will be replaced on write using the flowplayer API
+        // setup the flowplayer div. will be replaced on write using
+        // the flowplayer API
         this.microformat.create = function(obj, doc) {
             let wrapperID = Sherd.Base.newID('flowplayer-wrapper-');
             let playerID = Sherd.Base.newID('flowplayer-player-');
@@ -61,11 +63,11 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 };
             }
 
-            let posterUrl = "";
+            let posterUrl = '';
             if (obj.poster) {
                 posterUrl = obj.poster;
-            } else if (params.provider === "audio") {
-                posterUrl = STATIC_URL + "img/poster_audio.png";
+            } else if (params.provider === 'audio') {
+                posterUrl = STATIC_URL + 'img/poster_audio.png';
             }
 
             let create_obj = {
@@ -73,8 +75,11 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                 htmlID: wrapperID,
                 playerID: playerID, // Used by .initialize post initialization
                 playerParams: params,
-                text: '<div id="' + wrapperID + '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
-                    '<div class="fp-full fp-outlined no-brand sherd-flowplayer no-hover fixed-controls"' +
+                text: '<div id="' + wrapperID +
+                    '" class="sherd-flowplayer-wrapper sherd-video-wrapper">' +
+                    '<div class="fp-full fp-outlined no-brand ' +
+                    'sherd-flowplayer ' +
+                    'no-hover fixed-controls"' +
                           'poster="' + posterUrl + '"' +
                            'style="display:block;" id="' + playerID + '">' +
                     '</div>' +
@@ -92,7 +97,8 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             return create_obj;
         };
 
-        // self.components -- Access to the internal player and any options needed at runtime
+        // self.components -- Access to the internal player and any
+        // options needed at runtime
         this.microformat.components = function(html_dom, create_obj) {
             try {
                 let rv = {};
@@ -113,7 +119,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     }
                 }
                 return rv;
-            } catch (e) {}
+            } catch {}
             return false;
         };
 
@@ -121,10 +127,14 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         this.microformat.update = function(obj, html_dom) {
             let rc = false;
             let newUrl = self.microformat._getPlayerParams(obj);
-            if (newUrl.url && document.getElementById(self.components.playerID) && self.media.ready()) {
+            if (
+                newUrl.url &&
+                    document.getElementById(self.components.playerID) &&
+                    self.media.ready()
+            ) {
                 if (self.components.player.video.url === newUrl.url) {
-                    // If the url is the same as the previous, just seek to the right spot.
-                    // This works just fine.
+                    // If the url is the same as the previous, just
+                    // seek to the right spot.  This works just fine.
                     rc = true;
                 }
             } else {
@@ -132,7 +142,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             }
             return rc;
         };
-        
+
         this.microformat._getPlayerParams = function(obj) {
             let rc = {};
             if (obj.mp4_rtmp) {
@@ -164,37 +174,38 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
             }
             return rc;
         };
-        
+
         this.microformat.type = function() {
             return 'flowplayer';
         };
-        
+
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
-        // Post-create step. Overriding here to do a component create using the Flowplayer API
-        
+        // Post-create step. Overriding here to do a component create
+        // using the Flowplayer API
+
         this.disconnect_pause = function() {
-            self.events.killTimer('flowplayer pause');  
+            self.events.killTimer('flowplayer pause');
         };
-        
+
         this.disconnect_tickcount = function() {
-          self.events.killTimer('tick count');  
+            self.events.killTimer('tick count');
         };
 
         this.connect_tickcount = function() {
             self.events.queue('tick count', [{
-                test : function() {
+                test: function() {
                     self.components.elapsed.innerHTML =
                         self.secondsToCode(self.media.time());
-                    
-                    if (self.components.provider === "audio") {
+
+                    if (self.components.provider === 'audio') {
                         self.media.duration();
                     }
                 },
                 poll: 1000
-            }]);  
+            }]);
         };
-        
+
         this.initialize = function(create_obj) {
             if (create_obj) {
                 let options = {
@@ -203,34 +214,42 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     playlist: [],
                     splash: false,
                     swf: flowplayer.html5_swf_location
-                 };
+                };
 
-                 if (create_obj.object.flv || create_obj.object.flv_pseudo) {
-                     options.playlist.push([{flv: create_obj.playerParams.url}]);
-                 } else {
-                     options.playlist.push([{mp4: create_obj.playerParams.url}]);
-                 }
+                if (create_obj.object.flv || create_obj.object.flv_pseudo) {
+                    options.playlist.push(
+                        [{flv: create_obj.playerParams.url}]);
+                } else {
+                    options.playlist.push(
+                        [{mp4: create_obj.playerParams.url}]);
+                }
 
-                 let elt = jQuery("#" + create_obj.playerID);
-                 jQuery(elt).flowplayer(options);
+                let elt = jQuery('#' + create_obj.playerID);
+                jQuery(elt).flowplayer(options);
 
-                 jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
+                jQuery(window).trigger(
+                    'video.create', [
+                        self.components.itemId, self.components.primaryType]);
 
                 // Save reference to the player
                 self.components.player = flowplayer(elt);
                 self.components.provider = create_obj.playerParams.provider;
 
-                // register for notifications from clipstrip to seek to various times in the video
+                // register for notifications from clipstrip to seek
+                // to various times in the video
                 self.events.connect(self, 'seek', self.media.playAt);
                 self.events.connect(self, 'playclip', function(obj) {
                     self.media.seek(obj.start, obj.end, true);
                 });
 
-                self.components.player.bind("ready", function(e, api) {
+                self.components.player.bind('ready', function(e, api) {
                     self.state.ready = true;
 
                     if (self.state.starttime || self.state.autoplay) {
-                        self.media.seek(self.state.starttime, self.state.endtime, self.state.autoplay);
+                        self.media.seek(
+                            self.state.starttime,
+                            self.state.endtime,
+                            self.state.autoplay);
                     }
 
                     if (api.video.src) {
@@ -239,21 +258,22 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                             'title': 'Download video',
                             'download': 'download'
                         });
-                        $el.html('<span class="glyphicon glyphicon-floppy-save" ' +
-                                 'aria-hidden="true"></span>');
+                        $el.html(
+                            '<span class="glyphicon glyphicon-floppy-save" ' +
+                                'aria-hidden="true"></span>');
                         let $wrapper = jQuery('.sherd-flowplayer-download-btn');
                         $wrapper.append($el);
                         $wrapper.show();
                     }
                 });
-                self.components.player.bind("resume", function(e, api) {
+                self.components.player.bind('resume', function(e, api) {
                     self.connect_tickcount();
                 });
-                self.components.player.bind("stop", function(e, api) {
+                self.components.player.bind('stop', function(e, api) {
                     self.disconnect_tickcount();
                     self.disconnect_pause();
                 });
-                self.components.player.bind("pause", function(e, api) {
+                self.components.player.bind('pause', function(e, api) {
                     self.disconnect_tickcount();
                     self.disconnect_pause();
                 });
@@ -283,7 +303,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         this.media.isPlaying = function() {
             return self.components.player && self.components.player.playing;
         };
-        
+
         this.media.ready = function() {
             return self.state.ready;
         };
@@ -318,7 +338,7 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
         };
 
         this.media.time = function() {
-            return self.components.player ? 
+            return self.components.player ?
                 self.components.player.video.time : 0;
         };
 

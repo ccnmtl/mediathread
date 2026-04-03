@@ -1,7 +1,7 @@
 /* global Sherd: true*/
 
 import {
-    pdfjsScale, isValidAnnotation, drawAnnotation, renderPage
+    isValidAnnotation, drawAnnotation, renderPage
 } from '../../../../../pdf/utils.js';
 
 const PdfJS = function() {
@@ -81,7 +81,11 @@ const PdfJS = function() {
         },
         'medium': {
             height: function(obj, presenter) {
-                var height = self.components.winHeight ? self.components.winHeight() : Sherd.winHeight();
+                var height = (
+                    self.components.winHeight ?
+                        self.components.winHeight() :
+                        Sherd.winHeight()
+                );
                 return height;
             },
             width: function(obj, presenter) {
@@ -101,15 +105,16 @@ const PdfJS = function() {
     this.getPresentation = function(create_obj) {
         let presentation;
         switch (typeof create_obj.object.presentation) {
-            case 'string':
-                presentation = self.presentations[create_obj.object.presentation];
-                break;
-            case 'object':
-                presentation = create_obj.object.presentation;
-                break;
-            case 'undefined':
-                presentation = self.presentations['default'];
-                break;
+        case 'string':
+            presentation = self.presentations[
+                create_obj.object.presentation];
+            break;
+        case 'object':
+            presentation = create_obj.object.presentation;
+            break;
+        case 'undefined':
+            presentation = self.presentations['default'];
+            break;
         }
         return presentation;
     };
@@ -158,20 +163,22 @@ const PdfJS = function() {
         const presentation = self.getPresentation(self.current_obj);
 
         // If page number isn't present, fall back to page 1.
-        const pageNumber =
-              (annotation && annotation.geometry && annotation.geometry.page) ?
-              annotation.geometry.page : 1;
+        const pageNumber = (
+            (annotation && annotation.geometry && annotation.geometry.page) ?
+                annotation.geometry.page : 1
+        );
 
         self.pdfLoadingTask.promise.then(function(pdf) {
             pdf.getPage(pageNumber).then(function(page) {
-                const [renderTask, scale, offsetX, offsetY] = renderPage(
+                const [, scale, offsetX, offsetY] = renderPage(
                     page, canvasEl,
                     presentation.width(), presentation.height(),
                     annotation
                 );
 
-                const selector = self.wrapperID ?
-                      '#' + self.wrapperID : '.sherd-pdfjs-view';
+                const selector = (
+                    self.wrapperID ? '#' + self.wrapperID : '.sherd-pdfjs-view'
+                );
 
                 if (isValidAnnotation(annotation)) {
                     // Append <svg> element next to the <canvas>
@@ -240,7 +247,6 @@ const PdfJS = function() {
         const presentation = self.getPresentation(create_obj);
         // Init pdf.js view
         const top = document.getElementById(create_obj.htmlID);
-        const canvasEl = top.querySelector('canvas');
         const loadingTask = pdfjsLib.getDocument(create_obj.object.pdf);
         self.pdfLoadingTask = loadingTask;
 
@@ -260,7 +266,8 @@ const PdfJS = function() {
 
     this.queryformat = {
         find: function(str) {
-            var xywh = String(str).match(/xywh=((\w+):)?([.\d]+),([.\d]+),([.\d]+),([.\d]+)/);
+            var xywh = String(str).match(
+                /xywh=((\w+):)?([.\d]+),([.\d]+),([.\d]+),([.\d]+)/);
             if (xywh !== null) {
                 var ann = {
                     xywh: {

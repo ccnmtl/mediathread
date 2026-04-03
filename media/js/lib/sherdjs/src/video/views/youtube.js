@@ -18,7 +18,8 @@ if (!Sherd.Video.YouTube) {
     Sherd.Video.YouTube = function() {
         var self = this;
 
-        Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
+        //inherit -- video.js -- base.js
+        Sherd.Video.Base.apply(this, arguments);
 
         this.state = {
             starttime: 0,
@@ -40,7 +41,7 @@ if (!Sherd.Video.YouTube) {
             }
         };
 
-        ////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
         // Microformat
 
         // create == asset->{html+information to make it}
@@ -83,10 +84,13 @@ if (!Sherd.Video.YouTube) {
             return {
                 object: obj,
                 htmlID: wrapperID,
-                playerID: self.playerID, // Used by microformat.components initialization
-                autoplay: autoplay, // Used later by _seek seeking behavior
+                // Used by microformat.components initialization
+                playerID: self.playerID,
+                // Used later by _seek seeking behavior
+                autoplay: autoplay,
                 mediaUrl: url, // Used by _seek seeking behavior
-                text: '<div id="' + wrapperID + '" class="sherd-youtube-wrapper ' +
+                text: '<div id="' + wrapperID +
+                    '" class="sherd-youtube-wrapper ' +
                     'embed-responsive embed-responsive-16by9">' +
                     '<iframe title="YouTube video ' + obj.title + '"' +
                     'type="text/html" ' +
@@ -94,7 +98,9 @@ if (!Sherd.Video.YouTube) {
                     'width="' + obj.options.width + '" ' +
                     'height="' + obj.options.height + '" ' +
                     'allowfullscreen="true" ' +
-                    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+                    'allow="accelerometer; autoplay; clipboard-write; ' +
+                    'encrypted-media; gyroscope; ' +
+                    'picture-in-picture; web-share" ' +
                     'referrerpolicy="strict-origin-when-cross-origin" ' +
                     'frameborder="0" ' +
                     'id="' + self.playerID + '" />' +
@@ -153,13 +159,16 @@ if (!Sherd.Video.YouTube) {
             return dfd.reject(false);
         };
 
-        // Return asset object description (parameters) in a serialized JSON format.
-        // NOTE: Not currently in use. Will be used for things like printing, or spitting out a description.
+        // Return asset object description (parameters) in a
+        // serialized JSON format.
+        // NOTE: Not currently in use. Will be used for things like
+        // printing, or spitting out a description.
         this.microformat.read = function(found_obj) {
             var obj = {};
             var params = found_obj.html.getElementsByTagName('param');
             for (var i = 0; i < params.length; i++) {
-                obj[params[i].getAttribute('name')] = params[i].getAttribute('value');
+                obj[params[i].getAttribute('name')] =
+                    params[i].getAttribute('value');
             }
             obj.mediaUrl = obj.movie;
             return obj;
@@ -172,11 +181,15 @@ if (!Sherd.Video.YouTube) {
 
         // Replace the video identifier within the rendered .html
         this.microformat.update = function(obj, html_dom) {
-            if (obj.youtube && document.getElementById(self.components.playerID) && self.media.ready()) {
+            if (
+                obj.youtube &&
+                    document.getElementById(self.components.playerID) &&
+                    self.media.ready()
+            ) {
                 try {
                     return obj.youtube.indexOf(self.components.mediaUrl) === 0;
                 }
-                catch (e) {}
+                catch {}
             }
             return false;
         };
@@ -185,7 +198,8 @@ if (!Sherd.Video.YouTube) {
         // AssetView Overrides
 
         this.initialize = function(create_obj) {
-            // register for notifications from clipstrip to seek to various times in the video
+            // register for notifications from clipstrip to seek to
+            // various times in the video
             self.events.connect(self, 'seek', self.media.playAt);
 
             self.events.connect(self, 'playclip', function(obj) {
@@ -207,9 +221,10 @@ if (!Sherd.Video.YouTube) {
         this.loadYouTubeAPI = function(playerId) {
             var dfd = jQuery.Deferred();
 
-            if (typeof YT === 'undefined' ||
-                typeof YT.Player === 'undefined'
-               ) {
+            if (
+                typeof YT === 'undefined' ||
+                    typeof YT.Player === 'undefined'
+            ) {
                 window.onYouTubeIframeAPIReady = function() {
                     var p = self.loadYouTubePlayer(playerId);
                     dfd.resolve(p);
@@ -241,8 +256,9 @@ if (!Sherd.Video.YouTube) {
             if (decodeURI(self.playerID) === self.components.playerID) {
                 self.media._ready = true;
 
-                jQuery(window).trigger('video.create',
-                        [self.components.itemId, self.components.primaryType]);
+                jQuery(window).trigger(
+                    'video.create',
+                    [self.components.itemId, self.components.primaryType]);
 
                 // get out of the "loaded" function before seeking happens
                 if (self.state.starttime !== undefined) {

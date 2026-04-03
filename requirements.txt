@@ -98,7 +98,7 @@ gunicorn==25.3.0
 path==17.1.0
 simplegeneric==0.8.1
 scandir==1.10.0
-pathlib2==2.3.6
+pathlib2==2.3.7.post1
 
 freezegun==1.5.5
 django-smtp-ssl==1.0

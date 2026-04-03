@@ -10,9 +10,9 @@ if (!Sherd.AssetLayer) {
     };// AssetLayer
 }
 
-// GenericAssetView -- contains the pointer functions for displaying all types of media
-// Each media type identifies a "view" to display the media
-// And a clipForm that controls how the media is annotated
+// GenericAssetView -- contains the pointer functions for displaying
+// all types of media Each media type identifies a "view" to display
+// the media And a clipForm that controls how the media is annotated
 const GenericAssetView = function(options) {
     var self = this;
     //consts
@@ -47,21 +47,27 @@ const GenericAssetView = function(options) {
             decorateVideo(options, youtube);
         }
         if (Sherd.Video.Flowplayer) {
-            var flowplayer = this.settings.flowplayer = {'view': new Sherd.Video.Flowplayer() };
+            var flowplayer = this.settings.flowplayer = {
+                'view': new Sherd.Video.Flowplayer()
+            };
             decorateVideo(options, flowplayer);
         }
         if (Sherd.Video.Videotag) {
-            var videotag = this.settings.videotag = {'view': new Sherd.Video.Videotag() };
+            var videotag = this.settings.videotag = {
+                'view': new Sherd.Video.Videotag()
+            };
             decorateVideo(options, videotag);
         }
         if (Sherd.Video.Vimeo) {
-            var vimeo = this.settings.vimeo = {'view': new Sherd.Video.Vimeo() };
+            var vimeo = this.settings.vimeo = {
+                'view': new Sherd.Video.Vimeo()
+            };
             decorateVideo(options, vimeo);
         }
     } /*end Video*/
     if (Sherd.Image && Sherd.Image.OpenLayers) {
         var image = {
-            'view' : new Sherd.Image.OpenLayers()
+            'view': new Sherd.Image.OpenLayers()
         };
         if (options.clipform) {
             image.clipform = new Sherd.Image.Annotators.OpenLayers();
@@ -74,7 +80,7 @@ const GenericAssetView = function(options) {
     }
     if (Sherd.Image && Sherd.Image.FSIViewer) {
         var fsi = {
-            'view' : new Sherd.Image.FSIViewer()
+            'view': new Sherd.Image.FSIViewer()
         };
         if (options.clipform) {
             fsi.clipform = new Sherd.Image.Annotators.FSIViewer();

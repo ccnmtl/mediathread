@@ -1,4 +1,4 @@
-/* global Sherd: true, $f: true, djangosherd: true */
+/* global Sherd: true */
 
 if (typeof Sherd === 'undefined' || !Sherd) {
     Sherd = {};
@@ -8,16 +8,16 @@ if (typeof Sherd === 'undefined' || !Sherd) {
 function hasAttr(obj, key) {
     try {
         return (typeof (obj[key]) !== 'undefined');
-    } catch (e) {
+    } catch {
         return false;
     }
 }
-var new_id = 0;
+
 Sherd.Base = {
     'hasAttr': hasAttr,
     'newID': function(prefix) {
         prefix = prefix || 'autogen';
-        var new_id = 1;
+        let new_id = 1;
         while (document.getElementById(prefix + new_id) !== null) {
             new_id = Math.floor(Math.random() * 10000);
         }
@@ -26,14 +26,15 @@ Sherd.Base = {
     'log': function() {
         try {
             window.console.log(arguments);
-        } catch (e) {
+        } catch {
             var args = [];
             var m = arguments.length;
             while (--m >= 0) {
                 args.unshift(arguments[m]);
             }
-            document.body.appendChild(Sherd.Base
-                    .html2dom('<div class="log">' + String(args) + '</div>'));
+            document.body.appendChild(
+                Sherd.Base.html2dom(
+                    '<div class="log">' + String(args) + '</div>'));
         }
     },
     'html2dom': function(htmlText, doc) {
@@ -63,8 +64,8 @@ Sherd.Base = {
             }
         };
         this.removeListener = function(slotOrPos) {
-            var stor = (_namedListeners[slotOrPos]) ? _namedListeners
-                    : _listeners;
+            var stor =
+                (_namedListeners[slotOrPos]) ? _namedListeners : _listeners;
             if (stor[slotOrPos]) {
                 stor[slotOrPos].disconnect();
                 delete stor[slotOrPos];
@@ -125,18 +126,21 @@ Sherd.Base = {
                 // /but we should have it clobber
                 // /until we need it
                 if (self.microformat && self.microformat.components) {
-                    var possiblePromise = self.microformat.components(dom, createObj);
+                    var possiblePromise = self.microformat.components(
+                        dom, createObj);
 
-                    if (possiblePromise &&
-                        typeof possiblePromise.done === 'function'
-                       ) {
+                    if (
+                        possiblePromise &&
+                            typeof possiblePromise.done === 'function'
+                    ) {
                         possiblePromise.done(function(components) {
                             self.components = components;
                         });
                     } else if (typeof possiblePromise === 'object') {
                         self.components = possiblePromise;
                     } else {
-                        window.console.error('components error:', possiblePromise);
+                        window.console.error(
+                            'components error:', possiblePromise);
                     }
                 } else {
                     self.components = {
@@ -159,13 +163,13 @@ Sherd.Base = {
                     if (typeof self.components[part] === 'object' &&
                         self.components[part].parentNode) {
                         self.components[part].parentNode
-                        .removeChild(self.components[part]);
+                            .removeChild(self.components[part]);
                     }
                 }
             },
 
-            // /utility functions for adding htmlstrings (e.g. output from create()
-            // ) into the dom.
+            // /utility functions for adding htmlstrings (e.g. output
+            // from create() ) into the dom.
             write: function(towrite, doc) {
                 doc = (doc) ? doc : document;
                 if (typeof towrite === 'string') {
@@ -242,7 +246,8 @@ Sherd.Base = {
                             //    'instructions': 'clipform-instructions' }
                             for (var div in options.extra) {
                                 if (div in createObj) {
-                                    domOrId = document.getElementById(options.extra[div]);
+                                    domOrId = document.getElementById(
+                                        options.extra[div]);
                                     if (domOrId) {
                                         domOrId.innerHTML = createObj[div];
                                     }

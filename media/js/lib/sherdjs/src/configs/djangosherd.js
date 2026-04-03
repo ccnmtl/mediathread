@@ -3,12 +3,12 @@ function DjangoSherd_NoteForm() {
     var self = this;
     Sherd.Base.DomObject.apply(this, arguments);// inherit
     this.form_name = 'edit-annotation-form';
-    this.f = function (field) {
+    this.f = function(field) {
         //returns field from form, but without keeping pointers around
         return document.forms[self.form_name].elements[field];
     };
     this.storage = {
-        update : function (obj) {
+        update: function(obj) {
             var range1 = '0';
             var range2 = '0';
             function numOrEmpty(v) {
@@ -71,7 +71,7 @@ function djangosherd_adaptAsset(asset) {
         asset.type = 'pdf';
         asset.thumbable = true;
     } else if (asset.archive) {
-        asset.type = "NONE";
+        asset.type = 'NONE';
     }
     return asset;
 }
@@ -83,13 +83,13 @@ function djangosherd_adaptAsset(asset) {
 //assetlabel-X -- tells you what type the asset is. e.g. assetlabel-youtube is
 //youtube, assetlabel-url is the "viewable" link to the media
 function DjangoSherd_AssetMicroFormat() {
-    this.find = function (dom) {
+    this.find = function(dom) {
         dom = dom || document;
-        return jQuery('div.asset-links', dom).map(function () {
-            return {"html": this };
+        return jQuery('div.asset-links', dom).map(function() {
+            return {'html': this };
         }).get();
     };
-    this.create = function (obj, doc) {
+    this.create = function(obj, doc) {
         var wrapperID = Sherd.Base.newID('djangoasset');
         return {
             object: obj,
@@ -97,9 +97,9 @@ function DjangoSherd_AssetMicroFormat() {
             text: '<div id="' + wrapperID + '" class="asset-links"></div>'
         };
     };
-    this.read = function (found_obj) {
+    this.read = function(found_obj) {
         var rv = {};
-        jQuery('a.assetsource', found_obj.html).each(function (index, elt) {
+        jQuery('a.assetsource', found_obj.html).each(function(index, elt) {
             var reg = String(elt.className).match(/assetlabel-(\w+)/);
             if (reg !== null) {
                 // /ASSUMES: only one source for each label
@@ -131,37 +131,42 @@ function DjangoSherd_AssetMicroFormat() {
 function DjangoSherd_AnnotationMicroFormat() {
     var asset_mf = new DjangoSherd_AssetMicroFormat();
     var video = new Sherd.Video.Helpers();
-    this.find = function (dom) {
+    this.find = function(dom) {
         dom = dom || document;
-        return jQuery('div.annotation', dom).map(function () {
-            return {"html" : this };
+        return jQuery('div.annotation', dom).map(function() {
+            return {'html': this };
         }).get();
     };
-    this.create = function (obj, doc) {
-        ///NOTE: currently only makes header, rather than a full serialization of the object
+    this.create = function(obj, doc) {
+        ///NOTE: currently only makes header, rather than a full
+        ///serialization of the object
         var wrapperID = Sherd.Base.newID('djangoannotation');
         var return_text = '';
         if (obj.title) {
-            return_text += '<div class="annotation-title">' + obj.title + '</div>';
+            return_text += '<div class="annotation-title">' +
+                obj.title + '</div>';
         }
 
         if (obj.asset && obj.asset.title) {
             return_text += '<div class="asset-title">';
-            return_text += '<span class="asset-title-prefix">from </span><a href="' + obj.asset.local_url + '">' + obj.asset.title + '</a>';
+            return_text +=
+                '<span class="asset-title-prefix">from </span><a href="'
+                + obj.asset.local_url + '">' + obj.asset.title + '</a>';
             return_text += '</div>';
         }
 
         return {
             object: obj,
             htmlID: wrapperID,
-            text: '<div id="' + wrapperID + '" class="annotation">' + return_text + '</div>'
+            text: '<div id="' + wrapperID + '" class="annotation">'
+                + return_text + '</div>'
         };
     };
-    this.read = function (found_obj) {
+    this.read = function(found_obj) {
         var rv = {
-            metadata : {},
-            view : {},
-            annotations : []
+            metadata: {},
+            view: {},
+            annotations: []
         };
         var asset_elts = asset_mf.find(found_obj.html);
         if (asset_elts.length) {
@@ -170,19 +175,16 @@ function DjangoSherd_AnnotationMicroFormat() {
         }
 
         var data_elt = jQuery('div.annotation-data', found_obj.html).get(0);
-        var ann_title = jQuery('div.annotation-title', found_obj.html).first()
-        .each(function () {
-            rv.metadata.title = this.textContent;
-        });
-
 
         try {
             var ann_data = JSON.parse(
                 data_elt.getAttribute('data-annotation'));
 
             // /TODO: remove these--maybe we can with no problem
-            ann_data.start = parseInt(data_elt.getAttribute('data-begin'), 10);// CHOP
-            ann_data.end = parseInt(data_elt.getAttribute('data-end'), 10);// CHOP
+            ann_data.start = parseInt(
+                data_elt.getAttribute('data-begin'), 10);// CHOP
+            ann_data.end = parseInt(
+                data_elt.getAttribute('data-end'), 10);// CHOP
             ann_data.startCode = video.secondsToCode(ann_data.start);// CHOP
             ann_data.endCode = video.secondsToCode(ann_data.end);// CHOP
             rv.annotations.push(ann_data);
@@ -193,6 +195,7 @@ function DjangoSherd_AnnotationMicroFormat() {
     };
 }
 
+// eslint-disable-next-line no-unused-vars
 function DjangoSherd_Asset_Config() {
     var ds = djangosherd;
     ds.assetMicroFormat = new DjangoSherd_AssetMicroFormat();
@@ -224,18 +227,18 @@ function DjangoSherd_Asset_Config() {
 
     if (clipform) {
         ds.assetview.clipform.html.push('clipform-display', {
-            asset : {}
+            asset: {}
         }); // write videoform
     }
 }
 
-var CitationView = function () {
+var CitationView = function() {
     var self = this;
     self.citation_link = 'a.materialCitation';
     self.options = {autoplay: true, presentation: 'small', targets: {}};
 };
 
-CitationView.prototype.init = function (options) {
+CitationView.prototype.init = function(options) {
     var self = this;
 
     if (options) {
@@ -253,14 +256,19 @@ CitationView.prototype.init = function (options) {
     }
 
     // Create an assetview.
-    // @todo - We have potentially more than 1 assetview on the project page. The singleton nature in the
-    // core architecture means the two views are really sharing the underlying code.
-    // Consider how to resolve this contention. (It's a big change in the core.)
+    // @todo - We have potentially more than 1 assetview on the
+    // project page. The singleton nature in the core architecture
+    // means the two views are really sharing the underlying code.
+    // Consider how to resolve this contention. (It's a big change in
+    // the core.)
 
-    // This may be DANGEROUS in any sense. The old assetview should be destroyed first?
+    // This may be DANGEROUS in any sense. The old assetview should be
+    // destroyed first?
     if (!djangosherd.assetview) {
-        var clipform = options.hasOwnProperty('clipform') ? options.clipform : false;
-        var clipplay = options.hasOwnProperty('clipplay') ? options.clipplay : false;
+        var clipform = options.hasOwnProperty('clipform') ?
+            options.clipform: false;
+        var clipplay = options.hasOwnProperty('clipplay') ?
+            options.clipplay: false;
 
         if (!clipform) {
             djangosherd.assetview = new Sherd.GenericAssetView({
@@ -283,20 +291,21 @@ CitationView.prototype.init = function (options) {
     }
 };
 
-CitationView.prototype.decorateLinks = function (parent) {
+CitationView.prototype.decorateLinks = function(parent) {
     var self = this;
 
-    ///decorate LINKS to OPEN annotations within a specified div or the whole document
+    ///decorate LINKS to OPEN annotations within a specified div or
+    ///the whole document
     var elt = parent ? document.getElementById(parent) : document;
     return self.decorateElementLinks(elt);
 };
 
-CitationView.prototype.decorateElementLinks = function (element) {
+CitationView.prototype.decorateElementLinks = function(element) {
     var self = this;
 
     var links = jQuery(element).find(self.citation_link);
 
-    var clickHandler = function (evt) {
+    var clickHandler = function(evt) {
         try {
             self.openCitation(this);
 
@@ -312,13 +321,16 @@ CitationView.prototype.decorateElementLinks = function (element) {
 
     for (var i = 0; i < links.length; i++) {
         var link = links[i];
-        if (jQuery(link).data().events === undefined || jQuery(link).data().events.click === undefined) {
+        if (
+            jQuery(link).data().events === undefined ||
+                jQuery(link).data().events.click === undefined
+        ) {
             jQuery(link).click(clickHandler);
         }
     }
 };
 
-CitationView.prototype.openCitation = function (anchor) {
+CitationView.prototype.openCitation = function(anchor) {
     var self = this;
 
     var url = anchor.href;
@@ -332,12 +344,14 @@ CitationView.prototype.openCitation = function (anchor) {
     return self.openCitationById(anchor, asset_id, annotation_id);
 };
 
-CitationView.prototype.openCitationById = function (anchor, asset_id, annotation_id) {
+CitationView.prototype.openCitationById = function(
+    anchor, asset_id, annotation_id
+) {
     var self = this;
     self.asset_id = asset_id;
     self.annotation_id = annotation_id;
 
-    if (anchor && jQuery(anchor).hasClass("disabled")) {
+    if (anchor && jQuery(anchor).hasClass('disabled')) {
         return;
     }
 
@@ -345,28 +359,31 @@ CitationView.prototype.openCitationById = function (anchor, asset_id, annotation
     var id, type;
     if (annotation_id) {
         id = annotation_id;
-        type = "annotations";
+        type = 'annotations';
     } else {
         id = asset_id;
-        type = "asset";
+        type = 'asset';
     }
 
     djangosherd.storage.get({
         id: id, type: type
-    }, function (ann_obj) {
+    }, function(ann_obj) {
         self.options.deleted = false;
         return_value = self.displayCitation(anchor, ann_obj, id);
-    }, null, function (error) {
+    }, null, function(error) {
         console.error(error);
-        if (type === "annotations") {
+        if (type === 'annotations') {
             // attempt to get asset level
             djangosherd.storage.get({
                 id: asset_id, type: 'asset'
-            }, function (asset_obj) {
+            }, function(asset_obj) {
                 self.options.deleted = true;
                 return_value = self.displayCitation(anchor, asset_obj, id);
-            }, null, function (error) {
-                var obj = { 'asset': null, 'metadata': { 'title': 'Item Deleted' } };
+            }, null, function(error) {
+                var obj = {
+                    'asset': null,
+                    'metadata': { 'title': 'Item Deleted' }
+                };
                 return_value = self.displayCitation(anchor, obj, null);
             });
         } else {
@@ -383,12 +400,14 @@ CitationView.prototype.openCitationById = function (anchor, asset_id, annotation
     return return_value;
 };
 
-CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
+CitationView.prototype.displayCitation = function(anchor, ann_obj, id) {
     var self = this;
 
     var asset_target =
-        ((self.options.targets && self.options.targets.asset) ?
-         self.options.targets.asset : document.getElementById("videoclipbox"));
+        (
+            (self.options.targets && self.options.targets.asset) ?
+                self.options.targets.asset :
+                document.getElementById('videoclipbox'));
 
     if (typeof self.options.onPrepareCitation === 'function') {
         self.options.onPrepareCitation(asset_target);
@@ -400,37 +419,42 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
             display_position = jQuery(anchor).offset();
             display_position.top += jQuery(anchor).height();
         }
-        asset_target.style.left = display_position.left + "px";
+        asset_target.style.left = display_position.left + 'px';
 
         var linkHeight = 20;
 
-        var above_position = display_position.top - linkHeight - jQuery(asset_target).height();
-        var show_above = (display_position.top + jQuery(asset_target).height()) > jQuery("body").height();
+        var above_position =
+            display_position.top - linkHeight - jQuery(asset_target).height();
+        var show_above =
+            (
+                display_position.top + jQuery(asset_target).height()
+            ) > jQuery('body').height();
 
         if (show_above && above_position >= 0) {
-            asset_target.style.top = above_position + "px";
+            asset_target.style.top = above_position + 'px';
         } else {
-            asset_target.style.top = display_position.top + "px";
+            asset_target.style.top = display_position.top + 'px';
         }
     }
 
     jQuery(asset_target).show();
     var targets = {
-        "top": asset_target,
-        "clipstrip": jQuery(asset_target).find('div.clipstrip-display').get(0),
-        "clipplay": jQuery(asset_target).find('div.clipplay').get(0),
-        "asset": jQuery(asset_target).find('div.asset-display').get(0),
-        "asset_title": jQuery(asset_target).find('div.asset-title').get(0),
-        "annotation_title": jQuery(asset_target).find('div.annotation-title').get(0)
+        'top': asset_target,
+        'clipstrip': jQuery(asset_target).find('div.clipstrip-display').get(0),
+        'clipplay': jQuery(asset_target).find('div.clipplay').get(0),
+        'asset': jQuery(asset_target).find('div.asset-display').get(0),
+        'asset_title': jQuery(asset_target).find('div.asset-title').get(0),
+        'annotation_title': jQuery(asset_target).find(
+            'div.annotation-title').get(0)
     };
 
     if (targets.annotation_title) {
         if (self.options.deleted) {
-            targets.annotation_title.innerHTML = "Selection Deleted";
+            targets.annotation_title.innerHTML = 'Selection Deleted';
         } else {
-            targets.annotation_title.innerHTML =
-                ((ann_obj.metadata && ann_obj.metadata.title) ?
-                        '' + ann_obj.metadata.title + '' : '');
+            targets.annotation_title.innerHTML = (
+                (ann_obj.metadata && ann_obj.metadata.title) ?
+                    '' + ann_obj.metadata.title + '' : '');
             if (ann_obj.annotation.startCode) {
                 var duration = new Date(ann_obj.annotation.duration * 1000)
                     .toISOString().substr(11, 8);
@@ -442,28 +466,33 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
         }
     }
 
-    var asset_obj = ann_obj.hasOwnProperty("asset") ? ann_obj.asset : ann_obj;
+    var asset_obj = ann_obj.hasOwnProperty('asset') ? ann_obj.asset : ann_obj;
     if (asset_obj) {
-        asset_obj.autoplay = (self.options.autoplay) ? self.options.autoplay : false;
+        asset_obj.autoplay = (self.options.autoplay) ?
+            self.options.autoplay : false;
         asset_obj.presentation = self.options.presentation || 'small';
         asset_obj.pdf_iframe = self.options.pdf_iframe || false;
 
         if (targets.asset_title) {
-            if (targets.annotation_title.innerHTML === "") {
-                targets.annotation_title.innerHTML = '<a href="' + asset_obj.local_url + '">' + asset_obj.title + '</a>';
+            if (targets.annotation_title.innerHTML === '') {
+                targets.annotation_title.innerHTML = '<a href="' +
+                    asset_obj.local_url + '">' + asset_obj.title + '</a>';
                 targets.asset_title.innerHTML = '&nbsp;';
             } else {
-                targets.asset_title.innerHTML =
-                    ((asset_obj.title && asset_obj.local_url) ?
-                            'from <a href="' + asset_obj.local_url + '">' + asset_obj.title + '</a>'
-                            : '');
+                targets.asset_title.innerHTML = (
+                    (asset_obj.title && asset_obj.local_url) ?
+                        'from <a href="' + asset_obj.local_url + '">' +
+                        asset_obj.title + '</a>' : ''
+                );
                 if (asset_obj.xmeml && window.is_staff) {
-                    targets.asset_title.innerHTML += ' (<a href="/annotations/xmeml/' + id + '/">download FinalCut xml</a>)';
+                    targets.asset_title.innerHTML +=
+                        ' (<a href="/annotations/xmeml/' +
+                        id + '/">download FinalCut xml</a>)';
                 }
             }
         }
         djangosherd.assetview.html.push(targets.asset, {
-            asset : asset_obj,
+            asset: asset_obj,
             targets: {
                 clipstrip: targets.clipstrip,
                 clipplay: targets.clipplay
@@ -471,9 +500,13 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
             functions: { winHeight: self.options.winHeight }
         });
 
-        if (ann_obj.hasOwnProperty("annotations") && ann_obj.annotations.length > 0 && ann_obj.annotations[0] !== null) {
+        if (
+            ann_obj.hasOwnProperty('annotations') &&
+                ann_obj.annotations.length > 0 &&
+                ann_obj.annotations[0] !== null
+        ) {
             var ann_data = ann_obj.annotations[0];// ***
-            if (!ann_data.hasOwnProperty("start")) {
+            if (!ann_data.hasOwnProperty('start')) {
                 ann_data.start = 0;
             }
             djangosherd.assetview.setState(
@@ -489,10 +522,10 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
         }
     } else {
         djangosherd.assetview.html.remove();
-        targets.asset_title.innerHTML = "";
+        targets.asset_title.innerHTML = '';
     }
 
-    jQuery(window).trigger("resize");
+    jQuery(window).trigger('resize');
 
     var return_value = {};
     return_value.onUnload = self.unload;
@@ -503,7 +536,7 @@ CitationView.prototype.displayCitation = function (anchor, ann_obj, id) {
     return return_value;
 };
 
-CitationView.prototype.unload = function () {
+CitationView.prototype.unload = function() {
     if (djangosherd.assetview) {
         djangosherd.assetview.html.remove();
     }
@@ -513,7 +546,7 @@ function DjangoSherd_Storage() {
     /* read-only storage repo for annotation objects from MediaThread
      */
     var self = this,
-         _cache = {
+        _cache = {
             'annotations': {},
             'asset': {},
             'project': {}
@@ -521,7 +554,7 @@ function DjangoSherd_Storage() {
     this._cache = _cache;
 
     // Retrieve data from server & stash in the cache
-    this.get = function (subject, callback, list_callback, errorCallback) {
+    this.get = function(subject, callback, list_callback, errorCallback) {
         ///currently obj_type in [annotations, asset, project]
         /// that is used for the URL and a reference to the _cache{} section
         var id = parseInt(subject.id, 10);
@@ -539,7 +572,7 @@ function DjangoSherd_Storage() {
                     url: url,
                     dataType: 'json',
                     cache: false,
-                    success: function (json) {
+                    success: function(json) {
                         var new_id = self.json_update(json, obj_type);
                         if (callback) {
                             id = (typeof new_id !== 'boolean') ? new_id : id;
@@ -549,7 +582,7 @@ function DjangoSherd_Storage() {
                             list_callback(json);
                         }
                     },
-                    error: function (xhr, textStatus, errorThrown) {
+                    error: function(xhr, textStatus, errorThrown) {
                         if (errorCallback) {
                             errorCallback();
                         }
@@ -566,7 +599,7 @@ function DjangoSherd_Storage() {
         }
     };
 
-    this.json_update = function (json) {
+    this.json_update = function(json) {
         var new_id = true;
         if (json.project) {
             _cache.project[json.project.id] = json.project;
@@ -625,22 +658,24 @@ function DjangoSherd_Storage() {
     };
 }
 
+// eslint-disable-next-line no-unused-vars
 function DjangoSherd_NoteList() {
 }
 
 window.DjangoSherd_Colors = {
-    get: function (str) {
+    get: function(str) {
         return (this.current_colors[str] ||
                 (this.current_colors[str] = this.mapping(++this.last_color)));
     },
-    mapping: function (num) {
-        //would like to get purple = 270or280 in (green is currently over represented)
+    mapping: function(num) {
+        //would like to get purple = 270or280 in (green is currently
+        //over represented)
         var hue = (num * 45) % 240;
         var sat = 100 - (parseInt(num * 30 / 240, 10) % 3 * 40);
         var lum = 55 + 5 * ((parseInt(num * 30 / 240 / 3, 10) % 5));
         return this.hsl2rgb(hue, sat, lum);
     },
-    reset: function () {
+    reset: function() {
         this.last_color = -1;
         this.current_colors = {};
     },

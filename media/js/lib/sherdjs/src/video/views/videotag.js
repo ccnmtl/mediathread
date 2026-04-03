@@ -21,13 +21,13 @@ Documentation:
 if (!Sherd) { Sherd = {}; }
 if (!Sherd.Video) { Sherd.Video = {}; }
 if (!Sherd.Video.Videotag) {
-    Sherd.Video.Videotag = function () {
+    Sherd.Video.Videotag = function() {
         var self = this;
         Sherd.Video.Base.apply(this, arguments); //inherit off video.js - base.js
 
         ////////////////////////////////////////////////////////////////////////
         // Microformat
-        this.microformat.create = function (obj, doc) {
+        this.microformat.create = function(obj, doc) {
             var wrapperID = Sherd.Base.newID('videotag-wrapper-');
             var playerID = Sherd.Base.newID('videotag-player-');
             var controllerID = Sherd.Base.newID('videotag-controller-');
@@ -58,7 +58,7 @@ if (!Sherd.Video.Videotag) {
                 return create_obj;
             }
         };
-        this.microformat._getPlayerParams = function (obj) {
+        this.microformat._getPlayerParams = function(obj) {
             var types = {
                 ogg: 'video/ogg; codecs="theora, vorbis"',
                 webm: 'video/webm; codecs="vp8, vorbis"',
@@ -88,7 +88,7 @@ if (!Sherd.Video.Videotag) {
                 }
             }
         };
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             try {
                 var rv = {};
                 if (html_dom) {
@@ -106,7 +106,7 @@ if (!Sherd.Video.Videotag) {
 
         // Find the objects based on the individual player properties in the DOM
         // Works in conjunction with read
-        this.microformat.find = function (html_dom) {
+        this.microformat.find = function(html_dom) {
             throw new Error("unimplemented");
             //var found = [];
             //return found;
@@ -115,14 +115,14 @@ if (!Sherd.Video.Videotag) {
         // Return asset object description (parameters) in a serialized JSON format.
         // Will be used for things like printing, or spitting out a description.
         // works in conjunction with find
-        this.microformat.read = function (found_obj) {
+        this.microformat.read = function(found_obj) {
             throw new Error("unimplemented");
         };
 
-        this.microformat.type = function () { return 'videotag'; };
+        this.microformat.type = function() { return 'videotag'; };
 
         // Replace the video identifier within the rendered .html
-        this.microformat.update = function (obj, html_dom) {
+        this.microformat.update = function(obj, html_dom) {
             var supported = self.microformat._getPlayerParams(obj);
             if (supported && self.components.player) {
                 try {
@@ -139,14 +139,14 @@ if (!Sherd.Video.Videotag) {
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
 
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             self.events.connect(self, 'seek', self.media.playAt);
-            self.events.connect(self, 'playclip', function (obj) {
+            self.events.connect(self, 'playclip', function(obj) {
                 self.setState(obj);
                 self.media.play();
             });
             if (self.components.player) {
-                var signal_duration = function () {
+                var signal_duration = function() {
                     self.events.signal(self, 'duration', { duration: self.media.duration() });
                 };
                 if (self.media.duration() > 0) {
@@ -160,7 +160,7 @@ if (!Sherd.Video.Videotag) {
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        this.media.duration = function () {
+        this.media.duration = function() {
             var duration = 0;
             if (self.components.player) {
                 duration = self.components.player.duration || 0;
@@ -168,32 +168,32 @@ if (!Sherd.Video.Videotag) {
             return duration;
         };
 
-        this.media.pause = function () {
+        this.media.pause = function() {
             if (self.components.player) {
                 self.components.player.pause();
             }
         };
 
-        this.media.play = function () {
+        this.media.play = function() {
             if (self.components.player) {
                 self.components.player.play();
             }
         };
 
         // Used by tests
-        this.media.isPlaying = function () {
+        this.media.isPlaying = function() {
             return (self.components.player && !self.components.player.paused);
         };
 
-        this.media.ready = function () {
+        this.media.ready = function() {
             ///http://www.whatwg.org/specs/web-apps/current-work/multipage/video.html#dom-media-have_metadata
             return (self.components.player && self.components.player.readyState > 2);
         };
 
-        this.media.seek = function (starttime, endtime, autoplay) {
+        this.media.seek = function(starttime, endtime, autoplay) {
             if (self.components.player) {
                 var c, d = {}; //event listeners
-                var _seek = function (evt) {
+                var _seek = function(evt) {
                     if (starttime !== undefined) {
                         try {
                             self.components.player.currentTime = starttime;
@@ -214,12 +214,12 @@ if (!Sherd.Video.Videotag) {
                 };
                 if (_seek().error) {
                     var progress_triggers = 0;
-                    d = self.events.connect(self.components.player, 'progress', function (evt) {
+                    d = self.events.connect(self.components.player, 'progress', function(evt) {
                         progress_triggers = 1;
                         _seek(evt);
                     });
                     ///WebKit(Chrome) doesn't trigger progress, but 'canplaythrough' seems to trigger enough
-                    c = self.events.connect(self.components.player, 'canplaythrough', function (evt) {
+                    c = self.events.connect(self.components.player, 'canplaythrough', function(evt) {
                         if (progress_triggers === 1) {
                             c.disconnect();
                         } else {
@@ -234,15 +234,15 @@ if (!Sherd.Video.Videotag) {
             }
         };
 
-        this.media.time = function () {
+        this.media.time = function() {
             return (!self.components.player || self.components.player.currentTime);
         };
 
-        this.media.timescale = function () {
+        this.media.timescale = function() {
             return 1;
         };
 
-        this.media.timestrip = function () {
+        this.media.timestrip = function() {
             var w = self.components.player.width;
             return {w: w,
                 trackX: 40,
@@ -252,12 +252,12 @@ if (!Sherd.Video.Videotag) {
         };
 
         //returns true, if we're sure it is. Not currently used
-        this.media.isStreaming = function () {
+        this.media.isStreaming = function() {
             return false;
         };
 
         // Used by tests.
-        this.media.url = function () {
+        this.media.url = function() {
             return self.components.mediaUrl;
         };
 

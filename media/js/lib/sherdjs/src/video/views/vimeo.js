@@ -14,7 +14,7 @@
 if (!Sherd) {Sherd = {}; }
 if (!Sherd.Video) {Sherd.Video = {}; }
 if (!Sherd.Video.Vimeo) {
-    Sherd.Video.Vimeo = function () {
+    Sherd.Video.Vimeo = function() {
         var self = this;
 
         this.currentTime = 0;
@@ -30,16 +30,16 @@ if (!Sherd.Video.Vimeo) {
 
         this.presentations = {
             'small': {
-                width: function () { return 320; },
-                height: function () { return 240; }
+                width: function() { return 320; },
+                height: function() { return 240; }
             },
             'medium': {
-                width: function () { return 480; },
-                height: function () { return 360; }
+                width: function() { return 480; },
+                height: function() { return 360; }
             },
             'default': {
-                width: function () { return 640; },
-                height: function () { return 480; }
+                width: function() { return 640; },
+                height: function() { return 480; }
             }
         };
 
@@ -62,7 +62,7 @@ if (!Sherd.Video.Vimeo) {
             // register for notifications from clipstrip to seek to various times in the video
             self.events.connect(self, 'seek', self.media.playAt);
 
-            self.events.connect(self, 'playclip', function (obj) {
+            self.events.connect(self, 'playclip', function(obj) {
                 self.setState(obj, { 'autoplay': true });
             });
 
@@ -75,7 +75,7 @@ if (!Sherd.Video.Vimeo) {
 
             // get out of the "loaded" function before seeking happens
             if (self.state.starttime !== undefined) {
-                setTimeout(function () {
+                setTimeout(function() {
                     self.media.seek(
                         self.state.starttime,
                         self.state.endtime,
@@ -88,7 +88,7 @@ if (!Sherd.Video.Vimeo) {
         // Microformat
 
         // create == asset->{html+information to make it}
-        this.microformat.create = function (obj) {
+        this.microformat.create = function(obj) {
             var wrapperID = Sherd.Base.newID('vimeo-wrapper-');
             var playerID = Sherd.Base.newID('vimeo_player_');
             var autoplay = obj.autoplay ? 1 : 0;
@@ -148,7 +148,7 @@ if (!Sherd.Video.Vimeo) {
         };
 
         // self.components -- Access to the internal player and any options needed at runtime
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             if (!self.media.ready()) {
                 var top = document.getElementById(create_obj.htmlID);
                 var iframe = jQuery(top).find('iframe')[0];
@@ -182,7 +182,7 @@ if (!Sherd.Video.Vimeo) {
 
         // Return asset object description (parameters) in a serialized JSON format.
         // NOTE: Not currently in use. Will be used for things like printing, or spitting out a description.
-        this.microformat.read = function (found_obj) {
+        this.microformat.read = function(found_obj) {
             var obj = {};
             var params = found_obj.html.getElementsByTagName('param');
             for (var i = 0; i < params.length; i++) {
@@ -192,9 +192,9 @@ if (!Sherd.Video.Vimeo) {
             return obj;
         };
 
-        this.microformat.type = function () { return 'vimeo'; };
+        this.microformat.type = function() { return 'vimeo'; };
 
-        this.microformat.update = function (obj, html_dom) {
+        this.microformat.update = function(obj, html_dom) {
             return obj.vimeo === self.components.mediaUrl &&
                 document.getElementById(self.components.playerID) &&
                 self.media.ready();
@@ -203,13 +203,13 @@ if (!Sherd.Video.Vimeo) {
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
 
-        var on_vimeo_play = function () {
+        var on_vimeo_play = function() {
             jQuery(window).trigger(
                 'video.play',
                 [self.components.itemId, self.components.primaryType]);
         };
 
-        var on_vimeo_pause = function () {
+        var on_vimeo_pause = function() {
             self.currentIsPlaying = false;
             jQuery(window).trigger(
                 'video.pause',
@@ -226,7 +226,7 @@ if (!Sherd.Video.Vimeo) {
             self.currentIsPlaying = true;
         };
 
-        var on_vimeo_finish = function () {
+        var on_vimeo_finish = function() {
             self.currentIsPlaying = false;
             jQuery(window).trigger(
                 'video.finish',
@@ -236,11 +236,11 @@ if (!Sherd.Video.Vimeo) {
         ////////////////////////////////////////////////////////////////////////
         // Media & Player Specific
 
-        this.media.duration = function () {
+        this.media.duration = function() {
             return self.currentDuration;
         };
 
-        this.media.pause = function () {
+        this.media.pause = function() {
             if (self.components.player) {
                 try {
                     self.components.player.api('pause');
@@ -248,7 +248,7 @@ if (!Sherd.Video.Vimeo) {
             }
         };
 
-        this.media.play = function () {
+        this.media.play = function() {
             if (self.media.ready) {
                 try {
                     self.components.player.api('play');
@@ -256,15 +256,15 @@ if (!Sherd.Video.Vimeo) {
             }
         };
 
-        this.media.ready = function () {
+        this.media.ready = function() {
             return self.media._ready && self.components.player !== undefined;
         };
 
-        this.media.isPlaying = function () {
+        this.media.isPlaying = function() {
             return self.currentIsPlaying;
         };
 
-        this.media.seek = function (starttime, endtime, autoplay) {
+        this.media.seek = function(starttime, endtime, autoplay) {
             if (!self.media.ready()) {
                 // store values and reissues seek on player_ready
                 self.state.starttime = starttime;
@@ -300,7 +300,7 @@ if (!Sherd.Video.Vimeo) {
             return self.currentTime;
         };
 
-        this.media.timestrip = function () {
+        this.media.timestrip = function() {
             var w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
@@ -312,11 +312,11 @@ if (!Sherd.Video.Vimeo) {
 
         // Used by tests. Might be nice to refactor state out so that
         // there's a consistent interpretation across controls
-        this.media.state = function () {
+        this.media.state = function() {
             return 0;
         };
 
-        this.media.url = function () {
+        this.media.url = function() {
             var dfd = jQuery.Deferred();
             self.components.player.api('getVideoUrl', function(value) {
                 return dfd.resolve(value);

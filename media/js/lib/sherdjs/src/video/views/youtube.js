@@ -15,7 +15,7 @@
 if (!Sherd) {Sherd = {}; }
 if (!Sherd.Video) {Sherd.Video = {}; }
 if (!Sherd.Video.YouTube) {
-    Sherd.Video.YouTube = function () {
+    Sherd.Video.YouTube = function() {
         var self = this;
 
         Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
@@ -27,16 +27,16 @@ if (!Sherd.Video.YouTube) {
 
         this.presentations = {
             'small': {
-                width: function () { return 320; },
-                height: function () { return 240; }
+                width: function() { return 320; },
+                height: function() { return 240; }
             },
             'medium': {
-                width: function () { return 480; },
-                height: function () { return 360; }
+                width: function() { return 480; },
+                height: function() { return 360; }
             },
             'default': {
-                width: function () { return 640; },
-                height: function () { return 480; }
+                width: function() { return 640; },
+                height: function() { return 480; }
             }
         };
 
@@ -44,7 +44,7 @@ if (!Sherd.Video.YouTube) {
         // Microformat
 
         // create == asset->{html+information to make it}
-        this.microformat.create = function (obj) {
+        this.microformat.create = function(obj) {
             var wrapperID = Sherd.Base.newID('youtube-wrapper-');
             self.playerID = Sherd.Base.newID('youtube_player_');
             var autoplay = obj.autoplay ? 1 : 0;
@@ -107,7 +107,7 @@ if (!Sherd.Video.YouTube) {
          *
          *  Returns a promise.
          */
-        this.microformat.components = function (html_dom, create_obj) {
+        this.microformat.components = function(html_dom, create_obj) {
             var dfd = jQuery.Deferred();
 
             try {
@@ -155,7 +155,7 @@ if (!Sherd.Video.YouTube) {
 
         // Return asset object description (parameters) in a serialized JSON format.
         // NOTE: Not currently in use. Will be used for things like printing, or spitting out a description.
-        this.microformat.read = function (found_obj) {
+        this.microformat.read = function(found_obj) {
             var obj = {};
             var params = found_obj.html.getElementsByTagName('param');
             for (var i = 0; i < params.length; i++) {
@@ -166,12 +166,12 @@ if (!Sherd.Video.YouTube) {
         };
 
         // Note: not currently in use
-        this.microformat.type = function () {
+        this.microformat.type = function() {
             return 'youtube';
         };
 
         // Replace the video identifier within the rendered .html
-        this.microformat.update = function (obj, html_dom) {
+        this.microformat.update = function(obj, html_dom) {
             if (obj.youtube && document.getElementById(self.components.playerID) && self.media.ready()) {
                 try {
                     return obj.youtube.indexOf(self.components.mediaUrl) === 0;
@@ -184,11 +184,11 @@ if (!Sherd.Video.YouTube) {
         ////////////////////////////////////////////////////////////////////////
         // AssetView Overrides
 
-        this.initialize = function (create_obj) {
+        this.initialize = function(create_obj) {
             // register for notifications from clipstrip to seek to various times in the video
             self.events.connect(self, 'seek', self.media.playAt);
 
-            self.events.connect(self, 'playclip', function (obj) {
+            self.events.connect(self, 'playclip', function(obj) {
                 var opts = {};
                 if (obj.hasOwnProperty('autoplay')) {
                     opts.autoplay = obj.autoplay;
@@ -246,7 +246,7 @@ if (!Sherd.Video.YouTube) {
 
                 // get out of the "loaded" function before seeking happens
                 if (self.state.starttime !== undefined) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         self.media.seek(
                             self.state.starttime,
                             self.state.endtime,
@@ -308,7 +308,7 @@ if (!Sherd.Video.YouTube) {
             }
         };
 
-        this.media.duration = function () {
+        this.media.duration = function() {
             var duration = 0;
             if (self.components.player) {
                 try {
@@ -324,7 +324,7 @@ if (!Sherd.Video.YouTube) {
             return duration;
         };
 
-        this.media.pause = function () {
+        this.media.pause = function() {
             if (self.components.player) {
                 try {
                     self.components.player.pauseVideo();
@@ -334,7 +334,7 @@ if (!Sherd.Video.YouTube) {
             }
         };
 
-        this.media.play = function () {
+        this.media.play = function() {
             if (self.components.player) {
                 try {
                     self.components.player.playVideo();
@@ -344,11 +344,11 @@ if (!Sherd.Video.YouTube) {
             }
         };
 
-        this.media.ready = function () {
+        this.media.ready = function() {
             return self.media._ready;
         };
 
-        this.media.isPlaying = function () {
+        this.media.isPlaying = function() {
             var playing = false;
             try {
                 playing = self.media.state() === 1;
@@ -358,7 +358,7 @@ if (!Sherd.Video.YouTube) {
             return playing;
         };
 
-        this.media.seek = function (starttime, endtime, autoplay) {
+        this.media.seek = function(starttime, endtime, autoplay) {
             if (!self.media.ready()) {
                 // store values and reissues seek on player_ready
                 self.state.starttime = starttime;
@@ -393,7 +393,7 @@ if (!Sherd.Video.YouTube) {
             }
         };
 
-        this.media.time = function () {
+        this.media.time = function() {
             var time = 0;
             if (self.components.player) {
                 try {
@@ -409,7 +409,7 @@ if (!Sherd.Video.YouTube) {
             return time;
         };
 
-        this.media.timestrip = function () {
+        this.media.timestrip = function() {
             var w = jQuery('#' + self.components.playerID).width();
             return {
                 w: w,
@@ -421,11 +421,11 @@ if (!Sherd.Video.YouTube) {
 
         // Used by tests. Might be nice to refactor state out so that
         // there's a consistent interpretation across controls
-        this.media.state = function () {
+        this.media.state = function() {
             return self.components.player.getPlayerState();
         };
 
-        this.media.url = function () {
+        this.media.url = function() {
             return self.components.player.getVideoUrl();
         };
     };

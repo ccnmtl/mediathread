@@ -21,7 +21,8 @@ if (!Sherd.Video.Vimeo) {
         this.currentDuration = null;
         this.currentIsPlaying = false;
 
-        Sherd.Video.Base.apply(this, arguments); //inherit -- video.js -- base.js
+        //inherit -- video.js -- base.js
+        Sherd.Video.Base.apply(this, arguments);
 
         this.state = {
             starttime: 0,
@@ -49,7 +50,10 @@ if (!Sherd.Video.Vimeo) {
          * Takes the froogaloop-initialized iframe as a parameter.
          */
         this.vimeoPlayerReady = function(froogaloop) {
-            jQuery(window).trigger('video.create', [self.components.itemId, self.components.primaryType]);
+            jQuery(window).trigger(
+                'video.create', [
+                    self.components.itemId, self.components.primaryType
+                ]);
 
             self.components.player = $f(document.getElementById(
                 self.components.playerID));
@@ -59,7 +63,8 @@ if (!Sherd.Video.Vimeo) {
             self.components.player.addEvent('finish', on_vimeo_finish);
             self.components.player.addEvent('playProgress', on_vimeo_progress);
 
-            // register for notifications from clipstrip to seek to various times in the video
+            // register for notifications from clipstrip to seek to
+            // various times in the video
             self.events.connect(self, 'seek', self.media.playAt);
 
             self.events.connect(self, 'playclip', function(obj) {
@@ -126,9 +131,10 @@ if (!Sherd.Video.Vimeo) {
                 params;
 
             var embedCode = '<div id="' + wrapperID + '" ' +
-                'class="sherd-vimeo-wrapper embed-responsive embed-responsive-16by9">' +
+                'class="sherd-vimeo-wrapper embed-responsive ' +
+                'embed-responsive-16by9">' +
                 '<iframe id="' + playerID + '" ' +
-                'title="Vimeo video ' + obj.title + '" ' + 
+                'title="Vimeo video ' + obj.title + '" ' +
                 'src="' + src + '" ' +
                 'width="' + obj.options.width + '" ' +
                 'height="' + obj.options.height + '" ' +
@@ -147,7 +153,8 @@ if (!Sherd.Video.Vimeo) {
             };
         };
 
-        // self.components -- Access to the internal player and any options needed at runtime
+        // self.components -- Access to the internal player and any
+        // options needed at runtime
         this.microformat.components = function(html_dom, create_obj) {
             if (!self.media.ready()) {
                 var top = document.getElementById(create_obj.htmlID);
@@ -180,13 +187,16 @@ if (!Sherd.Video.Vimeo) {
             return false;
         };
 
-        // Return asset object description (parameters) in a serialized JSON format.
-        // NOTE: Not currently in use. Will be used for things like printing, or spitting out a description.
+        // Return asset object description (parameters) in a
+        // serialized JSON format.
+        // NOTE: Not currently in use. Will be used for things like
+        // printing, or spitting out a description.
         this.microformat.read = function(found_obj) {
             var obj = {};
             var params = found_obj.html.getElementsByTagName('param');
             for (var i = 0; i < params.length; i++) {
-                obj[params[i].getAttribute('name')] = params[i].getAttribute('value');
+                obj[params[i].getAttribute('name')] =
+                    params[i].getAttribute('value');
             }
             obj.mediaUrl = obj.movie;
             return obj;
@@ -244,7 +254,7 @@ if (!Sherd.Video.Vimeo) {
             if (self.components.player) {
                 try {
                     self.components.player.api('pause');
-                } catch (e) {}
+                } catch {}
             }
         };
 
@@ -252,7 +262,7 @@ if (!Sherd.Video.Vimeo) {
             if (self.media.ready) {
                 try {
                     self.components.player.api('play');
-                } catch (e) {}
+                } catch {}
             }
         };
 

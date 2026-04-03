@@ -314,27 +314,39 @@ if (!Sherd.Video.Annotators.ClipForm) {
                 htmlID: htmlID,
                 text: '<div id="' + htmlID + '" style="display: none">' +
                     '<div id="clipcontrols" class="sherd-clipform">' +
-                    '<p id="instructions" style="display: none" class="sherd-instructions">' +
-                    'Create a selection by clicking Start Time and End Time buttons as the video plays, ' +
-                    'or by manually typing in times in the associated edit boxes.<br /><br />' +
-                    'Add title, tags and notes. If a Course Vocabulary has been enabled by the instructor, ' +
-                    'apply vocabulary terms. Click Save when you are finished.' +
+
+                '<p id="instructions" style="display: none" ' +
+                    'class="sherd-instructions">' +
+
+                'Create a selection by clicking Start Time and End Time ' +
+                    'buttons as the video plays, ' +
+                    'or by manually typing in times in the associated ' +
+                    'edit boxes.<br /><br />' +
+                    'Add title, tags and notes. If a Course Vocabulary has ' +
+                    'been enabled by the instructor, ' +
+                    'apply vocabulary terms. Click Save when ' +
+                    'you are finished.' +
                     '</p>' +
                     '<table>' +
-                    '<tr><td span="0"><div><label for="annotation-title">Selection Times</label></div></td></tr>' +
+                    '<tr><td span="0"><div><label for="annotation-title">' +
+                    'Selection Times' +
+                    '</label></div></td></tr>' +
                     '<tr class="sherd-clipform-editing">' +
                     '<td>' +
-                    '<input type="button" class="btn btn-primary btn-sm" value="Start Time" id="btnClipStart"/> ' +
+                    '<input type="button" class="btn btn-primary btn-sm" ' +
+                    'value="Start Time" id="btnClipStart"/> ' +
                     '</td>' +
                     '<td width="10px">&nbsp;</td>' +
                     '<td>' +
-                    '<input type="button" class="btn btn-primary btn-sm" value="End Time" id="btnClipEnd"/> ' +
+                    '<input type="button" class="btn btn-primary btn-sm" ' +
+                    'value="End Time" id="btnClipEnd"/> ' +
                     '</td>' +
                     '<td>&nbsp;</td>' +
                     '</tr>' +
                     '<tr class="sherd-clipform-editing">' +
                     '<td>' +
-                    '<input type="text" class="timecode" id="clipStart" aria-label="clip start" value="' +
+                    '<input type="text" class="timecode" id="clipStart" ' +
+                    'aria-label="clip start" value="' +
                     self.components.start +
                     '" />' +
 
@@ -342,14 +354,16 @@ if (!Sherd.Video.Annotators.ClipForm) {
                     '</td>' +
                     '<td style="width: 10px; text-align: center">-</td>' +
                     '<td>' +
-                    '<input type="text" class="timecode" id="clipEnd" aria-label="clip end" value="' +
+                    '<input type="text" class="timecode" id="clipEnd" ' +
+                    'aria-label="clip end" value="' +
                     self.components.end +
                     '" />' +
 
                     '<div class="helptext timecode">HH:MM:SS</div>' +
                     '</td>' +
                     '<td class="sherd-clipform-play">' +
-                    '<input type="image" title="Play Clip" class="regButton videoplay" id="btnPlayClip" src="' +
+                    '<input type="image" title="Play Clip" ' +
+                    'class="regButton videoplay" id="btnPlayClip" src="' +
                     STATIC_URL +
                     'img/icons/meth_video_play.png"/>' +
 

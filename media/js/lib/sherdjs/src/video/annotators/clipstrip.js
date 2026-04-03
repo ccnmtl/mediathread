@@ -134,19 +134,23 @@ if (!Sherd.Video.Annotators.ClipStrip) {
         };
 
         this.initialize = function(create_obj) {
-            self.events.connect(self.components.clipStartMarker, 'click', function(evt) {
-                self.events.signal(self.targetview, 'seek', self.components.starttime);
-            });
-            self.events.connect(self.components.clipEndMarker, 'click', function(evt) {
-                self.events.signal(self.targetview, 'seek', self.components.endtime);
-            });
-            self.events.connect(self.components.clipRange, 'click', function(evt) {
-                var obj = self.getState();
-                self.events.signal(self.targetview, 'playclip', {
-                    start: obj.starttime, end: obj.endtime
+            self.events.connect(
+                self.components.clipStartMarker, 'click', function(evt) {
+                    self.events.signal(
+                        self.targetview, 'seek', self.components.starttime);
                 });
-            });
-
+            self.events.connect(
+                self.components.clipEndMarker, 'click', function(evt) {
+                    self.events.signal(
+                        self.targetview, 'seek', self.components.endtime);
+                });
+            self.events.connect(
+                self.components.clipRange, 'click', function(evt) {
+                    var obj = self.getState();
+                    self.events.signal(self.targetview, 'playclip', {
+                        start: obj.starttime, end: obj.endtime
+                    });
+                });
 
             // setup the clip markers in the default position
             self.microformat._resize();
@@ -167,15 +171,21 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                     '<div id="clipStripTrack"  style="width: ' +
                     timestrip.trackWidth + 'px; left: ' +
                     timestrip.trackX + 'px">' +
-                    '<div id="clipStripStart" class="clipSlider" onmouseover="return escape(\'Go to note start time\')" style="display:none"></div>' +
-                    '<div id="clipStripRange" class="clipStripRange" style="display:none"></div>' +
-                    '<div id="clipStripEnd" class="noteStripEnd" onmouseover="return escape(\'Go to note end time\')" style="display:none"></div>' +
+                    '<div id="clipStripStart" class="clipSlider" ' +
+                    'onmouseover="return escape(\'Go to note start time\')" ' +
+                    'style="display:none"></div>' +
+                    '<div id="clipStripRange" class="clipStripRange" ' +
+                    'style="display:none"></div>' +
+                    '<div id="clipStripEnd" class="noteStripEnd" ' +
+                    'onmouseover="return escape(\'Go to note end time\')" ' +
+                    'style="display:none"></div>' +
                     '</div>' +
                     '</div>'
             };
         };
 
-        // self.components -- Access to the internal player and any options needed at runtime
+        // self.components -- Access to the internal player and any
+        // options needed at runtime
         this.microformat.components = function(html_dom, create_obj) {
             try {
                 return {
@@ -207,9 +217,9 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                 self.components.starttime, self.components.duration,
                 self.components.timestrip.trackWidth);
 
-            var endtime =
-                self.components.endtime > self.components.duration ?
-                self.components.duration : self.components.endtime;
+            var endtime = (
+                self.components.endtime > self.components.duration
+            ) ? self.components.duration : self.components.endtime;
 
             var right = self.microformat._timeToPixels(
                 endtime, self.components.duration,
@@ -236,9 +246,9 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                         if (layer._anns.hasOwnProperty(annotationName)) {
                             var annotation = layer._anns[annotationName];
 
-                            endtime =
-                                annotation.endtime > self.components.duration ?
-                                self.components.duration : annotation.endtime;
+                            endtime = (
+                                annotation.endtime > self.components.duration
+                            ) ? self.components.duration : annotation.endtime;
 
                             left = self.microformat._timeToPixels(
                                 annotation.starttime, self.components.duration,
@@ -299,17 +309,18 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                 // higher in the list
                 var inserted = false;
                 if (opts.zIndex !== undefined) {
-                    jQuery('.clipStripLayerContainer').each(function(index, value) {
-                        var zindex = jQuery(this).css('z-index');
-                        if (
-                            (zindex && opts.zIndex > zindex) ||
-                                (zindex === undefined || zindex === 'auto')
-                        ) {
-                            jQuery(this).before(html);
-                            inserted = true;
-                            return false;
-                        }
-                    });
+                    jQuery('.clipStripLayerContainer').each(
+                        function(index, value) {
+                            var zindex = jQuery(this).css('z-index');
+                            if (
+                                (zindex && opts.zIndex > zindex) ||
+                                    (zindex === undefined || zindex === 'auto')
+                            ) {
+                                jQuery(this).before(html);
+                                inserted = true;
+                                return false;
+                            }
+                        });
                 }
 
                 if (!inserted) { // insert at end
@@ -332,7 +343,7 @@ if (!Sherd.Video.Annotators.ClipStrip) {
             },
             destroy: function() {
                 this.removeAll();
-                jQuery("#" + this.htmlID).remove();
+                jQuery('#' + this.htmlID).remove();
                 delete self.components.layers[name];
             },
             add: function(ann, opts) {
@@ -352,7 +363,8 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                 };
 
                 jQuery('#' + this.htmlID).children('.clipStripLayer').append(
-                    '<div class="annotationLayer" id="' + this._anns[opts.id].htmlID + '"></div>');
+                    '<div class="annotationLayer" id="' +
+                        this._anns[opts.id].htmlID + '"></div>');
 
                 if (opts.color) {
                     jQuery('#' + this._anns[opts.id].htmlID).css(

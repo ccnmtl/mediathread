@@ -325,10 +325,17 @@ if (!Sherd.Video.YouTube) {
         };
 
         this.media.duration = function() {
-            var duration = 0;
+            let duration = 0;
             if (self.components.player) {
                 try {
-                    duration = self.components.player.getDuration();
+                    if (
+                        self.components.player &&
+                            typeof self.components.player.getDuration ===
+                            'function'
+                    ) {
+                        duration = self.components.player.getDuration();
+                    }
+
                     if (duration < 0) {
                         duration = 0;
                     }

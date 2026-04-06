@@ -100,10 +100,10 @@ if (!Sherd.Video.YouTube) {
                     'allowfullscreen="true" ' +
                     'allow="accelerometer; autoplay; clipboard-write; ' +
                     'encrypted-media; gyroscope; ' +
-                    'picture-in-picture; web-share" ' +
+                    'picture-in-picture;" ' +
                     'referrerpolicy="strict-origin-when-cross-origin" ' +
                     'frameborder="0" ' +
-                    'id="' + self.playerID + '" />' +
+                    'id="' + self.playerID + '"></iframe>' +
                     '</div>'
             };
         };

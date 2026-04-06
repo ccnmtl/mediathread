@@ -438,11 +438,25 @@ if (!Sherd.Video.YouTube) {
         // Used by tests. Might be nice to refactor state out so that
         // there's a consistent interpretation across controls
         this.media.state = function() {
-            return self.components.player.getPlayerState();
+            if (
+                self.components.player &&
+                    typeof self.components.player.getPlayerState === 'function'
+            ) {
+                return self.components.player.getPlayerState();
+            }
+
+            return null;
         };
 
         this.media.url = function() {
-            return self.components.player.getVideoUrl();
+            if (
+                self.components.player &&
+                    typeof self.components.player.getVideoUrl === 'function'
+            ) {
+                return self.components.player.getVideoUrl();
+            }
+
+            return null;
         };
     };
 }

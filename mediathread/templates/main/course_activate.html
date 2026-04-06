@@ -10,7 +10,8 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/lib/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'js/lib/bootstrap-datepicker.min.js' %}"
+            crossorigin="anonymous"></script>
     <script>
     jQuery(document).ready(function() {
         jQuery('#id_date_range_start,#id_date_range_end').datepicker();

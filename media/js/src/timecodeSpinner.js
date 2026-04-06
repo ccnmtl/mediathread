@@ -1,7 +1,10 @@
 import {formatTimecode, parseTimecode} from './utils.js';
 
 export function defineTimecodeSpinner() {
-    if (typeof jQuery === 'undefined') {
+    if (
+        typeof jQuery === 'undefined' ||
+            !jQuery.ui || !jQuery.ui.spinner
+    ) {
         return;
     }
 

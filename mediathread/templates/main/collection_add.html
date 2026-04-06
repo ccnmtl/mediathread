@@ -266,8 +266,10 @@
 
 {% block js %}
     <!-- Media upload form -->
-    <script src="{% static 's3sign/js/s3upload.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+<script src="{% static 's3sign/js/s3upload.js' %}"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"
+        crossorigin="anonymous"></script>
     <script>
     const s3_upload = function() {
         const s3upload = new S3Upload({
@@ -341,7 +343,8 @@
     </script>
 
     <!-- Media import form -->
-    <script src="{% static 'js/lib/get-youtube-id/index.js' %}"></script>
+    <script src="{% static 'js/lib/get-youtube-id/index.js' %}"
+            crossorigin="anonymous"></script>
     <script type="module">
     import {
         getMediaType, refreshImportForm

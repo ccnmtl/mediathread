@@ -2,7 +2,8 @@
 {% load comments coursetags %}
 
 {% block js %}
-    <script type="text/javascript" src="{{STATIC_URL}}js/app/dashboard/reports.js"></script>
+<script src="{{STATIC_URL}}js/app/dashboard/reports.js"
+        crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
@@ -23,7 +24,8 @@
         });
     </script>
 
-    <script type="text/javascript" src="{{STATIC_URL}}js/protovis/protovis.min.js"></script>
+    <script src="{{STATIC_URL}}js/protovis/protovis.min.js"
+            crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block dashboard_content %}

@@ -15,9 +15,12 @@
 {% endblock %}
 
 {% block uncompressable_css %}
-    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-umd-min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/select2/select2.min.js"></script>
+    <script src="{{STATIC_URL}}js/underscore/underscore-umd-min.js"
+            crossorigin="anonymous"></script>
+    <script src="{{STATIC_URL}}js/backbone/backbone-min.js"
+            crossorigin="anonymous"></script>
+    <script src="{{STATIC_URL}}js/select2/select2.min.js"
+            crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block clientside_templates %}
@@ -37,15 +40,18 @@
     <!--All the annotation javascript -->
     {% include "djangosherd/annotator_resources.html" %}
 
-    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js"></script>
-    <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js"></script>
+    <script src="{{STATIC_URL}}js/app/projects/assignment_view.js"
+            crossorigin="anonymous"></script>
+    <script src="{{STATIC_URL}}js/app/projects/selection_assignment_view.js"
+            crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
     <script>
     window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
     </script>
-    <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"></script>
+    <script src="{% static 'js/pdf/pdfjs/pdf.js' %}"
+            crossorigin="anonymous"></script>
 
     {% include "djangosherd/player_resources.html" %}
 

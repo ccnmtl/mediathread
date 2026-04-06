@@ -10,7 +10,8 @@ locals().update(
         STATIC_ROOT=STATIC_ROOT,
         INSTALLED_APPS=INSTALLED_APPS,
         s3static=True,
-        s3prefix="ccnmtl",
+        cloudfront='de7ozu9uiu6ad',
+        s3prefix='ccnmtl',
     ))
 
 CACHES = {

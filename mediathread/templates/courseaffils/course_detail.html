@@ -18,7 +18,8 @@
 {% endblock %}
 
 {% block uncompressable_js %}
-    <script src="{% static 'js/bundle.js' %}"></script>
+    <script src="{% static 'js/bundle.js' %}"
+            crossorigin="anonymous"></script>
 
     <script type="text/javascript">
         jQuery(document).ready(function() {

@@ -55,18 +55,22 @@ See https://github.com/adobe-type-tools/cmap-resources
 window.WORKER_SRC = '{% static "js/pdf/pdfjs/pdf.worker.js" %}';
 </script>
 
-<script src="{% static 'js/pdf/pdfjs/pdf.js' %}""></script>
+<script src="{% static 'js/pdf/pdfjs/pdf.js' %}"
+        crossorigin="anonymous"></script>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = window.WORKER_SRC;
 window.ASSET_URL = '{{object.primary.signed_url|safe}}';
 </script>
 
-<script src="{% static 'js/pdf/pdfjs/viewer.js' %}"></script>
-<script src="{% static 'js/pdf/svg/svg.min.js' %}"></script>
+<script src="{% static 'js/pdf/pdfjs/viewer.js' %}"
+        crossorigin="anonymous"></script>
+<script src="{% static 'js/pdf/svg/svg.min.js' %}"
+        crossorigin="anonymous"></script>
 <script>
 window.PDFViewerApplication.baseUrl = window.ASSET_URL;
 </script>
-<script type="module" src="{% static 'js/pdf/main.js' %}"></script>
+<script type="module" src="{% static 'js/pdf/main.js' %}"
+        crossorigin="anonymous"></script>
 
   </head>
 

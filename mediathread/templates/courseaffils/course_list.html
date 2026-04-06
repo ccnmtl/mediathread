@@ -14,7 +14,8 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.combined.min.js' %}"></script>
+    <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.combined.min.js' %}"
+            crossorigin="anonymous"></script>
     <script>
         jQuery(document).ready(function () {
             jQuery('.tablesorter').tablesorter({

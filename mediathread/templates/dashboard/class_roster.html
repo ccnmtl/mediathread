@@ -9,19 +9,19 @@
 {% endblock %}
 
 {% block uncompressable_css %}
-    <script type="text/javascript" src="{{STATIC_URL}}js/underscore/underscore-umd-min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
+    <script crossorigin="anonymous" src="{{STATIC_URL}}js/underscore/underscore-umd-min.js"></script>
+    <script crossorigin="anonymous" src="{{STATIC_URL}}js/backbone/backbone-min.js"></script>
 {% endblock %}
 
 {% block js %}
     {{ block.super }}
-    <script type="text/javascript" src="{{STATIC_URL}}js/app/dashboard/class_roster.js"></script>
+    <script crossorigin="anonymous" src="{{STATIC_URL}}js/app/dashboard/class_roster.js"></script>
 {% endblock %}
 
 {% block uncompressable_js %}
     <script src="{% static 'js/lib/tablesorter/jquery.tablesorter.combined.min.js' %}"></script>
 
-    <script type="text/javascript">
+    <script>
         jQuery(document).ready(function () {
             var view = new CourseRosterView({
                 el: jQuery(".roster-container"),

@@ -12,21 +12,27 @@
 
         {% include "ctlsettings/sentry_js.html" %}
 
-        <script src='{% static "jquery/js/jquery-3.7.1.min.js" %}'></script>
+        <script src='{% static "jquery/js/jquery-3.7.1.min.js" %}'
+                crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Montserrat|Montserrat:bold|Open+Sans|Open+Sans:bold" rel="stylesheet">
 
-        <script src='{% static "jquery/js/jquery-ui.min.js" %}'></script>
-        <script src='{% static "jquery/js/jquery.mousewheel.min.js" %}'></script>
-        <script src="{% static 'js/mustache/mustache.min.js' %}"></script>
-        <script src="{% static 'js/flowplayer/flowplayer.min.js' %}"></script>
+        <script src='{% static "jquery/js/jquery-ui.min.js" %}'
+                crossorigin="anonymous"></script>
+        <script src='{% static "jquery/js/jquery.mousewheel.min.js" %}'
+                crossorigin="anonymous"></script>
+        <script src="{% static 'js/mustache/mustache.min.js' %}"
+                crossorigin="anonymous"></script>
+        <script src="{% static 'js/flowplayer/flowplayer.min.js' %}"
+                crossorigin="anonymous"></script>
 
-        <script src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"></script>
+        <script src="{% static 'js/lib/sherdjs/lib/OpenLayers-min.js' %}"
+                crossorigin="anonymous"></script>
         <script src="/jsi18n"></script>
 
-        <script src='{% static 'js/app/extension_updater.js' %}'></script>
+        <script src="{% static 'js/app/extension_updater.js' %}"></script>
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
@@ -167,22 +173,32 @@
             })();
             </script>
 
-            <script src='{% static "js/app/util.js" %}'></script>
-            <script src='{% static "js/app/ajaxDelete.js" %}'></script>
-            <script src='{% static "js/app/mediathread_setup.js" %}'></script>
-            <script src='{% static "js/app/panel.js" %}'></script>
+            <script src='{% static "js/app/util.js" %}'
+                    crossorigin="anonymous"></script>
+            <script src='{% static "js/app/ajaxDelete.js" %}'
+                    crossorigin="anonymous"></script>
+            <script src='{% static "js/app/mediathread_setup.js" %}'
+                    crossorigin="anonymous"></script>
+            <script src='{% static "js/app/panel.js" %}'
+                    crossorigin="anonymous"></script>
 
             <!--  Asset related -->
-            <script src='{% static "js/app/assetmgr/asset.js" %}'></script>
-            <script src='{% static "js/app/assetmgr/assetpanel.js" %}'></script>
-            <script type="module" src='{% static "js/app/assetmgr/collection.js" %}'></script>
+            <script src='{% static "js/app/assetmgr/asset.js" %}'
+                    crossorigin="anonymous"></script>
+            <script src='{% static "js/app/assetmgr/assetpanel.js" %}'
+                    crossorigin="anonymous"></script>
+            <script type="module" src='{% static "js/app/assetmgr/collection.js" %}'
+                    crossorigin="anonymous"></script>
 
             <!--  Discussion related -->
-            <script src='{% static "js/app/discussion/discussionpanel.js" %}'></script>
+            <script src='{% static "js/app/discussion/discussionpanel.js" %}'
+                    crossorigin="anonymous"></script>
 
             <!--  Project related -->
-            <script src='{% static "js/app/projects/projectpanel.js" %}'></script>
-            <script src='{% static "js/app/projects/projectlist.js" %}'></script>
+            <script src='{% static "js/app/projects/projectpanel.js" %}'
+                    crossorigin="anonymous"></script>
+            <script src='{% static "js/app/projects/projectlist.js" %}'
+                    crossorigin="anonymous"></script>
 
             <script>
             jQuery(document).ready(function() {

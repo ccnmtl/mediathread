@@ -9,6 +9,7 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from django.utils import timezone
 from django.db import models
 from django.db.models.query_utils import Q
 from django.utils.encoding import smart_str
@@ -103,7 +104,7 @@ class SherdNoteQuerySet(models.query.QuerySet):
         if date_range is None or len(date_range) < 1:
             return self
 
-        tomorrow = datetime.today() + timedelta(1)
+        tomorrow = timezone.now() + timedelta(1)
         # Tomorrow at midnight
         enddate = datetime(tomorrow.year, tomorrow.month, tomorrow.day)
         if date_range == 'today':

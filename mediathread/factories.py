@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from courseaffils.models import Course
 from django.contrib.auth.models import User, Group, Permission
@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.test.client import RequestFactory
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 import factory
 from factory.django import DjangoModelFactory
@@ -360,7 +361,7 @@ class MediathreadTestMixin(object):
             title='Sample Assignment Response', course=self.sample_course,
             author=self.student_one, policy='InstructorShared',
             project_type='composition', parent=assignment,
-            response_view_policy='always', date_submitted=datetime.now(),
+            response_view_policy='always', date_submitted=timezone.now(),
             body='Sample assignment response text')
 
     def setup_sample_selection_assignment(self):
@@ -368,7 +369,7 @@ class MediathreadTestMixin(object):
             title='Sample Selection Assignment',
             course=self.sample_course, author=self.instructor_one,
             policy='CourseProtected', project_type='selection-assignment',
-            due_date=datetime.today() + timedelta(1))
+            due_date=timezone.now() + timedelta(1))
 
         item = AssetFactory.create(
                 title='Selection Assignment Item', primary_source='image',
@@ -385,7 +386,7 @@ class MediathreadTestMixin(object):
             title='My Response', course=self.sample_course,
             author=self.student_one, policy='InstructorShared',
             project_type='composition', parent=assignment,
-            response_view_policy='always', date_submitted=datetime.now())
+            response_view_policy='always', date_submitted=timezone.now())
 
         note = SherdNoteFactory.create(
             asset=ai.asset, author=self.student_one)

@@ -1,5 +1,5 @@
 # pylint: disable-msg=R0904
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -8,6 +8,7 @@ from django.core.cache import cache
 from django.http.response import Http404
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from django.utils import timezone
 import json
 from mediathread.factories import MediathreadTestMixin, UserFactory, \
     AssetFactory, SherdNoteFactory, ProjectFactory, AssignmentItemFactory, \
@@ -304,7 +305,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         ctype = ContentType.objects.get(model='project', app_label='projects')
         response1 = ProjectFactory.create(
             title='Zeta', course=self.sample_course, author=self.student_three,
-            date_submitted=datetime.now(), policy='PublicEditorsAreOwners',
+            date_submitted=timezone.now(), policy='PublicEditorsAreOwners',
             parent=self.assignment)
         self.assertEqual(response1.assignment(), self.assignment)
 
@@ -403,7 +404,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
 
         # resave the response as submitted
         assignment_response.create_or_update_collaboration('CourseProtected')
-        assignment_response.date_submitted = datetime.now()
+        assignment_response.date_submitted = timezone.now()
         assignment_response.save()
 
         self.client.login(username=self.instructor_one.username,
@@ -506,7 +507,7 @@ class ProjectViewTest(MediathreadTestMixin, TestCase):
         # reset to public
         self.project_private.create_or_update_collaboration(
             PUBLISH_WHOLE_WORLD[0])
-        self.project_private.date_submitted = datetime.now()
+        self.project_private.date_submitted = timezone.now()
         self.project_private.save()
 
         url = self.project_private.public_url()
@@ -794,7 +795,7 @@ class SelectionAssignmentViewTest(MediathreadTestMixin, TestCase):
 
     def test_public_view(self):
         assignment_response = ProjectFactory.create(
-            date_submitted=datetime.now(),
+            date_submitted=timezone.now(),
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_WORLD[0], parent=self.assignment)
 
@@ -950,7 +951,7 @@ class SequenceAssignmentViewTest(MediathreadTestMixin, TestCase):
 
     def test_public_view(self):
         assignment_response = ProjectFactory.create(
-            date_submitted=datetime.now(),
+            date_submitted=timezone.now(),
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_WORLD[0], parent=self.assignment)
 
@@ -1111,7 +1112,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
             policy='CourseProtected', parent=self.assignment,
-            date_submitted=datetime.now())
+            date_submitted=timezone.now())
 
         url = reverse('project-item-view',
                       args=[self.assignment.id, self.asset.id])
@@ -1145,7 +1146,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # submit student one's response
         self.response_one.create_or_update_collaboration(
             'CourseProtected')
-        self.response_one.date_submitted = datetime.now()
+        self.response_one.date_submitted = timezone.now()
         self.response_one.save()
         cache.clear()
 
@@ -1185,7 +1186,7 @@ class ProjectItemViewTest(MediathreadTestMixin, TestCase):
         # all students having submitted, the annotation is now citable
         self.response_two.create_or_update_collaboration(
             'CourseProtected')
-        self.response_two.date_submitted = datetime.now()
+        self.response_two.date_submitted = timezone.now()
         self.response_two.save()
         cache.clear()
 
@@ -1351,7 +1352,7 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         future_assignment = ProjectFactory.create(
             title='due tomorrow',
             course=self.sample_course, author=self.instructor_one,
-            due_date=datetime.today() + timedelta(days=1),
+            due_date=timezone.now() + timedelta(days=1),
             policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
         evergreen_assignment = ProjectFactory.create(
             title='no due date',
@@ -1360,7 +1361,7 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
         past_assignment = ProjectFactory.create(
             title='due yesterday',
             course=self.sample_course, author=self.instructor_one,
-            due_date=datetime.today() - timedelta(days=1),
+            due_date=timezone.now() - timedelta(days=1),
             policy=PUBLISH_WHOLE_CLASS[0], project_type='assignment')
 
         # Student responses
@@ -1374,7 +1375,7 @@ class AssignmentListViewTest(MediathreadTestMixin, TestCase):
             policy=PUBLISH_DRAFT[0], parent=evergreen_assignment)
 
         # Submitted response for the past assignment
-        submitted = datetime.today() - timedelta(days=2)
+        submitted = timezone.now() - timedelta(days=2)
         ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             date_submitted=submitted,
@@ -1434,7 +1435,7 @@ class DiscussionAssignmentTest(MediathreadTestMixin, TestCase):
             title='keep talking',
             course=self.sample_course,
             author=self.instructor_one,
-            due_date=datetime.today(),
+            due_date=timezone.now(),
             policy=PUBLISH_WHOLE_CLASS[0],
             project_type='discussion-assignment')
         Project.objects.make_discussion_assignment(

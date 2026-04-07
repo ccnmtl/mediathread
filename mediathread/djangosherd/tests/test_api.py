@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
+from django.utils import timezone
 
 from mediathread.djangosherd.api import DiscussionIndexResource, \
     SherdNoteResource
@@ -52,7 +51,7 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
         self.assertFalse(res.in_selection_assignment_response(self.note1))
 
         pn = ProjectNoteFactory(annotation=self.note1)
-        pn.project.date_submitted = datetime.today()
+        pn.project.date_submitted = timezone.now()
         pn.project.save()
         self.assertTrue(res.in_selection_assignment_response(self.note1))
 
@@ -74,7 +73,7 @@ class SherdNoteResourceTest(MediathreadTestMixin, TestCase):
         psa = ProjectSequenceAssetFactory(sequence_asset=sa)
         self.assertFalse(res.in_sequence_assignment_response(self.note1))
 
-        psa.project.date_submitted = datetime.today()
+        psa.project.date_submitted = timezone.now()
         psa.project.save()
         self.assertTrue(res.in_sequence_assignment_response(self.note1))
 

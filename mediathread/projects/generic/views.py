@@ -96,6 +96,7 @@ class AssignmentView(LoggedInCourseMixin, ProjectReadableMixin, TemplateView):
             'feedback_count': feedback_count,
             'students': students
         }
+
         self.ctx.update(self.get_extra_context())
         return self.ctx
 

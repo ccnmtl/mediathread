@@ -538,7 +538,6 @@ class Project(models.Model):
 
     def responses(self, course, viewer, author=None):
         visible = []
-        self.clear_collaboration_cache()
         collaboration = self.get_collaboration()
 
         if not collaboration:
@@ -641,18 +640,17 @@ class Project(models.Model):
         '''returns the ThreadedComment object for a
         course discussion. This is distinguished from instructor feedback
         by the access policy.'''
-        thread = None
         col = self.get_collaboration()
-        if col:
-            comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        if not col:
+            return None
 
-            discussion = col.children.filter(
-                policy_record__policy_name='CourseProtected',
-                content_type=comm_type)
-            if discussion:
-                thread = discussion[0].content_object
+        comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        discussion = col.children.filter(
+            policy_record__policy_name='CourseProtected',
+            content_type=comm_type
+        ).first()
 
-        return thread
+        return discussion.content_object if discussion else None
 
     def visibility_policy(self):
         """Returns the project's policy name, e.g. 'PrivateEditorsAreOwners'"""
@@ -843,11 +841,16 @@ class Project(models.Model):
             pass  # optional parameter
 
     def set_parent(self, parent_id):
+        parent = None
+
         try:
             parent = Project.objects.get(id=parent_id)
-            parent.get_collaboration().append_child(self)
         except Project.DoesNotExist:
-            pass
+            return
+
+        if parent:
+            parent.get_collaboration().append_child(self)
+            self.clear_collaboration_cache()
 
     def get_collaboration(self):
         if not hasattr(self, '_collaboration_cache'):

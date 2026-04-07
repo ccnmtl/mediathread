@@ -557,6 +557,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_INSTRUCTOR_SHARED[0], parent=self.assignment)
         self.assignment.get_collaboration().delete()
+        self.assignment.clear_collaboration_cache()
 
         r = self.assignment.responses(self.sample_course, self.instructor_one)
         self.assertEqual(len(r), 0)

@@ -416,13 +416,20 @@ class ProjectManager(models.Manager):
         # world publish-able, turn this feature OFF
         projects = Project.objects.filter(course=course)
         for project in projects:
+            col = None
+
             try:
                 col = Collaboration.objects.get_for_object(project)
-                if col.policy_record.policy_name == 'PublicEditorsAreOwners':
-                    col.set_policy('CourseProtected')
-                    col.save()
             except Collaboration.DoesNotExist:
-                pass
+                project.clear_collaboration_cache()
+                continue
+
+            if col and \
+               col.policy_record.policy_name == 'PublicEditorsAreOwners':
+                col.set_policy('CourseProtected')
+                col.save()
+
+            project.clear_collaboration_cache()
 
     def limit_response_policy(self, course):
         # Update response policy to be NEVER
@@ -496,13 +503,14 @@ class Project(models.Model):
     def is_empty(self):
         return self.title == self.DEFAULT_TITLE and len(self.body) == 0
 
-    def public_url(self, col=None):
-        self.clear_collaboration_cache()
-
+    def public_url(self, col=None) -> str:
         if col is None:
             col = self.get_collaboration()
+
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
             return col.get_absolute_url()
+
+        return None
 
     def _response_by_author(self, children, author):
         '''not protected by can_read, strictly internal'''

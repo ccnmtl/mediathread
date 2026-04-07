@@ -497,6 +497,8 @@ class Project(models.Model):
         return self.title == self.DEFAULT_TITLE and len(self.body) == 0
 
     def public_url(self, col=None):
+        self.clear_collaboration_cache()
+
         if col is None:
             col = self.get_collaboration()
         if col and col.policy_record.policy_name == 'PublicEditorsAreOwners':
@@ -536,6 +538,7 @@ class Project(models.Model):
 
     def responses(self, course, viewer, author=None):
         visible = []
+        self.clear_collaboration_cache()
         collaboration = self.get_collaboration()
 
         if not collaboration:
@@ -609,6 +612,8 @@ class Project(models.Model):
         Returns the Project object that this Project is a response to,
         or None if this Project is not a response to any other.
         """
+        self.clear_collaboration_cache()
+
         col = self.get_collaboration()
         if col:
             parent = col.get_parent()
@@ -740,6 +745,8 @@ class Project(models.Model):
         parent = collaboration.get_parent()
         if parent is None:
             return True  # this project does not have a parent assignment
+        else:
+            self.clear_collaboration_cache()
 
         # If this project is an assignment response, verify the parent
         # assignment's response policy sanctions a read by the viewer
@@ -810,6 +817,8 @@ class Project(models.Model):
             collab_group.user_set.remove(ex_member)
 
     def create_or_update_collaboration(self, policy_name):
+        self.clear_collaboration_cache()
+
         try:
             col = Collaboration.objects.get_for_object(self)
             col.title = self.title
@@ -841,7 +850,14 @@ class Project(models.Model):
             pass
 
     def get_collaboration(self):
-        return self.collaboration.first()
+        if not hasattr(self, '_collaboration_cache'):
+            self._collaboration_cache = self.collaboration.first()
+
+        return self._collaboration_cache
+
+    def clear_collaboration_cache(self):
+        if hasattr(self, '_collaboration_cache'):
+            del self._collaboration_cache
 
     def is_submitted(self):
         return self.date_submitted is not None

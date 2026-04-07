@@ -619,13 +619,19 @@ class Project(models.Model):
         Returns the Project object that this Project is a response to,
         or None if this Project is not a response to any other.
         """
-        self.clear_collaboration_cache()
-
         col = self.get_collaboration()
         if col:
             parent = col.get_parent()
             if parent:
-                return parent.content_object
+                assignment = parent.content_object
+
+                try:
+                    assignment.refresh_from_db(
+                        fields=['response_view_policy', 'due_date'])
+                except Project.DoesNotExist:
+                    return None
+
+                return assignment
 
         return None
 

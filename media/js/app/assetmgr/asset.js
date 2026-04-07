@@ -954,6 +954,11 @@
         //  - update list items
         //  - replace with 'new' annotation
         this.saveAnnotation = function(saveButton) {
+            if (!self.active_asset || !self.active_asset.id) {
+                showMessage('The asset is still loading. Please try again.');
+                return false;
+            }
+
             jQuery(saveButton)
                 .attr('disabled', 'disabled')
                 .attr('value', 'Saving...')

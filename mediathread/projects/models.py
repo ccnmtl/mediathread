@@ -620,18 +620,17 @@ class Project(models.Model):
     def feedback_discussion(self):
         '''returns the ThreadedComment object for
          professor feedback (assuming it's private)'''
-        thread = None
         col = self.get_collaboration()
-        if col:
-            comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        if not col:
+            return None
 
-            feedback = col.children.filter(
-                policy_record__policy_name='PrivateStudentAndFaculty',
-                content_type=comm_type)
-            if feedback:
-                thread = feedback[0].content_object
+        comm_type = ContentType.objects.get_for_model(ThreadedComment)
+        item = col.children.filter(
+            policy_record__policy_name='PrivateStudentAndFaculty',
+            content_type=comm_type
+        ).first()
 
-        return thread
+        return item.content_object if item else None
 
     def course_discussion(self):
         '''returns the ThreadedComment object for a

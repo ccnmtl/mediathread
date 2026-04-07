@@ -2,6 +2,7 @@ import boto3
 import requests
 import os
 import tempfile
+from functools import lru_cache
 from django.conf import settings
 from django.utils import timezone
 from os.path import basename, splitext
@@ -30,16 +31,17 @@ def get_s3_private_bucket_name() -> str:
         'mediathread-private-uploads')
 
 
+@lru_cache(maxsize=32)
 def get_s3_client(aws_key, aws_secret):
-    aws_region_name = DEFAULT_AWS_REGION
-    if hasattr(settings, 'AWS_S3_REGION_NAME'):
-        aws_region_name = settings.AWS_S3_REGION_NAME
+    aws_region_name = getattr(
+        settings, 'AWS_S3_REGION_NAME', DEFAULT_AWS_REGION)
 
-    return boto3.client(
-        's3', config=s3_config,
+    session = boto3.session.Session(
         region_name=aws_region_name,
         aws_access_key_id=aws_key,
         aws_secret_access_key=aws_secret)
+
+    return session.client('s3', config=s3_config)
 
 
 def get_signed_s3_url(url: str, bucket: str, aws_key: str, aws_secret: str):

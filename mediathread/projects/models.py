@@ -751,8 +751,6 @@ class Project(models.Model):
         parent = collaboration.get_parent()
         if parent is None:
             return True  # this project does not have a parent assignment
-        else:
-            self.clear_collaboration_cache()
 
         # If this project is an assignment response, verify the parent
         # assignment's response policy sanctions a read by the viewer
@@ -763,6 +761,11 @@ class Project(models.Model):
             return True
 
         assignment = parent.content_object
+        if assignment is None:
+            return False
+
+        assignment.refresh_from_db(fields=['response_view_policy', 'due_date'])
+
         if (assignment.response_view_policy == RESPONSE_VIEW_ALWAYS[0]):
             return True
         elif assignment.response_view_policy == RESPONSE_VIEW_SUBMITTED[0]:

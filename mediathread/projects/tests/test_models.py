@@ -566,11 +566,17 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         public = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_WORLD[0])
+
         self.assertEqual(
             public.public_url(),
             '/s/%s/project/%s/' % (self.sample_course.slug(), public.id))
 
         Project.objects.reset_publish_to_world(self.sample_course)
+
+        # TODO: this should have been done by
+        # reset_publish_to_world(), not sure why this is necessary.
+        public.clear_collaboration_cache()
+
         self.assertIsNone(public.public_url())
 
     def test_limit_response_policy(self):

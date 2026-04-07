@@ -455,13 +455,23 @@ CitationView.prototype.displayCitation = function(anchor, ann_obj, id) {
             targets.annotation_title.innerHTML = (
                 (ann_obj.metadata && ann_obj.metadata.title) ?
                     '' + ann_obj.metadata.title + '' : '');
-            if (ann_obj.annotation.startCode) {
-                var duration = new Date(ann_obj.annotation.duration * 1000)
-                    .toISOString().substr(11, 8);
+
+            if (
+                ann_obj.annotation &&
+                ann_obj.annotation.startCode
+            ) {
+                let durationText = '';
+
+                if (Number.isFinite(ann_obj.annotation.duration)) {
+                    durationText = new Date(ann_obj.annotation.duration * 1000)
+                        .toISOString().substr(11, 8);
+                    durationText = ' (' + durationText + ')';
+                }
+
                 targets.annotation_title.innerHTML +=
                     '<br />' + ann_obj.annotation.startCode + ' - ' +
                      ann_obj.annotation.endCode +
-                    ' (' + duration + ')';
+                    durationText;
             }
         }
     }

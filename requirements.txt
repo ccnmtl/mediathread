@@ -19,7 +19,7 @@ six==1.17.0
 sqlparse==0.5.5  # django-debug-toolbar
 django-debug-toolbar==6.3.0
 python-mimeparse==2.0.0  # tastypie
-python-dateutil==2.9.0  # tastypie
+python-dateutil==2.9.0.post0  # tastypie
 defusedxml==0.7.1  # tastypie
 django-tastypie==0.15.1
 logilab-common==2.1.0

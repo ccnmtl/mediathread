@@ -122,13 +122,21 @@ class Collaboration(models.Model):
         return self._parent
 
     def get_children_for_object(self, obj, author=None):
-        model_name = obj._meta.model.__name__.lower()
+        ct = ContentType.objects.get_for_model(obj, for_concrete_model=False)
+        queryset = self.children.filter(content_type=ct)
 
-        queryset = self.children.filter(content_type__model=model_name)
         if author and not author.is_anonymous:
-            queryset = queryset.filter(Q(user=author) | Q(group__user=author))
+            queryset = queryset.filter(
+                Q(user=author) | Q(group__user=author))
 
-        return queryset.select_related('user', 'group', 'policy_record')
+        return queryset.select_related(
+            'user', 'group', 'policy_record'
+        ).prefetch_related(
+            'content_object',
+            'content_object__author',
+            'content_object__participants',
+            'content_object__collaboration'
+        )
 
     def get_top_ancestor(self):  # i.e. domain
         result = self

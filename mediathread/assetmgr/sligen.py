@@ -6,6 +6,29 @@ from panopto.session import PanoptoSessionManager
 import time
 
 
+def get_manifest_url(data: dict) -> str:
+    if not isinstance(data, dict):
+        return None
+
+    playlist = data.get('playlist')
+    if not isinstance(playlist, list) or not playlist:
+        return None
+
+    first_item = playlist[0]
+    if not isinstance(first_item, dict):
+        return None
+
+    sources = first_item.get('sources')
+    if not isinstance(sources, list) or not sources:
+        return None
+
+    first_source = sources[0]
+    if not isinstance(first_source, dict):
+        return None
+
+    return first_source.get('file')
+
+
 def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
     # JUST flv_pseudo, video_pseudo, and NOT 'video' or 'flv'
     # because the javascript won't activate streaming unless there's _pseudo
@@ -67,10 +90,13 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
 
         response = requests.get(url, timeout=60)
         data = response.json()
-        manifest_url = data['playlist'][0]['sources'][0]['file']
-        response = requests.get(manifest_url, timeout=60)
-        lines = response.content.decode('utf-8').split('\n')
-        jw_url = lines[2]
+
+        manifest_url = get_manifest_url(data)
+        if manifest_url:
+            response = requests.get(manifest_url, timeout=60)
+            lines = response.content.decode('utf-8').split('\n')
+            jw_url = lines[2]
+
         cache.set(url, jw_url, 10800)
         return jw_url
 

@@ -317,20 +317,10 @@ CollectionList.prototype.appendItems = function(config) {
             let $elt = jQuery('#selectionCollapse-' + self.current_annotation);
             $elt.collapse({toggle: true});
 
-            $elt = jQuery('#annotation-' + self.current_annotation);
-            let offset = {
-                top: 0,
-                left: 0
-            };
-
-            if ($elt && $elt.offset) {
-                offset = $elt.offset();
-            }
-
-            let top = 0;
-            if (offset && offset.top) {
-                top = offset.top;
-            }
+            const $annotation = jQuery(
+                '#annotation-' + self.current_annotation);
+            const top = $annotation.length ? (
+                $annotation.offset()?.top ?? 0) : 0;
 
             jQuery('html, body').animate({
                 scrollTop: top - 50

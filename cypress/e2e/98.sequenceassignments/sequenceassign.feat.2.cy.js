@@ -15,15 +15,18 @@ describe('Sequence Assignment Feat: Student Responds To Assignment', () => {
     it('should create student response', () => {
         cy.contains('Assignments').click();
         cy.get('#cu-privacy-notice-button').click();
-        cy.contains('Test Sequence Assignment').parent('tr').within(() => {
-            // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Test Sequence Assignment');
-            cy.get('td').eq(1).contains('No Response');
-            cy.get('td').eq(3).contains('Add Response');
-            cy.get('td').eq(4).contains('Sequence');
+        cy.contains('td', 'Test Sequence Assignment').closest('tr').within(
+            () => {
+                // all searches are automatically rooted to the found tr
+                // element
+                cy.get('td').eq(2).find('a')
+                    .contains('Test Sequence Assignment');
+                cy.get('td').eq(1).contains('No Response');
+                cy.get('td').eq(3).contains('Add Response');
+                cy.get('td').eq(4).contains('Sequence');
 
-            cy.get('td').eq(3).contains('Add Response').click();
-        });
+                cy.get('td').eq(3).contains('Add Response').click();
+            });
         cy.title().should('contain', 'Test Sequence Assignment');
         cy.get('.btn-edit-assignment').should('not.exist');
         cy.contains('Place secondary elements').should('be.visible');

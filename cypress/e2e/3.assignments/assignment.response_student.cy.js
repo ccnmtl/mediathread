@@ -57,9 +57,9 @@ describe('Assignment Feature: Student Response', () => {
     it('should show on assignments page', () => {
         cy.visit('/course/1/assignments/');
         cy.get('#cu-privacy-notice-button').click();
-        cy.contains('Sample Assignment').parent('tr').within(() => {
+        cy.contains('td', 'Sample Assignment').closest('tr').within(() => {
             // all searches are automatically rooted to the found tr element
-            cy.get('td').eq(2).contains('Sample Assignment');
+            cy.get('td').eq(2).find('a').contains('Sample Assignment');
             cy.get('td').eq(1).contains('Shared with Instructor');
             cy.get('td').eq(3).contains('View Response');
             cy.get('td').eq(4).contains('Composition');

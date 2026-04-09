@@ -122,7 +122,7 @@ pytz==2026.1.post1
 isodate==0.7.2
 cached-property==2.0.1
 
-platformdirs==4.9.2  # zeep
+platformdirs==4.9.6  # zeep
 attrs==26.1.0  # zeep
 zeep==4.3.2
 

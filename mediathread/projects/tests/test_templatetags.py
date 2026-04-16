@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from django.template.base import Template
 from django.template.context import Context
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from django.utils import timezone
 from django_comments.forms import CommentSecurityForm
 from mediathread.factories import UserFactory, MediathreadTestMixin, \
     ProjectFactory
@@ -42,12 +41,12 @@ class TestTemplateTags(MediathreadTestMixin, TestCase):
         visible_response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_CLASS[0], parent=assignment,
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
 
         draft_response = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
             policy=PUBLISH_DRAFT[0], parent=assignment,
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
 
         request = RequestFactory().get('/')
         request.course = self.sample_course

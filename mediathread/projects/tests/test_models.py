@@ -1,8 +1,9 @@
 # pylint: disable-msg=R0904
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.db import IntegrityError
 from django.test import TestCase
+from django.utils import timezone
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import (
@@ -62,7 +63,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         self.project_instructor_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_INSTRUCTOR_SHARED[0],
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
 
         self.project_class_shared = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
@@ -113,7 +114,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_one,
             policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
         self.assertTrue(
             response.can_cite(self.sample_course, self.student_two))
 
@@ -125,14 +126,14 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         # parent assignment: responses visible after due_date passes
         # or on viewer submit
-        yesterday = datetime.today() + timedelta(-1)
+        yesterday = timezone.now() + timedelta(-1)
         self.selection_assignment.response_view_policy = 'submitted'
         self.selection_assignment.due_date = yesterday
         self.selection_assignment.save()
         self.assertTrue(
             response.can_cite(self.sample_course, self.student_two))
 
-        tomorrow = datetime.today() + timedelta(1)
+        tomorrow = timezone.now() + timedelta(1)
         self.selection_assignment.due_date = tomorrow
         self.selection_assignment.save()
         self.assertFalse(
@@ -141,14 +142,14 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
             policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
         self.assertFalse(response.can_cite(
             self.sample_course, self.student_two))
 
         response = ProjectFactory.create(
             course=self.sample_course, author=self.student_three,
             policy=PUBLISH_WHOLE_CLASS[0], parent=self.selection_assignment,
-            date_submitted=datetime.today())
+            date_submitted=timezone.now())
         self.assertTrue(response.can_cite(
             self.sample_course, self.student_two))
 
@@ -444,7 +445,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         # submit response
         response.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
-        response.date_submitted = datetime.now()
+        response.date_submitted = timezone.now()
         response.save()
 
         self.assert_responses_by_course(self.student_one, [response], [])
@@ -470,7 +471,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # student_two submits
         response2 = ProjectFactory.create(
             course=self.sample_course, author=self.student_two,
-            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
+            date_submitted=timezone.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
         self.assert_responses_by_course(self.student_one,
                                         [response, response2], [])
@@ -484,7 +485,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
         # don't line-up by default
         response1 = ProjectFactory.create(
             title='Zeta', course=self.sample_course, author=self.student_three,
-            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
+            date_submitted=timezone.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
 
         # private response
@@ -494,13 +495,13 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         response4 = ProjectFactory.create(
             title='Gam', course=self.sample_course, author=self.student_three,
-            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
+            date_submitted=timezone.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
         response4.delete()
 
         response3 = ProjectFactory.create(
             title='Beta', course=self.sample_course, author=self.student_two,
-            date_submitted=datetime.now(), policy=PUBLISH_WHOLE_CLASS[0],
+            date_submitted=timezone.now(), policy=PUBLISH_WHOLE_CLASS[0],
             parent=self.assignment)
 
         self.assert_responses_by_course(self.student_one,
@@ -738,7 +739,7 @@ class ProjectTest(MediathreadTestMixin, TestCase):
 
         # student two submits his response (mock)
         response2.create_or_update_collaboration(PUBLISH_WHOLE_CLASS[0])
-        response2.date_submitted = datetime.now()
+        response2.date_submitted = timezone.now()
         response2.save()
         self.assertTrue(response.can_read(
             self.sample_course, self.student_two))

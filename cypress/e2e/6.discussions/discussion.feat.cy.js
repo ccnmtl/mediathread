@@ -69,8 +69,8 @@ describe('Discussion View: Create Discussion', () => {
         });
 
         cy.visit('/course/1/assignments');
-        cy.contains('Discussion: Scenario 1')
-            .parent('td').parent('tr').within(() => {
+        cy.contains('td', 'Discussion: Scenario 1')
+            .closest('tr').within(() => {
             // all searches are automatically rooted to the found tr element
                 cy.get('td').eq(2).contains('Discussion: Scenario 1');
                 cy.get('td').eq(1).contains('Shared with Class');
@@ -124,18 +124,20 @@ describe('Discussion View: Create Discussion', () => {
 
         cy.log('View status on the assignments page');
         cy.visit('/course/1/assignments');
-        cy.contains('Discussion: Scenario 1').parent('tr').within(() => {
-            cy.get('td').eq(2).contains('Discussion: Scenario 1');
-            cy.get('td').eq(1).contains('Shared 1 comment');
-            cy.get('td').eq(3).contains('Add Comments');
-        });
+        cy.contains('td', 'Discussion: Scenario 1').closest('tr').within(
+            () => {
+                cy.get('td').eq(2).find('a')
+                    .contains('Discussion: Scenario 1');
+                cy.get('td').eq(1).contains('Shared 1 comment');
+                cy.get('td').eq(3).contains('Add Comments');
+            });
     });
 
     it('Instructor sees the response', () => {
         cy.login('instructor_one', 'test');
         cy.visit('/course/1/assignments');
-        cy.contains('Discussion: Scenario 1')
-            .parent('td').parent('tr').within(() => {
+        cy.contains('td', 'Discussion: Scenario 1')
+            .closest('tr').within(() => {
                 cy.get('td').eq(3).contains('1 / 3');
                 cy.get('td').eq(7).should('not.contain', 'Delete');
             });

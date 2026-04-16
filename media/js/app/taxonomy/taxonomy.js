@@ -1,5 +1,4 @@
 /* global showMessage: true */
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 
 (function(jQuery) {
     // saveAll dirty models in a collection. Uses jQuery when/then to chain
@@ -568,7 +567,6 @@
         },
         createParents: function(data, selectedVocabulary, onomyURL,
             skosData, loopMax) {
-            /* eslint-disable no-useless-escape */
             var self = this;
             var parentsArray = {};
 
@@ -643,7 +641,6 @@
                     selectedVocabulary.addTerm(display, skos_uri);
                 }
             }
-            /* eslint-enable no-useless-escape */
             return parentsArray;
         }
     });

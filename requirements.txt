@@ -144,7 +144,7 @@ tzlocal==5.3.1  # celery
 exceptiongroup==1.3.1  # celery
 click>=8.3.2,<9.0
 click-didyoumean>=0.3.1
-click-repl>=0.2.0
+click-repl>=0.3.0
 click-plugins>=1.1.1.2
 wcwidth==0.6.0
 django-celery-results<2.7.0

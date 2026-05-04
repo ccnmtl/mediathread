@@ -118,7 +118,7 @@ entrypoints==0.4
 django-storages==1.14.6
 
 requests-toolbelt==1.0.0
-pytz==2026.1.post1
+pytz==2026.2
 isodate==0.7.2
 cached-property==2.0.1
 

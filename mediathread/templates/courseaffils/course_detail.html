@@ -18,10 +18,21 @@
 {% endblock %}
 
 {% block uncompressable_js %}
+    <!--
+        The Panopto Embed API contains some old-fashioned JavaScript that creates
+        some global variables important to be aware of:
+        * ApiError
+        * PlayerState
+        * EmbedApi (This is the constructor)
+      -->
+    <script src="https://developers.panopto.com/scripts/embedapi.min.js"></script>
+    <!-- TODO: If this route is down, we can fall back to a local copy. -->
+
+    <!-- main react JS -->
     <script src="{% static 'js/bundle.js' %}"
             crossorigin="anonymous"></script>
 
-    <script type="text/javascript">
+    <script>
         jQuery(document).ready(function() {
             {% if msg == "upload" %}
                 var msg = "Your media file submission is being processed.\nYou will receive an e-mail when it is ready."

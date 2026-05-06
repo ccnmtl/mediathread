@@ -1222,6 +1222,7 @@ class ReactAssetDetailView(LoggedInCourseMixin, DetailView):
             'owners': owners,
             'can_upload': can_upload,
             'can_upload_image': can_upload_image,
+            'panopto_server': getattr(settings, 'PANOPTO_SERVER', None),
         })
         return context
 

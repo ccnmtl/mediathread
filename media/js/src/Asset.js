@@ -8,6 +8,9 @@ export default class Asset {
     getType() {
         return getAssetType(this.asset.primary_type);
     }
+    isPanopto() {
+        return this.asset.primary_type === 'mp4_panopto';
+    }
     getThumbnail() {
         if (!this.asset) {
             return null;

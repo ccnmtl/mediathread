@@ -36,6 +36,7 @@ import CreateSelection from './CreateSelection';
 import ViewSelections from './ViewSelections';
 import ViewItem from './ViewItem';
 import TimecodeEditor from '../TimecodeEditor';
+import PanoptoPlayer from '../PanoptoPlayer';
 
 /**
  * Update the path to the given selection, using pushState.
@@ -922,22 +923,39 @@ class AssetDetailClass extends React.Component {
                     [{kind: 'subtitles', src: captionTrack, default: true}];
             }
 
+            let playerEl = null;
+
+            // TODO: enable when ready
+            if (false && this.asset.isPanopto()) {
+                // Use PanoptoPlayer component instead of ReactPlayer
+                playerEl = (
+                    <PanoptoPlayer
+                        serverName={window.PANOPTO_SERVER}
+                        sessionId={vidUrl}
+                    />
+                );
+            } else {
+                playerEl = (
+                    <ReactPlayer
+                        className="react-player embed-responsive-item"
+                        width="100%"
+                        height="100%"
+                        style={{backgroundColor: 'black'}}
+                        onProgress={this.onPlayerProgress.bind(this)}
+                        ref={this.playerRef}
+                        src={vidUrl}
+                        controls={true}
+                        config={extraConfig}
+                    />
+                );
+            }
+
             media = (
                 <React.Fragment>
                     {annotationTools}
                     <div className="embed-responsive embed-responsive-16by9" aria-live="polite"
                         aria-label={'Video for ' + label}>
-                        <ReactPlayer
-                            className="react-player embed-responsive-item"
-                            width="100%"
-                            height="100%"
-                            style={{backgroundColor: 'black'}}
-                            onProgress={this.onPlayerProgress.bind(this)}
-                            ref={this.playerRef}
-                            src={vidUrl}
-                            controls={true}
-                            config={extraConfig}
-                        />
+                        {playerEl}
                     </div>
                 </React.Fragment>
             );

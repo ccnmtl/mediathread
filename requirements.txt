@@ -111,7 +111,7 @@ django-s3sign==0.6.4
 s3transfer==0.17.0
 jmespath==1.1.0
 
-botocore==1.43.3
+botocore==1.43.4
 boto3[crt]==1.43.3
 
 entrypoints==0.4

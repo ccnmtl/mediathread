@@ -17,29 +17,32 @@ class ContactUsForm(forms.Form):
     email = forms.EmailField(required=True)
     username = forms.CharField(required=False, max_length=512)
     course = forms.CharField(required=False, max_length=512)
-
     issue_date = forms.DateTimeField(required=False)
-
     category = forms.CharField(required=False, max_length=512)
 
-    description = forms.CharField(widget=forms.Textarea, required=True)
+    description = forms.CharField(
+        required=True, widget=forms.Textarea)
 
-    decoy = forms.CharField(widget=forms.Textarea, required=False)
+    decoy = forms.CharField(
+        required=False, widget=forms.Textarea)
 
-    debug_info = forms.CharField(widget=forms.HiddenInput())
-    title = forms.CharField(widget=forms.HiddenInput())
-    pid = forms.CharField(widget=forms.HiddenInput())
-    mid = forms.CharField(widget=forms.HiddenInput())
-    type = forms.CharField(widget=forms.HiddenInput())
-    owner = forms.CharField(widget=forms.HiddenInput())
-    assigned_to = forms.CharField(widget=forms.HiddenInput())
+    debug_info = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    title = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    pid = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    mid = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    type = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    owner = forms.CharField(
+        required=False, widget=forms.HiddenInput())
+    assigned_to = forms.CharField(
+        required=False, widget=forms.HiddenInput())
 
     def clean(self):
         cleaned_data = super(ContactUsForm, self).clean()
-
-        if cleaned_data.get('category') == '-----':
-            self._errors["category"] = self.error_class([
-                "An issue category is required"])
 
         if 'decoy' in cleaned_data and len(cleaned_data.get('decoy')) > 0:
             self._errors["decoy"] = self.error_class([

@@ -17,9 +17,8 @@ class TestForms(TestCase):
         }
 
         form.clean()
-        self.assertEqual(len(form._errors.keys()), 2)
+        self.assertEqual(len(form._errors.keys()), 1)
         self.assertTrue('decoy' in form._errors)
-        self.assertTrue('category' in form._errors)
 
     def test_course_manage_materials_form(self):
         user = UserFactory()

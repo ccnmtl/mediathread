@@ -65,6 +65,8 @@ def sligen_streaming_processor(url, label=None, request=None):  # noqa: C901
 
         return fpx_url
     elif label == 'mp4_panopto':
+        # TODO: when ready, simply return the panopto_id here, to yet
+        # the user's client handle the panopto connection.
         panopto_id = url
         panopto_url = cache.get(panopto_id)
         if panopto_url:

@@ -68,7 +68,7 @@ django-smoketest==1.2.1
 
 django-markwhat==2025.5.31
 text-unidecode==1.3  # for faker
-Faker==40.19.1
+Faker==40.20.0
 factory_boy==3.3.3
 django-impersonate==1.9.5
 django-registration-redux==2.13

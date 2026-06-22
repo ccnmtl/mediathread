@@ -2,6 +2,7 @@ from datetime import datetime
 from courseaffils.lib import get_public_name, in_course_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator
 from django.db.models import (
@@ -261,9 +262,11 @@ class ProjectVersionListView(LoggedInCourseMixin, ProjectEditableMixin,
         return ctx
 
 
-class ProjectPublicView(View):
+class ProjectPublicView(LoginRequiredMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
+        super().dispatch(request, *args, **kwargs)
+
         context_slug = self.kwargs.get('context_slug', None)
         obj_id = self.kwargs.get('obj_id', None)
 
@@ -327,6 +330,7 @@ class SequenceReadOnlyView(ProjectReadableMixin, TemplateView):
 
 
 class ProjectReadOnlyView(ProjectReadableMixin,
+                          LoginRequiredMixin,
                           JSONResponseMixin, TemplateView):
     """
     A single panel read-only view of the specified project/version combination.

@@ -2,7 +2,6 @@ from courseaffils.models import Course
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.widgets import RadioSelect
-from registration.forms import RegistrationForm
 
 from mediathread.main import course_details
 from mediathread.main.course_details import (
@@ -49,39 +48,6 @@ class ContactUsForm(forms.Form):
                 "Please leave this field blank"])
 
         return cleaned_data
-
-
-class CustomRegistrationForm(RegistrationForm):
-    first_name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    username = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    email = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(
-        required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(
-        required=True,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    title = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    institution = forms.CharField(
-        required=True,
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    referred_by = forms.CharField(
-        required=True,
-        widget=forms.Textarea(attrs={'class': 'form-control'}))
-    user_story = forms.CharField(
-        required=False,
-        widget=forms.Textarea(attrs={'class': 'form-control'}))
 
 
 class CourseDeleteMaterialsForm(forms.Form):

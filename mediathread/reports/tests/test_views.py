@@ -8,8 +8,7 @@ from django.test.testcases import TestCase
 
 from mediathread.djangosherd.models import SherdNote
 from mediathread.factories import MediathreadTestMixin, ProjectFactory, \
-    UserFactory, AssetFactory, SherdNoteFactory, RegistrationProfileFactory, \
-    UserProfileFactory
+    UserFactory, AssetFactory, SherdNoteFactory
 from mediathread.reports.views import AssignmentDetailReport
 from mediathread.taxonomy.models import Term
 
@@ -221,45 +220,6 @@ class ReportViewTest(MediathreadTestMixin, TestCase):
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-
-    def test_self_registration_report(self):
-        UserProfileFactory(user=self.student_one)
-        RegistrationProfileFactory(user=self.student_one)
-        url = reverse('mediathread-self-registration',
-                      args=[self.sample_course.id])
-
-        # as student
-        self.client.login(username=self.student_one.username, password='test')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # as instructor
-        self.client.login(username=self.instructor_one.username,
-                          password='test')
-        self.switch_course(self.client, self.sample_course)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-        # as superuser
-        staff = UserFactory(is_staff=True, is_superuser=True)
-        self.assertTrue(self.client.login(username=staff.username,
-                                          password='test'))
-
-        set_course_url = '/?set_course=%s&next=/' % \
-            self.sample_course.group.name
-        response = self.client.get(set_course_url, follow=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
-        header = ("First Name,Last Name,Email,Title,Institution,"
-                  "Referred_By,User Story,Created")
-        data = ("Student,One,student_one@example.com,Title,"
-                "Columbia University,Pablo Picasso,User Story,")
-
-        self.assertContains(response, header)
-        self.assertContains(response, data)
 
 
 class TestAssignmentDetailReport(MediathreadTestMixin, TestCase):

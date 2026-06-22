@@ -1,6 +1,6 @@
 from django.urls import path
 from mediathread.reports.views import (
-    SelfRegistrationReportView, ActivityByCourseView, ClassSummaryGraphView,
+    ActivityByCourseView, ClassSummaryGraphView,
     AssignmentDetailReport, ClassSummaryView, ClassActivityView,
     ClassAssignmentsView, ClassAssignmentReport)
 
@@ -25,7 +25,4 @@ urlpatterns = [
 
     path('activity/course/', ActivityByCourseView.as_view(),
          name="mediathread-activity-by-course"),
-
-    path('self-registration/', SelfRegistrationReportView.as_view(),
-         name="mediathread-self-registration")
 ]

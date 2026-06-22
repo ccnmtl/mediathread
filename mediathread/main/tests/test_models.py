@@ -1,16 +1,12 @@
 from __future__ import unicode_literals
 
-from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 from django.utils.encoding import smart_str
 
 from mediathread.factories import (
-    MediathreadTestMixin, UserFactory, UserProfileFactory, CourseFactory,
+    MediathreadTestMixin, UserFactory, UserProfileFactory,
 )
-from mediathread.main.models import (
-    UserSetting, user_registered_callback,
-    user_activated_callback
-)
+from mediathread.main.models import UserSetting
 
 
 class UserSettingsTest(MediathreadTestMixin, TestCase):
@@ -44,33 +40,3 @@ class UserProfileTest(TestCase):
         user = UserFactory(username='johndoe')
         profile = UserProfileFactory(user=user)
         self.assertEqual(smart_str(profile), 'johndoe')
-
-
-class UserRegistrationTest(TestCase):
-    def test_user_registered_callback(self):
-        user = UserFactory()
-        data = {'first_name': 'John',
-                'last_name': 'Doe',
-                'title': 'Professor',
-                'institution': 'Columbia University',
-                'referred_by': 'Sam Smith',
-                'user_story': 'Sample user story'}
-
-        request = RequestFactory().post('/', data)
-        user_registered_callback(None, user, request)
-
-        user.refresh_from_db()
-        self.assertEqual(user.first_name, 'John')
-        self.assertEqual(user.last_name, 'Doe')
-        self.assertEqual(user.profile.title, 'Professor')
-        self.assertEqual(user.profile.institution, 'Columbia University')
-        self.assertEqual(user.profile.referred_by, 'Sam Smith')
-        self.assertEqual(user.profile.user_story, 'Sample user story')
-
-    def test_user_activated_callback(self):
-        course = CourseFactory(title='Mediathread Guest Sandbox')
-        user = UserFactory()
-
-        user_activated_callback(None, user, None)
-
-        self.assertTrue(course.is_member(user))

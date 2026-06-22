@@ -21,7 +21,6 @@ from mediathread.discussions.views import DiscussionCreateView
 from mediathread.main.models import UserProfile, CourseInvitation
 from mediathread.projects.models import Project, AssignmentItem, ProjectNote
 from mediathread.taxonomy.models import Vocabulary, Term, TermRelationship
-from registration.models import RegistrationProfile
 from structuredcollaboration.models import Collaboration, \
     CollaborationPolicyRecord
 from threadedcomments.models import ThreadedComment
@@ -54,13 +53,6 @@ class GroupFactory(DjangoModelFactory):
         model = Group
     name = factory.Sequence(
         lambda n: 't1.y2010.s001.cf1000.scnc.st.course:%d.columbia.edu' % n)
-
-
-class RegistrationProfileFactory(DjangoModelFactory):
-    class Meta:
-        model = RegistrationProfile
-    user = factory.SubFactory(UserFactory)
-    activation_key = factory.Sequence(lambda n: 'key%d' % n)
 
 
 class CourseFactory(DjangoModelFactory):

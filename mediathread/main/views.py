@@ -897,7 +897,7 @@ class CourseResendInviteView(LoggedInFacultyMixin, View):
 
 
 class CourseAcceptInvitationView(FormView):
-    template_name = 'registration/invitation_accept.html'
+    template_name = 'invitation_accept.html'
     form_class = AcceptInvitationForm
 
     def get_invite(self, uuid):

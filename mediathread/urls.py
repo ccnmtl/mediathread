@@ -68,7 +68,7 @@ urlpatterns = [
          name='cas_ng_logout'),
     path('admin/', admin.site.urls),
     path('accounts/login/',
-         LoginView.as_view(template_name='registration/login_darkmode.html'),
+         LoginView.as_view(template_name='login_darkmode.html'),
          name='login'),
 
     # override the default urls for password
@@ -95,10 +95,8 @@ urlpatterns = [
          CourseAcceptInvitationView.as_view(),
          name='course-invite-accept'),
     path('accounts/invite/complete/', TemplateView.as_view(
-        template_name='registration/invitation_complete.html'),
+        template_name='invitation_complete.html'),
          name='course-invite-complete'),
-
-    path('accounts/', include('registration.backends.default.urls')),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie
     path('api/asset/user/<slug:record_owner_name>/',

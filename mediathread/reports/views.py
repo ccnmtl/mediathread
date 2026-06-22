@@ -1,6 +1,5 @@
 from courseaffils.lib import users_in_course
 from courseaffils.models import Course
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.aggregates import Count
 from django.db.models.query_utils import Q
@@ -20,7 +19,6 @@ from mediathread.mixins import LoggedInSuperuserMixin, \
 from mediathread.projects.models import Project
 from mediathread.taxonomy.models import TermRelationship
 import re
-from registration.models import RegistrationProfile
 from structuredcollaboration.models import Collaboration
 from tagging.models import Tag
 import unicodecsv as csv
@@ -396,35 +394,6 @@ class ActivityByCourseView(LoggedInSuperuserMixin, CSVResponseMixin, View):
 
         return self.render_csv_response(
             'mediathread_activity_by_course', headers, rows)
-
-
-class SelfRegistrationReportView(LoggedInSuperuserMixin,
-                                 CSVResponseMixin, View):
-
-    def get_self_registered_users(self):
-        registered = RegistrationProfile.objects.values_list('user_id',
-                                                             flat=True)
-        return User.objects.filter(id__in=registered)
-
-    def get_rows(self, users):
-        rows = []
-        for user in users:
-            rows.append([user.first_name, user.last_name, user.email,
-                        user.profile.title, user.profile.institution,
-                        user.profile.referred_by, user.profile.user_story,
-                        user.date_joined])
-        return rows
-
-    def get(self, request, *args, **kwargs):
-        headers = ['First Name', 'Last Name', 'Email', 'Title',
-                   'Institution', 'Referred_By', 'User Story',
-                   'Created']
-
-        users = self.get_self_registered_users()
-        rows = self.get_rows(users)
-
-        return self.render_csv_response(
-            'mediathread_self_registration', headers, rows)
 
 
 class Echo(object):

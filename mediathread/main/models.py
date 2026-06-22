@@ -4,9 +4,6 @@ from courseaffils.models import Course
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields import UUIDField
-from registration.signals import user_registered, user_activated
-
-from mediathread.main.course_details import get_guest_sandbox
 
 
 class UserSetting(models.Model):
@@ -54,29 +51,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
-def user_registered_callback(sender, user, request, **kwargs):
-    user.first_name = request.POST['first_name'].strip()
-    user.last_name = request.POST['last_name'].strip()
-    user.save()
-
-    UserProfile.objects.create(user=user,
-                               self_registered=True,
-                               title=request.POST['title'].strip(),
-                               institution=request.POST['institution'].strip(),
-                               referred_by=request.POST['referred_by'],
-                               user_story=request.POST['user_story'])
-
-
-def user_activated_callback(sender, user, request, **kwargs):
-    # add this user to the guest sandbox by default
-    sandbox = get_guest_sandbox()
-    sandbox.group.user_set.add(user)
-
-
-user_registered.connect(user_registered_callback)
-user_activated.connect(user_activated_callback)
 
 
 class CourseInvitation(models.Model):

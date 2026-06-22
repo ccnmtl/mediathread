@@ -94,7 +94,6 @@ INSTALLED_APPS += [  # noqa
     'mediathread.reports',
     'mediathread.main',
     'mediathread.taxonomy',
-    'registration',
     'corsheaders',
     'reversion',
     'lti_auth',

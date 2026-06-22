@@ -1,4 +1,4 @@
-from courseaffils.models import Course, CourseInfo
+from courseaffils.models import CourseInfo
 from django.conf import settings
 from django.core.cache import cache
 from panopto.session import PanoptoSessionManager
@@ -165,10 +165,6 @@ def cached_course_collaboration(course):
             the_collaboration = None
 
     return the_collaboration
-
-
-def get_guest_sandbox():
-    return Course.objects.get(title="Mediathread Guest Sandbox")
 
 
 def has_student_activity(course):

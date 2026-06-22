@@ -48,12 +48,6 @@ text-center
                       onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
               <input class="btn btn-lg btn-secondary btn-block login-local-form" type="submit" value="Log In" {% if not form.errors %} style="display: none"{% endif %} />
               <input type="hidden" name="next" value="{{ next|urlencode }}" />
-
-
-              <hr style="border: 1px solid white;" />
-              <p class="text-light">
-                  <a class="text-light" href="/accounts/password_reset/"> I forgot my ID and/or password.</a> | <a class="text-light" href="{% url 'registration_register' %}">I don't have an account.</a>
-              </p>
           </form>
         </div>
 

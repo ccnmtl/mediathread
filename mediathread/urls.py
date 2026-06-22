@@ -26,7 +26,6 @@ from mediathread.assetmgr.views import (
     RedirectToExternalCollectionView, RedirectToUploaderView,
     ExternalAssetCreateView, BookmarkletMigrationView, AssetUpdateView
 )
-from mediathread.main.forms import CustomRegistrationForm
 from mediathread.main.views import (
     error_500,
     MethCourseListView, AffilActivateView,
@@ -44,7 +43,6 @@ from mediathread.projects.views import (
     ProjectCollectionView, ProjectDetailView, ProjectItemView,
     ProjectPublicView, ProjectListView, AssignmentListView)
 from mediathread.taxonomy.api import TermResource, VocabularyResource
-from registration.backends.default.views import RegistrationView
 from tastypie.api import Api
 
 
@@ -100,9 +98,6 @@ urlpatterns = [
         template_name='registration/invitation_complete.html'),
          name='course-invite-complete'),
 
-    path('accounts/register/',
-         RegistrationView.as_view(form_class=CustomRegistrationForm),
-         name='registration_register'),
     path('accounts/', include('registration.backends.default.urls')),
 
     # API - JSON rendering layers. Half hand-written, half-straight tasty=pie

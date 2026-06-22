@@ -140,14 +140,20 @@ def course_information_title(course):
                              COURSE_INFORMATION_TITLE_DEFAULT)
 
 
-def cached_course_is_member(course, user):
+def cached_course_is_member(course: object, user: object) -> bool:
+    if not course or not user:
+        return False
+
     key = "%s:%s:is_member" % (course.id, user.id)
     if key not in cache:
         cache.set(key, course.is_member(user))
     return cache.get(key)
 
 
-def cached_course_is_faculty(course, user):
+def cached_course_is_faculty(course: object, user: object) -> bool:
+    if not course or not user:
+        return False
+
     key = "%s:%s:is_faculty" % (course.id, user.id)
     if key not in cache:
         cache.set(key, course.is_faculty(user))

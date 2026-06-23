@@ -8,6 +8,7 @@ from courseaffils.views import CourseListView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group, User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ImproperlyConfigured
@@ -375,7 +376,7 @@ class MigrateMaterialsView(LoggedInFacultyMixin, AjaxRequiredMixin,
         return self.render_to_json_response(ctx)
 
 
-class ContactUsView(FormView):
+class ContactUsView(LoginRequiredMixin, FormView):
     template_name = 'main/contact.html'
     form_class = ContactUsForm
     success_url = "/contact/success/"

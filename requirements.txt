@@ -80,7 +80,7 @@ oauthlib==3.3.1
 pylti==0.7.0
 
 pyjwt==2.13.0  # pylti1p3next
-jwcrypto==1.5.7  # pylti1p3next
+jwcrypto==1.5.8  # pylti1p3next
 pylti1p3next==2.0.2  # django-lti
 django-lti==0.10.0
 

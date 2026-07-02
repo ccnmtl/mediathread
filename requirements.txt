@@ -148,7 +148,7 @@ click-plugins>=1.1.1.2
 wcwidth==0.8.2
 django-celery-results<2.7.0
 
-Pillow==12.2.0
+Pillow==12.3.0
 pi-heif==1.4.0
 
 # memcached

@@ -24,8 +24,8 @@ MANAGE ?= ./manage.py
 REQUIREMENTS ?= requirements.txt
 SYS_PYTHON ?= python3
 PY_SENTINAL ?= $(VE)/sentinal
-WHEEL_VERSION ?= 0.46.3
-PIP_VERSION ?= 26.0.1
+WHEEL_VERSION ?= 0.47.0
+PIP_VERSION ?= 26.1.2
 SETUPTOOLS_VERSION ?= 82.0.1
 MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
@@ -76,6 +76,6 @@ clean:
 	rm -rf reports
 	rm -f celerybeat-schedule
 	rm -rf node_modules
-	find . -name '*.pyc' -exec rm {} \;
+	find . -name '*.pyc' -delete
 
 .PHONY: jenkins test flake8 runserver migrate check shell clean

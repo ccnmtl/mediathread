@@ -43,7 +43,7 @@ idna==3.18
 urllib3==2.7.0  # sentry-sdk
 certifi==2026.7.22  # sentry-sdk
 cryptography==50.0.0
-pyOpenSSL==26.3.0
+pyOpenSSL==26.4.0
 asn1crypto==1.5.1  # for pyOpenSSL
 cffi==2.1.0  # for pyOpenSSL
 

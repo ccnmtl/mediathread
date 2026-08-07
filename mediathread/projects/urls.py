@@ -11,6 +11,7 @@ from mediathread.projects.views import (
     DiscussionAssignmentSaveView, ProjectVersionListView
 )
 from rest_framework import routers
+from ctlsettings import views as ctl_views
 
 
 router = routers.DefaultRouter()
@@ -18,6 +19,7 @@ router.register(r'projectsequenceassets', ProjectSequenceAssetViewSet)
 
 
 urlpatterns = [
+    path('accounts/login/', ctl_views.LoginAPIView.as_view()),
     path('api/', include(router.urls)),
 
     path('create/ca/', CompositionAssignmentEditView.as_view(), {},

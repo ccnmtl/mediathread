@@ -18,6 +18,19 @@
 text-center
 {% endblock %}
 
+{% block extrahead %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async
+        defer></script>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function enableSubmit() {
+            document.getElementById("guest-submit").disabled = false;
+        }
+    </script>
+{% endblock %}
+
 {% block container %}
 
         <div class="form-signin">
@@ -46,8 +59,9 @@ text-center
 
               <input id="guest-login" class="btn btn-lg btn-secondary btn-block" type="button" value="Guest Log In"{% if form.errors %} style="display: none"{% endif %}
                       onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
-              <input class="btn btn-lg btn-secondary btn-block login-local-form" type="submit" value="Log In" {% if not form.errors %} style="display: none"{% endif %} />
+              <input class="btn btn-lg btn-secondary btn-block login-local-form" type="submit" value="Log In" {% if not form.errors %} style="display: none"{% endif %} id="guest-submit" disabled />
               <input type="hidden" name="next" value="{{ next|urlencode }}" />
+              <div class="cf-turnstile mt-2" data-sitekey="{{ TURNSTILE_SITE_KEY }}" data-callback="enableSubmit" ></div>
           </form>
         </div>
 

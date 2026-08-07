@@ -67,6 +67,8 @@
 
         <link rel="stylesheet" href="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.css" />
         <script src="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.js"></script>
+        {% block extrahead %}
+        {% endblock %}
     </head>
 
     {% course_role for request.user in request.course as role_in_course %}

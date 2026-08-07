@@ -57,6 +57,16 @@
             jQuery("#id_password2").attr("placeholder", "Confirm Password");
         });
     </script>
+    <script>
+        function enableSubmit() {
+            document.getElementById("submit-id").disabled = false;
+        }
+    </script>
+{% endblock %}
+
+{% block extrahead %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async
+        defer></script>
 {% endblock %}
 
 {% block content %}
@@ -172,7 +182,8 @@
 
     <div style="text-align: center">
     <input class="btn btn-primary btn-large right" type="submit"
-     id="submit-id" value="{% trans 'Sign up!' %}" />
+     id="submit-id" value="{% trans 'Sign up!' %}" disabled />
+    <div class="cf-turnstile mt-2" data-sitekey="{{ TURNSTILE_SITE_KEY }}" data-callback="enableSubmit" ></div> 
     </div>
 </form>
 

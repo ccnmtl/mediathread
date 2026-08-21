@@ -57,12 +57,17 @@ text-center
           <form id="login-local" name="login_local" method="post" action=".">
               {% csrf_token %}
               <div class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
-                  <label for="id_username" class="sr-only">Username</label>
-                  <input type="text" id="id_username" maxlength="254" name="username" class="form-control" placeholder="User ID" required autofocus>
+                  <div class="mb-1">
+                      <label for="id_username" class="sr-only">Username</label>
+                      <input type="text" id="id_username" maxlength="254" name="username"
+                             class="form-control" placeholder="User ID" required autofocus />
+                  </div>
 
-                  <label for="id_password" class="sr-only">Password</label>
-                  <input type="password" id="id_password" class="form-control" name="password"
-                      placeholder="Password" required>
+                  <div class="mb-1">
+                      <label for="id_password" class="sr-only">Password</label>
+                      <input type="password" id="id_password" class="form-control" name="password"
+                             placeholder="Password" required />
+                  </div>
               </div>
 
               <input id="guest-login" class="btn btn-lg btn-secondary btn-block" type="button" value="Guest Log In"{% if form.errors %} style="display: none"{% endif %}

@@ -93,7 +93,7 @@ ua-parser-builtins==202606
 ua_parser==1.0.2
 user_agents==2.2.0
 django_user_agents==0.4.0
-gunicorn==26.0.0
+gunicorn==26.1.0
 path==17.1.1
 simplegeneric==0.8.1
 scandir==1.10.0

@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from django.db.models.query_utils import Q
 from django.urls import reverse
 from mediathread.api import UserResource, TagResource

@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 '''From the TastyPie Docs:
 Authentication is the component needed to verify who a certain user
 is and to validate their access to the API.

@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from random import choice
 
 from string import ascii_letters

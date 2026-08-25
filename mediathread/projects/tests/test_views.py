@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from datetime import timedelta
 
 from django.conf import settings

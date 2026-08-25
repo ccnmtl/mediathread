@@ -1,5 +1,3 @@
-# pylint: disable-msg=R0904
-# pylint: disable-msg=E1103
 import json
 
 from django.test import TestCase

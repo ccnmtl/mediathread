@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from django.contrib import admin
 
 from mediathread.assetmgr.models import (Asset, ExternalCollection, Source,

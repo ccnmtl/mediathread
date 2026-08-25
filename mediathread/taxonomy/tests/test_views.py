@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from django.test.client import RequestFactory
 from django.test.testcases import TestCase
 

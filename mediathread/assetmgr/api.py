@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 import json
 import time
 from django.urls import reverse

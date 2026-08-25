@@ -1,5 +1,3 @@
-# pylint: disable-msg=R0904
-# pylint: disable-msg=E1103
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 

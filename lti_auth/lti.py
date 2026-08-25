@@ -21,7 +21,7 @@ class LTI(object):
         self.role_type = role_type
         self.lti_params = {}
 
-    def consumer_user_id(self):  # pylint: disable=no-self-use
+    def consumer_user_id(self):
         """
         Returns user_id as provided by LTI
         """
@@ -55,7 +55,7 @@ class LTI(object):
 
         return ''
 
-    def user_roles(self):  # pylint: disable=no-self-use
+    def user_roles(self):
         """
         LTI roles of the authenticated user
 

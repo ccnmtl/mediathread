@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from __future__ import unicode_literals
 
 from django.core.cache import cache

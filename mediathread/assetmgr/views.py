@@ -1,4 +1,3 @@
-# pylint: disable-msg=C0302
 import hashlib
 
 from courseaffils.lib import in_course_or_404, in_course, AUTO_COURSE_SELECT

@@ -1,4 +1,3 @@
-# pylint: disable-msg=R0904
 from django.db.models import Count
 from tastypie.fields import ToManyField
 from tastypie.resources import ModelResource

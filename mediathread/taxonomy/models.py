@@ -18,9 +18,9 @@ class Vocabulary(models.Model):
     class Meta:
         ordering = ['display_name', 'id']
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self):
         self.name = slugify(self.display_name)
-        super(Vocabulary, self).save(force_insert, force_update)
+        super(Vocabulary, self).save()
 
     def __str__(self):
         return self.display_name
@@ -47,9 +47,9 @@ class Term(models.Model):
     def __str__(self):
         return "%s, %s" % (self.vocabulary, self.display_name)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self):
         self.name = slugify(self.display_name)
-        super(Term, self).save(force_insert, force_update)
+        super(Term, self).save()
 
     def to_json(self):
         return {

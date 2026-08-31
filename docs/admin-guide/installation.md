@@ -3,7 +3,7 @@
 Mediathread is a complex Django application dependent on several services. We recommend using Docker for development and evaluation, and a standard WSGI setup (Apache/Nginx) for production.
 
 ## Requirements
-*   **Python:** >= 3.8
+*   **Python:** >= 3.12
 *   **Database:** PostgreSQL (Recommended)
 *   **JavaScript:** Node.js & NPM (for building the frontend)
 *   **Video Player:** Flowplayer installation (optional, for legacy support)

@@ -1,0 +1,32 @@
+site_name: Mediathread Documentation
+site_description: Comprehensive documentation for Mediathread, a multimedia annotation platform.
+site_url: https://ccnmtl.github.io/mediathread/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - User Guide:
+    - Introduction: user-guide/intro.md
+    - Courses & Assignments: user-guide/courses.md
+    - Multimedia & Annotations: user-guide/multimedia.md
+    - Browser Extensions: user-guide/extensions.md
+  - Administrator Guide:
+    - Installation & Deployment: admin-guide/installation.md
+    - Authentication (LTI/CAS): admin-guide/authentication.md
+    - CLI & Management: admin-guide/cli.md
+  - Contributor Guide:
+    - Architecture Overview: contributor-guide/architecture.md
+    - Development Setup: contributor-guide/development.md
+    - API Reference: contributor-guide/api.md
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.details
+  - pymdownx.superfences

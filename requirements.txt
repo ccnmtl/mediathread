@@ -80,7 +80,7 @@ jwcrypto==1.5.9  # pylti1p3next
 pylti1p3next==2.0.2  # django-lti
 django-lti==0.10.1
 
-nameparser==1.2.1
+nameparser==2.1.0
 
 django-bootstrap3==26.2
 django-bootstrap4==26.2

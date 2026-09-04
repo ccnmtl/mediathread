@@ -1,6 +1,6 @@
 Django>=6.1,<6.2
 asgiref==3.12.1
-psycopg[binary]==3.3.4
+psycopg[binary]==3.3.5
 statsd==4.0.1
 pep8==1.7.1
 pyflakes==3.4.0

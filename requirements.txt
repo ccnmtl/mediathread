@@ -1,4 +1,4 @@
-Django>=6.1,<6.2
+Django>=6.1.1,<6.2
 asgiref==3.12.1
 psycopg[binary]==3.3.5
 statsd==4.0.1

@@ -131,7 +131,7 @@ entrypoints==0.4
 
 billiard==4.3.0
 vine==5.1.0
-amqp==5.3.1
+amqp==5.4.0
 kombu==5.6.2
 prompt-toolkit==3.0.53
 celery==5.6.3

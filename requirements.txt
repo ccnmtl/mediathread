@@ -3,7 +3,7 @@ asgiref==3.12.1
 psycopg[binary]==3.3.6
 statsd==4.0.1
 pep8==1.7.1
-pyflakes==4.0.1
+pyflakes==4.0.2
 mccabe==0.7.0
 pycodestyle==2.15.0
 configparser==7.2.0

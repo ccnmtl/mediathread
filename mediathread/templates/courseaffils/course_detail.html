@@ -26,6 +26,11 @@
         * EmbedApi (This is the constructor)
       -->
     <script src="https://developers.panopto.com/scripts/embedapi.min.js"></script>
+    <script>
+        {% if panopto_server %}
+        window.PANOPTO_SERVER = '{{ panopto_server }}';
+        {% endif %}
+    </script>
 
     <!-- main react JS -->
     <script src="{% static 'js/bundle.js' %}"
@@ -38,10 +43,6 @@
                 showMessage(msg);
             {% endif %}
         });
-
-        {% if panopto_server %}
-        window.PANOPTO_SERVER = '{{ panopto_server }}';
-        {% endif %}
     </script>
 {% endblock %}
 

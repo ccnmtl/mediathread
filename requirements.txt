@@ -109,7 +109,7 @@ jmespath==1.1.0
 botocore
 boto3[crt]
 
-entrypoints==0.4
+entrypoints==0.4.2
 django-storages==1.14.6
 
 requests-toolbelt==1.0.0
@@ -127,7 +127,7 @@ rich==15.0.0  # bandit
 bandit==1.9.1
 funcsigs==1.0.2
 pypanopto==0.3.2
-entrypoints==0.4
+entrypoints==0.4.2
 
 billiard==4.3.1
 vine==5.1.0

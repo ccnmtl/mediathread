@@ -73,12 +73,12 @@ Sherd.Base = {
         };
         this.clearListeners = function() {
             for (var a in _namedListeners) {
-                if (_namedListeners.hasOwnProperty(a)) {
+                if (Object.hasOwn(_namedListeners, a)) {
                     this.removeListener(a);
                 }
             }
             for (var b in _listeners) {
-                if (_listeners.hasOwnProperty(b)) {
+                if (Object.hasOwn(_listeners, b)) {
                     this.removeListener(b);
                 }
             }

@@ -75,7 +75,9 @@ if (!Sherd.Video.Annotators.ClipPlay) {
                     starttime: 0,
                     endtime: 0,
                 };
-            } catch {}
+            } catch {
+                console.error('clipplay.js: microformat.components error');
+            }
             return false;
         };
     };/* function Sherd.Video.Annotators.ClipPlay() */

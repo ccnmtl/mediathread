@@ -500,8 +500,8 @@
             });
         },
         getTheOnomy: function(onomyURL, selectedVocabulary) {
-            var self = this;
-            var url = onomyURL;
+            let self = this;
+            let url = onomyURL;
 
             // tests are executed w/o ssl
             if (url.indexOf('test.json') < 0) {
@@ -509,8 +509,8 @@
             }
 
             jQuery.get(url, function(data) {
-                var arrayMax = 0;
-                var skosData;
+                let arrayMax;
+                let skosData;
                 if (self.isJSON(url)) {
                     arrayMax = data.terms.length;
                 } else {
@@ -520,7 +520,7 @@
                     arrayMax = skosData.length;
                 }
 
-                var parents = self.createParents(
+                let parents = self.createParents(
                     data, selectedVocabulary, url, skosData, arrayMax);
 
                 self.createFromParents(parents);
@@ -581,12 +581,12 @@
                 } else {
                     skos_uri = skosData[i];
                     display = data[skos_uri][
-                        'http:\/\/www.w3.org\/2004\/02\/skos\/core#altLabel']
+                        'http://www.w3.org/2004/02/skos/core#altLabel']
                         .value.trim();
 
                     try {
                         pL = data[skos_uri][
-                            'http:\/\/onomy.org\/onomy-ns#parentLabel']
+                            'http://onomy.org/onomy-ns#parentLabel']
                             .value.trim();
                     } catch {
                         pL = undefined;
@@ -606,8 +606,8 @@
                         */
                         var parent_uri;
                         try {
-                            var re = 'http:\/\/www.w3.org\/2004' +
-                                '\/02\/skos\/core#broader';
+                            var re = 'http://www.w3.org/2004' +
+                                '/02/skos/core#broader';
                             parent_uri = data[skos_uri][re].value.trim();
                         } catch {
                             parent_uri = '';

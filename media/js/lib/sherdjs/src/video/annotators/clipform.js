@@ -1,4 +1,4 @@
-/* global Sherd: true */
+/* global Sherd: true, STATIC_URL: true */
 ///clipform-display
 ///1. update noteform field: DjangoSherd_UpdateHack()
 ///2. initialize clipform field vals
@@ -71,7 +71,7 @@ if (!Sherd.Video.Annotators.ClipForm) {
                 }
 
                 // hook up an extra playbutton
-                if (self.unbind.hasOwnProperty('tool_play')) {
+                if (Object.hasOwn(self.unbind, 'tool_play')) {
                     self.unbind.tool_play.disconnect();
                 }
                 if (options && options.tool_play) {

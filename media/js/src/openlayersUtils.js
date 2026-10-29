@@ -141,7 +141,7 @@ const getdisplayStyle = function() {
  * Returns the new VectorLayer.
  */
 const displayImageSelection = function(a, map) {
-    let styles = null;
+    let styles;
     const tool = a.annotation.tool;
     if(tool === 'polygon') {
         styles = getpolygonStyles();

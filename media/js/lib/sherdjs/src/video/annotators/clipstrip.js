@@ -41,7 +41,7 @@ if (!Sherd.Video.Annotators.ClipStrip) {
         Sherd.Video.Base.apply(this, arguments);
 
         jQuery(window).resize(function() {
-            if (self.components.hasOwnProperty('timestrip')) {
+            if (Object.hasOwn(self.components, 'timestrip')) {
                 self.microformat._resize();
             }
         });
@@ -199,7 +199,9 @@ if (!Sherd.Video.Annotators.ClipStrip) {
                     duration: 0,
                     layers: {}
                 };
-            } catch {}
+            } catch {
+                console.error('clipstrip.js: microformat.components error');
+            }
             return false;
         };
 
@@ -240,10 +242,10 @@ if (!Sherd.Video.Annotators.ClipStrip) {
             self.components.clipEndMarker.style.display = 'block';
 
             for (var layerName in self.components.layers) {
-                if (self.components.layers.hasOwnProperty(layerName)) {
+                if (Object.hasOwn(self.components.layers, layerName)) {
                     var layer = self.components.layers[layerName];
                     for (var annotationName in layer._anns) {
-                        if (layer._anns.hasOwnProperty(annotationName)) {
+                        if (Object.hasOwn(layer._anns, annotationName)) {
                             var annotation = layer._anns[annotationName];
 
                             endtime = (
@@ -400,7 +402,7 @@ if (!Sherd.Video.Annotators.ClipStrip) {
             },
             removeAll: function() {
                 for (var ann_id in this._anns)  {
-                    if (this._anns.hasOwnProperty(ann_id)) {
+                    if (Object.hasOwn(this._anns, ann_id)) {
                         this.remove(ann_id);
                         delete this._anns[ann_id];
                     }

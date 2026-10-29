@@ -88,7 +88,7 @@ if (!Sherd.Image.Annotators.OpenLayers) {
                 var geojson = self.targetview.openlayers.feature2json(feature);
                 //copy feature properties to current_state
                 for (var a in geojson) {
-                    if (geojson.hasOwnProperty(a)) {
+                    if (Object.hasOwn(geojson, a)) {
                         current_state[a] = geojson[a];
                     }
                 }

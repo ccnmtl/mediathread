@@ -267,8 +267,8 @@ const parseTimecode = function(str) {
     const parts = str.split(':');
 
     let col1 = null;
-    let col2 = null;
-    let col3 = null;
+    let col2;
+    let col3;
 
     if (parts.length > 2) {
         col1 = Number(parts[0]);
@@ -339,7 +339,7 @@ const formatDay = function(obj) {
  * mediathread/assetmgr/models.py
  */
 const getAssetType = function(primaryType) {
-    let type = primaryType;
+    let type;
 
     if (
         primaryType === 'youtube' ||
@@ -607,7 +607,7 @@ const tagsToReactSelect = function(tags, isCreating=false) {
     }
 
     return tags.map(function(tag) {
-        let label = '';
+        let label;
 
         if(tag.count > 0){
             label = `${tag.name} (${tag.count})`;

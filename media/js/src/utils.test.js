@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 import {
     formatTimecode, pad2,
     getSeparatedTimeUnits, parseTimecode,

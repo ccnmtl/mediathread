@@ -1,4 +1,4 @@
-/* global Sherd: true, flowplayer: true */
+/* global Sherd: true, flowplayer: true, STATIC_URL: true */
 /*
  * Using Flowplayer to support the flash video and mp4 formats
  * Support for the Flowplayer js-enabled player.  documentation at:
@@ -119,7 +119,9 @@ if (!Sherd.Video.Flowplayer && Sherd.Video.Base) {
                     }
                 }
                 return rv;
-            } catch {}
+            } catch {
+                console.error('flowplayer.js: microformat.components error');
+            }
             return false;
         };
 

@@ -1,4 +1,4 @@
-/* global Sherd: true, djangosherd: true */
+/* global Sherd: true, djangosherd: true, MediaThread: true */
 function DjangoSherd_NoteForm() {
     var self = this;
     Sherd.Base.DomObject.apply(this, arguments);// inherit
@@ -244,7 +244,7 @@ CitationView.prototype.init = function(options) {
     if (options) {
         // copy in options so default are not overwritten
         for (var a in options) {
-            if (options.hasOwnProperty(a)) {
+            if (Object.hasOwn(options, a)) {
                 self.options[a] = options[a];
             }
         }
@@ -265,9 +265,9 @@ CitationView.prototype.init = function(options) {
     // This may be DANGEROUS in any sense. The old assetview should be
     // destroyed first?
     if (!djangosherd.assetview) {
-        var clipform = options.hasOwnProperty('clipform') ?
+        var clipform = Object.hasOwn(options, 'clipform') ?
             options.clipform: false;
-        var clipplay = options.hasOwnProperty('clipplay') ?
+        var clipplay = Object.hasOwn(options, 'clipplay') ?
             options.clipplay: false;
 
         if (!clipform) {
@@ -476,7 +476,7 @@ CitationView.prototype.displayCitation = function(anchor, ann_obj, id) {
         }
     }
 
-    var asset_obj = ann_obj.hasOwnProperty('asset') ? ann_obj.asset : ann_obj;
+    var asset_obj = Object.hasOwn(ann_obj, 'asset') ? ann_obj.asset : ann_obj;
     if (asset_obj) {
         asset_obj.autoplay = (self.options.autoplay) ?
             self.options.autoplay : false;
@@ -511,12 +511,12 @@ CitationView.prototype.displayCitation = function(anchor, ann_obj, id) {
         });
 
         if (
-            ann_obj.hasOwnProperty('annotations') &&
+            Object.hasOwn(ann_obj, 'annotations') &&
                 ann_obj.annotations.length > 0 &&
                 ann_obj.annotations[0] !== null
         ) {
             var ann_data = ann_obj.annotations[0];// ***
-            if (!ann_data.hasOwnProperty('start')) {
+            if (!Object.hasOwn(ann_data, 'start')) {
                 ann_data.start = 0;
             }
             djangosherd.assetview.setState(
@@ -617,10 +617,10 @@ function DjangoSherd_Storage() {
         }
         if (json.assets) {
             for (var i in json.assets) {
-                if (json.assets.hasOwnProperty(i)) {
+                if (Object.hasOwn(json.assets, i)) {
                     var a = json.assets[i];
                     for (var j in a.sources) {
-                        if (a.sources.hasOwnProperty(j)) {
+                        if (Object.hasOwn(a.sources, j)) {
                             a[j] = a.sources[j].url;
 
                             if (a.sources[j].width) {
@@ -638,9 +638,9 @@ function DjangoSherd_Storage() {
                     djangosherd_adaptAsset(a); //in-place
                     _cache.asset[a.id] = a;
 
-                    if (a.hasOwnProperty('annotations')) {
+                    if (Object.hasOwn(a, 'annotations')) {
                         for (var l in a.annotations) {
-                            if (a.annotations.hasOwnProperty(l)) {
+                            if (Object.hasOwn(a.annotations, l)) {
                                 var ann1 = jQuery.extend({}, a.annotations[l]);
                                 ann1.asset = jQuery.extend({}, a);
                                 delete ann1.asset.annotations;

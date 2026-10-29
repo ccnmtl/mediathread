@@ -1,6 +1,7 @@
-import { defineConfig } from "eslint/config";
-import react from "eslint-plugin-react";
-import globals from "globals";
+import { defineConfig } from 'eslint/config';
+import eslintReact from '@eslint-react/eslint-plugin';
+import eslintJs from '@eslint/js';
+import globals from 'globals';
 import pluginCypress from 'eslint-plugin-cypress';
 
 export default defineConfig([
@@ -13,11 +14,10 @@ export default defineConfig([
     },
     {
         files: ['**/*.{js,jsx}'],
-        extends: [react.configs.flat.recommended],
-        plugins: {
-            react,
-        },
-
+        extends: [
+            eslintJs.configs.recommended,
+            eslintReact.configs['recommended'],
+        ],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -39,7 +39,7 @@ export default defineConfig([
 
         settings: {
             react: {
-                version: "detect",
+                version: "19.3",
             },
         },
 

@@ -302,7 +302,7 @@ export default class ViewSelections extends React.Component {
             return this.renderEditForm(this.props.isEditing);
         }
 
-        let selections = {};
+        let selections;
         if (this.state.groupBy === 'author') {
             selections = groupByAuthor(this.props.filteredSelections);
         } else if (this.state.groupBy === 'term') {

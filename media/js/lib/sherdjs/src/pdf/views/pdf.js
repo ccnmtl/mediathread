@@ -1,4 +1,4 @@
-/* global Sherd: true*/
+/* global Sherd: true, SVG: true, pdfjsLib: true */
 
 import {
     isValidAnnotation, drawAnnotation, renderPage

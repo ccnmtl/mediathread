@@ -35,7 +35,7 @@ const GenericAssetView = function(options) {
                 viewgroup.clipstrip = new Clipstripper();
                 viewgroup.clipstrip.attachView(viewgroup.view);
             }
-            if (options.hasOwnProperty('clipplay') && options.clipplay) {
+            if (Object.hasOwn(options, 'clipplay') && options.clipplay) {
                 viewgroup.clipplay = new Clipplayer();
                 viewgroup.clipplay.attachView(viewgroup.view);
             }

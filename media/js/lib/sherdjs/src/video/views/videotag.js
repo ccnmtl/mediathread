@@ -4,13 +4,13 @@ Documentation:
 
   SERIALIZATION of asset
        {url:''
-	,width:320
-	,height:260
-	,autoplay:'false'
-	,controller:'true'
-	,errortext:'Error text.'
-	,type:'video/ogg'
-	};
+    ,width:320
+    ,height:260
+    ,autoplay:'false'
+    ,controller:'true'
+    ,errortext:'Error text.'
+    ,type:'video/ogg'
+    };
   ISSUES:
      2010/August/26:
      Firefox does not have .seekable implemented
@@ -78,7 +78,7 @@ if (!Sherd.Video.Videotag) {
             var vid = document.createElement('video');
             var browser_supported = [];
             for (var a in types) {
-                if (types.hasOwnProperty(a)) {
+                if (Object.hasOwn(types, a)) {
                     switch (vid.canPlayType(types[a])) {
                     case 'probably':
                         browser_supported.unshift(a);
@@ -113,7 +113,9 @@ if (!Sherd.Video.Videotag) {
                     rv.mediaUrl = create_obj.object[create_obj.provider];
                 }
                 return rv;
-            } catch {}
+            } catch {
+                console.error('videotag.js: microformat.components error');
+            }
             return false;
         };
 
@@ -144,7 +146,9 @@ if (!Sherd.Video.Videotag) {
                     self.components.player.src = supported.url;
                     self.components.mediaUrl = supported.url;
                     return true;
-                } catch {}
+                } catch {
+                    console.error('videotag.js: microformat.update error');
+                }
             }
             return false;
         };

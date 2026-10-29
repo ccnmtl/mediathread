@@ -635,10 +635,10 @@
 
         ///Item Save -- global annotation
         this.saveItem = function(saveButton) {
-            var frm = jQuery(saveButton).parents('form')[0];
+            let frm = jQuery(saveButton).parents('form')[0];
 
             // Validate the title, if it is editable
-            var newTitle = null;
+            let newTitle;
             if ('asset-title' in frm.elements) {
                 newTitle = frm.elements['asset-title'].value;
                 if (newTitle.length < 1) {
@@ -655,10 +655,10 @@
             }
 
             // Validate the tag fields...should be in djangosherd?
-            var tag_field = frm.elements['annotation-tags'];
+            let tag_field = frm.elements['annotation-tags'];
             if (tag_field) {//is this null?
-                var tags = tag_field.value.split(',');
-                for (var i = 0; i < tags.length; i++) {
+                let tags = tag_field.value.split(',');
+                for (let i = 0; i < tags.length; i++) {
                     if (tags[i].trim().length > 25) {
                         showMessage(
                             'The ' + tags[i] +
@@ -710,7 +710,7 @@
                         jQuery(saveButton).removeClass('saving');
                         jQuery(saveButton).attr('value', 'Save Item');
 
-                        var context = {
+                        let context = {
                             'asset-current': self.active_asset,
                             'vocabulary': self.vocabulary
                         };
@@ -718,12 +718,12 @@
                         jQuery('.asset-view-title').text(
                             context['asset-current'].title);
 
-                        var $elt = self.$parent.find(
+                        let $elt = self.$parent.find(
                             '#asset-global-annotation');
                         $elt.hide();
                         context = jQuery.extend({}, context,
                             MediaThread.mustacheHelpers);
-                        var rendered = Mustache.render(
+                        let rendered = Mustache.render(
                             MediaThread.templates.asset_global_annotation,
                             context);
                         $elt.html(rendered);
@@ -1092,7 +1092,7 @@
                 if (self.active_annotation) {
                     currentState.annotation_id = self.active_annotation.id;
 
-                    var assetPath = '';
+                    var assetPath;
                     if (self.active_asset) {
                         assetPath = self.active_asset.local_url;
                     } else {

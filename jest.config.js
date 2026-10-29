@@ -1,5 +1,3 @@
-/* eslint-env node */
-
 module.exports = {
     'setupFiles': [
         '<rootDir>/media/js/polyfills.js'

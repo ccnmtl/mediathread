@@ -1,6 +1,4 @@
-/* eslint-env jest, node */
 import fs from 'fs';
-import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import GridAsset from './GridAsset';

@@ -125,15 +125,17 @@ if (!Sherd.Video.Base) {
             // Return serialized description of embedded player. Note:
             // Not currently in use.
             read: function(found_obj) {
-                var obj;
-                return obj;
+                return found_obj;
             },
             // Idea: Return list of types supported. Note: Not
             // currently in use or implemented by anyone
             supports: function() { return []; },
             // Return current type of media playing. Note: Not
             // currently in use;
-            type: function() { var type; return type; },
+            type: function() {
+                let type = null;
+                return type;
+            },
             // Replace the video identifier within the .html embed block
             update: function(obj, html_dom) {}
         };
@@ -247,7 +249,7 @@ if (!Sherd.Video.Base) {
 
         this.events.clearTimers = function() {
             for (var name in this._timers) {
-                if (this._timers.hasOwnProperty(name)) {
+                if (Object.hasOwn(this._timers, name)) {
                     window.clearTimeout(this._timers[name]);
                 }
             }

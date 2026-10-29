@@ -1,4 +1,4 @@
-/* global Sherd: true, console: true, getYouTubeID: true */
+/* global Sherd: true, getYouTubeID: true */
 /* global YT: true */
 /*
   Support for the YouTube js-enabled player.  documentation at:
@@ -114,10 +114,10 @@ if (!Sherd.Video.YouTube) {
          *  Returns a promise.
          */
         this.microformat.components = function(html_dom, create_obj) {
-            var dfd = jQuery.Deferred();
+            let dfd = jQuery.Deferred();
 
             try {
-                var rv = {};
+                let rv = {};
                 if (html_dom) {
                     rv.wrapper = html_dom;
                 }
@@ -156,7 +156,6 @@ if (!Sherd.Video.YouTube) {
             } catch (e) {
                 return dfd.reject('error in microformat.components:', e);
             }
-            return dfd.reject(false);
         };
 
         // Return asset object description (parameters) in a
@@ -189,7 +188,9 @@ if (!Sherd.Video.YouTube) {
                 try {
                     return obj.youtube.indexOf(self.components.mediaUrl) === 0;
                 }
-                catch {}
+                catch {
+                    console.error('youtube.js: microformat.update error');
+                }
             }
             return false;
         };
@@ -204,7 +205,7 @@ if (!Sherd.Video.YouTube) {
 
             self.events.connect(self, 'playclip', function(obj) {
                 var opts = {};
-                if (obj.hasOwnProperty('autoplay')) {
+                if (Object.hasOwn(obj, 'autoplay')) {
                     opts.autoplay = obj.autoplay;
                 }
                 self.setState(obj, opts);

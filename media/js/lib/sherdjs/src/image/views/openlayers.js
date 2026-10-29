@@ -1,4 +1,5 @@
 /* global Sherd: true, OpenLayers: true */
+
 /****
 An annotation looks like this:
 ///1
@@ -266,13 +267,14 @@ if (!Sherd.Image.OpenLayers) {
             },
             destroyAll: function() {
                 //remove from mouselistener obj
-                for (var i = 0; i < this.all_layers.length; i++) {
+                let layer;
+                for (let i = 0; i < this.all_layers.length; i++) {
                     layer = this.all_layers[i];
                     delete this.root.layers[layer.id];
                 }
                 this.all_layers = [];
-                for (var ann_id in this._anns) {
-                    if (this._anns.hasOwnProperty(ann_id)) {
+                for (let ann_id in this._anns) {
+                    if (Object.hasOwn(this._anns, ann_id)) {
                         delete this._anns[ann_id];
                     }
                 }
@@ -341,7 +343,7 @@ if (!Sherd.Image.OpenLayers) {
                 }
                 this.v.removeAllFeatures();
                 for (var ann_id in this._anns) {
-                    if (this._anns.hasOwnProperty(ann_id)) {
+                    if (Object.hasOwn(this._anns, ann_id)) {
                         delete this._anns[ann_id];
                     }
                 }

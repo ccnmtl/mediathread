@@ -1,4 +1,4 @@
-/* global Sherd: true, $f: true, console: true */
+/* global Sherd: true, $f: true, djangosherd: true */
 /*
   Support for the Vimeo js-enabled player.  documentation at:
   http://vimeo.com/api/docs/oembed
@@ -157,9 +157,9 @@ if (!Sherd.Video.Vimeo) {
         // options needed at runtime
         this.microformat.components = function(html_dom, create_obj) {
             if (!self.media.ready()) {
-                var top = document.getElementById(create_obj.htmlID);
-                var iframe = jQuery(top).find('iframe')[0];
-                var froogaloop = $f(iframe);
+                let top = document.getElementById(create_obj.htmlID);
+                let iframe = jQuery(top).find('iframe')[0];
+                let froogaloop = $f(iframe);
                 froogaloop.addEvent('ready', function() {
                     djangosherd.assetview.settings.vimeo.view.vimeoPlayerReady(
                         froogaloop);
@@ -167,7 +167,7 @@ if (!Sherd.Video.Vimeo) {
             }
 
             try {
-                var rv = {};
+                let rv = {};
                 if (html_dom) {
                     rv.wrapper = html_dom;
                 }
@@ -254,7 +254,9 @@ if (!Sherd.Video.Vimeo) {
             if (self.components.player) {
                 try {
                     self.components.player.api('pause');
-                } catch {}
+                } catch {
+                    console.error('vimeo.js: media.pause error');
+                }
             }
         };
 
@@ -262,7 +264,9 @@ if (!Sherd.Video.Vimeo) {
             if (self.media.ready) {
                 try {
                     self.components.player.api('play');
-                } catch {}
+                } catch {
+                    console.error('vimeo.js: media.play error');
+                }
             }
         };
 

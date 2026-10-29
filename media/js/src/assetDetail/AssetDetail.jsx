@@ -923,9 +923,10 @@ class AssetDetailClass extends React.Component {
                     [{kind: 'subtitles', src: captionTrack, default: true}];
             }
 
-            let playerEl = null;
+            let playerEl;
 
             // TODO: enable when ready
+            // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
             if (false && this.asset.isPanopto()) {
                 // Use PanoptoPlayer component instead of ReactPlayer
                 playerEl = (

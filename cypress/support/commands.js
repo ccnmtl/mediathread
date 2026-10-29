@@ -70,6 +70,7 @@ const severityIndicators = {
     critical: '🔴',
 };
 
+// eslint-disable-next-line no-unused-vars
 function callback(violations) {
     violations.forEach(violation => {
         const nodes =

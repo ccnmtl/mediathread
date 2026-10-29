@@ -234,7 +234,7 @@ if TESTING:
                 'HOST': 'localhost',
                 'PORT': 5432,
                 'USER': 'postgres',
-                'PASSWORD': 'postgres',
+                'PASSWORD': 'postgres',  # nosec B105 - test credentials
                 'ATOMIC_REQUESTS': True,
             }
         }

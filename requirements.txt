@@ -23,7 +23,7 @@ python-dateutil==2.9.0.post0  # tastypie
 defusedxml==0.7.1  # tastypie
 django-tastypie==0.15.1
 logilab-common==2.1.0
-lazy-object-proxy==1.12.0
+lazy-object-proxy==1.13.0
 wrapt==2.5.1
 unicodecsv==0.14.1
 

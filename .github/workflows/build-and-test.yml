@@ -3,11 +3,11 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     name: Django tests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
         python-version: ["3.12", "3.14"]
-        node-version: [24.x]
+        node-version: [26.x]
     services:
       postgres:
         image: postgres:17

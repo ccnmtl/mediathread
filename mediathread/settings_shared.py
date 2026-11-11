@@ -250,6 +250,10 @@ if TESTING:
 else:
     SESSION_COOKIE_SAMESITE = 'None'
     DCS_SESSION_COOKIE_SAMESITE = 'None'
+    # Browsers reject SameSite=None cookies that aren't Secure, and the
+    # test server runs over plain http with CSRF_COOKIE_SECURE = False.
+    # Keep Django's default (Lax) for tests so the csrftoken cookie sticks.
+    CSRF_COOKIE_SAMESITE = 'None'
 
 if DEVELOPMENT:
     INSTALLED_APPS = [
@@ -260,8 +264,6 @@ if DEVELOPMENT:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
         *MIDDLEWARE,
     ]
-
-CSRF_COOKIE_SAMESITE = 'None'
 
 BLOCKED_EMAIL_DOMAINS = []
 

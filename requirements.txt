@@ -103,7 +103,7 @@ ctlsettings==0.4.9
 django-extensions==4.1
 
 django-s3sign==0.6.5
-s3transfer==0.19.2
+s3transfer==0.19.3
 jmespath==1.1.0
 
 botocore

@@ -41,6 +41,9 @@ $(JS_SENTINAL): package.json
 eslint: $(JS_SENTINAL)
 	$(ESLINT) $(JS_FILES)
 
+jsbuild: $(JS_SENTINAL)
+	NODE_ENV=production npm run build
+
 jstest: $(JS_SENTINAL)
 	npm test
 

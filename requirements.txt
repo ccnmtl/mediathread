@@ -32,7 +32,7 @@ editdistance==0.8.1
 pyasn1==0.6.5
 ndg-httpsclient==0.5.1
 
-chardet==7.6.0
+chardet==7.7.0
 
 # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
 idna==3.20

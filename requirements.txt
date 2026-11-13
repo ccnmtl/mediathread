@@ -128,7 +128,7 @@ bandit==1.9.4
 funcsigs==1.0.2
 pypanopto==0.3.2
 
-billiard==4.3.1
+billiard==4.3.2
 vine==5.1.0
 amqp==5.4.1
 kombu==5.7.0

@@ -35,7 +35,7 @@
     "@babel/preset-env": "^8.0.7",
     "@babel/preset-react": "^8.0.1",
     "@babel/runtime": "^8.1.2",
-    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/jest-dom": "^8.0.0",
     "@testing-library/react": "^16.0.0",
     "babel-jest": "^30.5.2",
     "babel-loader": "^10.1.1",
